@@ -24,10 +24,13 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddControllersWithViews();
 
             services.AddDbContext<fmisContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
+            services.AddDbContext<ProductContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ProductContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +44,8 @@ namespace fmis
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
             app.UseStaticFiles();
 
             app.UseRouting();
