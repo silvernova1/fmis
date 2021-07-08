@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Personal_information
+    public class Personal_Information
     {
+        public int id { get; set; }
         [StringLength(100)]
-        public int userid { get; set; }
+        public string userid { get; set; }
         public string picture { get; set; }
+        [StringLength(255)]
         public string signature { get; set; }
         [StringLength(100)]
         public string fname { get; set; }
@@ -104,19 +106,36 @@ namespace fmis.Models
         public string case_address { get; set; }
         [StringLength(100)]
         public string case_contact { get; set; }
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
+        public int designation_id { get; set; }
+        public int division_id { get; set; }
+        public int section_id { get; set; }
+        [StringLength(100)]
+        public string disbursement_type { get; set; }
+        [StringLength(100)]
+        public string salary_charge { get; set; }
+        [StringLength(100)]
+        public string bbalance_cto { get; set; }
+        [StringLength(100)]
+        public string vacation_balance { get; set; }
+        [StringLength(100)]
+        public string sick_balance { get; set; }
+        public int sched { get; set; }
+        public int account_number { get; set; }
+        [StringLength(50)]
+        public string region { get; set; }
+        [StringLength(20)]
+        public string field_status { get; set; }
+        [StringLength(100)]
+        public string Rsitio { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime resigned_effectivity { get; set; }
+        [StringLength(100)]
+        public string Psitio { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime created_at { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime updated_at { get; set; }
 
     }
 }

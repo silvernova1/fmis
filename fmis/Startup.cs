@@ -29,8 +29,8 @@ namespace fmis
 
             services.AddDbContext<fmisContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
-            services.AddDbContext<ProductContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ProductContext")));
+            services.AddDbContext<PersonalInformationContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
