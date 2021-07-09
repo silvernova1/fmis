@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace fmis.Models
 {
     public class Personal_Information
     {
+        [Key]
         public int id { get; set; }
         [StringLength(100)]
         public string userid { get; set; }
@@ -23,7 +25,8 @@ namespace fmis.Models
         [StringLength(100)]
         public string name_ext { get; set; }
         [DataType(DataType.Date)]
-        public DateTime date_of_birth { get; set; }
+        /*public DateTime date_of_birth { get; set; }*/
+        public Nullable<DateTime> date_of_birth { get; set; }
         [StringLength(100)]
         public string place_of_birth { get; set; }
         [StringLength(20)]
@@ -45,13 +48,13 @@ namespace fmis.Models
         [StringLength(50)]
         public string gsis_polnno { get; set; }
         [StringLength(50)]
-        public int pagibig_no { get; set; }
+        public string pagibig_no { get; set; }
         [StringLength(50)]
-        public int phic_no { get; set; }
+        public string phic_no { get; set; }
         [StringLength(50)]
-        public int sss_no { get; set; }
+        public string sss_no { get; set; }
         [StringLength(50)]
-        public int tin_no { get; set; }
+        public string tin_no { get; set; }
         [StringLength(100)]
         public string residential_address { get; set; }
         [StringLength(100)]
@@ -106,10 +109,9 @@ namespace fmis.Models
         public string case_address { get; set; }
         [StringLength(100)]
         public string case_contact { get; set; }
-        
-        public int designation_id { get; set; }
-        public int division_id { get; set; }
-        public int section_id { get; set; }
+        public Nullable<int> designation_id { get; set; }
+        public Nullable<int> division_id { get; set; }
+        public Nullable<int> section_id { get; set; }
         [StringLength(100)]
         public string disbursement_type { get; set; }
         [StringLength(100)]
@@ -120,8 +122,10 @@ namespace fmis.Models
         public string vacation_balance { get; set; }
         [StringLength(100)]
         public string sick_balance { get; set; }
-        public int sched { get; set; }
-        public int account_number { get; set; }
+        [StringLength(100)]
+        public string sched  { get; set; }
+        [StringLength(100)]
+        public string account_number { get; set; }
         [StringLength(50)]
         public string region { get; set; }
         [StringLength(20)]
@@ -137,5 +141,9 @@ namespace fmis.Models
         [DataType(DataType.Date)]
         public DateTime updated_at { get; set; }
 
+        internal void SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
