@@ -110,9 +110,9 @@ namespace fmis.Controllers
                     var personal_information = new Personal_Information();
                     for (int col = 1; col <= ColCount; col++)
                     {
-                        /*if (col == 1)
+                        if (col == 1)
                             personal_information.id = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
-                        else */if (col == 2)
+                        else if (col == 2)
                             personal_information.userid = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 3)
                             personal_information.picture = checkExcel(worksheet.Cells[row, col].Text as string);
@@ -140,7 +140,7 @@ namespace fmis.Controllers
                             personal_information.indicate_country = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 16)
                             personal_information.height = checkExcel(worksheet.Cells[row, col].Text as string);
-                       /* else if (col == 17)
+                        else if (col == 17)
                             personal_information.weight = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 18)
                             personal_information.blood_type = checkExcel(worksheet.Cells[row, col].Text as string);
@@ -243,7 +243,7 @@ namespace fmis.Controllers
                         else if (col == 67)
                             personal_information.created_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 68)
-                            personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);*/
+                            personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
 
                     }
 
@@ -270,3 +270,4 @@ namespace fmis.Controllers
     
 
 }
+

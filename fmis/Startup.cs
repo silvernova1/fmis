@@ -29,6 +29,7 @@ namespace fmis
 
             services.AddDbContext<fmisContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
+
             services.AddDbContext<PersonalInformationContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
         }
