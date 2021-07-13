@@ -11,9 +11,9 @@ namespace fmis.Models
     public class Personal_Information
     {
         
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int id { get; set; }
+        public long id { get; set; }
         [StringLength(100)]
         public string userid { get; set; }
         public string picture { get; set; }

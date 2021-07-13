@@ -30,10 +30,23 @@ namespace fmis
             services.AddDbContext<fmisContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
 
-            services.AddDbContext<PersonalInformationContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
+           services.AddDbContext<PersonalInformationContext>(options =>
+                     options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
+
+
+           /* services.AddDbContext<PersonalInformationContext>(o =>
+                        o.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext"))
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));*/
+
+
+            /* services.AddDbContext<PersonalInformationContext>(options =>
+                     options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));*/
+
+            /*services.AddScoped<PersonalInformationContext>();*/
         }
 
+
+     
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

@@ -53,10 +53,12 @@ namespace fmis.Controllers
             DateTime date3 = DateTime.ParseExact(dateString, @"d/M/yyyy",
             System.Globalization.CultureInfo.InvariantCulture);
             if (dateString == null)
-                return DateTime.ParseExact(dateString, @"d/M/yyyy",
+            return DateTime.ParseExact(dateString, @"d/M/yyyy",
             System.Globalization.CultureInfo.InvariantCulture);
 
             return (DateTime)date3;
+
+
         }
 
 
@@ -69,11 +71,11 @@ namespace fmis.Controllers
             return DateTime.Parse("0001-01-01T00:00:00");
         }
 
-        public Int16 checkExcelInt(string excel_data, ExcelWorksheet worksheet, int row, int col) {
+        public int checkExcelInt(string excel_data, ExcelWorksheet worksheet, int row, int col) {
             if (!string.IsNullOrWhiteSpace(excel_data) && excel_data != "NULL")
             {
                 try{
-                    return Int16.Parse(worksheet.Cells[row, col].Value.ToString());
+                    return int.Parse(worksheet.Cells[row, col].Value.ToString());
                 }
                 catch {
                     return 0;
@@ -108,6 +110,7 @@ namespace fmis.Controllers
                 for (int row = 2; row <= rowCount; row++)
                 {
                     var personal_information = new Personal_Information();
+
                     for (int col = 1; col <= ColCount; col++)
                     {
                         if (col == 1)
