@@ -7,6 +7,10 @@
     "mssql2": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:SampleContext"
+    },
+    "mssql3": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:UserContextConnection"
     }
   }
 }

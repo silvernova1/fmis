@@ -34,13 +34,14 @@
     </div><!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li class="active">
+        <li class="
+            @if (@ViewBag.filter_sidebar == "dashboard")
+                @Html.Raw("active")
+            ">
             <a asp-area="" asp-controller="Home" asp-action="Index">
                 <i class="menu-icon fa fa-tachometer"></i>
-                <span class="menu-text"> Dashboard </span>
+                <span class="menu-text"> Dashboard</span>
             </a>
-
-            <b class="arrow"></b>
         </li>
 
         <li class="">
@@ -59,127 +60,61 @@
                 <li class="">
 
                     <a asp-controller="Prexcs" asp-action="Index">
-                   
-                    
+
+
                         <i class="menu-icon fa fa-caret-right"></i>
                         PREXC
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- UPLOAD FILE -->
+        <li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
+                @Html.Raw("active open")
+        ">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-upload"></i>
+                <span class="menu-text">
+                    Upload Data
+                </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="
+                    @if(ViewBag.filter_sidebar == "upload_file/personal_information")
+                        @Html.Raw("active")
+                ">
+                    <a asp-controller="UploadFile" asp-action="UploadFile">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Personal Information
                     </a>
                 </li>
 
                 <li class="">
                     <a href="typography.html">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Typography
+                        Division
                     </a>
-
-                    <b class="arrow"></b>
                 </li>
 
                 <li class="">
                     <a href="elements.html">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Elements
+                        Section
                     </a>
 
-                    <b class="arrow"></b>
                 </li>
 
                 <li class="">
                     <a href="buttons.html">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Buttons &amp; Icons
+                        ORS
                     </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="content-slider.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Content Sliders
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="treeview.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Treeview
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="jquery-ui.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        jQuery UI
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="nestable-list.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Nestable Lists
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-caret-right"></i>
-
-                        Three Level Menu
-                        <b class="arrow fa fa-angle-down"></b>
-                    </a>
-
-                    <b class="arrow"></b>
-
-                    <ul class="submenu">
-                        <li class="">
-                            <a href="#">
-                                <i class="menu-icon fa fa-leaf green"></i>
-                                Item #1
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-pencil orange"></i>
-
-                                4th level
-                                <b class="arrow fa fa-angle-down"></b>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu">
-                                <li class="">
-                                    <a href="#">
-                                        <i class="menu-icon fa fa-plus purple"></i>
-                                        Add Product
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-
-                                <li class="">
-                                    <a href="#">
-                                        <i class="menu-icon fa fa-eye pink"></i>
-                                        View Products
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </li>
             </ul>
         </li>
@@ -188,6 +123,14 @@
             <a asp-area="" asp-controller="UploadFile" asp-action="UploadFile">
                 <i class="menu-icon fa fa-list-alt"></i>
                 <span class="menu-text"> Upload File </span>
+            </a>
+        </li>
+
+        <li class="@if(ViewBag.filter_sidebar == "gallery")
+                        @Html.Raw("active")">
+            <a asp-controller="Home" asp-action="Gallery">
+                <i class="menu-icon fa fa-picture-o"></i>
+                <span class="menu-text"> Gallery </span>
             </a>
 
             <b class="arrow"></b>

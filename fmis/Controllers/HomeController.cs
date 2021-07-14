@@ -20,12 +20,21 @@ namespace fmis.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            ViewBag.filter_sidebar = "dashboard";
+            ViewBag.layout = null;
+            return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public IActionResult Gallery() 
+        {
+            ViewBag.filter_sidebar = "gallery";
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Home/Gallery.cshtml");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
