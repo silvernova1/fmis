@@ -1,4 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using fmis.Areas.Identity.Data
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@inject SignInManager<fmisUser> SignInManager
+@inject UserManager<fmisUser> UserManager
+
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -345,7 +359,7 @@
                                             <img class="nav-user-photo" src="~/assets/images/amals.jpg" alt="Amal's Photo" />
                                             <span class="user-info">
                                                 <small>Welcome,</small>
-                                                Amalio
+                                                @UserManager.GetUserName(User)
                                             </span>
 
                                             <i class="ace-icon fa fa-caret-down"></i>
@@ -364,11 +378,9 @@
                                                     Profile
                                                 </a>
                                             </li>
-
                                             <li class="divider"></li>
-
                                             <li>
-                                                <a href="#">
+                                                <a href="#" onclick="logout()">
                                                     <i class="ace-icon fa fa-power-off"></i>
                                                     Logout
                                                 </a>
@@ -423,10 +435,23 @@
     </div><!-- /.main-container -->
 
 </body>
-
 </html>
-@RenderSection("scripts", required: false)
-
-
-
-
+<script type="text/javascript">
+    function logout() {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            url: "/Identity/Account/Logout?returnUrl=%2FHome%2FDashboard%3Fpage%3D%252FIndex",
+            data: {
+                "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (result) {
+                location.reload();
+            },
+            error: function (result) {
+                console.log(result.responseText);
+            }
+        });
+    }
+</script>

@@ -27,6 +27,12 @@ namespace fmis
         {
             services.AddRazorPages();
 
+            /* services.AddRazorPages()
+                    .AddRazorPagesOptions(options => {
+                        options.RootDirectory = "/Budget";
+                    });*/
+          
+
             services.AddControllersWithViews();
 
             services.AddDbContext<fmisContext>(options =>
@@ -35,10 +41,10 @@ namespace fmis
            services.AddDbContext<PersonalInformationContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
 
-        /*    services.AddMvc().AddRazorPagesOptions(options => {
-                options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-*/
+            /*    services.AddMvc().AddRazorPagesOptions(options => {
+                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+    */
 
             /* services.AddDbContext<PersonalInformationContext>(o =>
                          o.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext"))

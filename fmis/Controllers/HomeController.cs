@@ -21,8 +21,15 @@ namespace fmis.Controllers
         public IActionResult Index()
         {
             ViewBag.filter_sidebar = "dashboard";
-            ViewBag.layout = null;
+            ViewBag.layout = null;   
             return View("~/Views/Shared/_LoginPartial.cshtml");
+        }
+
+        public IActionResult Dashboard()
+        {
+            ViewBag.filter_sidebar = "dashboard";
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Home/Index.cshtml");
         }
 
         public IActionResult Privacy()
