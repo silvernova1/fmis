@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Designation
+    public class Division
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
         [StringLength(100)]
         public string Description { get; set; }
+        public string Head { get; set; }
         public string Remember_Token { get; set; }
         [DataType(DataType.Date)]
         public DateTime Created_At { get; set; }

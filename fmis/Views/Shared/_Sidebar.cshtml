@@ -97,14 +97,15 @@
 
                 <li class="@if(ViewBag.filter_sidebar == "upload_file/designation")
                         @Html.Raw("active")">
-                    <a asp-controller="UploadFile" asp-action="UploadDesignation">
+                    <a asp-controller="UploadDesignation" asp-action="UploadDesignation">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Designation
                     </a>
                 </li>
 
-                <li class="">
-                    <a href="typography.html">
+                <li class="@if(ViewBag.filter_sidebar == "upload_file/division")
+                        @Html.Raw("active")">
+                    <a asp-controller="UploadDivision" asp-action="UploadDivision">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Division
                     </a>
