@@ -95,6 +95,14 @@
                     </a>
                 </li>
 
+                <li class="@if(ViewBag.filter_sidebar == "upload_file/designation")
+                        @Html.Raw("active")">
+                    <a asp-controller="UploadFile" asp-action="UploadDesignation">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Designation
+                    </a>
+                </li>
+
                 <li class="">
                     <a href="typography.html">
                         <i class="menu-icon fa fa-caret-right"></i>
