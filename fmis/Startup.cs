@@ -45,7 +45,10 @@ namespace fmis
                     options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
 
             services.AddDbContext<DivisionContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("DivisionContext"))); 
+
+            services.AddDbContext<SectionContext>(options =>
+                  options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
 
             /*    services.AddMvc().AddRazorPagesOptions(options => {
                     options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");

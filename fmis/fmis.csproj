@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\Budget\" />
     <Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
   </ItemGroup>
 </Project>

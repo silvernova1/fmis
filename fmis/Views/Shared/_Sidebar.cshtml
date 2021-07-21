@@ -111,12 +111,12 @@
                     </a>
                 </li>
 
-                <li class="">
-                    <a href="elements.html">
+                <li class="@if(ViewBag.filter_sidebar == "upload_file/section")
+                        @Html.Raw("active")">
+                    <a asp-controller="UploadSection" asp-action="UploadSection">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Section
                     </a>
-
                 </li>
 
                 <li class="">
