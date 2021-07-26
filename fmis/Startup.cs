@@ -46,7 +46,11 @@ namespace fmis
                     options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
 
             services.AddDbContext<DivisionContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DivisionContext"))); 
+                    options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
+
+            /*var userconn = "Data Source=LAMBORGHINI\\VEEAMSQL2016;Initial Catalog=FMIS;Integrated Security=False";
+            services.AddDbContext<UserContext>(options =>
+                options.UseSqlServer(userconn));*/
 
             services.AddDbContext<SectionContext>(options =>
                   options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
