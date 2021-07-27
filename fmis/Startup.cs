@@ -38,6 +38,8 @@ namespace fmis
                     options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
             services.AddDbContext<SectionContext>(options =>
                   options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
+            services.AddDbContext<ObligationContext>(options =>
+                  options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
 
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
