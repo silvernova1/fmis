@@ -7,13 +7,13 @@ using fmis.Models;
 
 namespace fmis.Data
 {
-    public class SectionContext : DbContext
+    public class Obligated_amountContext : DbContext
     {
-        public SectionContext(DbContextOptions<SectionContext> options)
+        public Obligated_amountContext(DbContextOptions<Obligated_amountContext> options)
          : base(options)
         {
         }
 
-        public DbSet<fmis.Models.Section> Section { get; set; }
+        public DbSet<fmis.Models.Obligated_amount> Obligated_amount { get; set; }
     }
 }
