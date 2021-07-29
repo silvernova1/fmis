@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Syncfusion.EJ2;
 
 namespace fmis.Controllers
 {
@@ -17,6 +18,7 @@ namespace fmis.Controllers
         {
             _logger = logger;
         }
+
 
         public IActionResult Index()
         {
@@ -49,5 +51,6 @@ namespace fmis.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }
