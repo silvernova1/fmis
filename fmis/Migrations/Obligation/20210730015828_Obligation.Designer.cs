@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.Obligation
 {
     [DbContext(typeof(ObligationContext))]
-    [Migration("20210727012737_Obligation")]
+    [Migration("20210730015828_Obligation")]
     partial class Obligation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
