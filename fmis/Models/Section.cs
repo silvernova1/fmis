@@ -9,6 +9,7 @@ namespace fmis.Models
 {
     public class Section
     {
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
@@ -22,5 +23,10 @@ namespace fmis.Models
         public DateTime Created_At { get; set; }
         [DataType(DataType.Date)]
         public DateTime Updated_At { get; set; }
+
+        internal string GetXml()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

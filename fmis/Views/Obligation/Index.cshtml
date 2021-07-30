@@ -1,144 +1,156 @@
-﻿<style>
-    #example1_events {
-        height: 166px;
-        padding: 5px;
-        margin: 10px 0;
-        overflow-y: scroll;
-        font-size: 11px;
-        border: 1px solid #CCC;
-        box-sizing: border-box;
-    }
+﻿@model IEnumerable<fmis.Models.Section>
 
-    #example1 {
-        margin-top: 0;
-    }
 
-    #hooksList {
-        padding: 0;
-    }
 
-        #hooksList li {
-            list-style: none;
-            width: 33%;
-            display: inline-block;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Division)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Head)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Remember_Token)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created_At)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updated_At)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Division)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Head)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Remember_Token)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created_At)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Updated_At)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
         }
-</style>
-
-<div id="example1" class="hot">
-    <div id="example1_events">
+    </tbody>
+</table>
 
 
-        <ul id="hooksList">
-            <li><label><input type="checkbox" id="check_select_all">Select all</label></li>
-        </ul>
 
 
+
+
+
+@*<script src="https://cdn.jsdelivr.net/npm/handsontable@9.0/dist/handsontable.full.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@9.0/dist/handsontable.full.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pikaday@1.8.2/pikaday.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday@1.8.2/css/pikaday.css">
+
+    <div id="example1" class="hot">
+        <script type="text/javascript">
+
+            const container = document.querySelector('#example1');
+            const cars = ['Audi', 'BMW', 'Chrysler', 'Citroen', 'Mercedes', 'Nissan', 'Opel', 'Suzuki', 'Toyota', 'Volvo'];
+            const hot = new Handsontable(container, {
+                licenseKey: 'non-commercial-and-evaluation',
+                data: [
+                    ['Mercedes', 'A 160', '01/14/2021', 6999.95],
+                    ['Citroen', 'C4 Coupe', '12/01/2022', 8330],
+                    ['Audi', 'A4 Avant', '11/19/2023', 33900],
+                    ['Opel', 'Astra', '02/02/2021', 7000],
+                    ['BMW', '320i Coupe', '07/24/2022', 30500]
+                ],
+                colHeaders: ['Car', 'Model', 'Registration date', 'Price'],
+                columns: [
+                    {
+                        type: 'autocomplete',
+                        source: cars,
+                        strict: false
+                    },
+                    {
+                        // 2nd cell is simple text, no special options here
+                    },
+                    {
+                        type: 'date',
+                        dateFormat: 'MM/DD/YYYY',
+                        correctFormat: true,
+                        defaultDate: '01/01/1900',
+                        // datePicker additional options
+                        // (see https://github.com/dbushell/Pikaday#configuration)
+                        datePickerConfig: {
+                            // First day of the week (0: Sunday, 1: Monday, etc)
+                            firstDay: 0,
+                            showWeekNumber: true,
+                            numberOfMonths: 3,
+                            licenseKey: 'non-commercial-and-evaluation',
+                            disableDayFn(date) {
+                                // Disable Sunday and Saturday
+                                return date.getDay() === 0 || date.getDay() === 6;
+                            }
+                        }
+                    },
+                    {
+                        type: 'numeric',
+                        numericFormat: {
+                            pattern: '$ 0,0.00'
+                        }
+                    }
+                ]
+            });
+
+        </script>
     </div>
-</div>
 
-<script>
-    const config = {
-        data: [
-            ['', 'Tesla', 'Mazda', 'Mercedes', 'Mini', 'Mitsubishi',],
-            ['2017', 0, 2941, 4303, 354, 5814],
-            ['2018', 3, 2905, 2867, 412, 5284],
-            ['2019', 4, 2517, 4822, 552, 6127],
-            ['2020', 2, 2422, 5399, 776, 4151]
-        ],
-        minRows: 5,
-        minCols: 6,
-        height: 'auto',
-        stretchH: 'all',
-        minSpareRows: 1,
-        autoWrapRow: true,
-        colHeaders: true,
-        contextMenu: true,
-        licenseKey: 'non-commercial-and-evaluation'
-    };
+    <div class="controls">
+        <button id="load" class="button button--primary button--blue">Load data</button>&nbsp;
+        <button id="save" class="button button--primary button--blue">Save data</button>
+        <label>
+            <input type="checkbox" name="autosave" id="autosave" />
+            Autosave
+        </label>
+    </div>
 
-    const example1Events = document.getElementById("example1_events");
-    const hooksList = document.getElementById('hooksList');
-    const hooks = Handsontable.hooks.getRegistered();
 
-    hooks.forEach(function (hook) {
-        let checked = '';
 
-        if (hook === 'afterChange' || hook === 'afterSelection' || hook === 'afterCreateRow' || hook === 'afterRemoveRow' || hook === 'afterCreateCol' || hook === 'afterRemoveCol') {
-            checked = 'checked';
-        }
+    <pre id="example1console" class="console">Click "Load" to load data from server</pre>
 
-        hooksList.innerHTML += '<li><label><input type="checkbox" ' + checked + ' id="check_' + hook + '"> ' + hook + '</label></li>';
-        config[hook] = function () {
-            log_events(hook, arguments);
-        }
-    });
-
-    const start = (new Date()).getTime();
-    let i = 0;
-    let timer;
-
-    function log_events(event, data) {
-        if (document.getElementById('check_' + event).checked) {
-            const now = (new Date()).getTime();
-            const diff = now - start;
-            let str;
-
-            const vals = [i, '' + numbro(diff / 1000).format('0.000'), '[' + event + ']'];
-
-            for (let d = 0; d < data.length; d++) {
-                try {
-                    str = JSON.stringify(data[d]);
-                } catch (e) {
-                    str = data[d].toString(); // JSON.stringify breaks on circular reference to a HTML node
-                }
-
-                if (str === void 0) {
-                    continue;
-                }
-                if (str.length > 20) {
-                    str = data[d].toString();
-                }
-                if (d < data.length - 1) {
-                    str += ',';
-                }
-
-                vals.push(str);
-            }
-
-            if (window.console) {
-                console.log(i, '' + numbro(diff / 1000).format('0.000'), '[' + event + ']', data);
-            }
-
-            const div = document.createElement('div');
-            const text = document.createTextNode(vals.join(' '));
-            div.appendChild(text);
-            example1Events.appendChild(div);
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-                example1Events.scrollTop = example1Events.scrollHeight;
-            }, 10);
-
-            i++;
-        }
-    }
-
-    const example1 = document.getElementById('example1');
-    const hot = new Handsontable(example1, config);
-
-    document.querySelector('#check_select_all').addEventListener('click', function () {
-        const state = this.checked;
-        const inputs = document.querySelectorAll('#hooksList input[type=checkbox]');
-        Array.prototype.forEach.call(inputs, function (input) {
-            input.checked = state;
-        });
-    });
-
-    document.querySelector('#hooksList input[type=checkbox]').addEventListener('click', function () {
-        if (!this.checked) {
-            document.getElementById('check_select_all').checked = false;
-        }
-    });
-</script>
+*@
