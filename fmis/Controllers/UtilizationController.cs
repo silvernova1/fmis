@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-    public class ORS_headControllers : Controller
+    public class UtilizationController : Controller
     {
         public IActionResult Index()
         {
-            return View();
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Budget/Utilization.cshtml");
         }
     }
 }
