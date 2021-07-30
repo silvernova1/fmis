@@ -52,6 +52,12 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
             services.AddDbContext<Suballotment_amountContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
+            services.AddDbContext<RequestingOfficeContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
+            services.AddDbContext<BudgetAllotmentContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentContext")));
+            services.AddDbContext<YearlyReferenceContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("YearlyReferenceContext")));
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
