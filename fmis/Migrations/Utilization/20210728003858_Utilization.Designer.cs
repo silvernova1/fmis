@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.Obligation
+namespace fmis.Migrations.Utilization
 {
-    [DbContext(typeof(ObligationContext))]
-    [Migration("20210727012737_Obligation")]
-    partial class Obligation
+    [DbContext(typeof(UtilizationContext))]
+    [Migration("20210728003858_Utilization")]
+    partial class Utilization
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace fmis.Migrations.Obligation
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.Obligation", b =>
+            modelBuilder.Entity("fmis.Models.Utilization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace fmis.Migrations.Obligation
                     b.Property<string>("Particulars")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Payee")
+                    b.Property<string>("Payer")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Po_no")
@@ -75,7 +75,7 @@ namespace fmis.Migrations.Obligation
 
                     b.HasKey("Id");
 
-                    b.ToTable("Obligation");
+                    b.ToTable("Utilization");
                 });
 #pragma warning restore 612, 618
         }
