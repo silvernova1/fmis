@@ -13,5 +13,6 @@ namespace fmis.Controllers
             ViewBag.layout = "_Layout";
             return View("~/Views/Budget/Obligated_amount.cshtml");
         }
+
     }
 }
