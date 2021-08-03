@@ -10,8 +10,9 @@ using fmis.Models;
 using Syncfusion.EJ2.Grids;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 
-namespace fmis.Controllers
+namespace fmis.Controllers.Grid
 {
     public partial class ObligationController : Controller
     {
@@ -21,55 +22,29 @@ namespace fmis.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             ViewBag.layout = "_Layout";
-            return View(await _context.Section.ToListAsync());
+            DataTable dt = new DataTable("Section");
+            dt.Columns.AddRange(new DataColumn[8] { 
+                       new DataColumn("Id", typeof(int)),
+                       new DataColumn("Division",typeof(int)),
+                       new DataColumn("Description", typeof(string)),
+                       new DataColumn("Head", typeof(string)),
+                       new DataColumn("Code", typeof(string)),
+                       new DataColumn("Remember_Token", typeof(string)),
+                        new DataColumn("Created_At",typeof(DateTime)),
+                        new DataColumn("Updated_At",typeof(DateTime)),
+            });
+            int code = 10000;
+            for (int i = 1; i < 10; i++)
+            {
+                dt.Rows.Add(code + 1, i + 0, "ALFKI", "Amals", "Sakalam", "Kuno", new DateTime(1991, 05, 15), new DateTime(1991, 05, 15));
+              
+            }
+            ViewBag.datasource = dt;
+            return View("~/Views/Obligation/Index.cshtml");
         }
-        /*public IActionResult Index()
-        {
-            ViewBag.layout = "_Layout";
-            return View();
-        }*/
-        /*  public JsonResult GetAllUser(int Id)
-          {
-              List<Obligation> obligation = new List<Obligation>();
-              string query = string.Format("Select * From Obligation", Id);
-              SqlConnection connection = new SqlConnection(connectionString);
-              {
-                  using (SqlCommand cmd = new SqlCommand(query, connection))
-                  {
-                      connection.Open();
-                      SqlDataReader reader = cmd.ExecuteReader();
-
-                      while (reader.Read())
-                      {
-                          obligation.Add(
-                              new Obligation
-                              {
-                                  Id = int.Parse(reader["Id"].ToString()),
-                                  Date = DateTime.Parse(reader["Date"].ToString()),
-                                  Pr_no = reader.GetValue(0).ToString(),
-                                  Po_no = reader.GetValue(0).ToString(),
-                                  Payee = reader.GetValue(0).ToString(),
-                                  Address = reader.GetValue(0).ToString(),
-                                  Particulars = reader.GetValue(0).ToString(),
-                                  Ors_no = int.Parse(reader["Ors_no"].ToString()),
-                                  Fund_source = reader.GetValue(0).ToString(),
-                                  Gross = float.Parse(reader["Gross"].ToString()),
-                                  Created_by = int.Parse(reader["Created_by"].ToString()),
-                                  Date_recieved = DateTime.Parse(reader["Date_recieved"].ToString()),
-                                  Time_recieved = DateTime.Parse(reader["Time_recieved"].ToString()),
-                                  Date_released = DateTime.Parse(reader["Date_released"].ToString()),
-                                  Time_released = DateTime.Parse(reader["Time_released"].ToString())
-
-                              }
-                          );
-                      }
-                  }
-                  return Json(obligation, System.Web.Mvc.JsonRequestBehavior.AllowGet);
-              }
-          }*/
     }
 }
 
