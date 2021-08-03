@@ -109,8 +109,32 @@
                     </a>
                 </li>
             </ul>
-        </li>
+            <ul class="submenu">
+                <li class="">
+                    <a asp-controller="BudgetAllotment" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        BUDGET_ALLOTMENT
+                    </a>
+                </li>
+            </ul>
+            <ul class="submenu">
+                <li class="">
+                    <a asp-controller="RequestingOffice" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        REQUESTING_OFFICE
+                    </a>
+                </li>
+            </ul>
+            <ul class="submenu">
+                <li class="">
+                    <a asp-controller="YearlyReference" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        YEARLY_REFERENCE
+                    </a>
+                </li>
+            </ul>
 
+        </li>
         <!-- UPLOAD FILE -->
         <li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
                 @Html.Raw("active open")
