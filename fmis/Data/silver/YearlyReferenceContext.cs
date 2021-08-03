@@ -15,6 +15,6 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<fmis.Models.YearlyReference> Yearly_reference { get; set; }
+        public DbSet<fmis.Models.YearlyReference> YearlyReference { get; set; }
     }
 }

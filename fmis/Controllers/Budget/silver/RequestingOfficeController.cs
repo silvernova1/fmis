@@ -11,7 +11,7 @@ namespace fmis.Controllers
         public IActionResult Index()
         {
             ViewBag.layout = "_Layout";
-            return View("~/Views/Budget/RequestingOffice.cshtml");
+            return View("~/Views/Budget/silver/RequestingOffice.cshtml");
         }
     }
 }
