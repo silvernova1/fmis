@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Obligated_amount>
+﻿@model IEnumerable<fmis.Models.Utilization>
 
 
 
@@ -12,22 +12,49 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Obligation_id)
+                @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Expenses_title)
+                @Html.DisplayNameFor(model => model.Dv)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Code)
+                @Html.DisplayNameFor(model => model.Pr_no)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Amount)
+                @Html.DisplayNameFor(model => model.Po_no)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Created_at)
+                @Html.DisplayNameFor(model => model.Payer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Updated_at)
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Particulars)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ors_no)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fund_source)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gross)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created_by)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date_recieved)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time_recieved)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date_released)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time_released)
             </th>
             <th></th>
         </tr>
@@ -35,34 +62,58 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Obligation_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Expenses_title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created_at)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated_at)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pr_no)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Payer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Particulars)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ors_no)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fund_source)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gross)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created_by)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date_recieved)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Time_recieved)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date_released)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Time_released)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
