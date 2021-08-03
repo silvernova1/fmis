@@ -15,16 +15,16 @@ namespace fmis.Controllers
 {
     public partial class Suballotment_amountController : Controller
     {
-        private readonly SectionContext _context;
+        private readonly Suballotment_amountContext _context;
 
-        public Suballotment_amountController(SectionContext context)
+        public Suballotment_amountController(Suballotment_amountContext context)
         {
             _context = context;
         }
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
-            return View(await _context.Section.ToListAsync());
+            return View(await _context.Suballotment_Amount.ToListAsync());
         }
     }
 }    

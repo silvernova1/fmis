@@ -15,16 +15,16 @@ namespace fmis.Controllers
 {
     public partial class Obligated_amountController : Controller
     {
-        private readonly SectionContext _context;
+        private readonly Obligated_amountContext _context;
 
-        public Obligated_amountController(SectionContext context)
+        public Obligated_amountController(Obligated_amountContext context)
         {
             _context = context;
         }
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
-            return View(await _context.Section.ToListAsync());
+            return View(await _context.Obligated_amount.ToListAsync());
         }
     }
 }
