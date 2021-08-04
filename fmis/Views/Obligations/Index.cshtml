@@ -11,8 +11,8 @@
 
 <input type="hidden" class="obligation" value="@ViewBag.temp">
 
-
 <div id="example"></div>
+
 
 
 <script>
@@ -20,7 +20,7 @@
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-
+            console.log(hot.getData());
             return false;
         }
     };
@@ -34,17 +34,28 @@
         counter++;
     })
 
+
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
+        width: '100%',
+        colWidths: 100,
         rowHeaders: true,
         colHeaders: true,
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
     });
+
     hot.updateSettings({
         colHeaders: ['Date', 'Dv', 'Pr_no', 'Po_no', 'Payee', 'Address', 'Particulars', 'Ors_no', 'Fund_source', 'Gross', 'Created_by', 'Date_recieved', 'Time_recieved', 'Date_released', 'Time_released'],
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
         columns: [
             {
                 type: 'date',
@@ -54,10 +65,10 @@
                 // 2nd cell is simple text, no special options here
             },
             {
-                
+
             },
             {
-                
+
             },
             {
 
@@ -111,4 +122,24 @@
 
     var tableData = JSON.stringify(hot.getData());
     console.log(hot.getData());
+
+
 </script>
+<style>
+
+    td.custom-cell {
+        color: #fff;
+        background-color: #37bc6c;
+    }
+
+    .handsontable th:nth-child(0) {
+        background-color: aquamarine;
+        font-weight: bold;
+    }
+
+
+    .custom-table tdata th:nth-child(even),
+    .custom-table tbody tr:nth-child(odd) th {
+        background-color: #d7f1e1;
+    }
+</style>
