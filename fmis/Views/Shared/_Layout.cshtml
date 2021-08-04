@@ -410,6 +410,7 @@
 
                 <div class="page-content">
                     @RenderBody()
+                    <ejs-scripts></ejs-scripts>
                 </div><!-- /.page-content -->
             </div>
         </div><!-- /.main-content -->
@@ -447,10 +448,9 @@
         </a>
 
     </div><!-- /.main-container -->
-
     <!-- Syncfusion Essential JS 2 ScriptManager -->
-    <ejs-scripts></ejs-scripts>
 
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
 <script type="text/javascript">
