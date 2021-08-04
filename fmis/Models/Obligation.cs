@@ -23,11 +23,11 @@ namespace fmis.Models
         public int Created_by { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date_recieved { get; set; }
-        [DataType(DataType.Date)]
+        [DataType(DataType.Time)]
         public DateTime Time_recieved { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date_released { get; set; }
-        [DataType(DataType.Date)]
+        [DataType(DataType.Time)]
         public DateTime Time_released { get; set; }
 
     }

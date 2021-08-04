@@ -48,7 +48,7 @@
     <!-- page specific plugin styles -->
     <link rel="stylesheet" href="~/assets/css/dropzone.min.css" />
 
-    <link rel="stylesheet" href="~/assets/plugins/lobibox/dist/css/Lobibox.css" />
+    <link rel="stylesheet" href="~/assets/plugins/dist/css/Lobibox.css" />
 
     <script src="~/assets/js/jquery-2.1.4.min.js"></script>
 
@@ -80,7 +80,7 @@
     <!-- page specific plugin scripts -->
     <script src="~/assets/js/dropzone.min.js"></script>
 
-    <script src="~/assets/plugins/lobibox/dist/js/Lobibox.js"></script>
+    <script src="~/assets/plugins/dist/js/Lobibox.js"></script>
 
     <!-- Syncfusion Essential JS 2 Scripts -->
     <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
@@ -410,7 +410,11 @@
 
                 <div class="page-content">
                     @RenderBody()
-                    <ejs-scripts></ejs-scripts>
+                    <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <center><img src="~/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
+                        </div>
+                    </div>
                 </div><!-- /.page-content -->
             </div>
         </div><!-- /.main-content -->
