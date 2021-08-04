@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Sub_allotment>
+﻿@model IEnumerable<fmis.Models.Obligated_amount>
 
 
 
@@ -12,22 +12,22 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Prexe_code)
+                @Html.DisplayNameFor(model => model.Obligation_id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Suballotment_code)
+                @Html.DisplayNameFor(model => model.Expenses_title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Suballotmenent_title)
+                @Html.DisplayNameFor(model => model.Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Orc_head)
+                @Html.DisplayNameFor(model => model.Amount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Responsibility_number)
+                @Html.DisplayNameFor(model => model.Created_at)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Updated_at)
             </th>
             <th></th>
         </tr>
@@ -40,22 +40,22 @@
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Prexe_code)
+                    @Html.DisplayFor(modelItem => item.Obligation_id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Suballotment_code)
+                    @Html.DisplayFor(modelItem => item.Expenses_title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Suballotmenent_title)
+                    @Html.DisplayFor(modelItem => item.Code)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Orc_head)
+                    @Html.DisplayFor(modelItem => item.Amount)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Responsibility_number)
+                    @Html.DisplayFor(modelItem => item.Created_at)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
+                    @Html.DisplayFor(modelItem => item.Updated_at)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -148,4 +148,3 @@
     <pre id="example1console" class="console">Click "Load" to load data from server</pre>
 
 *@
-
