@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Obligated_amount>
+﻿@model IEnumerable<fmis.Models.BudgetAllotment>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,22 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Obligation_id)
+                @Html.DisplayNameFor(model => model.Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Expenses_title)
+                @Html.DisplayNameFor(model => model.Allotment_Series)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Code)
+                @Html.DisplayNameFor(model => model.Allotment_Tittle)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Amount)
+                @Html.DisplayNameFor(model => model.Allotment_Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Created_at)
+                @Html.DisplayNameFor(model => model.Created_At)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Updated_at)
+                @Html.DisplayNameFor(model => model.Updated_At)
             </th>
             <th></th>
         </tr>
@@ -37,22 +37,22 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Obligation_id)
+                @Html.DisplayFor(modelItem => item.Year)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Expenses_title)
+                @Html.DisplayFor(modelItem => item.Allotment_Series)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Code)
+                @Html.DisplayFor(modelItem => item.Allotment_Tittle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Amount)
+                @Html.DisplayFor(modelItem => item.Allotment_Code)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Created_at)
+                @Html.DisplayFor(modelItem => item.Created_At)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Updated_at)
+                @Html.DisplayFor(modelItem => item.Updated_At)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
