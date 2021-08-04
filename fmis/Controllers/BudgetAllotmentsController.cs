@@ -7,29 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
-using System.Text.Json;
 
 namespace fmis.Controllers
 {
-    public class UtilizationController : Controller
+    public class BudgetAllotmentsController : Controller
     {
-        private readonly UtilizationContext _context;
+        private readonly Obligated_amountContext _context;
 
-        public UtilizationController(UtilizationContext context)
+        public BudgetAllotmentsController(Obligated_amountContext context)
         {
             _context = context;
         }
 
-        // GET: Utilization
+        // GET: BudgetAllotments
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Utilization.ToList());
-            ViewBag.temp = json;
-            return View(await _context.Utilization.ToListAsync());
+            return View(await _context.BudgetAllotment.ToListAsync());
         }
 
-        // GET: Utilization/Details/5
+        // GET: BudgetAllotments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,39 +33,39 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var utilization = await _context.Utilization
+            var budgetAllotment = await _context.BudgetAllotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (utilization == null)
+            if (budgetAllotment == null)
             {
                 return NotFound();
             }
 
-            return View(utilization);
+            return View(budgetAllotment);
         }
 
-        // GET: Utiilization/Create
+        // GET: BudgetAllotments/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Utilization/Create
+        // POST: BudgetAllotments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Created_by,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_Series,Allotment_Tittle,Allotment_Code,Created_At,Updated_At")] BudgetAllotment budgetAllotment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(utilization);
+                _context.Add(budgetAllotment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(utilization);
+            return View(budgetAllotment);
         }
 
-        // GET: Utilization/Edit/5
+        // GET: BudgetAllotments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,22 +73,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var utilization = await _context.Utilization.FindAsync(id);
-            if (utilization == null)
+            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
+            if (budgetAllotment == null)
             {
                 return NotFound();
             }
-            return View(utilization);
+            return View(budgetAllotment);
         }
 
-        // POST: Utilization/Edit/5
+        // POST: BudgetAllotments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Created_by,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_Series,Allotment_Tittle,Allotment_Code,Created_At,Updated_At")] BudgetAllotment budgetAllotment)
         {
-            if (id !=   utilization.Id)
+            if (id != budgetAllotment.Id)
             {
                 return NotFound();
             }
@@ -101,12 +97,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(utilization);
+                    _context.Update(budgetAllotment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UtilizationExists(utilization.Id))
+                    if (!BudgetAllotmentExists(budgetAllotment.Id))
                     {
                         return NotFound();
                     }
@@ -117,10 +113,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(utilization);
+            return View(budgetAllotment);
         }
 
-        // GET: Utilization/Delete/5
+        // GET: BudgetAllotments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -128,30 +124,30 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var utilization = await _context.Utilization
+            var budgetAllotment = await _context.BudgetAllotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (utilization == null)
+            if (budgetAllotment == null)
             {
                 return NotFound();
             }
 
-            return View(utilization);
+            return View(budgetAllotment);
         }
 
-        // POST: Utilization/Delete/5
+        // POST: BudgetAllotments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var utilization = await _context.Utilization.FindAsync(id);
-            _context.Utilization.Remove(utilization);
+            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
+            _context.BudgetAllotment.Remove(budgetAllotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UtilizationExists(int id)
+        private bool BudgetAllotmentExists(int id)
         {
-            return _context.Utilization.Any(e => e.Id == id);
+            return _context.BudgetAllotment.Any(e => e.Id == id);
         }
     }
 }

@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.Ors_Head
+namespace fmis.Migrations.Ors_head
 {
-    [DbContext(typeof(Ors_HeadContext))]
-    partial class Ors_HeadContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Ors_headContext))]
+    partial class Ors_headContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace fmis.Migrations.Ors_Head
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.Ors_Head", b =>
+            modelBuilder.Entity("fmis.Models.Ors_head", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -29,7 +29,7 @@ namespace fmis.Migrations.Ors_Head
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Headname")
+                    b.Property<string>("Head_name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Position")
@@ -40,7 +40,7 @@ namespace fmis.Migrations.Ors_Head
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ors_Head");
+                    b.ToTable("Ors_head");
                 });
 #pragma warning restore 612, 618
         }

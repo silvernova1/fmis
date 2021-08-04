@@ -15,6 +15,7 @@
             <td>B</td>
             <td>C</td>
             <td>D</td>
+            <td>A1</td>
         </tr>
         <tr>
             <th scope="row">2</th>
@@ -22,6 +23,7 @@
             <td>F</td>
             <td>G</td>
             <td>H</td>
+            <td>B2</td>
         </tr>
         <tr>
             <th scope="row">3</th>
@@ -29,6 +31,7 @@
             <td>J</td>
             <td>K</td>
             <td>L</td>
+            <td>C3</td>
         </tr>
         <tr>
             <th scope="row">4</th>
@@ -36,6 +39,7 @@
             <td>N</td>
             <td>O</td>
             <td>P</td>
+            <td>D4</td>
         </tr>
         <tr>
             <th scope="row">5</th>
@@ -43,10 +47,10 @@
             <td>R</td>
             <td>S</td>
             <td>T</td>
+            <td>E5</td>
         </tr>
     </tbody>
 </table>
-
 <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <center><img src="~/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
@@ -136,6 +140,7 @@
                                     total: file.size,
                                     bytesSent: (step + 1) * file.size / totalSteps
                                 };
+
                                 self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
                                 if (file.upload.progress == 100) {
                                     file.status = Dropzone.SUCCESS;
@@ -148,6 +153,8 @@
                     }
                 }
             }
+
+
             //remove dropzone instance when leaving this page in ajax mode
             $(document).one('ajaxloadstart.page', function (e) {
                 try {
@@ -161,6 +168,3 @@
 
     });
 </script>
-
-
-

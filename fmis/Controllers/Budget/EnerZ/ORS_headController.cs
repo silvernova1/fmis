@@ -13,18 +13,18 @@ using System.Data.SqlClient;
 
 namespace fmis.Controllers
 {
-    public partial class ORS_HeadController : Controller
+    public partial class Ors_headController : Controller
     {
-        private readonly Ors_HeadContext _context;
+        private readonly Ors_headContext _context;
 
-        public ORS_HeadController(Ors_HeadContext context)
+        public Ors_headController(Ors_headContext context)
         {
             _context = context;
         }
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
-            return View(await _context.Ors_Head.ToListAsync());
+            return View(await _context.Ors_head.ToListAsync());
         }
     }
 }
