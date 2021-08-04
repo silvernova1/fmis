@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using AutoMapper;
+using System.Text.Json;
 
 namespace fmis.Controllers
 {
@@ -22,6 +24,8 @@ namespace fmis.Controllers
         // GET: Obligations
         public async Task<IActionResult> Index()
         {
+            var json = JsonSerializer.Serialize(_context.Obligation.ToList());
+            ViewBag.temp = json;
             return View(await _context.Obligation.ToListAsync());
         }
 
