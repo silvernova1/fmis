@@ -2,64 +2,196 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Obligation_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Expenses_title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created_at)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Updated_at)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Obligation_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Expenses_title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created_at)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated_at)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<style>
+    .search-result-custom {
+        color: #ff0000;
+        font-weight: 900;
+    }
+</style>
+
+<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
+<input id="search_field2" type="search" placeholder="Search" />
+<br />
+<br />
+<div id="example" class="hot"></div>
+<br />
+<div class="controls">
+    <button id="export-file">Download CSV</button>
+</div>
+
+
+
+<script>
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+            console.log(hot.getData());
+            return false;
+        }
+    };
+
+    var obligated_amount = $.parseJSON($(".obligated_amount").val());
+
+    const data = [];
+    var counter = 0;
+    $.each(obligated_amount, function () {
+        data[counter] = [this.Id, this.Obligation_id, this.Expenses_title, this.Code, this.Amount, this.Created_at, this.Updated_at,]
+        counter++;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        width: '100%',
+        colWidths: 100,
+        rowHeaders: true,
+        colHeaders: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        height: 'auto',
+        licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+    });
+
+
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: false,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+    hot.addHook('afterChange', function (changes, src) {
+        [
+            [row, col, oldVal, newVal]
+        ] = changes;
+        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
+            console.log(newVal);
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+        }
+    })
+
+    hot.updateSettings({
+        colHeaders: ['Id', 'Obligation_id', 'Expenses_title', 'Code', 'Amount', 'Created_at', 'Updated_at'],
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
+        columns: [
+            {
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+            },
+            {
+                // 2nd cell is simple text, no special options here
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+
+            {
+
+            },
+
+            {
+                type: 'dropdown',
+                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+            },
+
+            {
+            },
+
+            {
+            },
+
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+        ]
+    });
+
+    var tableData = JSON.stringify(hot.getData());
+    console.log(hot.getData());
+
+
+</script>
+<style>
+
+    td.custom-cell {
+        color: #fff;
+        background-color: #37bc6c;
+    }
+
+    .handsontable th:nth-child(0) {
+        background-color: aquamarine;
+        font-weight: bold;
+    }
+
+
+    .custom-table tdata th:nth-child(even),
+    .custom-table tbody tr:nth-child(odd) th {
+        background-color: #d7f1e1;
+    }
+</style>
