@@ -57,7 +57,10 @@ namespace fmis
             services.AddDbContext<YearlyReferenceContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("YearlyReferenceContext")));
             services.AddDbContext<Ors_headContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("YearlyReferenceContext")));
+               options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
+            services.AddDbContext<UacsContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
