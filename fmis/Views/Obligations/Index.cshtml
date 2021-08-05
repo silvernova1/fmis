@@ -7,6 +7,8 @@
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+
+
 <style>
     .search-result-custom {
         color: #ff0000;
@@ -34,10 +36,19 @@
             console.log(hot.getData());
             return false;
         }
+        $.ajax('Obligations/Create', 'GET', JSON.stringify({ data: hot.getData() }), res => {
+            const response = JSON.parse(res.response);
+
+            if (response.result === 'ok') {
+                exampleConsole.innerText = 'Data saved';
+            } else {
+                exampleConsole.innerText = 'Save error';
+            }
+        });
     };
 
     var obligation = $.parseJSON($(".obligation").val());
-    
+
     const data = [];
     var counter = 0;
     $.each(obligation, function () {
@@ -60,6 +71,8 @@
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
     });
+
+
 
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
@@ -130,7 +143,7 @@
             },
 
             {
-                
+
             },
 
             {
