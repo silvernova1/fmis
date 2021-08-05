@@ -7,13 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using Syncfusion.EJ2.Grids;
-using System.Configuration;
-using System.Data.SqlClient;
 
-namespace fmis.Controllers
+namespace fmis.Controllers.Budget.EnerZ
 {
-    public partial class Suballotment_amountController : Controller
+    public class Suballotment_amountController : Controller
     {
         private readonly Suballotment_amountContext _context;
 
@@ -21,10 +18,136 @@ namespace fmis.Controllers
         {
             _context = context;
         }
+
+        // GET: Suballotment_amount
         public async Task<IActionResult> Index()
         {
-            ViewBag.layout = "_Layout";
             return View(await _context.Suballotment_Amount.ToListAsync());
         }
+
+        // GET: Suballotment_amount/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var suballotment_amount = await _context.Suballotment_Amount
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (suballotment_amount == null)
+            {
+                return NotFound();
+            }
+
+            return View(suballotment_amount);
+        }
+
+        // GET: Suballotment_amount/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Suballotment_amount/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Expenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(suballotment_amount);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(suballotment_amount);
+        }
+
+        // GET: Suballotment_amount/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var suballotment_amount = await _context.Suballotment_Amount.FindAsync(id);
+            if (suballotment_amount == null)
+            {
+                return NotFound();
+            }
+            return View(suballotment_amount);
+        }
+
+        // POST: Suballotment_amount/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Expenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
+        {
+            if (id != suballotment_amount.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(suballotment_amount);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!Suballotment_amountExists(suballotment_amount.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(suballotment_amount);
+        }
+
+        // GET: Suballotment_amount/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var suballotment_amount = await _context.Suballotment_Amount
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (suballotment_amount == null)
+            {
+                return NotFound();
+            }
+
+            return View(suballotment_amount);
+        }
+
+        // POST: Suballotment_amount/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var suballotment_amount = await _context.Suballotment_Amount.FindAsync(id);
+            _context.Suballotment_Amount.Remove(suballotment_amount);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool Suballotment_amountExists(int id)
+        {
+            return _context.Suballotment_Amount.Any(e => e.Id == id);
+        }
     }
-}    
+}
