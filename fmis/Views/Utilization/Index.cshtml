@@ -1,201 +1,114 @@
 ﻿@model IEnumerable<fmis.Models.Utilization>
 
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dv)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pr_no)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Po_no)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Payer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Particulars)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ors_no)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fund_source)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gross)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created_by)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date_recieved)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Time_recieved)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date_released)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Time_released)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dv)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Pr_no)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Payer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Particulars)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ors_no)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fund_source)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gross)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created_by)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date_recieved)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Time_recieved)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date_released)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Time_released)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+<input type="hidden" class="utilization" value="@ViewBag.temp">
+
+
+<div id="example"></div>
+
+
+<script>
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+
+            return false;
         }
-    </tbody>
-</table>
+    };
 
+    var utilization = $.parseJSON($(".utilization").val());
 
+    const data = [];
+    var counter = 0;
+    $.each(utilization, function () {
+        data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payer, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released]
+        counter++;
+    })
 
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: true,
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        height: 'auto',
+        licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+    });
+    hot.updateSettings({
+        colHeaders: ['Date', 'Dv', 'Pr_no', 'Po_no', 'Payer', 'Address', 'Particulars', 'Ors_no', 'Fund_source', 'Gross', 'Created_by', 'Date_recieved', 'Time_recieved', 'Date_released', 'Time_released'],
+        columns: [
+            {
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+            },
+            {
+                // 2nd cell is simple text, no special options here
+            },
+            {
 
+            },
+            {
 
+            },
+            {
 
+            },
+            {
 
-@*<script src="https://cdn.jsdelivr.net/npm/handsontable@9.0/dist/handsontable.full.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@9.0/dist/handsontable.full.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pikaday@1.8.2/pikaday.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday@1.8.2/css/pikaday.css">
+            },
+            {
 
-    <div id="example1" class="hot">
-        <script type="text/javascript">
+            },
 
-            const container = document.querySelector('#example1');
-            const cars = ['Audi', 'BMW', 'Chrysler', 'Citroen', 'Mercedes', 'Nissan', 'Opel', 'Suzuki', 'Toyota', 'Volvo'];
-            const hot = new Handsontable(container, {
-                licenseKey: 'non-commercial-and-evaluation',
-                data: [
-                    ['Mercedes', 'A 160', '01/14/2021', 6999.95],
-                    ['Citroen', 'C4 Coupe', '12/01/2022', 8330],
-                    ['Audi', 'A4 Avant', '11/19/2023', 33900],
-                    ['Opel', 'Astra', '02/02/2021', 7000],
-                    ['BMW', '320i Coupe', '07/24/2022', 30500]
-                ],
-                colHeaders: ['Car', 'Model', 'Registration date', 'Price'],
-                columns: [
-                    {
-                        type: 'autocomplete',
-                        source: cars,
-                        strict: false
-                    },
-                    {
-                        // 2nd cell is simple text, no special options here
-                    },
-                    {
-                        type: 'date',
-                        dateFormat: 'MM/DD/YYYY',
-                        correctFormat: true,
-                        defaultDate: '01/01/1900',
-                        // datePicker additional options
-                        // (see https://github.com/dbushell/Pikaday#configuration)
-                        datePickerConfig: {
-                            // First day of the week (0: Sunday, 1: Monday, etc)
-                            firstDay: 0,
-                            showWeekNumber: true,
-                            numberOfMonths: 3,
-                            licenseKey: 'non-commercial-and-evaluation',
-                            disableDayFn(date) {
-                                // Disable Sunday and Saturday
-                                return date.getDay() === 0 || date.getDay() === 6;
-                            }
-                        }
-                    },
-                    {
-                        type: 'numeric',
-                        numericFormat: {
-                            pattern: '$ 0,0.00'
-                        }
-                    }
-                ]
-            });
+            {
+            },
 
-        </script>
-    </div>
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '$ 0,0.00'
+                }
+            },
 
-    <div class="controls">
-        <button id="load" class="button button--primary button--blue">Load data</button>&nbsp;
-        <button id="save" class="button button--primary button--blue">Save data</button>
-        <label>
-            <input type="checkbox" name="autosave" id="autosave" />
-            Autosave
-        </label>
-    </div>
+            {
+            },
 
+            {
+            },
 
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
 
-    <pre id="example1console" class="console">Click "Load" to load data from server</pre>
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
 
-*@
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+        ]
+    });
+
+    var tableData = JSON.stringify(hot.getData());
+    console.log(hot.getData());
+</script>
