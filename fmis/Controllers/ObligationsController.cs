@@ -65,6 +65,8 @@ namespace fmis.Controllers
             var obligations = new List<Obligation>();
             var obligation = new Obligation();
             
+            
+
 
             obligation.Date = obligation.Date;
             obligation.Dv = obligation.Dv;
