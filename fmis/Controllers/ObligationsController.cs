@@ -21,6 +21,12 @@ namespace fmis.Controllers
             _context = context;
         }
 
+        public class ObligationData
+        {
+            public int date { get; set; }
+            public string dv { get; set; }
+        }
+
         // GET: Obligations
         public async Task<IActionResult> Index()
         {
@@ -51,6 +57,22 @@ namespace fmis.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult saveObligation(ObligationData obligation_data)
+        {
+            var obligations = new List<Obligation>();
+            var obligation = new Obligation();
+            
+
+            obligation.Date = obligation.Date;
+            obligation.Dv = obligation.Dv;
+            obligations.Add(obligation);
+
+            this._context.Obligation.Add(obligation);
+            this._context.SaveChanges();
+            return Json(obligation);
         }
 
         // POST: Obligations/Create

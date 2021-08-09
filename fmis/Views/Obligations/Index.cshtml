@@ -7,8 +7,6 @@
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
 
 <style>
     .search-result-custom {
@@ -37,21 +35,27 @@
 
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
 
-            var ObligationsInput = JSON.stringify(hot.getSourceData());
-        jQuery.ajax({
-            type: "POST",
-            url: "@Url.Action("Create")",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            data: ObligationsInput,
-            success: function (data) { exampleConsole = alert(data); },
-            failure: function (errMsg) {
-                alert(errMsg);
-            }
-        });
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Date: this[0], Dv: this[1], Pr_no: this[2], Po_no: this[3], Payee: this[4], Address: this[5], Particulars: this[6], Ors_no: this[7], Fund_source: this[8], Gross: this[9], Created_by: this[10], Date_recieved: this[11], Time_recieved: this[12], Date_released: this[13], Time_released: this[14]});
+            });
 
-            console.log(hot.getSourceData())
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("saveObligation", "Obligations")',
+                data: json,
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
             return false;
         }
     };
