@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Obligated_amount>
+﻿@model IEnumerable<fmis.Models.Uacs>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,20 +10,32 @@
 
 
 <style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
+    td.custom-cell {
+        color: #fff;
+        background-color: #37bc6c;
+    }
+
+    .handsontable th:nth-child(0) {
+        background-color: aquamarine;
+        font-weight: bold;
+    }
+
+
+    .custom-table tdata th:nth-child(even),
+    .custom-table tbody tr:nth-child(odd) th {
+        background-color: #d7f1e1;
     }
 </style>
 
-<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
+<input type="hidden" class="uacs" value="@ViewBag.temp">
+<input id="search_field2" type="search" placeholder="Search"/>
 <br />
 <br />
-<div id="example" class="hot"></div>
+<table id="example" class="hot" style="margin-left:50px;"></table>
+
 <br />
 <div class="controls">
-    <button id="export-file">Download CSV</button>
+    <button id="export-file">Download CSV bbbb</button>
 </div>
 
 
@@ -33,26 +45,45 @@
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-            console.log(hot.getData());
+
+            var json = [];
+            $.each(hot.getData(), function () {
+                json.push({ account_title: this[0], expense_code: this[1] });
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("saveUacs", "Uacs")',
+                data: json,
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Save...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
             return false;
         }
     };
 
-    var obligated_amount = $.parseJSON($(".obligated_amount").val());
+    var uacs = $.parseJSON($(".uacs").val());
 
     const data = [];
     var counter = 0;
-    $.each(obligated_amount, function () {
-        data[counter] = [this.Id, this.Obligation_id, this.Expenses_title, this.Code, this.Amount, this.Created_at, this.Updated_at,]
+    $.each(uacs, function () {
+        data[counter] = [this.Account_title, this.Expense_code,]
         counter++;
-    })
+    });
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '100%',
-        colWidths: 100,
+        width: '200%',
+        colWidths: 550,
         rowHeaders: true,
         colHeaders: true,
         search: {
@@ -101,7 +132,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Obligation_id', 'Expenses_title', 'Code', 'Amount', 'Created_at', 'Updated_at'],
+        colHeaders: ['Account_title', 'Expense_code'],
         cell: [
             {
                 row: 0,
@@ -111,64 +142,12 @@
         ],
         columns: [
             {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
+
             },
             {
                 // 2nd cell is simple text, no special options here
             },
-            {
 
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-
-            {
-
-            },
-
-            {
-                type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
-            },
-
-            {
-            },
-
-            {
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
         ]
     });
 
@@ -177,21 +156,4 @@
 
 
 </script>
-<style>
 
-    td.custom-cell {
-        color: #fff;
-        background-color: #37bc6c;
-    }
-
-    .handsontable th:nth-child(0) {
-        background-color: aquamarine;
-        font-weight: bold;
-    }
-
-
-    .custom-table tdata th:nth-child(even),
-    .custom-table tbody tr:nth-child(odd) th {
-        background-color: #d7f1e1;
-    }
-</style>

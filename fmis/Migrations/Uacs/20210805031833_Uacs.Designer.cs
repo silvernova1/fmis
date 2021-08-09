@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.Ors_head
+namespace fmis.Migrations.Uacs
 {
-    [DbContext(typeof(Ors_headContext))]
-    partial class Ors_headContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UacsContext))]
+    [Migration("20210805031833_Uacs")]
+    partial class Uacs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,28 +21,31 @@ namespace fmis.Migrations.Ors_head
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.Ors_head", b =>
+            modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Head_name")
+                    b.Property<string>("Account_title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Position")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Created_at")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("Updated_at")
+                    b.Property<DateTime>("Date_recieved")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Expense_code")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Updated_at")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ors_head");
+                    b.ToTable("Uacs");
                 });
 #pragma warning restore 612, 618
         }

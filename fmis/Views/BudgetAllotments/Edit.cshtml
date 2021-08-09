@@ -1,0 +1,59 @@
+﻿@model fmis.Models.BudgetAllotment
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>BudgetAllotment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Year" class="control-label"></label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Allotment_Series" class="control-label"></label>
+                <input asp-for="Allotment_Series" class="form-control" />
+                <span asp-validation-for="Allotment_Series" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Allotment_Tittle" class="control-label"></label>
+                <input asp-for="Allotment_Tittle" class="form-control" />
+                <span asp-validation-for="Allotment_Tittle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Allotment_Code" class="control-label"></label>
+                <input asp-for="Allotment_Code" class="form-control" />
+                <span asp-validation-for="Allotment_Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created_At" class="control-label"></label>
+                <input asp-for="Created_At" class="form-control" />
+                <span asp-validation-for="Created_At" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Updated_At" class="control-label"></label>
+                <input asp-for="Updated_At" class="form-control" />
+                <span asp-validation-for="Updated_At" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

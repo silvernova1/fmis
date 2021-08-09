@@ -1,0 +1,108 @@
+﻿@model fmis.Models.Utilization
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Utilization</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Dv)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Dv)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Pr_no)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Pr_no)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Po_no)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Po_no)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Payer)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Payer)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Particulars)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Particulars)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ors_no)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ors_no)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Fund_source)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Fund_source)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Gross)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Gross)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_by)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_by)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date_recieved)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date_recieved)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Time_recieved)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Time_recieved)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date_released)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date_released)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Time_released)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Time_released)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -7,29 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
-using System.Text.Json;
 
 namespace fmis.Controllers
 {
-    public class PrexcController : Controller
+    public class BudgetAllotmentsController : Controller
     {
-        private readonly PrexcContext _context;
+        private readonly Obligated_amountContext _context;
 
-        public PrexcController(PrexcContext context)
+        public BudgetAllotmentsController(Obligated_amountContext context)
         {
             _context = context;
         }
 
-        // GET: Prexc
+        // GET: BudgetAllotments
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Prexc.ToList());
-            ViewBag.temp = json;
-            return View(await _context.Prexc.ToListAsync());
+            return View(await _context.BudgetAllotment.ToListAsync());
         }
 
-        // GET: Prexc/Details/5
+        // GET: BudgetAllotments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,39 +33,39 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var     prexc = await _context.Prexc
+            var budgetAllotment = await _context.BudgetAllotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
+            if (budgetAllotment == null)
             {
                 return NotFound();
             }
 
-            return View(prexc);
+            return View(budgetAllotment);
         }
 
-        // GET: Prexc/Create
+        // GET: BudgetAllotments/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Prexc/Create
+        // POST: BudgetAllotments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Pap_title,Pap_code1,Pap_code2,Created_at,Updated_at,")] Prexc prexc)
+        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_Series,Allotment_Tittle,Allotment_Code,Created_At,Updated_At")] BudgetAllotment budgetAllotment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(prexc);
+                _context.Add(budgetAllotment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(prexc);
+            return View(budgetAllotment);
         }
 
-        // GET: Ors_head/Edit/5
+        // GET: BudgetAllotments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +73,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc.FindAsync(id);
-            if (prexc == null)
+            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
+            if (budgetAllotment == null)
             {
                 return NotFound();
             }
-            return View(prexc);
+            return View(budgetAllotment);
         }
 
-        // POST: Prexc/Edit/5
+        // POST: BudgetAllotments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Pap_title, Pap_code1, Pap_code2, Created_at, Updated_at, ")] Prexc prexc
-            )
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_Series,Allotment_Tittle,Allotment_Code,Created_At,Updated_At")] BudgetAllotment budgetAllotment)
         {
-            if (id != prexc.Id)
+            if (id != budgetAllotment.Id)
             {
                 return NotFound();
             }
@@ -102,12 +97,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(prexc);
+                    _context.Update(budgetAllotment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PrexcExists(prexc.Id))
+                    if (!BudgetAllotmentExists(budgetAllotment.Id))
                     {
                         return NotFound();
                     }
@@ -118,10 +113,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(prexc);
+            return View(budgetAllotment);
         }
 
-        // GET: Prexc/Delete/5
+        // GET: BudgetAllotments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,30 +124,30 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc
+            var budgetAllotment = await _context.BudgetAllotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
+            if (budgetAllotment == null)
             {
                 return NotFound();
             }
 
-            return View(prexc);
+            return View(budgetAllotment);
         }
 
-        // POST: Prexc/Delete/5
+        // POST: BudgetAllotments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var prexc = await _context.Prexc.FindAsync(id);
-            _context.Prexc.Remove(prexc);
+            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
+            _context.BudgetAllotment.Remove(budgetAllotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PrexcExists(int id)
+        private bool BudgetAllotmentExists(int id)
         {
-            return _context.Prexc.Any(e => e.Id == id);
+            return _context.BudgetAllotment.Any(e => e.Id == id);
         }
     }
 }

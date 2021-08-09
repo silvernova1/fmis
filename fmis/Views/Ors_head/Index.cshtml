@@ -1,34 +1,34 @@
-﻿@model IEnumerable<fmis.Models.Obligated_amount>
+﻿model IEnumerable<fmis.Models.Ors_head>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
-
-
-<style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
+    @{
+        ViewData["Title"] = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
     }
-</style>
 
-<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
-<br />
-<br />
-<div id="example" class="hot"></div>
-<br />
-<div class="controls">
-    <button id="export-file">Download CSV</button>
-</div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
 
+    <style>
+        .search-result-custom {
+            color: #ff0000;
+            font-weight: 900;
+        }
+    </style>
 
-<script>
+    <input type="hidden" class="ors_head" value="@ViewBag.temp">
+    <input id="search_field2" type="search" placeholder="Search" />
+    <br />
+    <br />
+    <div id="example" class="hot"></div>
+    <br />
+    <div class="controls">
+        <button id="export-file">Download CSV</button>
+    </div>
+
+
+
+    <script>
 
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
@@ -36,14 +36,23 @@
             console.log(hot.getData());
             return false;
         }
+        $.ajax('Ors_head/Create', 'GET', JSON.stringify({ data: hot.getData() }), res => {
+            const response = JSON.parse(res.response);
+
+            if (response.result === 'ok') {
+                exampleConsole.innerText = 'Data saved';
+            } else {
+                exampleConsole.innerText = 'Save error';
+            }
+        });
     };
 
-    var obligated_amount = $.parseJSON($(".obligated_amount").val());
+    var ors_head = $.parseJSON($(".ors_head").val());
 
     const data = [];
     var counter = 0;
-    $.each(obligated_amount, function () {
-        data[counter] = [this.Id, this.Obligation_id, this.Expenses_title, this.Code, this.Amount, this.Created_at, this.Updated_at,]
+    $.each(ors_head, function () {
+        data[counter] = [this.Id, this.Head_name, this.Position, this.Created_at, this.Updated_at]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -101,7 +110,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Obligation_id', 'Expenses_title', 'Code', 'Amount', 'Created_at', 'Updated_at'],
+        colHeaders: ['Id','Head_name', 'Position', 'Created_at', 'Updated_at'],
         cell: [
             {
                 row: 0,
@@ -176,22 +185,22 @@
     console.log(hot.getData());
 
 
-</script>
-<style>
+    </script>
+    <style>
 
-    td.custom-cell {
-        color: #fff;
-        background-color: #37bc6c;
-    }
+        td.custom-cell {
+            color: #fff;
+            background-color: #37bc6c;
+        }
 
-    .handsontable th:nth-child(0) {
-        background-color: aquamarine;
-        font-weight: bold;
-    }
+        .handsontable th:nth-child(0) {
+            background-color: aquamarine;
+            font-weight: bold;
+        }
 
 
-    .custom-table tdata th:nth-child(even),
-    .custom-table tbody tr:nth-child(odd) th {
-        background-color: #d7f1e1;
-    }
-</style>
+        .custom-table tdata th:nth-child(even),
+        .custom-table tbody tr:nth-child(odd) th {
+            background-color: #d7f1e1;
+        }
+    </style>

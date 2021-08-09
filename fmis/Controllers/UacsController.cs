@@ -7,29 +7,59 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
 using System.Text.Json;
+using System.IO;
+using System.Text;
 
 namespace fmis.Controllers
 {
-    public class PrexcController : Controller
+    public class UacsController : Controller
     {
-        private readonly PrexcContext _context;
+        /*private readonly UacsContext _context;
 
-        public PrexcController(PrexcContext context)
+        public UacsController(UacsContext context)
         {
             _context = context;
-        }
+        }*/
 
-        // GET: Prexc
-        public async Task<IActionResult> Index()
+        public class UacsData
         {
-            var json = JsonSerializer.Serialize(_context.Prexc.ToList());
-            ViewBag.temp = json;
-            return View(await _context.Prexc.ToListAsync());
+            public int account_title { get; set; }
+            public string expense_title { get; set; }
         }
 
-        // GET: Prexc/Details/5
+        private UacsContext _context { get; }
+
+        public UacsController(UacsContext context)
+        {
+            this._context = context;
+        }
+
+        // GET: Uacs
+        public IActionResult Index()
+        {
+            var json = JsonSerializer.Serialize(_context.Uacs.ToList());
+            ViewBag.temp = json;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult saveUacs(UacsData uacs_data) {
+            var uacses = new List<Uacs>();
+            var uacs = new Uacs();
+
+
+
+            uacs.Account_title = "hahahaha";
+            uacs.Expense_code = 12312312;
+            uacses.Add(uacs);
+
+            this._context.Uacs.Add(uacs);
+            this._context.SaveChanges();
+            return Json(uacs_data);
+        }
+
+        // GET: Uacs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,39 +67,39 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var     prexc = await _context.Prexc
+            var uacs = await _context.Uacs
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
+            if (uacs == null)
             {
                 return NotFound();
             }
 
-            return View(prexc);
+            return View(uacs);
         }
 
-        // GET: Prexc/Create
+        // GET: Uacs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Prexc/Create
+        // POST: Uacs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Pap_title,Pap_code1,Pap_code2,Created_at,Updated_at,")] Prexc prexc)
+        public string Create([Bind("Id,Account_title,Expense_code,Created_at,Updated_at")] Uacs uacs)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(prexc);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.Add(uacs);
+                /*await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));*/
             }
-            return View(prexc);
+            return "Successfuly Added";
         }
 
-        // GET: Ors_head/Edit/5
+        // GET: Uacs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +107,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc.FindAsync(id);
-            if (prexc == null)
+            var uacs = await _context.Uacs.FindAsync(id);
+            if (uacs == null)
             {
                 return NotFound();
             }
-            return View(prexc);
+            return View(uacs);
         }
 
-        // POST: Prexc/Edit/5
+        // POST: Uacs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Pap_title, Pap_code1, Pap_code2, Created_at, Updated_at, ")] Prexc prexc
-            )
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Account_title,Expense_code,Created_at,Updated_at,Date_recieved")] Uacs uacs)
         {
-            if (id != prexc.Id)
+            if (id != uacs.Id)
             {
                 return NotFound();
             }
@@ -102,12 +131,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(prexc);
+                    _context.Update(uacs);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PrexcExists(prexc.Id))
+                    if (!UacsExists(uacs.Id))
                     {
                         return NotFound();
                     }
@@ -118,10 +147,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(prexc);
+            return View(uacs);
         }
 
-        // GET: Prexc/Delete/5
+        // GET: Uacs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,30 +158,30 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc
+            var uacs = await _context.Uacs
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
+            if (uacs == null)
             {
                 return NotFound();
             }
 
-            return View(prexc);
+            return View(uacs);
         }
 
-        // POST: Prexc/Delete/5
+        // POST: Uacs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var prexc = await _context.Prexc.FindAsync(id);
-            _context.Prexc.Remove(prexc);
+            var uacs = await _context.Uacs.FindAsync(id);
+            _context.Uacs.Remove(uacs);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PrexcExists(int id)
+        private bool UacsExists(int id)
         {
-            return _context.Prexc.Any(e => e.Id == id);
+            return _context.Uacs.Any(e => e.Id == id);
         }
     }
 }
