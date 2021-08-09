@@ -69,6 +69,17 @@ namespace fmis.Controllers
             return View(obligation);
         }
 
+        [HttpPost]
+
+        public ActionResult AddObligation(IEnumerable<Obligation> ObligationsInput)
+
+        {
+
+            var p = ObligationsInput;
+            return null;
+
+        }
+
         // GET: Obligations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

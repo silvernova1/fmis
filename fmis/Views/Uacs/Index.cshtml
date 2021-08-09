@@ -10,10 +10,7 @@
 
 
 <style>
-    td.custom-cell {
-        color: #fff;
-        background-color: #37bc6c;
-    }
+   
 
     .handsontable th:nth-child(0) {
         background-color: aquamarine;
@@ -28,13 +25,13 @@
 </style>
 
 <input type="hidden" class="uacs" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search"/>
+<input id="search_field2" type="search" placeholder="Search"/ hidden>
 <br />
 <br />
 <table id="example" class="hot" style="margin-left:50px;"></table>
 
 <br />
-<div class="controls">
+<div class="controls" hidden>
     <button id="export-file">Download CSV bbbb</button>
 </div>
 
@@ -132,7 +129,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Account_title', 'Expense_code'],
+        colHeaders: ['Account Title' , 'UACS Expense Code'],
         cell: [
             {
                 row: 0,

@@ -7,6 +7,7 @@
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
 <style>
@@ -15,6 +16,7 @@
         font-weight: 900;
     }
 </style>
+
 
 <input type="hidden" class="obligation" value="@ViewBag.temp">
 <input id="search_field2" type="search" placeholder="Search" />
@@ -25,27 +27,35 @@
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-
+<button class="intext-btn btn btn-primary center-block"
+        id="save" name="save">
+    Save
+</button>
 
 
 <script>
 
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
-            $('#loading_modal').modal('show');
-            console.log(hot.getData());
-            return false;
-        }
-        $.ajax('Obligations/Create', 'GET', JSON.stringify({ data: hot.getData() }), res => {
-            const response = JSON.parse(res.response);
 
-            if (response.result === 'ok') {
-                exampleConsole.innerText = 'Data saved';
-            } else {
-                exampleConsole.innerText = 'Save error';
+            var ObligationsInput = JSON.stringify(hot.getSourceData());
+        jQuery.ajax({
+            type: "POST",
+            url: "@Url.Action("Create")",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: ObligationsInput,
+            success: function (data) { exampleConsole = alert(data); },
+            failure: function (errMsg) {
+                alert(errMsg);
             }
         });
+
+            console.log(hot.getSourceData())
+            return false;
+        }
     };
+
 
     var obligation = $.parseJSON($(".obligation").val());
 
@@ -69,7 +79,26 @@
         },
         contextMenu: ['row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
-        licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
+        columns: [
+            { data: 'Date ', type: 'numeric' },
+            { data: 'Dv', type: 'numeric' },
+            { data: 'Pr_no', type: 'text' },
+            { data: 'Po_no', type: 'text' },
+            { data: 'Payee', type: 'text' },
+            { data: 'Address', type: 'text' },
+            { data: 'Particulars', type: 'text' },
+            { data: 'Ors_no', type: 'text' },
+            { data: 'Fund_source', type: 'text' },
+            { data: 'Gross', type: 'text' },
+            { data: 'Created_by', type: 'text' },
+            { data: 'Date_recieved', type: 'text' },
+            { data: 'Time_recieved', type: 'text' },
+            { data: 'Date_released', type: 'text' },
+            { data: 'Time_released', type: 'text' }
+
+        ]
     });
 
 
@@ -181,8 +210,8 @@
         ]
     });
 
-    var tableData = JSON.stringify(hot.getData());
-    console.log(hot.getData());
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 
 
 </script>
