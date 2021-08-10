@@ -9,6 +9,7 @@ using fmis.Data;
 using fmis.Models;
 using AutoMapper;
 using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace fmis.Controllers
 {
@@ -23,8 +24,26 @@ namespace fmis.Controllers
 
         public class ObligationData
         {
-            public int date { get; set; }
-            public string dv { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime Date { get; set; }
+            public string Dv { get; set; }
+            public string Pr_no { get; set; }
+            public string Po_no { get; set; }
+            public string Payee { get; set; }
+            public string Address { get; set; }
+            public string Particulars { get; set; }
+            public int Ors_no { get; set; }
+            public string Fund_source { get; set; }
+            public float Gross { get; set; }
+            public int Created_by { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime Date_recieved { get; set; }
+            [DataType(DataType.Time)]
+            public DateTime Time_recieved { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime Date_released { get; set; }
+            [DataType(DataType.Time)]
+            public DateTime Time_released { get; set; }
         }
 
         // GET: Obligations
@@ -59,23 +78,44 @@ namespace fmis.Controllers
             return View();
         }
 
+        public ActionResult AddData(List<string[]> dataListFromTable)
+        {
+            var dataListTable = dataListFromTable;
+            return Json("Response, Data Received Successfully");
+        }
+
         [HttpPost]
-        public IActionResult saveObligation(ObligationData obligation_data)
+        public IActionResult saveObligation(List<ObligationData> data)
         {
             var obligations = new List<Obligation>();
             var obligation = new Obligation();
 
-            foreach (var item in obligations)
+
+            foreach (var item in data)
             {
                 obligation.Date = item.Date;
                 obligation.Dv = item.Dv;
+                obligation.Pr_no = item.Pr_no;
+                obligation.Po_no = item.Po_no;
                 obligation.Payee = item.Payee;
+                obligation.Address = item.Address;
+                obligation.Particulars = item.Particulars;
+                obligation.Ors_no = item.Ors_no;
+                obligation.Fund_source = item.Fund_source;
+                obligation.Gross = item.Gross;
+                obligation.Created_by = item.Created_by;
+                obligation.Date_recieved = item.Date_recieved;
+                obligation.Time_recieved = item.Time_recieved;
+                obligation.Date_released = item.Date_released;
+                obligation.Time_released = item.Time_released;
+
                 obligations.Add(obligation);
             }
 
+
             this._context.Obligation.Add(obligation);
             this._context.SaveChanges();
-            return Json(obligation);
+            return Json(data);
         }
 
         // POST: Obligations/Create
