@@ -21,6 +21,12 @@ namespace fmis.Controllers
             _context = context;
         }
 
+        public class ObligationData
+        {
+            public int date { get; set; }
+            public string dv { get; set; }
+        }
+
         // GET: Obligations
         public async Task<IActionResult> Index()
         {
@@ -53,6 +59,24 @@ namespace fmis.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult saveObligation(ObligationData obligation_data)
+        {
+            var obligations = new List<Obligation>();
+            var obligation = new Obligation();
+
+            foreach (var item in obligations)
+            {
+                obligation.Date = item.Date;
+                obligation.Dv = item.Dv;
+                obligations.Add(obligation);
+            }
+
+            this._context.Obligation.Add(obligation);
+            this._context.SaveChanges();
+            return Json(obligation);
+        }
+
         // POST: Obligations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -67,6 +91,17 @@ namespace fmis.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(obligation);
+        }
+
+        [HttpPost]
+
+        public ActionResult AddObligation(IEnumerable<Obligation> ObligationsInput)
+
+        {
+
+            var p = ObligationsInput;
+            return null;
+
         }
 
         // GET: Obligations/Edit/5

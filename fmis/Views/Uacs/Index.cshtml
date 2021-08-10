@@ -10,10 +10,7 @@
 
 
 <style>
-    td.custom-cell {
-        color: #fff;
-        background-color: #37bc6c;
-    }
+   
 
     .handsontable th:nth-child(0) {
         background-color: aquamarine;
@@ -25,18 +22,23 @@
     .custom-table tbody tr:nth-child(odd) th {
         background-color: #d7f1e1;
     }
+
+    .uacs {
+
+        margin-right: 200px;
+    }
 </style>
 
-<input type="hidden" class="uacs" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search"/>
-<br />
-<br />
-<table id="example" class="hot" style="margin-left:50px;"></table>
+    <input type="hidden" class="uacs" value="@ViewBag.temp">
+    <input id="search_field2" type="search" placeholder="Search" / hidden>
+    <br />
+    <br />
+    <table id="example" class="hot" style="margin-left:50px;"></table>
 
-<br />
-<div class="controls">
-    <button id="export-file">Download CSV bbbb</button>
-</div>
+    <br />
+    <div class="controls" hidden>
+        <button id="export-file">Download CSV bbbb</button>
+    </div>
 
 
 
@@ -58,7 +60,7 @@
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
-                        msg: "Successfully Save...",
+                        msg: "Successfully Saved...",
                         sound: false
                     });
                     console.log(output);
@@ -132,7 +134,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Account_title', 'Expense_code'],
+        colHeaders: ['Account Title' , 'UACS Expense Code'],
         cell: [
             {
                 row: 0,

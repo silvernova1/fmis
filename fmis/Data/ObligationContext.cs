@@ -17,6 +17,5 @@ namespace fmis.Data
 
         public DbSet<fmis.Models.Obligation> Obligation { get; set; }
 
-        public DbSet<fmis.Models.Obligated_amount> Obligated_amount { get; set; }
     }
 }

@@ -8,13 +8,23 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-
 <style>
     .search-result-custom {
         color: #ff0000;
         font-weight: 900;
     }
+    .htCore tbody tr td, .htCore thead tr th, body {
+    }
+
+
+    .htCore thead tr th {
+        color: #fff;
+        font-size: 13px;
+        background-color: #2ECC71
+    }
 </style>
+
+
 
 <input type="hidden" class="obligation" value="@ViewBag.temp">
 <input id="search_field2" type="search" placeholder="Search" />
@@ -25,7 +35,10 @@
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-
+<button class="intext-btn btn btn-primary center-block"
+        id="save" name="save">
+    Save
+</button>
 
 
 <script>
@@ -33,19 +46,30 @@
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-            console.log(hot.getData());
+
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Date: this[0], Dv: this[1], Pr_no: this[2], Po_no: this[3], Payee: this[4], Address: this[5], Particulars: this[6], Ors_no: this[7], Fund_source: this[8], Gross: this[9], Created_by: this[10], Date_recieved: this[11], Time_recieved: this[12], Date_released: this[13], Time_released: this[14]});
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("saveObligation", "Obligations")',
+                data: json,
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
             return false;
         }
-        $.ajax('Obligations/Create', 'GET', JSON.stringify({ data: hot.getData() }), res => {
-            const response = JSON.parse(res.response);
-
-            if (response.result === 'ok') {
-                exampleConsole.innerText = 'Data saved';
-            } else {
-                exampleConsole.innerText = 'Save error';
-            }
-        });
     };
+
 
     var obligation = $.parseJSON($(".obligation").val());
 
@@ -67,9 +91,28 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: ['row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
-        licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
+        columns: [
+            { data: 'Date ', type: 'numeric' },
+            { data: 'Dv', type: 'numeric' },
+            { data: 'Pr_no', type: 'text' },
+            { data: 'Po_no', type: 'text' },
+            { data: 'Payee', type: 'text' },
+            { data: 'Address', type: 'text' },
+            { data: 'Particulars', type: 'text' },
+            { data: 'Ors_no', type: 'text' },
+            { data: 'Fund_source', type: 'text' },
+            { data: 'Gross', type: 'text' },
+            { data: 'Created_by', type: 'text' },
+            { data: 'Date_recieved', type: 'text' },
+            { data: 'Time_recieved', type: 'text' },
+            { data: 'Date_released', type: 'text' },
+            { data: 'Time_released', type: 'text' }
+
+        ]
     });
 
 
@@ -181,12 +224,12 @@
         ]
     });
 
-    var tableData = JSON.stringify(hot.getData());
-    console.log(hot.getData());
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 
 
 </script>
-<style>
+@*<style>
 
     td.custom-cell {
         color: #fff;
@@ -203,4 +246,4 @@
     .custom-table tbody tr:nth-child(odd) th {
         background-color: #d7f1e1;
     }
-</style>
+</style>*@

@@ -44,14 +44,14 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveUacs(UacsData uacs_data) {
+        public IActionResult saveUacs(UacsData uacs_data, string Account_title, int _code) {
             var uacses = new List<Uacs>();
             var uacs = new Uacs();
 
 
 
-            uacs.Account_title = "hahahaha";
-            uacs.Expense_code = 12312312;
+            uacs.Account_title = uacs.Account_title;
+            uacs.Expense_code = uacs.Expense_code;
             uacses.Add(uacs);
 
             this._context.Uacs.Add(uacs);
