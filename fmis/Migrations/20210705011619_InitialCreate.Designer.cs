@@ -9,7 +9,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(fmisContext))]
-    [Migration("20210703132054_InitialCreate")]
+    [Migration("20210705011619_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
