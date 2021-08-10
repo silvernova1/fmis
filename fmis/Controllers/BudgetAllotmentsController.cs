@@ -22,7 +22,7 @@ namespace fmis.Controllers
         // GET: BudgetAllotments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BudgetAllotment.ToListAsync());
+            return View(await _context.Obligated_amount.ToListAsync());
         }
 
         // GET: BudgetAllotments/Details/5
@@ -33,7 +33,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var budgetAllotment = await _context.BudgetAllotment
+            var budgetAllotment = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (budgetAllotment == null)
             {
@@ -73,7 +73,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
+            var budgetAllotment = await _context.Obligated_amount.FindAsync(id);
             if (budgetAllotment == null)
             {
                 return NotFound();

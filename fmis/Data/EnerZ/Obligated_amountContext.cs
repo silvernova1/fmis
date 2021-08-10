@@ -13,6 +13,6 @@ namespace fmis.Data
          : base(options)
         {
         }
-        public DbSet<fmis.Models.Obligated_amount> Ors_head { get; set; }
+        public DbSet<fmis.Models.Obligated_amount> Obligated_amount { get; set; }
     }
 }
