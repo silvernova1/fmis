@@ -69,6 +69,7 @@ namespace fmis.Controllers
             {
                 obligation.Date = item.Date;
                 obligation.Dv = item.Dv;
+                obligation.Payee = item.Payee;
                 obligations.Add(obligation);
             }
 
