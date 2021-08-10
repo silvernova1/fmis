@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using fmis.Data;
 
 namespace fmis
 {
@@ -23,6 +25,9 @@ namespace fmis
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<fmisContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
