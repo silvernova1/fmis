@@ -8,13 +8,24 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-
 <style>
     .search-result-custom {
         color: #ff0000;
         font-weight: 900;
     }
+
+    .htCore tbody tr td, .htCore thead tr th, body {
+    }
+
+
+    .htCore thead tr th {
+        color: #fff;
+        font-size: 13px;
+        background-color: #2ECC71
+    }
 </style>
+
+
 
 <input type="hidden" class="obligated_amount" value="@ViewBag.temp">
 <input id="search_field2" type="search" placeholder="Search" />
@@ -25,7 +36,10 @@
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-
+<button class="intext-btn btn btn-primary center-block"
+        id="save" name="save">
+    Save
+</button>
 
 
 <script>
@@ -33,17 +47,37 @@
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-            console.log(hot.getData());
+
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Id: this[0], Obligation_id: this[1], Expenses_title: this[2], Code: this[3], Amount: this[4], Created_at: this[5], Updated_at: this[6]});
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("saveObligated_amount", "Obligated_amount")',
+                data: json,
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
             return false;
         }
     };
+
 
     var obligated_amount = $.parseJSON($(".obligated_amount").val());
 
     const data = [];
     var counter = 0;
     $.each(obligated_amount, function () {
-        data[counter] = [this.Id, this.Obligation_id, this.Expenses_title, this.Code, this.Amount, this.Created_at, this.Updated_at,]
+        data[counter] = [this.ID,this.Obligation_id, this.Expenses_title, this.Code, this.Amount, this.Created_at, this.Updated_at]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -58,9 +92,19 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: ['row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
-        licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Id: null, Obligation_id: null, Expenses_title: null, Code: null, Amount: null, Created_at: null, Updated_at: null},
+        columns: [
+            { data: 'Id ', type: 'numeric' },
+            { data: 'Obligation_id', type: 'numeric' },
+            { data: 'Expenses_title', type: 'text' },
+            { data: 'Code', type: 'text' },
+            { data: 'Amount', type: 'text' },
+            { data: 'Created_at', type: 'text' },
+            { data: 'Updated_at', type: 'text' },
+        ]
     });
 
 
@@ -172,26 +216,26 @@
         ]
     });
 
-    var tableData = JSON.stringify(hot.getData());
-    console.log(hot.getData());
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 
 
 </script>
-<style>
+@*<style>
 
-    td.custom-cell {
-        color: #fff;
-        background-color: #37bc6c;
-    }
+        td.custom-cell {
+            color: #fff;
+            background-color: #37bc6c;
+        }
 
-    .handsontable th:nth-child(0) {
-        background-color: aquamarine;
-        font-weight: bold;
-    }
+        .handsontable th:nth-child(0) {
+            background-color: aquamarine;
+            font-weight: bold;
+        }
 
 
-    .custom-table tdata th:nth-child(even),
-    .custom-table tbody tr:nth-child(odd) th {
-        background-color: #d7f1e1;
-    }
-</style>
+        .custom-table tdata th:nth-child(even),
+        .custom-table tbody tr:nth-child(odd) th {
+            background-color: #d7f1e1;
+        }
+    </style>*@

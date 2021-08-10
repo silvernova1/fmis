@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Ors_head>
+﻿@model IEnumerable<fmis.Models.Sub_allotment>
 
 @{
     ViewData["Title"] = "Index";
@@ -27,7 +27,7 @@
 
 
 
-<input type="hidden" class="ors_head" value="@ViewBag.temp">
+<input type="hidden" class="sub_allotment" value="@ViewBag.temp">
 <input id="search_field2" type="search" placeholder="Search" />
 <br />
 <br />
@@ -50,12 +50,12 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Id: this[0], Head_name: this[1], Position: this[2], Created_at: this[3], Updated_at: this[4]});
+                json.push({ Id: this[0], Prexe_code: this[1], Suballotment_code: this[2], Suballotment_title: this[3], Orc_head: this[4], Responsibility_number: this[5], Description: this[6]});
             });
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("saveOrs_head", "Ors_head")',
+                url: '@Url.Action("saveSub_allotment", "Sub_allotment")',
                 data: json,
                 success: function (output) {
                     $('#loading_modal').modal('hide');
@@ -72,12 +72,12 @@
     };
 
 
-    var ors_head = $.parseJSON($(".ors_head").val());
+    var sub_allotment = $.parseJSON($(".sub_allotment").val());
 
     const data = [];
     var counter = 0;
-    $.each(ors_head, function () {
-        data[counter] = [this.ID, this.Head_name, this.Position, this.Created_at, this.Updated_at]
+    $.each(sub_allotment, function () {
+        data[counter] = [this.ID, this.Prexe_code, this.Suballotment_code, this.Suballotment_title, this.Orc_head, this.Responsibility_number, this.Description]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -95,13 +95,17 @@
         contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Id: null, Head_name: null, Position: null, Created_at: null, Updated_at: null},
+        dataSchema: { Id: null, Prexe_code: null, Suballotment_code: null, Suballotment_title: null, Orc_head: null, Responsibility_number: null, Description: null},
         columns: [
+
             { data: 'Id ', type: 'numeric' },
-            { data: 'Head_name', type: 'numeric' },
-            { data: 'Position', type: 'text' },
-            { data: 'Created_at', type: 'text' },
-            { data: 'Updated_at', type: 'text' },
+            { data: 'Prexe_code', type: 'numeric' },
+            { data: 'Suballotment_code', type: 'text' },
+            { data: 'Suballotment_title', type: 'text' },
+            { data: 'Orc_head', type: 'text' },
+            { data: 'Responsibility_number', type: 'text' },
+            { data: 'Description', type: 'text' },
+         
         ]
     });
 
@@ -143,7 +147,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Head_name', 'Position', 'Created_at', 'Updated_at'],
+        colHeaders: ['Id', 'Prexe_code', 'Suballotment_code', 'Suballotment_title', 'Orc_head', 'Responsibility_number', 'Description'],
         cell: [
             {
                 row: 0,

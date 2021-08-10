@@ -9,7 +9,7 @@ using fmis.Data;
 namespace fmis.Migrations.Sub_allotment
 {
     [DbContext(typeof(Sub_allotmentContext))]
-    [Migration("20210728074012_Sub_allotment")]
+    [Migration("20210810085459_Sub_allotment")]
     partial class Sub_allotment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,10 +39,10 @@ namespace fmis.Migrations.Sub_allotment
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Suballotmenent_title")
+                    b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Suballotment_code")
+                    b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
