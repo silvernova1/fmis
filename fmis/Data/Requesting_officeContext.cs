@@ -7,14 +7,14 @@ using fmis.Models;
 
 namespace fmis.Data
 {
-    public class YearlyReferenceContext : DbContext
+    public class Requesting_officeContext : DbContext
     {
 
-        public YearlyReferenceContext(DbContextOptions<YearlyReferenceContext> options)
+        public Requesting_officeContext(DbContextOptions<Requesting_officeContext> options)
             : base(options)
         {
         }
 
-        public DbSet<fmis.Models.YearlyReference> YearlyReference { get; set; }
+        public DbSet<fmis.Models.Requesting_office> Requesting_office { get; set; }
     }
 }
