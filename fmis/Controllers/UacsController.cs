@@ -24,8 +24,8 @@ namespace fmis.Controllers
 
         public class UacsData
         {
-            public int account_title { get; set; }
-            public string expense_title { get; set; }
+            public string Account_title { get; set; }
+            public int Expense_code { get; set; }
         }
 
         private UacsContext _context { get; }
@@ -44,19 +44,21 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveUacs(UacsData uacs_data, string Account_title, int _code) {
+        public IActionResult saveUacs(List<UacsData> data) {
             var uacses = new List<Uacs>();
             var uacs = new Uacs();
 
 
-
-            uacs.Account_title = uacs.Account_title;
-            uacs.Expense_code = uacs.Expense_code;
+            foreach(var item in data)
+            { 
+            uacs.Account_title = item.Account_title;
+            uacs.Expense_code = item.Expense_code;
             uacses.Add(uacs);
-
+            }
             this._context.Uacs.Add(uacs);
             this._context.SaveChanges();
-            return Json(uacs_data);
+
+            return Json(data);
         }
 
         // GET: Uacs/Details/5
