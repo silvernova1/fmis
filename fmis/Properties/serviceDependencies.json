@@ -23,6 +23,14 @@
     "mssql6": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:Requesting_officeContext"
+    },
+    "mssql7": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:Yearly_referenceContext"
+    },
+    "mssql8": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:Budget_allotmentContext"
     }
   }
 }
