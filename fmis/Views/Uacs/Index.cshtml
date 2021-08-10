@@ -30,7 +30,7 @@
 </style>
 
     <input type="hidden" class="uacs" value="@ViewBag.temp">
-    <input id="search_field2" type="search" placeholder="Search" / hidden>
+    <input id="search_field2" type="search" placeholder="Search" hidden>
     <br />
     <br />
     <table id="example" class="hot" style="margin-left:50px;"></table>
@@ -50,13 +50,16 @@
 
             var json = [];
             $.each(hot.getData(), function () {
-                json.push({ account_title: this[0], expense_code: this[1] });
+                json.push({ Account_title: this[0], Expense_code: this[1] });
             });
+
+         
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("saveUacs", "Uacs")',
-                data: json,
+                dataType: "JSON",
+                data: { data: json },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -64,6 +67,7 @@
                         sound: false
                     });
                     console.log(output);
+
                 }
             });
 

@@ -7,125 +7,98 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using System.Text.Json;
-using System.IO;
-using System.Text;
 
 namespace fmis.Controllers
 {
-    public class UacsController : Controller
+    public class Budget_allotmentController : Controller
     {
-        /*private readonly UacsContext _context;
+        private readonly Budget_allotmentContext _context;
 
-        public UacsController(UacsContext context)
+        public Budget_allotmentController(Budget_allotmentContext context)
         {
             _context = context;
-        }*/
+        }
 
-        public class UacsData
+        // GET: Budget_allotment
+        public async Task<IActionResult> Index()
         {
-            public string Account_title { get; set; }
-            public int Expense_code { get; set; }
+            ViewBag.layout = "_Layout";
+            return View(await _context.Budget_allotment.ToListAsync());
         }
 
-        private UacsContext _context { get; }
-
-        public UacsController(UacsContext context)
-        {
-            this._context = context;
-        }
-
-        // GET: Uacs
-        public IActionResult Index()
-        {
-            var json = JsonSerializer.Serialize(_context.Uacs.ToList());
-            ViewBag.temp = json;
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult saveUacs(List<UacsData> data) {
-            var uacses = new List<Uacs>();
-            var uacs = new Uacs();
-
-
-            foreach(var item in data)
-            { 
-            uacs.Account_title = item.Account_title;
-            uacs.Expense_code = item.Expense_code;
-            uacses.Add(uacs);
-            }
-            this._context.Uacs.Add(uacs);
-            this._context.SaveChanges();
-
-            return Json(data);
-        }
-
-        // GET: Uacs/Details/5
+        // GET: Budget_allotment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            var uacs = await _context.Uacs
+            var budget_allotment = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (uacs == null)
+            if (budget_allotment == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            return View(uacs);
+            ViewBag.layout = "_Layout";
+            return View(budget_allotment);
         }
 
-        // GET: Uacs/Create
+        // GET: Budget_allotment/Create
         public IActionResult Create()
         {
+            ViewBag.layout = "_Layout";
             return View();
         }
 
-        // POST: Uacs/Create
+        // POST: Budget_allotment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public string Create([Bind("Id,Account_title,Expense_code,Created_at,Updated_at")] Uacs uacs)
+        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(uacs);
-                /*await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));*/
+                _context.Add(budget_allotment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return "Successfuly Added";
+            ViewBag.layout = "_Layout";
+            return View(budget_allotment);
         }
 
-        // GET: Uacs/Edit/5
+        // GET: Budget_allotment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            var uacs = await _context.Uacs.FindAsync(id);
-            if (uacs == null)
+            var budget_allotment = await _context.Budget_allotment.FindAsync(id);
+            if (budget_allotment == null)
             {
                 return NotFound();
             }
-            return View(uacs);
+            ViewBag.layout = "_Layout";
+            return View(budget_allotment);
         }
 
-        // POST: Uacs/Edit/5
+        // POST: Budget_allotment/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Account_title,Expense_code,Created_at,Updated_at,Date_recieved")] Uacs uacs)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
         {
-            if (id != uacs.Id)
+            if (id != budget_allotment.Id)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -133,12 +106,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(uacs);
+                    _context.Update(budget_allotment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UacsExists(uacs.Id))
+                    if (!Budget_allotmentExists(budget_allotment.Id))
                     {
                         return NotFound();
                     }
@@ -149,10 +122,11 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(uacs);
+            ViewBag.layout = "_Layout";
+            return View(budget_allotment);
         }
 
-        // GET: Uacs/Delete/5
+        // GET: Budget_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -160,30 +134,32 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var uacs = await _context.Uacs
+            var budget_allotment = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (uacs == null)
+            if (budget_allotment == null)
             {
                 return NotFound();
             }
 
-            return View(uacs);
+            ViewBag.layout = "_Layout";
+            return View(budget_allotment);
         }
 
-        // POST: Uacs/Delete/5
+        // POST: Budget_allotment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var uacs = await _context.Uacs.FindAsync(id);
-            _context.Uacs.Remove(uacs);
+            var budget_allotment = await _context.Budget_allotment.FindAsync(id);
+            _context.Budget_allotment.Remove(budget_allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UacsExists(int id)
+        private bool Budget_allotmentExists(int id)
         {
-            return _context.Uacs.Any(e => e.Id == id);
+            ViewBag.layout = "_Layout";
+            return _context.Budget_allotment.Any(e => e.Id == id);
         }
     }
 }
