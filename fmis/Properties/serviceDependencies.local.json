@@ -15,6 +15,14 @@
     "mssql4": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:ObligationContext"
+    },
+    "mssql5": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:BudgetAllotmentContext"
+    },
+    "mssql6": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:Requesting_officeContext"
     }
   }
 }

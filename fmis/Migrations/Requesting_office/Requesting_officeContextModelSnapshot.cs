@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.YearlyReference
+namespace fmis.Migrations.Requesting_office
 {
-    [DbContext(typeof(YearlyReferenceContext))]
-    partial class YearlyReferenceContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Requesting_officeContext))]
+    partial class Requesting_officeContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,25 +19,28 @@ namespace fmis.Migrations.YearlyReference
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.YearlyReference", b =>
+            modelBuilder.Entity("fmis.Models.Requesting_office", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Created_At")
+                    b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Updated_At")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Yearly_Reference")
+                    b.Property<string>("Head_name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Yearly_reference");
+                    b.ToTable("Requesting_office");
                 });
 #pragma warning restore 612, 618
         }

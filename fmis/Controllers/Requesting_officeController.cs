@@ -10,22 +10,22 @@ using fmis.Models;
 
 namespace fmis.Controllers
 {
-    public class BudgetAllotmentsController : Controller
+    public class Requesting_officeController : Controller
     {
-        private readonly Obligated_amountContext _context;
+        private readonly Requesting_officeContext _context;
 
-        public BudgetAllotmentsController(Obligated_amountContext context)
+        public Requesting_officeController(Requesting_officeContext context)
         {
             _context = context;
         }
 
-        // GET: BudgetAllotments
+        // GET: Requesting_office
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BudgetAllotment.ToListAsync());
+            return View(await _context.Requesting_office.ToListAsync());
         }
 
-        // GET: BudgetAllotments/Details/5
+        // GET: Requesting_office/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var budgetAllotment = await _context.BudgetAllotment
+            var requesting_office = await _context.Requesting_office
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (budgetAllotment == null)
+            if (requesting_office == null)
             {
                 return NotFound();
             }
 
-            return View(budgetAllotment);
+            return View(requesting_office);
         }
 
-        // GET: BudgetAllotments/Create
+        // GET: Requesting_office/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: BudgetAllotments/Create
+        // POST: Requesting_office/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_Series,Allotment_Tittle,Allotment_Code,Created_At,Updated_At")] BudgetAllotment budgetAllotment)
+        public async Task<IActionResult> Create([Bind("Id,Head_name,Position,Created_at,Updated_at")] Requesting_office requesting_office)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(budgetAllotment);
+                _context.Add(requesting_office);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(budgetAllotment);
+            return View(requesting_office);
         }
 
-        // GET: BudgetAllotments/Edit/5
+        // GET: Requesting_office/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
-            if (budgetAllotment == null)
+            var requesting_office = await _context.Requesting_office.FindAsync(id);
+            if (requesting_office == null)
             {
                 return NotFound();
             }
-            return View(budgetAllotment);
+            return View(requesting_office);
         }
 
-        // POST: BudgetAllotments/Edit/5
+        // POST: Requesting_office/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_Series,Allotment_Tittle,Allotment_Code,Created_At,Updated_At")] BudgetAllotment budgetAllotment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Head_name,Position,Created_at,Updated_at")] Requesting_office requesting_office)
         {
-            if (id != budgetAllotment.Id)
+            if (id != requesting_office.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(budgetAllotment);
+                    _context.Update(requesting_office);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BudgetAllotmentExists(budgetAllotment.Id))
+                    if (!Requesting_officeExists(requesting_office.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(budgetAllotment);
+            return View(requesting_office);
         }
 
-        // GET: BudgetAllotments/Delete/5
+        // GET: Requesting_office/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var budgetAllotment = await _context.BudgetAllotment
+            var requesting_office = await _context.Requesting_office
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (budgetAllotment == null)
+            if (requesting_office == null)
             {
                 return NotFound();
             }
 
-            return View(budgetAllotment);
+            return View(requesting_office);
         }
 
-        // POST: BudgetAllotments/Delete/5
+        // POST: Requesting_office/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var budgetAllotment = await _context.BudgetAllotment.FindAsync(id);
-            _context.BudgetAllotment.Remove(budgetAllotment);
+            var requesting_office = await _context.Requesting_office.FindAsync(id);
+            _context.Requesting_office.Remove(requesting_office);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BudgetAllotmentExists(int id)
+        private bool Requesting_officeExists(int id)
         {
-            return _context.BudgetAllotment.Any(e => e.Id == id);
+            return _context.Requesting_office.Any(e => e.Id == id);
         }
     }
 }

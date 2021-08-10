@@ -15,6 +15,14 @@
     "mssql4": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:ObligationContext"
+    },
+    "mssql5": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:BudgetAllotmentContext"
+    },
+    "mssql6": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:Requesting_officeContext"
     }
   }
 }

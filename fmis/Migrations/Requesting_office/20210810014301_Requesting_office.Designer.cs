@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.RequestingOffice
+namespace fmis.Migrations.Requesting_office
 {
-    [DbContext(typeof(RequestingOfficeContext))]
-    partial class RequestingOfficeContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Requesting_officeContext))]
+    [Migration("20210810014301_Requesting_office")]
+    partial class Requesting_office
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,17 +21,14 @@ namespace fmis.Migrations.RequestingOffice
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.RequestingOffice", b =>
+            modelBuilder.Entity("fmis.Models.Requesting_office", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Created_At")
+                    b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Head_name")
@@ -38,12 +37,12 @@ namespace fmis.Migrations.RequestingOffice
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Updated_At")
+                    b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestingOffice");
+                    b.ToTable("Requesting_office");
                 });
 #pragma warning restore 612, 618
         }
