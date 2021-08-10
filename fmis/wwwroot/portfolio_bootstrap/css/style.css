@@ -856,5 +856,34 @@ div#preloader {
 }
 
 
+.footer-area-bottom {
+    background: #e4e4e4 none repeat scroll 0 0;
+    padding: 15px 0;
+}
+
+.copyright-text a:hover {
+    text-decoration: underline;
+    color: #3EC1D5;
+}
+
+.copyright-text a {
+    color: #444;
+}
+
+.copyright > p {
+    margin-bottom: 0;
+    color: #444;
+}
+
+.copyright a, .credits a {
+    color: #4998fb;
+    font-weight: bold;
+}
+
+.credits {
+    padding-top: 5px;
+    text-align: center;
+}
+
 
 
