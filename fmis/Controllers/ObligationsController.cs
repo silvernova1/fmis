@@ -64,11 +64,13 @@ namespace fmis.Controllers
         {
             var obligations = new List<Obligation>();
             var obligation = new Obligation();
-            
 
-            obligation.Date = obligation.Date;
-            obligation.Dv = obligation.Dv;
-            obligations.Add(obligation);
+            foreach (var item in obligations)
+            {
+                obligation.Date = item.Date;
+                obligation.Dv = item.Dv;
+                obligations.Add(obligation);
+            }
 
             this._context.Obligation.Add(obligation);
             this._context.SaveChanges();

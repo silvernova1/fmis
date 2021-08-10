@@ -13,7 +13,17 @@
         color: #ff0000;
         font-weight: 900;
     }
+    .htCore tbody tr td, .htCore thead tr th, body {
+    }
+
+
+    .htCore thead tr th {
+        color: #fff;
+        font-size: 13px;
+        background-color: #2ECC71
+    }
 </style>
+
 
 
 <input type="hidden" class="obligation" value="@ViewBag.temp">
@@ -81,7 +91,7 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: ['row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
@@ -219,7 +229,7 @@
 
 
 </script>
-<style>
+@*<style>
 
     td.custom-cell {
         color: #fff;
@@ -236,4 +246,4 @@
     .custom-table tbody tr:nth-child(odd) th {
         background-color: #d7f1e1;
     }
-</style>
+</style>*@
