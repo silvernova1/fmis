@@ -31,6 +31,9 @@ namespace fmis.Migrations
                     b.Property<string>("pap_code2")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("pap_title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Prexc");

@@ -1,0 +1,51 @@
+﻿@model fmis.Models.Requesting_office
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>RequestingOffice</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Head_name" class="control-label"></label>
+                <input asp-for="Head_name" class="form-control" />
+                <span asp-validation-for="Head_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Position" class="control-label"></label>
+                <input asp-for="Position" class="form-control" />
+                <span asp-validation-for="Position" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created_at" class="control-label"></label>
+                <input asp-for="Created_at" class="form-control" />
+                <span asp-validation-for="Created_at" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Updated_at" class="control-label"></label>
+                <input asp-for="Updated_at" class="form-control" />
+                <span asp-validation-for="Updated_at" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

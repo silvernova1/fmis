@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Syncfusion.EJ2;
 
 namespace fmis.Controllers
 {
@@ -18,9 +19,19 @@ namespace fmis.Controllers
             _logger = logger;
         }
 
+
         public IActionResult Index()
         {
-            return View();
+            ViewBag.filter_sidebar = "dashboard";
+            ViewBag.layout = null;   
+            return View("~/Views/Shared/_LoginPartial.cshtml");
+        }
+
+        public IActionResult Dashboard()
+        {
+            ViewBag.filter_sidebar = "dashboard";
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Home/Index.cshtml");
         }
 
         public IActionResult Privacy()
@@ -28,10 +39,18 @@ namespace fmis.Controllers
             return View();
         }
 
+        public IActionResult Gallery() 
+        {
+            ViewBag.filter_sidebar = "gallery";
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Home/Gallery.cshtml");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

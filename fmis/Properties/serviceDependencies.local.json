@@ -3,6 +3,34 @@
     "mssql1": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:fmisContext"
+    },
+    "mssql2": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:SampleContext"
+    },
+    "mssql3": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:UserContextConnection"
+    },
+    "mssql4": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:ObligationContext"
+    },
+    "mssql5": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:BudgetAllotmentContext"
+    },
+    "mssql6": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:Requesting_officeContext"
+    },
+    "mssql7": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:Yearly_referenceContext"
+    },
+    "mssql8": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:Budget_allotmentContext"
     }
   }
 }

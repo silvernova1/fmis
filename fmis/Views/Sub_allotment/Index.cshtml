@@ -1,0 +1,243 @@
+﻿@model IEnumerable<fmis.Models.Sub_allotment>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+
+<style>
+    .search-result-custom {
+        color: #ff0000;
+        font-weight: 900;
+    }
+
+    .htCore tbody tr td, .htCore thead tr th, body {
+    }
+
+
+    .htCore thead tr th {
+        color: #fff;
+        font-size: 13px;
+        background-color: #2ECC71
+    }
+</style>
+
+
+
+<input type="hidden" class="sub_allotment" value="@ViewBag.temp">
+<input id="search_field2" type="search" placeholder="Search" />
+<br />
+<br />
+<div id="example" class="hot"></div>
+<br />
+<div class="controls">
+    <button id="export-file">Download CSV</button>
+</div>
+<button class="intext-btn btn btn-primary center-block"
+        id="save" name="save">
+    Save
+</button>
+
+
+<script>
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Id: this[0], Prexe_code: this[1], Suballotment_code: this[2], Suballotment_title: this[3], Orc_head: this[4], Responsibility_number: this[5], Description: this[6]});
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("saveSub_allotment", "Sub_allotment")',
+                data: json,
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
+            return false;
+        }
+    };
+
+
+    var sub_allotment = $.parseJSON($(".sub_allotment").val());
+
+    const data = [];
+    var counter = 0;
+    $.each(sub_allotment, function () {
+        data[counter] = [this.ID, this.Prexe_code, this.Suballotment_code, this.Suballotment_title, this.Orc_head, this.Responsibility_number, this.Description]
+        counter++;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        width: '100%',
+        colWidths: 100,
+        rowHeaders: true,
+        colHeaders: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        height: 'auto',
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Id: null, Prexe_code: null, Suballotment_code: null, Suballotment_title: null, Orc_head: null, Responsibility_number: null, Description: null},
+        columns: [
+
+            { data: 'Id ', type: 'numeric' },
+            { data: 'Prexe_code', type: 'numeric' },
+            { data: 'Suballotment_code', type: 'text' },
+            { data: 'Suballotment_title', type: 'text' },
+            { data: 'Orc_head', type: 'text' },
+            { data: 'Responsibility_number', type: 'text' },
+            { data: 'Description', type: 'text' },
+         
+        ]
+    });
+
+
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: false,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+    hot.addHook('afterChange', function (changes, src) {
+        [
+            [row, col, oldVal, newVal]
+        ] = changes;
+        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
+            console.log(newVal);
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+        }
+    })
+
+    hot.updateSettings({
+        colHeaders: ['Id', 'Prexe_code', 'Suballotment_code', 'Suballotment_title', 'Orc_head', 'Responsibility_number', 'Description'],
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
+        columns: [
+            {
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+            },
+            {
+                // 2nd cell is simple text, no special options here
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+
+            {
+
+            },
+
+            {
+                type: 'dropdown',
+                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+            },
+
+            {
+            },
+
+            {
+            },
+
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+        ]
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+
+</script>
+@*<style>
+
+        td.custom-cell {
+            color: #fff;
+            background-color: #37bc6c;
+        }
+
+        .handsontable th:nth-child(0) {
+            background-color: aquamarine;
+            font-weight: bold;
+        }
+
+
+        .custom-table tdata th:nth-child(even),
+        .custom-table tbody tr:nth-child(odd) th {
+            background-color: #d7f1e1;
+        }
+    </style>*@
