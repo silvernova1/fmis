@@ -7,26 +7,65 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
 using System.Text.Json;
+using System.IO;
+using System.Text;
 
 namespace fmis.Controllers
 {
     public class PrexcController : Controller
     {
-        private readonly PrexcContext _context;
+        /*private readonly PrexcContext _context;
 
         public PrexcController(PrexcContext context)
         {
             _context = context;
+        }*/
+
+        public class PrexcData
+        {
+            public int Id { get; set; }
+            public string pap_title { get; set; }
+            public string pap_code1 { get; set; }
+            public string pap_code2 { get; set; }
+            public DateTime Created_at { get; set; }
+            public DateTime Updated_at { get; set; }
+        }
+
+        private PrexcContext _context { get; }
+
+        public PrexcController(PrexcContext context)
+        {
+            this._context = context;
         }
 
         // GET: Prexc
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Prexc.ToList());
             ViewBag.temp = json;
-            return View(await _context.Prexc.ToListAsync());
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult savePrexc(PrexcData prexc_data)
+        {
+            var prexces = new List<Prexc>();
+            var prexc = new Prexc();
+
+
+
+            prexc.Id = 12312312;
+            prexc.pap_title = "hahahaha";
+            prexc.pap_code1 = "hahahaha";
+            prexc.pap_code2 = "hahahaha";
+            prexc.Created_at = DateTime.Now;
+            prexc.Updated_at = DateTime.Now;
+            prexces.Add(prexc);
+
+            this._context.Prexc.Add(prexc);
+            this._context.SaveChanges();
+            return Json(prexc_data);
         }
 
         // GET: Prexc/Details/5
@@ -37,7 +76,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var     prexc = await _context.Prexc
+            var prexc = await _context.Prexc
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prexc == null)
             {
@@ -58,18 +97,18 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Pap_title,Pap_code1,Pap_code2,Created_at,Updated_at,")] Prexc prexc)
+        public string Create([Bind("Id,pap_title,pap_code1,pap_code2,Created_at,Updated_at")] Prexc prexc)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(prexc);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                /*await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));*/
             }
-            return View(prexc);
+            return "Successfuly Added";
         }
 
-        // GET: Ors_head/Edit/5
+        // GET: Prexc/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,8 +129,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Pap_title, Pap_code1, Pap_code2, Created_at, Updated_at, ")] Prexc prexc
-            )
+        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code1,pap_code2,Created_at,Updated_at,Date_recieved")] Prexc prexc)
         {
             if (id != prexc.Id)
             {

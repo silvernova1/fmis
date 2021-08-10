@@ -15,6 +15,6 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<fmis.Models.Suballotment_amount> Suballotment_Amount { get; set; }
+        public DbSet<fmis.Models.Suballotment_amount> Suballotment_amount { get; set; }
     }
 }

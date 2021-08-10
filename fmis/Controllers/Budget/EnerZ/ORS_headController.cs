@@ -7,26 +7,63 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
 using System.Text.Json;
+using System.IO;
+using System.Text;
 
 namespace fmis.Controllers
 {
     public class Ors_headController : Controller
     {
-        private readonly Ors_headContext _context;
+        /*private readonly Ors_headContext _context;
 
         public Ors_headController(Ors_headContext context)
         {
             _context = context;
+        }*/
+
+        public class Ors_headData
+        {
+            public int Id { get; set; }
+            public string Head_name { get; set; }
+            public string Position { get; set; }
+            public DateTime Created_at { get; set; }
+            public DateTime Updated_at { get; set; }
+        }
+
+        private Ors_headContext _context { get; }
+
+        public Ors_headController(Ors_headContext context)
+        {
+            this._context = context;
         }
 
         // GET: Ors_head
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Ors_head.ToList());
             ViewBag.temp = json;
-            return View(await _context.Ors_head.ToListAsync());
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult saveOrs_head(Ors_headData ors_head_data)
+        {
+            var ors_heades = new List<Ors_head>();
+            var ors_head = new Ors_head();
+
+
+
+            ors_head.Id = 12312312;
+            ors_head.Head_name = "hahahaha";
+            ors_head.Position = "hahahaha";
+            ors_head.Created_at = DateTime.Now;
+            ors_head.Updated_at = DateTime.Now;
+            ors_heades.Add(ors_head);
+
+            this._context.Ors_head.Add(ors_head);
+            this._context.SaveChanges();
+            return Json(ors_head_data);
         }
 
         // GET: Ors_head/Details/5
@@ -58,15 +95,15 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Head_name,Position,Created_at,Updated_at,")] Ors_head ors_head)
+        public string Create([Bind("Id,Head_name,Position,Created_at,Updated_at")] Ors_head ors_head)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(ors_head);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                /*await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));*/
             }
-            return View(ors_head);
+            return "Successfuly Added";
         }
 
         // GET: Ors_head/Edit/5
@@ -90,7 +127,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Head_name, Position, Created_at, Updated_at, ")] Ors_head ors_head)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Head_name,Position,Created_at,Updated_at,")] Ors_head ors_head)
         {
             if (id != ors_head.Id)
             {
@@ -155,3 +192,4 @@ namespace fmis.Controllers
         }
     }
 }
+
