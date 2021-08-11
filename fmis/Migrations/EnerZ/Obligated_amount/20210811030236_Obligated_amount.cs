@@ -8,7 +8,7 @@ namespace fmis.Migrations.Obligated_amount
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Obligated_amount",
+                name: "Obligated_amout",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -22,14 +22,14 @@ namespace fmis.Migrations.Obligated_amount
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Obligated_amount", x => x.Id);
+                    table.PrimaryKey("PK_Obligated_amout", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Obligated_amount");
+                name: "Obligated_amout");
         }
     }
 }

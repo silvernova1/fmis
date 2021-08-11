@@ -24,10 +24,8 @@
     }
 </style>
 
-
-
 <input type="hidden" class="obligation" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <div id="example" class="hot"></div>
@@ -35,10 +33,6 @@
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-<button class="intext-btn btn btn-primary center-block"
-        id="save" name="save">
-    Save
-</button>
 
 
 <script>
@@ -49,13 +43,14 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Date: this[0], Dv: this[1], Pr_no: this[2], Po_no: this[3], Payee: this[4], Address: this[5], Particulars: this[6], Ors_no: this[7], Fund_source: this[8], Gross: this[9], Created_by: this[10], Date_recieved: this[11], Time_recieved: this[12], Date_released: this[13], Time_released: this[14]});
+                json.push({ Date: this[0], Dv: this[1], Pr_no: this[2], Po_no: this[3], Payee: this[4], Address: this[5], Particulars: this[6], Ors_no: this[7], Fund_source: this[8], Gross: this[9], Created_by: this[10], Date_recieved: this[11], Time_recieved: this[12], Date_released: this[13], Time_released: this[13] } );
             });
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("saveObligation", "Obligations")',
-                data: json,
+                dataType: "JSON",
+                data: { data: json },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -114,8 +109,6 @@
 
         ]
     });
-
-
 
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');

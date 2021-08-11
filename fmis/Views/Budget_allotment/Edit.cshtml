@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Requesting_office
+﻿@model fmis.Models.Budget_allotment
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,7 +6,7 @@
 
 <h2>Edit</h2>
 
-<h4>Requesting_office</h4>
+<h4>Budget_allotment</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,19 +14,24 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+                <label asp-for="Year" class="control-label"></label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Head_name" class="control-label"></label>
-                <input asp-for="Head_name" class="form-control" />
-                <span asp-validation-for="Head_name" class="text-danger"></span>
+                <label asp-for="Allotment_series" class="control-label"></label>
+                <input asp-for="Allotment_series" class="form-control" />
+                <span asp-validation-for="Allotment_series" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Position" class="control-label"></label>
-                <input asp-for="Position" class="form-control" />
-                <span asp-validation-for="Position" class="text-danger"></span>
+                <label asp-for="Allotment_title" class="control-label"></label>
+                <input asp-for="Allotment_title" class="form-control" />
+                <span asp-validation-for="Allotment_title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Allotment_code" class="control-label"></label>
+                <input asp-for="Allotment_code" class="form-control" />
+                <span asp-validation-for="Allotment_code" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Created_at" class="control-label"></label>

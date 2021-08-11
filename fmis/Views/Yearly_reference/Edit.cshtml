@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Obligated_amount
+﻿@model fmis.Models.Yearly_reference
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,32 +6,18 @@
 
 <h2>Edit</h2>
 
-<h4>Obligated_amount</h4>
+<h4>Yearly_reference</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+          
             <div class="form-group">
-                <label asp-for="Obligation_id" class="control-label"></label>
-                <input asp-for="Obligation_id" class="form-control" />
-                <span asp-validation-for="Obligation_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Expenses_title" class="control-label"></label>
-                <input asp-for="Expenses_title" class="form-control" />
-                <span asp-validation-for="Expenses_title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Code" class="control-label"></label>
-                <input asp-for="Code" class="form-control" />
-                <span asp-validation-for="Code" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
+                <label asp-for="YearlyReference" class="control-label"></label>
+                <input asp-for="YearlyReference" class="form-control" />
+                <span asp-validation-for="YearlyReference" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Created_at" class="control-label"></label>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Requesting_office>
+﻿@model IEnumerable<fmis.Models.Yearly_reference>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,14 +12,9 @@
 <table class="table">
     <thead>
         <tr>
+          
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Head_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Position)
+                @Html.DisplayNameFor(model => model.YearlyReference)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Created_at)
@@ -33,19 +28,15 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+           
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Head_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Position)
+                @Html.DisplayFor(modelItem => item.YearlyReference)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created_at)
             </td>
             <td>
+
                 @Html.DisplayFor(modelItem => item.Updated_at)
             </td>
             <td>

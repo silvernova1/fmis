@@ -2,50 +2,40 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.Sub_allotment
+namespace fmis.Migrations
 {
-    [DbContext(typeof(Sub_allotmentContext))]
-    partial class Sub_allotmentContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(fmisContext))]
+    [Migration("20210705011619_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
+            modelBuilder.Entity("fmis.Models.Prexc", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
+                    b.Property<string>("pap_code1")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Orc_head")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Prexe_code")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Responsibility_number")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Suballotment_code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Suballotment_title")
+                    b.Property<string>("pap_code2")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sub_allotment");
+                    b.ToTable("Prexc");
                 });
 #pragma warning restore 612, 618
         }

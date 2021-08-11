@@ -13,45 +13,33 @@ using System.ComponentModel.DataAnnotations;
 
 namespace fmis.Controllers
 {
-    public class ObligationsController : Controller
+    public class Budget_allotmentController : Controller
     {
-        private readonly ObligationContext _context;
+        private readonly Budget_allotmentContext _context;
 
-        public ObligationsController(ObligationContext context)
+        public Budget_allotmentController(Budget_allotmentContext context)
         {
             _context = context;
         }
 
-        public class ObligationData
+        public class Budget_allotmentData
         {
             [DataType(DataType.Date)]
-            public DateTime Date { get; set; }
-            public string Dv { get; set; }
-            public string Pr_no { get; set; }
-            public string Po_no { get; set; }
-            public string Payee { get; set; }
-            public string Address { get; set; }
-            public string Particulars { get; set; }
-            public int Ors_no { get; set; }
-            public string Fund_source { get; set; }
-            public float Gross { get; set; }
-            public int Created_by { get; set; }
+            public string Year { get; set; }
+            public string Allotment_series { get; set; }
+            public string Allotment_title { get; set; }
+            public string Allotment_code { get; set; }
             [DataType(DataType.Date)]
-            public DateTime Date_recieved { get; set; }
-            [DataType(DataType.Time)]
-            public DateTime Time_recieved { get; set; }
+            public DateTime Created_at { get; set; }
             [DataType(DataType.Date)]
-            public DateTime Date_released { get; set; }
-            [DataType(DataType.Time)]
-            public DateTime Time_released { get; set; }
+            public DateTime Updated_at { get; set; }
         }
-
-        // GET: Obligations
+        // GET: 
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Obligation.ToList());
+            var json = JsonSerializer.Serialize(_context.Budget_allotment.ToList());
             ViewBag.temp = json;
-            return View(await _context.Obligation.ToListAsync());
+            return View(await _context.Budget_allotment.ToListAsync());
         }
 
         // GET: Obligations/Details/5
@@ -62,14 +50,14 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var obligation = await _context.Obligation
+            var Budget = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (obligation == null)
+            if (Budget == null)
             {
                 return NotFound();
             }
 
-            return View(obligation);
+            return View(Budget);
         }
 
         // GET: Obligations/Create
@@ -85,35 +73,26 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveObligation(List<ObligationData> data)
+        public IActionResult saveObligation(List<Budget_allotmentData> data)
         {
-            var obligations = new List<Obligation>();
-            var obligation = new Obligation();
+            var Budget = new List<Budget_allotment>();
+            var Allotment = new Budget_allotment();
 
 
             foreach (var item in data)
             {
-                obligation.Date = item.Date;
-                obligation.Dv = item.Dv;
-                obligation.Pr_no = item.Pr_no;
-                obligation.Po_no = item.Po_no;
-                obligation.Payee = item.Payee;
-                obligation.Address = item.Address;
-                obligation.Particulars = item.Particulars;
-                obligation.Ors_no = item.Ors_no;
-                obligation.Fund_source = item.Fund_source;
-                obligation.Gross = item.Gross;
-                obligation.Created_by = item.Created_by;
-                obligation.Date_recieved = item.Date_recieved;
-                obligation.Time_recieved = item.Time_recieved;
-                obligation.Date_released = item.Date_released;
-                obligation.Time_released = item.Time_released;
+                Allotment.Year = item.Year;
+                Allotment.Allotment_series = item.Allotment_series;
+                Allotment.Allotment_title = item.Allotment_title;
+                Allotment.Allotment_code = item.Allotment_code;
+                Allotment.Created_at = item.Created_at;
+                Allotment.Updated_at = item.Updated_at;
 
-                obligations.Add(obligation);
+                Budget.Add(Allotment);
             }
 
 
-            this._context.Obligation.Add(obligation);
+            this._context.Budget_allotment.Add(Allotment);
             this._context.SaveChanges();
             return Json(data);
         }
@@ -123,24 +102,24 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Created_by,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(obligation);
+                _context.Add(Allotment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(obligation);
+            return View(Allotment);
         }
 
         [HttpPost]
 
-        public ActionResult AddObligation(IEnumerable<Obligation> ObligationsInput)
+        public ActionResult AddObligation(IEnumerable<Budget_allotment> BudgetInput)
 
         {
 
-            var p = ObligationsInput;
+            var p = BudgetInput;
             return null;
 
         }
@@ -153,12 +132,12 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var obligation = await _context.Obligation.FindAsync(id);
-            if (obligation == null)
+            var Allotment = await _context.Budget_allotment.FindAsync(id);
+            if (Allotment == null)
             {
                 return NotFound();
             }
-            return View(obligation);
+            return View(Allotment);
         }
 
         // POST: Obligations/Edit/5
@@ -166,9 +145,9 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Created_by,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
-            if (id != obligation.Id)
+            if (id != Allotment.Id)
             {
                 return NotFound();
             }
@@ -177,12 +156,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(obligation);
+                    _context.Update(Allotment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ObligationExists(obligation.Id))
+                    if (!Budget_allotmentExists(Allotment.Id))
                     {
                         return NotFound();
                     }
@@ -193,7 +172,7 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(obligation);
+            return View(Allotment);
         }
 
         // GET: Obligations/Delete/5
@@ -204,14 +183,14 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var obligation = await _context.Obligation
+            var Allotment = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (obligation == null)
+            if (Allotment == null)
             {
                 return NotFound();
             }
 
-            return View(obligation);
+            return View(Allotment);
         }
 
         // POST: Obligations/Delete/5
@@ -219,15 +198,15 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var obligation = await _context.Obligation.FindAsync(id);
-            _context.Obligation.Remove(obligation);
+            var Allotment = await _context.Budget_allotment.FindAsync(id);
+            _context.Budget_allotment.Remove(Allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ObligationExists(int id)
+        private bool Budget_allotmentExists(int id)
         {
-            return _context.Obligation.Any(e => e.Id == id);
+            return _context.Budget_allotment.Any(e => e.Id == id);
         }
     }
 }

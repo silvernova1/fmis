@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Requesting_office>
+﻿@model IEnumerable<fmis.Models.Budget_allotment>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Head_name)
+                @Html.DisplayNameFor(model => model.Allotment_series)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Position)
+                @Html.DisplayNameFor(model => model.Allotment_title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Allotment_code)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Created_at)
@@ -34,13 +37,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => item.Year)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Head_name)
+                @Html.DisplayFor(modelItem => item.Allotment_series)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Position)
+                @Html.DisplayFor(modelItem => item.Allotment_title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_code)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created_at)

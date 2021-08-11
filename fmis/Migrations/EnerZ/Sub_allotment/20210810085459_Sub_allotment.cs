@@ -14,7 +14,7 @@ namespace fmis.Migrations.Sub_allotment
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Prexe_code = table.Column<int>(type: "int", nullable: false),
                     Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Suballotmenent_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Suballotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Orc_head = table.Column<int>(type: "int", nullable: false),
                     Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
