@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Yearly Budget Reference</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Add New</a>
 </p>
 <table class="table">
     <thead>
@@ -15,12 +15,6 @@
           
             <th>
                 @Html.DisplayNameFor(model => model.YearlyReference)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created_at)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Updated_at)
             </th>
             <th></th>
         </tr>
@@ -33,15 +27,8 @@
                 @Html.DisplayFor(modelItem => item.YearlyReference)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Created_at)
-            </td>
-            <td>
-
-                @Html.DisplayFor(modelItem => item.Updated_at)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <!--<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |-->
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>

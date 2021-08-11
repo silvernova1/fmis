@@ -37,6 +37,7 @@ namespace fmis.Controllers
         // GET: 
         public async Task<IActionResult> Index()
         {
+            ViewBag.layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.Budget_allotment.ToList());
             ViewBag.temp = json;
             return View(await _context.Budget_allotment.ToListAsync());
@@ -47,6 +48,7 @@ namespace fmis.Controllers
         {
             if (id == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -54,20 +56,23 @@ namespace fmis.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (Budget == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-
+            ViewBag.layout = "_Layout";
             return View(Budget);
         }
 
         // GET: Obligations/Create
         public IActionResult Create()
         {
+            ViewBag.layout = "_Layout";
             return View();
         }
 
         public ActionResult AddData(List<string[]> dataListFromTable)
         {
+            ViewBag.layout = "_Layout";
             var dataListTable = dataListFromTable;
             return Json("Response, Data Received Successfully");
         }
@@ -91,7 +96,7 @@ namespace fmis.Controllers
                 Budget.Add(Allotment);
             }
 
-
+            ViewBag.layout = "_Layout";
             this._context.Budget_allotment.Add(Allotment);
             this._context.SaveChanges();
             return Json(data);
@@ -106,10 +111,12 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(Allotment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
 
@@ -137,6 +144,7 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
+            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
 
@@ -149,6 +157,7 @@ namespace fmis.Controllers
         {
             if (id != Allotment.Id)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -170,8 +179,10 @@ namespace fmis.Controllers
                         throw;
                     }
                 }
+                ViewBag.layout = "_Layout";
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
 
@@ -180,6 +191,7 @@ namespace fmis.Controllers
         {
             if (id == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -187,9 +199,11 @@ namespace fmis.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (Allotment == null)
             {
+                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
+            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
 
@@ -198,6 +212,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.layout = "_Layout";
             var Allotment = await _context.Budget_allotment.FindAsync(id);
             _context.Budget_allotment.Remove(Allotment);
             await _context.SaveChangesAsync();
@@ -206,6 +221,7 @@ namespace fmis.Controllers
 
         private bool Budget_allotmentExists(int id)
         {
+            ViewBag.layout = "_Layout";
             return _context.Budget_allotment.Any(e => e.Id == id);
         }
     }
