@@ -46,7 +46,7 @@ namespace fmis.Migrations.Obligated_amount
 
                     b.HasKey("Id");
 
-                    b.ToTable("Obligated_amount");
+                    b.ToTable("Obligated_amout");
                 });
 #pragma warning restore 612, 618
         }

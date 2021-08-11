@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.Obligated_amount
 {
     [DbContext(typeof(Obligated_amountContext))]
-    [Migration("20210728011256_Obligated_amount")]
+    [Migration("20210811030236_Obligated_amount")]
     partial class Obligated_amount
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace fmis.Migrations.Obligated_amount
 
                     b.HasKey("Id");
 
-                    b.ToTable("Obligated_amount");
+                    b.ToTable("Obligated_amout");
                 });
 #pragma warning restore 612, 618
         }
