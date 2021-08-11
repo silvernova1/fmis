@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using AutoMapper;
+using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace fmis.Controllers
 {
@@ -19,86 +22,133 @@ namespace fmis.Controllers
             _context = context;
         }
 
-        // GET: Budget_allotment
+        public class Budget_allotmentData
+        {
+            [DataType(DataType.Date)]
+            public string Year { get; set; }
+            public string Allotment_series { get; set; }
+            public string Allotment_title { get; set; }
+            public string Allotment_code { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime Created_at { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime Updated_at { get; set; }
+        }
+        // GET: 
         public async Task<IActionResult> Index()
         {
-            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(_context.Budget_allotment.ToList());
+            ViewBag.temp = json;
             return View(await _context.Budget_allotment.ToListAsync());
         }
 
-        // GET: Budget_allotment/Details/5
+        // GET: Obligations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            var budget_allotment = await _context.Budget_allotment
+            var Budget = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (budget_allotment == null)
+            if (Budget == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            ViewBag.layout = "_Layout";
-            return View(budget_allotment);
+            return View(Budget);
         }
 
-        // GET: Budget_allotment/Create
+        // GET: Obligations/Create
         public IActionResult Create()
         {
-            ViewBag.layout = "_Layout";
             return View();
         }
 
-        // POST: Budget_allotment/Create
+        public ActionResult AddData(List<string[]> dataListFromTable)
+        {
+            var dataListTable = dataListFromTable;
+            return Json("Response, Data Received Successfully");
+        }
+
+        [HttpPost]
+        public IActionResult saveObligation(List<Budget_allotmentData> data)
+        {
+            var Budget = new List<Budget_allotment>();
+            var Allotment = new Budget_allotment();
+
+
+            foreach (var item in data)
+            {
+                Allotment.Year = item.Year;
+                Allotment.Allotment_series = item.Allotment_series;
+                Allotment.Allotment_title = item.Allotment_title;
+                Allotment.Allotment_code = item.Allotment_code;
+                Allotment.Created_at = item.Created_at;
+                Allotment.Updated_at = item.Updated_at;
+
+                Budget.Add(Allotment);
+            }
+
+
+            this._context.Budget_allotment.Add(Allotment);
+            this._context.SaveChanges();
+            return Json(data);
+        }
+
+        // POST: Obligations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(budget_allotment);
+                _context.Add(Allotment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
-            return View(budget_allotment);
+            return View(Allotment);
         }
 
-        // GET: Budget_allotment/Edit/5
+        [HttpPost]
+
+        public ActionResult AddObligation(IEnumerable<Budget_allotment> BudgetInput)
+
+        {
+
+            var p = BudgetInput;
+            return null;
+
+        }
+
+        // GET: Obligations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            var budget_allotment = await _context.Budget_allotment.FindAsync(id);
-            if (budget_allotment == null)
+            var Allotment = await _context.Budget_allotment.FindAsync(id);
+            if (Allotment == null)
             {
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
-            return View(budget_allotment);
+            return View(Allotment);
         }
 
-        // POST: Budget_allotment/Edit/5
+        // POST: Obligations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
-            if (id != budget_allotment.Id)
+            if (id != Allotment.Id)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -106,12 +156,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(budget_allotment);
+                    _context.Update(Allotment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Budget_allotmentExists(budget_allotment.Id))
+                    if (!Budget_allotmentExists(Allotment.Id))
                     {
                         return NotFound();
                     }
@@ -122,11 +172,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
-            return View(budget_allotment);
+            return View(Allotment);
         }
 
-        // GET: Budget_allotment/Delete/5
+        // GET: Obligations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,31 +183,29 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var budget_allotment = await _context.Budget_allotment
+            var Allotment = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (budget_allotment == null)
+            if (Allotment == null)
             {
                 return NotFound();
             }
 
-            ViewBag.layout = "_Layout";
-            return View(budget_allotment);
+            return View(Allotment);
         }
 
-        // POST: Budget_allotment/Delete/5
+        // POST: Obligations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var budget_allotment = await _context.Budget_allotment.FindAsync(id);
-            _context.Budget_allotment.Remove(budget_allotment);
+            var Allotment = await _context.Budget_allotment.FindAsync(id);
+            _context.Budget_allotment.Remove(Allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool Budget_allotmentExists(int id)
         {
-            ViewBag.layout = "_Layout";
             return _context.Budget_allotment.Any(e => e.Id == id);
         }
     }
