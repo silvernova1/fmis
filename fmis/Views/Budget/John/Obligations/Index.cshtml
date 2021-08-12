@@ -13,6 +13,7 @@
         color: #ff0000;
         font-weight: 900;
     }
+
     .htCore tbody tr td, .htCore thead tr th, body {
     }
 
@@ -36,6 +37,15 @@
 
 
 <script>
+
+
+
+
+
+
+
+
+
 
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
@@ -86,19 +96,19 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['<a href="https://handsontable.com/docs/">Print ORS</a>'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
         columns: [
-            { data: 'Date ', type: 'numeric' },
-            { data: 'Dv', type: 'numeric' },
+            { data: 'Date ', type: 'date' },
+            { data: 'Dv', type: 'text' },
             { data: 'Pr_no', type: 'text' },
             { data: 'Po_no', type: 'text' },
             { data: 'Payee', type: 'text' },
             { data: 'Address', type: 'text' },
             { data: 'Particulars', type: 'text' },
-            { data: 'Ors_no', type: 'text' },
+            { data: 'Ors_no', type: 'numeric' },
             { data: 'Fund_source', type: 'text' },
             { data: 'Gross', type: 'text' },
             { data: 'Created_by', type: 'text' },
@@ -195,7 +205,7 @@
 
             {
                 type: 'date',
-                dateFormat: 'DD/MM/YYYY',
+                dateFormat: 'MM/DD/YYYY',
             },
 
             {
@@ -206,7 +216,7 @@
 
             {
                 type: 'date',
-                dateFormat: 'DD/MM/YYYY',
+                dateFormat: 'MM/DD/YYYY',
             },
 
             {
@@ -224,19 +234,19 @@
 </script>
 @*<style>
 
-    td.custom-cell {
-        color: #fff;
-        background-color: #37bc6c;
-    }
+        td.custom-cell {
+            color: #fff;
+            background-color: #37bc6c;
+        }
 
-    .handsontable th:nth-child(0) {
-        background-color: aquamarine;
-        font-weight: bold;
-    }
+        .handsontable th:nth-child(0) {
+            background-color: aquamarine;
+            font-weight: bold;
+        }
 
 
-    .custom-table tdata th:nth-child(even),
-    .custom-table tbody tr:nth-child(odd) th {
-        background-color: #d7f1e1;
-    }
-</style>*@
+        .custom-table tdata th:nth-child(even),
+        .custom-table tbody tr:nth-child(odd) th {
+            background-color: #d7f1e1;
+        }
+    </style>*@

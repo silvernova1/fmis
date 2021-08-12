@@ -56,6 +56,8 @@ namespace fmis
                options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDbContext<UacsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+            services.AddDbContext<AllotmentClassContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
 
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
