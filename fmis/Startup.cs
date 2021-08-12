@@ -43,7 +43,6 @@ namespace fmis
             services.AddDbContext<PrexcContext>(options =>
                   options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
             services.AddDbContext<UtilizationContext>(options =>
-           
                  options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
             services.AddDbContext<Sub_allotmentContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
@@ -55,6 +54,13 @@ namespace fmis
                options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDbContext<UacsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+            services.AddDbContext<AppropriationContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+            services.AddDbContext<Yearly_referenceContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
+            services.AddDbContext<Budget_allotmentContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
+
 
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
