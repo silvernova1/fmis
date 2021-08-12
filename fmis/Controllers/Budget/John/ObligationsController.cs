@@ -51,7 +51,7 @@ namespace fmis.Controllers
         {
             var json = JsonSerializer.Serialize(_context.Obligation.ToList());
             ViewBag.temp = json;
-            return View(await _context.Obligation.ToListAsync());
+            return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
         // GET: Obligations/Details/5
@@ -113,7 +113,7 @@ namespace fmis.Controllers
             }
 
 
-            this._context.Obligation.Add(obligation);
+            this._context.Obligation.Update(obligation);
             this._context.SaveChanges();
             return Json(data);
         }
