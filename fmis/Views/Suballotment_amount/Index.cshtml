@@ -2,46 +2,238 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Expenses)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fund_source)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Expenses)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fund_source)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<style>
+    .search-result-custom {
+        color: #ff0000;
+        font-weight: 900;
+    }
+
+    .htCore tbody tr td, .htCore thead tr th, body {
+    }
+
+
+    .htCore thead tr th {
+        color: #fff;
+        font-size: 13px;
+        background-color: #2ECC71
+    }
+</style>
+
+
+
+<input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+<input id="search_field2" type="search" placeholder="Search" />
+<br />
+<br />
+<div id="example" class="hot"></div>
+<br />
+<div class="controls">
+    <button id="export-file">Download CSV</button>
+</div>
+<button class="intext-btn btn btn-primary center-block"
+        id="save" name="save">
+    Save
+</button>
+
+
+<script>
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Id: this[0], Expenses: this[1], Amount: this[2], Fund_source: this[3]});
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("saveSuballotment_amount", "Suballotment_amount")',
+                data: json,
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
+            return false;
+        }
+    };
+
+
+    var suballotment_amount = $.parseJSON($(".suballotment_amount").val());
+
+    const data = [];
+    var counter = 0;
+    $.each(suballotment_amount, function () {
+        data[counter] = [this.ID,this.Expenses, this.Amount, this.Fund_source]
+        counter++;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        width: '100%',
+        colWidths: 100,
+        rowHeaders: true,
+        colHeaders: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        height: 'auto',
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Id: null, Expenses: null, Amount: null, Fund_source: null },
+        columns: [
+            { data: 'Id ', type: 'numeric' },
+            { data: 'Expenses', type: 'numeric' },
+            { data: 'Amount', type: 'text' },
+            { data: 'Fund_source', type: 'text' },
+            { data: 'Amount', type: 'text' },
+        ]
+    });
+
+
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: false,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+    hot.addHook('afterChange', function (changes, src) {
+        [
+            [row, col, oldVal, newVal]
+        ] = changes;
+        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
+            console.log(newVal);
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+        }
+    })
+
+    hot.updateSettings({
+        colHeaders: ['Id', 'Expenses', 'Amount', 'Fund_source'],
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
+        columns: [
+            {
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+            },
+            {
+                // 2nd cell is simple text, no special options here
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+
+            {
+
+            },
+
+            {
+                type: 'dropdown',
+                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+            },
+
+            {
+            },
+
+            {
+            },
+
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+
+            {
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+            },
+
+            {
+                type: 'time',
+                timeFormat: 'h:mm:ss a',
+                correctFormat: true
+            },
+        ]
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+
+</script>
+@*<style>
+
+        td.custom-cell {
+            color: #fff;
+            background-color: #37bc6c;
+        }
+
+        .handsontable th:nth-child(0) {
+            background-color: aquamarine;
+            font-weight: bold;
+        }
+
+
+        .custom-table tdata th:nth-child(even),
+        .custom-table tbody tr:nth-child(odd) th {
+            background-color: #d7f1e1;
+        }
+    </style>*@

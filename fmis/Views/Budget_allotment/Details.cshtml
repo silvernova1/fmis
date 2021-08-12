@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Obligated_amount
+﻿@model fmis.Models.Budget_allotment
 
 @{
     ViewData["Title"] = "Details";
@@ -7,32 +7,32 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Obligated_amount</h4>
+    <h4>Budget_allotment</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Obligation_id)
+            @Html.DisplayNameFor(model => model.Year)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Obligation_id)
+            @Html.DisplayFor(model => model.Year)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Expenses_title)
+            @Html.DisplayNameFor(model => model.Allotment_series)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Expenses_title)
+            @Html.DisplayFor(model => model.Allotment_series)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Code)
+            @Html.DisplayNameFor(model => model.Allotment_title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Code)
+            @Html.DisplayFor(model => model.Allotment_title)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Amount)
+            @Html.DisplayNameFor(model => model.Allotment_code)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Amount)
+            @Html.DisplayFor(model => model.Allotment_code)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Created_at)

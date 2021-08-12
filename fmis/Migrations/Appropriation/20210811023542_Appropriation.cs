@@ -1,35 +1,33 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations.Obligated_amount
+namespace fmis.Migrations.Appropriation
 {
-    public partial class Obligated_amount : Migration
+    public partial class Appropriation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Obligated_amount",
+                name: "Appropriation",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Obligation_id = table.Column<int>(type: "int", nullable: false),
-                    Expenses_title = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<float>(type: "real", nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Obligated_amount", x => x.Id);
+                    table.PrimaryKey("PK_Appropriation", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Obligated_amount");
+                name: "Appropriation");
         }
     }
 }

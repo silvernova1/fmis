@@ -37,10 +37,10 @@ namespace fmis.Migrations.Sub_allotment
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Suballotmenent_title")
+                    b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Suballotment_code")
+                    b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

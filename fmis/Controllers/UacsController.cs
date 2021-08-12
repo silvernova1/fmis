@@ -15,36 +15,30 @@ namespace fmis.Controllers
 {
     public class UacsController : Controller
     {
-        /*private readonly UacsContext _context;
-
-        public UacsController(UacsContext context)
-        {
-            _context = context;
-        }*/
-
+       
         public class UacsData
         {
             public string Account_title { get; set; }
             public int Expense_code { get; set; }
         }
 
-        private UacsContext _context { get; }
+        private UacsContext Context { get; }
 
         public UacsController(UacsContext context)
         {
-            this._context = context;
+            this.Context = context;
         }
 
         // GET: Uacs
         public IActionResult Index()
         {
-            var json = JsonSerializer.Serialize(_context.Uacs.ToList());
+            var json = JsonSerializer.Serialize(Context.Uacs.ToList());
             ViewBag.temp = json;
             return View();
         }
 
         [HttpPost]
-        public IActionResult saveUacs(List<UacsData> data) {
+        public IActionResult SaveUacs(List<UacsData> data) {
             var uacses = new List<Uacs>();
             var uacs = new Uacs();
 
@@ -55,10 +49,11 @@ namespace fmis.Controllers
             uacs.Expense_code = item.Expense_code;
             uacses.Add(uacs);
             }
-            this._context.Uacs.Add(uacs);
-            this._context.SaveChanges();
+            this.Context.Uacs.Add(uacs);
+            this.Context.SaveChanges();
 
             return Json(data);
+
         }
 
         // GET: Uacs/Details/5
@@ -69,7 +64,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var uacs = await _context.Uacs
+            var uacs = await Context.Uacs
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (uacs == null)
             {
@@ -94,7 +89,7 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(uacs);
+                Context.Add(uacs);
                 /*await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));*/
             }
@@ -109,7 +104,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var uacs = await _context.Uacs.FindAsync(id);
+            var uacs = await Context.Uacs.FindAsync(id);
             if (uacs == null)
             {
                 return NotFound();
@@ -133,8 +128,8 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(uacs);
-                    await _context.SaveChangesAsync();
+                    Context.Update(uacs);
+                    await Context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -160,7 +155,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var uacs = await _context.Uacs
+            var uacs = await Context.Uacs
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (uacs == null)
             {
@@ -175,15 +170,15 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var uacs = await _context.Uacs.FindAsync(id);
-            _context.Uacs.Remove(uacs);
-            await _context.SaveChangesAsync();
+            var uacs = await Context.Uacs.FindAsync(id);
+            Context.Uacs.Remove(uacs);
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UacsExists(int id)
         {
-            return _context.Uacs.Any(e => e.Id == id);
+            return Context.Uacs.Any(e => e.Id == id);
         }
     }
 }

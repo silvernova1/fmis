@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.Obligated_amount
+namespace fmis.Migrations.Budget_allotment
 {
-    [DbContext(typeof(Obligated_amountContext))]
-    [Migration("20210728011256_Obligated_amount")]
-    partial class Obligated_amount
+    [DbContext(typeof(Budget_allotmentContext))]
+    [Migration("20210810073914_Budget_allotment")]
+    partial class Budget_allotment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,34 +21,34 @@ namespace fmis.Migrations.Obligated_amount
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
+            modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<string>("Allotment_code")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
+                    b.Property<string>("Allotment_series")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Allotment_title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Expenses_title")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Obligation_id")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Obligated_amount");
+                    b.ToTable("Budget_allotment");
                 });
 #pragma warning restore 612, 618
         }

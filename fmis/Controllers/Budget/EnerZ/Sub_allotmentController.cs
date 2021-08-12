@@ -15,19 +15,13 @@ namespace fmis.Controllers
 {
     public class Sub_allotmentController : Controller
     {
-        /*private readonly Sub_allotmentContext _context;
-
-        public Sub_allotmentController(Sub_allotmentContext context)
-        {
-            _context = context;
-        }*/
 
         public class Sub_allotmentData
         {
             public int Id { get; set; }
             public int Prexe_code { get; set; }
             public string Suballotment_code { get; set; }
-            public string Suballotmenent_title { get; set; }
+            public string Suballotment_title { get; set; }
             public int Orc_head { get; set; }
             public string Responsibility_number { get; set; }
             public string Description { get; set; }
@@ -56,7 +50,7 @@ namespace fmis.Controllers
 
             sub_allotment.Id = 12312312;
             sub_allotment.Prexe_code = 12312312;
-            sub_allotment.Suballotment_title = "hahahaha";
+            sub_allotment.Suballotment_code = "hahahaha";
             sub_allotment.Suballotment_title = "hahahaha";
             sub_allotment.Orc_head = 12312312;
             sub_allotment.Responsibility_number = "hahahaha";
