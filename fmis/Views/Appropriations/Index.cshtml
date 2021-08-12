@@ -10,9 +10,9 @@
 <h2>Appropriation</h2>
 <br />
 
-<p>
-    <a asp-action="Create"> Add New + </a>
-</p>
+
+    <a asp-action="Create" style="color:white;" class="btn btn-success"> Add New + </a>
+
 
 <style>
     .table {
@@ -23,7 +23,8 @@
         color: #438eb9;
     }
 </style>
-<br />
+<br /><br />
+
 <table class="table">
     <thead>
         <tr>
@@ -59,9 +60,11 @@
                         @Html.DisplayFor(modelItem => item.Updated_at)
                     </td>*@
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i> Edit</a> |
-                @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
-               <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Delete</a>
+            
+                    <a asp-action="Edit" asp-route-id="@item.Id" style="color:white;"  class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit</a>
+              @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
+                    <a asp-action="Delete" asp-route-id="@item.Id" style="color:white;" class="btn btn-warning"><i class="bi bi-trash"></i> Delete</a>
+               
             </td>
             </tr>
         }
