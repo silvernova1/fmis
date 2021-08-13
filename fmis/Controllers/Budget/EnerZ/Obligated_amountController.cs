@@ -13,31 +13,34 @@ using System.ComponentModel.DataAnnotations;
 
 namespace fmis.Controllers
 {
-    public class Ors_headController : Controller
+    public class Obligated_amountController : Controller
     {
-        private readonly Ors_headContext _context;
+        private readonly Obligated_amountContext _context;
 
-        public Ors_headController(Ors_headContext context)
+        public Obligated_amountController(Obligated_amountContext context)
         {
             _context = context;
         }
 
-        public class Ors_headData
+        public class Obligated_amountData
         {
 
-            public string Head_name { get; set; }
-            public string Position { get; set; }
+            public int Obligation_id { get; set; }
+            public int Expense_Title { get; set; }
+            public int Code { get; set; }
+            public float Amount { get; set; }
+          
         }
 
-        // GET: Ors_head
+        // GET: Obligated_amount
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Ors_head.ToList());
+            var json = JsonSerializer.Serialize(_context.Obligated_amount.ToList());
             ViewBag.temp = json;
-            return View(await _context.Ors_head.ToListAsync());
+            return View(await _context.Obligated_amount.ToListAsync());
         }
 
-        // GET: Ors_head/Details/5
+        // GET: Obligated_amount/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,17 +48,17 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var ors_head = await _context.Ors_head
+            var obligated_amount = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ors_head == null)
+            if (obligated_amount == null)
             {
                 return NotFound();
             }
 
-            return View(ors_head);
+            return View(obligated_amount);
         }
 
-        // GET: Ors_head/Create
+        // GET: Obligated_amount/Create
         public IActionResult Create()
         {
             return View();
@@ -68,55 +71,55 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveOrs_head(List<Ors_headData> data)
+        public IActionResult saveObligated_amount(List<Obligated_amountData> data)
         {
-            var ors_heads = new List<Ors_head>();
-            var ors_head = new Ors_head();
+            var obligated_amounts = new List<Obligated_amount>();
+            var obligated_amount = new Obligated_amount();
 
 
             foreach (var item in data)
             {
-
-                ors_head.Head_name = item.Head_name;
-                ors_head.Position = item.Position;
-
-                ors_heads.Add(ors_head);
+                obligated_amount.Obligation_id = item.Obligation_id;
+                obligated_amount.Expense_Title = item.Expense_Title;
+                obligated_amount.Code = item.Code;
+                obligated_amount.Amount = item.Amount;
+                obligated_amounts.Add(obligated_amount);
             }
 
 
-            this._context.Ors_head.Add(ors_head);
+            this._context.Obligated_amount.Add(obligated_amount);
             this._context.SaveChanges();
             return Json(data);
         }
 
-        // POST:Ors_head/Create
+        // POST: Obligated_amount/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Head_name,Position")] Ors_head ors_head)
+        public async Task<IActionResult> Create([Bind("Obligation_id,Expense_Title,Code,Amount")] Obligated_amount obligated_amount)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ors_head);
+                _context.Add(obligated_amount);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(ors_head);
+            return View(obligated_amount);
         }
 
         [HttpPost]
 
-        public ActionResult AddOrs_head(IEnumerable<Ors_head> Ors_headInput)
+        public ActionResult AddObligated_amount(IEnumerable<Obligated_amount> Obligated_amountInput)
 
         {
 
-            var p = Ors_headInput;
+            var p = Obligated_amountInput;
             return null;
 
         }
 
-        // GET: Ors_head/Edit/5
+        // GET: Obligated_amount/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -124,22 +127,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var ors_head = await _context.Ors_head.FindAsync(id);
-            if (ors_head == null)
+            var obligated_amount = await _context.Obligated_amount.FindAsync(id);
+            if (obligated_amount == null)
             {
                 return NotFound();
             }
-            return View(ors_head);
+            return View(obligated_amount);
         }
 
-        // POST: Ors_head/Edit/5
+        // POST: Obligated_amount/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Head_name,Position")] Ors_head ors_head)
+        public async Task<IActionResult> Edit(int id, [Bind("Obligation_id, Expense_Title, Code, Amount")] Obligated_amount obligated_amount)
         {
-            if (id != ors_head.Id)
+            if (id != obligated_amount.Id)
             {
                 return NotFound();
             }
@@ -148,12 +151,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(ors_head);
+                    _context.Update(obligated_amount);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Ors_headExists(ors_head.Id))
+                    if (!Obligated_amountExists(obligated_amount.Id))
                     {
                         return NotFound();
                     }
@@ -164,10 +167,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ors_head);
+            return View(obligated_amount);
         }
 
-        // GET: Ors_head/Delete/5
+        // GET: Obligated_amount/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -175,30 +178,30 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var ors_head = await _context.Ors_head
+            var obligated_amount = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ors_head == null)
+            if (obligated_amount == null)
             {
                 return NotFound();
             }
 
-            return View(ors_head);
+            return View(obligated_amount);
         }
 
-        // POST: Ors_head/Delete/5
+        // POST: Obligated_amount/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ors_head = await _context.Ors_head.FindAsync(id);
-            _context.Ors_head.Remove(ors_head);
+            var obligated_amount = await _context.Obligated_amount.FindAsync(id);
+            _context.Obligated_amount.Remove(obligated_amount);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool Ors_headExists(int id)
+        private bool Obligated_amountExists(int id)
         {
-            return _context.Ors_head.Any(e => e.Id == id);
+            return _context.Obligated_amount.Any(e => e.Id == id);
         }
     }
 }

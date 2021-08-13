@@ -33,9 +33,12 @@
 <br />
 <div id="example" class="hot"></div>
 <br />
+<br />
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
+<br />
+
 <button class="intext-btn btn btn-primary center-block"
         id="save" name="save">
     Save
@@ -155,42 +158,13 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
-            },
-            {
-                // 2nd cell is simple text, no special options here
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-
-            {
-
-            },
-
+            }, 
             {
                 type: 'dropdown',
                 source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
             },
 
             {
-            },
-
-            {
-            },
-
-            {
                 type: 'date',
                 dateFormat: 'DD/MM/YYYY',
             },
@@ -201,16 +175,6 @@
                 correctFormat: true
             },
 
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
         ]
     });
 

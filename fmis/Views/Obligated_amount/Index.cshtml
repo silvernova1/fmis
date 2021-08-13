@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Sub_allotment>
+﻿@model IEnumerable<fmis.Models.Obligated_amount>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,25 +25,15 @@
     }
 </style>
 
-
-
-<input type="hidden" class="sub_allotment" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
+<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <div id="example" class="hot"></div>
 <br />
-<br />
-
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-<br />
-
-<button class="intext-btn btn btn-primary center-block"
-        id="save" name="save">
-    Save
-</button>
 
 
 <script>
@@ -54,13 +44,14 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Id: this[0], Prexe_code: this[1], Suballotment_code: this[2], Suballotment_title: this[3], Orc_head: this[4], Responsibility_number: this[5], Description: this[6]});
+                json.push({ Obligation_id: this[0], Expense_title: this[1], Code: this[2], Amount: this[3] } );
             });
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("saveSub_allotment", "Sub_allotment")',
-                data: json,
+                url: '@Url.Action("saveObligated_amount", "Obligated_amount")',
+                dataType: "JSON",
+                data: { data: json },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -76,12 +67,12 @@
     };
 
 
-    var sub_allotment = $.parseJSON($(".sub_allotment").val());
+    var obligated_amount = $.parseJSON($(".obligated_amount").val());
 
     const data = [];
     var counter = 0;
-    $.each(sub_allotment, function () {
-        data[counter] = [this.ID, this.Prexe_code, this.Suballotment_code, this.Suballotment_title, this.Orc_head, this.Responsibility_number, this.Description]
+    $.each(obligated_amount, function () {
+        data[counter] = [this.Obligation_id, this.Expense_title, this.Code, this.Amount]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -99,21 +90,16 @@
         contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Id: null, Prexe_code: null, Suballotment_code: null, Suballotment_title: null, Orc_head: null, Responsibility_number: null, Description: null},
+        dataSchema: { Obligation_id: null, Expense_title: null, Code: null, Amount: null},
         columns: [
 
-            { data: 'Id ', type: 'numeric' },
-            { data: 'Prexe_code', type: 'numeric' },
-            { data: 'Suballotment_code', type: 'text' },
-            { data: 'Suballotment_title', type: 'text' },
-            { data: 'Orc_head', type: 'text' },
-            { data: 'Responsibility_number', type: 'text' },
-            { data: 'Description', type: 'text' },
-         
+            { data: 'Obligation_id', type: 'numeric' },
+            { data: 'Expense_title', type: 'numeric' },
+            { data: 'Code', type: 'numeric' },
+            { data: 'Amount', type: 'numeric' },
+        
         ]
     });
-
-
 
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
@@ -151,7 +137,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Prexc_code', 'Suballotment_code', 'Suballotment_title', 'Ors_head', 'Responsibility_number', 'Description'],
+        colHeaders: ['Obligation_id', 'Expense_title', 'Code', 'Amount'],
         cell: [
             {
                 row: 0,
@@ -161,49 +147,18 @@
         ],
         columns: [
             {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-            },
-
-            {
-                type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+                //  cell is simple text, no special options here
             },
             {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
+                //  cell is simple text, no special options here
             },
-
             {
-
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-
+                //  cell is simple text, no special options here
             },
-
             {
-
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-
+                //  cell is simple text, no special options here
             },
-
-            {
-
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-
-            },
-
-            {
-
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-
-
-            },
+           
         ]
     });
 

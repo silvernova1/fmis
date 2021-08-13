@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using fmis.Models;
 
 namespace fmis.Data
 {
     public class Ors_headContext : DbContext
     {
+
         public Ors_headContext(DbContextOptions<Ors_headContext> options)
-         : base(options)
+            : base(options)
         {
         }
 
