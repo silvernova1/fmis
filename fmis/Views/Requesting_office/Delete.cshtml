@@ -12,12 +12,6 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Head_name)
         </dt>
         <dd>
@@ -28,24 +22,12 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Position)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Created_at)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Created_at)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated_at)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Updated_at)
-        </dd>
+        </dd>   
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a class="btn btn-default"asp-action="Index">Back to List</a>
     </form>
 </div>
