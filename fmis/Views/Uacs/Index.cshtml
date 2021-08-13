@@ -32,14 +32,21 @@
         color: #fff;
         background-color: #2ECC71
     }
+
+    .search {
+         
+        margin-left:61%;
+    }
+ 
+    
 </style>
 
     <input type="hidden" class="uacs" value="@ViewBag.temp">
-    <input id="search_field2" type="search" placeholder="Search" hidden>
+    <br />
+    <input id="search_field2" type="search" placeholder="Search" class="search">
     <br />
     <br />
-    <table id="example" class="hot" style="margin-left:50px;"></table>
-
+    <table id="example" class="hot table-responsive" style="margin-left:50px;" ></table>
     <br />
     <div class="controls" hidden>
         <button id="export-file">Download CSV bbbb</button>
@@ -132,6 +139,7 @@
         });
     });
 
+
     hot.addHook('afterChange', function (changes, src) {
         [
             [row, col, oldVal, newVal]
@@ -143,22 +151,19 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Account Title' , 'UACS Expense Code'],
+        colHeaders: ['ACCOUNT TITLE' , 'UACS EXPENSE CODE'],
         cell: [
             {
                 row: 0,
                 col: 0,
                 className: 'custom-cell',
             },
-        ],
-        columns: [
             {
-
+               
             },
             {
-                // 2nd cell is simple text, no special options here
-            },
 
+            }
         ]
     });
 
@@ -167,4 +172,3 @@
 
 
 </script>
-
