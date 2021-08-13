@@ -48,7 +48,7 @@ namespace fmis.Controllers
         // GET: Appropriations/Create
         public IActionResult Create()
         {
-            ViewBag.Layout = "_Layout";
+           
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace fmis.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Layout = "_Layout";
+          
             return View(appropriation);
         }
 
@@ -82,7 +82,7 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Layout = "_Layout";
+          
             return View(appropriation);
         }
 
@@ -137,7 +137,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            ViewBag.Layout = "_Layout";
+         
             return View(appropriation);
         }
 

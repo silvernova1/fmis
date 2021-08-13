@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Yearly_reference
+﻿@model fmis.Models.Uacs
 
 @{
     ViewData["Title"] = "Details";
@@ -7,15 +7,20 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Yearly_reference</h4>
+    <h4>Uacs</h4>
     <hr />
     <dl class="dl-horizontal">
-     
         <dt>
-            @Html.DisplayNameFor(model => model.YearlyReference)
+            @Html.DisplayNameFor(model => model.Account_title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.YearlyReference)
+            @Html.DisplayFor(model => model.Account_title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Expense_code)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Expense_code)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Created_at)
@@ -32,6 +37,6 @@
     </dl>
 </div>
 <div>
-    <a class="btn btn-primary"asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a class="btn btn-default"asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>

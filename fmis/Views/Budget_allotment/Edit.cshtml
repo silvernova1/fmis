@@ -33,7 +33,7 @@
                 <input asp-for="Allotment_code" class="form-control" />
                 <span asp-validation-for="Allotment_code" class="text-danger"></span>
             </div>
-            <div class="form-group">
+           @* <div class="form-group">
                 <label asp-for="Created_at" class="control-label"></label>
                 <input asp-for="Created_at" class="form-control" />
                 <span asp-validation-for="Created_at" class="text-danger"></span>
@@ -42,17 +42,16 @@
                 <label asp-for="Updated_at" class="control-label"></label>
                 <input asp-for="Updated_at" class="form-control" />
                 <span asp-validation-for="Updated_at" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-success" />|
+                <a class="btn btn-dark" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
