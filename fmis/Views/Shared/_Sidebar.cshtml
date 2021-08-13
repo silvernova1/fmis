@@ -113,7 +113,7 @@
 
                     <ul class="submenu nav-hide" style="display: none;">
                         <li class="">
-                            <a asp-area="" asp-controller="Uacs" asp-action="Index">
+                            <a href="two-menu-1.html">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 UACS Expense Code
                             </a>
@@ -130,7 +130,15 @@
                             <b class="arrow"></b>
                         </li>
                         <li class="">
-                            <a asp-controller="Budget_allotment" asp-action="Index">
+                            <a asp-controller="AllotmentClasses" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                Allotment Class
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="">
+                            <a href="two-menu-1.html">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 Budget Allotments
                             </a>
@@ -146,7 +154,7 @@
                             <b class="arrow"></b>
                         </li>
                         <li class="">
-                            <a asp-controller="Yearly_reference" asp-action="Index">
+                            <a asp-controller="YearlyReference" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 Yearly Budget Reference
                             </a>
@@ -223,13 +231,29 @@
             </ul>
             <ul class="submenu">
                 <li class="">
+                    <a asp-controller="BudgetAllotment" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        BUDGET_ALLOTMENT
+                    </a>
+                </li>
+            </ul>
+            <ul class="submenu">
+                <li class="">
                     <a asp-controller="Requesting_office" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         REQUESTING_OFFICE
                     </a>
                 </li>
             </ul>
-          
+            <ul class="submenu">
+                <li class="">
+                    <a asp-controller="YearlyReference" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        YEARLY_REFERENCE
+                    </a>
+                </li>
+            </ul>
+
         </li>
         <!-- UPLOAD FILE -->
         <li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
@@ -289,7 +313,7 @@
                 </li>
             </ul>
         </li>
-      @*  <li class="@if(ViewBag.filter_sidebar == "gallery")
+       @* <li class="@if(ViewBag.filter_sidebar == "gallery")
                         @Html.Raw("active")">
             <a asp-controller="Home" asp-action="Gallery">
                 <i class="menu-icon fa fa-picture-o"></i>

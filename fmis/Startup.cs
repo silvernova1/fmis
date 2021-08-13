@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
 
 namespace fmis
 {
@@ -26,7 +27,8 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
             services.AddDbContext<fmisContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
@@ -43,11 +45,9 @@ namespace fmis
             services.AddDbContext<PrexcContext>(options =>
                   options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
             services.AddDbContext<UtilizationContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
+            services.AddDbContext<Obligated_amountContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
-            services.AddDbContext<Yearly_referenceContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
-            services.AddDbContext<Budget_allotmentContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
             services.AddDbContext<Sub_allotmentContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
             services.AddDbContext<Suballotment_amountContext>(options =>
@@ -59,13 +59,10 @@ namespace fmis
             services.AddDbContext<UacsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<AppropriationContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
-            services.AddDbContext<Yearly_referenceContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
-            services.AddDbContext<Budget_allotmentContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
-            services.AddDbContext<Obligated_amountContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
+        options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+            services.AddDbContext<AllotmentClassContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
+
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -93,6 +90,8 @@ namespace fmis
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            RotativaConfiguration.Setup(env.ContentRootPath, "wwwroot/Rotativa");
         }
     }
 }
