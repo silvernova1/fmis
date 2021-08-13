@@ -1,9 +1,5 @@
 ﻿@model fmis.Models.John.AllotmentClass
 
-@*@{
-    ViewData["Title"] = "Delete";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}*@
 
 <center>
     <h3>Are you sure you want to delete this?</h3>
@@ -17,16 +13,12 @@
                 <tr>
                     <th scope="col">@Html.DisplayNameFor(model => model.Allotment_Class)</th>
                     <th scope="col">@Html.DisplayNameFor(model => model.Account_Code)</th>
-                    <th scope="col">@Html.DisplayNameFor(model => model.Created_At)</th>
-                    <th scope="col">@Html.DisplayNameFor(model => model.Updated_At)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>@Html.DisplayFor(model => model.Allotment_Class)</td>
                     <td>@Html.DisplayFor(model => model.Account_Code)</td>
-                    <td>@Html.DisplayFor(model => model.Created_At)</td>
-                    <td>@Html.DisplayFor(model => model.Updated_At)</td>
                 </tr>
             </tbody>
         </table>
@@ -41,3 +33,7 @@
         </center>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

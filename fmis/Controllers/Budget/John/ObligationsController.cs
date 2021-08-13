@@ -10,9 +10,15 @@ using fmis.Models;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Graphics;
+using System.Drawing;
+using Rotativa.AspNetCore;
 
 namespace fmis.Controllers
 {
+
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
@@ -21,6 +27,19 @@ namespace fmis.Controllers
         {
             _context = context;
         }
+
+        public IActionResult PrintPdf()
+        {
+
+            return new ViewAsPdf("PrintPdf")
+            {
+
+                CustomSwitches = "--page-offset 0 --footer-center [page] --footer-font-size 12",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+
+            };
+        }
+
 
         public class ObligationData
         {
@@ -85,7 +104,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveObligation(List<ObligationData> data)
+        public IActionResult SaveObligation(List<ObligationData> data)
         {
             var obligations = new List<Obligation>();
             var obligation = new Obligation();

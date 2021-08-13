@@ -87,13 +87,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Account_Code)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created_At)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Updated_At)
-            </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -107,17 +101,22 @@
                     @Html.DisplayFor(modelItem => item.Account_Code)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Created_At)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Updated_At)
-                </td>
-                <td>
-                    <a asp-action="Edit" data-toggle="modal" data-target="#EditModalCenter" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" data-toggle="modal" data-target="#DeleteModalCenter" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" data-toggle="modal" data-target="#EditModalCenter" class="btn btn-primary btn-sm" asp-route-id="@item.Id">
+                        Edit
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a> |
+                    @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
+                    <a asp-action="Delete" data-toggle="modal" data-target="#DeleteModalCenter" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
+                        Delete
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

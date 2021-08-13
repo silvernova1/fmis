@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models.John;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.John
 {
+    [Authorize]
     public class AllotmentClassesController : Controller
     {
         private readonly AllotmentClassContext _context;

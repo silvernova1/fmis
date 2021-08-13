@@ -25,6 +25,7 @@
     }
 </style>
 
+
 <input type="hidden" class="obligation" value="@ViewBag.temp">
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
@@ -38,15 +39,6 @@
 
 <script>
 
-
-
-
-
-
-
-
-
-
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
@@ -58,7 +50,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("saveObligation", "Obligations")',
+                url: '@Url.Action("SaveObligation", "Obligations")',
                 dataType: "JSON",
                 data: { data: json },
                 success: function (output) {
@@ -96,7 +88,7 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: [['<a href="https://handsontable.com/docs/">Print ORS</a>'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
@@ -134,7 +126,7 @@
         exportPlugin.downloadFile('csv', {
             bom: false,
             columnDelimiter: ',',
-            columnHeaders: false,
+            columnHeaders: true,
             exportHiddenColumns: true,
             exportHiddenRows: true,
             fileExtension: 'csv',
