@@ -25,21 +25,22 @@ namespace fmis.Controllers
             this.Context = _context;
         }
 
-     /*   #region TEST MODEL
-        public class Yoh
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-            public string Url { get; set; }
-        }
-        #endregion*/
+        /*   #region TEST MODEL
+           public class Yoh
+           {
+               public string Id { get; set; }
+               public string Name { get; set; }
+               public string Url { get; set; }
+           }
+           #endregion*/
 
         public IActionResult UploadFile()
         {
             return View("~/Views/Budget/UploadFile.cshtml");
         }
 
-        public string checkExcel(string excel_data) {
+        public string checkExcel(string excel_data)
+        {
             if (!string.IsNullOrWhiteSpace(excel_data))
                 return @excel_data;
 
@@ -60,38 +61,41 @@ namespace fmis.Controllers
         }
 
 
-        public DateTime checkExcelDate(string excel_data,ExcelWorksheet worksheet,int row,int col)
+        public DateTime checkExcelDate(string excel_data, ExcelWorksheet worksheet, int row, int col)
         {
-            if (!string.IsNullOrWhiteSpace(excel_data) && excel_data != "NULL") 
+            if (!string.IsNullOrWhiteSpace(excel_data) && excel_data != "NULL")
                 return DateTime.Parse(worksheet.Cells[row, col].Value.ToString());
-            
-                
+
+
             return DateTime.Parse("0001-01-01T00:00:00");
         }
 
-        public Int16 checkExcelInt(string excel_data, ExcelWorksheet worksheet, int row, int col) {
+        public Int16 checkExcelInt(string excel_data, ExcelWorksheet worksheet, int row, int col)
+        {
             if (!string.IsNullOrWhiteSpace(excel_data) && excel_data != "NULL")
             {
-                try{
+                try
+                {
                     return Int16.Parse(worksheet.Cells[row, col].Value.ToString());
                 }
-                catch {
+                catch
+                {
                     return 0;
                 }
             }
-                
+
             return 0;
         }
 
-      
+
         [HttpPost]
         public IActionResult Import()
         {
             IFormFile excelfile = Request.Form.Files[0];
             string sWebRootFolder = Directory.GetCurrentDirectory() + @"\UploadFile";
             if (!Directory.Exists(sWebRootFolder)) Directory.CreateDirectory(sWebRootFolder);
-                string sFileName = $"{Guid.NewGuid()}.xlsx";
-            
+            string sFileName = $"{Guid.NewGuid()}.xlsx";
+
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var personal_informations = new List<Personal_Information>();
             using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
@@ -108,11 +112,13 @@ namespace fmis.Controllers
                 for (int row = 2; row <= rowCount; row++)
                 {
                     var personal_information = new Personal_Information();
+                  
+
                     for (int col = 1; col <= ColCount; col++)
                     {
-                        /*if (col == 1)
+                        if (col == 1)
                             personal_information.id = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
-                        else */if (col == 2)
+                        else if (col == 2)
                             personal_information.userid = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 3)
                             personal_information.picture = checkExcel(worksheet.Cells[row, col].Text as string);
@@ -130,17 +136,17 @@ namespace fmis.Controllers
                             personal_information.date_of_birth = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 11)
                             personal_information.place_of_birth = checkExcel(worksheet.Cells[row, col].Text as string);
-                         else if (col == 12)
-                             personal_information.sex = checkExcel(worksheet.Cells[row, col].Text as string);
+                        else if (col == 12)
+                            personal_information.sex = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 13)
                             personal_information.civil_status = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 14)
-                           personal_information.citizenship = checkExcel(worksheet.Cells[row, col].Text as string);
+                            personal_information.citizenship = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 15)
                             personal_information.indicate_country = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 16)
                             personal_information.height = checkExcel(worksheet.Cells[row, col].Text as string);
-                       /* else if (col == 17)
+                        else if (col == 17)
                             personal_information.weight = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 18)
                             personal_information.blood_type = checkExcel(worksheet.Cells[row, col].Text as string);
@@ -243,18 +249,21 @@ namespace fmis.Controllers
                         else if (col == 67)
                             personal_information.created_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 68)
-                            personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);*/
+                            personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
 
                     }
 
 
                     personal_informations.Add(personal_information);
 
-                    if (!string.IsNullOrWhiteSpace(personal_information.userid)) {
+                    if (!string.IsNullOrWhiteSpace(personal_information.userid))
+                    {
                         this.Context.Personal_Information.Add(personal_information);
                         this.Context.SaveChanges();
                     }
-                        
+
+                    
+
                     //sb.Append(Environment.NewLine);
 
                 }
@@ -262,11 +271,8 @@ namespace fmis.Controllers
                 return Json(personal_informations);
                 //return Content(sb.ToString());
             }
-            
+
         }
 
     }
-
-    
-
 }

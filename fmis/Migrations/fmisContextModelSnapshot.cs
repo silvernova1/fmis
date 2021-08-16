@@ -7,7 +7,7 @@ using fmis.Data;
 
 namespace fmis.Migrations
 {
-    [DbContext(typeof(fmisContext))]
+    
     partial class fmisContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
