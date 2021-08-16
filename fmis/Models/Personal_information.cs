@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    
     public class Personal_Information
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
         public int id { get; set; }
         [StringLength(100)]
@@ -39,23 +37,23 @@ namespace fmis.Models
         public string citizenship { get; set; }
         [StringLength(100)]
         public string indicate_country { get; set; }
-        [StringLength(255)]
+        [StringLength(20)]
         public string height { get; set; }
-        [StringLength(255)]
+        [StringLength(20)]
         public string weight { get; set; }
-        [StringLength(255)]
+        [StringLength(20)]
         public string blood_type { get; set; }
-        [StringLength(255)]
+        [StringLength(50)]
         public string gsis_idno { get; set; }
-        [StringLength(255)]
+        [StringLength(50)]
         public string gsis_polnno { get; set; }
-        [StringLength(255)]
+        [StringLength(50)]
         public string pagibig_no { get; set; }
-        [StringLength(255)]
+        [StringLength(50)]
         public string phic_no { get; set; }
-        [StringLength(255)]
+        [StringLength(50)]
         public string sss_no { get; set; }
-        [StringLength(255)]
+        [StringLength(50)]
         public string tin_no { get; set; }
         [StringLength(100)]
         public string residential_address { get; set; }
@@ -142,5 +140,10 @@ namespace fmis.Models
         public DateTime created_at { get; set; }
         [DataType(DataType.Date)]
         public DateTime updated_at { get; set; }
+
+        internal void SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

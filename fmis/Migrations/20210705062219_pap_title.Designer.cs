@@ -8,7 +8,7 @@ using fmis.Data;
 
 namespace fmis.Migrations
 {
-    
+    [DbContext(typeof(fmisContext))]
     [Migration("20210705062219_pap_title")]
     partial class pap_title
     {
