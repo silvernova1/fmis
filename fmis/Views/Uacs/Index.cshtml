@@ -10,6 +10,11 @@
 
 
 <style>
+
+    .search-result-custom {
+        color: #ff0000;
+        font-weight: 900;
+    }
    
 
     .handsontable th:nth-child(0) {
@@ -48,7 +53,7 @@
     <br />
     <table id="example" class="hot table-responsive" style="margin-left:50px;" ></table>
     <br />
-    <div class="controls" hidden>
+    <div class="controls" >
         <button id="export-file">Download CSV bbbb</button>
     </div>
 
@@ -61,7 +66,7 @@
             $('#loading_modal').modal('show');
 
             var json = [];
-            $.each(hot.getData(), function () {
+            $.each(hot.getSourceData(), function () {
                 json.push({ Account_title: this[0], Expense_code: this[1] });
             });
 
@@ -110,6 +115,7 @@
         contextMenu: ['row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+      
     });
 
 
@@ -167,8 +173,8 @@
         ]
     });
 
-    var tableData = JSON.stringify(hot.getData());
-    console.log(hot.getData());
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 
 
 </script>
