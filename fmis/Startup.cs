@@ -9,30 +9,61 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
+using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
 
 namespace fmis
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
-
             services.AddDbContext<fmisContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
-            services.AddDbContext<PersonalInformationContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
-        }
+           services.AddDbContext<PersonalInformationContext>(options =>
+                     options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
+            services.AddDbContext<DesignationContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
+            services.AddDbContext<DivisionContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
+            services.AddDbContext<SectionContext>(options =>
+                  options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
+            services.AddDbContext<ObligationContext>(options =>
+                  options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
+            services.AddDbContext<PrexcContext>(options =>
+                  options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
+            services.AddDbContext<UtilizationContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
+            services.AddDbContext<Obligated_amountContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
+            services.AddDbContext<Sub_allotmentContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
+            services.AddDbContext<Suballotment_amountContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
+            services.AddDbContext<Requesting_officeContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
+            services.AddDbContext<Ors_headContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
+            services.AddDbContext<UacsContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+            services.AddDbContext<AppropriationContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+            services.AddDbContext<AllotmentClassContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
 
+        }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -44,11 +75,11 @@ namespace fmis
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -57,7 +88,10 @@ namespace fmis
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
+
+            RotativaConfiguration.Setup(env.ContentRootPath, "wwwroot/Rotativa");
         }
     }
 }

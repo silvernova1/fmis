@@ -21,9 +21,9 @@ namespace fmis.Migrations.PersonalInformation
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("PBarangay")
@@ -99,8 +99,8 @@ namespace fmis.Migrations.PersonalInformation
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("blood_type")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("case_address")
                         .HasMaxLength(100)
@@ -159,16 +159,16 @@ namespace fmis.Migrations.PersonalInformation
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("gsis_idno")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("gsis_polnno")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("height")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("inactive_area")
                         .HasMaxLength(100)
@@ -195,12 +195,12 @@ namespace fmis.Migrations.PersonalInformation
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("pagibig_no")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("phic_no")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("picture")
                         .HasColumnType("nvarchar(max)");
@@ -256,16 +256,16 @@ namespace fmis.Migrations.PersonalInformation
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("sss_no")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("telno")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("tin_no")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("updated_at")
                         .HasColumnType("datetime2");
@@ -279,8 +279,8 @@ namespace fmis.Migrations.PersonalInformation
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("weight")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("id");
 

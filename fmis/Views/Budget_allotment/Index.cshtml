@@ -1,0 +1,56 @@
+﻿@model IEnumerable<fmis.Models.Budget_allotment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Budget Allotment</h2>
+
+<p>
+    <a class=" btn" asp-action="Create">Create New</a>
+</p>
+<style>
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Allotment_series)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Allotment_title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Allotment_code)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_series)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_code)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                  @*  <a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

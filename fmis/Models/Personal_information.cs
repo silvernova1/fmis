@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
+
     public class Personal_Information
     {
+        
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int id { get; set; }
+        public long id { get; set; }
         [StringLength(100)]
         public string userid { get; set; }
         public string picture { get; set; }
@@ -37,23 +40,23 @@ namespace fmis.Models
         public string citizenship { get; set; }
         [StringLength(100)]
         public string indicate_country { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string height { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string weight { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string blood_type { get; set; }
-        [StringLength(50)]
+        [StringLength(255)]
         public string gsis_idno { get; set; }
-        [StringLength(50)]
+        [StringLength(255)]
         public string gsis_polnno { get; set; }
-        [StringLength(50)]
+        [StringLength(255)]
         public string pagibig_no { get; set; }
-        [StringLength(50)]
+        [StringLength(255)]
         public string phic_no { get; set; }
-        [StringLength(50)]
+        [StringLength(255)]
         public string sss_no { get; set; }
-        [StringLength(50)]
+        [StringLength(255)]
         public string tin_no { get; set; }
         [StringLength(100)]
         public string residential_address { get; set; }
@@ -94,11 +97,11 @@ namespace fmis.Models
         [StringLength(100)]
         public string telno { get; set; }
         [StringLength(100)]
-        public string emall_address{ get; set; }
+        public string emall_address { get; set; }
         [StringLength(100)]
         public string cellno { get; set; }
         [StringLength(100)]
-        public string employee_status{ get; set; }
+        public string employee_status { get; set; }
         [StringLength(100)]
         public string job_status { get; set; }
         [StringLength(100)]
@@ -123,7 +126,7 @@ namespace fmis.Models
         [StringLength(100)]
         public string sick_balance { get; set; }
         [StringLength(100)]
-        public string sched  { get; set; }
+        public string sched { get; set; }
         [StringLength(100)]
         public string account_number { get; set; }
         [StringLength(50)]
@@ -140,10 +143,5 @@ namespace fmis.Models
         public DateTime created_at { get; set; }
         [DataType(DataType.Date)]
         public DateTime updated_at { get; set; }
-
-        internal void SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -54,7 +54,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code1,pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Create([Bind("Id,pap_code1,pap_code2")] Prexc prexc)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code1,pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_code1,pap_code2")] Prexc prexc)
         {
             if (id != prexc.Id)
             {
