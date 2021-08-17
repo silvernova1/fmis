@@ -25,10 +25,8 @@
     }
 </style>
 
-
-
 <input type="hidden" class="sub_allotment" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <div id="example" class="hot"></div>
@@ -36,10 +34,6 @@
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-<button class="intext-btn btn btn-primary center-block"
-        id="save" name="save">
-    Save
-</button>
 
 
 <script>
@@ -50,13 +44,14 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Id: this[0], Prexe_code: this[1], Suballotment_code: this[2], Suballotment_title: this[3], Orc_head: this[4], Responsibility_number: this[5], Description: this[6]});
+                json.push({ Prexe_code: this[0], Suballotment_code: this[1], Suballotment_title: this[2], Ors_head: this[3], Responsibility_number: this[4], Description: this[5]} );
             });
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("saveSub_allotment", "Sub_allotment")',
-                data: json,
+                dataType: "JSON",
+                data: { data: json },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -77,7 +72,7 @@
     const data = [];
     var counter = 0;
     $.each(sub_allotment, function () {
-        data[counter] = [this.ID, this.Prexe_code, this.Suballotment_code, this.Suballotment_title, this.Orc_head, this.Responsibility_number, this.Description]
+        data[counter] = [this.Prexe_code, this.Suballotment_code, this.Suballotment_title, this.Ors_head, this.Responsibility_number, this.Description]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -95,21 +90,17 @@
         contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Id: null, Prexe_code: null, Suballotment_code: null, Suballotment_title: null, Orc_head: null, Responsibility_number: null, Description: null},
+        dataSchema: { Prexe_code: null, Suballotment_code: null, Suballotment_title: null, Ors_head: null, Responsibility_number: null, Description: null,},
         columns: [
 
-            { data: 'Id ', type: 'numeric' },
             { data: 'Prexe_code', type: 'numeric' },
             { data: 'Suballotment_code', type: 'text' },
             { data: 'Suballotment_title', type: 'text' },
-            { data: 'Orc_head', type: 'text' },
+            { data: 'Ors_head', type: 'numeric' },
             { data: 'Responsibility_number', type: 'text' },
             { data: 'Description', type: 'text' },
-         
         ]
     });
-
-
 
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
@@ -142,12 +133,12 @@
         ] = changes;
         if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
             console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y'  + newVal.slice(1, newVal.length))
         }
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Prexe_code', 'Suballotment_code', 'Suballotment_title', 'Orc_head', 'Responsibility_number', 'Description'],
+        colHeaders: ['Prexe_code', ' Suballotment_code', ' Suballotment_title', 'Ors_head', 'Responsibility_number', 'Description'],
         cell: [
             {
                 row: 0,
@@ -157,64 +148,28 @@
         ],
         columns: [
             {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-            },
-            {
-                // 2nd cell is simple text, no special options here
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
+               // 1st cell is simple text, no special options here
             },
 
             {
-
+                // This cell is simple text, no special options here
+            },
+            {
+                // This cell is simple text, no special options here
             },
 
             {
-                type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+                // This cell is simple text, no special options here
+            },
+            {
+                // This cell is simple text, no special options here
             },
 
             {
+                // This cell is simple text, no special options here
             },
 
-            {
-            },
 
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
         ]
     });
 
@@ -241,3 +196,4 @@
             background-color: #d7f1e1;
         }
     </style>*@
+

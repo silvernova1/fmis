@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Ors_head>
+﻿@model IEnumerable<fmis.Models.Obligated_amount>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,7 +25,7 @@
     }
 </style>
 
-<input type="hidden" class="ors_head" value="@ViewBag.temp">
+<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
@@ -44,12 +44,12 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Head_name: this[0], Position: this[1]} );
+                json.push({ Obligation_id: this[0], Expense_title: this[1], Code: this[2], Amount: this[3] } );
             });
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("saveOrs_head", "Ors_head")',
+                url: '@Url.Action("saveObligated_amount", "Obligated_amount")',
                 dataType: "JSON",
                 data: { data: json },
                 success: function (output) {
@@ -67,12 +67,12 @@
     };
 
 
-    var ors_head = $.parseJSON($(".ors_head").val());
+    var obligated_amount = $.parseJSON($(".obligated_amount").val());
 
     const data = [];
     var counter = 0;
-    $.each(ors_head, function () {
-        data[counter] = [this.Head_name, this.Position]
+    $.each(obligated_amount, function () {
+        data[counter] = [this.Obligation_id, this.Expense_title, this.Code, this.Amount]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -90,11 +90,14 @@
         contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: {Head_name: null, Position: null,},
+        dataSchema: { Obligation_id: null, Expense_title: null, Code: null, Amount: null},
         columns: [
 
-            { data: 'Headname', type: 'text' },
-            { data: 'Position', type: 'text' },  
+            { data: 'Obligation_id', type: 'numeric' },
+            { data: 'Expense_title', type: 'numeric' },
+            { data: 'Code', type: 'numeric' },
+            { data: 'Amount', type: 'numeric' },
+        
         ]
     });
 
@@ -129,12 +132,12 @@
         ] = changes;
         if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
             console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y'  + newVal.slice(1, newVal.length))
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
         }
     })
 
     hot.updateSettings({
-        colHeaders: ['Head_name', 'Position'],
+        colHeaders: ['Obligation_id', 'Expense_title', 'Code', 'Amount'],
         cell: [
             {
                 row: 0,
@@ -144,14 +147,18 @@
         ],
         columns: [
             {
-               // 1st cell is simple text, no special options here
+                //  cell is simple text, no special options here
             },
-
             {
-                // 2nd cell is simple text, no special options here
+                //  cell is simple text, no special options here
+            },
+            {
+                //  cell is simple text, no special options here
+            },
+            {
+                //  cell is simple text, no special options here
             },
            
-
         ]
     });
 

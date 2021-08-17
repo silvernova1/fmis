@@ -13,35 +13,34 @@ using System.ComponentModel.DataAnnotations;
 
 namespace fmis.Controllers
 {
-    public class Sub_allotmentController : Controller
+    public class Obligated_amountController : Controller
     {
-        private readonly Sub_allotmentContext _context;
+        private readonly Obligated_amountContext _context;
 
-        public Sub_allotmentController(Sub_allotmentContext context)
+        public Obligated_amountController(Obligated_amountContext context)
         {
             _context = context;
         }
 
-        public class Sub_allotmentData
+        public class Obligated_amountData
         {
 
-            public int Prexe_code { get; set; }
-            public string Suballotment_code { get; set; }
-            public string Suballotment_title { get; set; }
-            public int Orc_head { get; set; }
-            public string Responsibility_number { get; set; }
-            public string Description { get; set; }
+            public int Obligation_id { get; set; }
+            public int Expense_Title { get; set; }
+            public int Code { get; set; }
+            public float Amount { get; set; }
+          
         }
 
-        // GET: Sub_allotment
+        // GET: Obligated_amount
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Sub_allotment.ToList());
+            var json = JsonSerializer.Serialize(_context.Obligated_amount.ToList());
             ViewBag.temp = json;
-            return View(await _context.Sub_allotment.ToListAsync());
+            return View(await _context.Obligated_amount.ToListAsync());
         }
 
-        // GET: Sub_allotment/Details/5
+        // GET: Obligated_amount/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,17 +48,17 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var sub_allotment = await _context.Sub_allotment
+            var obligated_amount = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (sub_allotment == null)
+            if (obligated_amount == null)
             {
                 return NotFound();
             }
 
-            return View(sub_allotment);
+            return View(obligated_amount);
         }
 
-        // GET: Sub_allotment/Create
+        // GET: Obligated_amount/Create
         public IActionResult Create()
         {
             return View();
@@ -72,58 +71,55 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveSub_allotment(List<Sub_allotmentData> data)
+        public IActionResult saveObligated_amount(List<Obligated_amountData> data)
         {
-            var sub_allotments = new List<Sub_allotment>();
-            var sub_allotment = new Sub_allotment();
+            var obligated_amounts = new List<Obligated_amount>();
+            var obligated_amount = new Obligated_amount();
 
 
             foreach (var item in data)
             {
-
-                sub_allotment.Prexe_code = item.Prexe_code;
-                sub_allotment.Suballotment_code = item.Suballotment_code;
-                sub_allotment.Suballotment_title = item.Suballotment_title;
-                sub_allotment.Orc_head = item.Orc_head;
-                sub_allotment.Responsibility_number = item.Responsibility_number;
-                sub_allotment.Description = item.Description;
-                sub_allotments.Add(sub_allotment);
+                obligated_amount.Obligation_id = item.Obligation_id;
+                obligated_amount.Expense_Title = item.Expense_Title;
+                obligated_amount.Code = item.Code;
+                obligated_amount.Amount = item.Amount;
+                obligated_amounts.Add(obligated_amount);
             }
 
 
-            this._context.Sub_allotment.Add(sub_allotment);
+            this._context.Obligated_amount.Add(obligated_amount);
             this._context.SaveChanges();
             return Json(data);
         }
 
-        // POST:Sub_allotment/Create
+        // POST: Obligated_amount/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Create([Bind("Obligation_id,Expense_Title,Code,Amount")] Obligated_amount obligated_amount)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sub_allotment);
+                _context.Add(obligated_amount);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(sub_allotment);
+            return View(obligated_amount);
         }
 
         [HttpPost]
 
-        public ActionResult AddSub_allotment(IEnumerable<Sub_allotment> Sub_allotmentInput)
+        public ActionResult AddObligated_amount(IEnumerable<Obligated_amount> Obligated_amountInput)
 
         {
 
-            var p = Sub_allotmentInput;
+            var p = Obligated_amountInput;
             return null;
 
         }
 
-        // GET: Sub_allotment/Edit/5
+        // GET: Obligated_amount/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -131,22 +127,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var sub_allotment = await _context.Sub_allotment.FindAsync(id);
-            if (sub_allotment == null)
+            var obligated_amount = await _context.Obligated_amount.FindAsync(id);
+            if (obligated_amount == null)
             {
                 return NotFound();
             }
-            return View(sub_allotment);
+            return View(obligated_amount);
         }
 
-        // POST: Sub_allotment/Edit/5
+        // POST: Obligated_amount/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("Obligation_id, Expense_Title, Code, Amount")] Obligated_amount obligated_amount)
         {
-            if (id != sub_allotment.Id)
+            if (id != obligated_amount.Id)
             {
                 return NotFound();
             }
@@ -155,12 +151,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(sub_allotment);
+                    _context.Update(obligated_amount);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Sub_allotmentExists(sub_allotment.Id))
+                    if (!Obligated_amountExists(obligated_amount.Id))
                     {
                         return NotFound();
                     }
@@ -171,10 +167,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(sub_allotment);
+            return View(obligated_amount);
         }
 
-        // GET: Sub_allotment/Delete/5
+        // GET: Obligated_amount/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,30 +178,30 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var sub_allotment = await _context.Sub_allotment
+            var obligated_amount = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (sub_allotment == null)
+            if (obligated_amount == null)
             {
                 return NotFound();
             }
 
-            return View(sub_allotment);
+            return View(obligated_amount);
         }
 
-        // POST: Sub_allotment/Delete/5
+        // POST: Obligated_amount/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sub_allotment = await _context.Sub_allotment.FindAsync(id);
-            _context.Sub_allotment.Remove(sub_allotment);
+            var obligated_amount = await _context.Obligated_amount.FindAsync(id);
+            _context.Obligated_amount.Remove(obligated_amount);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool Sub_allotmentExists(int id)
+        private bool Obligated_amountExists(int id)
         {
-            return _context.Sub_allotment.Any(e => e.Id == id);
+            return _context.Obligated_amount.Any(e => e.Id == id);
         }
     }
 }

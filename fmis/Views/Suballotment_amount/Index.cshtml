@@ -25,10 +25,8 @@
     }
 </style>
 
-
-
 <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <div id="example" class="hot"></div>
@@ -36,10 +34,6 @@
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-<button class="intext-btn btn btn-primary center-block"
-        id="save" name="save">
-    Save
-</button>
 
 
 <script>
@@ -50,13 +44,14 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Id: this[0], Expenses: this[1], Amount: this[2], Fund_source: this[3]});
+                json.push({ Expenses: this[0], Amount: this[1], Fund_source: this[2]} );
             });
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("saveSuballotment_amount", "Suballotment_amount")',
-                data: json,
+                dataType: "JSON",
+                data: { data: json },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -77,7 +72,7 @@
     const data = [];
     var counter = 0;
     $.each(suballotment_amount, function () {
-        data[counter] = [this.ID,this.Expenses, this.Amount, this.Fund_source]
+        data[counter] = [this.Expenses, this.Amount, this.Fund_source]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -95,17 +90,15 @@
         contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Id: null, Expenses: null, Amount: null, Fund_source: null },
+        dataSchema: { Expenses: null, Amount: null, Fund_source: null,},
         columns: [
-            { data: 'Id ', type: 'numeric' },
+
             { data: 'Expenses', type: 'numeric' },
             { data: 'Amount', type: 'text' },
-            { data: 'Fund_source', type: 'text' },
-            { data: 'Amount', type: 'text' },
+            { data: 'Fund_source', type: 'numeric' },
+
         ]
     });
-
-
 
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
@@ -138,12 +131,12 @@
         ] = changes;
         if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
             console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y'  + newVal.slice(1, newVal.length))
         }
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Expenses', 'Amount', 'Fund_source'],
+        colHeaders: ['Expenses', ' Amount', ' Fund_source'],
         cell: [
             {
                 row: 0,
@@ -152,65 +145,18 @@
             },
         ],
         columns: [
-            {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-            },
-            {
-                // 2nd cell is simple text, no special options here
-            },
-            {
 
-            },
             {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
+               // 1st cell is simple text, no special options here
             },
 
             {
-
+                // This cell is simple text, no special options here
             },
-
             {
-                type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+                // This cell is simple text, no special options here
             },
 
-            {
-            },
-
-            {
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
         ]
     });
 
