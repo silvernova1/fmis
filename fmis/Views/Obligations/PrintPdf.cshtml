@@ -1,11 +1,69 @@
-﻿@{
-    Layout = null;
-}
+﻿@model IEnumerable<fmis.Models.Obligation>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        .topics tr {
+            line-height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <center><h4>Table with Collapsed Borders</h4></center>
+
+    <div style="margin-right: 180px; margin-left: 180px">
+        <table style="width:100%" class="topics">
+            <tr height="150">
+                <td><p>
+    <center><b>Republic of the Philippines<b></center><center>
+        <b>Department of Health<b>
+    </center>
+</p><center><b>Central Visayas for Health Development<b></center>
+</p></td>
+                    <td>$100</td>
+            </tr>
+            <tr>
+                <td>February</td>
+                <td>
+                    $80
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+
+
+
+
+<!--@{
+    Layout = null;
+}
+
+
+<style>
+    hr {
+        display: block;
+        height: 50px;
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 0;
+    }
+</style>
 
 <html>
 <head>
@@ -21,83 +79,32 @@
     <header>
         <br />
         <br />
-        <br />
-        <center>Republic of the Philippines</center>
-        <center><b>Department of Health</b></center>
-        <center>Central Visayas for Health Development</center>
-        <center>Central Visayas, Osmeña Blvd. Cebu City</center>
+        <br />-->
+@*        <address contenteditable>
+        <p>Jonathan Neal</p>
+        <p>101 E. Chapman Ave<br>Orange, CA 92866</p>
+        <p>(800) 555-1234</p>
+    </address>*@
+
+
+<!--</header>
+<div style="width:1000px;height:1000px;border:1px solid #000;">
+    <nav>
+        Republic of the Philippines<br>
+        <b>Department of Health</b><br>
+        Central Visayas for Health Development<br>
+        Central Visayas, Osmeña Blvd. Cebu City<br>
         <span><img width="70" height="70" src="/portfolio_bootstrap/img/about/doh.png" /></span>
-
-
-        @*        <address contenteditable>
-                <p>Jonathan Neal</p>
-                <p>101 E. Chapman Ave<br>Orange, CA 92866</p>
-                <p>(800) 555-1234</p>
-            </address>*@
-
-
-    </header>
-    <article>
-        <h1>Recipient</h1>
-        <address contenteditable>
-            <p>Demo Company<br>c/o Saineshwar</p>
-        </address>
-        <table class="meta">
-            <tr>
-                <th><span contenteditable>Invoice #</span></th>
-                <td><span contenteditable>000001</span></td>
-            </tr>
-            <tr>
-                <th><span contenteditable>Date</span></th>
-                <td><span contenteditable>January 1, 2018</span></td>
-            </tr>
-            <tr>
-                <th><span contenteditable>Amount Due</span></th>
-                <td><span id="prefix" contenteditable>र </span><span>600.00</span></td>
-            </tr>
-        </table>
-        <table class="form-group">
-            <thead>
-                <tr>
-                    <th><span contenteditable>Item</span></th>
-                    <th><span contenteditable>Description</span></th>
-                    <th><span contenteditable>Rate</span></th>
-                    <th><span contenteditable>Quantity</span></th>
-                    <th><span contenteditable>Price</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a class="cut">-</a><span contenteditable>Front End Consultation</span></td>
-                    <td><span contenteditable>Experience Review</span></td>
-                    <td><span data-prefix>र </span><span contenteditable>150.00</span></td>
-                    <td><span contenteditable>4</span></td>
-                    <td><span data-prefix>र </span><span>600.00</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <table class="balance">
-            <tr>
-                <th><span contenteditable>Total</span></th>
-                <td><span data-prefix>र </span><span>600.00</span></td>
-            </tr>
-            <tr>
-                <th><span contenteditable>Amount Paid</span></th>
-                <td><span data-prefix>र </span><span contenteditable>0.00</span></td>
-            </tr>
-            <tr>
-                <th><span contenteditable>Balance Due</span></th>
-                <td><span data-prefix>र </span><span>600.00</span></td>
-            </tr>
-        </table>
-    </article>
-
-    <aside>
+    </nav>
+    <nav>   </nav>
+    <nav>   </nav>
+    <nav>   </nav>
+</div>-->
+@* <aside>
         <h1><span contenteditable>Additional Notes</span></h1>
         <div contenteditable>
             <p>A finance charge of 1.5% will be made on unpaid balances after 30 days.</p>
         </div>
-    </aside>
-</body>
-</html>  
+    </aside>*@
+<!--</body>
+</html>-->

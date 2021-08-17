@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using Microsoft.AspNetCore.Mvc;
 using Rotativa.AspNetCore;
+using fmis.Data.John;
 
 namespace fmis
 {
@@ -59,9 +60,11 @@ namespace fmis
             services.AddDbContext<UacsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<AppropriationContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<AllotmentClassContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
+            services.AddDbContext<FundSourceContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("FundSourceContext")));
 
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

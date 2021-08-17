@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="bootstrap" Version="5.0.2" />
-    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
@@ -38,8 +37,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Rotativa" Version="1.7.4-rc" />
     <PackageReference Include="Rotativa.AspNetCore" Version="1.2.0-beta" />
-    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="19.2.0.51" />
-    <PackageReference Include="Syncfusion.Pdf.AspNet.Mvc5" Version="19.2.0.55" />
     <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="19.2.0.55" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
