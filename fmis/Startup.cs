@@ -55,13 +55,18 @@ namespace fmis
             services.AddDbContext<Requesting_officeContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
             services.AddDbContext<Ors_headContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
+                 options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDbContext<UacsContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+                 options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<AppropriationContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+                  options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<AllotmentClassContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
+                 options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
+            services.AddDbContext<Budget_allotmentContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
+            services.AddDbContext<Yearly_referenceContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
+
 
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
