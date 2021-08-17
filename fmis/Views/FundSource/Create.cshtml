@@ -7,22 +7,23 @@
 
 <h2>Create Fund Source</h2>
 <hr />
-<div class="form-group">
-    <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
-</div>
+
 <form asp-action="Create">
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
+    </div>
     <div class="row">
         <div class="col-md-6">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PrexcCode" class="control-label"></label>
-                <input asp-for="PrexcCode" class="form-control" required/>
+                <input asp-for="PrexcCode" class="form-control" required />
                 <span asp-validation-for="PrexcCode" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FundSourceTitle" class="control-label"></label>
-                <input asp-for="FundSourceTitle" class="form-control" required/>
+                <input asp-for="FundSourceTitle" class="form-control" required />
                 <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,12 +35,12 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="FundSourceTitleCode" class="control-label"></label>
-                <input asp-for="FundSourceTitleCode" class="form-control" required/>
+                <input asp-for="FundSourceTitleCode" class="form-control" required />
                 <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Respo" class="control-label"></label>
-                <input asp-for="Respo" class="form-control" required/>
+                <input asp-for="Respo" class="form-control" required />
                 <span asp-validation-for="Respo" class="text-danger"></span>
             </div>
         </div>
