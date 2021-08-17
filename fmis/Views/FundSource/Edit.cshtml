@@ -1,0 +1,51 @@
+﻿@model fmis.Models.John.FundSource
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Fund Source</h2>
+<hr />
+<div class="form-group">
+    <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
+</div>
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FundSourceId" />
+            <div class="form-group">
+                <label asp-for="PrexcCode" class="control-label"></label>
+                <input asp-for="PrexcCode" class="form-control" />
+                <span asp-validation-for="PrexcCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundSourceTitle" class="control-label"></label>
+                <input asp-for="FundSourceTitle" class="form-control" />
+                <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="FundSourceTitleCode" class="control-label"></label>
+                <input asp-for="FundSourceTitleCode" class="form-control" />
+                <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Respo" class="control-label"></label>
+                <input asp-for="Respo" class="form-control" />
+                <span asp-validation-for="Respo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

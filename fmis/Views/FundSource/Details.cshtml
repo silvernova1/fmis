@@ -1,0 +1,49 @@
+﻿@model fmis.Models.John.FundSource
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>FundSource</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PrexcCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrexcCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FundSourceTitle)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FundSourceTitle)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FundSourceTitleCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FundSourceTitleCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Respo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Respo)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.FundSourceId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
