@@ -117,7 +117,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Delete/5
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -137,7 +137,7 @@ namespace fmis.Controllers.Budget.John
         // POST: FundSource/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var fundSource = await _context.FundSource.FindAsync(id);
             _context.FundSource.Remove(fundSource);
