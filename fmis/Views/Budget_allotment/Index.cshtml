@@ -48,7 +48,7 @@
                 @Html.DisplayFor(modelItem => item.Allotment_code)
             </td>
             <td>
-                <a class="btn btn-outline-secondary"asp-action="Fund Source" asp-route-id="@item.Id">➦Fund Source</a>
+                <a class="btn btn-outline-secondary" asp-controller="FundSource" asp-action="Index">➦Fund Source</a>
             </td>
             <td>
                 <a class="btn btn-secondary" asp-action="Sub Allotment" asp-route-id="@item.Id">+Sub-Allotment</a>
