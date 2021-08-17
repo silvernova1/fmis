@@ -25,25 +25,15 @@
     }
 </style>
 
-
-
 <input type="hidden" class="prexc" value="@ViewBag.temp">
-<input id="search_field2" type="search" placeholder="Search" />
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <div id="example" class="hot"></div>
 <br />
-<br />
-
 <div class="controls">
     <button id="export-file">Download CSV</button>
 </div>
-<br />
-
-<button class="intext-btn btn btn-primary center-block"
-        id="save" name="save">
-    Save
-</button>
 
 
 <script>
@@ -54,13 +44,14 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Id: this[0], Pap_title: this[1], Pap_code1: this[2], Pap_code2: this[3], Created_at: this[4], Updated_at: this[5]});
+                json.push({ Head_name: this[0], Position: this[1]} );
             });
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("savePrexc", "Prexc")',
-                data: json,
+                dataType: "JSON",
+                data: { data: json },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -81,7 +72,7 @@
     const data = [];
     var counter = 0;
     $.each(prexc, function () {
-        data[counter] = [this.Id, this.Pap_title, this.Pap_code1, this.Pap_code2, this.Created_at, this.Updated_at]
+        data[counter] = [this.Pap_title, this.Pap_code1, this.Pap_code2]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -99,19 +90,14 @@
         contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Id: null, Pap_title: null, Pap_code1: null, Pap_code2: null, Created_at: null, Updated_at: null},
+        dataSchema: {Head_name: null, Position: null,},
         columns: [
-            { data: 'Id', type: 'numeric' },
+
             { data: 'Pap_title', type: 'text' },
             { data: 'Pap_code1', type: 'text' },
             { data: 'Pap_code2', type: 'text' },
-            { data: 'Created_at', type: 'text' },
-            { data: 'Updated_at', type: 'text' },
-
         ]
     });
-
-
 
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
@@ -144,12 +130,12 @@
         ] = changes;
         if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
             console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y'  + newVal.slice(1, newVal.length))
         }
     })
 
     hot.updateSettings({
-        colHeaders: ['Id', 'Pap_title', 'Pap_code1', 'Pap_code2', 'Created_at', 'Updated_at'],
+        colHeaders: ['Pap_tile', 'Pap_code1', 'Pap_code2'],
         cell: [
             {
                 row: 0,
@@ -159,35 +145,17 @@
         ],
         columns: [
             {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
+               // 1st cell is simple text, no special options here
             },
 
             {
-                type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
-            },
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
+                // 2nd cell is simple text, no special options here
             },
 
             {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
+                // 2nd cell is simple text, no special options here
             },
 
-            {
-                type: 'date',
-                dateFormat: 'DD/MM/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
         ]
     });
 
