@@ -7,7 +7,6 @@
 
 <center>
     <h2>Create New</h2>
-    <h4>Allotment Class</h4>
 </center>
 <hr />
 <div class="container">
@@ -16,12 +15,12 @@
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Allotment_Class" class="control-label"></label>
+                    <label asp-for="Allotment_Class" class="control-label">Allotment Class</label>
                     <input asp-for="Allotment_Class" class="form-control" required />
                     <span asp-validation-for="Allotment_Class" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Account_Code" class="control-label"></label>
+                    <label asp-for="Account_Code" class="control-label">Account Code</label>
                     <input asp-for="Account_Code" class="form-control" required />
                     <span asp-validation-for="Account_Code" class="text-danger"></span>
                 </div>

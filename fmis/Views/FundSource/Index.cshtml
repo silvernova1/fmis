@@ -1,0 +1,62 @@
+﻿@model IEnumerable<fmis.Models.John.FundSource>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Fund Source List</h2>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Fund Source Code
+            </th>
+            <th>
+                Fund Source Title
+            </th>
+            <th>
+                ORS Head
+            </th>
+            <th>
+                Actions
+            </th>
+            <th>Funds Realignment</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                </td>
+                <td>
+                    <select class="form-control" aria-label="Default select example">
+                        <option selected>Select ORS Head</option>
+                        <option value="1">Rusel</option>
+                        <option value="2">John</option>
+                        <option value="3">Carlo</option>
+                        <option value="3">Silver</option>
+                        <option value="3">Enerz</option>
+                    </select>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a> |
+                    <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm">Delete<span class="glyphicon glyphicon-trash"></span></a>
+
+                </td>
+                <td>
+                    <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

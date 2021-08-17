@@ -15,6 +15,14 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using Syncfusion.Drawing;
+using System.IO;
+using Syncfusion.Pdf.Grid;
+using RectangleF = Syncfusion.Drawing.RectangleF;
+using SizeF = Syncfusion.Drawing.SizeF;
+using Color = Syncfusion.Drawing.Color;
+using PointF = Syncfusion.Drawing.PointF;
+using Syncfusion.Pdf.Tables;
 
 namespace fmis.Controllers
 {
@@ -38,6 +46,13 @@ namespace fmis.Controllers
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
 
             };
+        }
+
+        public IActionResult CreateD()
+        {
+
+            return View("~/Views/Obligations/PrintPdf.cshtml");
+
         }
 
 
