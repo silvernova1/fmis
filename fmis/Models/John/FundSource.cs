@@ -14,5 +14,7 @@ namespace fmis.Models.John
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
 
+        public Uacs Uacs { get; set; }
+
     }
 }

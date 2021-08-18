@@ -22,6 +22,7 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.FundSource.ToListAsync());
         }
 

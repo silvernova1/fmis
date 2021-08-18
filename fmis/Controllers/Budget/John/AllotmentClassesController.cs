@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.John
 {
-    [Authorize]
+
     public class AllotmentClassesController : Controller
     {
         private readonly AllotmentClassContext _context;
