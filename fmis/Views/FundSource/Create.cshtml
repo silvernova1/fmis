@@ -5,12 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create Fund Source</h2>
-<hr />
 
 <form asp-action="Create">
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Create" class="btn btn-success btn-xs" />
+                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -46,7 +50,14 @@
         </div>
     </div>
 </form>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="example"></div>
+        </div>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <script></script>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

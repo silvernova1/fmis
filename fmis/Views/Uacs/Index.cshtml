@@ -1,0 +1,173 @@
+﻿@model IEnumerable<fmis.Models.Uacs>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+
+<style>
+    .search-result-custom {
+        color: #ff0000;
+        font-weight: 900;
+    }
+
+    .htCore tbody tr td, .htCore thead tr th, body {
+    }
+
+
+    .htCore thead tr th {
+        color: #fff;
+        font-size: 13px;
+        background-color: #2ECC71
+    }
+
+    .uacs {
+        margin-right: 200px;
+    }
+
+    .search {
+        margin-left: 54%;
+    }
+</style>
+
+
+<input type="hidden" class="uacs" value="@ViewBag.temp">
+<br />
+<input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
+<br />
+<br />
+<br />
+<div id="example" class="hot" style="margin-left:50px;"></div>
+<br />
+<div class="controls" >
+    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
+</div>
+
+
+<script>
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Account_title: this[0], Expense_code: this[1] } );
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SaveUacs", "Uacs")',
+                dataType: "JSON",
+                data: { data: json },
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
+            return false;
+        }
+    };
+
+
+    var uacs = $.parseJSON($(".uacs").val());
+
+    const data = [];
+    var counter = 0;
+    $.each(uacs, function () {
+        data[counter] = [this.Account_title, this.Expense_code]
+        counter++;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        width: '200%',
+        colWidths: 550,
+        rowHeaders: true,
+        colHeaders: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row'],
+        height: 'auto',
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Account_title: null, Expense_code: null},
+        columns: [
+            { data: 'Account_title ', type: 'text' },
+            { data: 'Expense_code', type: 'text' }
+
+        ]
+    });
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'UACS',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+    hot.addHook('afterChange', function (changes, src) {
+        [
+            [row, col, oldVal, newVal]
+        ] = changes;
+        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
+            console.log(newVal);
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+        }
+    })
+
+    hot.updateSettings({
+        colHeaders: ['ACCOUNT_TILE', 'UACS EXPENSE_CODE'],
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
+        columns: [
+            {
+
+            },
+            {
+                // 2nd cell is simple text, no special options here
+            },
+
+        ]
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+
+</script>
+
+
