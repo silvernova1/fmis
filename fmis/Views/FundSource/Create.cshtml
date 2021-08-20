@@ -1,4 +1,13 @@
 ﻿@model fmis.Models.John.FundSource
+@using fmis.Models;
+@using fmis.Models.John;
+@{
+
+
+    FundSource FundSource = TempData["FundSource"] as FundSource;
+    List<Uacs> Uacs = TempData["Uacs"] as List<Uacs>;
+}
+
 
 @{
     ViewData["Title"] = "Create";
@@ -53,194 +62,32 @@
 
 
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
-
-<style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
-    }
-
-    .htCore tbody tr td, .htCore thead tr th, body {
-    }
-
-
-    .htCore thead tr th {
-        color: #fff;
-        font-size: 13px;
-        background-color: #2ECC71
-    }
-</style>
-
-
-<input type="hidden" class="obligation" value="@ViewBag.temp">
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
-<br />
-<div id="example" class="hot"></div>
-<br />
-<div class="controls">
-    <button id="export-file">Download CSV</button>
-</div>
-
-
-<script>
-
-
-    var obligation = $.parseJSON($(".obligation").val());
-
-    const data = [];
-    var counter = 0;
-    $.each(obligation, function () {
-        data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released]
-        counter++;
-    })
-    const searchField = document.querySelector('#search_field2');
-    const button = document.querySelector('#export-file');
-    const container = document.getElementById('example');
-    const hot = new Handsontable(container, {
-        data: data,
-        width: '100%',
-        colWidths: 100,
-        rowHeaders: true,
-        colHeaders: true,
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
-        height: 'auto',
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
-        columns: [
-            { data: 'Date ', type: 'date' },
-            { data: 'Dv', type: 'text' },
-            { data: 'Pr_no', type: 'text' },
-            { data: 'Po_no', type: 'text' },
-            { data: 'Payee', type: 'text' },
-            { data: 'Address', type: 'text' },
-            { data: 'Particulars', type: 'text' },
-            { data: 'Ors_no', type: 'numeric' },
-            { data: 'Fund_source', type: 'text' },
-            { data: 'Gross', type: 'text' },
-            { data: 'Created_by', type: 'text' },
-            { data: 'Date_recieved', type: 'text' },
-            { data: 'Time_recieved', type: 'text' },
-            { data: 'Date_released', type: 'text' },
-            { data: 'Time_released', type: 'text' }
-
-        ]
-    });
-
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-
-        console.log(queryResult);
-        hot.render();
-    });
-
-    const exportPlugin = hot.getPlugin('exportFile');
-
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
-
-    hot.addHook('afterChange', function (changes, src) {
-        [
-            [row, col, oldVal, newVal]
-        ] = changes;
-        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
-            console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*   @FundSource.FundSourceTitle*@
+            </th>
+            <th>
+                @* @FundSource.FundSourceTitleCode*@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Uacs)
+        {
+            <tr>
+                <td style="width: 800px;">
+                    @item.Account_title
+                </td>
+                @*<td>
+                    <select class="form-control" aria-label="Default select example">
+                        <option selected>Select ORS Head</option>
+                        <option value="1">@item.Account_title</option>
+                    </select>
+                </td>*@
+            </tr>
         }
-    })
-
-    hot.updateSettings({
-        colHeaders: ['Date', 'Dv', 'Pr_no', 'Po_no', 'Payee', 'Address', 'Particulars', 'Ors_no', 'Fund_source', 'Gross', 'Created_by', 'Date_recieved', 'Time_recieved', 'Date_released', 'Time_released'],
-        cell: [
-            {
-                row: 0,
-                col: 0,
-                className: 'custom-cell',
-            },
-        ],
-        columns: [
-            {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-            },
-            {
-                // 2nd cell is simple text, no special options here
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
-            },
-
-            {
-
-            },
-
-            {
-                type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
-            },
-
-            {
-            },
-
-            {
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
-
-            {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-            },
-
-            {
-                type: 'time',
-                timeFormat: 'h:mm:ss a',
-                correctFormat: true
-            },
-        ]
-    });
-
-    var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
-
-
-</script>
+    </tbody>
+</table>
