@@ -7,33 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
-using System.Text.Json;
-using System.ComponentModel.DataAnnotations;
 
-namespace fmis.Controllers
+
+namespace fmis.Controllers.Budget
 {
     public class Ors_headController : Controller
     {
         private readonly Ors_headContext _context;
+        private readonly Ors_headContext _dbContext;
 
-        public Ors_headController(Ors_headContext context)
+        public Ors_headController(Ors_headContext context, Ors_headContext dbContext)
         {
             _context = context;
+            _dbContext = dbContext;
         }
 
-        public class Ors_headData
-        {
-
-            public string Head_name { get; set; }
-            public string Position { get; set; }
-        }
 
         // GET: Ors_head
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Ors_head.ToList());
-            ViewBag.temp = json;
+
             return View(await _context.Ors_head.ToListAsync());
         }
 
@@ -56,45 +49,19 @@ namespace fmis.Controllers
         }
 
         // GET: Ors_head/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
+            TempData["Ors_head"] = await _dbContext.Ors_head.ToListAsync();
+            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
             return View();
         }
 
-        public ActionResult AddData(List<string[]> dataListFromTable)
-        {
-            var dataListTable = dataListFromTable;
-            return Json("Response, Data Received Successfully");
-        }
-
-        [HttpPost]
-        public IActionResult saveOrs_head(List<Ors_headData> data)
-        {
-            var ors_heads = new List<Ors_head>();
-            var ors_head = new Ors_head();
-
-
-            foreach (var item in data)
-            {
-
-                ors_head.Head_name = item.Head_name;
-                ors_head.Position = item.Position;
-
-                ors_heads.Add(ors_head);
-            }
-
-
-            this._context.Ors_head.Add(ors_head);
-            this._context.SaveChanges();
-            return Json(data);
-        }
-
-        // POST:Ors_head/Create
+        // POST: Ors_head/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Head_name,Position")] Ors_head ors_head)
+        public async Task<IActionResult> Create([Bind("Id, Head_name, Position, Created_at, Updated_at")] Ors_head ors_head)
         {
             if (ModelState.IsValid)
             {
@@ -103,17 +70,6 @@ namespace fmis.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(ors_head);
-        }
-
-        [HttpPost]
-
-        public ActionResult AddOrs_head(IEnumerable<Ors_head> Ors_headInput)
-
-        {
-
-            var p = Ors_headInput;
-            return null;
-
         }
 
         // GET: Ors_head/Edit/5
@@ -137,7 +93,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Head_name,Position")] Ors_head ors_head)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Head_name, Position, Created_at, Updaed_at")] Ors_head ors_head)
         {
             if (id != ors_head.Id)
             {
