@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Obligated_amount>
+﻿@model IEnumerable<fmis.Models.Uacs>
 
 @{
     ViewData["Title"] = "Index";
@@ -23,16 +23,27 @@
         font-size: 13px;
         background-color: #2ECC71
     }
+
+    .uacs {
+        margin-right: 200px;
+    }
+
+    .search {
+        margin-left: 54%;
+    }
 </style>
 
-<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+
+<input type="hidden" class="uacs" value="@ViewBag.temp">
+<br />
+<input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
 <br />
 <br />
-<div id="example" class="hot"></div>
 <br />
-<div class="controls">
-    <button id="export-file">Download CSV</button>
+<div id="example" class="hot" style="margin-left:50px;"></div>
+<br />
+<div class="controls" >
+    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
 </div>
 
 
@@ -44,12 +55,12 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Obligation_id: this[0], Expense_title: this[1], Code: this[2], Amount: this[3] } );
+                json.push({ Account_title: this[0], Expense_code: this[1] } );
             });
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("saveObligated_amount", "Obligated_amount")',
+                url: '@Url.Action("SaveUacs", "Uacs")',
                 dataType: "JSON",
                 data: { data: json },
                 success: function (output) {
@@ -67,12 +78,12 @@
     };
 
 
-    var obligated_amount = $.parseJSON($(".obligated_amount").val());
+    var uacs = $.parseJSON($(".uacs").val());
 
     const data = [];
     var counter = 0;
-    $.each(obligated_amount, function () {
-        data[counter] = [this.Obligation_id, this.Expense_title, this.Code, this.Amount]
+    $.each(uacs, function () {
+        data[counter] = [this.Account_title, this.Expense_code]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -80,24 +91,21 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '100%',
-        colWidths: 150,
+        width: '200%',
+        colWidths: 550,
         rowHeaders: true,
         colHeaders: true,
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row'],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Obligation_id: null, Expense_title: null, Code: null, Amount: null},
+        dataSchema: { Account_title: null, Expense_code: null},
         columns: [
+            { data: 'Account_title ', type: 'text' },
+            { data: 'Expense_code', type: 'text' }
 
-            { data: 'Obligation_id', type: 'numeric' },
-            { data: 'Expense_title', type: 'numeric' },
-            { data: 'Code', type: 'numeric' },
-            { data: 'Amount', type: 'numeric' },
-        
         ]
     });
 
@@ -115,11 +123,11 @@
         exportPlugin.downloadFile('csv', {
             bom: false,
             columnDelimiter: ',',
-            columnHeaders: false,
+            columnHeaders: true,
             exportHiddenColumns: true,
             exportHiddenRows: true,
             fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            filename: 'UACS',
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true
@@ -137,7 +145,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Obligation_id', 'Expense_title', 'Code', 'Amount'],
+        colHeaders: ['ACCOUNT_TILE', 'UACS EXPENSE_CODE'],
         cell: [
             {
                 row: 0,
@@ -147,18 +155,12 @@
         ],
         columns: [
             {
-                //  cell is simple text, no special options here
+
             },
             {
-                //  cell is simple text, no special options here
+                // 2nd cell is simple text, no special options here
             },
-            {
-                //  cell is simple text, no special options here
-            },
-            {
-                //  cell is simple text, no special options here
-            },
-           
+
         ]
     });
 
@@ -167,21 +169,5 @@
 
 
 </script>
-@*<style>
-
-        td.custom-cell {
-            color: #fff;
-            background-color: #37bc6c;
-        }
-
-        .handsontable th:nth-child(0) {
-            background-color: aquamarine;
-            font-weight: bold;
-        }
 
 
-        .custom-table tdata th:nth-child(even),
-        .custom-table tbody tr:nth-child(odd) th {
-            background-color: #d7f1e1;
-        }
-    </style>*@

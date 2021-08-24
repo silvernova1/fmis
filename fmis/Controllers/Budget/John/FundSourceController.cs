@@ -7,21 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data.John;
 using fmis.Models.John;
+using fmis.Models;
+using fmis.Data;
+
 
 namespace fmis.Controllers.Budget.John
 {
     public class FundSourceController : Controller
     {
         private readonly FundSourceContext _context;
+        private readonly UacsContext _dbContext;
 
-        public FundSourceController(FundSourceContext context)
+        public FundSourceController(FundSourceContext context, UacsContext dbContext)
         {
             _context = context;
+            _dbContext = dbContext;
         }
+
 
         // GET: FundSource
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.FundSource.ToListAsync());
         }
 
@@ -44,8 +51,10 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
+            TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
+            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
             return View();
         }
 
@@ -117,7 +126,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Delete/5
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -137,7 +146,7 @@ namespace fmis.Controllers.Budget.John
         // POST: FundSource/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var fundSource = await _context.FundSource.FindAsync(id);
             _context.FundSource.Remove(fundSource);

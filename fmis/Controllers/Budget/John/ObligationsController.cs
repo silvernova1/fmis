@@ -48,6 +48,22 @@ namespace fmis.Controllers
             };
         }
 
+
+        public DateTime CheckExcelDate(string excel_data)
+        {
+            string dateString = @"d/M/yyyy";
+
+            DateTime date1 = DateTime.ParseExact(dateString, @"d/M/yyyy",
+            System.Globalization.CultureInfo.InvariantCulture);
+            if (dateString == null)
+                return DateTime.ParseExact(dateString, @"d/M/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture);
+
+            return (DateTime)date1;
+
+
+        }
+
         public IActionResult CreateD()
         {
 

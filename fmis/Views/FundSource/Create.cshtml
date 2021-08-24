@@ -1,16 +1,29 @@
 ﻿@model fmis.Models.John.FundSource
+@using fmis.Models;
+@using fmis.Models.John;
+@{
+
+
+    FundSource FundSource = TempData["FundSource"] as FundSource;
+    List<Uacs> Uacs = TempData["Uacs"] as List<Uacs>;
+}
+
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create Fund Source</h2>
-<hr />
 
 <form asp-action="Create">
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Create" class="btn btn-success btn-xs" />
+                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -47,6 +60,34 @@
     </div>
 </form>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*   @FundSource.FundSourceTitle*@
+            </th>
+            <th>
+                @* @FundSource.FundSourceTitleCode*@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Uacs)
+        {
+            <tr>
+                <td style="width: 800px;">
+                    @item.Account_title
+                </td>
+                @*<td>
+                    <select class="form-control" aria-label="Default select example">
+                        <option selected>Select ORS Head</option>
+                        <option value="1">@item.Account_title</option>
+                    </select>
+                </td>*@
+            </tr>
+        }
+    </tbody>
+</table>
