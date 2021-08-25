@@ -25,6 +25,7 @@ namespace fmis.Controllers
         public class Budget_allotmentData
         {
             [DataType(DataType.Date)]
+            public int Id { get; set; }
             public string Year { get; set; }
             public string Allotment_series { get; set; }
             public string Allotment_title { get; set; }
@@ -46,9 +47,9 @@ namespace fmis.Controllers
         // GET: Obligations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.layout = "_Layout";
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -56,10 +57,8 @@ namespace fmis.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (Budget == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
             return View(Budget);
         }
 
@@ -69,10 +68,8 @@ namespace fmis.Controllers
             ViewBag.layout = "_Layout";
             return View();
         }
-
         public ActionResult AddData(List<string[]> dataListFromTable)
         {
-            ViewBag.layout = "_Layout";
             var dataListTable = dataListFromTable;
             return Json("Response, Data Received Successfully");
         }
@@ -86,6 +83,7 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
+                Allotment.Id = item.Id;
                 Allotment.Year = item.Year;
                 Allotment.Allotment_series = item.Allotment_series;
                 Allotment.Allotment_title = item.Allotment_title;
@@ -95,8 +93,6 @@ namespace fmis.Controllers
 
                 Budget.Add(Allotment);
             }
-
-            ViewBag.layout = "_Layout";
             this._context.Budget_allotment.Add(Allotment);
             this._context.SaveChanges();
             return Json(data);
@@ -109,6 +105,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
+            ViewBag.layout = "_Layout";
             if (ModelState.IsValid)
             {
 
@@ -116,35 +113,29 @@ namespace fmis.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
 
         [HttpPost]
 
         public ActionResult AddObligation(IEnumerable<Budget_allotment> BudgetInput)
-
         {
-
             var p = BudgetInput;
             return null;
-
         }
-
         // GET: Obligations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.layout = "_Layout";
             if (id == null)
             {
                 return NotFound();
             }
-
             var Allotment = await _context.Budget_allotment.FindAsync(id);
             if (Allotment == null)
             {
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
 
@@ -155,9 +146,9 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
+            ViewBag.layout = "_Layout";
             if (id != Allotment.Id)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
@@ -179,34 +170,26 @@ namespace fmis.Controllers
                         throw;
                     }
                 }
-                ViewBag.layout = "_Layout";
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
-
         // GET: Obligations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.layout = "_Layout";
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-
             var Allotment = await _context.Budget_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (Allotment == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-
-            ViewBag.layout = "_Layout";
             return View(Allotment);
         }
-
         // POST: Obligations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
