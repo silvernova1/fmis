@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
+using fmis.Data.John;
 using fmis.Models;
+using fmis.Models.John;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
+
 
 namespace fmis.Controllers
 {
@@ -37,15 +40,24 @@ namespace fmis.Controllers
         // GET: 
         public async Task<IActionResult> Index()
         {
-            ViewBag.layout = "_Layout";
+
+
+               ViewBag.layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.Budget_allotment.ToList());
             ViewBag.temp = json;
+
+
+
             return View(await _context.Budget_allotment.ToListAsync());
+
         }
 
         // GET: Obligations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+  
+
+
             if (id == null)
             {
                 ViewBag.layout = "_Layout";
@@ -53,7 +65,7 @@ namespace fmis.Controllers
             }
 
             var Budget = await _context.Budget_allotment
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
             if (Budget == null)
             {
                 ViewBag.layout = "_Layout";
@@ -107,7 +119,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
             if (ModelState.IsValid)
             {
@@ -153,9 +165,9 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
-            if (id != Allotment.Id)
+            if (id != Allotment.BudgetAllotmentId)
             {
                 ViewBag.layout = "_Layout";
                 return NotFound();
@@ -170,7 +182,7 @@ namespace fmis.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Budget_allotmentExists(Allotment.Id))
+                    if (!Budget_allotmentExists(Allotment.BudgetAllotmentId))
                     {
                         return NotFound();
                     }
@@ -196,7 +208,7 @@ namespace fmis.Controllers
             }
 
             var Allotment = await _context.Budget_allotment
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
             if (Allotment == null)
             {
                 ViewBag.layout = "_Layout";
@@ -222,7 +234,7 @@ namespace fmis.Controllers
         private bool Budget_allotmentExists(int id)
         {
             ViewBag.layout = "_Layout";
-            return _context.Budget_allotment.Any(e => e.Id == id);
+            return _context.Budget_allotment.Any(e => e.BudgetAllotmentId == id);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using fmis.Models;
 
 namespace fmis.Models.John
 {
@@ -16,7 +17,8 @@ namespace fmis.Models.John
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
 
-       /* public ICollection<Uacs> Uacs { get; set; }*/
+        public int BudgetAllotmentId { get; set; }
+       public Budget_allotment Budget_allotment { get; set; }
 
     }
 }
