@@ -5,20 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.John;
 
 namespace fmis.Data
 {
     public class MyDbContext : DbContext
     {
-        public DbSet<fmis.Models.John.FundSource> Uacs { get; set; }
-        public DbSet<fmis.Models.Uacs> UacsAmount { get; set; }
+        public DbSet<Budget_allotment> Budget_allotment { get; set; }
+        public DbSet<fmis.Models.John.FundSource> FundSource { get; set; }
 
-/*        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Uacs>()
-                .HasOne(p => p.FundSource)
-                .WithMany(b => b.Uacses);
-        }*/
+
+            modelBuilder.Entity<FundSource>()
+                .HasOne<Budget_allotment>(p => p.Budget_allotment)
+                .WithMany(b => b.FundSource);
+                /*.HasForeignKey(e => e.BudgetAllotmentId);*/
+        }
 
 
         public MyDbContext(DbContextOptions<MyDbContext> options)

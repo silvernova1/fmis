@@ -29,29 +29,25 @@ namespace fmis.Controllers.Budget.silver
         // GET: Requesting_office/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.layout = "_Layout";
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-
             var requesting_office = await _context.Requesting_office
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (requesting_office == null)
             {
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
             return View(requesting_office);
         }
-
         // GET: Requesting_office/Create
         public IActionResult Create()
         {
             ViewBag.layout = "_Layout";
             return View();
         }
-
         // POST: Requesting_office/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -59,36 +55,30 @@ namespace fmis.Controllers.Budget.silver
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Head_name,Position,Created_at,Updated_at")] Requesting_office requesting_office)
         {
+            ViewBag.layout = "_Layout";
             if (ModelState.IsValid)
             {
-                ViewBag.layout = "_Layout";
                 _context.Add(requesting_office);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
             return View(requesting_office);
         }
-
         // GET: Requesting_office/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.layout = "_Layout";
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-
             var requesting_office = await _context.Requesting_office.FindAsync(id);
             if (requesting_office == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
             return View(requesting_office);
         }
-
         // POST: Requesting_office/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -96,12 +86,11 @@ namespace fmis.Controllers.Budget.silver
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Head_name,Position,Created_at,Updated_at")] Requesting_office requesting_office)
         {
+            ViewBag.layout = "_Layout";
             if (id != requesting_office.Id)
-            {
-                ViewBag.layout = "_Layout";
+            {   
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -113,7 +102,6 @@ namespace fmis.Controllers.Budget.silver
                 {
                     if (!Requesting_officeExists(requesting_office.Id))
                     {
-                        ViewBag.layout = "_Layout";
                         return NotFound();
                     }
                     else
@@ -121,39 +109,31 @@ namespace fmis.Controllers.Budget.silver
                         throw;
                     }
                 }
-                ViewBag.layout = "_Layout";
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
             return View(requesting_office);
         }
-
         // GET: Requesting_office/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.layout = "_Layout";
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-
             var requesting_office = await _context.Requesting_office
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (requesting_office == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
             return View(requesting_office);
         }
-
         // POST: Requesting_office/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            ViewBag.layout = "_Layout";
             var requesting_office = await _context.Requesting_office.FindAsync(id);
             _context.Requesting_office.Remove(requesting_office);
             await _context.SaveChangesAsync();
@@ -162,7 +142,6 @@ namespace fmis.Controllers.Budget.silver
 
         private bool Requesting_officeExists(int id)
         {
-            ViewBag.layout = "_Layout";
             return _context.Requesting_office.Any(e => e.Id == id);
         }
     }
