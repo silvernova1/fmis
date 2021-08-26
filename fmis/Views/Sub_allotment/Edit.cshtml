@@ -1,0 +1,59 @@
+﻿@model fmis.Models.Sub_allotment
+
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Sub_allotment</h2>
+<hr />
+<form asp-action="Edit">
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Prexe_code" class="control-label"></label>
+                <input asp-for="Prexe_code" class="form-control" />
+                <span asp-validation-for="Prexe_code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Suballotment_code" class="control-label"></label>
+                <input asp-for="Suballotment_code" class="form-control" />
+                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Suballotment_title" class="control-label"></label>
+                <textarea asp-for="Suballotment_title" class="form-control"></textarea>
+                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Ors_head" class="control-label"></label>
+                <input asp-for="Ors_head" class="form-control" />
+                <span asp-validation-for="Ors_head" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Responsibility_number" class="control-label"></label>
+                <input asp-for="Responsibility_number" class="form-control" />
+                <span asp-validation-for="Responsibility_number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+           
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

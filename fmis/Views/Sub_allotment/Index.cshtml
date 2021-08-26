@@ -1,199 +1,199 @@
 ﻿@model IEnumerable<fmis.Models.Sub_allotment>
 
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-<style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
-    }
+<h2>Sub_allotment</h2>
+<hr />
 
-    .htCore tbody tr td, .htCore thead tr th, body {
-    }
-
-
-    .htCore thead tr th {
-        color: #fff;
-        font-size: 13px;
-        background-color: #2ECC71
-    }
-</style>
-
-<input type="hidden" class="sub_allotment" value="@ViewBag.temp">
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
-<br />
-<div id="example" class="hot"></div>
-<br />
-<div class="controls">
-    <button id="export-file">Download CSV</button>
+<div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+<p>
+    <a asp-action="Create" class="btn btn-success btn-sm">Add new Sub_allotment</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Prexe_code
+            </th>
+            <th>
+                Suballotment_code
+            </th>
+            <th>
+                Suballotment_title
+            </th>
+            <th>
+                ORS Head
+            </th>
+            <th>
+                Responsibility_number
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+         {
 
-<script>
+      <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prexe_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Suballotment_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Suballotment_title)
+            </td>
+            <td>
+                <select class="form-control" aria-label="Default select example">
+                    <option selected>Select ORS Head</option>
+                    <option value="1">Rusel</option>
+                    <option value="2">John</option>
+                    <option value="3">Carlo</option>
+                    <option value="3">Silver</option>
+                    <option value="3">Enerz</option>
+                </select>
+            <td>
+                @Html.DisplayFor(modelItem => item.Responsibility_number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-    document.onkeydown = function (e) {
-        if (e.ctrlKey && e.keyCode === 83) {
-            $('#loading_modal').modal('show');
+            </td>
+     </tr>
 
-            var json = [];
-            $.each(hot.getSourceData(), function () {
-                json.push({ Prexe_code: this[0], Suballotment_code: this[1], Suballotment_title: this[2], Ors_head: this[3], Responsibility_number: this[4], Description: this[5]} );
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("saveSub_allotment", "Sub_allotment")',
-                dataType: "JSON",
-                data: { data: json },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-            });
-
-            return false;
-        }
-    };
+         }
+    </tbody>
+</table>
 
 
-    var sub_allotment = $.parseJSON($(".sub_allotment").val());
 
-    const data = [];
-    var counter = 0;
-    $.each(sub_allotment, function () {
-        data[counter] = [this.Prexe_code, this.Suballotment_code, this.Suballotment_title, this.Ors_head, this.Responsibility_number, this.Description]
-        counter++;
-    })
-    const searchField = document.querySelector('#search_field2');
-    const button = document.querySelector('#export-file');
-    const container = document.getElementById('example');
-    const hot = new Handsontable(container, {
-        data: data,
-        width: '100%',
-        colWidths: 150,
-        rowHeaders: true,
-        colHeaders: true,
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
-        height: 'auto',
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Prexe_code: null, Suballotment_code: null, Suballotment_title: null, Ors_head: null, Responsibility_number: null, Description: null,},
-        columns: [
 
-            { data: 'Prexe_code', type: 'numeric' },
-            { data: 'Suballotment_code', type: 'text' },
-            { data: 'Suballotment_title', type: 'text' },
-            { data: 'Ors_head', type: 'numeric' },
-            { data: 'Responsibility_number', type: 'text' },
-            { data: 'Description', type: 'text' },
-        ]
-    });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
 
-        console.log(queryResult);
-        hot.render();
-    });
 
-    const exportPlugin = hot.getPlugin('exportFile');
 
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: false,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
 
-    hot.addHook('afterChange', function (changes, src) {
-        [
-            [row, col, oldVal, newVal]
-        ] = changes;
-        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
-            console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y'  + newVal.slice(1, newVal.length))
-        }
-    })
 
-    hot.updateSettings({
-        colHeaders: ['Prexe_code', ' Suballotment_code', ' Suballotment_title', 'Ors_head', 'Responsibility_number', 'Description'],
-        cell: [
+
+
+
+
+
+@*@model IEnumerable<fmis.Models.John.FundSource>
+
+    @{
+        ViewData["Title"] = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <h2>Fund Source List</h2>
+    <hr />
+
+    <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Fund Source Code
+                </th>
+                <th>
+                    Fund Source Title
+                </th>
+                <th>
+                    ORS Head
+                </th>
+                <th>
+                    Actions
+                </th>
+                <th>Funds Realignment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
             {
-                row: 0,
-                col: 0,
-                className: 'custom-cell',
-            },
-        ],
-        columns: [
-            {
-               // 1st cell is simple text, no special options here
-            },
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                    </td>
+                    <td>
+                        <select class="form-control" aria-label="Default select example">
+                            <option selected>Select ORS Head</option>
+                            <option value="1">Rusel</option>
+                            <option value="2">John</option>
+                            <option value="3">Carlo</option>
+                            <option value="3">Silver</option>
+                            <option value="3">Enerz</option>
+                        </select>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                        <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-            {
-                // This cell is simple text, no special options here
-            },
-            {
-                // This cell is simple text, no special options here
-            },
-
-            {
-                // This cell is simple text, no special options here
-            },
-            {
-                // This cell is simple text, no special options here
-            },
-
-            {
-                // This cell is simple text, no special options here
-            },
-
-
-        ]
-    });
-
-    var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
-
-
-</script>
-@*<style>
-
-        td.custom-cell {
-            color: #fff;
-            background-color: #37bc6c;
-        }
-
-        .handsontable th:nth-child(0) {
-            background-color: aquamarine;
-            font-weight: bold;
-        }
-
-
-        .custom-table tdata th:nth-child(even),
-        .custom-table tbody tr:nth-child(odd) th {
-            background-color: #d7f1e1;
-        }
-    </style>*@
-
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+*@

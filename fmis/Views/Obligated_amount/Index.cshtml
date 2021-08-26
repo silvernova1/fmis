@@ -1,187 +1,195 @@
 ﻿@model IEnumerable<fmis.Models.Obligated_amount>
 
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-<style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
-    }
+<h2>Obligated_amount</h2>
+<hr />
 
-    .htCore tbody tr td, .htCore thead tr th, body {
-    }
-
-
-    .htCore thead tr th {
-        color: #fff;
-        font-size: 13px;
-        background-color: #2ECC71
-    }
-</style>
-
-<input type="hidden" class="obligated_amount" value="@ViewBag.temp">
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
-<br />
-<div id="example" class="hot"></div>
-<br />
-<div class="controls">
-    <button id="export-file">Download CSV</button>
+<div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<script>
-
-    document.onkeydown = function (e) {
-        if (e.ctrlKey && e.keyCode === 83) {
-            $('#loading_modal').modal('show');
-
-            var json = [];
-            $.each(hot.getSourceData(), function () {
-                json.push({ Obligation_id: this[0], Expense_title: this[1], Code: this[2], Amount: this[3] } );
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("saveObligated_amount", "Obligated_amount")',
-                dataType: "JSON",
-                data: { data: json },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-            });
-
-            return false;
-        }
-    };
-
-
-    var obligated_amount = $.parseJSON($(".obligated_amount").val());
-
-    const data = [];
-    var counter = 0;
-    $.each(obligated_amount, function () {
-        data[counter] = [this.Obligation_id, this.Expense_title, this.Code, this.Amount]
-        counter++;
-    })
-    const searchField = document.querySelector('#search_field2');
-    const button = document.querySelector('#export-file');
-    const container = document.getElementById('example');
-    const hot = new Handsontable(container, {
-        data: data,
-        width: '100%',
-        colWidths: 150,
-        rowHeaders: true,
-        colHeaders: true,
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
-        height: 'auto',
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Obligation_id: null, Expense_title: null, Code: null, Amount: null},
-        columns: [
-
-            { data: 'Obligation_id', type: 'numeric' },
-            { data: 'Expense_title', type: 'numeric' },
-            { data: 'Code', type: 'numeric' },
-            { data: 'Amount', type: 'numeric' },
-        
-        ]
-    });
-
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-
-        console.log(queryResult);
-        hot.render();
-    });
-
-    const exportPlugin = hot.getPlugin('exportFile');
-
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: false,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
-
-    hot.addHook('afterChange', function (changes, src) {
-        [
-            [row, col, oldVal, newVal]
-        ] = changes;
-        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
-            console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
-        }
-    })
-
-    hot.updateSettings({
-        colHeaders: ['Obligation_id', 'Expense_title', 'Code', 'Amount'],
-        cell: [
-            {
-                row: 0,
-                col: 0,
-                className: 'custom-cell',
-            },
-        ],
-        columns: [
-            {
-                //  cell is simple text, no special options here
-            },
-            {
-                //  cell is simple text, no special options here
-            },
-            {
-                //  cell is simple text, no special options here
-            },
-            {
-                //  cell is simple text, no special options here
-            },
+<p>
+    <a asp-action="Create" class="btn btn-success btn-sm">Add new Obligated_amount</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Obligation_id
+            </th>
+            <th>
+                Expense_title
+            </th>
+            <th>
+                Code
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Actions
+            </th>
            
-        ]
-    });
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Obligation_id)
+            </td>
+            <td>
+                <select class="form-control" aria-label="Default select example">
+                    <option selected>UACS (Account title)</option>
+                    <option value="1">Rusel</option>
+                    <option value="2">John</option>
+                    <option value="3">Carlo</option>
+                    <option value="3">Silver</option>
+                    <option value="3">Enerz</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control" aria-label="Default select example">
+                    <option selected>UACS (Expense Code)</option>
+                    <option value="1">Rusel</option>
+                    <option value="2">John</option>
+                    <option value="3">Carlo</option>
+                    <option value="3">Silver</option>
+                    <option value="3">Enerz</option>
+                </select>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-    var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
+            </td>
 
-
-</script>
-@*<style>
-
-        td.custom-cell {
-            color: #fff;
-            background-color: #37bc6c;
+        </tr>
         }
-
-        .handsontable th:nth-child(0) {
-            background-color: aquamarine;
-            font-weight: bold;
-        }
+    </tbody>
+</table>
 
 
-        .custom-table tdata th:nth-child(even),
-        .custom-table tbody tr:nth-child(odd) th {
-            background-color: #d7f1e1;
-        }
-    </style>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@model IEnumerable<fmis.Models.John.FundSource>
+
+    @{
+        ViewData["Title"] = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <h2>Fund Source List</h2>
+    <hr />
+
+    <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Fund Source Code
+                </th>
+                <th>
+                    Fund Source Title
+                </th>
+                <th>
+                    ORS Head
+                </th>
+                <th>
+                    Actions
+                </th>
+                <th>Funds Realignment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                    </td>
+                    <td>
+                        <select class="form-control" aria-label="Default select example">
+                            <option selected>Select ORS Head</option>
+                            <option value="1">Rusel</option>
+                            <option value="2">John</option>
+                            <option value="3">Carlo</option>
+                            <option value="3">Silver</option>
+                            <option value="3">Enerz</option>
+                        </select>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                        <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+*@
