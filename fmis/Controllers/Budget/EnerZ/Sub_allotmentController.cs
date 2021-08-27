@@ -22,7 +22,6 @@ namespace fmis.Controllers
             _dbContext = dbContext;
         }
 
-
         // GET: Sub_allotment
         public async Task<IActionResult> Index()
         {
@@ -151,7 +150,6 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool Sub_allotmentExists(int id)
         {
             return _context.Sub_allotment.Any(e => e.Id == id);

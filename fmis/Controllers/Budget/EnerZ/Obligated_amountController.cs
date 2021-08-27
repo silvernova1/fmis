@@ -22,7 +22,6 @@ namespace fmis.Controllers
             _dbContext = dbContext;
         }
 
-
         // GET: Obligated_amount
         public async Task<IActionResult> Index()
         {
@@ -37,14 +36,12 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             var obligated_amount = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (obligated_amount == null)
             {
                 return NotFound();
             }
-
             return View(obligated_amount);
         }
 

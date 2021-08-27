@@ -9,12 +9,11 @@ namespace fmis.Data
 {
     public class UtilizationContext : DbContext
     {
-
         public UtilizationContext(DbContextOptions<UtilizationContext> options)
             : base(options)
         {
-        }
 
+        }
         public DbSet<fmis.Models.Utilization> Utilization { get; set; }
     }
 }

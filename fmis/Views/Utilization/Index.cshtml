@@ -23,17 +23,27 @@
         font-size: 13px;
         background-color: #2ECC71
     }
+
+    .uacs {
+        margin-right: 200px;
+    }
+
+    .search {
+        margin-left: 54%;
+    }
 </style>
 
 
 <input type="hidden" class="utilization" value="@ViewBag.temp">
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+<br />
+<input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
 <br />
 <br />
-<div id="example" class="hot"></div>
+<br />
+<div id="example" class="hot" style="margin-left:50px;"></div>
 <br />
 <div class="controls">
-    <button id="export-file">Download CSV</button>
+    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
 </div>
 
 
@@ -50,7 +60,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("SaveUtilization", "Utilizations")',
+                url: '@Url.Action("SaveUtilization", "Utilization")',
                 dataType: "JSON",
                 data: { data: json },
                 success: function (output) {
@@ -68,7 +78,7 @@
     };
 
 
-    var utilization = $.parseJSON($(".utiization").val());
+    var utilization = $.parseJSON($(".utilization").val());
 
     const data = [];
     var counter = 0;
@@ -82,13 +92,13 @@
     const hot = new Handsontable(container, {
         data: data,
         width: '100%',
-        colWidths: 100,
+        colWidths: 105,
         rowHeaders: true,
         colHeaders: true,
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row'],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payer: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},
@@ -108,7 +118,6 @@
             { data: 'Time_recieved', type: 'text' },
             { data: 'Date_released', type: 'text' },
             { data: 'Time_released', type: 'text' }
-
         ]
     });
 
@@ -130,7 +139,7 @@
             exportHiddenColumns: true,
             exportHiddenRows: true,
             fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            filename: 'UTILIZATION',
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true
@@ -161,27 +170,26 @@
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
             },
-            {
-                // 2nd cell is simple text, no special options here
-            },
-            {
 
-            },
             {
-
-            },
-            {
-
-            },
-            {
-
-            },
-            {
-
             },
 
             {
+            },
 
+            {
+            },
+
+            {
+            },
+
+            {
+            },
+
+            {
+            },
+
+            {
             },
 
             {
@@ -216,6 +224,7 @@
                 timeFormat: 'h:mm:ss a',
                 correctFormat: true
             },
+           
         ]
     });
 
@@ -224,21 +233,4 @@
 
 
 </script>
-@*<style>
 
-        td.custom-cell {
-            color: #fff;
-            background-color: #37bc6c;
-        }
-
-        .handsontable th:nth-child(0) {
-            background-color: aquamarine;
-            font-weight: bold;
-        }
-
-
-        .custom-table tdata th:nth-child(even),
-        .custom-table tbody tr:nth-child(odd) th {
-            background-color: #d7f1e1;
-        }
-    </style>*@

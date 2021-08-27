@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
 
-
 namespace fmis.Controllers.Budget
 {
     public class Ors_headController : Controller
@@ -21,7 +20,6 @@ namespace fmis.Controllers.Budget
             _context = context;
             _dbContext = dbContext;
         }
-
 
         // GET: Ors_head
         public async Task<IActionResult> Index()
@@ -44,7 +42,6 @@ namespace fmis.Controllers.Budget
             {
                 return NotFound();
             }
-
             return View(ors_head);
         }
 
@@ -137,7 +134,6 @@ namespace fmis.Controllers.Budget
             {
                 return NotFound();
             }
-
             return View(ors_head);
         }
 

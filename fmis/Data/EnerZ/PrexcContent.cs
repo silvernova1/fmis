@@ -9,12 +9,11 @@ namespace fmis.Data
 {
     public class PrexcContext : DbContext
     {
-
         public PrexcContext(DbContextOptions<PrexcContext> options)
             : base(options)
         {
-        }
 
+        }
         public DbSet<fmis.Models.Prexc> Prexc { get; set; }
     }
 }

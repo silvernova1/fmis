@@ -15,14 +15,6 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
-using Syncfusion.Drawing;
-using System.IO;
-using Syncfusion.Pdf.Grid;
-using RectangleF = Syncfusion.Drawing.RectangleF;
-using SizeF = Syncfusion.Drawing.SizeF;
-using Color = Syncfusion.Drawing.Color;
-using PointF = Syncfusion.Drawing.PointF;
-using Syncfusion.Pdf.Tables;
 
 namespace fmis.Controllers
 {
@@ -36,45 +28,11 @@ namespace fmis.Controllers
             _context = context;
         }
 
-        public IActionResult PrintPdf()
-        {
-
-            return new ViewAsPdf("PrintPdf")
-            {
-
-                CustomSwitches = "--page-offset 0 --footer-center [page] --footer-font-size 12",
-                PageSize = Rotativa.AspNetCore.Options.Size.A4
-
-            };
-        }
-
-
-        public DateTime CheckExcelDate(string excel_data)
-        {
-            string dateString = @"d/M/yyyy";
-
-            DateTime date1 = DateTime.ParseExact(dateString, @"d/M/yyyy",
-            System.Globalization.CultureInfo.InvariantCulture);
-            if (dateString == null)
-                return DateTime.ParseExact(dateString, @"d/M/yyyy",
-                System.Globalization.CultureInfo.InvariantCulture);
-
-            return (DateTime)date1;
-
-
-        }
-
-        public IActionResult CreateD()
-        {
-
-            return View("~/Views/Utilization/PrintPdf.cshtml");
-
-        }
 
 
         public class UtilizationData
         {
-            [DataType(DataType.Date)]
+            public int Id { get; set; }
             public DateTime Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -86,13 +44,9 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-            [DataType(DataType.Date)]
             public DateTime Date_recieved { get; set; }
-            [DataType(DataType.Time)]
             public DateTime Time_recieved { get; set; }
-            [DataType(DataType.Date)]
             public DateTime Date_released { get; set; }
-            [DataType(DataType.Time)]
             public DateTime Time_released { get; set; }
         }
 
@@ -137,12 +91,13 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUtilization(List<UtilizationData> data)
         {
-            var utilizations = new List<Utilization>();
+            var utilizationes = new List<Utilization>();
             var utilization = new Utilization();
 
 
             foreach (var item in data)
             {
+                utilization.Id = item.Id;
                 utilization.Date = item.Date;
                 utilization.Dv = item.Dv;
                 utilization.Pr_no = item.Pr_no;
@@ -159,7 +114,7 @@ namespace fmis.Controllers
                 utilization.Date_released = item.Date_released;
                 utilization.Time_released = item.Time_released;
 
-                utilizations.Add(utilization);
+                utilizationes.Add(utilization);
             }
 
 
@@ -211,7 +166,7 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
-        // POST:  Utilization/Edit/5
+        // POST: Utilization/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -246,7 +201,7 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
-        // GET:  Utilization/Delete/5
+        // GET: Utilization/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -281,3 +236,4 @@ namespace fmis.Controllers
         }
     }
 }
+

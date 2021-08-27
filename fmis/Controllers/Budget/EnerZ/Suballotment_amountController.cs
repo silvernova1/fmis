@@ -34,14 +34,12 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             var suballotment_amount = await _context.Suballotment_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (suballotment_amount== null)
             {
                 return NotFound();
             }
-
             return View(suballotment_amount);
         }
 
@@ -125,14 +123,12 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             var suballotment_amount = await _context.Suballotment_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (suballotment_amount == null)
             {
                 return NotFound();
             }
-
             return View(suballotment_amount);
         }
 
@@ -146,7 +142,6 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool Suballotment_amountExists(int id)
         {
             return _context.Suballotment_amount.Any(e => e.Id == id);

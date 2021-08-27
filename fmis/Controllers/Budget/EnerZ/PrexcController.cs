@@ -24,11 +24,9 @@ namespace fmis.Controllers
 
         public class PrexcData
         {
-
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
             public string pap_code2 { get; set; }
-
         }
 
         // GET: PrexcData
@@ -53,7 +51,6 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             return View(prexc);
         }
 
@@ -75,7 +72,6 @@ namespace fmis.Controllers
             var prexcs = new List<Prexc>();
             var prexc = new Prexc();
 
-
             foreach (var item in data)
             {
                 prexc.pap_title = item.pap_title;
@@ -83,7 +79,6 @@ namespace fmis.Controllers
                 prexc.pap_code2 = item.pap_code2;
                 prexcs.Add(prexc);
             }
-
 
             this._context.Prexc.Add(prexc);
             this._context.SaveChanges();
@@ -175,14 +170,12 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             var prexc = await _context.Prexc
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prexc == null)
             {
                 return NotFound();
             }
-
             return View(prexc);
         }
 
@@ -196,7 +189,6 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool PrexcExists(int id)
         {
             return _context.Prexc.Any(e => e.Id == id);
