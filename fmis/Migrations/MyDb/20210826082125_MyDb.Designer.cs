@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.MyDb
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20210826011457_MyDb")]
+    [Migration("20210826082125_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,7 +89,7 @@ namespace fmis.Migrations.MyDb
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
-                        .WithMany("FundSource")
+                        .WithMany("FundSources")
                         .HasForeignKey("Budget_allotmentBudgetAllotmentId");
 
                     b.Navigation("Budget_allotment");
@@ -97,7 +97,7 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
-                    b.Navigation("FundSource");
+                    b.Navigation("FundSources");
                 });
 #pragma warning restore 612, 618
         }

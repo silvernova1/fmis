@@ -17,8 +17,11 @@ namespace fmis.Models.John
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
 
+
+        /*public Budget_allotment Budget_allotment { get; set; */
         public int BudgetAllotmentId { get; set; }
-       public Budget_allotment Budget_allotment { get; set; }
+        public Budget_allotment Budget_allotment { get; set; }
+        
 
     }
 }

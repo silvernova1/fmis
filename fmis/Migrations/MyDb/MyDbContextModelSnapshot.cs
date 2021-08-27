@@ -87,7 +87,7 @@ namespace fmis.Migrations.MyDb
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
-                        .WithMany("FundSource")
+                        .WithMany("FundSources")
                         .HasForeignKey("Budget_allotmentBudgetAllotmentId");
 
                     b.Navigation("Budget_allotment");
@@ -95,7 +95,7 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
-                    b.Navigation("FundSource");
+                    b.Navigation("FundSources");
                 });
 #pragma warning restore 612, 618
         }
