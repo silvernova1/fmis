@@ -10,9 +10,23 @@ using fmis.Models;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Graphics;
+using System.Drawing;
+using Rotativa.AspNetCore;
+using Syncfusion.Drawing;
+using System.IO;
+using Syncfusion.Pdf.Grid;
+using RectangleF = Syncfusion.Drawing.RectangleF;
+using SizeF = Syncfusion.Drawing.SizeF;
+using Color = Syncfusion.Drawing.Color;
+using PointF = Syncfusion.Drawing.PointF;
+using Syncfusion.Pdf.Tables;
 
 namespace fmis.Controllers
 {
+
     public class UtilizationController : Controller
     {
         private readonly UtilizationContext _context;
@@ -22,9 +36,44 @@ namespace fmis.Controllers
             _context = context;
         }
 
-        public class UtilizationData
+        public IActionResult PrintPdf()
         {
 
+            return new ViewAsPdf("PrintPdf")
+            {
+
+                CustomSwitches = "--page-offset 0 --footer-center [page] --footer-font-size 12",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+
+            };
+        }
+
+
+        public DateTime CheckExcelDate(string excel_data)
+        {
+            string dateString = @"d/M/yyyy";
+
+            DateTime date1 = DateTime.ParseExact(dateString, @"d/M/yyyy",
+            System.Globalization.CultureInfo.InvariantCulture);
+            if (dateString == null)
+                return DateTime.ParseExact(dateString, @"d/M/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture);
+
+            return (DateTime)date1;
+
+
+        }
+
+        public IActionResult CreateD()
+        {
+
+            return View("~/Views/Utilization/PrintPdf.cshtml");
+
+        }
+
+
+        public class UtilizationData
+        {
             [DataType(DataType.Date)]
             public DateTime Date { get; set; }
             public string Dv { get; set; }
@@ -39,11 +88,11 @@ namespace fmis.Controllers
             public int Created_by { get; set; }
             [DataType(DataType.Date)]
             public DateTime Date_recieved { get; set; }
-            [DataType(DataType.Date)]
+            [DataType(DataType.Time)]
             public DateTime Time_recieved { get; set; }
             [DataType(DataType.Date)]
             public DateTime Date_released { get; set; }
-            [DataType(DataType.Date)]
+            [DataType(DataType.Time)]
             public DateTime Time_released { get; set; }
         }
 
@@ -52,7 +101,7 @@ namespace fmis.Controllers
         {
             var json = JsonSerializer.Serialize(_context.Utilization.ToList());
             ViewBag.temp = json;
-            return View(await _context.Utilization.ToListAsync());
+            return View("~/Views/Utilization/Index.cshtml");
         }
 
         // GET: Utilization/Details/5
@@ -86,7 +135,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult saveUtilization(List<Utilization> data)
+        public IActionResult SaveUtilization(List<UtilizationData> data)
         {
             var utilizations = new List<Utilization>();
             var utilization = new Utilization();
@@ -94,7 +143,6 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-
                 utilization.Date = item.Date;
                 utilization.Dv = item.Dv;
                 utilization.Pr_no = item.Pr_no;
@@ -102,25 +150,25 @@ namespace fmis.Controllers
                 utilization.Payer = item.Payer;
                 utilization.Address = item.Address;
                 utilization.Particulars = item.Particulars;
-                utilization.Ors_no= item.Ors_no;
+                utilization.Ors_no = item.Ors_no;
                 utilization.Fund_source = item.Fund_source;
                 utilization.Gross = item.Gross;
                 utilization.Created_by = item.Created_by;
                 utilization.Date_recieved = item.Date_recieved;
-                utilization.Date_released = item.Date_released;
                 utilization.Time_recieved = item.Time_recieved;
+                utilization.Date_released = item.Date_released;
                 utilization.Time_released = item.Time_released;
 
                 utilizations.Add(utilization);
             }
 
 
-            this._context.Utilization.Add(utilization);
+            this._context.Utilization.Update(utilization);
             this._context.SaveChanges();
             return Json(data);
         }
 
-        // POST:Ors_head/Create
+        // POST: Utilization/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -147,7 +195,7 @@ namespace fmis.Controllers
 
         }
 
-        // GET: Utilzation/Edit/5
+        // GET: Utilization/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -163,7 +211,7 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
-        // POST: Utilization/Edit/5
+        // POST:  Utilization/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -196,10 +244,9 @@ namespace fmis.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(utilization);
-
         }
 
-        // GET: UtilizationDelete/5
+        // GET:  Utilization/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -217,13 +264,13 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
-        // POST: Utiization/Delete/5
+        // POST: Utilization/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var utilization = await _context.Utilization.FindAsync(id);
-            _context.Utilization.Remove(utilization);
+            var obligation = await _context.Utilization.FindAsync(id);
+            _context.Utilization.Remove(obligation);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

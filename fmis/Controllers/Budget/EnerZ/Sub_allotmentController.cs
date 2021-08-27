@@ -7,41 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using AutoMapper;
-using System.Text.Json;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace fmis.Controllers
 {
     public class Sub_allotmentController : Controller
     {
         private readonly Sub_allotmentContext _context;
+        private readonly Sub_allotmentContext _dbContext;
 
-        public Sub_allotmentController(Sub_allotmentContext context)
+        public Sub_allotmentController(Sub_allotmentContext context, Sub_allotmentContext dbContext)
         {
             _context = context;
+            _dbContext = dbContext;
         }
 
-        public class Sub_allotmentData
-        {
-
-            public int Prexe_code { get; set; }
-            public string Suballotment_code { get; set; }
-            public string Suballotment_title { get; set; }
-            public int Orc_head { get; set; }
-            public string Responsibility_number { get; set; }
-            public string Description { get; set; }
-        }
 
         // GET: Sub_allotment
         public async Task<IActionResult> Index()
         {
-            var json = JsonSerializer.Serialize(_context.Sub_allotment.ToList());
-            ViewBag.temp = json;
+
             return View(await _context.Sub_allotment.ToListAsync());
         }
 
-        // GET: Sub_allotment/Details/5
+        // GET: Sub_allotmentDetails/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -60,48 +49,19 @@ namespace fmis.Controllers
         }
 
         // GET: Sub_allotment/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
+            TempData["Sub_allotment"] = await _dbContext.Sub_allotment.ToListAsync();
+            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
             return View();
         }
 
-        public ActionResult AddData(List<string[]> dataListFromTable)
-        {
-            var dataListTable = dataListFromTable;
-            return Json("Response, Data Received Successfully");
-        }
-
-        [HttpPost]
-        public IActionResult saveSub_allotment(List<Sub_allotmentData> data)
-        {
-            var sub_allotments = new List<Sub_allotment>();
-            var sub_allotment = new Sub_allotment();
-
-
-            foreach (var item in data)
-            {
-
-                sub_allotment.Prexe_code = item.Prexe_code;
-                sub_allotment.Suballotment_code = item.Suballotment_code;
-                sub_allotment.Suballotment_title = item.Suballotment_title;
-                sub_allotment.Orc_head = item.Orc_head;
-                sub_allotment.Responsibility_number = item.Responsibility_number;
-                sub_allotment.Description = item.Description;
-                sub_allotments.Add(sub_allotment);
-            }
-
-
-            this._context.Sub_allotment.Add(sub_allotment);
-            this._context.SaveChanges();
-            return Json(data);
-        }
-
-        // POST:Sub_allotment/Create
+        // POST: Sub_allotment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Create([Bind("PrexcCode,Suballotment_code,Suballotment_title,Ors_head,Responisiblity_number,Description")] Sub_allotment sub_allotment)
         {
             if (ModelState.IsValid)
             {
@@ -110,17 +70,6 @@ namespace fmis.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(sub_allotment);
-        }
-
-        [HttpPost]
-
-        public ActionResult AddSub_allotment(IEnumerable<Sub_allotment> Sub_allotmentInput)
-
-        {
-
-            var p = Sub_allotmentInput;
-            return null;
-
         }
 
         // GET: Sub_allotment/Edit/5
@@ -139,12 +88,12 @@ namespace fmis.Controllers
             return View(sub_allotment);
         }
 
-        // POST: Sub_allotment/Edit/5
+        // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("PrexcCode,Suballotment_code,Suballotment_title,Ors_head,Responisiblity_number,Description")] Sub_allotment sub_allotment)
         {
             if (id != sub_allotment.Id)
             {
@@ -182,7 +131,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var sub_allotment = await _context.Sub_allotment
+            var sub_allotment= await _context.Sub_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (sub_allotment == null)
             {

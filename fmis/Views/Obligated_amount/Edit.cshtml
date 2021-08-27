@@ -1,0 +1,48 @@
+﻿@model fmis.Models.Obligated_amount
+
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Obligated_amount</h2>
+<hr />
+<form asp-action="Edit">
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a asp-action="Index">Back to List</a>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Obligation_id" class="control-label"></label>
+                <input asp-for="Obligation_id" class="form-control" />
+                <span asp-validation-for="Obligation_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Expense_Title" class="control-label"></label>
+                <input asp-for="Expense_Title" class="form-control" />
+                <span asp-validation-for="Expense_Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Code" class="control-label"></label>
+                <textarea asp-for="Code" class="form-control"></textarea>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+           
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

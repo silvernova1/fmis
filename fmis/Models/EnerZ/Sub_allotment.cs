@@ -11,7 +11,7 @@ namespace fmis.Models
         public int Prexe_code { get; set; }
         public string Suballotment_code { get; set; }
         public string Suballotment_title { get; set; }
-        public int Orc_head { get; set; }
+        public int Ors_head { get; set; }
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
     }

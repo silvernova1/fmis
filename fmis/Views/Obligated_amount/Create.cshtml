@@ -1,0 +1,93 @@
+﻿@model fmis.Models.Obligated_amount
+@using fmis.Models;
+@{
+
+
+    Obligated_amount Obligated_amount = TempData["Obligated_amount"] as Obligated_amount;
+    List<Obligated_amount> obligated_amount = TempData["Obligated_amount"] as List<Obligated_amount>;
+}
+
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form asp-action="Add new Obligated_amount">
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Create" class="btn btn-success btn-xs" />
+                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Obligation_id" class="control-label"></label>
+                <input asp-for="Obligation_id" class="form-control" required />
+                <span asp-validation-for="Obligation_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Expense_Title" class="control-label"></label>
+                <input asp-for="Expense_Title" class="form-control" required />
+                <span asp-validation-for="Expense_Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Code" class="control-label"></label>
+                <textarea asp-for="Code" class="form-control" required></textarea>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" required />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*  @Obligated_amount. *@
+            </th>
+            <th>
+                @*  @Obligated_amount. *@
+            </th>
+            <th>
+                @*  @Obligated_amount. *@
+            </th>
+            <th>
+                @*  @Obligated_amount. *@
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in obligated_amount)
+         {
+            <tr>
+                <td style="width: 800px;">
+                    @item. Obligated_amount
+                </td>
+                @*<td>
+                        <select class="form-control" aria-label="Default select example">
+                            <option selected>Select ORS Head</option>
+                            <option value="1">@item.Account_title</option>
+                        </select>
+                    </td>*@
+            </tr>
+         }
+    </tbody>
+</table>
