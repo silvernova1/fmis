@@ -41,13 +41,13 @@ namespace fmis.Controllers
         public async Task<IActionResult> Index()
         {
 
-
-               ViewBag.layout = "_Layout";
+            ViewBag.layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.Budget_allotment.ToList());
             ViewBag.temp = json;
 
 
-
+            /*IList<Budget_allotment> item = _context.Budget_allotment.Include(f => f.FundSource).ToList();*/
+            /*return View(item);*/
             return View(await _context.Budget_allotment.ToListAsync());
 
         }

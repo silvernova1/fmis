@@ -29,7 +29,12 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Index()
         {
 
-            return View(await _context.FundSource.ToListAsync());
+
+
+            IList<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();
+
+            return View(item);
+            /*return View(await _context.FundSource.ToListAsync());*/
         }
 
         // GET: FundSource/Details/5

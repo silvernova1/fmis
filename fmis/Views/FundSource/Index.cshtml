@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.John.FundSource>
+﻿@model IList<fmis.Models.John.FundSource>
 
 
 @{
@@ -43,6 +43,9 @@
                 Fund Source Title
             </th>
             <th>
+                Budget Allotment Id
+            </th>
+            <th>
                 ORS Head
             </th>
             <th>
@@ -54,32 +57,35 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
-                <td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">Rusel</option>
-                        <option value="2">John</option>
-                        <option value="3">Carlo</option>
-                        <option value="3">Silver</option>
-                        <option value="3">Enerz</option>
-                    </select>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                    <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FundSourceTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
+            </td>
+            <td>
+                <select class="form-control" aria-label="Default select example">
+                    <option selected>Select ORS Head</option>
+                    <option value="1">Rusel</option>
+                    <option value="2">John</option>
+                    <option value="3">Carlo</option>
+                    <option value="3">Silver</option>
+                    <option value="3">Enerz</option>
+                </select>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-                </td>
-                <td>
-                    <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
-                </td>
-            </tr>
+            </td>
+            <td>
+                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
