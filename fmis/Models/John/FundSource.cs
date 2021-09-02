@@ -9,7 +9,7 @@ namespace fmis.Models.John
 {
     public class FundSource
     {
-        
+        [Key]
         public int FundSourceId { get; set; }
         public string PrexcCode { get; set; }
         public string FundSourceTitle { get; set; }
@@ -19,9 +19,9 @@ namespace fmis.Models.John
 
 
         /*public Budget_allotment Budget_allotment { get; set; */
-        public int BudgetAllotmentId { get; set; }
+
         public Budget_allotment Budget_allotment { get; set; }
-        
+
 
     }
 }

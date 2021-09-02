@@ -12,17 +12,21 @@ using fmis.Models.John;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
-
+using Sitecore.FakeDb;
+using System.Dynamic;
+using fmis.ViewModel;
 
 namespace fmis.Controllers
 {
     public class Budget_allotmentController : Controller
     {
         private readonly Budget_allotmentContext _context;
+        private readonly FundSourceContext _Context;
 
-        public Budget_allotmentController(Budget_allotmentContext context)
+        public Budget_allotmentController(Budget_allotmentContext context, FundSourceContext Context)
         {
             _context = context;
+            _Context = Context;
         }
 
         public class Budget_allotmentData
@@ -38,7 +42,7 @@ namespace fmis.Controllers
             public DateTime Updated_at { get; set; }
         }
         // GET: 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
 
             ViewBag.layout = "_Layout";
@@ -46,8 +50,17 @@ namespace fmis.Controllers
             ViewBag.temp = json;
 
 
-            /*IList<Budget_allotment> item = _context.Budget_allotment.Include(f => f.FundSource).ToList();*/
-            /*return View(item);*/
+            /*List<Budget_allotment> item = _context.Budget_allotment.Include(f => f.FundSources).ToList();*/
+            /*IList<FundSource> item = _Context.FundSource.Include(f => f.Budget_allotment).ToList();
+            return View(item);*/
+            /*var item = _context.Budget_allotment.FromSqlRaw("Select * from Budget_Allotment")
+                  .ToList();*/
+            /*var item = _context.Budget_allotment.Include(f => f.FundSources);*/
+
+
+            
+
+
             return View(await _context.Budget_allotment.ToListAsync());
 
         }
@@ -60,18 +73,21 @@ namespace fmis.Controllers
 
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
+                
                 return NotFound();
             }
 
             var Budget = await _context.Budget_allotment
+                .Include(s => s.FundSources)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+
             if (Budget == null)
             {
-                ViewBag.layout = "_Layout";
+                
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
+            
             return View(Budget);
         }
 

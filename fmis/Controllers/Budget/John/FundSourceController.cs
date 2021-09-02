@@ -31,8 +31,9 @@ namespace fmis.Controllers.Budget.John
 
 
 
-            IList<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();
-
+            /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
+            var item = _context.FundSource.FromSqlRaw("Select * from FundSource where Budget_allotmentBudgetAllotmentId = 1")
+                  .ToList();
             return View(item);
             /*return View(await _context.FundSource.ToListAsync());*/
         }

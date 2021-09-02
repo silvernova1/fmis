@@ -1,0 +1,77 @@
+﻿@model fmis.Models.Budget_allotment
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Budget_allotment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Allotment_series)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Allotment_series)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Allotment_title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Allotment_title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Allotment_code)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Allotment_code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_at)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_at)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated_at)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated_at)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FundSources)
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+                <tr>
+                    <th>Course Title</th>
+                    <th>Grade</th>
+                </tr>
+                @foreach (var item in Model.FundSources)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="FundSource" asp-action="index">FundSource</a>
+                        </td>
+                       @* <td>
+                            @Html.DisplayFor(modelItem => item.Grade)
+                        </td>*@
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.BudgetAllotmentId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

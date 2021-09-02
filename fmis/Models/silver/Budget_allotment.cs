@@ -18,7 +18,7 @@ namespace fmis.Models
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
-        public IList<FundSource> FundSources { get; set; }
+        public ICollection<FundSource> FundSources { get; set; }
         /*public IList<FundSource> FundSource { get; set; }*/
 
     }

@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.MyDb
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20210826082125_MyDb")]
+    [Migration("20210902070528_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,9 +57,6 @@ namespace fmis.Migrations.MyDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BudgetAllotmentId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");

@@ -36,7 +36,6 @@ namespace fmis.Migrations.MyDb
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

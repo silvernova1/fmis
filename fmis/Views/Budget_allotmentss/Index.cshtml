@@ -1,0 +1,64 @@
+﻿@model IEnumerable<fmis.Models.Budget_allotment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Budget Allotment</h2>
+
+<p>
+    <a class=" btn btn-success" asp-action="Create">Create New</a>
+</p>
+<style>
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Year
+            </th>
+            <th>
+               Allotment_series
+            </th>
+            <th>
+                Allotment_title
+            </th>
+            <th>
+                Allotment_code
+            </th>
+            <th>For Fund Source</th>
+            <th>For Sub-Allotment</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_series)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_code)
+                </td>
+                <td>
+                    <a class="btn btn-outline-secondary" asp-controller="FundSource" asp-action="Index" asp-route-Budget_allotment="@item.BudgetAllotmentId">➦Fund Source</a>
+                </td>
+                <td>
+                    <a class="btn btn-secondary" asp-action="Sub Allotment" asp-route-id="">+Sub-Allotment</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">Edit</a> |
+                      @*<a asp-action="Details" asp-route-id="@item.Id">Details</a>*@ |
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

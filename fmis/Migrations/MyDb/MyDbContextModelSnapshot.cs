@@ -56,9 +56,6 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BudgetAllotmentId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 

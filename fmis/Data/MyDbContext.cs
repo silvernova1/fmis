@@ -11,22 +11,44 @@ namespace fmis.Data
 {
     public class MyDbContext : DbContext
     {
-        public DbSet<Budget_allotment> Budget_allotment { get; set; }
-        public DbSet<fmis.Models.John.FundSource> FundSource { get; set; }
+        
 
-/*        protected override void OnModelCreating(ModelBuilder modelBuilder)
+       /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<FundSource>()
-                .HasOne<Budget_allotment>(p => p.Budget_allotment)
-                .WithMany(b => b.FundSource);
-                *//*.HasForeignKey(e => e.BudgetAllotmentId);*//*
+          *//*  modelBuilder.Entity<FundSource>()
+                .HasOne(p => p.Budget_allotment)
+                .WithMany(b => b.FundSources)
+                .HasForeignKey(e => e.BudgetAllotmentId);*/
+
+            /*modelBuilder.Entity<FundSource>()
+            .HasOne(p => p.Budget_allotment)
+            .WithMany(b => b.FundSources);*/
+            /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
+
+            /*modelBuilder.Entity<Budget_allotment>()
+                .HasMany(b => b.FundSources)
+                .WithOne(p => p.Budget_allotment)
+                .OnDelete(DeleteBehavior.NoAction);*//*
+
+
+            modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
+
         }*/
 
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
+        }
+        public DbSet<Budget_allotment> Budget_allotments { get; set; }
+        public DbSet<fmis.Models.John.FundSource> FundSources { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
+            modelBuilder.Entity<FundSource>().ToTable("FundSource");
         }
     }
 }
