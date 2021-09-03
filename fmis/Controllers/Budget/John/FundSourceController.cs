@@ -17,11 +17,13 @@ namespace fmis.Controllers.Budget.John
     {
         private readonly FundSourceContext _context;
         private readonly UacsContext _dbContext;
+        private readonly Budget_allotmentContext _bContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext dbContext)
+        public FundSourceController(FundSourceContext context, UacsContext dbContext, Budget_allotmentContext bContext)
         {
             _context = context;
             _dbContext = dbContext;
+            _bContext = bContext;
         }
 
 
@@ -59,8 +61,21 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Create
         public async Task<IActionResult> CreateAsync()
         {
-            TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
-            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
+
+            //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
+            //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
+             //TempData["FundSource"] = await _context.FundSource.ToListAsync();
+
+/*
+            Budget_allotment budget_allotment = new Budget_allotment()
+            {
+                BudgetAllotmentId = 7
+            };*/
+
+
+            var BudgetAllotmentId = await _bContext.Budget_allotment.OrderByDescending(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
+
+
             return View();
         }
 
@@ -69,7 +84,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo")] FundSource fundSource)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,BudgetAllotmentId")] FundSource fundSource)
         {
             if (ModelState.IsValid)
             {

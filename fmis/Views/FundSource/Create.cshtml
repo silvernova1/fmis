@@ -1,18 +1,19 @@
 ﻿@model fmis.Models.John.FundSource
 @using fmis.Models;
 @using fmis.Models.John;
-@{
+@*@{
 
-
+    Budget_allotment Budget_allotment = new Budget_allotment();
     FundSource FundSource = TempData["FundSource"] as FundSource;
     List<Uacs> Uacs = TempData["Uacs"] as List<Uacs>;
-}
+}*@
 
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 
 <form asp-action="Create">
@@ -27,24 +28,25 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PrexcCode" class="control-label"></label>
-                <input asp-for="PrexcCode" class="form-control" required />
-                <span asp-validation-for="PrexcCode" class="text-danger"></span>
+                <input type="text" asp-for="Budget_allotment.BudgetAllotmentId"/>
+            
+                <div class="form-group">
+                    <label asp-for="PrexcCode" class="control-label"></label>
+                    <input asp-for="PrexcCode" class="form-control" required />
+                    <span asp-validation-for="PrexcCode" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FundSourceTitle" class="control-label"></label>
+                    <input asp-for="FundSourceTitle" class="form-control" required />
+                    <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" required></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="FundSourceTitle" class="control-label"></label>
-                <input asp-for="FundSourceTitle" class="form-control" required />
-                <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" required></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="FundSourceTitleCode" class="control-label"></label>
@@ -62,32 +64,32 @@
 
 
 
-<table class="table">
+<!--<table class="table">
     <thead>
         <tr>
-            <th>
+            <th>-->
                 @*   @FundSource.FundSourceTitle*@
-            </th>
-            <th>
+            <!--</th>
+            <th>-->
                 @* @FundSource.FundSourceTitleCode*@
-            </th>
+            <!--</th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Uacs)
+    <tbody>-->
+     @*   @foreach (var item in Uacs)
         {
             <tr>
                 <td style="width: 800px;">
                     @item.Account_title
                 </td>
-                @*<td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">@item.Account_title</option>
-                    </select>
-                </td>*@
+                <td>
+                        <select class="form-control" aria-label="Default select example">
+                            <option selected>Select ORS Head</option>
+                            <option value="1">@item.Account_title</option>
+                        </select>
+                    </td>
             </tr>
-        }
-    </tbody>
-</table>
+        }*@
+    <!--</tbody>
+</table>-->
