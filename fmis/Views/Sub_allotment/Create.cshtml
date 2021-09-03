@@ -1,110 +1,58 @@
 ﻿@model fmis.Models.Sub_allotment
-@using fmis.Models;
-@{
 
 
-    Sub_allotment Sub_allotment = TempData["Sub_alotment"] as Sub_allotment;
-    List<Sub_allotment> sub_allotment = TempData["Sub_allotment"] as List<Sub_allotment>;
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<center>
+    <h2>Create New</h2>
+</center>
+<hr />
+<div class="container">
+    <center>
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Prexe_code" class="control-label">Prexe_code</label>
+                    <input asp-for="Prexe_code" class="form-control" required />
+                    <span asp-validation-for="Prexe_code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Suballotment_code" class="control-label">Suballotment_code</label>
+                    <input asp-for="Suballotment_code" class="form-control" required />
+                    <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Suballotment_title" class="control-label">Suballotment_title</label>
+                    <input asp-for="Suballotment_title" class="form-control" required />
+                    <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Ors_head" class="control-label">Ors_head</label>
+                    <input asp-for="Ors_head" class="form-control" required />
+                    <span asp-validation-for="Ors_head" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Responsibility_number" class="control-label">Responsibility_number</label>
+                    <input asp-for="Responsibility_number" class="form-control" required />
+                    <span asp-validation-for="Responsibility_number" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Description</label>
+                    <input asp-for="Description" class="form-control" required />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-success btn-lg" /> | <a asp-action="Index">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </center>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-
-@{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-
-<form asp-action="Add new Sub_allotment">
-    <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
-        <div class="pull-right">
-            <div class="btn-group">
-                <input type="submit" value="Create" class="btn btn-success btn-xs" />
-                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Prexe_code" class="control-label"></label>
-                <input asp-for="Prexe_code" class="form-control" required />
-                <span asp-validation-for="Prexe_code" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Suballotment_code" class="control-label"></label>
-                <input asp-for="Suballotment_code" class="form-control" required />
-                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Suballotment_title" class="control-label"></label>
-                <textarea asp-for="Suballotment_title" class="form-control" required></textarea>
-                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="Ors_head" class="control-label"></label>
-                <input asp-for="Ors_head" class="form-control" required />
-                <span asp-validation-for="Ors_head" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Responsibility_number" class="control-label"></label>
-                <input asp-for="Responsibility_number" class="form-control" required />
-                <span asp-validation-for="Responsibility_number" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" required></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-        
-        </div>
-    </div>
-</form>
-
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @*  @Sus_allotment. *@
-            </th>
-            <th>
-                @*  @Sub_allotment. *@
-            </th>
-            <th>
-                @*  @FundSource.    *@
-            </th>
-            <th>
-                @*  @Sus_allotment. *@
-            </th>
-            <th>
-                @*  @Sub_allotment. *@
-            </th>
-            <th>
-
-            </th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in sub_allotment)
-        {
-            <tr>
-                <td style="width: 800px;">
-                    @item. Sub_allotment
-                </td>
-                @*<td>
-                        <select class="form-control" aria-label="Default select example">
-                            <option selected>Select ORS Head</option>
-                            <option value="1">@item.Account_title</option>
-                        </select>
-                    </td>*@
-            </tr>
-        }
-    </tbody>
-</table>

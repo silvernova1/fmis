@@ -8,17 +8,11 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Prexc</h4>
+    <h4>Uacs</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.pap_title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.pap_title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.pap_code1)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.pap_code1)
@@ -26,23 +20,8 @@
         <dt>
             @Html.DisplayNameFor(model => model.pap_code2)
         </dt>
-        <dd>
-            @Html.DisplayFor(model => model.pap_code2)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Created_at)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Created_at)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated_at)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Updated_at)
-        </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-default" /> |

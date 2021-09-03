@@ -23,16 +23,27 @@
         font-size: 13px;
         background-color: #2ECC71
     }
+
+    .prexc {
+        margin-right: 200px;
+    }
+
+    .search {
+        margin-left: 54%;
+    }
 </style>
 
+
 <input type="hidden" class="prexc" value="@ViewBag.temp">
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+<br />
+<input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
 <br />
 <br />
-<div id="example" class="hot"></div>
+<br />
+<div id="example" class="hot" style="margin-left:50px;"></div>
 <br />
 <div class="controls">
-    <button id="export-file">Download CSV</button>
+    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
 </div>
 
 
@@ -44,12 +55,12 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Head_name: this[0], Position: this[1]} );
+                json.push({ Pap_title: this[0], Pap_code1: this[1], Pap_code2: this[2] } );
             });
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("savePrexc", "Prexc")',
+                url: '@Url.Action("SavePrexc", "Prexc")',
                 dataType: "JSON",
                 data: { data: json },
                 success: function (output) {
@@ -80,22 +91,22 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '100%',
-        colWidths: 300,
+        width: '200%',
+        colWidths: 500,
         rowHeaders: true,
         colHeaders: true,
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: [['Print ORS'],'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row'],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: {Head_name: null, Position: null,},
+        dataSchema: { Pap_title: null, Pap_code1: null, Pap_code2: null},
         columns: [
-
-            { data: 'Pap_title', type: 'text' },
+            { data: 'Pap_title ', type: 'text' },
             { data: 'Pap_code1', type: 'text' },
-            { data: 'Pap_code2', type: 'text' },
+            { data: 'Pap_code2', type: 'text' }
+
         ]
     });
 
@@ -113,11 +124,11 @@
         exportPlugin.downloadFile('csv', {
             bom: false,
             columnDelimiter: ',',
-            columnHeaders: false,
+            columnHeaders: true,
             exportHiddenColumns: true,
             exportHiddenRows: true,
             fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            filename: 'UACS',
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true
@@ -130,12 +141,12 @@
         ] = changes;
         if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
             console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y'  + newVal.slice(1, newVal.length))
+            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
         }
     })
 
     hot.updateSettings({
-        colHeaders: ['Pap_tile', 'Pap_code1', 'Pap_code2'],
+        colHeaders: ['Pap_title', 'Pap_code1', 'Pap_code2'],
         cell: [
             {
                 row: 0,
@@ -145,15 +156,13 @@
         ],
         columns: [
             {
-               // 1st cell is simple text, no special options here
-            },
 
+            },
             {
                 // 2nd cell is simple text, no special options here
             },
-
             {
-                // 2nd cell is simple text, no special options here
+                // 3rd cell is simple text, no special options here
             },
 
         ]
@@ -164,21 +173,3 @@
 
 
 </script>
-@*<style>
-
-        td.custom-cell {
-            color: #fff;
-            background-color: #37bc6c;
-        }
-
-        .handsontable th:nth-child(0) {
-            background-color: aquamarine;
-            font-weight: bold;
-        }
-
-
-        .custom-table tdata th:nth-child(even),
-        .custom-table tbody tr:nth-child(odd) th {
-            background-color: #d7f1e1;
-        }
-    </style>*@

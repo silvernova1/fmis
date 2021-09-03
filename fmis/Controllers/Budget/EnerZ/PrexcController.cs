@@ -10,9 +10,15 @@ using fmis.Models;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Graphics;
+using System.Drawing;
+using Rotativa.AspNetCore;
 
 namespace fmis.Controllers
 {
+
     public class PrexcController : Controller
     {
         private readonly PrexcContext _context;
@@ -22,19 +28,24 @@ namespace fmis.Controllers
             _context = context;
         }
 
+
+
         public class PrexcData
         {
+            public int Id { get; set; }
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
             public string pap_code2 { get; set; }
+            public DateTime Created_at { get; set; }
+            public DateTime Updated_at { get; set; }
         }
 
-        // GET: PrexcData
+        // GET: Prexc
         public async Task<IActionResult> Index()
         {
             var json = JsonSerializer.Serialize(_context.Prexc.ToList());
             ViewBag.temp = json;
-            return View(await _context.Prexc.ToListAsync());
+            return View("~/Views/Prexc/Index.cshtml");
         }
 
         // GET: Prexc/Details/5
@@ -51,10 +62,11 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
+
             return View(prexc);
         }
 
-        // GET: Prexc
+        // GET: Prexc/Create
         public IActionResult Create()
         {
             return View();
@@ -67,20 +79,22 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult savePrexc(List<PrexcData> data)
+        public IActionResult SavePrexc(List<PrexcData> data)
         {
-            var prexcs = new List<Prexc>();
+            var prexces = new List<Prexc>();
             var prexc = new Prexc();
+
 
             foreach (var item in data)
             {
                 prexc.pap_title = item.pap_title;
                 prexc.pap_code1 = item.pap_code1;
                 prexc.pap_code2 = item.pap_code2;
-                prexcs.Add(prexc);
+                prexces.Add(prexc);
             }
 
-            this._context.Prexc.Add(prexc);
+
+            this._context.Prexc.Update(prexc);
             this._context.SaveChanges();
             return Json(data);
         }
@@ -90,7 +104,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Pap_title,Pap_code1,Pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code1,pap_code2")] Prexc prexc)
         {
             if (ModelState.IsValid)
             {
@@ -133,7 +147,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Pap_title,Pap_code1,Pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code1,pap_code2")] Prexc prexc)
         {
             if (id != prexc.Id)
             {
@@ -170,12 +184,14 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
+
             var prexc = await _context.Prexc
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prexc == null)
             {
                 return NotFound();
             }
+
             return View(prexc);
         }
 
@@ -189,6 +205,7 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         private bool PrexcExists(int id)
         {
             return _context.Prexc.Any(e => e.Id == id);

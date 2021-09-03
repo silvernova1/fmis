@@ -14,5 +14,8 @@ namespace fmis.Models
         public float Amount { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+
+        public IList<Uacs> Uacs { get; set; }
+        /*public IList<FundSource> FundSource { get; set; }*/
     }
 }

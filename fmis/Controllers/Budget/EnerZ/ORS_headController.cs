@@ -8,23 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
 
-namespace fmis.Controllers.Budget
+namespace fmis.Controllers.Budget.EnerZ
 {
     public class Ors_headController : Controller
     {
         private readonly Ors_headContext _context;
-        private readonly Ors_headContext _dbContext;
 
-        public Ors_headController(Ors_headContext context, Ors_headContext dbContext)
+        public Ors_headController(Ors_headContext context)
         {
             _context = context;
-            _dbContext = dbContext;
         }
 
         // GET: Ors_head
         public async Task<IActionResult> Index()
         {
-
             return View(await _context.Ors_head.ToListAsync());
         }
 
@@ -35,7 +32,6 @@ namespace fmis.Controllers.Budget
             {
                 return NotFound();
             }
-
             var ors_head = await _context.Ors_head
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ors_head == null)
@@ -44,21 +40,17 @@ namespace fmis.Controllers.Budget
             }
             return View(ors_head);
         }
-
         // GET: Ors_head/Create
-        public async Task<IActionResult> CreateAsync()
+        public IActionResult Create()
         {
-            TempData["Ors_head"] = await _dbContext.Ors_head.ToListAsync();
-            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
             return View();
         }
-
         // POST: Ors_head/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Head_name, Position, Created_at, Updated_at")] Ors_head ors_head)
+        public async Task<IActionResult> Create([Bind("Id,Head_name,Position,Created_at,Updated_at")] Ors_head ors_head)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +60,6 @@ namespace fmis.Controllers.Budget
             }
             return View(ors_head);
         }
-
         // GET: Ors_head/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -76,7 +67,6 @@ namespace fmis.Controllers.Budget
             {
                 return NotFound();
             }
-
             var ors_head = await _context.Ors_head.FindAsync(id);
             if (ors_head == null)
             {
@@ -84,19 +74,17 @@ namespace fmis.Controllers.Budget
             }
             return View(ors_head);
         }
-
         // POST: Ors_head/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Head_name, Position, Created_at, Updaed_at")] Ors_head ors_head)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Head_name,Position,Created_at,Updated_at")] Ors_head ors_head)
         {
             if (id != ors_head.Id)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -119,7 +107,6 @@ namespace fmis.Controllers.Budget
             }
             return View(ors_head);
         }
-
         // GET: Ors_head/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -127,7 +114,6 @@ namespace fmis.Controllers.Budget
             {
                 return NotFound();
             }
-
             var ors_head = await _context.Ors_head
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ors_head == null)
@@ -136,8 +122,7 @@ namespace fmis.Controllers.Budget
             }
             return View(ors_head);
         }
-
-        // POST: Ors_head/Delete/5
+        // POST: ors_head/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -21,7 +21,7 @@ namespace fmis.Controllers
             _context = context;
         }
 
-        // GET: Suallotment_amouont
+        // GET: Suballotment_amountClasses
         public async Task<IActionResult> Index()
         {
             return View(await _context.Suballotment_amount.ToListAsync());
@@ -34,12 +34,14 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
+
             var suballotment_amount = await _context.Suballotment_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (suballotment_amount== null)
+            if (suballotment_amount == null)
             {
                 return NotFound();
             }
+
             return View(suballotment_amount);
         }
 
@@ -54,15 +56,15 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Epenses,Amount,Fund_source")] Suballotment_amount suballotment_Amount)
+        public async Task<IActionResult> Create([Bind("Id,Obligation_id,Expense_Title,Code,Amount,Created_at,Updated_at")] Suballotment_amount suballotment_amount)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(suballotment_Amount);
+                _context.Add(suballotment_amount);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(suballotment_Amount);
+            return View(suballotment_amount);
         }
 
         // GET: Suballotment_amount/Edit/5
@@ -86,7 +88,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Epenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Obligation_id,Expense_Title,Code,Amount,Created_at,Updated_at")] Suballotment_amount suballotment_amount)
         {
             if (id != suballotment_amount.Id)
             {
@@ -123,12 +125,14 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
+
             var suballotment_amount = await _context.Suballotment_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (suballotment_amount == null)
             {
                 return NotFound();
             }
+
             return View(suballotment_amount);
         }
 
@@ -142,6 +146,7 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         private bool Suballotment_amountExists(int id)
         {
             return _context.Suballotment_amount.Any(e => e.Id == id);

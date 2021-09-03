@@ -1,76 +1,37 @@
 ﻿@model fmis.Models.Ors_head
-@using fmis.Models;
-@{
 
 
-    Ors_head Ors_head = TempData["Ors_head"] as Ors_head;
-    List<Ors_head> ors_head = TempData["Ors_head"] as List<Ors_head>;
-}
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-@{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-
-<form asp-action="Add new Ors_head">
-    <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
-        <div class="pull-right">
-            <div class="btn-group">
-                <input type="submit" value="Create" class="btn btn-success btn-xs" />
-                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
+<center>
+    <h2>Create New</h2>
+</center>
+<hr />
+<div class="container">
+    <center>
         <div class="col-md-6">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Head_name" class="control-label"></label>
-                <input asp-for="Head_name" class="form-control" required />
-                <span asp-validation-for="Head_name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Position" class="control-label"></label>
-                <input asp-for="Position" class="form-control" required />
-                <span asp-validation-for="Position" class="text-danger"></span>
-            </div>
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Head_name" class="control-label">Head_name</label>
+                    <input asp-for="Head_name" class="form-control" required />
+                    <span asp-validation-for="Head_name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Position" class="control-label">Position</label>
+                    <input asp-for="Position" class="form-control" required />
+                    <span asp-validation-for="Position" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-success btn-lg" /> | <a asp-action="Index">Back to List</a>
+                </div>
+            </form>
         </div>
-    </div>
-</form>
+    </center>
+</div>
 
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @*  @Ors_head. *@
-            </th>
-            <th>
-                @*  @Ors_head. *@
-            </th>
-            
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in ors_head)
-         {
-            <tr>
-                <td style="width: 800px;">
-                    @item. Ors_head
-                </td>
-                @*<td>
-                        <select class="form-control" aria-label="Default select example">
-                            <option selected>Select ORS Head</option>
-                            <option value="1">@item.Account_title</option>
-                        </select>
-                    </td>*@
-            </tr>
-         }
-    </tbody>
-</table>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

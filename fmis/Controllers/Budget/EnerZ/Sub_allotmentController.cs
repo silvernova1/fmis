@@ -7,29 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+
     public class Sub_allotmentController : Controller
     {
         private readonly Sub_allotmentContext _context;
-        private readonly Sub_allotmentContext _dbContext;
 
-        public Sub_allotmentController(Sub_allotmentContext context, Sub_allotmentContext dbContext)
+        public Sub_allotmentController(Sub_allotmentContext context)
         {
             _context = context;
-            _dbContext = dbContext;
         }
 
-        // GET: Sub_allotment
+        // GET: Obligated_amountClasses
         public async Task<IActionResult> Index()
         {
-
             return View(await _context.Sub_allotment.ToListAsync());
         }
 
-        // GET: Sub_allotmentDetails/5
+        // GET: Sub_allotment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,10 +46,8 @@ namespace fmis.Controllers
         }
 
         // GET: Sub_allotment/Create
-        public async Task<IActionResult> CreateAsync()
+        public IActionResult Create()
         {
-            TempData["Sub_allotment"] = await _dbContext.Sub_allotment.ToListAsync();
-            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
             return View();
         }
 
@@ -60,7 +56,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PrexcCode,Suballotment_code,Suballotment_title,Ors_head,Responisiblity_number,Description")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Create([Bind("Id,Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment sub_allotment)
         {
             if (ModelState.IsValid)
             {
@@ -87,12 +83,12 @@ namespace fmis.Controllers
             return View(sub_allotment);
         }
 
-        // POST: FundSource/Edit/5
+        // POST: Obligated_amount/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PrexcCode,Suballotment_code,Suballotment_title,Ors_head,Responisiblity_number,Description")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment sub_allotment)
         {
             if (id != sub_allotment.Id)
             {
@@ -122,7 +118,7 @@ namespace fmis.Controllers
             return View(sub_allotment);
         }
 
-        // GET: Sub_allotment/Delete/5
+        // GET: Obligated_amount/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,7 +126,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var sub_allotment= await _context.Sub_allotment
+            var sub_allotment = await _context.Sub_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (sub_allotment == null)
             {
@@ -140,7 +136,7 @@ namespace fmis.Controllers
             return View(sub_allotment);
         }
 
-        // POST: Sub_allotment/Delete/5
+        // POST: Obligated_amount/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -150,6 +146,7 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         private bool Sub_allotmentExists(int id)
         {
             return _context.Sub_allotment.Any(e => e.Id == id);

@@ -7,25 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+
     public class Obligated_amountController : Controller
     {
         private readonly Obligated_amountContext _context;
-        private readonly Obligated_amountContext _dbContext;
 
-        public Obligated_amountController(Obligated_amountContext context, Obligated_amountContext dbContext)
+        public Obligated_amountController(Obligated_amountContext context)
         {
             _context = context;
-            _dbContext = dbContext;
         }
 
-        // GET: Obligated_amount
+        // GET: Obligated_amountClasses
         public async Task<IActionResult> Index()
         {
-
             return View(await _context.Obligated_amount.ToListAsync());
         }
 
@@ -36,20 +34,20 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
+
             var obligated_amount = await _context.Obligated_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (obligated_amount == null)
             {
                 return NotFound();
             }
+
             return View(obligated_amount);
         }
 
         // GET: Obligated_amount/Create
-        public async Task<IActionResult> CreateAsync()
+        public IActionResult Create()
         {
-            TempData["Obligated_amount"] = await _dbContext.Obligated_amount.ToListAsync();
-            // TempData["FundSource"] = await _context.FundSource.ToListAsync();
             return View();
         }
 
@@ -58,7 +56,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Obligation_id,Expense_title,Code,Amount,Created_at,Updated_at")] Obligated_amount obligated_amount)
+        public async Task<IActionResult> Create([Bind("Id,Obligation_id,Expense_Title,Code,Amount,Created_at,Updated_at")] Obligated_amount obligated_amount)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +88,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Obligation_id,Expense_title,Code,Amount,Created_at,Updated_at")] Obligated_amount obligated_amount)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Obligation_id,Expense_Title,Code,Amount,Created_at,Updated_at")] Obligated_amount obligated_amount)
         {
             if (id != obligated_amount.Id)
             {
@@ -138,7 +136,7 @@ namespace fmis.Controllers
             return View(obligated_amount);
         }
 
-        // POST: Obligated-amount/Delete/5
+        // POST: Obligated_amount/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

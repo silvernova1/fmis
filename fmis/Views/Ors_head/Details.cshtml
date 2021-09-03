@@ -1,9 +1,6 @@
 ﻿@model fmis.Models.Ors_head
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+
 
 <h2>Details</h2>
 
@@ -23,10 +20,25 @@
         <dd>
             @Html.DisplayFor(model => model.Position)
         </dd>
-        <
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_at)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_at)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated_at)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated_at)
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
