@@ -9,7 +9,7 @@ using fmis.Data.John;
 using fmis.Data;
 using fmis.Models;
 
-namespace fmis
+namespace fmis.Controllers
 {
     public class Budget_allotmentsController : Controller
     {
@@ -31,6 +31,7 @@ namespace fmis
         // GET: Budget_allotments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.BudgetId = id;
             if (id == null)
             {
                 return NotFound();

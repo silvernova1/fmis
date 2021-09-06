@@ -36,6 +36,33 @@
     <button id="export-file">Download CSV</button>
 </div>
 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 
@@ -88,7 +115,35 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],
+        @*contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row', ['Add Obligated Amount']],*@
+        contextMenu: {
+            items: {
+                "make_bold": {
+                    name: 'Print ORS',
+                    callback: function (key, options) {
+                        var selection = this.getSelected();
+                        var tempdata = this.getData();
+                        var data = [];
+                        var url = "www.youjizz.com";
+                        @*data = selectedRows(selection, tempdata, 1);*@
+                        @*openWindowWithPost(url, data, allotmentID);*@
+                        @*openWindowWithPost(url);*@
+                        window.open(url);
+                    }
+                },
+                "": {
+                    name: 'UACS Amount Entry / Disbmt.',
+                    callback: function (key, options) {
+                        var selection = this.getSelected();
+                        var tempdata = this.getData();
+                        @*var data = [];
+                        data = selectedRows(selection, tempdata, 0);*@
+                        console.log(tempdata[selection[0][0]]);
+                        $('#exampleModal').modal('show');
+                    }
+                }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+            }
+        },
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null},

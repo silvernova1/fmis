@@ -9,6 +9,7 @@ using fmis.Data.John;
 using fmis.Models.John;
 using fmis.Models;
 using fmis.Data;
+using fmis.ViewModel;
 
 
 namespace fmis.Controllers.Budget.John
@@ -16,13 +17,13 @@ namespace fmis.Controllers.Budget.John
     public class FundSourceController : Controller
     {
         private readonly FundSourceContext _context;
-        private readonly UacsContext _dbContext;
+        private readonly UacsContext _uContext;
         private readonly Budget_allotmentContext _bContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext dbContext, Budget_allotmentContext bContext)
+        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext)
         {
             _context = context;
-            _dbContext = dbContext;
+            _uContext = uContext;
             _bContext = bContext;
         }
 
@@ -34,10 +35,10 @@ namespace fmis.Controllers.Budget.John
 
 
             /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
-            var item = _context.FundSource.FromSqlRaw("Select * from FundSource where Budget_allotmentBudgetAllotmentId = 1")
+           /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
                   .ToList();
-            return View(item);
-            /*return View(await _context.FundSource.ToListAsync());*/
+            return View(item);*/
+            return View(await _context.FundSource.ToListAsync());
         }
 
         // GET: FundSource/Details/5
@@ -59,21 +60,23 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public async Task<IActionResult> CreateAsync()
+        public IActionResult Create(int? id)
         {
-
+            ViewBag.BudgetId = id;
             //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
             //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
-             //TempData["FundSource"] = await _context.FundSource.ToListAsync();
+            //TempData["FundSource"] = await _context.FundSource.ToListAsync();
 
-/*
-            Budget_allotment budget_allotment = new Budget_allotment()
-            {
-                BudgetAllotmentId = 7
-            };*/
+            /*
+                        Budget_allotment budget_allotment = new Budget_allotment()
+                        {
+                            BudgetAllotmentId = 7
+                        };*/
 
 
-            var BudgetAllotmentId = await _bContext.Budget_allotment.OrderByDescending(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
+            //var FundSource = await _bContext.Budget_allotment.(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
+
+            //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
 
 
             return View();
@@ -84,7 +87,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,BudgetAllotmentId")] FundSource fundSource)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId")] FundSource fundSource)
         {
             if (ModelState.IsValid)
             {
