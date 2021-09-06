@@ -224,8 +224,8 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var obligation = await _context.Utilization.FindAsync(id);
-            _context.Utilization.Remove(obligation);
+            var utilization = await _context.Utilization.FindAsync(id);
+            _context.Utilization.Remove(utilization);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

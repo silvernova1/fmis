@@ -56,7 +56,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Obligation_id,Expense_Title,Code,Amount,Created_at,Updated_at")] Suballotment_amount suballotment_amount)
+        public async Task<IActionResult> Create([Bind("Id,Expenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Obligation_id,Expense_Title,Code,Amount,Created_at,Updated_at")] Suballotment_amount suballotment_amount)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Expenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
         {
             if (id != suballotment_amount.Id)
             {

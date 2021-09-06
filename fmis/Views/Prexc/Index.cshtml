@@ -24,7 +24,7 @@
         background-color: #2ECC71
     }
 
-    .prexc {
+    .uacs {
         margin-right: 200px;
     }
 
@@ -34,7 +34,7 @@
 </style>
 
 
-<input type="hidden" class="prexc" value="@ViewBag.temp">
+<input type="hidden" class="utilization" value="@ViewBag.temp">
 <br />
 <input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
 <br />
@@ -55,7 +55,7 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Pap_title: this[0], Pap_code1: this[1], Pap_code2: this[2] } );
+                json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2] } );
             });
 
             $.ajax({
@@ -78,12 +78,12 @@
     };
 
 
-    var prexc = $.parseJSON($(".prexc").val());
+    var utilization = $.parseJSON($(".utilization").val());
 
     const data = [];
     var counter = 0;
-    $.each(prexc, function () {
-        data[counter] = [this.Pap_title, this.Pap_code1, this.Pap_code2]
+    $.each(utilization, function () {
+        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -91,8 +91,8 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '200%',
-        colWidths: 500,
+        width: '100%',
+        colWidths: 400,
         rowHeaders: true,
         colHeaders: true,
         search: {
@@ -101,12 +101,12 @@
         contextMenu: [['Print ORS'], 'row_above', 'row_below', 'remove_row'],
         height: 'auto',
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Pap_title: null, Pap_code1: null, Pap_code2: null},
+        dataSchema: { pap_title: null, pap_code1: null, pap_code2: null},
         columns: [
-            { data: 'Pap_title ', type: 'text' },
-            { data: 'Pap_code1', type: 'text' },
-            { data: 'Pap_code2', type: 'text' }
-
+            { data: 'pap_title', type: 'text' },
+            { data: 'pap_code1', type: 'text' },
+            { data: 'pap_code2', type: 'text' },
+          
         ]
     });
 
@@ -128,7 +128,7 @@
             exportHiddenColumns: true,
             exportHiddenRows: true,
             fileExtension: 'csv',
-            filename: 'UACS',
+            filename: 'PREXC',
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true
@@ -146,7 +146,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['Pap_title', 'Pap_code1', 'Pap_code2'],
+        colHeaders: ['pap_title', 'pap_code1', 'pap_code2'],
         cell: [
             {
                 row: 0,
@@ -156,14 +156,14 @@
         ],
         columns: [
             {
+            },
 
-            },
             {
-                // 2nd cell is simple text, no special options here
             },
+
             {
-                // 3rd cell is simple text, no special options here
             },
+
 
         ]
     });
@@ -173,3 +173,4 @@
 
 
 </script>
+

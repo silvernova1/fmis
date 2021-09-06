@@ -30,8 +30,9 @@ namespace fmis.Controllers
 
 
 
-        public class PrexcData
+        public class    PrexcData
         {
+
             public int Id { get; set; }
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
@@ -87,9 +88,13 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
+                prexc.Id = item.Id;
                 prexc.pap_title = item.pap_title;
                 prexc.pap_code1 = item.pap_code1;
                 prexc.pap_code2 = item.pap_code2;
+                prexc.Created_at = item.Created_at;
+                prexc.Updated_at = item.Updated_at;
+
                 prexces.Add(prexc);
             }
 
@@ -104,7 +109,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code1,pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code1,pap_code2,Created_at,Updated_at")] Prexc prexc)
         {
             if (ModelState.IsValid)
             {
@@ -147,7 +152,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code1,pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code1,pap_code2,Created_at,Updated_at")] Prexc prexc)
         {
             if (id != prexc.Id)
             {
