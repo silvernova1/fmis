@@ -14,9 +14,11 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
-                <span asp-validation-for="Year" class="text-danger"></span>
+                @**@<label asp-for="Year" class="control-label"></label>
+                <select class="form-control" asp-for="BudgetAllotmentId" asp-items="@(new SelectList(ViewBag.message,"Id","YearlyReference"))"></select>
+                @*<input asp-for="Year" class="form-control" />*@
+                @*<span asp-validation-for="Year" class="text-danger"></span>*@
+
             </div>
             <div class="form-group">
                 <label asp-for="Allotment_series" class="control-label"></label>
@@ -28,7 +30,7 @@
                 <input asp-for="Allotment_title" class="form-control" />
                 <span asp-validation-for="Allotment_title" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Allotment_code" class="control-label"></label>
                 <input asp-for="Allotment_code" class="form-control" />
                 <span asp-validation-for="Allotment_code" class="text-danger"></span>
@@ -42,18 +44,14 @@
                 <label asp-for="Updated_at" class="control-label"></label>
                 <input asp-for="Updated_at" class="form-control" />
                 <span asp-validation-for="Updated_at" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+            </div>*@
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-default" />|
+            <a class="btn btn-default" asp-action="Index">Back to List</a>
+        </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

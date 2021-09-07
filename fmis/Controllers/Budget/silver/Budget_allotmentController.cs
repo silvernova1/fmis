@@ -22,11 +22,13 @@ namespace fmis.Controllers
     {
         private readonly Budget_allotmentContext _context;
         private readonly FundSourceContext _Context;
+        
 
         public Budget_allotmentController(Budget_allotmentContext context, FundSourceContext Context)
         {
             _context = context;
             _Context = Context;
+
         }
 
         public class Budget_allotmentData
@@ -41,6 +43,7 @@ namespace fmis.Controllers
             [DataType(DataType.Date)]
             public DateTime Updated_at { get; set; }
         }
+
         // GET: 
         public async Task<IActionResult> Index(int? id)
         {
@@ -91,7 +94,8 @@ namespace fmis.Controllers
         // GET: Obligations/Create
         public IActionResult Create()
         {
-            ViewBag.layout = "_Layout";
+            
+
             return View();
         }
 
@@ -134,6 +138,10 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
+
+            
+
+
             if (ModelState.IsValid)
             {
 

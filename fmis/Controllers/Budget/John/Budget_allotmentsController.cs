@@ -15,11 +15,13 @@ namespace fmis.Controllers
     {
         private readonly MyDbContext _context;
         private readonly FundSourceContext _Context;
+        private readonly Yearly_referenceContext _osContext;
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context)
+        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext)
         {
             _context = context;
             _Context = Context;
+            _osContext = osContext;
         }
 
         // GET: Budget_allotments
@@ -52,6 +54,12 @@ namespace fmis.Controllers
         // GET: Budget_allotments/Create
         public IActionResult Create()
         {
+            List<Yearly_reference> oh = new List<Yearly_reference>();
+
+            oh = (from c in _osContext.Yearly_reference select c).ToList();
+            oh.Insert(0, new Yearly_reference { Id = 0, YearlyReference = "--Select Year--" });
+
+            ViewBag.message = oh;
             return View();
         }
 
@@ -62,6 +70,9 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
         {
+
+            
+
             try
             {
                 if (ModelState.IsValid)
