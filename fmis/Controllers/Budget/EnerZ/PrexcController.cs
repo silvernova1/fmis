@@ -42,7 +42,7 @@ namespace fmis.Controllers
         }
 
         // GET: Prexc
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Prexc.ToList());
             ViewBag.temp = json;
@@ -201,14 +201,19 @@ namespace fmis.Controllers
         }
 
         // POST: Prexc/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
         {
-            var prexc = await _context.Prexc.FindAsync(id);
+            /*var prexc = await _context.Prexc.FindAsync(id);
             _context.Prexc.Remove(prexc);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));*/
+
+
+            var prexc = this._context.Prexc.Find(id);
+            this._context.Prexc.Remove(prexc);
+            this._context.SaveChangesAsync();
+            return Json(id);
         }
 
         private bool PrexcExists(int id)
