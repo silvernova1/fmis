@@ -103,7 +103,6 @@
 <p>
     <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
 </p>
-<input type="text" name="budgetId" value="@ViewBag.BudgetId" />
 <table class="table">
     <thead>
         <tr>
@@ -112,9 +111,6 @@
             </th>
             <th>
                 Fund Source Title
-            </th>
-            <th>
-                Budget Allotment Id
             </th>
             <th>
                 ORS Head
@@ -138,16 +134,11 @@
                 @*  <td>
                         @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
                     </td>*@
-                <td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">Rusel</option>
-                        <option value="2">John</option>
-                        <option value="3">Carlo</option>
-                        <option value="3">Silver</option>
-                        <option value="3">Enerz</option>
-                    </select>
-                </td>
+            <td>
+
+                <select class="form-control" asp-for="BudgetAllotmentId" asp-items="@(new SelectList(ViewBag.message,"Id","Head_name"))"></select>
+
+            </td>
                 <td>
                     <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
                     <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>

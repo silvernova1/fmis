@@ -19,26 +19,37 @@ namespace fmis.Controllers.Budget.John
         private readonly FundSourceContext _context;
         private readonly UacsContext _uContext;
         private readonly Budget_allotmentContext _bContext;
+        private readonly PrexcContext _pContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext)
+        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext)
         {
             _context = context;
             _uContext = uContext;
             _bContext = bContext;
+            _pContext = pContext;
         }
 
 
         // GET: FundSource
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
 
 
 
             /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
-           /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
-                  .ToList();
-            return View(item);*/
-            return View(await _context.FundSource.ToListAsync());
+            /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
+                   .ToList();
+             return View(item);*/
+
+            /* return View(await _context.FundSource
+                 .Include(s => s.Budget_allotment)
+                 .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
+                 .ToListAsync());*/
+
+            return View( await _context.FundSource.ToListAsync());
+
+
+            
         }
 
         // GET: FundSource/Details/5
@@ -63,6 +74,13 @@ namespace fmis.Controllers.Budget.John
         public IActionResult Create(int? id)
         {
             ViewBag.BudgetId = id;
+
+            List<Prexc> p = new List<Prexc>();
+
+            p = (from c in _pContext.Prexc select c).ToList();
+            p.Insert(0, new Prexc { Id = 0, pap_title  = "--Select PREXC--" });
+
+            ViewBag.message = p;
             //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
             //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
             //TempData["FundSource"] = await _context.FundSource.ToListAsync();
@@ -89,8 +107,11 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId")] FundSource fundSource)
         {
+
+
             if (ModelState.IsValid)
             {
+
                 _context.Add(fundSource);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
