@@ -28,17 +28,16 @@ namespace fmis.Controllers
             _context = context;
         }
 
-
-
         public class UacsData
         {
 
             public string Account_title { get; set; }
             public string Expense_code { get; set; }
+            public int Id { get; set; }
         }
 
-        // GET: Obligations
-        public async Task<IActionResult> Index()
+        // GET: Uacs
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Uacs.ToList());
             ViewBag.temp = json;
@@ -78,25 +77,33 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUacs(List<UacsData> data)
         {
-            var uacses = new List<Uacs>();
             var uacs = new Uacs();
 
+            var data_holder = this._context.Uacs;
 
             foreach (var item in data)
             {
-                uacs.Account_title = item.Account_title;
-                uacs.Expense_code = item.Expense_code;
+                if (item.Id == 0)
+                {
+                    uacs.Id = item.Id;
+                    uacs.Account_title = item.Account_title;
+                    uacs.Expense_code = item.Expense_code;
 
-                uacses.Add(uacs);
+                    this._context.Uacs.Update(uacs);
+                    this._context.SaveChanges();
+                }
+                else {
+                    data_holder.Find(item.Id).Account_title = item.Account_title;
+                    data_holder.Find(item.Id).Expense_code = item.Expense_code;
+
+                    this._context.SaveChanges();
+                }
             }
 
-
-            this._context.Uacs.Update(uacs);
-            this._context.SaveChanges();
             return Json(data);
         }
 
-        // POST: Obligations/Create
+        // POST: Uacs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -123,7 +130,7 @@ namespace fmis.Controllers
 
         }
 
-        // GET: Obligations/Edit/5
+        // GET: Uacs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -139,7 +146,7 @@ namespace fmis.Controllers
             return View(uacs);
         }
 
-        // POST: Obligations/Edit/5
+        // POST: Uacs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -174,7 +181,7 @@ namespace fmis.Controllers
             return View(uacs);
         }
 
-        // GET: Obligations/Delete/5
+        // GET: Uacs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -192,15 +199,14 @@ namespace fmis.Controllers
             return View(uacs);
         }
 
-        // POST: Obligations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // POST: Uacs/Delete/5
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
         {
-            var obligation = await _context.Uacs.FindAsync(id);
-            _context.Uacs.Remove(obligation);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var uacs = this._context.Uacs.Find(id);
+            this._context.Uacs.Remove(uacs);
+            this._context.SaveChangesAsync();
+            return Json(id);
         }
 
         private bool ObligationExists(int id)
