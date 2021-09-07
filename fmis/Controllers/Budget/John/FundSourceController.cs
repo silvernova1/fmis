@@ -95,7 +95,7 @@ namespace fmis.Controllers.Budget.John
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(fundSource);
+            return View("~/Views/Budget_allotments/Index.cshtml");
         }
 
         // GET: FundSource/Edit/5
