@@ -29,7 +29,6 @@ namespace fmis.Controllers
         }
 
 
-
         public class    PrexcData
         {
 
@@ -201,19 +200,14 @@ namespace fmis.Controllers
         }
 
         // POST: Prexc/Delete/5
-        [HttpPost]
-        public IActionResult DeleteConfirmed(int id)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            /*var prexc = await _context.Prexc.FindAsync(id);
+            var prexc = await _context.Prexc.FindAsync(id);
             _context.Prexc.Remove(prexc);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));*/
-
-
-            var prexc = this._context.Prexc.Find(id);
-            this._context.Prexc.Remove(prexc);
-            this._context.SaveChangesAsync();
-            return Json(id);
+            return RedirectToAction(nameof(Index));
         }
 
         private bool PrexcExists(int id)

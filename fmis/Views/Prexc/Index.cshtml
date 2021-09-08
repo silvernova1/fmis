@@ -29,12 +29,12 @@
     }
 
     .search {
-        margin-left: 77.5%;
+        margin-left: 77%;
     }
 </style>
 
 
-<input type="hidden" class="utilization" value="@ViewBag.temp">
+<input type="hidden" class="prexc" value="@ViewBag.temp">
 <br />
 <input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
 <br />
@@ -42,7 +42,7 @@
 <br />
 <div id="example" class="hot" style="margin-left:50px;"></div>
 <br />
-<div class="controls">
+<div class="controls" hidden>
     <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
 </div>
 
@@ -55,7 +55,7 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2] } );
+                json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2]} );
             });
 
             $.ajax({
@@ -78,11 +78,11 @@
     };
 
 
-    var utilization = $.parseJSON($(".utilization").val());
+    var prexc = $.parseJSON($(".prexc").val());
 
     const data = [];
     var counter = 0;
-    $.each(utilization, function () {
+    $.each(prexc, function () {
         data[counter] = [this.pap_title, this.pap_code1, this.pap_code2]
         counter++;
     })
@@ -98,42 +98,15 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: ['row_above', 'row_below', 'remove_row'],
-         beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
-            var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][2]
-
-            if (holder_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("DeleteConfirmed", "Prexc")',
-                    dataType: "JSON",
-                    data: { id: holder_id },
-                    success: function (output) {
-                        console.log(output);
-                    }
-                });
-            }
-
-            Lobibox.notify("warning", {
-                msg: "Your selected row was remove",
-                sound: false
-            });
-
-        },
+        contextMenu:  ['row_above', 'row_below', 'remove_row'],
         height: 'auto',
-        hiddenColumns: {
-            columns: [2],
-            indicators: true
-        },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { pap_title: null, pap_code1: null, pap_code2: null},
         columns: [
             { data: 'pap_title', type: 'text' },
             { data: 'pap_code1', type: 'text' },
             { data: 'pap_code2', type: 'text' },
-            { data: 'Id', type: 'text' },
+      
 
         ]
     });
@@ -184,13 +157,15 @@
         ],
         columns: [
             {
-            },
 
-            {
             },
+            {
 
-            {
             },
+            {
+
+            },
+           
 
 
         ]
