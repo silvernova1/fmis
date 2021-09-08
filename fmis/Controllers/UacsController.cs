@@ -167,7 +167,7 @@ namespace fmis.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ObligationExists(uacs.Id))
+                    if (!UacsExists(uacs.Id))
                     {
                         return NotFound();
                     }
@@ -201,7 +201,7 @@ namespace fmis.Controllers
 
         // POST: Uacs/Delete/5
         [HttpPost]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteUacs(int id)
         {
             var uacs = this._context.Uacs.Find(id);
             this._context.Uacs.Remove(uacs);
@@ -209,7 +209,7 @@ namespace fmis.Controllers
             return Json(id);
         }
 
-        private bool ObligationExists(int id)
+        private bool UacsExists(int id)
         {
             return _context.Uacs.Any(e => e.Id == id);
         }

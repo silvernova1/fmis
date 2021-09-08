@@ -42,9 +42,9 @@
 <br />
 <div id="example" class="hot" style="margin-left:50px;"></div>
 <br />
-@*<div class="controls" >
+<div class="controls"hidden>
     <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
-</div>*@
+</div>
 
 
 <script>
@@ -107,7 +107,7 @@
             if (holder_id) {
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("DeleteConfirmed", "Uacs")',
+                    url: '@Url.Action("DeleteUacs", "Uacs")',
                     dataType: "JSON",
                     data: { id: holder_id },
                     success: function (output) {
