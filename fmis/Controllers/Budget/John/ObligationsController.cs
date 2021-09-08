@@ -74,6 +74,7 @@ namespace fmis.Controllers
 
         public class ObligationData
         {
+            public int Id { get; set; }
             [DataType(DataType.Date)]
             public DateTime Date { get; set; }
             public string Dv { get; set; }
@@ -97,7 +98,7 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Obligation.ToList());
             ViewBag.temp = json;
@@ -137,8 +138,67 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveObligation(List<ObligationData> data)
         {
-            var obligations = new List<Obligation>();
+
+
+
             var obligation = new Obligation();
+
+            var data_holder = this._context.Obligation;
+
+            foreach (var item in data)
+            {
+                if (item.Id == 0)
+                {
+                    obligation.Id = item.Id;
+                    obligation.Date = item.Date;
+                    obligation.Dv = item.Dv;
+                    obligation.Pr_no = item.Pr_no;
+                    obligation.Po_no = item.Po_no;
+                    obligation.Payee = item.Payee;
+                    obligation.Address = item.Address;
+                    obligation.Particulars = item.Particulars;
+                    obligation.Ors_no = item.Ors_no;
+                    obligation.Fund_source = item.Fund_source;
+                    obligation.Gross = item.Gross;
+                    obligation.Created_by = item.Created_by;
+                    obligation.Date_recieved = item.Date_recieved;
+                    obligation.Time_recieved = item.Time_recieved;
+                    obligation.Date_released = item.Date_released;
+                    obligation.Time_released = item.Time_released;
+
+                    this._context.Obligation.Update(obligation);
+                    this._context.SaveChanges();
+                }
+                else
+                {
+
+                    data_holder.Find(item.Id).Date = item.Date;
+                    data_holder.Find(item.Id).Dv = item.Dv;
+                    data_holder.Find(item.Id).Pr_no = item.Pr_no;
+                    data_holder.Find(item.Id).Payee = item.Payee;
+                    data_holder.Find(item.Id).Address = item.Address;
+                    data_holder.Find(item.Id).Particulars = item.Particulars;
+                    data_holder.Find(item.Id).Ors_no = item.Ors_no;
+                    data_holder.Find(item.Id).Fund_source = item.Fund_source;
+                    data_holder.Find(item.Id).Gross = item.Gross;
+                    data_holder.Find(item.Id).Created_by = item.Created_by;
+                    data_holder.Find(item.Id).Date_recieved = item.Date_recieved;
+                    data_holder.Find(item.Id).Time_recieved = item.Time_recieved;
+                    data_holder.Find(item.Id).Date_released = item.Date_released;
+                    data_holder.Find(item.Id).Time_released = item.Time_released;
+                    this._context.SaveChanges();
+                }
+            }
+
+            return Json(data);
+
+
+
+
+
+            /*var obligations = new List<Obligation>();
+            var obligation = new Obligation();
+
 
 
             foreach (var item in data)
@@ -165,7 +225,7 @@ namespace fmis.Controllers
 
             this._context.Obligation.Update(obligation);
             this._context.SaveChanges();
-            return Json(data);
+            return Json(data);*/
         }
 
         // POST: Obligations/Create
@@ -194,6 +254,8 @@ namespace fmis.Controllers
             return null;
 
         }
+
+
 
         // GET: Obligations/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -265,14 +327,13 @@ namespace fmis.Controllers
         }
 
         // POST: Obligations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
         {
-            var obligation = await _context.Obligation.FindAsync(id);
-            _context.Obligation.Remove(obligation);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var obligation = this._context.Obligation.Find(id);
+            this._context.Obligation.Remove(obligation);
+            this._context.SaveChangesAsync();
+            return Json(id);
         }
 
         private bool ObligationExists(int id)

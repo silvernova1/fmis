@@ -16,12 +16,14 @@ namespace fmis.Controllers
         private readonly MyDbContext _context;
         private readonly FundSourceContext _Context;
         private readonly Yearly_referenceContext _osContext;
+        private readonly Ors_headContext _orssContext;
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext)
+        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext)
         {
             _context = context;
             _Context = Context;
             _osContext = osContext;
+            _orssContext = orssContext;
         }
 
         // GET: Budget_allotments
@@ -33,6 +35,16 @@ namespace fmis.Controllers
         // GET: Budget_allotments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
+            List<Ors_head> oh = new List<Ors_head>();
+
+            oh = (from c in _orssContext.Ors_head select c).ToList();
+            oh.Insert(0, new Ors_head { Id = 0, Head_name = "--Select ORS Head--" });
+
+            ViewBag.message = oh;
+
+
+
             ViewBag.BudgetId = id;
             if (id == null)
             {

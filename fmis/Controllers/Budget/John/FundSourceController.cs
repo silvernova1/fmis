@@ -105,8 +105,26 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId")] FundSource fundSource)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId")] FundSource fundSource, Ors_head Ors_head)
         {
+
+
+            /*if (Ors_head.Id == 0)
+            {
+
+                ModelState.AddModelError("", "Select ORS Head");
+
+            }
+
+            int SelectValue = Ors_head.Id;
+            ViewBag.SelectedValue = Ors_head.Id;*/
+
+            List<Prexc> p = new List<Prexc>();
+
+            p = (from c in _pContext.Prexc select c).ToList();
+            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
+
+            ViewBag.message = p;
 
 
             if (ModelState.IsValid)
