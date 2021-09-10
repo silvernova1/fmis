@@ -1,8 +1,16 @@
 ﻿@model IEnumerable<fmis.Models.Obligation>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
 }
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
@@ -38,54 +46,13 @@
     <button id="export-file">Download CSV</button>
 </div>
 
+
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
-            <div class="modal-body">
-                <form>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td class="col-sm-1"><strong>Particulars</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10">
-                                   
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-sm-1"><strong>Payee</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10"></td>
-                            </tr>
-                            <tr>
-                                <td class="col-sm-1"><strong>Address</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10"></td>
-                            </tr>
-                            <tr>
-                                <td class="col-sm-1"><strong>Fund Source</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10"></td>
-                            </tr>
-                            <tr>
-                                <td class="col-sm-1"><strong>PR #</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10"></td>
-                            </tr>
-                            <tr>
-                                <td class="col-sm-1"><strong>Total Amount</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10"><strong id="uacs_total"></strong></td>
-                            </tr>
-                            <tr>
-                                <td class="col-sm-1"><strong>Dibursements</strong></td>
-                                <td class="col-sm-1"><strong>:</strong></td>
-                                <td class="col-sm-10"><strong id="uacs_disbursment"></strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
+            <div class="modal-body ObligationContent">
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success">Save</button>
@@ -94,6 +61,7 @@
         </div>
     </div>
 </div>
+
 
 
 <script>
@@ -147,8 +115,7 @@
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu: ['row_above', 'row_below', 'remove_row'],
-        @*contextMenu: {
+        contextMenu: {
             items: {
                 "make_bold": {
                     name: 'Print ORS',
@@ -163,15 +130,31 @@
                 "": {
                     name: 'UACS Amount Entry / Disbmt.',
                     callback: function (key, options) {
+                        $("#exampleModal").modal('show');
+                        $(".ObligationContent").html(loading);
                         var selection = this.getSelected();
-                        var tempdata = this.getData();
-                        console.log(tempdata[selection[0][0]]);
-                        $('#exampleModal').modal('show');
+                        var holder_data = this.getData();
+                        var holder_id = holder_data[selection[0][0]][15]
+
+                        $.ajax({
+                        type: 'GET',
+                        headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                        url: '@Url.Action("ObligationModal", "Obligations")',
+                        data: { id: holder_id },
+                        success: function (output) {
+                            @*console.log(output);*@
+                            setTimeout(function () {
+                                $(".ObligationContent").html(output);
+                            }, 500);
+                        }
+                    });
+
+
                     }
                 }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
             }
-        },*@
-            beforeRemoveRow: function (index, column) {
+        },
+        beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
             var holder_id = holder_data[selection[0][0]][15]
