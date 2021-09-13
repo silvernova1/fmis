@@ -40,25 +40,26 @@
     <button id="export-file">Download CSV</button>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
-            <div class="modal-body">
-                
-              
-                
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
+                <div class="modal-body ObligationModal" >
+
+                  
+
                 </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success">Save</button>
-                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success">Save</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-<script>
+
+    <script>
 
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
@@ -125,10 +126,28 @@
                 "": {
                     name: 'UACS Amount Entry / Disbmt.',
                     callback: function (key, options) {
+                        $("#exampleModal").modal('show');
+                        $(".ObligationModal").html(loading);
+              
                         var selection = this.getSelected();
-                        var tempdata = this.getData();
-                        console.log(tempdata[selection[0][0]]);
-                        $('#exampleModal').modal('show');
+                        var holder_data = this.getData();
+                        var holder_id = holder_data[selection[0][0]][2];
+
+                        if (holder_id) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '@Url.Action("ObligationModal", "Obligations")',
+                                data: { id: holder_id },
+                                success: function (output) {
+ 
+                                    @*setTimeout(function () {
+                                        $(".ObligationModal").html(output);
+                                    }, 500);*@
+                                }
+                            });
+                        }
+
+
                     }
                 }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
             }
@@ -298,12 +317,12 @@
     console.log(hot.getSourceData());
 
 
-</script>
+    </script>
 
 
 
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
 

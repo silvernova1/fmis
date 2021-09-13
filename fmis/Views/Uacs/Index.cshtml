@@ -5,6 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
@@ -29,7 +31,7 @@
     }
 
     .search {
-        margin-left: 54%;
+        margin-left: 61%;
     }
 </style>
 
@@ -102,7 +104,7 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][2]
+            var holder_id = holder_data[selection[0][0]][2];
 
             if (holder_id) {
                 $.ajax({

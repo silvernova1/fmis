@@ -98,11 +98,12 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? id)
         {
             var json = JsonSerializer.Serialize(_context.Obligation.ToList());
             ViewBag.temp = json;
-            return View("~/Views/Budget/John/Obligations/Index.cshtml");
+
+            return View(await _context.Obligation.ToListAsync());
         }
 
         // GET: Obligations/Details/5
@@ -135,12 +136,30 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
+
+        public IActionResult ObligationModal(int? id)
+        {
+            ViewBag.layout = null;
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obligation = _context.Obligation
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (obligation == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Obligation = obligation;
+            return View(obligation);
+        }
+
         [HttpPost]
         public IActionResult SaveObligation(List<ObligationData> data)
         {
-
-
-
             var obligation = new Obligation();
 
             var data_holder = this._context.Obligation;
@@ -245,16 +264,13 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-
         public ActionResult AddObligation(IEnumerable<Obligation> ObligationsInput)
 
         {
-
             var p = ObligationsInput;
             return null;
 
         }
-
 
 
         // GET: Obligations/Edit/5

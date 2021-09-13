@@ -29,6 +29,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Budget_allotments.ToListAsync());
         }
 
