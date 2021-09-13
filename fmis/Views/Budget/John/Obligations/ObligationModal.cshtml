@@ -1,0 +1,53 @@
+﻿@model fmis.Models.Obligation
+
+<form>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td class="col-sm-1"><strong>Particulars</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.Particulars)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Payee</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.Payee)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Address</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Fund Source</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.Fund_source)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>PR #</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.Pr_no)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Total Amount</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10"><strong id="uacs_total"></strong></td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Dibursements</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10"><strong id="uacs_disbursment"></strong></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
