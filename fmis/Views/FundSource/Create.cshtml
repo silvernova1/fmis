@@ -16,8 +16,8 @@
 
 
 <form asp-action="Create">
-    @*    <input type="text" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
-    *@    <div class="panel-heading">
+        <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+        <div class="panel-heading">
         <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
         <div class="pull-right">
             <div class="btn-group">
@@ -29,17 +29,26 @@
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*            <input type="text" asp-for="@Model.Budget_allotment.BudgetAllotmentId" />
-            *@            <div class="form-group">
-                <select class="form-control" asp-for="FundSourceId" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.Message" asp-items="@(new SelectList(ViewBag.message,"Id","pap_title"))"></select>
+            @*<div class="form-group">
+            <select class="form-control" asp-for="FundSourceId" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.Message" asp-items="@(new SelectList(ViewBag.message,"Id","pap_title"))"></select>
+            <label asp-for="PrexcCode" class="control-label"></label>
+            <input asp-for="PrexcCode" class="form-control" required />
+            <span asp-validation-for="PrexcCode" class="text-danger"></span>
+        </div>*@
 
-                @*<label asp-for="PrexcCode" class="control-label"></label>
-                    <input asp-for="PrexcCode" class="form-control" required />
-                    <span asp-validation-for="PrexcCode" class="text-danger"></span>*@
-            </div>
+        <div class="form-group">
+            <label asp-for="PrexcCode" class="control-label"></label><br />
+            @Html.DropDownList("Id", String.Empty)
+            <span asp-validation-for="PrexcCode" class="text-danger"></span>
+        </div>
 
-
-
+          @*  <div class="form-group">
+                <label asp-for="PrexcCode" class="control-label"></label>
+                <div class="col-md-10">
+                    @Html.DropDownList("Id", String.Empty)
+                    @Html.ValidationMessageFor(model => model.Id)
+                </div>
+            </div>*@
 
             <div class="form-group">
                 <label asp-for="FundSourceTitle" class="control-label"></label>
@@ -52,29 +61,19 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="FundSourceTitleCode" class="control-label"></label>
-                <input asp-for="FundSourceTitleCode" class="form-control" required />
-                <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Respo" class="control-label"></label>
-                <input asp-for="Respo" class="form-control" required />
-                <span asp-validation-for="Respo" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                @if (ViewBag.SelectedValue != null)
-                {
-                    <text>Selected Country ID: </text> @ViewBag.SelectedValue;
-                }
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="FundSourceTitleCode" class="control-label"></label>
+                    <input asp-for="FundSourceTitleCode" class="form-control" required />
+                    <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Respo" class="control-label"></label>
+                    <input asp-for="Respo" class="form-control" required />
+                    <span asp-validation-for="Respo" class="text-danger"></span>
+                </div>
             </div>
         </div>
-    </div>
 </form>
 
 

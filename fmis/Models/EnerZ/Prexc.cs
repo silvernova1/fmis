@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using fmis.Models.John;
 
 namespace fmis.Models
 {
@@ -14,5 +16,8 @@ namespace fmis.Models
         public string pap_code2 { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+
+        
+        public FundSource FundSource { get; set; }
     }
 }
