@@ -13,10 +13,12 @@ namespace fmis.Controllers.Budget.silver
     public class Requesting_officeController : Controller
     {
         private readonly Requesting_officeContext _context;
+        private readonly PersonalInformationContext _Context;
 
-        public Requesting_officeController(Requesting_officeContext context)
+        public Requesting_officeController(Requesting_officeContext context, PersonalInformationContext Context)
         {
             _context = context;
+            _Context = Context;
         }
 
         // GET: Requesting_office
@@ -45,6 +47,12 @@ namespace fmis.Controllers.Budget.silver
         // GET: Requesting_office/Create
         public IActionResult Create()
         {
+            List<Personal_Information> oh = new List<Personal_Information>();
+
+            oh = (from c in _Context.Personal_Information select c).ToList();
+            oh.Insert(0, new Personal_Information { id = 0, fname = "--SelectA Ice cream--" });
+
+            ViewBag.message = oh;
             ViewBag.layout = "_Layout";
             return View();
         }
@@ -88,7 +96,7 @@ namespace fmis.Controllers.Budget.silver
         {
             ViewBag.layout = "_Layout";
             if (id != requesting_office.Id)
-            {   
+            {
                 return NotFound();
             }
             if (ModelState.IsValid)

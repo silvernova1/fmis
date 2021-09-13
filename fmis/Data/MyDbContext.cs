@@ -46,6 +46,8 @@ namespace fmis.Data
         public DbSet<fmis.Models.John.FundSource> FundSources { get; set; }
         /*public DbSet<Obligation> Obligation { get; set; }*/
         public DbSet<Prexc> Prexc { get; set; }
+        public DbSet<Personal_Information> Personal_information { get; set; }
+        public DbSet<Requesting_office> Requesting_office { get; set; }
         /*public DbSet<Utilization> Utilization { get; set; }
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
         public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
@@ -73,6 +75,17 @@ namespace fmis.Data
             modelBuilder.Entity<Prexc>()
             .HasOne<FundSource>(p => p.FundSource)
             .WithOne(s => s.Prexc);
+
+
+            //arnell
+
+            modelBuilder.Entity<Personal_Information>()
+           .HasKey(s => s.id);
+
+            modelBuilder.Entity<Requesting_office>()
+            .HasOne<Personal_Information>(p => p.Personal_information)
+            .WithOne(s => s.Requesting_office);
+
 
 
 
