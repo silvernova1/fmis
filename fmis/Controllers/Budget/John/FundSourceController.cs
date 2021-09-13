@@ -10,7 +10,7 @@ using fmis.Models.John;
 using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
-
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -73,6 +73,9 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Create
         public IActionResult Create(int? id)
         {
+
+            PopulatePrexcsDropDownList();
+
             ViewBag.BudgetId = id;
 
             List<Prexc> p = new List<Prexc>();
@@ -105,7 +108,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId")] FundSource fundSource, Ors_head Ors_head)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource)
         {
 
 
@@ -119,22 +122,36 @@ namespace fmis.Controllers.Budget.John
             int SelectValue = Ors_head.Id;
             ViewBag.SelectedValue = Ors_head.Id;*/
 
-            List<Prexc> p = new List<Prexc>();
+            /*List<Prexc> p = new List<Prexc>();
 
             p = (from c in _pContext.Prexc select c).ToList();
             p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
 
-            ViewBag.message = p;
+            ViewBag.message = p;*/
 
-
-            if (ModelState.IsValid)
+            try
             {
+                if (ModelState.IsValid)
+            {
+                List<Prexc> p = new List<Prexc>();
+
+                
 
                 _context.Add(fundSource);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View("~/Views/Budget_allotments/Index.cshtml");
+            }
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulatePrexcsDropDownList(fundSource.Id);
+            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
+
+            return View(fundSource);
+            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
 
         // GET: FundSource/Edit/5
@@ -151,6 +168,14 @@ namespace fmis.Controllers.Budget.John
                 return NotFound();
             }
             return View(fundSource);
+        }
+
+        private void PopulatePrexcsDropDownList(object selectedPrexc = null)
+        {
+            var prexsQuery = from d in _pContext.Prexc
+                                   orderby d.pap_title
+                                   select d;
+            ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);
         }
 
         // POST: FundSource/Edit/5

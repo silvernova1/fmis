@@ -44,9 +44,9 @@ namespace fmis.Data
         }
         public DbSet<Budget_allotment> Budget_allotments { get; set; }
         public DbSet<fmis.Models.John.FundSource> FundSources { get; set; }
-        public DbSet<Obligation> Obligation { get; set; }
+        /*public DbSet<Obligation> Obligation { get; set; }*/
         public DbSet<Prexc> Prexc { get; set; }
-        public DbSet<Utilization> Utilization { get; set; }
+        /*public DbSet<Utilization> Utilization { get; set; }
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
         public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
         public DbSet<Requesting_office> Requesting_office { get; set; }
@@ -56,7 +56,7 @@ namespace fmis.Data
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<FundSource> FundSource { get; set; }
-        public DbSet<AllotmentClass> AllotmentClass { get; set; }
+        public DbSet<AllotmentClass> AllotmentClass { get; set; }*/
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,11 +67,19 @@ namespace fmis.Data
             /*.HasForeignKey(p => p.BudgetAllotmentId);*/
 
 
+            modelBuilder.Entity<FundSource>()
+           .HasKey(s => s.FundSourceId);
+
+            modelBuilder.Entity<Prexc>()
+            .HasOne<FundSource>(p => p.FundSource)
+            .WithOne(s => s.Prexc);
+
+
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
-            modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
-            modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");
+            /*modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
+            modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");*/
         }
     }
 }

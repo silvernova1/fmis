@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
@@ -19,7 +20,10 @@ namespace fmis.Models.John
         public int Budget_allotmentBudgetAllotmentId { get; set; }
 
 
+        [ForeignKey("Prexc")]
+        public int Id { get; set; }
         public Budget_allotment Budget_allotment { get; set; }
+        public Prexc Prexc { get; set; }
 
 
     }
