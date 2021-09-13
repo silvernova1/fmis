@@ -176,27 +176,6 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
-
-        public IActionResult ObligationModal(int? id)
-        {
-            ViewBag.layout = null;
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var obligation = _context.Obligation
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (obligation == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.Obligation = obligation;
-            return View(obligation);
-        }
-
         [HttpPost]
         public IActionResult SaveObligation(List<ObligationData> data)
         {

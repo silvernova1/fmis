@@ -38,7 +38,11 @@
 
         <div class="form-group">
             <label asp-for="PrexcCode" class="control-label"></label><br />
-            @Html.DropDownList("Id", String.Empty)
+            @Html.DropDownList("Id", null, htmlAttributes: new { @class = "form-control" })
+            @*@Html.DropDownList("Id", String.Empty)*@
+            @*@Html.DropDownList("Id" + "pap_code1",
+        (IEnumerable<SelectListItem>)ViewBag.Id,
+        "Select Prexc Enerz")*@
             <span asp-validation-for="PrexcCode" class="text-danger"></span>
         </div>
 

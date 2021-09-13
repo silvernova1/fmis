@@ -81,7 +81,7 @@ namespace fmis.Controllers.Budget.John
             List<Prexc> p = new List<Prexc>();
 
             p = (from c in _pContext.Prexc select c).ToList();
-            p.Insert(0, new Prexc { Id = 0, pap_title  = "--Select PREXC--" });
+            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
 
             ViewBag.message = p;
             //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
@@ -170,12 +170,26 @@ namespace fmis.Controllers.Budget.John
             return View(fundSource);
         }
 
+        /*DROPDOWN LIST FOR PREXC*/
+
         private void PopulatePrexcsDropDownList(object selectedPrexc = null)
         {
             var prexsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
-            ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);
+
+            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
+
+            ViewBag.Id = new SelectList((from s in _pContext.Prexc.ToList()
+                                                 select new
+                                                 {
+                                                     Id = s.Id,
+                                                     prexc = s.pap_title + " ( " + s.pap_code1 + ")"
+                                                 }),
+       "Id",
+       "prexc",
+       null);
+
         }
 
         // POST: FundSource/Edit/5
