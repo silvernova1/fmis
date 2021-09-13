@@ -13,7 +13,7 @@ namespace fmis.Models
         
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public long id { get; set; }
+        public int id { get; set; }
         [StringLength(100)]
         public string userid { get; set; }
         public string picture { get; set; }
@@ -143,5 +143,9 @@ namespace fmis.Models
         public DateTime created_at { get; set; }
         [DataType(DataType.Date)]
         public DateTime updated_at { get; set; }
+
+
+        public Requesting_office Requesting_office { get; set; }
+
     }
 }
