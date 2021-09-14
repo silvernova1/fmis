@@ -28,10 +28,8 @@ namespace fmis.Controllers
             _context = context;
         }
 
-
-        public class    PrexcData
+        public class PrexcData
         {
-
             public int Id { get; set; }
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
@@ -81,25 +79,36 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SavePrexc(List<PrexcData> data)
         {
-            var prexces = new List<Prexc>();
             var prexc = new Prexc();
 
+            var data_holder = this._context.Prexc;
 
             foreach (var item in data)
             {
-                prexc.Id = item.Id;
-                prexc.pap_title = item.pap_title;
-                prexc.pap_code1 = item.pap_code1;
-                prexc.pap_code2 = item.pap_code2;
-                prexc.Created_at = item.Created_at;
-                prexc.Updated_at = item.Updated_at;
+                if (item.Id == 0)
+                {
+                    prexc.Id = item.Id;
+                    prexc.pap_title = item.pap_title;
+                    prexc.pap_code1 = item.pap_code1;
+                    prexc.pap_code2 = item.pap_code2;
+                    prexc.Created_at = item.Created_at;
+                    prexc.Updated_at = item.Updated_at;
 
-                prexces.Add(prexc);
+                    this._context.Prexc.Update(prexc);
+                    this._context.SaveChanges();
+                }
+                else
+                {
+                    data_holder.Find(item.Id).pap_title = item.pap_title;
+                    data_holder.Find(item.Id).pap_code1 = item.pap_code1;
+                    data_holder.Find(item.Id).pap_code2 = item.pap_code2;
+                    data_holder.Find(item.Id).Created_at = item.Created_at;
+                    data_holder.Find(item.Id).Updated_at = item.Updated_at;
+
+                    this._context.SaveChanges();
+                }
             }
 
-
-            this._context.Prexc.Update(prexc);
-            this._context.SaveChanges();
             return Json(data);
         }
 
@@ -146,7 +155,7 @@ namespace fmis.Controllers
             return View(prexc);
         }
 
-        // POST: Prexc/Edit/5
+        // POST: Uacs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -200,14 +209,13 @@ namespace fmis.Controllers
         }
 
         // POST: Prexc/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult DeletePrexc(int id)
         {
-            var prexc = await _context.Prexc.FindAsync(id);
-            _context.Prexc.Remove(prexc);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var prexc = this._context.Prexc.Find(id);
+            this._context.Prexc.Remove(prexc);
+            this._context.SaveChangesAsync();
+            return Json(id);
         }
 
         private bool PrexcExists(int id)

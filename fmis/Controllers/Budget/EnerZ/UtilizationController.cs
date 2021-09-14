@@ -28,8 +28,6 @@ namespace fmis.Controllers
             _context = context;
         }
 
-
-
         public class UtilizationData
         {
             public int Id { get; set; }
@@ -51,7 +49,7 @@ namespace fmis.Controllers
         }
 
         // GET: Utilization
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Utilization.ToList());
             ViewBag.temp = json;
@@ -91,35 +89,55 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUtilization(List<UtilizationData> data)
         {
-            var utilizationes = new List<Utilization>();
             var utilization = new Utilization();
 
+            var data_holder = this._context.Utilization;
 
             foreach (var item in data)
             {
-                utilization.Id = item.Id;
-                utilization.Date = item.Date;
-                utilization.Dv = item.Dv;
-                utilization.Pr_no = item.Pr_no;
-                utilization.Po_no = item.Po_no;
-                utilization.Payer = item.Payer;
-                utilization.Address = item.Address;
-                utilization.Particulars = item.Particulars;
-                utilization.Ors_no = item.Ors_no;
-                utilization.Fund_source = item.Fund_source;
-                utilization.Gross = item.Gross;
-                utilization.Created_by = item.Created_by;
-                utilization.Date_recieved = item.Date_recieved;
-                utilization.Time_recieved = item.Time_recieved;
-                utilization.Date_released = item.Date_released;
-                utilization.Time_released = item.Time_released;
+                if (item.Id == 0)
+                {
+                    utilization.Id = item.Id;
+                    utilization.Date = item.Date;
+                    utilization.Dv = item.Dv;
+                    utilization.Pr_no = item.Pr_no;
+                    utilization.Po_no = item.Po_no;
+                    utilization.Payer = item.Payer;
+                    utilization.Address = item.Address;
+                    utilization.Particulars = item.Particulars;
+                    utilization.Ors_no = item.Ors_no;
+                    utilization.Fund_source = item.Fund_source;
+                    utilization.Gross = item.Gross;
+                    utilization.Created_by = item.Created_by;
+                    utilization.Date_recieved = item.Date_recieved;
+                    utilization.Time_recieved = item.Time_recieved;
+                    utilization.Date_released = item.Date_released;
+                    utilization.Time_released = item.Time_released;
 
-                utilizationes.Add(utilization);
+                    this._context.Utilization.Update(utilization);
+                    this._context.SaveChanges();
+                }
+                else
+                {
+                    data_holder.Find(item.Id).Date = item.Date;
+                    data_holder.Find(item.Id).Dv = item.Dv;
+                    data_holder.Find(item.Id).Pr_no = item.Pr_no;
+                    data_holder.Find(item.Id).Payer = item.Payer;
+                    data_holder.Find(item.Id).Address = item.Address;
+                    data_holder.Find(item.Id).Particulars = item.Particulars;
+                    data_holder.Find(item.Id).Ors_no = item.Ors_no;
+                    data_holder.Find(item.Id).Fund_source = item.Fund_source;
+                    data_holder.Find(item.Id).Gross = item.Gross;
+                    data_holder.Find(item.Id).Created_by = item.Created_by;
+                    data_holder.Find(item.Id).Date_recieved = item.Date_recieved;
+                    data_holder.Find(item.Id).Time_recieved = item.Time_recieved;
+                    data_holder.Find(item.Id).Date_released = item.Date_released;
+                    data_holder.Find(item.Id).Time_released = item.Time_released;
+
+                    this._context.SaveChanges();
+                }
             }
 
-
-            this._context.Utilization.Update(utilization);
-            this._context.SaveChanges();
             return Json(data);
         }
 
@@ -150,7 +168,7 @@ namespace fmis.Controllers
 
         }
 
-        // GET: Utilization/Edit/5
+        // GET: Prexc/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -220,14 +238,13 @@ namespace fmis.Controllers
         }
 
         // POST: Utilization/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult DeleteUtilization(int id)
         {
-            var utilization = await _context.Utilization.FindAsync(id);
-            _context.Utilization.Remove(utilization);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var utilization = this._context.Utilization.Find(id);
+            this._context.Utilization.Remove(utilization);
+            this._context.SaveChangesAsync();
+            return Json(id);
         }
 
         private bool UtilizationExists(int id)
@@ -236,4 +253,3 @@ namespace fmis.Controllers
         }
     }
 }
-

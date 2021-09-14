@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h2>PREXC</h2>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
@@ -29,7 +30,7 @@
     }
 
     .search {
-        margin-left: 77%;
+        margin-left: 54%;
     }
 </style>
 
@@ -55,7 +56,7 @@
 
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2]} );
+                json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2], Id: this[3] } );
             });
 
             $.ajax({
@@ -83,7 +84,7 @@
     const data = [];
     var counter = 0;
     $.each(prexc, function () {
-        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2]
+        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2, this.Id]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -91,22 +92,49 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '100%',
+        width: '200%',
         colWidths: 500,
         rowHeaders: true,
         colHeaders: true,
         search: {
             searchResultClass: 'search-result-custom'
         },
-        contextMenu:  ['row_above', 'row_below', 'remove_row'],
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var holder_id = holder_data[selection[0][0]][3]
+
+            if (holder_id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeletePrexc", "Prexc")',
+                    dataType: "JSON",
+                    data: { id: holder_id },
+                    success: function (output) {
+                        console.log(output);
+                    }
+                });
+            }
+
+            Lobibox.notify("warning", {
+                msg: "Your selected row was remove",
+                sound: false
+            });
+
+        },
         height: 'auto',
+        hiddenColumns: {
+            columns: [3],
+            indicators: true
+        },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { pap_title: null, pap_code1: null, pap_code2: null},
         columns: [
-            { data: 'pap_title', type: 'text' },
+            { data: 'pap_title ', type: 'text' },
             { data: 'pap_code1', type: 'text' },
             { data: 'pap_code2', type: 'text' },
-      
+            { data: 'Id ', type: 'text' },
 
         ]
     });
@@ -147,7 +175,7 @@
     })
 
     hot.updateSettings({
-        colHeaders: ['ACCOUNT TITLE', 'CODE 1', 'CODE 2'],
+        colHeaders: ['TITLE', 'CODE1', 'CODE2', 'ID'],
         cell: [
             {
                 row: 0,
@@ -165,10 +193,11 @@
             {
 
             },
-           
+            {
+                // 2nd cell is simple text, no special options here
+            },
 
-
-        ]
+        ],
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
@@ -176,4 +205,3 @@
 
 
 </script>
-
