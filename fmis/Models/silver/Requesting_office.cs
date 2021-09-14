@@ -16,9 +16,13 @@ namespace fmis.Models
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
-        [ForeignKey("Personal_information")]
+        [ForeignKey("Personal_Information")]
         public int Pid { get; set; }
-        public Personal_Information Personal_information { get; set; }
+        public Personal_Information Personal_Information { get; set; }
+
+        [ForeignKey("Designation")]
+        public int Did { get; set; }
+        public Designation Designation { get; set; }
 
     }
 }

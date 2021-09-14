@@ -13,7 +13,7 @@ namespace fmis.Models
         
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int id { get; set; }
+        public int Pid { get; set; }
         [StringLength(100)]
         public string userid { get; set; }
         public string picture { get; set; }

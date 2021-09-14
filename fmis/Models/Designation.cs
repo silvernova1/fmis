@@ -11,7 +11,7 @@ namespace fmis.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int Id { get; set; }
+        public int Did { get; set; }
         [StringLength(100)]
         public string Description { get; set; }
         public string Remember_Token { get; set; }
@@ -19,5 +19,7 @@ namespace fmis.Models
         public DateTime Created_At { get; set; }
         [DataType(DataType.Date)]
         public DateTime Updated_At { get; set; }
+
+        public Requesting_office Requesting_office { get; set; }
     }
 }
