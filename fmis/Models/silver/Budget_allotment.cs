@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.John;
@@ -21,6 +22,10 @@ namespace fmis.Models
         public List<FundSource> FundSources { get; set; }
 
         public List<Personal_Information> Personal_Information { get; set; }
+
+        [ForeignKey("Yearly_reference")]
+        public int Id { get; set; }
+        public Yearly_reference Yearly_reference { get; set; }
         /*public IList<FundSource> FundSource { get; set; }*/
 
     }
