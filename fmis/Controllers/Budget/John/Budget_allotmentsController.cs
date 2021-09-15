@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data.John;
 using fmis.Data;
 using fmis.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace fmis.Controllers
 {
@@ -97,6 +98,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments/Create
         public IActionResult Create()
         {
+            PopulateYrDropDownList();
             List<Yearly_reference> oh = new List<Yearly_reference>();
 
             oh = (from c in _osContext.Yearly_reference select c).ToList();
@@ -106,33 +108,59 @@ namespace fmis.Controllers
             return View();
         }
 
+
+        private void PopulateYrDropDownList(object selectedPrexc = null)
+        {
+            var prexsQuery = from d in _osContext.Yearly_reference
+                             orderby d.YearlyReference
+                             select d;
+
+
+            ViewBag.Id = new SelectList((from s in _osContext.Yearly_reference.ToList()
+                                         select new
+                                         {
+                                             Id = s.Id,
+                                             yr = s.YearlyReference
+                                         }),
+       "Id",
+       "yr",
+       null);
+
+        }
+
         // POST: Budget_allotments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,Id")] Budget_allotment budget_allotment)
         {
 
-            
+
 
             try
             {
                 if (ModelState.IsValid)
+                {
+                    List<Prexc> p = new List<Prexc>();
+
+
+
+                    _context.Add(budget_allotment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (RetryLimitExceededException /* dex */)
             {
-                _context.Add(budget_allotment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.
-                ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists " +
-                    "see your system administrator.");
-            }
+            PopulateYrDropDownList(budget_allotment.Id);
+            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
+
             return View(budget_allotment);
+            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
 
         // GET: Budget_allotments/Edit/5
