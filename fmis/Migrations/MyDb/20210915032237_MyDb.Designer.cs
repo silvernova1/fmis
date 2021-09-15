@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.MyDb
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20210914070807_MyDb")]
+    [Migration("20210915032237_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,6 +98,34 @@ namespace fmis.Migrations.MyDb
                     b.HasKey("Did");
 
                     b.ToTable("Designation");
+                });
+
+            modelBuilder.Entity("fmis.Models.Division", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Head")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remember_Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Division");
                 });
 
             modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>
@@ -284,6 +312,9 @@ namespace fmis.Migrations.MyDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PBarangay")
                         .HasMaxLength(255)
@@ -543,7 +574,9 @@ namespace fmis.Migrations.MyDb
 
                     b.HasKey("Pid");
 
-                    b.ToTable("Personal_information");
+                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
+
+                    b.ToTable("Personal_Information");
                 });
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>
@@ -607,6 +640,40 @@ namespace fmis.Migrations.MyDb
                         .IsUnique();
 
                     b.ToTable("Requesting_office");
+                });
+
+            modelBuilder.Entity("fmis.Models.Section", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Division")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Head")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remember_Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Section");
                 });
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
@@ -681,6 +748,42 @@ namespace fmis.Migrations.MyDb
                     b.HasIndex("Obligated_amountId");
 
                     b.ToTable("Uacs");
+                });
+
+            modelBuilder.Entity("fmis.Models.Uacsamount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Expense_code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ObligationId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Total_disbursement")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_net_amount")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_others")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_tax_amount")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Uacsamount");
                 });
 
             modelBuilder.Entity("fmis.Models.Utilization", b =>
@@ -787,6 +890,15 @@ namespace fmis.Migrations.MyDb
                         .HasForeignKey("Sub_allotmentId");
                 });
 
+            modelBuilder.Entity("fmis.Models.Personal_Information", b =>
+                {
+                    b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
+                        .WithMany("Personal_Information")
+                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
+
+                    b.Navigation("Budget_allotment");
+                });
+
             modelBuilder.Entity("fmis.Models.Requesting_office", b =>
                 {
                     b.HasOne("fmis.Models.Designation", "Designation")
@@ -816,6 +928,8 @@ namespace fmis.Migrations.MyDb
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
                     b.Navigation("FundSources");
+
+                    b.Navigation("Personal_Information");
                 });
 
             modelBuilder.Entity("fmis.Models.Designation", b =>

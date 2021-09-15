@@ -65,16 +65,6 @@
                 @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
             </td>*@
             <td>
-                <select class="form-control" aria-label="Default select example">
-                    <option selected>Select ORS Head</option>
-                    <option value="1">Rusel</option>
-                    <option value="2">John</option>
-                    <option value="3">Carlo</option>
-                    <option value="3">Silver</option>
-                    <option value="3">Enerz</option>
-                </select>
-            </td>
-            <td>
                 <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
                 <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 

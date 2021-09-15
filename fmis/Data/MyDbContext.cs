@@ -42,6 +42,9 @@ namespace fmis.Data
             : base(options)
         {
         }
+        public DbSet<Section> Section { get; set; }
+        public DbSet<Division> Division { get; set; }
+        public DbSet<Personal_Information> Personal_Information { get; set; }
         public DbSet<Budget_allotment> Budget_allotments { get; set; }
         public DbSet<fmis.Models.John.FundSource> FundSources { get; set; }
         public DbSet<Obligation> Obligation { get; set; }
@@ -56,9 +59,9 @@ namespace fmis.Data
         public DbSet<Uacs> Uacs { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
-        public DbSet<FundSource> FundSource { get; set; }
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
         public DbSet<Designation> Designation { get; set; }
+        public DbSet<Uacsamount> Uacsamount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
