@@ -1,0 +1,18 @@
+﻿.search-result-custom {
+    color: #ff0000;
+    font-weight: 900;
+}
+
+.htCore tbody tr td, .htCore thead tr th, body {
+}
+
+
+.htCore thead tr th {
+    color: #fff;
+    font-size: 13px;
+    background-color: #2ECC71
+}
+
+.modal-body {
+    overflow-x: auto;
+}

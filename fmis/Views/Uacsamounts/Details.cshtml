@@ -1,0 +1,60 @@
+﻿@model fmis.Models.Uacsamount
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Uacsamount</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Account_title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Account_title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Expense_code)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Expense_code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Total_disbursement)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total_disbursement)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Total_net_amount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total_net_amount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Total_tax_amount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total_tax_amount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Total_others)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total_others)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

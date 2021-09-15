@@ -30,10 +30,14 @@ namespace fmis.Controllers
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
+        private readonly UacsamountContext _Ucontext;
+        private readonly UacsContext _UacsContext;
 
-        public ObligationsController(ObligationContext context)
+        public ObligationsController(ObligationContext context, UacsamountContext Ucontext, UacsContext UacsContext)
         {
             _context = context;
+            _Ucontext = Ucontext;
+            _UacsContext = UacsContext;
         }
 
         public IActionResult PrintPdf()
@@ -41,10 +45,8 @@ namespace fmis.Controllers
 
             return new ViewAsPdf("PrintPdf")
             {
-
                 CustomSwitches = "--page-offset 0 --footer-center [page] --footer-font-size 12",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
-
             };
         }
 
@@ -98,12 +100,11 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations
-        public async Task<IActionResult> Index(int? id)
+        public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Obligation.ToList());
             ViewBag.temp = json;
-
-            return View(await _context.Obligation.ToListAsync());
+            return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
         // GET: Obligations/Details/5
@@ -128,6 +129,10 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ObligationModal(int? id)
         {
+            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id).ToList());
+            ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
 
             if (id == null)
             {
@@ -167,6 +172,10 @@ namespace fmis.Controllers
         // GET: Obligations/Create
         public IActionResult Create()
         {
+
+            
+
+
             return View();
         }
 
@@ -179,6 +188,9 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveObligation(List<ObligationData> data)
         {
+
+
+
             var obligation = new Obligation();
 
             var data_holder = this._context.Obligation;
@@ -230,40 +242,6 @@ namespace fmis.Controllers
 
             return Json(data);
 
-
-
-
-
-            /*var obligations = new List<Obligation>();
-            var obligation = new Obligation();
-
-
-
-            foreach (var item in data)
-            {
-                obligation.Date = item.Date;
-                obligation.Dv = item.Dv;
-                obligation.Pr_no = item.Pr_no;
-                obligation.Po_no = item.Po_no;
-                obligation.Payee = item.Payee;
-                obligation.Address = item.Address;
-                obligation.Particulars = item.Particulars;
-                obligation.Ors_no = item.Ors_no;
-                obligation.Fund_source = item.Fund_source;
-                obligation.Gross = item.Gross;
-                obligation.Created_by = item.Created_by;
-                obligation.Date_recieved = item.Date_recieved;
-                obligation.Time_recieved = item.Time_recieved;
-                obligation.Date_released = item.Date_released;
-                obligation.Time_released = item.Time_released;
-
-                obligations.Add(obligation);
-            }
-
-
-            this._context.Obligation.Update(obligation);
-            this._context.SaveChanges();
-            return Json(data);*/
         }
 
         // POST: Obligations/Create
@@ -283,13 +261,16 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
+
         public ActionResult AddObligation(IEnumerable<Obligation> ObligationsInput)
 
         {
+
             var p = ObligationsInput;
             return null;
 
         }
+
 
 
         // GET: Obligations/Edit/5

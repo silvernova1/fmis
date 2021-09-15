@@ -32,45 +32,47 @@ namespace fmis
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
             services.AddDbContext<fmisContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
-           services.AddDbContext<PersonalInformationContext>(options =>
-                     options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
+            services.AddDbContext<PersonalInformationContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
             services.AddDbContext<DesignationContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
             services.AddDbContext<DivisionContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
             services.AddDbContext<SectionContext>(options =>
-                  options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
             services.AddDbContext<ObligationContext>(options =>
-                  options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
             services.AddDbContext<PrexcContext>(options =>
-                  options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
             services.AddDbContext<UtilizationContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
             services.AddDbContext<Obligated_amountContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
             services.AddDbContext<Sub_allotmentContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
             services.AddDbContext<Suballotment_amountContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
             services.AddDbContext<Requesting_officeContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
             services.AddDbContext<Ors_headContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDbContext<UacsContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+            services.AddDbContext<UacsamountContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("UacsamountContext")));
             services.AddDbContext<AppropriationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<AllotmentClassContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
             services.AddDbContext<FundSourceContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundSourceContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("FundSourceContext")));
             services.AddDbContext<Budget_allotmentContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
             services.AddDbContext<Yearly_referenceContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
             services.AddDbContext<MyDbContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
+              options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
         }    
