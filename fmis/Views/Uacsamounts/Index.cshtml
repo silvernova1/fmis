@@ -1,70 +1,20 @@
-﻿@model  fmis.Models.Obligation
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 
-<form>
-    <table class="table">
-        <tbody>
-
-            <tr>
-                <td class="col-sm-1"><strong>Particulars</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    <input asp-for="Particulars" class="form-control" />
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Payee</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Address</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Fund Source</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>PR #</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Total Amount</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10"><strong id="uacs_total"></strong></td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Dibursements</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10"><strong id="uacs_disbursment"></strong></td>
-            </tr>
-
-        </tbody>
-    </table>
-
-    <input type="hidden" class="uacsamount" value="@ViewBag.temp">
-    <br />
-    <input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
-    <br />
-    <br />
-    <br />
-    <div id="example" class="hot" style="margin-left:50px;"></div>
-    <br />
-    <div class="controls" hidden>
-        <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
-    </div>
-
-
-</form>
-
+<input type="hidden" class="uacsamount" value="@ViewBag.temp">
+<br />
+<input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
+<br />
+<br />
+<br />
+<div id="example" class="hot" style="margin-left:50px;"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
+</div>
 
 
 <script>
@@ -187,7 +137,7 @@
         });
     });
 
-
+   
 
     hot.updateSettings({
         colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL_OTHERS', 'ID'],
@@ -206,7 +156,7 @@
 
             },
             {
-
+               
             },
             {
 
@@ -232,3 +182,5 @@
 
 
 </script>
+
+
