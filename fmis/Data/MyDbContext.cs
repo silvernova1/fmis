@@ -92,6 +92,14 @@ namespace fmis.Data
             .HasOne<Designation>(d => d.Designation)
             .WithOne(s => s.Requesting_office);
 
+            //Yearylyref
+
+            modelBuilder.Entity<Yearly_reference>()
+           .HasKey(s => s.Id);
+
+            modelBuilder.Entity<Budget_allotment>()
+            .HasOne<Yearly_reference>(d => d.Yearly_reference)
+            .WithOne(s => s.Budget_allotment);
 
 
 

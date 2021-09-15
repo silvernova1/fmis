@@ -22,15 +22,16 @@ namespace fmis.Controllers
     {
         private readonly Budget_allotmentContext _context;
         private readonly FundSourceContext _Context;
+        private readonly Yearly_referenceContext _YContext;
         
 
-        public Budget_allotmentController(Budget_allotmentContext context, FundSourceContext Context)
+        public Budget_allotmentController(Budget_allotmentContext context, FundSourceContext Context,Yearly_referenceContext YContext)
         {
             _context = context;
             _Context = Context;
+            _YContext = YContext;
 
         }
-
         public class Budget_allotmentData
         {
             [DataType(DataType.Date)]
@@ -92,13 +93,32 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            
+            ViewBag.layout = "_Layout";
+            PopulateYrDropDownList();
 
             return View();
         }
 
+        private void PopulateYrDropDownList(object selectedPrexc = null)
+        {
+            var prexsQuery = from d in _YContext.Yearly_reference
+                             orderby d.YearlyReference
+                             select d;
+
+
+            ViewBag.Id = new SelectList((from s in _YContext.Yearly_reference.ToList()
+                                          select new
+                                          {
+                                              Id = s.Id,
+                                              yr = s.YearlyReference 
+                                          }),
+       "Id",
+       "yr",
+       null);
+
+        }
         public ActionResult AddData(List<string[]> dataListFromTable)
         {
             ViewBag.layout = "_Layout";

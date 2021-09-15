@@ -62,6 +62,9 @@ namespace fmis.Migrations.MyDb
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
@@ -69,6 +72,9 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BudgetAllotmentId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
 
                     b.ToTable("Budget_allotment");
                 });
@@ -759,6 +765,17 @@ namespace fmis.Migrations.MyDb
                     b.ToTable("Yearly_reference");
                 });
 
+            modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
+                {
+                    b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
+                        .WithOne("Budget_allotment")
+                        .HasForeignKey("fmis.Models.Budget_allotment", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Yearly_reference");
+                });
+
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
@@ -839,6 +856,11 @@ namespace fmis.Migrations.MyDb
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
                     b.Navigation("Ors_Heads");
+                });
+
+            modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
+                {
+                    b.Navigation("Budget_allotment");
                 });
 #pragma warning restore 612, 618
         }
