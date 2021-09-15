@@ -190,15 +190,14 @@ namespace fmis.Controllers
         {
 
 
-
-            var obligation = new Obligation();
-
             var data_holder = this._context.Obligation;
 
             foreach (var item in data)
             {
                 if (item.Id == 0)
                 {
+
+                    var obligation = new Obligation();
                     obligation.Id = item.Id;
                     obligation.Date = item.Date;
                     obligation.Dv = item.Dv;

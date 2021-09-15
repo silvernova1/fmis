@@ -77,14 +77,13 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUacs(List<UacsData> data)
         {
-            var uacs = new Uacs();
-
             var data_holder = this._context.Uacs;
 
             foreach (var item in data)
             {
-                if (item.Id == 0)
+                if (item.Id == 0) //save
                 {
+                    var uacs = new Uacs(); //clear object
                     uacs.Id = item.Id;
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
@@ -92,7 +91,7 @@ namespace fmis.Controllers
                     this._context.Uacs.Update(uacs);
                     this._context.SaveChanges();
                 }
-                else {
+                else { //update
                     data_holder.Find(item.Id).Account_title = item.Account_title;
                     data_holder.Find(item.Id).Expense_code = item.Expense_code;
 
