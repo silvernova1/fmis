@@ -109,7 +109,7 @@ namespace fmis.Controllers
                     for (int col = 1; col <= ColCount; col++)
                     {
                         if (col == 1)
-                            designation.Id = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
+                            designation.Did = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 2)
                             designation.Description = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 3)

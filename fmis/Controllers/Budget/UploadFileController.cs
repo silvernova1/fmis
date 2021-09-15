@@ -116,7 +116,7 @@ namespace fmis.Controllers
                     for (int col = 1; col <= ColCount; col++)
                     {
                         if (col == 1)
-                            personal_information.id = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
+                            personal_information.Pid = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 2)
                             personal_information.userid = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 3)
