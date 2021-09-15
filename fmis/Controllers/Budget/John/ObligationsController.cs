@@ -129,7 +129,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ObligationModal(int? id)
         {
-            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id).ToList());
+            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;

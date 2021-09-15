@@ -39,9 +39,6 @@ namespace fmis.Controllers
         public async Task<IActionResult> Details(int? id)
         {
 
-
-            PopulateHeadDropDownList();
-
             List<Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
@@ -69,31 +66,6 @@ namespace fmis.Controllers
 
             return View(budget_allotment);
         }
-
-
-        // Populate Ord Head
-        private void PopulateHeadDropDownList(object selectedPrexc = null)
-        {
-            var prexsQuery = from d in _context.Personal_information
-                             orderby d.userid
-                             select d;
-
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
-
-            ViewBag.Pid = new SelectList((from s in _context.Personal_information.ToList()
-                                          select new
-                                          {
-                                              Pid = s.Pid,
-                                              ps = s.fname + " " + s.mname + " " + s.lname
-                                          }),
-       "Pid",
-       "ps",
-       null);
-
-        }
-
-
-
 
         // GET: Budget_allotments/Create
         public IActionResult Create()

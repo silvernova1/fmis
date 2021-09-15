@@ -11,6 +11,7 @@ using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Text.Json;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -20,13 +21,15 @@ namespace fmis.Controllers.Budget.John
         private readonly UacsContext _uContext;
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
+        private readonly MyDbContext _MyDbContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext)
+        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
             _uContext = uContext;
             _bContext = bContext;
             _pContext = pContext;
+            _MyDbContext = MyDbContext;
         }
 
 
@@ -73,6 +76,14 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Create
         public IActionResult Create(int? id)
         {
+
+
+            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount.Where(s => s.FundsId == id).ToList());
+            ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
+
 
             PopulatePrexcsDropDownList();
 
