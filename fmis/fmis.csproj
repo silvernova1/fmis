@@ -43,6 +43,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="ViewBag\" />
     <Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
     <Folder Include="wwwroot\Rotativa\" />

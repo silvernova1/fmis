@@ -98,7 +98,7 @@ namespace fmis.Data
             //Yearylyref
 
             modelBuilder.Entity<Yearly_reference>()
-           .HasKey(s => s.Id);
+           .HasKey(s => s.YearlyReferenceId);
 
             modelBuilder.Entity<Budget_allotment>()
             .HasOne<Yearly_reference>(d => d.Yearly_reference)

@@ -9,7 +9,7 @@ namespace fmis.Models
     public class Yearly_reference
     {
         [Key]
-        public int Id { get; set; }
+        public int YearlyReferenceId { get; set; }
         public string YearlyReference { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
