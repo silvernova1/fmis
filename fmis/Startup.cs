@@ -74,6 +74,9 @@ namespace fmis
             services.AddDbContext<MyDbContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<FundSourceAmountContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
         }    
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

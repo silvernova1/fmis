@@ -16,8 +16,8 @@
 
 
 <form asp-action="Create">
-        <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
-        <div class="panel-heading">
+    <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+    <div class="panel-heading">
         <i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source
         <div class="pull-right">
             <div class="btn-group">
@@ -30,29 +30,29 @@
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @*<div class="form-group">
-            <select class="form-control" asp-for="FundSourceId" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.Message" asp-items="@(new SelectList(ViewBag.message,"Id","pap_title"))"></select>
-            <label asp-for="PrexcCode" class="control-label"></label>
-            <input asp-for="PrexcCode" class="form-control" required />
-            <span asp-validation-for="PrexcCode" class="text-danger"></span>
-        </div>*@
+                    <select class="form-control" asp-for="FundSourceId" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.Message" asp-items="@(new SelectList(ViewBag.message,"Id","pap_title"))"></select>
+                    <label asp-for="PrexcCode" class="control-label"></label>
+                    <input asp-for="PrexcCode" class="form-control" required />
+                    <span asp-validation-for="PrexcCode" class="text-danger"></span>
+                </div>*@
 
-        <div class="form-group">
-            <label asp-for="PrexcCode" class="control-label"></label><br />
-            @Html.DropDownList("Id", null, htmlAttributes: new { @class = "form-control" })
-            @*@Html.DropDownList("Id", String.Empty)*@
-            @*@Html.DropDownList("Id" + "pap_code1",
-        (IEnumerable<SelectListItem>)ViewBag.Id,
-        "Select Prexc Enerz")*@
-            <span asp-validation-for="PrexcCode" class="text-danger"></span>
-        </div>
+            <div class="form-group">
+                <label asp-for="PrexcCode" class="control-label"></label><br />
+                @Html.DropDownList("Id", null, htmlAttributes: new { @class = "form-control" })
+                @*@Html.DropDownList("Id", String.Empty)*@
+                @*@Html.DropDownList("Id" + "pap_code1",
+                    (IEnumerable<SelectListItem>)ViewBag.Id,
+                    "Select Prexc Enerz")*@
+                <span asp-validation-for="PrexcCode" class="text-danger"></span>
+            </div>
 
-          @*  <div class="form-group">
-                <label asp-for="PrexcCode" class="control-label"></label>
-                <div class="col-md-10">
-                    @Html.DropDownList("Id", String.Empty)
-                    @Html.ValidationMessageFor(model => model.Id)
-                </div>
-            </div>*@
+            @*  <div class="form-group">
+                    <label asp-for="PrexcCode" class="control-label"></label>
+                    <div class="col-md-10">
+                        @Html.DropDownList("Id", String.Empty)
+                        @Html.ValidationMessageFor(model => model.Id)
+                    </div>
+                </div>*@
 
             <div class="form-group">
                 <label asp-for="FundSourceTitle" class="control-label"></label>
@@ -65,49 +65,221 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="FundSourceTitleCode" class="control-label"></label>
-                    <input asp-for="FundSourceTitleCode" class="form-control" required />
-                    <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Respo" class="control-label"></label>
-                    <input asp-for="Respo" class="form-control" required />
-                    <span asp-validation-for="Respo" class="text-danger"></span>
-                </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="FundSourceTitleCode" class="control-label"></label>
+                <input asp-for="FundSourceTitleCode" class="form-control" required />
+                <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Respo" class="control-label"></label>
+                <input asp-for="Respo" class="form-control" required />
+                <span asp-validation-for="Respo" class="text-danger"></span>
             </div>
         </div>
+    </div>
 </form>
 
 
+<input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
+<input type="hidden" class="uacs" value="@ViewBag.uacs">
+<br />
+<input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+<br />
+<br />
+<br />
+<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+<div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
+</div>
 
-<!--<table class="table">
-    <thead>
-        <tr>
-            <th>-->
-@*   @FundSource.FundSourceTitle*@
-<!--</th>
-<th>-->
-@* @FundSource.FundSourceTitleCode*@
-<!--</th>
-        <th></th>
-    </tr>
-</thead>
-<tbody>-->
-@*   @foreach (var item in Uacs)
-    {
-        <tr>
-            <td style="width: 800px;">
-                @item.Account_title
-            </td>
-            <td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">@item.Account_title</option>
-                    </select>
-                </td>
-        </tr>
-    }*@
-<!--</tbody>
-</table>-->
+
+
+<script>
+
+    var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
+    const data = [];
+    var counter = 0;
+    $.each(fundsourceamount, function () {
+        data[counter] = [this.Amount, this.Id]
+        counter++;
+    })
+
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data[uacs_counter] = this.Account_title
+        uacs_counter++;
+    })
+
+    console.log(uacs_data);
+
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('fundsource_amount');
+    const hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [400, 250, 100, 150, 150, 150, 150, 150, 150],
+        stretchH: 'all',
+        height: '250px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var holder_id = holder_data[selection[0][0]][1];
+            if (holder_id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeleteFundSourceAmount", "FundSourceAmounts")',
+                    dataType: "JSON",
+                    data: { id: holder_id },
+                    success: function (output) {
+                        console.log(output);
+                    }
+                });
+            }
+
+            Lobibox.notify("warning", {
+                msg: "Your selected row was remove",
+                sound: false
+            });
+
+        },
+        hiddenColumns: {
+            columns: [2],
+            indicators: true
+        },
+
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { FundSourceId: null, Amount: null },
+        columns: [
+            {
+                data: 'UacsId ', type: 'text',
+            },
+            { data: 'Amount', type: 'text' },
+
+        ]
+    });
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'UACS',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+
+
+    hot.updateSettings({
+        colHeaders: ['UACS','AMOUNT'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data
+            },
+            {
+
+            },
+
+        ],
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+    var fundsource_id = @Html.DisplayFor(model => model.FundSourceId);
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ fundsource_id: FundSourceId, Amount: this[0], Id: this[1] });
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SaveFundSourceAmount", "FundSource")',
+                dataType: "JSON",
+                data: { data: json },
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+
+            return false;
+        }
+    };
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+                    <!--<table class="table">
+                        <thead>
+                            <tr>
+                                <th>-->
+                    @*   @FundSource.FundSourceTitle*@
+                    <!--</th>
+                    <th>-->
+                    @* @FundSource.FundSourceTitleCode*@
+                    <!--</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>-->
+                    @*   @foreach (var item in Uacs)
+                        {
+                            <tr>
+                                <td style="width: 800px;">
+                                    @item.Account_title
+                                </td>
+                                <td>
+                                        <select class="form-control" aria-label="Default select example">
+                                            <option selected>Select ORS Head</option>
+                                            <option value="1">@item.Account_title</option>
+                                        </select>
+                                    </td>
+                            </tr>
+                        }*@
+                    <!--</tbody>
+                    </table>-->

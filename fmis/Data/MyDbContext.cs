@@ -62,6 +62,7 @@ namespace fmis.Data
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<Uacsamount> Uacsamount { get; set; }
+        public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
