@@ -22,14 +22,24 @@ namespace fmis.Controllers.Budget.John
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
+        private readonly FundSourceAmountContext _FsaContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
+        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, FundSourceAmountContext FsaContext)
         {
             _context = context;
             _uContext = uContext;
             _bContext = bContext;
             _pContext = pContext;
             _MyDbContext = MyDbContext;
+            _FsaContext = FsaContext;
+        }
+
+        // FundSourceAmount Data
+
+        public class FundSourceAmountData
+        {
+            public float Amount { get; set; }
+            public int FoundSourceId { get; set; }
         }
 
 
@@ -74,11 +84,11 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public IActionResult Create(int? id)
+        public async Task<IActionResult> Create(int? id)
         {
 
 
-            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount.Where(s => s.FundsId == id).ToList());
+            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount.Where(s => s.Id == id).ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
@@ -87,14 +97,28 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
 
-            ViewBag.BudgetId = id;
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            List<Prexc> p = new List<Prexc>();
+            var obligation = await _MyDbContext.Budget_allotments
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+            if (obligation == null)
+            {
+                return NotFound();
+            }
 
-            p = (from c in _pContext.Prexc select c).ToList();
-            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
+            return View();
 
-            ViewBag.message = p;
+            /* ViewBag.BudgetId = id;
+
+             List<Prexc> p = new List<Prexc>();
+
+             p = (from c in _pContext.Prexc select c).ToList();
+             p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
+
+             ViewBag.message = p;*/
             //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
             //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
             //TempData["FundSource"] = await _context.FundSource.ToListAsync();
@@ -111,8 +135,41 @@ namespace fmis.Controllers.Budget.John
             //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
 
 
-            return View();
+            
         }
+
+        // Saving FundSourceAmount
+
+        [HttpPost]
+        public IActionResult SaveFundSourceamount(List<FundSourceAmountData> data)
+        {
+            var fundsourceamount = new FundSourceAmount();
+
+            var data_holder = this._FsaContext.FundSourceAmount;
+
+            foreach (var item in data)
+            {
+                if (item.FoundSourceId == 0)
+                {
+                    fundsourceamount.FundSourceId = item.FoundSourceId;
+                    fundsourceamount.Amount = item.Amount;
+                    
+
+                    this._FsaContext.FundSourceAmount.Update(fundsourceamount);
+                    this._FsaContext.SaveChanges();
+                }
+                else
+                {
+                    data_holder.Find(item.FoundSourceId).FundSourceId = item.FoundSourceId;
+                    data_holder.Find(item.FoundSourceId).Amount = item.Amount;
+
+                    this._FsaContext.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
 
         // POST: FundSource/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
