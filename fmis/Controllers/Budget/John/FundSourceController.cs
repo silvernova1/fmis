@@ -11,7 +11,6 @@ using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Text.Json;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -21,25 +20,13 @@ namespace fmis.Controllers.Budget.John
         private readonly UacsContext _uContext;
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
-        private readonly MyDbContext _MyDbContext;
-        private readonly FundSourceAmountContext _FsaContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, FundSourceAmountContext FsaContext)
+        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext)
         {
             _context = context;
             _uContext = uContext;
             _bContext = bContext;
             _pContext = pContext;
-            _MyDbContext = MyDbContext;
-            _FsaContext = FsaContext;
-        }
-
-        // FundSourceAmount Data
-
-        public class FundSourceAmountData
-        {
-            public float Amount { get; set; }
-            public int FoundSourceId { get; set; }
         }
 
 
@@ -59,10 +46,10 @@ namespace fmis.Controllers.Budget.John
                  .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
                  .ToListAsync());*/
 
-            return View( await _context.FundSource.ToListAsync());
+            return View(await _context.FundSource.ToListAsync());
 
 
-            
+
         }
 
         // GET: FundSource/Details/5
@@ -84,41 +71,19 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public async Task<IActionResult> Create(int? id)
+        public IActionResult Create(int? id)
         {
-
-
-            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount.Where(s => s.Id == id).ToList());
-            ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
-            ViewBag.uacs = uacs_data;
-
-
 
             PopulatePrexcsDropDownList();
 
-            if (id == null)
-            {
-                return NotFound();
-            }
+            ViewBag.BudgetId = id;
 
-            var obligation = await _MyDbContext.Budget_allotments
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
-            if (obligation == null)
-            {
-                return NotFound();
-            }
+            List<Prexc> p = new List<Prexc>();
 
-            return View();
+            p = (from c in _pContext.Prexc select c).ToList();
+            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
 
-            /* ViewBag.BudgetId = id;
-
-             List<Prexc> p = new List<Prexc>();
-
-             p = (from c in _pContext.Prexc select c).ToList();
-             p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
-
-             ViewBag.message = p;*/
+            ViewBag.message = p;
             //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
             //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
             //TempData["FundSource"] = await _context.FundSource.ToListAsync();
@@ -135,41 +100,8 @@ namespace fmis.Controllers.Budget.John
             //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
 
 
-            
+            return View();
         }
-
-        // Saving FundSourceAmount
-
-        [HttpPost]
-        public IActionResult SaveFundSourceamount(List<FundSourceAmountData> data)
-        {
-            var fundsourceamount = new FundSourceAmount();
-
-            var data_holder = this._FsaContext.FundSourceAmount;
-
-            foreach (var item in data)
-            {
-                if (item.FoundSourceId == 0)
-                {
-                    fundsourceamount.FundSourceId = item.FoundSourceId;
-                    fundsourceamount.Amount = item.Amount;
-                    
-
-                    this._FsaContext.FundSourceAmount.Update(fundsourceamount);
-                    this._FsaContext.SaveChanges();
-                }
-                else
-                {
-                    data_holder.Find(item.FoundSourceId).FundSourceId = item.FoundSourceId;
-                    data_holder.Find(item.FoundSourceId).Amount = item.Amount;
-
-                    this._FsaContext.SaveChanges();
-                }
-            }
-
-            return Json(data);
-        }
-
 
         // POST: FundSource/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -178,37 +110,18 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource)
         {
-
-
-            /*if (Ors_head.Id == 0)
-            {
-
-                ModelState.AddModelError("", "Select ORS Head");
-
-            }
-
-            int SelectValue = Ors_head.Id;
-            ViewBag.SelectedValue = Ors_head.Id;*/
-
-            /*List<Prexc> p = new List<Prexc>();
-
-            p = (from c in _pContext.Prexc select c).ToList();
-            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
-
-            ViewBag.message = p;*/
-
             try
             {
                 if (ModelState.IsValid)
-            {
-                List<Prexc> p = new List<Prexc>();
+                {
+                    List<Prexc> p = new List<Prexc>();
 
-                
 
-                _context.Add(fundSource);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+
+                    _context.Add(fundSource);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             catch (RetryLimitExceededException /* dex */)
             {
@@ -235,65 +148,76 @@ namespace fmis.Controllers.Budget.John
             {
                 return NotFound();
             }
+            PopulatePrexcsDropDownList(fundSource.Id);
             return View(fundSource);
         }
 
         /*DROPDOWN LIST FOR PREXC*/
 
-        private void PopulatePrexcsDropDownList(object selectedPrexc = null)
+        private void PopulatePrexcsDropDownList(object selectedDepartment = null)
         {
-            var prexsQuery = from d in _pContext.Prexc
+            var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
+            ViewBag.Id = new SelectList(departmentsQuery.AsNoTracking(), "Id", "pap_title", selectedDepartment);
+        }
 
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
+        /*private void PopulatePrexcsDropDownList(object selectedPrexc = null)
+        {
+            var prexsQuery = from d in _pContext.Prexc
+                             orderby d.pap_title
+                             select d;
+
+            *//*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*//*
 
             ViewBag.Id = new SelectList((from s in _pContext.Prexc.ToList()
-                                                 select new
-                                                 {
-                                                     Id = s.Id,
-                                                     prexc = s.pap_title + " ( " + s.pap_code1 + ")"
-                                                 }),
+                                         select new
+                                         {
+                                             Id = s.Id,
+                                             prexc = s.pap_title + " ( " + s.pap_code1 + ")"
+                                         }),
        "Id",
        "prexc",
        null);
 
-        }
+        }*/
 
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo")] FundSource fundSource)
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != fundSource.FundSourceId)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var prexcToUpdate = await _context.FundSource
+                .FirstOrDefaultAsync(c => c.FundSourceId == id);
+
+            if (await TryUpdateModelAsync<FundSource>(prexcToUpdate,
+        "",
+        c => c.FundSourceTitle, c => c.Id, c => c.Description, c => c.FundSourceTitleCode, c => c.Respo))
             {
                 try
                 {
-                    _context.Update(fundSource);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!FundSourceExists(fundSource.FundSourceId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(fundSource);
+            PopulatePrexcsDropDownList(prexcToUpdate.Id);
+            return View(prexcToUpdate);
         }
+
 
         // GET: FundSource/Delete/5
         public async Task<IActionResult> Delete(int? id)
