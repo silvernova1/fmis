@@ -36,7 +36,7 @@ namespace fmis.Controllers
             }
 
             var yearly_reference = await _context.Yearly_reference
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.YearlyReferenceId == id);
             if (yearly_reference == null)
             {
                 ViewBag.layout = "_Layout";
@@ -97,7 +97,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,YearlyReference,Created_at,Updated_at")] Yearly_reference yearly_reference)
         {
-            if (id != yearly_reference.Id)
+            if (id != yearly_reference.YearlyReferenceId)
             {
                 ViewBag.layout = "_Layout";
                 return NotFound();
@@ -112,7 +112,7 @@ namespace fmis.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Yearly_referenceExists(yearly_reference.Id))
+                    if (!Yearly_referenceExists(yearly_reference.YearlyReferenceId))
                     {
                         return NotFound();
                     }
@@ -138,7 +138,7 @@ namespace fmis.Controllers
             }
 
             var yearly_reference = await _context.Yearly_reference
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.YearlyReferenceId == id);
             if (yearly_reference == null)
             {
                 ViewBag.layout = "_Layout";
@@ -163,7 +163,7 @@ namespace fmis.Controllers
         private bool Yearly_referenceExists(int id)
         {
             ViewBag.layout = "_Layout";
-            return _context.Yearly_reference.Any(e => e.Id == id);
+            return _context.Yearly_reference.Any(e => e.YearlyReferenceId == id);
         }
     }
 }

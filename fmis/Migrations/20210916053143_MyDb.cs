@@ -2,22 +2,22 @@
 
 namespace fmis.Migrations
 {
-    public partial class pap_title : Migration
+    public partial class MyDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "pap_title",
-                table: "Prexc",
-                type: "nvarchar(max)",
+            migrationBuilder.AddColumn<int>(
+                name: "CourseID",
+                table: "Budget_allotment",
+                type: "int",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "pap_title",
-                table: "Prexc");
+                name: "CourseID",
+                table: "Budget_allotment");
         }
     }
 }

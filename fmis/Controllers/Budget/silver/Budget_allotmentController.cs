@@ -23,19 +23,21 @@ namespace fmis.Controllers
         private readonly Budget_allotmentContext _context;
         private readonly FundSourceContext _Context;
         private readonly Yearly_referenceContext _YContext;
-        
+        private readonly MyDbContext _MyDbContext;
 
-        public Budget_allotmentController(Budget_allotmentContext context, FundSourceContext Context,Yearly_referenceContext YContext)
+
+        public Budget_allotmentController(Budget_allotmentContext context, FundSourceContext Context,Yearly_referenceContext YContext, MyDbContext MyDbContext)
         {
             _context = context;
             _Context = Context;
             _YContext = YContext;
+            _MyDbContext = MyDbContext;
 
         }
         public class Budget_allotmentData
         {
             [DataType(DataType.Date)]
-            public string Year { get; set; }
+            public int Year { get; set; }
             public string Allotment_series { get; set; }
             public string Allotment_title { get; set; }
             public string Allotment_code { get; set; }
@@ -103,15 +105,15 @@ namespace fmis.Controllers
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
-            var prexsQuery = from d in _YContext.Yearly_reference
+            var prexsQuery = from d in _MyDbContext.Yearly_reference
                              orderby d.YearlyReference
                              select d;
 
 
-            ViewBag.Id = new SelectList((from s in _YContext.Yearly_reference.ToList()
+            ViewBag.Id = new SelectList((from s in _MyDbContext.Yearly_reference.ToList()
                                           select new
                                           {
-                                              Id = s.Id,
+                                              Id = s.YearlyReference,
                                               yr = s.YearlyReference 
                                           }),
        "Id",
@@ -135,7 +137,6 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-                Allotment.Year = item.Year;
                 Allotment.Allotment_series = item.Allotment_series;
                 Allotment.Allotment_title = item.Allotment_title;
                 Allotment.Allotment_code = item.Allotment_code;
