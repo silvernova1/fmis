@@ -200,11 +200,11 @@ namespace fmis.Controllers
 
         // POST: Uacs/Delete/5
         [HttpPost]
-        public IActionResult DeleteUacs(int id)
+        public async Task<IActionResult> DeleteUacs(int id)
         {
-            var uacs = this._context.Uacs.Find(id);
+            var uacs = await _context.Uacs.FindAsync(id);
             this._context.Uacs.Remove(uacs);
-            this._context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return Json(id);
         }
 

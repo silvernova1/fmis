@@ -12,7 +12,6 @@ namespace fmis.Models
     {
         [Key]
         public int BudgetAllotmentId { get; set; }
-        public string Year { get; set; }
         public string Allotment_series { get; set; }
         public string Allotment_title { get; set; }
         public string Allotment_code { get; set; }
@@ -24,8 +23,9 @@ namespace fmis.Models
         public List<Personal_Information> Personal_Information { get; set; }
 
         [ForeignKey("Yearly_reference")]
-        public int Id { get; set; }
+        public int YearlyReferenceId { get; set; }
         public Yearly_reference Yearly_reference { get; set; }
+        public int? CourseID { get; internal set; }
         /*public IList<FundSource> FundSource { get; set; }*/
 
     }

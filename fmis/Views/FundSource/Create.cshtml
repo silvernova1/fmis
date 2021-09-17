@@ -37,14 +37,16 @@
                 </div>*@
 
             <div class="form-group">
-                <label asp-for="PrexcCode" class="control-label"></label><br />
-                @Html.DropDownList("Id", null, htmlAttributes: new { @class = "form-control" })
-                @*@Html.DropDownList("Id", String.Empty)*@
-                @*@Html.DropDownList("Id" + "pap_code1",
-                    (IEnumerable<SelectListItem>)ViewBag.Id,
-                    "Select Prexc Enerz")*@
-                <span asp-validation-for="PrexcCode" class="text-danger"></span>
-            </div>
+                <label asp-for="Prexc" class="control-label"></label>
+                <select asp-for="Prexc.Id" class="form-control" asp-items="ViewBag.Id">
+                <option value="">-- Select Department --</option>
+                </select>
+            <span asp-validation-for="Id" class="text-danger" />
+            <span asp-validation-for="Prexc.Id" class="text-danger" />
+            @*<label asp-for="PrexcCode" class="control-label"></label><br />
+        @Html.DropDownList("Id", null, htmlAttributes: new { @class = "form-control" })
+        <span asp-validation-for="PrexcCode" class="text-danger"></span>*@
+        </div>
 
             @*  <div class="form-group">
                     <label asp-for="PrexcCode" class="control-label"></label>
@@ -79,59 +81,6 @@
         </div>
     </div>
 </form>
-
-
-<input type="hidden" class="uacsamount" value="@ViewBag.temp">
-<input type="hidden" class="uacs" value="@ViewBag.uacs">
-<br />
-<input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-<br />
-<br />
-<br />
-<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
-<div id="uacs_amount" class="hot handsontable htColumnHeaders"></div>
-<br />
-<div class="controls" hidden>
-    <button id="export-file">Download CSV</button>
-</div>
-
-
-
-<script>
-
-
-    var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
-    const data = [];
-    var counter = 0;
-    $.each(uacsamount, function () {
-        data[counter] = [this.Amount, this.FundsId]
-        counter++;
-    })
-
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
-    var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Amount
-        uacs_counter++;
-    })
-
-    console.log(uacs_data);
-
-    const container = document.getElementById('uacs_amount')
-
-
-
-
-</script>
-
-
-
-
-
-
-
-
 
                     <!--<table class="table">
                         <thead>

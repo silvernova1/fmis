@@ -7,19 +7,14 @@
 
 
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
-
 
 
 <input type="hidden" class="uacs" value="@ViewBag.temp">
 <br />
-<input id="search_field2" style="float: left; margin-left:50px;"  type="search" placeholder="Search" class="search" />
+<input id="search_field2" type="search" placeholder="Search" class="search" />
 <br />
-<br />
-<br />
-<p style="margin-left: 50px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
-<div id="example" class="hot" style="margin-left:50px;"></div>
+<p style="color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+<div id="example" class="hot" ></div>
 <br />
 <div class="controls"hidden>
     <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
@@ -140,16 +135,7 @@
         });
     });
 
-    hot.addHook('afterChange', function (changes, src) {
-        [
-            [row, col, oldVal, newVal]
-        ] = changes;
-        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
-            console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
-        }
-    })
-
+  
     hot.updateSettings({
         colHeaders: ['ACCOUNT TITLE', 'UACS EXPENSE CODE', 'ID'],
         cell: [

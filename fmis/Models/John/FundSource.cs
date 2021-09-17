@@ -26,7 +26,7 @@ namespace fmis.Models.John
 
 
         public Budget_allotment Budget_allotment { get; set; }
-        
+
 
 
     }
