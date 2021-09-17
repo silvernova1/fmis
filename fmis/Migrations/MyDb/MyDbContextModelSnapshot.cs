@@ -194,6 +194,21 @@ namespace fmis.Migrations.MyDb
                     b.ToTable("FundSource");
                 });
 
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.Property<int>("FundsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FundsId");
+
+                    b.ToTable("FundSourceAmount");
+                });
+
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
                 {
                     b.Property<int>("Id")
@@ -291,8 +306,14 @@ namespace fmis.Migrations.MyDb
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Did")
+                        .HasColumnType("int");
+
                     b.Property<string>("Head_name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Pid")
+                        .HasColumnType("int");
 
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
@@ -304,6 +325,10 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Did");
+
+                    b.HasIndex("Pid");
 
                     b.HasIndex("Sub_allotmentId");
 
@@ -900,9 +925,25 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
                 {
+                    b.HasOne("fmis.Models.Designation", "Designation")
+                        .WithMany()
+                        .HasForeignKey("Did")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.Personal_Information", "Personal_Information")
+                        .WithMany()
+                        .HasForeignKey("Pid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fmis.Models.Sub_allotment", null)
                         .WithMany("Ors_Heads")
                         .HasForeignKey("Sub_allotmentId");
+
+                    b.Navigation("Designation");
+
+                    b.Navigation("Personal_Information");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>

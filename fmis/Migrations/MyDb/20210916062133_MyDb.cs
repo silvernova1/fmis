@@ -73,6 +73,19 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "FundSourceAmount",
+                columns: table => new
+                {
+                    FundsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Amount = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSourceAmount", x => x.FundsId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Obligated_amount",
                 columns: table => new
                 {
@@ -270,29 +283,6 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ors_head",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Head_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Position = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Sub_allotmentId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ors_head", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ors_head_Sub_allotment_Sub_allotmentId",
-                        column: x => x.Sub_allotmentId,
-                        principalTable: "Sub_allotment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Budget_allotment",
                 columns: table => new
                 {
@@ -434,6 +424,43 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ors_head",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Head_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Position = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Pid = table.Column<int>(type: "int", nullable: false),
+                    Did = table.Column<int>(type: "int", nullable: false),
+                    Sub_allotmentId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ors_head", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ors_head_Designation_Did",
+                        column: x => x.Did,
+                        principalTable: "Designation",
+                        principalColumn: "Did",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ors_head_Personal_Information_Pid",
+                        column: x => x.Pid,
+                        principalTable: "Personal_Information",
+                        principalColumn: "Pid",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ors_head_Sub_allotment_Sub_allotmentId",
+                        column: x => x.Sub_allotmentId,
+                        principalTable: "Sub_allotment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Requesting_office",
                 columns: table => new
                 {
@@ -481,6 +508,16 @@ namespace fmis.Migrations.MyDb
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ors_head_Did",
+                table: "Ors_head",
+                column: "Did");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ors_head_Pid",
+                table: "Ors_head",
+                column: "Pid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ors_head_Sub_allotmentId",
                 table: "Ors_head",
                 column: "Sub_allotmentId");
@@ -521,6 +558,9 @@ namespace fmis.Migrations.MyDb
 
             migrationBuilder.DropTable(
                 name: "FundSource");
+
+            migrationBuilder.DropTable(
+                name: "FundSourceAmount");
 
             migrationBuilder.DropTable(
                 name: "Obligation");

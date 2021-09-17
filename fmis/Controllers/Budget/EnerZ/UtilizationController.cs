@@ -15,6 +15,15 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using Syncfusion.Drawing;
+using System.IO;
+using Syncfusion.Pdf.Grid;
+using RectangleF = Syncfusion.Drawing.RectangleF;
+using SizeF = Syncfusion.Drawing.SizeF;
+using Color = Syncfusion.Drawing.Color;
+using PointF = Syncfusion.Drawing.PointF;
+using Syncfusion.Pdf.Tables;
+
 
 namespace fmis.Controllers
 {
@@ -22,11 +31,48 @@ namespace fmis.Controllers
     public class UtilizationController : Controller
     {
         private readonly UtilizationContext _context;
+        private readonly UacsamountContext _Ucontext;
+        private readonly UacsContext _UacsContext;
 
-        public UtilizationController(UtilizationContext context)
+        public UtilizationController(UtilizationContext context, UacsamountContext Ucontext, UacsContext UacsContext)
         {
             _context = context;
+            _Ucontext = Ucontext;
+            _UacsContext = UacsContext;
         }
+        public IActionResult PrintPdf()
+        {
+
+            return new ViewAsPdf("PrintPdf")
+            {
+                CustomSwitches = "--page-offset 0 --footer-center [page] --footer-font-size 12",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
+        }
+
+
+        public DateTime CheckExcelDate(string excel_data)
+        {
+            string dateString = @"d/M/yyyy";
+
+            DateTime date1 = DateTime.ParseExact(dateString, @"d/M/yyyy",
+            System.Globalization.CultureInfo.InvariantCulture);
+            if (dateString == null)
+                return DateTime.ParseExact(dateString, @"d/M/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture);
+
+            return (DateTime)date1;
+
+
+        }
+
+        public IActionResult CreateD()
+        {
+
+            return View("~/Views/Obligations/PrintPdf.cshtml");
+
+        }
+
 
         public class UtilizationData
         {
@@ -74,9 +120,37 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
+
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UtlizationModal(int? id)
+        {
+            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
+            ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var utilization = await _context.Utilization
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (utilization == null)
+            {
+                return NotFound();
+            }
+
+            return View("~/Views/Utilization/UtilizationModal.cshtml", utilization);
+
+        }
+
         // GET: Utilization/Create
         public IActionResult Create()
         {
+
+
             return View();
         }
 
@@ -122,6 +196,7 @@ namespace fmis.Controllers
                     data_holder.Find(item.Id).Date = item.Date;
                     data_holder.Find(item.Id).Dv = item.Dv;
                     data_holder.Find(item.Id).Pr_no = item.Pr_no;
+                    data_holder.Find(item.Id).Po_no = item.Po_no;
                     data_holder.Find(item.Id).Payer = item.Payer;
                     data_holder.Find(item.Id).Address = item.Address;
                     data_holder.Find(item.Id).Particulars = item.Particulars;
@@ -168,7 +243,7 @@ namespace fmis.Controllers
 
         }
 
-        // GET: Prexc/Edit/5
+        // GET: Utilization/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

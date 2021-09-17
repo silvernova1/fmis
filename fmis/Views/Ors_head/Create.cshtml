@@ -1,37 +1,44 @@
 ﻿@model fmis.Models.Ors_head
 
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-<center>
-    <h2>Create New</h2>
-</center>
-<hr />
-<div class="container">
-    <center>
-        <div class="col-md-6">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Head_name" class="control-label">Head_name</label>
-                    <input asp-for="Head_name" class="form-control" required />
-                    <span asp-validation-for="Head_name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Position" class="control-label">Position</label>
-                    <input asp-for="Position" class="form-control" required />
-                    <span asp-validation-for="Position" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-success btn-lg" /> | <a asp-action="Index">Back to List</a>
-                </div>
-            </form>
-        </div>
-    </center>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@{
+    ViewData["Title"] = "Create";
 }
+
+<h2>Create</h2>
+
+<h4>Ors_head</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+                    <label asp-for="Head_name" class="control-label"></label>
+                    <select class="form-control" asp-items="@(new SelectList(ViewBag.message,"id","fname"))"></select>
+                    <input asp-for="Head_name" class="form-control" />
+                    <span asp-validation-for="Head_name" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <label class="control-label"> Head_Name </label>
+                @Html.DropDownList("Pid", null, htmlAttributes: new { @class = "form-control" })
+                @*@Html.DropDownList("Pid", String.Empty)
+                        @Html.DropDownList("Id" + "pap_code1",
+                    (IEnumerable<SelectListItem>)ViewBag.Id,
+                    "Select Prexc Enerz")*@
+            </div>
+            <div class="form-group">
+                <label class="control-label"> Position</label>
+                @Html.DropDownList("Did", null, htmlAttributes: new { @class = "form-control" })
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="Position" class="control-label"></label>
+                    <input asp-for="Position" class="form-control" />
+                    <span asp-validation-for="Position" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />|
+                <a class="btn btn-default" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
