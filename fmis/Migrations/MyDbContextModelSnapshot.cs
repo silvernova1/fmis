@@ -194,6 +194,24 @@ namespace fmis.Migrations
                     b.ToTable("FundSource");
                 });
 
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FundSourceAmount");
+                });
+
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
                 {
                     b.Property<int>("Id")

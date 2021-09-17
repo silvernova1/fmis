@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     public partial class MyDb : Migration
     {
@@ -251,7 +251,7 @@ namespace fmis.Migrations.MyDb
                 name: "Yearly_reference",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     YearlyReference = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -259,7 +259,7 @@ namespace fmis.Migrations.MyDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Yearly_reference", x => x.Id);
+                    table.PrimaryKey("PK_Yearly_reference", x => x.YearlyReferenceId);
                 });
 
             migrationBuilder.CreateTable(
@@ -312,22 +312,22 @@ namespace fmis.Migrations.MyDb
                 {
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Year = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_series = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false),
+                    CourseID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Budget_allotment", x => x.BudgetAllotmentId);
                     table.ForeignKey(
-                        name: "FK_Budget_allotment_Yearly_reference_Id",
-                        column: x => x.Id,
+                        name: "FK_Budget_allotment_Yearly_reference_YearlyReferenceId",
+                        column: x => x.YearlyReferenceId,
                         principalTable: "Yearly_reference",
-                        principalColumn: "Id",
+                        principalColumn: "YearlyReferenceId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -478,9 +478,9 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Budget_allotment_Id",
+                name: "IX_Budget_allotment_YearlyReferenceId",
                 table: "Budget_allotment",
-                column: "Id",
+                column: "YearlyReferenceId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

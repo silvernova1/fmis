@@ -69,37 +69,8 @@
 </div>
 
 
-@*<div id="example1" class="hot handsontable htColumnHeaders"></div>*@
-
 
 <script>
-     @*
-    function getCarData() {
-        return [
-            ["Tesla", 2017, "black", "black"],
-            ["Nissan", 2018, "blue", "blue"],
-            ["Chrysler", 2019, "yellow", "black"],
-            ["Volvo", 2020, "white", "gray"]
-        ];
-    }
-    const container = document.getElementById('example1');
-
-    const hot = new Handsontable(container, {
-        data: getCarData(),
-        colHeaders: ['Car', 'Year', 'Chassis color', 'Bumper color'],
-        columns: [
-            {},
-            { type: 'numeric' },
-            {
-                type: 'dropdown',
-                source: ['yellow', 'red', 'orange', 'green', 'blue', 'gray', 'black', 'white']
-            },
-            {
-                type: 'dropdown',
-                source: ['yellow', 'red', 'orange', 'green', 'blue', 'gray', 'black', 'white']
-            }
-        ]
-    });*@
 
     var uacsamount = $.parseJSON($(".uacsamount").val());
     const data = [];
@@ -108,7 +79,6 @@
         data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id]
         counter++;
     })
-
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -116,9 +86,7 @@
         uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
     })
-
     console.log(uacs_data);
-
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('uacs_amount');
@@ -148,18 +116,15 @@
                     }
                 });
             }
-
             Lobibox.notify("warning", {
                 msg: "Your selected row was remove",
                 sound: false
             });
-
         },
         hiddenColumns: {
             columns: [7],
             indicators: true
         },
-
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Account_title: null, Expense_code: null, Amount: null, Total_disbursement: null, Total_net_amount: null, Total_tax_amount: null, Total_others: null },
         columns: [
@@ -173,20 +138,15 @@
             { data: 'Total_tax_amount', type: 'numeric' },
             { data: 'Total_others', type: 'numeric' },
             { data: 'Id ', type: 'text' },
-
         ]
     });
-
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
-
         console.log(queryResult);
         hot.render();
     });
-
     const exportPlugin = hot.getPlugin('exportFile');
-
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
             bom: false,
@@ -201,9 +161,6 @@
             rowHeaders: true
         });
     });
-
-
-
     hot.updateSettings({
         colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID'],
         columns: [
@@ -212,43 +169,31 @@
                 source: uacs_data
             },
             {
-
             },
             {
-
             },
             {
-
             },
             {
-
             },
             {
-
             },
             {
-
             },
             {
-
             },
-
         ],
     });
-
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
-
    var obligation_id = @Html.DisplayFor(model => model.Id);
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-
             var json = [];
             $.each(hot.getSourceData(), function () {
                 json.push({ ObligationId: obligation_id, Account_title: this[0], Expense_code: this[1], Amount: this[2], Total_disbursement: this[3], Total_net_amount: this[4], Total_tax_amount: this[5], Total_others: this[6], Id: this[7] });
             });
-
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("SaveUacsamount", "Uacsamounts")',
@@ -263,13 +208,7 @@
                     console.log(output);
                 }
             });
-
             return false;
         }
     };
-
-
-
-
 </script>
-
