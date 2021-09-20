@@ -133,6 +133,13 @@ namespace fmis.Controllers
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
+            var uamount = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
+            ViewBag.uamount = uamount;
+
+
+            var sample = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == 50000).ToList());
+            ViewBag.sample = sample;
+
 
             if (id == null)
             {
@@ -185,7 +192,9 @@ namespace fmis.Controllers
         public IActionResult SaveObligation(List<ObligationData> data)
         {
 
-      
+
+
+            var obligation = new Obligation();
 
             var data_holder = this._context.Obligation;
 
@@ -193,8 +202,6 @@ namespace fmis.Controllers
             {
                 if (item.Id == 0)
                 {
-
-                    var obligation = new Obligation();
                     obligation.Id = item.Id;
                     obligation.Date = item.Date;
                     obligation.Dv = item.Dv;
