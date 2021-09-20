@@ -185,37 +185,33 @@ namespace fmis.Controllers.Budget.John
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> Edit(FundSource fundSource)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+      
 
-            var prexcToUpdate = await _context.FundSource
-                .FirstOrDefaultAsync(c => c.FundSourceId == id);
-
-            if (await TryUpdateModelAsync<FundSource>(prexcToUpdate,
-        "",
-        c => c.FundSourceTitle, c => c.Id, c => c.Description, c => c.FundSourceTitleCode, c => c.Respo))
+            if (ModelState.IsValid)
             {
                 try
                 {
+                    _context.Update(fundSource);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateException /* ex */)
+                catch (DbUpdateConcurrencyException)
                 {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
+                    if (!FundSourceExists(fundSource.FundSourceId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            PopulatePrexcsDropDownList(prexcToUpdate.Id);
-            return View(prexcToUpdate);
+            return View(fundSource);
         }
 
 
