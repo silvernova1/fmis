@@ -146,8 +146,9 @@ namespace fmis.Models
 
 
         public Requesting_office Requesting_office { get; set; }
-
         public Budget_allotment Budget_allotment { get; set; }
+        public Ors_head Ors_head { get; set; }
+
 
     }
 }

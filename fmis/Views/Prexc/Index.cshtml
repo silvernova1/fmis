@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>PREXC</h2>
+<h2>Prexc</h2>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
@@ -24,27 +24,36 @@
         font-size: 13px;
         background-color: #2ECC71
     }
-
-    .uacs {
-        margin-right: 200px;
-    }
-
-    .search {
-        margin-left: 54%;
-    }
 </style>
 
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
 <br />
-<input id="search_field2" style="float: left; width:300px;" type="search" placeholder="Search" class="search" />
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <br />
-<div id="example" class="hot" style="margin-left:50px;"></div>
+<div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
-    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
+    <button id="export-file">Download CSV</button>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
+            <div class="modal-body ObligationModal">
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-success">Save</button>
+                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -92,8 +101,7 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '200%',
-        colWidths: 500,
+        colWidths: [700, 200,200],
         rowHeaders: true,
         colHeaders: true,
         search: {

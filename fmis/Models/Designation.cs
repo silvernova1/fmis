@@ -21,5 +21,8 @@ namespace fmis.Models
         public DateTime Updated_At { get; set; }
 
         public Requesting_office Requesting_office { get; set; }
+        public Ors_head Ors_head { get; set; }
+
+
     }
 }

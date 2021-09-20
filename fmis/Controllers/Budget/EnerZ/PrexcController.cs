@@ -79,7 +79,7 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SavePrexc(List<PrexcData> data)
         {
-            var prexc = new Prexc();
+              
 
             var data_holder = this._context.Prexc;
 
@@ -87,6 +87,7 @@ namespace fmis.Controllers
             {
                 if (item.Id == 0)
                 {
+                    var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;

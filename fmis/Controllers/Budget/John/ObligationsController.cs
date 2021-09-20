@@ -129,10 +129,17 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ObligationModal(int? id)
         {
-            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
+            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id).ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
+            var uamount = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
+            ViewBag.uamount = uamount;
+
+
+            var sample = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == 50000).ToList());
+            ViewBag.sample = sample;
+
 
             if (id == null)
             {
@@ -152,28 +159,24 @@ namespace fmis.Controllers
 
         /* public IActionResult ObligationModal(int? id)
          {
-
              if (id == null)
              {
                  return NotFound();
              }
-
              var obligation =  _context.Obligation
                  .FirstOrDefaultAsync(m => m.Id == id);
              if (obligation == null)
              {
                  return NotFound();
              }
-
              return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml",obligation);
-
          }*/
 
         // GET: Obligations/Create
         public IActionResult Create()
         {
 
-            
+
 
 
             return View();
@@ -190,14 +193,15 @@ namespace fmis.Controllers
         {
 
 
+
+            var obligation = new Obligation();
+
             var data_holder = this._context.Obligation;
 
             foreach (var item in data)
             {
                 if (item.Id == 0)
                 {
-
-                    var obligation = new Obligation();
                     obligation.Id = item.Id;
                     obligation.Date = item.Date;
                     obligation.Dv = item.Dv;
