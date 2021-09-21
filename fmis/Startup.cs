@@ -55,8 +55,6 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
             services.AddDbContext<Requesting_officeContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
-            services.AddDbContext<Ors_headContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDbContext<UacsContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<UacsamountContext>(options =>
@@ -76,6 +74,9 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<FundSourceAmountContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<Ors_headContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
         }    

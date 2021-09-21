@@ -79,14 +79,14 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SavePrexc(List<PrexcData> data)
         {
-            var prexc = new Prexc();
-
+           
             var data_holder = this._context.Prexc;
 
             foreach (var item in data)
             {
                 if (item.Id == 0)
                 {
+                    var prexc = new Prexc();
                     prexc.Id = item.Id;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
@@ -155,7 +155,7 @@ namespace fmis.Controllers
             return View(prexc);
         }
 
-        // POST: Uacs/Edit/5
+        // POST: Prexc/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -202,6 +202,7 @@ namespace fmis.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prexc == null)
             {
+
                 return NotFound();
             }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
@@ -19,7 +20,14 @@ namespace fmis.Models
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
 
-        public List<Ors_head> Ors_Heads { get; set; }
-        /*public IList<FundSource> FundSource { get; set; }*/
+
+        [ForeignKey("Prexc")]
+        public int PId { get; set; }
+        public Prexc Prexc { get; set; }
+        [ForeignKey("Ors_head")]
+        public int Oid { get; set; }
+        public Ors_head Ors_Head { get; set; }
+
+
     }
 }

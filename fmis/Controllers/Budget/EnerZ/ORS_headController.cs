@@ -9,7 +9,7 @@ using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace fmis.Controllers.Budget.silver
+namespace fmis.Controllers.Budget.EnerZ
 {
     public class Ors_headController : Controller
     {
@@ -24,7 +24,7 @@ namespace fmis.Controllers.Budget.silver
             _DContext = DContext;
         }
 
-        // GET: Ors_head
+        // GET:  Ors_head
         public async Task<IActionResult> Index(int? id)
         {
             ViewBag.PsId = id;
@@ -39,7 +39,7 @@ namespace fmis.Controllers.Budget.silver
             //return View(await _context.Requesting_office.ToListAsync());
         }
 
-        // GET:  Ors_heade/Details/5
+        // GET: Requesting_office/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             ViewBag.layout = "_Layout";
@@ -55,7 +55,7 @@ namespace fmis.Controllers.Budget.silver
             }
             return View(ors_head);
         }
-        // GET:  Ors_head/Create
+        // GET: Ors_head/Create
         public IActionResult Create(int? id)
         {
             ViewBag.layout = "_Layout";
@@ -71,7 +71,7 @@ namespace fmis.Controllers.Budget.silver
             ViewBag.layout = "_Layout";*/
             return View();
         }
-        // POST:  Ors_head/Create
+        // POST: Ors_head/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -120,7 +120,7 @@ namespace fmis.Controllers.Budget.silver
             return View(ors_head);
             /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
-        // GET:  Ors_heade/Edit/5
+        // GET: Ors_head/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             ViewBag.layout = "_Layout";
@@ -135,7 +135,7 @@ namespace fmis.Controllers.Budget.silver
             }
             return View(ors_head);
         }
-        // POST:  Ors_head/Edit/5
+        // POST: Ors_head/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -217,7 +217,7 @@ namespace fmis.Controllers.Budget.silver
 
 
 
-        // GET:  Ors_head/Delete/5
+        // GET: Ors_head/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             ViewBag.layout = "_Layout";
@@ -233,7 +233,7 @@ namespace fmis.Controllers.Budget.silver
             }
             return View(ors_head);
         }
-        // POST:  Ors_head/Delete/5
+        // POST: Ors_head/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

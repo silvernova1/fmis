@@ -55,7 +55,6 @@ namespace fmis.Data
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
         public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
         public DbSet<Yearly_reference> Yearly_reference { get; set; }
-        public DbSet<Ors_head> Ors_head { get; set; }
         public DbSet<Uacs> Uacs { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
@@ -75,10 +74,6 @@ namespace fmis.Data
 
             modelBuilder.Entity<FundSource>()
            .HasKey(s => s.FundSourceId);
-
-            modelBuilder.Entity<Prexc>()
-            .HasOne<FundSource>(p => p.FundSource)
-            .WithOne(s => s.Prexc);
 
 
             //arnell
@@ -112,6 +107,7 @@ namespace fmis.Data
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
             /*modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");*/
+
         }
     }
 }

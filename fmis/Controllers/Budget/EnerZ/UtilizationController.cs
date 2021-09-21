@@ -163,7 +163,6 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUtilization(List<UtilizationData> data)
         {
-            var utilization = new Utilization();
 
             var data_holder = this._context.Utilization;
 
@@ -171,6 +170,7 @@ namespace fmis.Controllers
             {
                 if (item.Id == 0)
                 {
+                    var utilization = new Utilization();
                     utilization.Id = item.Id;
                     utilization.Date = item.Date;
                     utilization.Dv = item.Dv;

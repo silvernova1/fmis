@@ -10,6 +10,7 @@ namespace fmis.Models
 {
     public class Prexc
     {
+        [Key]
         public int Id { get; set; }
         public string pap_title { get; set; }
         public string pap_code1 { get; set; }
@@ -17,7 +18,7 @@ namespace fmis.Models
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
-        
-        public FundSource FundSource { get; set; }
+        public Sub_allotment Sub_Allotment { get; set; }
+
     }
 }
