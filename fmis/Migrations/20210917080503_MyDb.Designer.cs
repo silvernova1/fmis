@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210917080503_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,21 +61,21 @@ namespace fmis.Migrations.MyDb
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CourseID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Year")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("YearlyReferenceId")
+                        .HasColumnType("int");
 
                     b.HasKey("BudgetAllotmentId");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("YearlyReferenceId")
                         .IsUnique();
 
                     b.ToTable("Budget_allotment");
@@ -196,15 +198,18 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
                 {
-                    b.Property<int>("FundsId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Amount")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
 
-                    b.HasKey("FundsId");
+                    b.Property<int>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -306,14 +311,8 @@ namespace fmis.Migrations.MyDb
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Did")
-                        .HasColumnType("int");
-
                     b.Property<string>("Head_name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Pid")
-                        .HasColumnType("int");
 
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
@@ -325,10 +324,6 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Did");
-
-                    b.HasIndex("Pid");
 
                     b.HasIndex("Sub_allotmentId");
 
@@ -874,7 +869,7 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("YearlyReferenceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -888,7 +883,7 @@ namespace fmis.Migrations.MyDb
                     b.Property<string>("YearlyReference")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("YearlyReferenceId");
 
                     b.ToTable("Yearly_reference");
                 });
@@ -897,7 +892,7 @@ namespace fmis.Migrations.MyDb
                 {
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
                         .WithOne("Budget_allotment")
-                        .HasForeignKey("fmis.Models.Budget_allotment", "Id")
+                        .HasForeignKey("fmis.Models.Budget_allotment", "YearlyReferenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -925,25 +920,9 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
                 {
-                    b.HasOne("fmis.Models.Designation", "Designation")
-                        .WithMany()
-                        .HasForeignKey("Did")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("fmis.Models.Personal_Information", "Personal_Information")
-                        .WithMany()
-                        .HasForeignKey("Pid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("fmis.Models.Sub_allotment", null)
                         .WithMany("Ors_Heads")
                         .HasForeignKey("Sub_allotmentId");
-
-                    b.Navigation("Designation");
-
-                    b.Navigation("Personal_Information");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>

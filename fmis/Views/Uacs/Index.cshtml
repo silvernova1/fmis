@@ -13,6 +13,7 @@
 <br />
 <input id="search_field2" type="search" placeholder="Search" class="search" />
 <br />
+<br />
 <p style="color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
 <div id="example" class="hot" ></div>
 <br />
@@ -65,7 +66,7 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [700, 200],
+        colWidths: [700, 350],
         rowHeaders: true,
         colHeaders: true,
         search: {
@@ -76,6 +77,24 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var holder_id = holder_data[selection[0][0]][2];
+@*
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var holder_many = [];
+            for (var j = first_column; j <= last_column; j++) {
+                console.log("=="+j)
+                holder_many[j] = holder_data[j];
+
+            }
+
+            console.log(holder_many);
+*@
 
             if (holder_id) {
                 $.ajax({
@@ -135,7 +154,7 @@
         });
     });
 
-  
+
     hot.updateSettings({
         colHeaders: ['ACCOUNT TITLE', 'UACS EXPENSE CODE', 'ID'],
         cell: [

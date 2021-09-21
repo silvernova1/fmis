@@ -7,22 +7,28 @@
 
 <h2>Edit Fund Source</h2>
 <hr />
-<form asp-action="Edit">
+<form asp-action="Edit" method="post">
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class=" btn btn-primary btn-sm" asp-action="Index">Back to List</a>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Prexc.Id" />
+            <input type="hidden" asp-for="FundSourceId" />
+            <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" />
+
+            @*            <div class="form-group">
+            <label asp-for="FundSourceId" class="control-label"></label>
+            <div>@Html.DisplayFor(model => model.FundSourceId)</div>
+        </div>*@
+
             <div class="form-group">
                 <label asp-for="Prexc" class="control-label"></label>
-                <select asp-for="Prexc.Id" class="form-control" asp-items="ViewBag.Id">
-                    <option value="">-- Select Department --</option>
+                <select asp-for="Id" class="form-control" asp-items="ViewBag.Id">
+                    <option value="">-- Select Prexc --</option>
                 </select>
-                <span asp-validation-for="Id" class="text-danger" />
-                <span asp-validation-for="Prexc.Id" class="text-danger" />
             </div>
+
             <div class="form-group">
                 <label asp-for="FundSourceTitle" class="control-label"></label>
                 <input asp-for="FundSourceTitle" class="form-control" />

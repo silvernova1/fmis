@@ -4,9 +4,7 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Create</h2>
-
 <h4>Budget Allotment</h4>
 <hr />
 <div class="row">
@@ -15,7 +13,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Yearly_reference" class="control-label"></label>
-                @Html.DropDownList("YearlyReferenceId", null, htmlAttributes: new { @class = "form-control" })
+                <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
+                @*@Html.DropDownList("YearlyReferenceId", null, htmlAttributes: new { @class = "form-control" })*@
             </div>
             <div class="form-group">
                 <label asp-for="Allotment_series" class="control-label"></label>

@@ -82,7 +82,7 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUacsamount(List<UacsamountData> data)
         {
-            var uacsamount = new Uacsamount();
+          
 
             var data_holder = this._context.Uacsamount;
 
@@ -90,6 +90,8 @@ namespace fmis.Controllers
             {
                 if (item.Id == 0)
                 {
+
+                    var uacsamount = new Uacsamount();
                     uacsamount.Id = item.Id;
                     uacsamount.ObligationId = item.ObligationId;
                     uacsamount.Account_title = item.Account_title;
