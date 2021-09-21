@@ -20,14 +20,8 @@ namespace fmis.Models
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
 
-
         [ForeignKey("Prexc")]
         public int PId { get; set; }
         public Prexc Prexc { get; set; }
-        [ForeignKey("Ors_head")]
-        public int Oid { get; set; }
-        public Ors_head Ors_Head { get; set; }
-
-
     }
 }
