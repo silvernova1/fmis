@@ -12,6 +12,8 @@ using fmis.Data;
 using Microsoft.AspNetCore.Mvc;
 using Rotativa.AspNetCore;
 using fmis.Data.John;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 namespace fmis
 {
@@ -25,9 +27,13 @@ namespace fmis
         }
 
         public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            services.AddControllers();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
@@ -79,9 +85,11 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
 
         }    
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

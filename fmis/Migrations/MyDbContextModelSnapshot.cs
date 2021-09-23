@@ -201,13 +201,21 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("FundSourceId")
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FundsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FundSourceId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -309,8 +317,14 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Did")
+                        .HasColumnType("int");
+
                     b.Property<string>("Head_name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Pid")
+                        .HasColumnType("int");
 
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
@@ -322,6 +336,12 @@ namespace fmis.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Did")
+                        .IsUnique();
+
+                    b.HasIndex("Pid")
+                        .IsUnique();
 
                     b.HasIndex("Sub_allotmentId");
 
@@ -916,11 +936,36 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.HasOne("fmis.Models.John.FundSource", "FundSource")
+                        .WithMany("FundSourceAmounts")
+                        .HasForeignKey("FundSourceId");
+
+                    b.Navigation("FundSource");
+                });
+
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
                 {
+                    b.HasOne("fmis.Models.Designation", "Designation")
+                        .WithOne("Ors_head")
+                        .HasForeignKey("fmis.Models.Ors_head", "Did")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.Personal_Information", "Personal_Information")
+                        .WithOne("Ors_head")
+                        .HasForeignKey("fmis.Models.Ors_head", "Pid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fmis.Models.Sub_allotment", null)
                         .WithMany("Ors_Heads")
                         .HasForeignKey("Sub_allotmentId");
+
+                    b.Navigation("Designation");
+
+                    b.Navigation("Personal_Information");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
@@ -967,7 +1012,14 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
+                    b.Navigation("Ors_head");
+
                     b.Navigation("Requesting_office");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.FundSource", b =>
+                {
+                    b.Navigation("FundSourceAmounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
@@ -977,6 +1029,8 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
                 {
+                    b.Navigation("Ors_head");
+
                     b.Navigation("Requesting_office");
                 });
 

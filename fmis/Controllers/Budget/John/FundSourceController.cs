@@ -11,6 +11,7 @@ using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Text.Json;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -20,13 +21,24 @@ namespace fmis.Controllers.Budget.John
         private readonly UacsContext _uContext;
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
+        private readonly MyDbContext _MyDbContext;
 
-        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext)
+        public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
             _uContext = uContext;
             _bContext = bContext;
             _pContext = pContext;
+            _MyDbContext = MyDbContext;
+        }
+
+
+        public class FundsourceamountData
+        {
+            public int FundsId { get; set; }
+            public string Account_title { get; set; }
+            public float Amount { get; set; }
+            public int Id { get; set; }
         }
 
 
@@ -74,9 +86,18 @@ namespace fmis.Controllers.Budget.John
         public IActionResult Create(int? id)
         {
 
+
+            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
+                .Where(f => f.FundSource.FundSourceId == id).ToList());
+            ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
+
             PopulatePrexcsDropDownList();
 
             ViewBag.BudgetId = id;
+            ViewBag.FundsId = id;
 
             List<Prexc> p = new List<Prexc>();
 
@@ -100,8 +121,57 @@ namespace fmis.Controllers.Budget.John
             //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
 
 
+            var fundsource = _context.FundSource
+                .FirstOrDefaultAsync(m => m.FundSourceId == id);
+            if (fundsource == null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
+
+
+
+        [HttpPost]
+        public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
+        {
+
+
+            var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
+
+            foreach (var item in data)
+            {
+                if (item.Id == 0)
+                {
+
+                    var fundsourceamount = new FundSourceAmount();
+                    
+                    fundsourceamount.Id = item.Id;
+                    fundsourceamount.FundsId = item.FundsId;
+                    fundsourceamount.Account_title = item.Account_title;
+                    fundsourceamount.Amount = item.Amount;
+
+                    this._MyDbContext.FundSourceAmount.Update(fundsourceamount);
+                    this._MyDbContext.SaveChanges();
+                }
+                else
+                {
+                    /*data_holder.Find(item.Id).FundsId = item.FundsId;
+                    data_holder.Find(item.Id).Account_title = item.Account_title;
+                    data_holder.Find(item.Id).Amount = item.Amount;*/
+
+                    this._MyDbContext.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
+
+
+
+
 
         // POST: FundSource/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -112,16 +182,12 @@ namespace fmis.Controllers.Budget.John
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    List<Prexc> p = new List<Prexc>();
-
-
-
-                    _context.Add(fundSource);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+                 if (ModelState.IsValid)
+                    {
+                        _context.Add(fundSource);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
             }
             catch (RetryLimitExceededException /* dex */)
             {
@@ -159,8 +225,21 @@ namespace fmis.Controllers.Budget.John
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
-            ViewBag.Id = new SelectList(departmentsQuery.AsNoTracking(), "Id", "pap_title", selectedDepartment);
+            ViewBag.Id = new SelectList((from s in _pContext.Prexc.ToList()
+                                         select new
+                                         {
+                                             Id = s.Id,
+                                             prexc = s.pap_title + " ( " + s.pap_code1 + ")"
+                                         }),
+       "Id",
+       "prexc",
+       null);
+
         }
+
+
+        /*new SelectList(departmentsQuery.AsNoTracking(), "Id", "pap_title", selectedDepartment);
+}*/
 
         /*private void PopulatePrexcsDropDownList(object selectedPrexc = null)
         {
@@ -234,14 +313,13 @@ namespace fmis.Controllers.Budget.John
         }
 
         // POST: FundSource/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult DeleteFundsourceamount(int id)
         {
-            var fundSource = await _context.FundSource.FindAsync(id);
-            _context.FundSource.Remove(fundSource);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var fundsourceamount = this._MyDbContext.FundSourceAmount.Find(id);
+            this._MyDbContext.FundSourceAmount.Remove(fundsourceamount);
+            this._MyDbContext.SaveChangesAsync();
+            return Json(id);
         }
 
         private bool FundSourceExists(int id)
