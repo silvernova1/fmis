@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.Prexc
+namespace fmis.Migrations
 {
-    [DbContext(typeof(PrexcContext))]
-    [Migration("20210917032432_Prexc")]
-    partial class Prexc
+    [DbContext(typeof(MyDbContext))]
+    [Migration("20210923012637_MyDb")]
+    partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,30 @@ namespace fmis.Migrations.Prexc
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("fmis.Models.Appropriation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Appropriation");
+                });
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
@@ -82,6 +106,58 @@ namespace fmis.Migrations.Prexc
                     b.ToTable("Designation");
                 });
 
+            modelBuilder.Entity("fmis.Models.Division", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Head")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remember_Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Division");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account_Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Allotment_Class")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AllotmentClass");
+                });
+
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
                     b.Property<int>("FundSourceId")
@@ -114,10 +190,122 @@ namespace fmis.Migrations.Prexc
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
+                    b.HasIndex("Id");
 
                     b.ToTable("FundSource");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FundsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundSourceId");
+
+                    b.ToTable("FundSourceAmount");
+                });
+
+            modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Expense_Title")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Obligation_id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Obligated_amount");
+                });
+
+            modelBuilder.Entity("fmis.Models.Obligation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Created_by")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_recieved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_released")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Dv")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fund_source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Gross")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Ors_no")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Particulars")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payee")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Po_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pr_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time_recieved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Time_released")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Obligation");
                 });
 
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
@@ -142,6 +330,9 @@ namespace fmis.Migrations.Prexc
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Sub_AllotmentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
@@ -152,6 +343,8 @@ namespace fmis.Migrations.Prexc
 
                     b.HasIndex("Pid")
                         .IsUnique();
+
+                    b.HasIndex("Sub_AllotmentId");
 
                     b.ToTable("Ors_head");
                 });
@@ -492,6 +685,213 @@ namespace fmis.Migrations.Prexc
                     b.ToTable("Requesting_office");
                 });
 
+            modelBuilder.Entity("fmis.Models.Section", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Division")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Head")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remember_Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Section");
+                });
+
+            modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Ors_head")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Prexe_code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Responsibility_number")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Suballotment_code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Suballotment_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PId")
+                        .IsUnique();
+
+                    b.ToTable("Sub_allotment");
+                });
+
+            modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Expenses")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Fund_source")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suballotment_amount");
+                });
+
+            modelBuilder.Entity("fmis.Models.Uacs", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Expense_code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Obligated_amountId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Obligated_amountId");
+
+                    b.ToTable("Uacs");
+                });
+
+            modelBuilder.Entity("fmis.Models.Uacsamount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Expense_code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ObligationId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Total_disbursement")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_net_amount")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_others")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_tax_amount")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Uacsamount");
+                });
+
+            modelBuilder.Entity("fmis.Models.Utilization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Created_by")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_recieved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_released")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Dv")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fund_source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Gross")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Ors_no")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Particulars")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Po_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pr_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time_recieved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Time_released")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Utilization");
+                });
+
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
                 {
                     b.Property<int>("YearlyReferenceId")
@@ -533,14 +933,23 @@ namespace fmis.Migrations.Prexc
                         .IsRequired();
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
-                        .WithOne("FundSource")
-                        .HasForeignKey("fmis.Models.John.FundSource", "Id")
+                        .WithMany()
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Budget_allotment");
 
                     b.Navigation("Prexc");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.HasOne("fmis.Models.John.FundSource", "FundSource")
+                        .WithMany("FundSourceAmounts")
+                        .HasForeignKey("FundSourceId");
+
+                    b.Navigation("FundSource");
                 });
 
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
@@ -557,9 +966,15 @@ namespace fmis.Migrations.Prexc
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.Sub_allotment", "Sub_Allotment")
+                        .WithMany()
+                        .HasForeignKey("Sub_AllotmentId");
+
                     b.Navigation("Designation");
 
                     b.Navigation("Personal_Information");
+
+                    b.Navigation("Sub_Allotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
@@ -590,6 +1005,24 @@ namespace fmis.Migrations.Prexc
                     b.Navigation("Personal_Information");
                 });
 
+            modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
+                {
+                    b.HasOne("fmis.Models.Prexc", "Prexc")
+                        .WithOne("Sub_Allotment")
+                        .HasForeignKey("fmis.Models.Sub_allotment", "PId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Prexc");
+                });
+
+            modelBuilder.Entity("fmis.Models.Uacs", b =>
+                {
+                    b.HasOne("fmis.Models.Obligated_amount", null)
+                        .WithMany("Uacs")
+                        .HasForeignKey("Obligated_amountId");
+                });
+
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
                     b.Navigation("FundSources");
@@ -604,6 +1037,16 @@ namespace fmis.Migrations.Prexc
                     b.Navigation("Requesting_office");
                 });
 
+            modelBuilder.Entity("fmis.Models.John.FundSource", b =>
+                {
+                    b.Navigation("FundSourceAmounts");
+                });
+
+            modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
+                {
+                    b.Navigation("Uacs");
+                });
+
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
                 {
                     b.Navigation("Ors_head");
@@ -613,7 +1056,7 @@ namespace fmis.Migrations.Prexc
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>
                 {
-                    b.Navigation("FundSource");
+                    b.Navigation("Sub_Allotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
