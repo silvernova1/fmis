@@ -170,7 +170,7 @@ namespace fmis.Controllers
             {
                 if (item.Id == 0)
                 {
-                    var utilization = new Utilization(); //clear object
+                    var utilization = new Utilization();
                     utilization.Id = item.Id;
                     utilization.Date = item.Date;
                     utilization.Dv = item.Dv;

@@ -41,8 +41,6 @@ namespace fmis.Controllers
         // GET: Budget_allotments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-
-
             PopulateHeadDropDownList();
 
             List<Ors_head> oh = new List<Ors_head>();
@@ -69,7 +67,6 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
-
         // Populate Ord Head
         private void PopulateHeadDropDownList(object selectedPrexc = null)
         {
@@ -77,32 +74,22 @@ namespace fmis.Controllers
                              orderby d.userid
                              select d;
 
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
-
             ViewBag.Pid = new SelectList((from s in _context.Personal_information.ToList()
                                           select new
                                           {
                                               Pid = s.Pid,
                                               ps = s.fname + " " + s.mname + " " + s.lname
                                           }),
-       "Pid",
-       "ps",
-       null);
+                                         "Pid", "ps",
+                                         null);
         }
         // GET: Budget_allotments/Create
-        public IActionResult Create()
-        {
-            PopulateYrDropDownList();
-            List<Yearly_reference> oh = new List<Yearly_reference>();
-
-            oh = (from c in _osContext.Yearly_reference select c).ToList();
-            oh.Insert(0, new Yearly_reference { YearlyReferenceId = 0, YearlyReference = "--Select Year--" });
-
-            ViewBag.message = oh;
-            return View();
-        }
-
-
+          public IActionResult Create()
+          {
+              PopulateYrDropDownList();
+              
+              return View();
+          }
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
             var prexsQuery = from d in _context.Yearly_reference
@@ -114,9 +101,15 @@ namespace fmis.Controllers
                                              YearlyReferenceId = s.YearlyReferenceId,
                                              yr = s.YearlyReference
                                          }),
-       "YearlyReferenceId",
-       "yr",
-       null);
+                                         "YearlyReferenceId","yr"
+                                         );
+
+            List<Yearly_reference> oh = new List<Yearly_reference>();
+
+            oh = (from c in _osContext.Yearly_reference select c).ToList();
+            oh.Insert(0, new Yearly_reference { YearlyReferenceId = 0, YearlyReference = "--Select Year--" });
+
+            ViewBag.message = oh;
         }
         // POST: Budget_allotments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -135,18 +128,13 @@ namespace fmis.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch (RetryLimitExceededException /* dex */)
+            catch (RetryLimitExceededException )
             {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
             PopulateYrDropDownList(budget_allotment.YearlyReferenceId);
-            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
-
             return View(budget_allotment);
-            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
-
         // GET: Budget_allotments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -154,38 +142,23 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             var budget_allotment = await _context.Budget_allotments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+
+            PopulateYrDropDownList(budget_allotment.YearlyReferenceId);
             if (budget_allotment == null)
             {
                 return NotFound();
             }
             return View(budget_allotment);
         }
-
-        /*    public async Task<IActionResult> Edit(int? id)
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                var budget_allotment = await _context.Budget_allotments.FindAsync(id);
-                if (budget_allotment == null)
-                {
-                    return NotFound();
-                }
-                return View(budget_allotment);
-            }*/
-
         // POST: Budget_allotments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
         {
             if (id != budget_allotment.BudgetAllotmentId)
             {

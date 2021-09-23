@@ -1,9 +1,12 @@
-﻿@model IEnumerable<fmis.Models.Sub_allotment>
+﻿@model List<fmis.Models.Sub_allotment
+   >
+
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <h2>Sub Allotment</h2>
 <hr />
@@ -29,15 +32,8 @@
 </div>
 
 <p>
-    <a class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> Add new Sub-Allotment</a>
+    <a asp-action="Create" class="btn btn-success btn-sm">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Sub Allotment" asp-action="Index">Back to Sub Allotment</a>
 </p>
-<p>
-    <a class="btn btn-warning pull-right"><span class="glyphicon glyphicon-arrow-left"></span> Back</a>
-
-</p>
-
-<style>
-</style>
 <table class="table">
     <thead>
         <tr>
@@ -47,10 +43,13 @@
             <th>
                 Sub Allotment Title
             </th>
-            <th>Ors Head</th>
-            <th>Actions</th>
-            <th>Realignment</th>
-
+            <th>
+                ORS Head
+            </th>
+            <th>
+                Actions
+            </th>
+            <th>Funds Realignment</th>
         </tr>
     </thead>
     <tbody>
@@ -63,16 +62,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Suballotment_title)
                 </td>
-                <td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">Rusel</option>
-                        <option value="2">John</option>
-                        <option value="3">Carlo</option>
-                        <option value="3">Silver</option>
-                        <option value="3">Enerz</option>
-                    </select>
-                </td>
+                @*  <td>
+                        @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
+                    </td>*@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>

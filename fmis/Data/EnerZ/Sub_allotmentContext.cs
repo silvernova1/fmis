@@ -9,11 +9,12 @@ namespace fmis.Data
 {
     public class Sub_allotmentContext : DbContext
     {
+
         public Sub_allotmentContext(DbContextOptions<Sub_allotmentContext> options)
             : base(options)
         {
-
         }
+
         public DbSet<fmis.Models.Sub_allotment> Sub_allotment { get; set; }
     }
 }

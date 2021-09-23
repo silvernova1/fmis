@@ -5,61 +5,44 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using fmis.Data;
-using fmis.Data.John;
 using fmis.Models;
-using fmis.Models.John;
-using AutoMapper;
-using System.Text.Json;
-using System.ComponentModel.DataAnnotations;
-using Sitecore.FakeDb;
-using System.Dynamic;
+using fmis.Data;
 using fmis.ViewModel;
+using Microsoft.EntityFrameworkCore.Storage;
 
-namespace fmis.Controllers
+namespace fmis.Controllers.Budget.EnerZ
 {
     public class Sub_allotmentController : Controller
     {
         private readonly Sub_allotmentContext _context;
-        private readonly Ors_headContext _Context;
+        private readonly PrexcContext _pContext;
 
-        public Sub_allotmentController(Sub_allotmentContext context, Ors_headContext Context)
+        public Sub_allotmentController(Sub_allotmentContext context, PrexcContext pContext)
         {
             _context = context;
-            _Context = Context;
+            _pContext = pContext;
         }
 
-        public class Sub_allotmentData
-        {
-            public int Id { get; set; }
-            public int Prexe_code { get; set; }
-            public string Suballotment_code { get; set; }
-            public string Suballotment_title { get; set; }
-            public int Ors_head { get; set; }
-            public string Responsibility_number { get; set; }
-            public string Description { get; set; }
-        }
-        // GET: 
+
+        // GET: Sub_allotment
         public async Task<IActionResult> Index(int? id)
         {
 
-            ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(_context.Sub_allotment.ToList());
-            ViewBag.temp = json;
 
 
-            /*List<Budget_allotment> item = _context.Budget_allotment.Include(f => f.FundSources).ToList();*/
-            /*IList<FundSource> item = _Context.FundSource.Include(f => f.Budget_allotment).ToList();
-            return View(item);*/
-            /*var item = _context.Budget_allotment.FromSqlRaw("Select * from Budget_Allotment")
-                  .ToList();*/
-            /*var item = _context.Budget_allotment.Include(f => f.FundSources);*/
+            /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
+            /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
+                   .ToList();
+             return View(item);*/
 
-
-
-
+            /* return View(await _context.FundSource
+                 .Include(s => s.Budget_allotment)
+                 .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
+                 .ToListAsync());*/
 
             return View(await _context.Sub_allotment.ToListAsync());
+
+
 
         }
 
@@ -68,93 +51,85 @@ namespace fmis.Controllers
         {
             if (id == null)
             {
-
                 return NotFound();
             }
 
-            var Sub = await _context.Sub_allotment
-                .Include(s => s.Ors_head)
-                .AsNoTracking()
+            var sub_allotment = await _context.Sub_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (Sub == null)
+            if (sub_allotment == null)
             {
-
                 return NotFound();
             }
 
-            return View(Sub);
+            return View(sub_allotment);
         }
 
         // GET: Sub_allotment/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewBag.layout = "_Layout";
+
+            PopulatePrexcsDropDownList();
+
+            ViewBag.BudgetId = id;
+
+            List<Prexc> p = new List<Prexc>();
+
+            p = (from c in _pContext.Prexc select c).ToList();
+            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
+
+            ViewBag.message = p;
+            //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
+            //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
+            //TempData["FundSource"] = await _context.FundSource.ToListAsync();
+
+            /*
+                        Budget_allotment budget_allotment = new Budget_allotment()
+                        {
+                            BudgetAllotmentId = 7
+                        };*/
+
+
+            //var FundSource = await _bContext.Budget_allotment.(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
+
+            //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
+
+
             return View();
         }
 
-        public ActionResult AddData(List<string[]> dataListFromTable)
-        {
-            ViewBag.layout = "_Layout";
-            var dataListTable = dataListFromTable;
-            return Json("Response, Data Received Successfully");
-        }
-
-        [HttpPost]
-        public IActionResult saveObligation(List<Sub_allotmentData> data)
-        {
-            var Sub = new List<Sub_allotment>();
-            var Allotment = new Sub_allotment();
-
-
-            foreach (var item in data)
-            {
-                Allotment.Prexe_code = item.Prexe_code;
-                Allotment.Suballotment_code = item.Suballotment_code;
-                Allotment.Suballotment_title = item.Suballotment_title;
-                Allotment.Ors_head = item.Ors_head;
-                Allotment.Responsibility_number = item. Responsibility_number;
-                Allotment.Description = item.Description;
-
-                Sub.Add(Allotment);
-            }
-
-            ViewBag.layout = "_Layout";
-            this._context.Sub_allotment.Add(Allotment);
-            this._context.SaveChanges();
-            return Json(data);
-        }
-
-        // POST: Sub_allotmnent/Create
+        // POST: Sub_allotment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment Allotment)
+        public async Task<IActionResult> Create([Bind("Prexc_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description,Id")] Sub_allotment sub_allotment)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (ModelState.IsValid)
+                {
+                    List<Prexc> p = new List<Prexc>();
 
-                _context.Add(Allotment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+
+                    _context.Add(sub_allotment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewBag.layout = "_Layout";
-            return View(Allotment);
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulatePrexcsDropDownList(sub_allotment.Id);
+            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
+
+            return View(sub_allotment);
+            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
 
-        [HttpPost]
-
-        public ActionResult AddSub_allotment(IEnumerable<Budget_allotment> SubInput)
-
-        {
-
-            var p = SubInput;
-            return null;
-
-        }
-
-        // GET: Obligations/Edit/5
+        // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -162,38 +137,64 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var Allotment = await _context.Sub_allotment.FindAsync(id);
-            if (Allotment == null)
+            var sub_allotment = await _context.Sub_allotment.FindAsync(id);
+            if (sub_allotment == null)
             {
                 return NotFound();
             }
-            ViewBag.layout = "_Layout";
-            return View(Allotment);
+            PopulatePrexcsDropDownList(sub_allotment.Id);
+            return View(sub_allotment);
         }
 
-        // POST: Obligations/Edit/5
+        /*DROPDOWN LIST FOR PREXC*/
+
+        private void PopulatePrexcsDropDownList(object selectedDepartment = null)
+        {
+            var departmentsQuery = from d in _pContext.Prexc
+                                   orderby d.pap_title
+                                   select d;
+            ViewBag.Id = new SelectList(departmentsQuery.AsNoTracking(), "Id", "pap_title", selectedDepartment);
+        }
+
+        /*private void PopulatePrexcsDropDownList(object selectedPrexc = null)
+        {
+            var prexsQuery = from d in _pContext.Prexc
+                             orderby d.pap_title
+                             select d;
+
+            *//*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*//*
+
+            ViewBag.Id = new SelectList((from s in _pContext.Prexc.ToList()
+                                         select new
+                                         {
+                                             Id = s.Id,
+                                             prexc = s.pap_title + " ( " + s.pap_code1 + ")"
+                                         }),
+       "Id",
+       "prexc",
+       null);
+
+        }*/
+
+        // POST: Sub_allotment/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Prexe_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description")] Sub_allotment Allotment)
+        public async Task<IActionResult> Edit(Sub_allotment sub_allotment)
         {
-            if (id != Allotment.Id)
-            {
-                ViewBag.layout = "_Layout";
-                return NotFound();
-            }
+
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(Allotment);
+                    _context.Update(sub_allotment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Sub_allotmentExists(Allotment.Id))
+                    if (!Sub_allotmentExists(sub_allotment.Id))
                     {
                         return NotFound();
                     }
@@ -202,49 +203,43 @@ namespace fmis.Controllers
                         throw;
                     }
                 }
-                ViewBag.layout = "_Layout";
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.layout = "_Layout";
-            return View(Allotment);
+            return View(sub_allotment);
         }
 
-        // GET: Obligations/Delete/5
+
+        // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            var Allotment = await _context.Sub_allotment
+            var sub_allotment = await _context.Sub_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (Allotment == null)
+            if (sub_allotment == null)
             {
-                ViewBag.layout = "_Layout";
                 return NotFound();
             }
 
-            ViewBag.layout = "_Layout";
-            return View(Allotment);
+            return View(sub_allotment);
         }
 
-        // POST: Obligations/Delete/5
+        // POST: Sub_allotment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            ViewBag.layout = "_Layout";
-            var Allotment = await _context.Sub_allotment.FindAsync(id);
-            _context.Sub_allotment.Remove(Allotment);
+            var sub_allotment = await _context.Sub_allotment.FindAsync(id);
+            _context.Sub_allotment.Remove(sub_allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool Sub_allotmentExists(int id)
         {
-            ViewBag.layout = "_Layout";
             return _context.Sub_allotment.Any(e => e.Id == id);
         }
     }
