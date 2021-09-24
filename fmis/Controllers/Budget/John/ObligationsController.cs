@@ -137,8 +137,7 @@ namespace fmis.Controllers
             ViewBag.uamount = uamount;
 
 
-            var sample = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == 50000).ToList());
-            ViewBag.sample = sample;
+            
 
 
             if (id == null)

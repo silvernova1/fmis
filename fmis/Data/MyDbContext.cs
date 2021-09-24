@@ -65,11 +65,17 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            //1:M relationship
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.FundSources);
             /*.HasForeignKey(p => p.BudgetAllotmentId);*/
+
+
+            //1:M relationship
+            modelBuilder.Entity<FundSourceAmount>()
+            .HasOne(p => p.FundSource)
+            .WithMany(b => b.FundSourceAmounts);
 
 
             modelBuilder.Entity<FundSource>()
