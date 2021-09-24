@@ -63,12 +63,9 @@
 
 <input type="hidden" class="uacsamount" value="@ViewBag.temp">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
-<br />
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-<br />
-<br />
-<br />
-<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+
+<p style="margin-left: 5px; color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
 <div id="uacs_amount" class="hot handsontable htColumnHeaders"></div>
 <br />
 <div class="controls" hidden>
@@ -186,7 +183,7 @@
                 source: uacs_data
             },
             {
-                
+                readOnly: true
             },
             {
             },
