@@ -1,6 +1,6 @@
 ﻿<div id="sidebar" class="sidebar                  responsive                    ace-save-state">
     <script type="text/javascript">
-            try { ace.settings.loadState('sidebar') } catch (e) { }
+        try { ace.settings.loadState('sidebar') } catch (e) { }
     </script>
 
     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
@@ -59,7 +59,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-             
+
                 <li class="">
                     <a href="#" class="dropdown-toggle">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -110,7 +110,7 @@
                                 <span class="menu-text"> ORS UPLOAD </span>
                             </a>
                         </li>
-                      
+
                     </ul>
                 </li>
             </ul>
@@ -125,6 +125,7 @@
                     <b class="arrow"></b>
                     <ul class="submenu nav-hide" style="display: none;">
                         <li class="">
+
                             <a asp-area="" asp-controller="Uacs" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 SAOB
@@ -142,7 +143,7 @@
                 </li>
             </ul>
             <ul class="submenu">
-                <li class="">
+                <li class=" ">
                     <a href="#" class="dropdown-toggle">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Master Data
@@ -187,7 +188,7 @@
                         <li class="">
                             <a asp-controller="Requesting_office" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
-                               ORS/Requesting head
+                                ORS/Requesting head
                             </a>
                             <b class="arrow"></b>
                         </li>
@@ -305,7 +306,7 @@
                     </a>
                 </li>
 
-                <li class="">
+                <li class=" @Html.Raw("active open")">
                     <a href="buttons.html">
                         <i class="menu-icon fa fa-caret-right"></i>
                         ORS
@@ -313,7 +314,7 @@
                 </li>
             </ul>
         </li>
-       @* <li class="@if(ViewBag.filter_sidebar == "gallery")
+        @* <li class="@if(ViewBag.filter_sidebar == "gallery")
                         @Html.Raw("active")">
             <a asp-controller="Home" asp-action="Gallery">
                 <i class="menu-icon fa fa-picture-o"></i>
@@ -322,7 +323,69 @@
 
             <b class="arrow"></b>
         </li>*@
+
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-pencil-square-o"></i>
+                <span class="menu-text"> ORS </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="form-elements.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                       OBL
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="form-elements-2.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Form Elements 2
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="form-wizard.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Wizard &amp; Validation
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="wysiwyg.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Wysiwyg &amp; Markdown
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="dropzone.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Dropzone File Upload
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
+
     </ul>
+
+
 
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>

@@ -97,12 +97,26 @@ namespace fmis.Controllers
             public DateTime Date_released { get; set; }
             [DataType(DataType.Time)]
             public DateTime Time_released { get; set; }
+            public string token { get; set; }
+        }
+
+        public class ManyId
+        {
+            public int many_id { get; set; }
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public int single_id { get; set; }
+            public string single_token { get; set; }
+            public List<ManyId> many_id { get; set; }
         }
 
         // GET: Obligations
         public IActionResult Index()
         {
-            var json = JsonSerializer.Serialize(_context.Obligation.ToList());
+            var json = JsonSerializer.Serialize(_context.Obligation.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
@@ -136,10 +150,6 @@ namespace fmis.Controllers
             var uamount = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
             ViewBag.uamount = uamount;
 
-
-            
-
-
             if (id == null)
             {
                 return NotFound();
@@ -153,7 +163,6 @@ namespace fmis.Controllers
             }
 
             return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", obligation);
-
         }
 
         /* public IActionResult ObligationModal(int? id)
@@ -191,16 +200,14 @@ namespace fmis.Controllers
         public IActionResult SaveObligation(List<ObligationData> data)
         {
 
-
-
-            var obligation = new Obligation();
-
             var data_holder = this._context.Obligation;
 
             foreach (var item in data)
             {
-                if (item.Id == 0)
+                if (item.Id == 0)//SAVE
                 {
+
+                    var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
                     obligation.Date = item.Date;
                     obligation.Dv = item.Dv;
@@ -217,13 +224,15 @@ namespace fmis.Controllers
                     obligation.Time_recieved = item.Time_recieved;
                     obligation.Date_released = item.Date_released;
                     obligation.Time_released = item.Time_released;
+                    obligation.status = "activated";
+                    obligation.token = item.token;
 
                     this._context.Obligation.Update(obligation);
                     this._context.SaveChanges();
                 }
                 else
                 {
-
+                    //UPDATE
                     data_holder.Find(item.Id).Date = item.Date;
                     data_holder.Find(item.Id).Dv = item.Dv;
                     data_holder.Find(item.Id).Pr_no = item.Pr_no;
@@ -238,6 +247,8 @@ namespace fmis.Controllers
                     data_holder.Find(item.Id).Time_recieved = item.Time_recieved;
                     data_holder.Find(item.Id).Date_released = item.Date_released;
                     data_holder.Find(item.Id).Time_released = item.Time_released;
+                    data_holder.Find(item.Id).status = "activated";
+
                     this._context.SaveChanges();
                 }
             }
@@ -346,12 +357,29 @@ namespace fmis.Controllers
 
         // POST: Obligations/Delete/5
         [HttpPost]
-        public IActionResult DeleteConfirmed(int id)
+        [ValidateAntiForgeryToken]
+        public async Task <IActionResult> DeleteConfirmed(DeleteData data)
         {
-            var obligation = this._context.Obligation.Find(id);
-            this._context.Obligation.Remove(obligation);
-            this._context.SaveChangesAsync();
-            return Json(id);
+            if (data.many_id.Count > 1)
+            {
+                var data_holder = this._context.Obligation;
+                foreach (var many in data.many_id)
+                {
+                    data_holder.Find(many.many_id).status = "deactivated";
+                    data_holder.Find(many.many_id).token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = this._context.Obligation;
+                data_holder.Find(data.single_id).status = "deactivated";
+                data_holder.Find(data.single_id).token = data.single_token;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
         private bool ObligationExists(int id)

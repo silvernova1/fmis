@@ -110,7 +110,9 @@ namespace fmis.Migrations
                     Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -126,8 +128,8 @@ namespace fmis.Migrations
                     pap_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     pap_code1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     pap_code2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -181,7 +183,9 @@ namespace fmis.Migrations
                     Total_disbursement = table.Column<float>(type: "real", nullable: false),
                     Total_net_amount = table.Column<float>(type: "real", nullable: false),
                     Total_tax_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_others = table.Column<float>(type: "real", nullable: false)
+                    Total_others = table.Column<float>(type: "real", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -238,6 +242,8 @@ namespace fmis.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Obligated_amountId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -287,8 +293,7 @@ namespace fmis.Migrations
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false),
-                    CourseID = table.Column<int>(type: "int", nullable: true)
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

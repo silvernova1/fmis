@@ -29,6 +29,8 @@ namespace fmis.Models
         public DateTime Date_released { get; set; }
         [DataType(DataType.Time)]
         public DateTime Time_released { get; set; }
+        public string status { get; set; }
+        public string token { get; set; }
 
     }
 }
