@@ -28,6 +28,9 @@ namespace fmis.Controllers.Budget.John
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
 
+
+        Obligation obligation = new Obligation();
+
         public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
@@ -333,7 +336,7 @@ namespace fmis.Controllers.Budget.John
         }
 
 
-        private static PdfPCell PhraseCell(Phrase phrase, int align)
+       /* private static PdfPCell PhraseCell(Phrase phrase, int align)
         {
             PdfPCell cell = new PdfPCell(phrase);
             cell.BorderColor = BaseColor.BLACK;
@@ -342,9 +345,21 @@ namespace fmis.Controllers.Budget.John
             cell.PaddingBottom = 2f;
             cell.PaddingTop = 0f;
             return cell;
-        }
-        public FileResult Export()
+        }*/
+
+
+
+
+
+        //EXPORTING PDF FILE
+
+        public FileResult Export(String id)
         {
+
+            Int32 Id = Convert.ToInt32(id);
+            var ors = _MyDbContext.Obligation.Where(p => p.Id == Id).FirstOrDefault();
+
+
             string ExportData = "This is pdf generated";
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
@@ -386,7 +401,7 @@ namespace fmis.Controllers.Budget.John
                 float[] columnWidths = { 5, 25, 15 };
                 table.SetWidths(columnWidths);
 
-                Image logo = Image.GetInstance("wwwroot/assets/images/boyd.jpg");
+                Image logo = Image.GetInstance("wwwroot/assets/images/ro7.png");
                 logo.ScaleAbsolute(60f, 60f);
                 PdfPCell logo_cell = new PdfPCell(logo);
                 logo_cell.DisableBorderSide(8);
@@ -420,7 +435,7 @@ namespace fmis.Controllers.Budget.John
                 table3.AddCell(new PdfPCell(new Paragraph("321321" + " - 01101101 - " + "2021" + " - " + "09", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph("2051", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                table3.AddCell(new PdfPCell(new Paragraph(obligation.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Fund :", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph("321321" + "-01101101", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
@@ -437,7 +452,7 @@ namespace fmis.Controllers.Budget.John
                 table_row_2.WidthPercentage = 100f;
                 table_row_2.SetWidths(tbt_row2_width);
                 table_row_2.AddCell(new PdfPCell(new Paragraph("Payee", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_2.AddCell(new PdfPCell(new Paragraph("Kabaso Org", arial_font_10)));
+                table_row_2.AddCell(new PdfPCell(new Paragraph(ors.Payee, arial_font_10)));
                 table_row_2.AddCell(new PdfPCell(new Paragraph("", arial_font_10)));
 
 
@@ -458,7 +473,7 @@ namespace fmis.Controllers.Budget.John
                 table_row_4.WidthPercentage = 100f;
                 table_row_4.SetWidths(tbt_row4_width);
                 table_row_4.AddCell(new PdfPCell(new Paragraph("Address", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_4.AddCell(new PdfPCell(new Paragraph("Eskina Sambag Ila Ate kusmod kung sa lane magpalit sud.an", arial_font_10)));
+                table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address, arial_font_10)));
                 table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 
@@ -726,8 +741,9 @@ namespace fmis.Controllers.Budget.John
 
 
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
-                PdfFile.Close(); return File(stream.ToArray(), "application/pdf", "ORS File.pdf");
+                PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
 
+                
             }
         }
     }
