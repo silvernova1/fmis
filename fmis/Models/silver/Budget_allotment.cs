@@ -19,6 +19,7 @@ namespace fmis.Models
         public DateTime Updated_at { get; set; }
 
         public List<FundSource> FundSources { get; set; }
+        public List<Sub_allotment> Sub_allotment { get; set; }
 
         public List<Personal_Information> Personal_Information { get; set; }
 

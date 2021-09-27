@@ -52,16 +52,15 @@ namespace fmis.Data
         public DbSet<Personal_Information> Personal_information { get; set; }
         public DbSet<Requesting_office> Requesting_office { get; set; }
         public DbSet<Utilization> Utilization { get; set; }
-        public DbSet<Sub_allotment> Sub_allotment { get; set; }
-        public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
         public DbSet<Yearly_reference> Yearly_reference { get; set; }
         public DbSet<Uacs> Uacs { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
-        public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
+        public DbSet<Sub_allotment> Sub_allotment { get; set; }
+        public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

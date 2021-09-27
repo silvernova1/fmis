@@ -724,6 +724,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -747,6 +750,8 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
+
                     b.HasIndex("PId")
                         .IsUnique();
 
@@ -769,7 +774,12 @@ namespace fmis.Migrations
                     b.Property<int>("Fund_source")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Sub_allotmentId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Sub_allotmentId");
 
                     b.ToTable("Suballotment_amount");
                 });
@@ -1005,13 +1015,28 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
+                    b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
+                        .WithMany("Sub_allotment")
+                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
+
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithOne("Sub_Allotment")
                         .HasForeignKey("fmis.Models.Sub_allotment", "PId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Budget_allotment");
+
                     b.Navigation("Prexc");
+                });
+
+            modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>
+                {
+                    b.HasOne("fmis.Models.Sub_allotment", "Sub_allotment")
+                        .WithMany("Suballotment_amount")
+                        .HasForeignKey("Sub_allotmentId");
+
+                    b.Navigation("Sub_allotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
@@ -1026,6 +1051,8 @@ namespace fmis.Migrations
                     b.Navigation("FundSources");
 
                     b.Navigation("Personal_Information");
+
+                    b.Navigation("Sub_allotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Designation", b =>
@@ -1055,6 +1082,11 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Prexc", b =>
                 {
                     b.Navigation("Sub_Allotment");
+                });
+
+            modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
+                {
+                    b.Navigation("Suballotment_amount");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
