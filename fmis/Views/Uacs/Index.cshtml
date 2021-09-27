@@ -13,17 +13,16 @@
     }
 }
 
-
 <input type="hidden" class="uacs" value="@ViewBag.temp">
+<h5>UACS Account Title & Expense Code</h5>
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
-<input id="search_field2" type="search" placeholder="Search" class="search" />
 <br />
-<br />
-<p style="color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+<p style="color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
-    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
+    <button id="export-file">Download CSV</button>
 </div>
 
 
@@ -71,7 +70,7 @@
                 );
             });
 
-            ajaxServer(ajax_data,'@Url.Action("SaveUacs", "Uacs")','success','Sucessfully saved the new rows!');
+            ajaxServer(ajax_data, '@Url.Action("SaveUacs", "Uacs")', 'success', 'Sucessfully saved the new rows!');
 
             return false;
         }

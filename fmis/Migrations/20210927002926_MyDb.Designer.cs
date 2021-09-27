@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20210923012637_MyDb")]
+    [Migration("20210927002926_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,9 +60,6 @@ namespace fmis.Migrations
 
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CourseID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
@@ -302,6 +299,12 @@ namespace fmis.Migrations
 
                     b.Property<DateTime>("Time_released")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -629,12 +632,6 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Updated_at")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("pap_code1")
                         .HasColumnType("nvarchar(max)");
 
@@ -642,6 +639,12 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("pap_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -792,6 +795,12 @@ namespace fmis.Migrations
                     b.Property<int?>("Obligated_amountId")
                         .HasColumnType("int");
 
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Obligated_amountId");
@@ -829,6 +838,12 @@ namespace fmis.Migrations
 
                     b.Property<float>("Total_tax_amount")
                         .HasColumnType("real");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -49,7 +49,6 @@ namespace fmis.Controllers
             public List<ManyId> many_id { get; set; }
         }
 
-
         // GET: Uacs
         public IActionResult Index()
         {

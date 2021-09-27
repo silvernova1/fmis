@@ -59,9 +59,6 @@ namespace fmis.Migrations
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CourseID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -200,13 +197,21 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("FundSourceId")
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FundsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FundSourceId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -292,6 +297,12 @@ namespace fmis.Migrations
 
                     b.Property<DateTime>("Time_released")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -619,12 +630,6 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Updated_at")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("pap_code1")
                         .HasColumnType("nvarchar(max)");
 
@@ -632,6 +637,12 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("pap_title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -826,6 +837,12 @@ namespace fmis.Migrations
                     b.Property<float>("Total_tax_amount")
                         .HasColumnType("real");
 
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Uacsamount");
@@ -939,6 +956,15 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.HasOne("fmis.Models.John.FundSource", "FundSource")
+                        .WithMany("FundSourceAmounts")
+                        .HasForeignKey("FundSourceId");
+
+                    b.Navigation("FundSource");
+                });
+
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
                 {
                     b.HasOne("fmis.Models.Designation", "Designation")
@@ -1022,6 +1048,11 @@ namespace fmis.Migrations
                     b.Navigation("Ors_head");
 
                     b.Navigation("Requesting_office");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.FundSource", b =>
+                {
+                    b.Navigation("FundSourceAmounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>

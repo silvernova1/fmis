@@ -79,7 +79,7 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SavePrexc(List<PrexcData> data)
         {
-           
+
             var data_holder = this._context.Prexc;
 
             foreach (var item in data)
@@ -91,9 +91,7 @@ namespace fmis.Controllers
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_code2 = item.pap_code2;
-                    prexc.Created_at = item.Created_at;
-                    prexc.Updated_at = item.Updated_at;
-
+       
                     this._context.Prexc.Update(prexc);
                     this._context.SaveChanges();
                 }
@@ -102,8 +100,7 @@ namespace fmis.Controllers
                     data_holder.Find(item.Id).pap_title = item.pap_title;
                     data_holder.Find(item.Id).pap_code1 = item.pap_code1;
                     data_holder.Find(item.Id).pap_code2 = item.pap_code2;
-                    data_holder.Find(item.Id).Created_at = item.Created_at;
-                    data_holder.Find(item.Id).Updated_at = item.Updated_at;
+   
 
                     this._context.SaveChanges();
                 }

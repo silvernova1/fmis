@@ -55,18 +55,6 @@ namespace fmis.Controllers
             var json = JsonSerializer.Serialize(_context.Budget_allotment.ToList());
             ViewBag.temp = json;
 
-
-            /*List<Budget_allotment> item = _context.Budget_allotment.Include(f => f.FundSources).ToList();*/
-            /*IList<FundSource> item = _Context.FundSource.Include(f => f.Budget_allotment).ToList();
-            return View(item);*/
-            /*var item = _context.Budget_allotment.FromSqlRaw("Select * from Budget_Allotment")
-                  .ToList();*/
-            /*var item = _context.Budget_allotment.Include(f => f.FundSources);*/
-
-
-            
-
-
             return View(await _context.Budget_allotment.ToListAsync());
 
         }
@@ -76,7 +64,6 @@ namespace fmis.Controllers
         {
             if (id == null)
             {
-                
                 return NotFound();
             }
 
@@ -116,9 +103,9 @@ namespace fmis.Controllers
                                               Id = s.YearlyReference,
                                               yr = s.YearlyReference 
                                           }),
-       "Id",
-       "yr",
-       null);
+                                         "Id",
+                                         "yr",
+                                        null);
 
         }
         public ActionResult AddData(List<string[]> dataListFromTable)
@@ -159,10 +146,6 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Year,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment Allotment)
         {
-
-            
-
-
             if (ModelState.IsValid)
             {
 
@@ -175,14 +158,10 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-
         public ActionResult AddObligation(IEnumerable<Budget_allotment> BudgetInput)
-
         {
-
             var p = BudgetInput;
             return null;
-
         }
 
         // GET: Obligations/Edit/5

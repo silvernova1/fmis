@@ -95,7 +95,7 @@ namespace fmis.Controllers.Budget.John
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
                 .Where(f => f.FundSource.FundSourceId == id).ToList());
             ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            var uacs_data = JsonSerializer.Serialize(_context.Uacs.Where(s => s.status == "activated").ToList());
             ViewBag.uacs = uacs_data;
 
 
@@ -343,7 +343,7 @@ namespace fmis.Controllers.Budget.John
             cell.PaddingTop = 0f;
             return cell;
         }
-        public FileResult Export()
+        public FileResult Export(int id,string pdffile)
         {
             string ExportData = "This is pdf generated";
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -371,7 +371,7 @@ namespace fmis.Controllers.Budget.John
 
                 PdfFile.Open();
 
-                Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS FOR KABASO .ORG");
+                Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS FOR KABASO .ORG "+id);
 
                 header_text.Font = FontFactory.GetFont("Arial", 10, Font.BOLD, BaseColor.BLACK);
                 header_text.Alignment = Element.ALIGN_CENTER;
@@ -726,7 +726,8 @@ namespace fmis.Controllers.Budget.John
 
 
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
-                PdfFile.Close(); return File(stream.ToArray(), "application/pdf", "ORS File.pdf");
+                PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
+
 
             }
         }

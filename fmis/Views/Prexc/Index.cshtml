@@ -18,7 +18,6 @@
     .htCore tbody tr td, .htCore thead tr th, body {
     }
 
-
     .htCore thead tr th {
         color: #fff;
         font-size: 13px;
@@ -58,16 +57,13 @@
 
 
 <script>
-
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-
             var json = [];
             $.each(hot.getSourceData(), function () {
                 json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2], Id: this[3] } );
             });
-
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("SavePrexc", "Prexc")',
@@ -82,14 +78,10 @@
                     console.log(output);
                 }
             });
-
             return false;
         }
     };
-
-
     var prexc = $.parseJSON($(".prexc").val());
-
     const data = [];
     var counter = 0;
     $.each(prexc, function () {
@@ -112,7 +104,6 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var holder_id = holder_data[selection[0][0]][3]
-
             if (holder_id) {
                 $.ajax({
                     type: 'POST',
@@ -124,12 +115,10 @@
                     }
                 });
             }
-
             Lobibox.notify("warning", {
                 msg: "Your selected row was remove",
                 sound: false
             });
-
         },
         height: 'auto',
         hiddenColumns: {
@@ -143,20 +132,15 @@
             { data: 'pap_code1', type: 'text' },
             { data: 'pap_code2', type: 'text' },
             { data: 'Id ', type: 'text' },
-
         ]
     });
-
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
-
         console.log(queryResult);
         hot.render();
     });
-
     const exportPlugin = hot.getPlugin('exportFile');
-
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
             bom: false,
@@ -171,7 +155,6 @@
             rowHeaders: true
         });
     });
-
     hot.addHook('afterChange', function (changes, src) {
         [
             [row, col, oldVal, newVal]
@@ -181,7 +164,6 @@
             hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
         }
     })
-
     hot.updateSettings({
         colHeaders: ['TITLE', 'CODE1', 'CODE2', 'ID'],
         cell: [
@@ -193,23 +175,16 @@
         ],
         columns: [
             {
-
             },
             {
-
             },
             {
-
             },
             {
                 // 2nd cell is simple text, no special options here
             },
-
         ],
     });
-
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
-
-
 </script>
