@@ -11,31 +11,33 @@ namespace fmis.Data
 {
     public class MyDbContext : DbContext
     {
-        
-
-       /*protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
-          *//*  modelBuilder.Entity<FundSource>()
-                .HasOne(p => p.Budget_allotment)
-                .WithMany(b => b.FundSources)
-                .HasForeignKey(e => e.BudgetAllotmentId);*/
-
-            /*modelBuilder.Entity<FundSource>()
-            .HasOne(p => p.Budget_allotment)
-            .WithMany(b => b.FundSources);*/
-            /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
-
-            /*modelBuilder.Entity<Budget_allotment>()
-                .HasMany(b => b.FundSources)
-                .WithOne(p => p.Budget_allotment)
-                .OnDelete(DeleteBehavior.NoAction);*//*
 
 
-            modelBuilder.Entity<FundSource>().ToTable("FundSource");
-            modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
 
-        }*/
+
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+         {
+
+           *//*  modelBuilder.Entity<FundSource>()
+                 .HasOne(p => p.Budget_allotment)
+                 .WithMany(b => b.FundSources)
+                 .HasForeignKey(e => e.BudgetAllotmentId);*/
+
+        /*modelBuilder.Entity<FundSource>()
+        .HasOne(p => p.Budget_allotment)
+        .WithMany(b => b.FundSources);*/
+        /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
+
+        /*modelBuilder.Entity<Budget_allotment>()
+            .HasMany(b => b.FundSources)
+            .WithOne(p => p.Budget_allotment)
+            .OnDelete(DeleteBehavior.NoAction);*//*
+
+
+        modelBuilder.Entity<FundSource>().ToTable("FundSource");
+        modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
+
+    }*/
 
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
