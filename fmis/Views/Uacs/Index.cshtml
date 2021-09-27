@@ -1,52 +1,76 @@
 ﻿@model IEnumerable<fmis.Models.Uacs>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 
 <input type="hidden" class="uacs" value="@ViewBag.temp">
+<h5>UACS Account Title & Expense Code</h5>
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
-<input id="search_field2" type="search" placeholder="Search" class="search" />
 <br />
+<p style="color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
+<div id="example" class="hot"></div>
 <br />
-<p style="color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
-<div id="example" class="hot" ></div>
-<br />
-<div class="controls"hidden>
-    <button id="export-file" class="btn btn-sm btn-primary" style="margin-left:50px;"><i class="ace-icon fa fa-download bigger-110"></i> EXPORT FILE</button>
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
 </div>
 
 
 <script>
 
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify(lobi_type, {
+                    msg: lobi_msg,
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+    }
+
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
 
-            var json = [];
+            var ajax_data = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Account_title: this[0], Expense_code: this[1], Id: this[2] } );
+                ajax_data.push(
+                    {
+                        Account_title: this[0] ? this[0] : " ",
+                        Expense_code: this[1] ? this[1] : " ",
+                        Id: this[2] ? this[2] : " ",
+                        token: this[3] ? this[3] : guid()
+                    }
+                );
             });
 
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("SaveUacs", "Uacs")',
-                dataType: "JSON",
-                data: { data: json },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-            });
+            ajaxServer(ajax_data, '@Url.Action("SaveUacs", "Uacs")', 'success', 'Sucessfully saved the new rows!');
 
             return false;
         }
@@ -58,7 +82,7 @@
     const data = [];
     var counter = 0;
     $.each(uacs, function () {
-        data[counter] = [this.Account_title, this.Expense_code, this.Id]
+        data[counter] = [this.Account_title, this.Expense_code, this.Id, this.token]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -69,6 +93,7 @@
         colWidths: [700, 350],
         rowHeaders: true,
         colHeaders: true,
+        undo: true,
         search: {
             searchResultClass: 'search-result-custom'
         },
@@ -76,8 +101,8 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][2];
-@*
+            var single_id = holder_data[selection[0][0]][2];
+
             console.log(selection);
             console.log(holder_data);
             console.log(column);
@@ -86,37 +111,35 @@
             var last_column = selection[0][2];
             console.log(first_column);
             console.log(last_column);
-            var holder_many = [];
+            var many_id = [];
             for (var j = first_column; j <= last_column; j++) {
-                console.log("=="+j)
-                holder_many[j] = holder_data[j];
-
+                many_id.push({
+                    many_id: holder_data[j][2],
+                    many_token: guid() + holder_data[j][2]
+                })
             }
 
-            console.log(holder_many);
-*@
+            if (single_id) {
+                var ajax_data = {
+                    "single_id": single_id,
+                    "many_id": many_id,
+                    "single_token": guid()
+                };
 
-            if (holder_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("DeleteUacs", "Uacs")',
-                    dataType: "JSON",
-                    data: { id: holder_id },
-                    success: function (output) {
-                        console.log(output);
-                    }
-                });
+                ajaxServer(ajax_data,'@Url.Action("DeleteUacs", "Uacs")','warning','Successfully removed.');
             }
 
-            Lobibox.notify("warning", {
-                msg: "Your selected row was remove",
+        },
+        afterUndo: function (index, column) {
+            Lobibox.notify("info", {
+                msg: "You are doing undo!",
                 sound: false
             });
-
+            console.log(this.getData());
         },
         height: 'auto',
         hiddenColumns: {
-            columns: [2],
+            columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
@@ -125,7 +148,7 @@
             { data: 'Account_title ', type: 'text' },
             { data: 'Expense_code', type: 'text' },
             { data: 'Id ', type: 'text' },
-
+            { data: 'tOKEN ', type: 'text' },
         ]
     });
 
@@ -156,7 +179,7 @@
 
 
     hot.updateSettings({
-        colHeaders: ['ACCOUNT TITLE', 'UACS EXPENSE CODE', 'ID'],
+        colHeaders: ['ACCOUNT TITLE', 'UACS EXPENSE CODE', 'ID','TOKEN'],
         cell: [
             {
                 row: 0,
@@ -172,7 +195,10 @@
 
             },
             {
-                // 2nd cell is simple text, no special options here
+                // 2nd cell ID column had been hidden
+            },
+            {
+                // 3nd cell ID column had been hidden
             },
 
         ],

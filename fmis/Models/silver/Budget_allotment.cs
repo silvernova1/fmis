@@ -26,7 +26,6 @@ namespace fmis.Models
         [ForeignKey("Yearly_reference")]
         public int YearlyReferenceId { get; set; }
         public Yearly_reference Yearly_reference { get; set; }
-        public int? CourseID { get; internal set; }
         /*public IList<FundSource> FundSource { get; set; }*/
 
     }

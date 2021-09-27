@@ -30,16 +30,29 @@ namespace fmis.Controllers
 
         public class UacsData
         {
-
             public string Account_title { get; set; }
             public string Expense_code { get; set; }
             public int Id { get; set; }
+            public string token { get; set; }
+        }
+
+        public class ManyId
+        {
+            public int many_id { get; set; }
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public int single_id { get; set; }
+            public string single_token { get; set; }
+            public List<ManyId> many_id { get; set; }
         }
 
         // GET: Uacs
         public IActionResult Index()
         {
-            var json = JsonSerializer.Serialize(_context.Uacs.ToList());
+            var json = JsonSerializer.Serialize(_context.Uacs.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
             return View("~/Views/Uacs/Index.cshtml");
         }
@@ -75,6 +88,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SaveUacs(List<UacsData> data)
         {
             var data_holder = this._context.Uacs;
@@ -87,13 +101,17 @@ namespace fmis.Controllers
                     uacs.Id = item.Id;
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
+                    uacs.status = "activated";
+                    uacs.token = item.token;
 
                     this._context.Uacs.Update(uacs);
                     this._context.SaveChanges();
                 }
-                else { //update
+                else
+                { //update
                     data_holder.Find(item.Id).Account_title = item.Account_title;
                     data_holder.Find(item.Id).Expense_code = item.Expense_code;
+                    data_holder.Find(item.Id).status = "activated";
 
                     this._context.SaveChanges();
                 }
@@ -200,12 +218,29 @@ namespace fmis.Controllers
 
         // POST: Uacs/Delete/5
         [HttpPost]
-        public async Task<IActionResult> DeleteUacs(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUacs(DeleteData data)
         {
-            var uacs = await _context.Uacs.FindAsync(id);
-            this._context.Uacs.Remove(uacs);
-            await _context.SaveChangesAsync();
-            return Json(id);
+            if (data.many_id.Count > 1)
+            {
+                var data_holder = this._context.Uacs;
+                foreach (var many in data.many_id)
+                {
+                    data_holder.Find(many.many_id).status = "deactivated";
+                    data_holder.Find(many.many_id).token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = this._context.Uacs;
+                data_holder.Find(data.single_id).status = "deactivated";
+                data_holder.Find(data.single_id).token = data.single_token;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
         private bool UacsExists(int id)

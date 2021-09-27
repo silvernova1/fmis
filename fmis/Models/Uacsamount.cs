@@ -18,6 +18,9 @@ namespace fmis.Models
         public float Total_net_amount { get; set; }
         public float Total_tax_amount { get; set; }
         public float Total_others { get; set; }
+        public string status { get; set; }
+        public string token { get; set; }
+
 
        
 

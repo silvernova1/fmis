@@ -15,8 +15,8 @@ namespace fmis.Models
         public string pap_title { get; set; }
         public string pap_code1 { get; set; }
         public string pap_code2 { get; set; }
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
+        public string status { get; set; }
+        public string token { get; set; }
 
         public Sub_allotment Sub_Allotment { get; set; }
 
