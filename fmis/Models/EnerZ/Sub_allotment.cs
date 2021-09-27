@@ -23,5 +23,10 @@ namespace fmis.Models
         [ForeignKey("Prexc")]
         public int PId { get; set; }
         public Prexc Prexc { get; set; }
+
+
+        public Budget_allotment Budget_allotment { get; set; }
+        public List<Suballotment_amount> Suballotment_amount { get; set; }
+
     }
 }

@@ -53,12 +53,6 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
             services.AddDbContext<UtilizationContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
-            services.AddDbContext<Obligated_amountContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
-            services.AddDbContext<Sub_allotmentContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
-            services.AddDbContext<Suballotment_amountContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
             services.AddDbContext<Requesting_officeContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
             services.AddDbContext<UacsContext>(options =>
@@ -83,6 +77,15 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Ors_headContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<Sub_allotmentContext>(options =>
+           options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<Suballotment_amountContext>(options =>
+           options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<Obligated_amountContext>(options =>
+          options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
         }    
