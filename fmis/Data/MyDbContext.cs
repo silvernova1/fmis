@@ -62,14 +62,21 @@ namespace fmis.Data
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
-        public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
+        public DbSet<Suballotment_amount> Suballotment_amounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //1:M relationship
+            //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.FundSources);
+            /*.HasForeignKey(p => p.BudgetAllotmentId);*/
+
+
+            //1:M relationship to budget allotments and sub allotments
+            modelBuilder.Entity<Sub_allotment>()
+            .HasOne(p => p.Budget_allotment)
+            .WithMany(b => b.Sub_allotments);
             /*.HasForeignKey(p => p.BudgetAllotmentId);*/
 
 
@@ -112,6 +119,7 @@ namespace fmis.Data
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<Sub_allotment>().ToTable("Sub_allotment");
             /*modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");*/
 
