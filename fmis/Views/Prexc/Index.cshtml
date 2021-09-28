@@ -1,91 +1,89 @@
 ﻿@model IEnumerable<fmis.Models.Prexc>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Prexc</h2>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
-
-<style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
-
-    .htCore tbody tr td, .htCore thead tr th, body {
-    }
-
-    .htCore thead tr th {
-        color: #fff;
-        font-size: 13px;
-        background-color: #2ECC71
-    }
-</style>
-
+}
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
-<br />
+<h5>PREXC</h5>
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
-<br />
+<p style="color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
-            <div class="modal-body ObligationModal">
-
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success">Save</button>
-                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <script>
+
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify(lobi_type, {
+                    msg: lobi_msg,
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+    }
+
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-            var json = [];
+
+            var ajax_data = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ pap_title: this[0], pap_code1: this[1], pap_code2: this[2], Id: this[3] } );
+                ajax_data.push(
+                    {
+                        pap_title: this[0] ? this[0] : " ",
+                        pap_code1: this[1] ? this[1] : " ",
+                        pap_code2: this[2] ? this[2] : " ",
+                        Id: this[3] ? this[3] : " ",
+                        token: this[3] ? this[3] : guid()
+                    }
+                );
             });
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("SavePrexc", "Prexc")',
-                dataType: "JSON",
-                data: { data: json },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-            });
+
+            ajaxServer(ajax_data, '@Url.Action("SavePrexc", "Prexc")', 'success', 'Sucessfully saved the new rows!');
+
             return false;
         }
     };
+
+
     var prexc = $.parseJSON($(".prexc").val());
+
     const data = [];
     var counter = 0;
     $.each(prexc, function () {
-        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2, this.Id]
+        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2, this.Id, this.token]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -93,9 +91,10 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [700, 200,200],
+        colWidths: [700, 350, 350 ],
         rowHeaders: true,
         colHeaders: true,
+        undo: true,
         search: {
             searchResultClass: 'search-result-custom'
         },
@@ -103,44 +102,68 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][3]
-            if (holder_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("DeletePrexc", "Prexc")',
-                    dataType: "JSON",
-                    data: { id: holder_id },
-                    success: function (output) {
-                        console.log(output);
-                    }
-                });
+            var single_id = holder_data[selection[0][0]][3];
+
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_id = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_id.push({
+                    many_id: holder_data[j][3],
+                    many_token: guid() + holder_data[j][3]
+                })
             }
-            Lobibox.notify("warning", {
-                msg: "Your selected row was remove",
+
+            if (single_id) {
+                var ajax_data = {
+                    "single_id": single_id,
+                    "many_id": many_id,
+                    "single_token": guid()
+                };
+
+                ajaxServer(ajax_data,'@Url.Action("DeletePrexc", "Prexc")','warning','Successfully removed.');
+            }
+
+        },
+        afterUndo: function (index, column) {
+            Lobibox.notify("info", {
+                msg: "You are doing undo!",
                 sound: false
             });
+            console.log(this.getData());
         },
         height: 'auto',
         hiddenColumns: {
-            columns: [3],
+            columns: [3,4],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { pap_title: null, pap_code1: null, pap_code2: null},
+        dataSchema: { pap_title: null, pap_code1: null, pap_code2: null },
         columns: [
             { data: 'pap_title ', type: 'text' },
             { data: 'pap_code1', type: 'text' },
             { data: 'pap_code2', type: 'text' },
             { data: 'Id ', type: 'text' },
+            { data: 'tOKEN ', type: 'text' },
         ]
     });
+
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
+
         console.log(queryResult);
         hot.render();
     });
+
     const exportPlugin = hot.getPlugin('exportFile');
+
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
             bom: false,
@@ -155,17 +178,10 @@
             rowHeaders: true
         });
     });
-    hot.addHook('afterChange', function (changes, src) {
-        [
-            [row, col, oldVal, newVal]
-        ] = changes;
-        if (hot.propToCol(col) === 3 && newVal.slice(0, 1) !== 'Y') {
-            console.log(newVal);
-            hot.setDataAtCell(row, hot.propToCol(col), 'Y' + newVal.slice(1, newVal.length))
-        }
-    })
+
+
     hot.updateSettings({
-        colHeaders: ['TITLE', 'CODE1', 'CODE2', 'ID'],
+        colHeaders: ['TITLE', 'CODE', 'CODE2', 'ID','TOKEN'],
         cell: [
             {
                 row: 0,
@@ -175,16 +191,26 @@
         ],
         columns: [
             {
+
             },
             {
+
             },
             {
+
             },
             {
-                // 2nd cell is simple text, no special options here
+                // 2nd cell ID column had been hidden
             },
+            {
+                // 3nd cell ID column had been hidden
+            },
+
         ],
     });
+
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
 </script>

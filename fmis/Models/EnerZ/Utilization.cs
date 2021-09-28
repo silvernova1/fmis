@@ -23,5 +23,7 @@ namespace fmis.Models
         public DateTime Time_recieved { get; set; }
         public DateTime Date_released { get; set; }
         public DateTime Time_released { get; set; }
+        public string status { get; set; }
+        public string token { get; set; }
     }
 }
