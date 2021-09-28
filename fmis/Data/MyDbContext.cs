@@ -11,33 +11,31 @@ namespace fmis.Data
 {
     public class MyDbContext : DbContext
     {
+        
+
+       /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+          *//*  modelBuilder.Entity<FundSource>()
+                .HasOne(p => p.Budget_allotment)
+                .WithMany(b => b.FundSources)
+                .HasForeignKey(e => e.BudgetAllotmentId);*/
+
+            /*modelBuilder.Entity<FundSource>()
+            .HasOne(p => p.Budget_allotment)
+            .WithMany(b => b.FundSources);*/
+            /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
+
+            /*modelBuilder.Entity<Budget_allotment>()
+                .HasMany(b => b.FundSources)
+                .WithOne(p => p.Budget_allotment)
+                .OnDelete(DeleteBehavior.NoAction);*//*
 
 
+            modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
 
-
-        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
-         {
-
-           *//*  modelBuilder.Entity<FundSource>()
-                 .HasOne(p => p.Budget_allotment)
-                 .WithMany(b => b.FundSources)
-                 .HasForeignKey(e => e.BudgetAllotmentId);*/
-
-        /*modelBuilder.Entity<FundSource>()
-        .HasOne(p => p.Budget_allotment)
-        .WithMany(b => b.FundSources);*/
-        /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
-
-        /*modelBuilder.Entity<Budget_allotment>()
-            .HasMany(b => b.FundSources)
-            .WithOne(p => p.Budget_allotment)
-            .OnDelete(DeleteBehavior.NoAction);*//*
-
-
-        modelBuilder.Entity<FundSource>().ToTable("FundSource");
-        modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
-
-    }*/
+        }*/
 
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
@@ -54,29 +52,24 @@ namespace fmis.Data
         public DbSet<Personal_Information> Personal_information { get; set; }
         public DbSet<Requesting_office> Requesting_office { get; set; }
         public DbSet<Utilization> Utilization { get; set; }
+        public DbSet<Sub_allotment> Sub_allotment { get; set; }
+        public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
         public DbSet<Yearly_reference> Yearly_reference { get; set; }
         public DbSet<Uacs> Uacs { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
+        public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
-        public DbSet<Sub_allotment> Sub_allotment { get; set; }
-        public DbSet<Suballotment_amount> Suballotment_amounts { get; set; }
+        public DbSet<Saob> Saob { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //1:M relationship to budget allotments and fundsources
+            //1:M relationship
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.FundSources);
-            /*.HasForeignKey(p => p.BudgetAllotmentId);*/
-
-
-            //1:M relationship to budget allotments and sub allotments
-            modelBuilder.Entity<Sub_allotment>()
-            .HasOne(p => p.Budget_allotment)
-            .WithMany(b => b.Sub_allotments);
             /*.HasForeignKey(p => p.BudgetAllotmentId);*/
 
 
@@ -119,7 +112,6 @@ namespace fmis.Data
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
-            modelBuilder.Entity<Sub_allotment>().ToTable("Sub_allotment");
             /*modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");*/
 

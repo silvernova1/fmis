@@ -23,6 +23,7 @@ using SizeF = Syncfusion.Drawing.SizeF;
 using Color = Syncfusion.Drawing.Color;
 using PointF = Syncfusion.Drawing.PointF;
 using Syncfusion.Pdf.Tables;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -116,6 +117,8 @@ namespace fmis.Controllers
         // GET: Obligations
         public IActionResult Index()
         {
+            ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("ors", "obligation");
             var json = JsonSerializer.Serialize(_context.Obligation.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
@@ -143,13 +146,11 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ObligationModal(int? id)
         {
-            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id).ToList());
+            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id && s.status == "activated").ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
-            var uamount = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
-            ViewBag.uamount = uamount;
-
+           
             if (id == null)
             {
                 return NotFound();

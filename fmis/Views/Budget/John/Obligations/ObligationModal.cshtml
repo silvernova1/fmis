@@ -1,5 +1,12 @@
 ﻿@model fmis.Models.Obligation
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 <form>
 
     <table class="table">
@@ -41,17 +48,17 @@
             </tr>
 
 
-          
+
             <tr>
                 <td class="col-sm-1"><strong>Total Amount</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
                     <strong id="" class="obligation_amount">
-                        
+
                     </strong>
                 </td>
             </tr>
-            
+
             <tr>
                 <td class="col-sm-1"><strong>Dibursements</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
@@ -76,17 +83,44 @@
 
 <script>
 
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+      function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify(lobi_type, {
+                    msg: lobi_msg,
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+    }
+
     var uacsamount = $.parseJSON($(".uacsamount").val());
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
 
     $.each(uacsamount, function () {
-        data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id]
+        data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
         counter++;
         obligation_amount += this.Amount;
     })
     $(".obligation_amount").html(obligation_amount);
+
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -110,7 +144,7 @@
         },
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
+            @*var selection = this.getSelected();
             var holder_data = this.getData();
             var holder_id = holder_data[selection[0][0]][7];
             if (holder_id) {
@@ -128,12 +162,49 @@
                 msg: "Your selected row was remove",
                 sound: false
             });
+        },*@
+
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_id = holder_data[selection[0][0]][7];
+
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_id = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_id.push({
+                    many_id: holder_data[j][7],
+                    many_token: guid() + holder_data[j][7]
+                })
+            }
+
+            if (single_id) {
+                var ajax_data = {
+                    "single_id": single_id,
+                    "many_id": many_id,
+                    "single_token": guid()
+                };
+
+                ajaxServer(ajax_data,'@Url.Action("DeleteUacsamount", "Uacsamounts")','warning','Successfully removed.');
+            }
+
+        },
+        afterUndo: function (index, column) {
+            Lobibox.notify("info", {
+                msg: "You are doing undo!",
+                sound: false
+            });
+            console.log(this.getData());
         },
 
-
-      
         hiddenColumns: {
-            columns: [7],
+            columns: [7,8],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
@@ -149,6 +220,7 @@
             { data: 'Total_tax_amount', type: 'numeric' },
             { data: 'Total_others', type: 'numeric' },
             { data: 'Id ', type: 'text' },
+            { data: 'token ', type: 'text' },
         ]
     });
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
@@ -173,10 +245,10 @@
         });
     });
 
-   
+
 
     hot.updateSettings({
-        colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID'],
+        colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID' ,'TOKEN'],
         columns: [
             {
                 type: 'dropdown',
@@ -186,39 +258,62 @@
                 readOnly: true
             },
             {
+                
+            },
+            {
+            },
+            {     
             },
             {
             },
             {
             },
             {
+                //HIDDEN ID
             },
             {
-            },
-            {
+                //HIDDEN TOKEN
             },
         ],
     });
-    var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
-   var obligation_id = @Html.DisplayFor(model => model.Id);
-    document.onkeydown = function (e) {
-        if (e.ctrlKey && e.keyCode === 83) {
-            $('#loading_modal').modal('show');
-            var json = [];
-            $(".obligation_amount").html();
-            obligation_amount = 0;
-            $.each(hot.getSourceData(), function () {
-                json.push({ ObligationId: obligation_id, Account_title: this[0], Expense_code: this[1], Amount: this[2], Total_disbursement: this[3], Total_net_amount: this[4], Total_tax_amount: this[5], Total_others: this[6], Id: this[7] });
-                obligation_amount += parseInt(this[2]);
-            });
+        var tableData = JSON.stringify(hot.getSourceData());
+        console.log(hot.getSourceData());
+        var obligation_id = @Html.DisplayFor(model => model.Id);
+        document.onkeydown = function (e) {
+            if (e.ctrlKey && e.keyCode === 83) {
+                $('#loading_modal').modal('show');
+                var ajax_data = [];
+                $(".obligation_amount").html();
+                obligation_amount = 0;
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push(
+                        {
+                            ObligationId: obligation_id,
+                            Account_title: this[0],
+                            Expense_code: this[1],
+                            Amount: this[2],
+                            Total_disbursement: this[3],
+                            Total_net_amount: this[4],
+                            Total_tax_amount: this[5],
+                            Total_others: this[6],
+                            Id: this[7],
+                            token: this[8] ? this[8] : guid(),
+                        }
+                     );
+                    obligation_amount += parseInt(this[2]);
+                });
             $(".obligation_amount").html(obligation_amount);
 
-            $.ajax({
+            ajaxServer(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")', 'success', 'Sucessfully saved the new rows!');
+
+            return false;
+
+
+           @* $.ajax({
                 type: 'POST',
                 url: '@Url.Action("SaveUacsamount", "Uacsamounts")',
                 dataType: "JSON",
-                data: { data: json },
+                data: { data: ajax_data },
                 success: function (output) {
                     $('#loading_modal').modal('hide');
                     Lobibox.notify("success", {
@@ -228,7 +323,7 @@
                     console.log(output);
                 }
             });
-            return false;
+            return false;*@
         }
     };
 </script>

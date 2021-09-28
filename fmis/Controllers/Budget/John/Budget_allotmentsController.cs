@@ -9,6 +9,7 @@ using fmis.Data.John;
 using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -32,6 +33,8 @@ namespace fmis.Controllers
         public async Task<IActionResult> Index()
         {
 
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.layout = "_Layout";
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
@@ -41,6 +44,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             PopulateHeadDropDownList();
 
             List<Ors_head> oh = new List<Ors_head>();
@@ -70,6 +74,7 @@ namespace fmis.Controllers
         // Populate Ord Head
         private void PopulateHeadDropDownList(object selectedPrexc = null)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var prexsQuery = from d in _context.Personal_information
                              orderby d.userid
                              select d;
@@ -83,15 +88,18 @@ namespace fmis.Controllers
                                          "Pid", "ps",
                                          null);
         }
+
         // GET: Budget_allotments/Create
-          public IActionResult Create()
-          {
-              PopulateYrDropDownList();
-              
-              return View();
-          }
+        public IActionResult Create()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            PopulateYrDropDownList();
+            return View();
+        }
+
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var prexsQuery = from d in _context.Yearly_reference
                              orderby d.YearlyReference
                              select d;
@@ -118,6 +126,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId")] Budget_allotment budget_allotment)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
             {
                 if (ModelState.IsValid)
@@ -138,6 +147,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -160,6 +170,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id != budget_allotment.BudgetAllotmentId)
             {
                 return NotFound();
@@ -188,9 +199,12 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
+
+
         // GET: Budget_allotments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -211,14 +225,17 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var budget_allotment = await _context.Budget_allotments.FindAsync(id);
             _context.Budget_allotments.Remove(budget_allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool Budget_allotmentExists(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             return _context.Budget_allotments.Any(e => e.BudgetAllotmentId == id);
         }
     }

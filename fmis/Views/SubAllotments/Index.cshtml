@@ -1,4 +1,5 @@
-﻿@model List<fmis.Models.Sub_allotment>
+﻿@model List<fmis.Models.Sub_allotment
+       >
 
 
 @{
@@ -6,10 +7,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-<h2>Fund Source List</h2>
+<h3 style="color: #438eb9;">Sub-Allotment</h3>
 <hr />
-
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -31,16 +30,20 @@
 </div>
 
 <p>
-    <a asp-action="Create" class="btn btn-success btn-sm">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-action="Create" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+    | <a class=" btn btn-primary btn-sm" asp-controller="Sub Allotment" asp-action="Index">Back to Sub Allotment</a>
 </p>
+<br />
 <table class="table">
     <thead>
         <tr>
             <th>
-                Fund Source Code
+                Sub Allotment Code
             </th>
             <th>
-                Fund Source Title
+                Sub Allotment Title
             </th>
             <th>
                 ORS Head
