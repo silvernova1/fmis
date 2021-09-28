@@ -15,6 +15,7 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -42,7 +43,9 @@ namespace fmis.Controllers
         public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Prexc.ToList());
+            ViewBag.filter = new FilterSidebar("master_data", "prexc");
             ViewBag.temp = json;
+            ViewBag.layout = "_Layout";
             return View("~/Views/Prexc/Index.cshtml");
         }
 

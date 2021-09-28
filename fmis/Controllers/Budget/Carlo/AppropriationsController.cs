@@ -20,10 +20,17 @@ namespace fmis.Controllers
         }
 
         // GET: Appropriations
-        public async Task<IActionResult> Index()
+     /*   public async Task<IActionResult> Index()
         {
             ViewBag.Layout = "_Layout";
             return View(await _context.Appropriation.ToListAsync());
+           
+        }*/
+
+        public IActionResult Index()
+        {
+            ViewBag.Layout = "_Layout";
+            return View("~/Views/Carlo/Appropriations/Index.cshtml");
         }
 
         // GET: Appropriations/Details/5

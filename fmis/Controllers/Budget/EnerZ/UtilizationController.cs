@@ -23,7 +23,7 @@ using SizeF = Syncfusion.Drawing.SizeF;
 using Color = Syncfusion.Drawing.Color;
 using PointF = Syncfusion.Drawing.PointF;
 using Syncfusion.Pdf.Tables;
-
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -97,6 +97,8 @@ namespace fmis.Controllers
         // GET: Utilization
         public IActionResult Index()
         {
+            ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("ors", "utilization");
             var json = JsonSerializer.Serialize(_context.Utilization.ToList());
             ViewBag.temp = json;
             return View("~/Views/Utilization/Index.cshtml");

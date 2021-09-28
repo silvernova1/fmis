@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<fmis.Models.Uacs>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,13 +15,15 @@
 }
 
 <input type="hidden" class="uacs" value="@ViewBag.temp">
-<h5>UACS Account Title & Expense Code</h5>
+<h3 style="color: #438eb9;">UACS Account Title & Exepense Code  </h3>
+<hr />
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
-<p style="color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
+<p style="color: #438eb9;">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
 <div id="example" class="hot"></div>
 <br />
+
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
@@ -148,7 +151,7 @@
             { data: 'Account_title ', type: 'text' },
             { data: 'Expense_code', type: 'text' },
             { data: 'Id ', type: 'text' },
-            { data: 'tOKEN ', type: 'text' },
+            { data: 'token ', type: 'text' },
         ]
     });
 

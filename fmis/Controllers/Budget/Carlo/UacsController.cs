@@ -15,6 +15,7 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -52,9 +53,11 @@ namespace fmis.Controllers
         // GET: Uacs
         public IActionResult Index()
         {
+            ViewBag.filter = new FilterSidebar("master_data","uacs");
+            ViewBag.layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.Uacs.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
-            return View("~/Views/Uacs/Index.cshtml");
+            return View("~/Views/Carlo/Uacs/Index.cshtml");
         }
 
         // GET: Obligations/Details/5

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -36,8 +37,8 @@ namespace fmis.Controllers
 
         public IActionResult UploadFile()
         {
-            ViewBag.filter_sidebar = "upload_file/personal_information";
             ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("upload_document", "orsupload");
             return View("~/Views/Budget/UploadFile.cshtml");
         }
 

@@ -46,224 +46,189 @@
             </a>
         </li>
 
-        <li>
-            <a href="#" class="dropdown-toggle">
+        <li class="">
+            <a asp-area="" asp-controller="Home" asp-action="Dashboard">
                 <i class="menu-icon fa fa-bank"></i>
                 <span class="menu-text">
                     DOH7 BUDGET
                 </span>
-
-                <b class="arrow fa fa-angle-down"></b>
             </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-
-                <li class="">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        ORS
-                        <b class="arrow fa fa-angle-down"></b>
-                    </a>
-                    <b class="arrow"></b>
-                    <ul class="submenu nav-hide" style="display: none;">
-                        <li class="">
-                            <a asp-controller="Obligations" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                OBLIGATION
-                            </a>
-                        </li>
-                        <li class="">
-                            <a href="top-menu.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                FUNDSOURCE
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="two-menu-1.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                STO
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
-            <ul class="submenu">
-                <li class="">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Upload Documents
-                        <b class="arrow fa fa-angle-down"></b>
-                    </a>
-                    <b class="arrow"></b>
-                    <ul class="submenu nav-hide" style="display: none;">
-                        <li class="">
-                            <a asp-area="" asp-controller="UploadFile" asp-action="UploadFile">
-                                <i class="menu-icon fa fa-upload"></i>
-                                <span class="menu-text"> ORS UPLOAD </span>
-                            </a>
-                        </li>
-
-                    </ul>
-                </li>
-            </ul>
-
-            <ul class="submenu">
-                <li class="">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Budget Reports
-                        <b class="arrow fa fa-angle-down"></b>
-                    </a>
-                    <b class="arrow"></b>
-                    <ul class="submenu nav-hide" style="display: none;">
-                        <li class="">
-
-                            <a asp-area="" asp-controller="Uacs" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                SAOB
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                        <li class="">
-                            <a asp-area="" asp-controller="Uacs" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                ORS SUMMARY
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="submenu">
-                <li class=" ">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Master Data
-                        <b class="arrow fa fa-angle-down"></b>
-                    </a>
-
-                    <b class="arrow"></b>
-
-                    <ul class="submenu nav-hide" style="display: none;">
-                        <li class="">
-                            <a asp-controller="Uacs" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                UACS Expense Code
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a asp-controller="Prexc" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Fund Source | PREXC
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-                        <li class="">
-                            <a asp-controller="AllotmentClasses" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Allotment Class
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-                        <li class="">
-                            <a asp-controller="Budget_allotments" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Budget Allotment
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                        <li class="">
-                            <a asp-controller="Requesting_office" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                ORS/Requesting head
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                        <li class="">
-                            <a asp-controller="Yearly_reference" asp-action="Index">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Yearly Budget Reference
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
         </li>
 
-        <li class="">
+        <li class="@if(ViewBag.filter.main == "ors")
+                @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-money"></i>
-                <span class="menu-text">
-                    Budget
-                </span>
+                <i class="menu-icon fa fa-cog"></i>
+                <span class="menu-text"> ORS </span>
+
                 <b class="arrow fa fa-angle-down"></b>
             </a>
+
             <b class="arrow"></b>
+
             <ul class="submenu">
-                <li class="">
-                    <a asp-controller="Ors_head" asp-action="Index">
+                <li class="@if(ViewBag.filter.sub == "obligation")
+                @Html.Raw("active")">
+                    <a asp-controller="Obligations" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        ORS HEAD
+                        OBLIGATION
                     </a>
+
+                    <b class="arrow"></b>
                 </li>
-            </ul>
-            <ul class="submenu">
-                <li class="">
-                    <a asp-controller="Obligated_amount" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        OBLIGATED_AMOUNT
-                    </a>
-                </li>
-            </ul>
-            <ul class="submenu">
-                <li class="">
+
+                <li class="@if(ViewBag.filter.sub == "utilization")
+                @Html.Raw("active")">
                     <a asp-controller="Utilization" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         UTILIZATION
                     </a>
-                </li>
-            </ul>
-            <ul class="submenu">
-                <li class="">
-                    <a asp-controller="Sub_allotment" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        SUB_ALLOTMENT
-                    </a>
-                </li>
-            </ul>
-            <ul class="submenu">
-                <li class="">
-                    <a asp-controller="Suballotment_amount" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        SUBALLOTMENT_AMOUNT
-                    </a>
-                </li>
-            </ul>
 
+                    <b class="arrow"></b>
+                </li>
+            </ul>
         </li>
-        <!-- UPLOAD FILE -->
-        <li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
-                @Html.Raw("active open")
-        ">
+
+        <li class="@if(ViewBag.filter.main == "upload_document")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-upload"></i>
+                <span class="menu-text"> Upload Documents </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "orsupload")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="UploadFile" asp-action="UploadFile">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        ORS Upload
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+        <li class="@if(ViewBag.filter.main == "budget_report")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-print"></i>
+                <span class="menu-text"> Budget Reports </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "saob")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="Saob" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        SAOB
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+               @* <li class="">
+                    <a href="form-elements-2.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        ORS SUMMARY
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>*@
+            </ul>
+        </li>
+
+        <li class="@if(ViewBag.filter.main == "master_data")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-file"></i>
+                <span class="menu-text"> Master Data </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "uacs")
+                @Html.Raw("active")">
+                    <a asp-controller="Uacs" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        UACS Expense Code@* @Html.Raw(ViewBag.filter.sub)*@
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "prexc")
+                @Html.Raw("active")">
+                    <a asp-controller="Prexc" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Fund Source | PREXC 
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "allotmentclass")
+                @Html.Raw("active")">
+                    <a asp-controller="AllotmentClasses" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Allotment Class
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "budgetallotment")
+                @Html.Raw("active")">
+                    <a asp-controller="Budget_allotments" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Budget Allotments
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "requestingoffice")
+                @Html.Raw("active")">
+                    <a asp-controller="Requesting_office" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        ORS/Requesting Head
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "yearlyreference")
+                @Html.Raw("active")">
+                    <a asp-controller="Yearly_reference" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Yearly Budget Ref
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+
+            </ul>
+        </li>
+
+     
+        <!--<!-- UPLOAD FILE -->
+        <!--<li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
+                @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-upload"></i>
                 <span class="menu-text">
-                    Upload Data
+                    <b>Upload Data</b>
                 </span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -313,7 +278,7 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li>-->
         @* <li class="@if(ViewBag.filter_sidebar == "gallery")
                         @Html.Raw("active")">
             <a asp-controller="Home" asp-action="Gallery">
@@ -324,68 +289,8 @@
             <b class="arrow"></b>
         </li>*@
 
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-pencil-square-o"></i>
-                <span class="menu-text"> ORS </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-                <li class="">
-                    <a href="form-elements.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                       OBL
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="form-elements-2.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Form Elements 2
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="form-wizard.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Wizard &amp; Validation
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="wysiwyg.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Wysiwyg &amp; Markdown
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="dropzone.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Dropzone File Upload
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-
 
     </ul>
-
-
 
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>

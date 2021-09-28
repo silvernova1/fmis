@@ -1,4 +1,5 @@
-﻿using fmis.Models;
+﻿using fmis.Filters;
+using fmis.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,14 +23,13 @@ namespace fmis.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.filter_sidebar = "dashboard";
             ViewBag.layout = null;   
             return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
         public IActionResult Dashboard()
         {
-            ViewBag.filter_sidebar = "dashboard";
+            ViewBag.filter = new FilterSidebar("dashboard", "home");
             ViewBag.layout = "_Layout";
             return View("~/Views/Home/Index.cshtml");
         }

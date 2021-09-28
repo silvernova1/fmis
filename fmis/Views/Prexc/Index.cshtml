@@ -5,33 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Prexc</h2>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
 
-<style>
-    .search-result-custom {
-        color: #ff0000;
-        font-weight: 900;
-    }
-
-    .htCore tbody tr td, .htCore thead tr th, body {
-    }
-
-    .htCore thead tr th {
-        color: #fff;
-        font-size: 13px;
-        background-color: #2ECC71
-    }
-</style>
-
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
-<br />
+<h3 style="color: #438eb9;">Fund Source | Prexc </h3>
+<hr />
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
-<br />
+<p style="color: #438eb9;">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>

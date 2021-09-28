@@ -6,10 +6,6 @@
 }
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-
 <!-- Modal -->
 <div class="modal fade" id="CreateModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -72,12 +68,14 @@
         </div>
     </div>
 </div>
-
+<h3 style="color: #438eb9;">Allotment Class</h3>
+<hr />
 <p>
-    <a asp-action="Create" class="btn btn-success btn-lg" data-toggle="modal" data-target="#CreateModalCenter">
-        <span class="glyphicon glyphicon-plus"></span>Create
+    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModalCenter">
+        <i class="ace-icon fa fa-plus "></i>Create New
     </a>
 </p>
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -102,14 +100,12 @@
                 </td>
                 <td>
                     <a asp-action="Edit" data-toggle="modal" data-target="#EditModalCenter" class="btn btn-primary btn-sm" asp-route-id="@item.Id">
-                        Edit
-                        <span class="glyphicon glyphicon-edit"></span>
+                        <i class="ace-icon fa fa-edit"></i>Edit
                     </a> |
                     @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
-                    <a asp-action="Delete" data-toggle="modal" data-target="#DeleteModalCenter" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
-                        Delete
-                        <span class="glyphicon glyphicon-trash"></span>
-                    </a>
+                <a asp-action="Delete" data-toggle="modal" data-target="#DeleteModalCenter" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
+                    <i class="ace-icon fa fa-trash"></i>Delete
+                </a>
                 </td>
             </tr>
         }

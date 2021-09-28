@@ -7,71 +7,72 @@
 
 @*<h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>*@
 @*<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Year)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Allotment_series)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Allotment_title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Allotment_code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created_at)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Updated_at)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Year)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_series)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created_at)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Updated_at)
-                </td>
-                <td>
-                    <a asp-controller="FundSource" asp-action="index">FundSource</a>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.BudgetAllotmentId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Year)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Allotment_series)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Allotment_title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Allotment_code)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Created_at)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Updated_at)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>*@
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Year)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Allotment_series)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Allotment_title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Allotment_code)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created_at)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updated_at)
+                    </td>
+                    <td>
+                        <a asp-controller="FundSource" asp-action="index">FundSource</a>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.BudgetAllotmentId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
 
 
-<h3>Budget Allotments</h3>
-<br />
+
+<h3 style="color: #438eb9;">Budget Allotments</h3>
+<hr />
 <p>
     <a class=" btn btn-sm btn-success" asp-action="Create">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -86,13 +87,13 @@
                 Year
             </th>
             <th>
-               Allotment Series
+                Allotment Series
             </th>
             <th>
-               Allotment Title
+                Allotment Title
             </th>
             <th>
-               Allotment Code
+                Allotment Code
             </th>
             <th>For Fund Source</th>
             <th>For Sub-Allotment</th>
@@ -102,39 +103,39 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Allotment_series)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Allotment_title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Allotment_code)
-            </td>
-            <td>
-                <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@item.BudgetAllotmentId">
-                    <i class="ace-icon fa fa-arrow-right"></i>Fund Source
-                </a>
-            </td>
-            <td>
-                <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="index" asp-route-id="">
-                    <i class="ace-icon fa fa-plus"></i>Sub-Allotment
-                </a>
-            </td>
-            <td>
-                <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
-                    <i class="ace-icon fa fa-edit"></i>Edit
-                </a>
-                @*<a asp-action="Details" asp-route-id="@item.Id">Details</a>*@ |
-                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
-                    <i class="ace-icon fa fa-trash"></i>Delete
-                </a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_series)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Allotment_code)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@item.BudgetAllotmentId">
+                        <i class="ace-icon fa fa-arrow-right"></i>Fund Source
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="index" asp-route-id="">
+                        <i class="ace-icon fa fa-plus"></i>Sub-Allotment
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
+                        <i class="ace-icon fa fa-edit"></i>Edit
+                    </a>
+                    @*<a asp-action="Details" asp-route-id="@item.Id">Details</a>*@ |
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
+                        <i class="ace-icon fa fa-trash"></i>Delete
+                    </a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

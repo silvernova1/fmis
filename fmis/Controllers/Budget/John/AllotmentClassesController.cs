@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models.John;
 using Microsoft.AspNetCore.Authorization;
+using fmis.Filters;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -24,6 +25,8 @@ namespace fmis.Controllers.Budget.John
         // GET: AllotmentClasses
         public async Task<IActionResult> Index()
         {
+            ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
+            ViewBag.layout = "_Layout";
             return View(await _context.AllotmentClass.ToListAsync());
         }
 

@@ -9,6 +9,7 @@ using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
 using Microsoft.EntityFrameworkCore.Storage;
+using fmis.Filters;
 
 namespace fmis.Controllers.Budget.EnerZ
 {
@@ -39,7 +40,7 @@ namespace fmis.Controllers.Budget.EnerZ
                  .Include(s => s.Budget_allotment)
                  .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
                  .ToListAsync());*/
-
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             return View(await _context.Sub_allotment.ToListAsync());
 
 
@@ -49,6 +50,7 @@ namespace fmis.Controllers.Budget.EnerZ
         // GET: Sub_allotment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -67,7 +69,7 @@ namespace fmis.Controllers.Budget.EnerZ
         // GET: Sub_allotment/Create
         public IActionResult Create(int? id)
         {
-
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             PopulatePrexcsDropDownList();
 
             ViewBag.BudgetId = id;
@@ -78,21 +80,7 @@ namespace fmis.Controllers.Budget.EnerZ
             p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
 
             ViewBag.message = p;
-            //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
-            //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
-            //TempData["FundSource"] = await _context.FundSource.ToListAsync();
-
-            /*
-                        Budget_allotment budget_allotment = new Budget_allotment()
-                        {
-                            BudgetAllotmentId = 7
-                        };*/
-
-
-            //var FundSource = await _bContext.Budget_allotment.(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
-
-            //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
-
+          
 
             return View();
         }
@@ -104,6 +92,7 @@ namespace fmis.Controllers.Budget.EnerZ
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Prexc_code,Suballotment_code,Suballotment_title,Ors_head,Responsibility_number,Description,Id")] Sub_allotment sub_allotment)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
             {
                 if (ModelState.IsValid)
@@ -132,6 +121,7 @@ namespace fmis.Controllers.Budget.EnerZ
         // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -150,6 +140,7 @@ namespace fmis.Controllers.Budget.EnerZ
 
         private void PopulatePrexcsDropDownList(object selectedDepartment = null)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
@@ -183,8 +174,7 @@ namespace fmis.Controllers.Budget.EnerZ
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Sub_allotment sub_allotment)
         {
-
-
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (ModelState.IsValid)
             {
                 try
@@ -212,6 +202,7 @@ namespace fmis.Controllers.Budget.EnerZ
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -232,6 +223,7 @@ namespace fmis.Controllers.Budget.EnerZ
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var sub_allotment = await _context.Sub_allotment.FindAsync(id);
             _context.Sub_allotment.Remove(sub_allotment);
             await _context.SaveChangesAsync();

@@ -4,40 +4,38 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
-
-<h4>Requesting Office</h4>
+<h3 style="color: #438eb9;">Create Requesting Office</h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @*<div class="form-group">
-            <label asp-for="Head_name" class="control-label"></label>
-            <select class="form-control" asp-items="@(new SelectList(ViewBag.message,"id","fname"))"></select>
-            <input asp-for="Head_name" class="form-control" />
-            <span asp-validation-for="Head_name" class="text-danger"></span>
-        </div>*@
+                    <label asp-for="Head_name" class="control-label"></label>
+                    <select class="form-control" asp-items="@(new SelectList(ViewBag.message,"id","fname"))"></select>
+                    <input asp-for="Head_name" class="form-control" />
+                    <span asp-validation-for="Head_name" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <label class="control-label"> Full Name </label>
                 @Html.DropDownList("Pid", null, htmlAttributes: new { @class = "form-control" })
                 @*@Html.DropDownList("Pid", String.Empty)
-                @Html.DropDownList("Id" + "pap_code1",
-            (IEnumerable<SelectListItem>)ViewBag.Id,
-            "Select Prexc Enerz")*@
+                        @Html.DropDownList("Id" + "pap_code1",
+                    (IEnumerable<SelectListItem>)ViewBag.Id,
+                    "Select Prexc Enerz")*@
             </div>
             <div class="form-group">
                 <label class="control-label"> Position</label>
                 @Html.DropDownList("Did", null, htmlAttributes: new { @class = "form-control" })
             </div>
             @*<div class="form-group">
-            <label asp-for="Position" class="control-label"></label>
-            <input asp-for="Position" class="form-control" />
-            <span asp-validation-for="Position" class="text-danger"></span>
-        </div>*@
+                    <label asp-for="Position" class="control-label"></label>
+                    <input asp-for="Position" class="form-control" />
+                    <span asp-validation-for="Position" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success" />|
-                <a class="btn btn-default" asp-action="Index">Back to List</a>
+                <input type="submit" value="Create" class="btn btn-success btn-sm" /> |
+                <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>

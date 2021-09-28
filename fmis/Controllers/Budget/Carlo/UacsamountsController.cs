@@ -39,14 +39,30 @@ namespace fmis.Controllers
             public float Total_tax_amount { get; set; }
             public float Total_others { get; set; }
             public int Id { get; set; }
+            public string token { get; set; }
         }
+
+        public class ManyId
+        {
+            public int many_id { get; set; }
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public int single_id { get; set; }
+            public string single_token { get; set; }
+            public List<ManyId> many_id { get; set; }
+        }
+
+
 
         // GET: Uacs
         public IActionResult Index()
         {
             var json = JsonSerializer.Serialize(_context.Uacsamount.ToList());
             ViewBag.temp = json;
-            return View("~/Views/Uacsamounts/Index.cshtml");
+            return View("~/Views/Carlo/Uacsamounts/Index.cshtml");
         }
 
         // GET: Obligations/Details/5
@@ -101,6 +117,8 @@ namespace fmis.Controllers
                     uacsamount.Total_net_amount = item.Total_net_amount;
                     uacsamount.Total_tax_amount = item.Total_tax_amount;
                     uacsamount.Total_others = item.Total_others;
+                    uacsamount.status = "activated";
+                    uacsamount.token = item.token;
 
                     this._context.Uacsamount.Update(uacsamount);
                     this._context.SaveChanges();
@@ -115,6 +133,7 @@ namespace fmis.Controllers
                     data_holder.Find(item.Id).Total_net_amount = item.Total_net_amount;
                     data_holder.Find(item.Id).Total_tax_amount = item.Total_tax_amount;
                     data_holder.Find(item.Id).Total_others = item.Total_others;
+                    data_holder.Find(item.Id).status = "activated";
 
                     this._context.SaveChanges();
                 }
@@ -221,12 +240,28 @@ namespace fmis.Controllers
 
         // POST: Uacs/Delete/5
         [HttpPost]
-        public IActionResult DeleteUacsamount(int id)
+        public async Task<IActionResult> DeleteUacsamount(DeleteData data)
         {
-            var uacsamount = this._context.Uacsamount.Find(id);
-            this._context.Uacsamount.Remove(uacsamount);
-            this._context.SaveChangesAsync();
-            return Json(id);
+            if (data.many_id.Count > 1)
+            {
+                var data_holder = this._context.Uacsamount;
+                foreach (var many in data.many_id)
+                {
+                    data_holder.Find(many.many_id).status = "deactivated";
+                    data_holder.Find(many.many_id).token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            { 
+                var data_holder = this._context.Uacsamount;
+                data_holder.Find(data.single_id).status = "deactivated";
+                data_holder.Find(data.single_id).token = data.single_token;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
         private bool UacsamountExists(int id)
