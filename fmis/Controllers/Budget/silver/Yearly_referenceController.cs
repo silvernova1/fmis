@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -23,6 +24,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             return View(await _context.Yearly_reference.ToListAsync());
         }
 
@@ -51,6 +53,7 @@ namespace fmis.Controllers
         public IActionResult Create()
         {
             ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             return View();
         }
 
@@ -61,6 +64,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,YearlyReference,Created_at,Updated_at")] Yearly_reference yearly_reference)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             if (ModelState.IsValid)
             {
                 _context.Add(yearly_reference);
@@ -74,6 +78,7 @@ namespace fmis.Controllers
         // GET: Yearly_reference/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             if (id == null)
             {
                 ViewBag.layout = "_Layout";
@@ -97,6 +102,8 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,YearlyReference,Created_at,Updated_at")] Yearly_reference yearly_reference)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
+
             if (id != yearly_reference.YearlyReferenceId)
             {
                 ViewBag.layout = "_Layout";
@@ -131,6 +138,8 @@ namespace fmis.Controllers
         // GET: Yearly_reference/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
+
             if (id == null)
             {
                 ViewBag.layout = "_Layout";
@@ -154,6 +163,9 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
+
             var yearly_reference = await _context.Yearly_reference.FindAsync(id);
             _context.Yearly_reference.Remove(yearly_reference);
             await _context.SaveChangesAsync();
@@ -163,6 +175,7 @@ namespace fmis.Controllers
         private bool Yearly_referenceExists(int id)
         {
             ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             return _context.Yearly_reference.Any(e => e.YearlyReferenceId == id);
         }
     }

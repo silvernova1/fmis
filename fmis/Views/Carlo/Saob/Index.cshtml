@@ -1,0 +1,33 @@
+﻿@model IEnumerable<fmis.Models.Saob>
+
+
+
+    <h3 style="color: #438eb9;">Statement of Allotment, Obligations and Balances</h3>
+    <hr />
+    <h5>SAOB REPORTS</h5>
+    <table>
+
+        <tbody>
+            <tr>
+                <td>Format</td>
+                <td>
+                    <select name="format" class="form-control" disabled="">
+                        <option value="excel" selected="">EXCEL</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Date From</td>
+                <td><input type="date" name="date_from" required="" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>Date To</td>
+                <td><input type="date" name="date_to" required="" class="form-control"></td>
+            </tr>
+            <tr>
+              
+            </tr>
+        </tbody>
+    </table>
+<br />
+    <button type="submit" class="btn btn-success btn-sm"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>

@@ -7,9 +7,8 @@
 }
 
 
-<h2>Fund Source List</h2>
+<h3 style="color: #438eb9;">Allotment Class</h3>
 <hr />
-
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -31,8 +30,11 @@
 </div>
 
 <p>
-    <a asp-action="Create" class="btn btn-success btn-sm">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-action="Create" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
 </p>
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -54,25 +56,25 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FundSourceTitle)
-            </td>
-          @*  <td>
-                @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
-            </td>*@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                </td>
+                @*  <td>
+                        @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
+                    </td>*@
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-            </td>
-            <td>
-                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
-            </td>
-        </tr>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

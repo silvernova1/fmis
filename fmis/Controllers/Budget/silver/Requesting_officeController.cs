@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
+using fmis.Filters;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -29,7 +30,7 @@ namespace fmis.Controllers.Budget.silver
         {
             ViewBag.PsId = id;
             ViewBag.layout = "_Layout";
-
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             var reqoffices = _context.Requesting_office
             .Include(c => c.Personal_Information)
             .Include(d => d.Designation)
@@ -42,6 +43,7 @@ namespace fmis.Controllers.Budget.silver
         // GET: Requesting_office/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             ViewBag.layout = "_Layout";
             if (id == null)
             {
@@ -61,6 +63,7 @@ namespace fmis.Controllers.Budget.silver
             ViewBag.layout = "_Layout";
             PopulatePsDropDownList();
             PopulateDsDropDownList();
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
 
             /*List<Personal_Information> oh = new List<Personal_Information>();
 
@@ -95,6 +98,8 @@ namespace fmis.Controllers.Budget.silver
 
             ViewBag.message = p;*/
 
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+
             try
             {
                 if (ModelState.IsValid)
@@ -124,6 +129,7 @@ namespace fmis.Controllers.Budget.silver
         public async Task<IActionResult> Edit(int? id)
         {
             ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             if (id == null)
             {
                 return NotFound();
@@ -143,6 +149,7 @@ namespace fmis.Controllers.Budget.silver
         public async Task<IActionResult> Edit(int id, [Bind("Id,Head_name,Position,Created_at,Updated_at")] Requesting_office requesting_office)
         {
             ViewBag.layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             if (id != requesting_office.Id)
             {
                 return NotFound();
@@ -174,6 +181,7 @@ namespace fmis.Controllers.Budget.silver
 
         private void PopulatePsDropDownList(object selectedPrexc = null)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             var prexsQuery = from d in _PContext.Personal_Information
                              orderby d.userid
                              select d;
@@ -220,6 +228,7 @@ namespace fmis.Controllers.Budget.silver
         // GET: Requesting_office/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             ViewBag.layout = "_Layout";
             if (id == null)
             {
@@ -238,6 +247,7 @@ namespace fmis.Controllers.Budget.silver
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             var requesting_office = await _context.Requesting_office.FindAsync(id);
             _context.Requesting_office.Remove(requesting_office);
             await _context.SaveChangesAsync();
@@ -246,6 +256,7 @@ namespace fmis.Controllers.Budget.silver
 
         private bool Requesting_officeExists(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             return _context.Requesting_office.Any(e => e.Id == id);
         }
     }

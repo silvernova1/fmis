@@ -4,17 +4,18 @@
     ViewData["Title"] = "Index";
 }
 
-<h4>Yearly Budget Reference</h4>
-
+<h3 style="color: #438eb9;">Yearly Budget Reference</h3>
+<hr />
 <p>
     <a class="btn btn-sm btn-success" asp-action="Create">
         <i class="ace-icon fa fa-plus"></i>Create New
     </a>
 </p>
+<br />
 <table class="table">
     <thead>
         <tr>
-          
+
             <th>
                 @Html.DisplayNameFor(model => model.YearlyReference)
             </th>
@@ -22,20 +23,21 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.YearlyReference)
-            </td>
-            <td>
-                <!--<a asp-action="Edit" asp-route-id="@item.YearlyReferenceId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.YearlyReferenceId">Details</a> |-->
-                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.YearlyReferenceId">
-                    <i class="ace-icon fa fa-trash"></i>Delete
-                </a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.YearlyReference)
+                </td>
+                <td>
+                    <!--<a asp-action="Edit" asp-route-id="@item.YearlyReferenceId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.YearlyReferenceId">Details</a> |-->
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.YearlyReferenceId">
+                        <i class="ace-icon fa fa-trash"></i>Delete
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
