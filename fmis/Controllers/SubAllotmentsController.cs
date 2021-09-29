@@ -15,6 +15,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Globalization;
+using fmis.Filters;
 
 namespace fmis.Controllers.Budget
 {
@@ -64,6 +65,7 @@ namespace fmis.Controllers.Budget
                  .Include(s => s.Budget_allotment)
                  .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
                  .ToListAsync());*/
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             return View(await _context.Sub_allotment.ToListAsync());
 
@@ -74,6 +76,7 @@ namespace fmis.Controllers.Budget
         // GET: Sub_allotment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -92,6 +95,8 @@ namespace fmis.Controllers.Budget
         // GET: Sub_allotmentController/Create
         public ActionResult Create(int? id)
         {
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             PopulatePrexcsDropDownList();
             var sub_allotment = _context.Sub_allotment
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -107,6 +112,7 @@ namespace fmis.Controllers.Budget
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,PId")] Sub_allotment sub_allotment)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
             {
                 if (ModelState.IsValid)
@@ -130,6 +136,7 @@ namespace fmis.Controllers.Budget
         // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -148,6 +155,7 @@ namespace fmis.Controllers.Budget
 
         private void PopulatePrexcsDropDownList(object selectedDepartment = null)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
@@ -195,7 +203,7 @@ namespace fmis.Controllers.Budget
         public async Task<IActionResult> Edit(Sub_allotment sub_allotment)
         {
 
-
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (ModelState.IsValid)
             {
                 try
@@ -223,6 +231,7 @@ namespace fmis.Controllers.Budget
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
                 return NotFound();
@@ -242,6 +251,7 @@ namespace fmis.Controllers.Budget
         [HttpPost]
         public IActionResult DeleteSuballotment_amount(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var fundsourceamount = this._MyDbContext.FundSourceAmount.Find(id);
             this._MyDbContext.FundSourceAmount.Remove(fundsourceamount);
             this._MyDbContext.SaveChangesAsync();
@@ -250,6 +260,7 @@ namespace fmis.Controllers.Budget
 
         private bool Sub_allotmentExists(int id)
         {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             return _context.Sub_allotment.Any(e => e.Id == id);
         }
 
