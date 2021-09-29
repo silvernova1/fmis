@@ -23,7 +23,7 @@ using SizeF = Syncfusion.Drawing.SizeF;
 using Color = Syncfusion.Drawing.Color;
 using PointF = Syncfusion.Drawing.PointF;
 using Syncfusion.Pdf.Tables;
-using fmis.Filters;
+
 
 namespace fmis.Controllers
 {
@@ -92,14 +92,27 @@ namespace fmis.Controllers
             public DateTime Time_recieved { get; set; }
             public DateTime Date_released { get; set; }
             public DateTime Time_released { get; set; }
+            public string status { get; set; }
+            public string token { get; set; }
+        }
+
+        public class ManyId
+        {
+            public int many_id { get; set; }
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public int single_id { get; set; }
+            public string single_token { get; set; }
+            public List<ManyId> many_id { get; set; }
         }
 
         // GET: Utilization
         public IActionResult Index()
         {
-            ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("ors", "utilization");
-            var json = JsonSerializer.Serialize(_context.Utilization.ToList());
+            var json = JsonSerializer.Serialize(_context.Utilization.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
             return View("~/Views/Utilization/Index.cshtml");
         }
@@ -170,9 +183,9 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-                if (item.Id == 0)
+                if (item.Id == 0) //save
                 {
-                    var utilization = new Utilization();
+                    var utilization = new Utilization();//clear object
                     utilization.Id = item.Id;
                     utilization.Date = item.Date;
                     utilization.Dv = item.Dv;
@@ -189,12 +202,14 @@ namespace fmis.Controllers
                     utilization.Time_recieved = item.Time_recieved;
                     utilization.Date_released = item.Date_released;
                     utilization.Time_released = item.Time_released;
+                    utilization.status = "activated";
+                    utilization.token = item.token;
 
                     this._context.Utilization.Update(utilization);
                     this._context.SaveChanges();
                 }
                 else
-                {
+                { //update
                     data_holder.Find(item.Id).Date = item.Date;
                     data_holder.Find(item.Id).Dv = item.Dv;
                     data_holder.Find(item.Id).Pr_no = item.Pr_no;
@@ -210,6 +225,8 @@ namespace fmis.Controllers
                     data_holder.Find(item.Id).Time_recieved = item.Time_recieved;
                     data_holder.Find(item.Id).Date_released = item.Date_released;
                     data_holder.Find(item.Id).Time_released = item.Time_released;
+
+                    data_holder.Find(item.Id).status = "activated";
 
                     this._context.SaveChanges();
                 }
@@ -296,32 +313,31 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
-        // GET: Utilization/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var utilization = await _context.Utilization
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (utilization == null)
-            {
-                return NotFound();
-            }
-
-            return View(utilization);
-        }
-
         // POST: Utilization/Delete/5
         [HttpPost]
-        public IActionResult DeleteUtilization(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUtilization(DeleteData data)
         {
-            var utilization = this._context.Utilization.Find(id);
-            this._context.Utilization.Remove(utilization);
-            this._context.SaveChangesAsync();
-            return Json(id);
+            if (data.many_id.Count > 1)
+            {
+                var data_holder = this._context.Utilization;
+                foreach (var many in data.many_id)
+                {
+                    data_holder.Find(many.many_id).status = "deactivated";
+                    data_holder.Find(many.many_id).token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = this._context.Utilization;
+                data_holder.Find(data.single_id).status = "deactivated";
+                data_holder.Find(data.single_id).token = data.single_token;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
         private bool UtilizationExists(int id)

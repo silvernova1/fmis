@@ -15,7 +15,6 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
-using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -35,17 +34,28 @@ namespace fmis.Controllers
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
             public string pap_code2 { get; set; }
-            public DateTime Created_at { get; set; }
-            public DateTime Updated_at { get; set; }
+            public string status { get; set; }
+            public string token { get; set; }
+        }
+
+        public class ManyId
+        {
+            public int many_id { get; set; }
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public int single_id { get; set; }
+            public string single_token { get; set; }
+            public List<ManyId> many_id { get; set; }
         }
 
         // GET: Prexc
         public IActionResult Index()
         {
-            var json = JsonSerializer.Serialize(_context.Prexc.ToList());
-            ViewBag.filter = new FilterSidebar("master_data", "prexc");
+            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
-            ViewBag.layout = "_Layout";
             return View("~/Views/Prexc/Index.cshtml");
         }
 
@@ -80,30 +90,33 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SavePrexc(List<PrexcData> data)
         {
-
             var data_holder = this._context.Prexc;
 
             foreach (var item in data)
             {
-                if (item.Id == 0)
+                if (item.Id == 0) //save
                 {
-                    var prexc = new Prexc();
+                    var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_code2 = item.pap_code2;
-       
+                    prexc.status = "activated";
+                    prexc.token = item.token;
+
                     this._context.Prexc.Update(prexc);
                     this._context.SaveChanges();
                 }
                 else
-                {
+                { //update
                     data_holder.Find(item.Id).pap_title = item.pap_title;
                     data_holder.Find(item.Id).pap_code1 = item.pap_code1;
                     data_holder.Find(item.Id).pap_code2 = item.pap_code2;
-   
+
+                    data_holder.Find(item.Id).status = "activated";
 
                     this._context.SaveChanges();
                 }
@@ -117,7 +130,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code1,pap_code2,Created_at,Updated_at")] Prexc prexc)
+        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code,pap_code2")] Prexc prexc)
         {
             if (ModelState.IsValid)
             {
@@ -130,7 +143,7 @@ namespace fmis.Controllers
 
         [HttpPost]
 
-        public ActionResult AddPrexc(IEnumerable<Prexc> PrexcInput)
+        public ActionResult AddUacs(IEnumerable<Prexc> PrexcInput)
 
         {
 
@@ -160,7 +173,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code1,pap_code2,Created_at,Updated_at")] Prexc prexc)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code,pap_code2")] Prexc prexc)
         {
             if (id != prexc.Id)
             {
@@ -190,7 +203,7 @@ namespace fmis.Controllers
             return View(prexc);
         }
 
-        // GET: Prexc/Delete/5
+        // GET:  Prexc/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -202,7 +215,6 @@ namespace fmis.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prexc == null)
             {
-
                 return NotFound();
             }
 
@@ -211,12 +223,29 @@ namespace fmis.Controllers
 
         // POST: Prexc/Delete/5
         [HttpPost]
-        public IActionResult DeletePrexc(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePrexc(DeleteData data)
         {
-            var prexc = this._context.Prexc.Find(id);
-            this._context.Prexc.Remove(prexc);
-            this._context.SaveChangesAsync();
-            return Json(id);
+            if (data.many_id.Count > 1)
+            {
+                var data_holder = this._context.Prexc;
+                foreach (var many in data.many_id)
+                {
+                    data_holder.Find(many.many_id).status = "deactivated";
+                    data_holder.Find(many.many_id).token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = this._context.Prexc;
+                data_holder.Find(data.single_id).status = "deactivated";
+                data_holder.Find(data.single_id).token = data.single_token;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
         private bool PrexcExists(int id)

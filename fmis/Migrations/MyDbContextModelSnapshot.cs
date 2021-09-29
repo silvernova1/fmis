@@ -875,6 +875,12 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Time_released")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Utilization");

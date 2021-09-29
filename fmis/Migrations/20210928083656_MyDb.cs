@@ -195,7 +195,9 @@ namespace fmis.Migrations
                     Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

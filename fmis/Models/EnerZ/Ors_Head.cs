@@ -24,6 +24,5 @@ namespace fmis.Models
         public int Did { get; set; }
         public Designation Designation { get; set; }
         public Sub_allotment Sub_Allotment { get; set; }
-
     }
 }
