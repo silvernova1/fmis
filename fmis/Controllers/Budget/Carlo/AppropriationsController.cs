@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -20,18 +21,20 @@ namespace fmis.Controllers
         }
 
         // GET: Appropriations
-     /*   public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.Layout = "_Layout";
-            return View(await _context.Appropriation.ToListAsync());
-           
-        }*/
+            ViewBag.filter = new FilterSidebar("daboard", "home");
+            return View("~/Views/Carlo/Appropriations/Index.cshtml", await _context.Appropriation.ToListAsync());
 
-        public IActionResult Index()
-        {
-            ViewBag.Layout = "_Layout";
-            return View("~/Views/Carlo/Appropriations/Index.cshtml");
         }
+
+        /* public IActionResult Index()
+         {
+             ViewBag.Layout = "_Layout";
+             return View("~/Views/Carlo/Appropriations/Index.cshtml");
+         }*/
+
 
         // GET: Appropriations/Details/5
         public async Task<IActionResult> Details(int? id)
