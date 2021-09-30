@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
+using fmis.Filters;
 
 namespace fmis.Controllers.Budget.EnerZ
 {
@@ -26,6 +27,7 @@ namespace fmis.Controllers.Budget.EnerZ
         // GET:  Ors_head
         public async Task<IActionResult> Index(int? id)
         {
+            ViewBag.filter = new FilterSidebar("dashboard", "home");
             ViewBag.PsId = id;
             ViewBag.layout = "_Layout";
             var ors_head = _context.Ors_head
@@ -55,6 +57,7 @@ namespace fmis.Controllers.Budget.EnerZ
         // GET: Ors_head/Create
         public IActionResult Create(int? id)
         {
+            ViewBag.filter = new FilterSidebar("dashboard", "home");
             ViewBag.layout = "_Layout";
             PopulatePsDropDownList();
             PopulateDsDropDownList();

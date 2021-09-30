@@ -12,6 +12,34 @@ namespace fmis.Data
     public class MyDbContext : DbContext
     {
 
+
+
+
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+         {
+
+           *//*  modelBuilder.Entity<FundSource>()
+                 .HasOne(p => p.Budget_allotment)
+                 .WithMany(b => b.FundSources)
+                 .HasForeignKey(e => e.BudgetAllotmentId);*/
+
+        /*modelBuilder.Entity<FundSource>()
+        .HasOne(p => p.Budget_allotment)
+        .WithMany(b => b.FundSources);*/
+        /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
+
+        /*modelBuilder.Entity<Budget_allotment>()
+            .HasMany(b => b.FundSources)
+            .WithOne(p => p.Budget_allotment)
+            .OnDelete(DeleteBehavior.NoAction);*//*
+
+
+        modelBuilder.Entity<FundSource>().ToTable("FundSource");
+        modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
+
+    }*/
+
+
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
@@ -33,8 +61,7 @@ namespace fmis.Data
         public DbSet<Designation> Designation { get; set; }
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
-        public DbSet<Sub_allotment> Sub_allotment { get; set; }
-        public DbSet<Suballotment_amount> Suballotment_amounts { get; set; }
+        public object Suballotment_amount { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
