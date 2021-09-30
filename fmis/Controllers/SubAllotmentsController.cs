@@ -54,17 +54,6 @@ namespace fmis.Controllers.Budget
         public async Task<IActionResult> Index(int? id)
         {
 
-
-
-            /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
-            /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
-                   .ToList();
-             return View(item);*/
-
-            /* return View(await _context.FundSource
-                 .Include(s => s.Budget_allotment)
-                 .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
-                 .ToListAsync());*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             return View(await _context.Sub_allotment.ToListAsync());
