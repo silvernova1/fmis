@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/fmis/Controllers/Budget/EnerZ/SubAllotmentsController.cs
+/fmis/Migrations/20210929042535_MyDb.cs
+/fmis/Migrations/20210929042535_MyDb.Designer.cs
