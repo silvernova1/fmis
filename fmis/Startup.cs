@@ -14,6 +14,7 @@ using Rotativa.AspNetCore;
 using fmis.Data.John;
 using DinkToPdf.Contracts;
 using DinkToPdf;
+using Microsoft.AspNetCore.Identity;
 
 namespace fmis
 {

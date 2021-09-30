@@ -754,7 +754,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Sub_allotmentId");
 
-                    b.ToTable("Suballotment_amounts");
+                    b.ToTable("Suballotment_amount");
                 });
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>

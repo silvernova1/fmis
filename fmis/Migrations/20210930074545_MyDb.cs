@@ -481,7 +481,7 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Suballotment_amounts",
+                name: "Suballotment_amount",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -493,9 +493,9 @@ namespace fmis.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Suballotment_amounts", x => x.Id);
+                    table.PrimaryKey("PK_Suballotment_amount", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Suballotment_amounts_Sub_allotment_Sub_allotmentId",
+                        name: "FK_Suballotment_amount_Sub_allotment_Sub_allotmentId",
                         column: x => x.Sub_allotmentId,
                         principalTable: "Sub_allotment",
                         principalColumn: "Id",
@@ -569,8 +569,8 @@ namespace fmis.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suballotment_amounts_Sub_allotmentId",
-                table: "Suballotment_amounts",
+                name: "IX_Suballotment_amount_Sub_allotmentId",
+                table: "Suballotment_amount",
                 column: "Sub_allotmentId");
         }
 
@@ -601,7 +601,7 @@ namespace fmis.Migrations
                 name: "Section");
 
             migrationBuilder.DropTable(
-                name: "Suballotment_amounts");
+                name: "Suballotment_amount");
 
             migrationBuilder.DropTable(
                 name: "Uacs");

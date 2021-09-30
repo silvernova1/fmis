@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20210928083656_MyDb")]
+    [Migration("20210930074545_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -756,7 +756,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Sub_allotmentId");
 
-                    b.ToTable("Suballotment_amounts");
+                    b.ToTable("Suballotment_amount");
                 });
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>

@@ -268,7 +268,7 @@
         const queryResult = search.query(this.value);
 
         console.log(queryResult);
-        hot.render();
+        hot.validateCells();
     });
 
     const exportPlugin = hot.getPlugin('exportFile');
@@ -302,6 +302,8 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                correctFormat: true,
+                defaultDate: Date.now()
             },
             {
                 // 2nd cell is simple text, no special options here
