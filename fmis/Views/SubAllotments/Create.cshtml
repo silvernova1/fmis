@@ -1,0 +1,220 @@
+﻿@model fmis.Models.Sub_allotment
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+
+<form asp-action="Create">
+    <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Create Sub Allotment
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Create" class="btn btn-success btn-xs" />
+                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Prexc" class="control-label"></label>
+                @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+            </div>
+            <div class="form-group">
+                <label asp-for="Suballotment_title" class="control-label"></label>
+                <input asp-for="Suballotment_title" class="form-control" required>
+                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Suballotment_code" class="control-label"></label>
+                <input asp-for="Suballotment_code" class="form-control" required />
+                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Responsibility_number" class="control-label"></label>
+                <input asp-for="Responsibility_number" class="form-control" required />
+                <span asp-validation-for="Responsibility_number" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="SubId" value="@ViewBag.Id" />
+    <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+</form>
+
+
+<br />
+<input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+<br />
+<br />
+<br />
+<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+<div id="suballotment_amount" class="hot handsontable htColumnHeaders"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.prexc').select2();
+    });
+</script>
+
+<script>
+
+    var suballotment_amount = $.parseJSON($(".Suballotment_amount").val());
+    const data = [];
+    var counter = 0;
+
+
+    $.each(suballotment_amount, function () {
+        data[counter] = [this.Expenses, this.Amount, this.Id, this.SubId]
+        counter++;
+
+    })
+
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data[uacs_counter] = this.Account_title
+        uacs_counter++;
+    })
+    console.log(uacs_data);
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('fundsource_amount');
+    const hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [150, 150],
+        stretchH: 'all',
+        height: '200px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var holder_id = holder_data[selection[0][0]][2];
+            if (holder_id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeleteSuballotment_amount", "Sub_allotment")',
+                    dataType: "JSON",
+                    data: { id: holder_id },
+                    success: function (output) {
+                        console.log(output);
+                    }
+                });
+            }
+            Lobibox.notify("warning", {
+                msg: "Your selected row was remove",
+                sound: false
+            });
+        },
+
+
+
+        hiddenColumns: {
+            columns: [2],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Expenses: null, Amount: null, },
+        columns: [
+            {
+                data: 'Exopenses ', type: 'text',
+            },
+            { data: 'Amount', type: 'numeric' },
+            { data: 'Id ', type: 'text' },
+            { data: 'Budget_allotmentBudgetAllotmentId', type: 'text' },
+        ]
+    });
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+        console.log(queryResult);
+        hot.render();
+    });
+    const exportPlugin = hot.getPlugin('exportFile');
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'UACS',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+
+
+    hot.updateSettings({
+        colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'SubId'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data
+            },
+            {
+
+            },
+            {
+            },
+        ],
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+            var json = [];
+            $.each(hot.getSourceData(), function () {
+                json.push({ Expenses: this[0], Amount: this[1], Id: this[2], SubId: $('#FSubId').val() });
+            });
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SaveSuballotment_amount", "Sub_allotment")',
+                dataType: "JSON",
+                data: { data: json },
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
+            return false;
+        }
+    };
+</script>
+
