@@ -73,6 +73,22 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FundsRealignment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Realignment_from = table.Column<int>(type: "int", nullable: false),
+                    Realignment_to = table.Column<int>(type: "int", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundsRealignment", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Obligation",
                 columns: table => new
                 {
@@ -587,6 +603,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "FundSourceAmount");
+
+            migrationBuilder.DropTable(
+                name: "FundsRealignment");
 
             migrationBuilder.DropTable(
                 name: "Obligation");

@@ -76,6 +76,30 @@ namespace fmis.Migrations
                     b.ToTable("Budget_allotment");
                 });
 
+            modelBuilder.Entity("fmis.Models.Carlo.FundsRealignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Realignment_from")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Realignment_to")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FundsRealignment");
+                });
+
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
                     b.Property<int>("Did")
