@@ -31,18 +31,17 @@
 </div>
 
 <p>
-    <a asp-action="Create" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> Add new Sub-Allotment</a>
-    <a class=" btn btn-warning pull-right" asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
+    <a asp-action="Create" class="btn btn-success btn-sm">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Sub Allotment" asp-action="Index">Back to Sub Allotment</a>
 </p>
 <br />
 <table class="table">
     <thead>
         <tr>
             <th>
-                Sub Allotment Code
+                Fund Source Code
             </th>
             <th>
-                Sub Allotment Title
+                Fund Source Title
             </th>
             <th>
                 ORS Head
@@ -67,8 +66,8 @@
                         @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
                     </td>*@
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.SubId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                    <a asp-action="Delete" asp-route-id="@item.SubId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
                 </td>
                 <td>
