@@ -12,7 +12,7 @@ namespace fmis.Models
     public class Sub_allotment
     {
         [Key]
-        public int SubId { get; set; }
+        public int Id { get; set; }
         public int Prexe_code { get; set; }
         public string Suballotment_code { get; set; }
         public string Suballotment_title { get; set; }
