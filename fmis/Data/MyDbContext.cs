@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
 using fmis.Models.John;
+using fmis.Models.Carlo;
 
 namespace fmis.Data
 {
@@ -61,6 +62,7 @@ namespace fmis.Data
         public DbSet<Designation> Designation { get; set; }
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
+        public DbSet<FundsRealignment> FundsRealignment { get; set; }
         public object Suballotment_amount { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

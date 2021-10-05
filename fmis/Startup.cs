@@ -15,6 +15,7 @@ using fmis.Data.John;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using Microsoft.AspNetCore.Identity;
+using fmis.Data.Carlo;
 
 namespace fmis
 {
@@ -89,6 +90,8 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Obligated_amountContext>(options =>
           options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDbContext<FundsRealignmentContext>(options =>
+         options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
         }    
