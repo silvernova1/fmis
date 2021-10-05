@@ -17,7 +17,7 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 
-namespace fmis.Controllers.Budget
+namespace fmis.Controllers
 {
     public class Sub_allotmentController : Controller
     {
@@ -26,6 +26,8 @@ namespace fmis.Controllers.Budget
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
+
+
 
 
         public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
@@ -38,15 +40,12 @@ namespace fmis.Controllers.Budget
         }
 
 
-        public class Sub_allotmentamountData
+        public class Suballotment_amountData
         {
             public int Id { get; set; }
-            public int Prexe_code { get; set; }
-            public string Suballotment_code { get; set; }
-            public string Suballotment_title { get; set; }
-            public int Ors_head { get; set; }
-            public string Responsibility_number { get; set; }
-            public string Description { get; set; }
+            public int Expenses { get; set; }
+            public float Amount { get; set; }
+            public int Fund_source { get; set; }
         }
 
 
@@ -55,6 +54,16 @@ namespace fmis.Controllers.Budget
         {
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+
+            /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
+            /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
+                   .ToList();
+             return View(item);*/
+
+            /* return View(await _context.FundSource
+                 .Include(s => s.Budget_allotment)
+                 .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
+                 .ToListAsync());*/
 
             return View(await _context.Sub_allotment.ToListAsync());
 
@@ -81,25 +90,96 @@ namespace fmis.Controllers.Budget
             return View(sub_allotment);
         }
 
-        // GET: Sub_allotmentController/Create
-        public ActionResult Create(int? id)
+        // GET: FundSource/Create
+        public IActionResult Create(int? id)
         {
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var json = JsonSerializer.Serialize(_MyDbContext.Suballotment_amount
+                .Where(f => f.Sub_allotment.SubId == id).ToList());
+            ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
+
             PopulatePrexcsDropDownList();
+
+            ViewBag.BudgetId = id;
+            ViewBag.FundsId = id;
+
+            List<Prexc> p = new List<Prexc>();
+
+            p = (from c in _pContext.Prexc select c).ToList();
+            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
+
+            ViewBag.message = p;
+            //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
+            //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
+            //TempData["FundSource"] = await _context.FundSource.ToListAsync();
+
+            /*
+                        Budget_allotment budget_allotment = new Budget_allotment()
+                        {
+                            BudgetAllotmentId = 7
+                        };*/
+
+
+            //var FundSource = await _bContext.Budget_allotment.(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
+
+            //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
+
+
             var sub_allotment = _context.Sub_allotment
                 .FirstOrDefaultAsync(m => m.SubId == id);
             if (sub_allotment == null)
             {
                 return NotFound();
             }
+
             return View();
         }
 
-        // POST: SubAllotmentsController/Create
+
+
+        [HttpPost]
+        public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var data_holder = this._MyDbContext.Suballotment_amount.Include(c => c.Sub_allotment);
+
+            foreach (var item in data)
+            {
+                if (item.Id == 0)
+                {
+
+                    var suballotment_amount = new Suballotment_amount();
+
+                    suballotment_amount.Id = item.Id;
+                    suballotment_amount.Expenses = item.Expenses;
+                    suballotment_amount.Amount = item.Amount;
+                    suballotment_amount.Fund_source = item.Fund_source;
+
+                    this._MyDbContext.Suballotment_amount.Update(suballotment_amount);
+                    this._MyDbContext.SaveChanges();
+                }
+                else
+                {
+                    /*data_holder.Find(item.Id).FundsId = item.FundsId;
+                    data_holder.Find(item.Id).Account_title = item.Account_title;
+                    data_holder.Find(item.Id).Amount = item.Amount;*/
+
+                    this._MyDbContext.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
+        // POST: FundSource/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,PId")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Create([Bind("SubId,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -116,13 +196,14 @@ namespace fmis.Controllers.Budget
                 //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
-            PopulatePrexcsDropDownList(sub_allotment.PId);
+            PopulatePrexcsDropDownList(sub_allotment.Id);
             //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
 
             return View(sub_allotment);
             /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
-        // GET: Sub_allotment/Edit/5
+
+        // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
@@ -136,7 +217,7 @@ namespace fmis.Controllers.Budget
             {
                 return NotFound();
             }
-            PopulatePrexcsDropDownList(sub_allotment.SubId);
+            PopulatePrexcsDropDownList(sub_allotment.Id);
             return View(sub_allotment);
         }
 
@@ -184,14 +265,13 @@ namespace fmis.Controllers.Budget
 
         }*/
 
-        // POST: Sub_allotment/Edit/5
+        // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Sub_allotment sub_allotment)
         {
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (ModelState.IsValid)
             {
@@ -217,7 +297,7 @@ namespace fmis.Controllers.Budget
         }
 
 
-        // GET: Sub_allotment/Delete/5
+        // GET: FundSource/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
@@ -236,13 +316,13 @@ namespace fmis.Controllers.Budget
             return View(sub_allotment);
         }
 
-        // POST: Sub_allotment/Delete/5
+        // POST: FundSource/Delete/5
         [HttpPost]
         public IActionResult DeleteSuballotment_amount(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var fundsourceamount = this._MyDbContext.FundSourceAmount.Find(id);
-            this._MyDbContext.FundSourceAmount.Remove(fundsourceamount);
+            var suballotment_amount = this._MyDbContext.Suballotment_amount.Find(id);
+            this._MyDbContext.Suballotment_amount.Remove(suballotment_amount);
             this._MyDbContext.SaveChangesAsync();
             return Json(id);
         }
@@ -252,21 +332,6 @@ namespace fmis.Controllers.Budget
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             return _context.Sub_allotment.Any(e => e.SubId == id);
         }
-
-
-        /* private static PdfPCell PhraseCell(Phrase phrase, int align)
-         {
-             PdfPCell cell = new PdfPCell(phrase);
-             cell.BorderColor = BaseColor.BLACK;
-             cell.VerticalAlignment = Element.ALIGN_TOP;
-             cell.HorizontalAlignment = align;
-             cell.PaddingBottom = 2f;
-             cell.PaddingTop = 0f;
-             return cell;
-         }*/
-
-
-
 
 
         //EXPORTING PDF FILE
@@ -352,10 +417,10 @@ namespace fmis.Controllers.Budget
                 Font column3_font = FontFactory.GetFont("Arial", 8, Font.BOLD, BaseColor.BLACK);
 
                 table3.AddCell(new PdfPCell(new Paragraph("No :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph("321321" + " - 01101101 - " + "2021" + " - " + "09", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                table3.AddCell(new PdfPCell(new Paragraph("" + " - 01101101 - " + "2021" + " - " + "09", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph("", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Fund :", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph("321321" + "-01101101", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });

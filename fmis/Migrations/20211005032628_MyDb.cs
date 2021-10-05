@@ -379,7 +379,7 @@ namespace fmis.Migrations
                 name: "Sub_allotment",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    SubId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Prexe_code = table.Column<int>(type: "int", nullable: false),
                     Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -387,21 +387,21 @@ namespace fmis.Migrations
                     Ors_head = table.Column<int>(type: "int", nullable: false),
                     Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PId = table.Column<int>(type: "int", nullable: false),
-                    Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: true)
+                    Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sub_allotment", x => x.Id);
+                    table.PrimaryKey("PK_Sub_allotment", x => x.SubId);
                     table.ForeignKey(
                         name: "FK_Sub_allotment_Budget_allotment_Budget_allotmentBudgetAllotmentId",
                         column: x => x.Budget_allotmentBudgetAllotmentId,
                         principalTable: "Budget_allotment",
                         principalColumn: "BudgetAllotmentId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Sub_allotment_Prexc_PId",
-                        column: x => x.PId,
+                        name: "FK_Sub_allotment_Prexc_Id",
+                        column: x => x.Id,
                         principalTable: "Prexc",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -471,7 +471,7 @@ namespace fmis.Migrations
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Pid = table.Column<int>(type: "int", nullable: false),
                     Did = table.Column<int>(type: "int", nullable: false),
-                    Sub_AllotmentId = table.Column<int>(type: "int", nullable: true)
+                    Sub_AllotmentSubId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -489,10 +489,10 @@ namespace fmis.Migrations
                         principalColumn: "Pid",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Ors_head_Sub_allotment_Sub_AllotmentId",
-                        column: x => x.Sub_AllotmentId,
+                        name: "FK_Ors_head_Sub_allotment_Sub_AllotmentSubId",
+                        column: x => x.Sub_AllotmentSubId,
                         principalTable: "Sub_allotment",
-                        principalColumn: "Id",
+                        principalColumn: "SubId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -505,16 +505,16 @@ namespace fmis.Migrations
                     Expenses = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<float>(type: "real", nullable: false),
                     Fund_source = table.Column<int>(type: "int", nullable: false),
-                    Sub_allotmentId = table.Column<int>(type: "int", nullable: true)
+                    Sub_allotmentSubId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Suballotment_amount", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Suballotment_amount_Sub_allotment_Sub_allotmentId",
-                        column: x => x.Sub_allotmentId,
+                        name: "FK_Suballotment_amount_Sub_allotment_Sub_allotmentSubId",
+                        column: x => x.Sub_allotmentSubId,
                         principalTable: "Sub_allotment",
-                        principalColumn: "Id",
+                        principalColumn: "SubId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -552,9 +552,9 @@ namespace fmis.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ors_head_Sub_AllotmentId",
+                name: "IX_Ors_head_Sub_AllotmentSubId",
                 table: "Ors_head",
-                column: "Sub_AllotmentId");
+                column: "Sub_AllotmentSubId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Personal_Information_Budget_allotmentBudgetAllotmentId",
@@ -579,15 +579,15 @@ namespace fmis.Migrations
                 column: "Budget_allotmentBudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sub_allotment_PId",
+                name: "IX_Sub_allotment_Id",
                 table: "Sub_allotment",
-                column: "PId",
+                column: "Id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suballotment_amount_Sub_allotmentId",
+                name: "IX_Suballotment_amount_Sub_allotmentSubId",
                 table: "Suballotment_amount",
-                column: "Sub_allotmentId");
+                column: "Sub_allotmentSubId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

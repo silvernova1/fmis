@@ -63,7 +63,9 @@ namespace fmis.Data
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
-        public object Suballotment_amount { get; internal set; }
+        public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
+        public DbSet<Sub_allotment> Sub_allotment { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -89,6 +91,14 @@ namespace fmis.Data
 
             modelBuilder.Entity<FundSource>()
            .HasKey(s => s.FundSourceId);
+
+            //Amalio
+            modelBuilder.Entity<Suballotment_amount>()
+            .HasOne(p => p.Sub_allotment)
+            .WithMany(b => b.Suballotment_amount);
+
+            modelBuilder.Entity<Sub_allotment>()
+          .HasKey(s => s.SubId);
 
 
             //arnell

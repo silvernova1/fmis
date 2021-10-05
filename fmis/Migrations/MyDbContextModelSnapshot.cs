@@ -325,7 +325,7 @@ namespace fmis.Migrations
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Sub_AllotmentId")
+                    b.Property<int?>("Sub_AllotmentSubId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Updated_at")
@@ -339,7 +339,7 @@ namespace fmis.Migrations
                     b.HasIndex("Pid")
                         .IsUnique();
 
-                    b.HasIndex("Sub_AllotmentId");
+                    b.HasIndex("Sub_AllotmentSubId");
 
                     b.ToTable("Ors_head");
                 });
@@ -716,21 +716,21 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SubId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
+                    b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Ors_head")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("PId")
+                    b.Property<int>("Ors_head")
                         .HasColumnType("int");
 
                     b.Property<int>("Prexe_code")
@@ -745,11 +745,11 @@ namespace fmis.Migrations
                     b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("SubId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("PId")
+                    b.HasIndex("Id")
                         .IsUnique();
 
                     b.ToTable("Sub_allotment");
@@ -771,12 +771,12 @@ namespace fmis.Migrations
                     b.Property<int>("Fund_source")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Sub_allotmentId")
+                    b.Property<int?>("Sub_allotmentSubId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Sub_allotmentId");
+                    b.HasIndex("Sub_allotmentSubId");
 
                     b.ToTable("Suballotment_amount");
                 });
@@ -986,7 +986,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Sub_allotment", "Sub_Allotment")
                         .WithMany()
-                        .HasForeignKey("Sub_AllotmentId");
+                        .HasForeignKey("Sub_AllotmentSubId");
 
                     b.Navigation("Designation");
 
@@ -1027,11 +1027,13 @@ namespace fmis.Migrations
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
                         .WithMany("Sub_allotments")
-                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
+                        .HasForeignKey("Budget_allotmentBudgetAllotmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithOne("Sub_Allotment")
-                        .HasForeignKey("fmis.Models.Sub_allotment", "PId")
+                        .HasForeignKey("fmis.Models.Sub_allotment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1044,7 +1046,7 @@ namespace fmis.Migrations
                 {
                     b.HasOne("fmis.Models.Sub_allotment", "Sub_allotment")
                         .WithMany("Suballotment_amount")
-                        .HasForeignKey("Sub_allotmentId");
+                        .HasForeignKey("Sub_allotmentSubId");
 
                     b.Navigation("Sub_allotment");
                 });
