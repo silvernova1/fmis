@@ -20,21 +20,21 @@ using fmis.Filters;
 namespace fmis.Controllers
 {
 
-    public class PrexcController : Controller
+    public class Suballotment_amountController : Controller
     {
-        private readonly PrexcContext _context;
+        private readonly Suballotment_amountContext _context;
 
-        public PrexcController(PrexcContext context)
+        public Suballotment_amountController(Suballotment_amountContext context)
         {
             _context = context;
         }
 
-        public class PrexcData
+        public class Suballotment_amountData
         {
             public int Id { get; set; }
-            public string pap_title { get; set; }
-            public string pap_code1 { get; set; }
-            public string pap_code2 { get; set; }
+            public int Expenses { get; set; }
+            public float Amount { get; set; }
+            public int Fund_source { get; set; }
             public string status { get; set; }
             public string token { get; set; }
         }
@@ -52,16 +52,16 @@ namespace fmis.Controllers
             public List<ManyId> many_id { get; set; }
         }
 
-        // GET: Prexc
+        // GET: Suballotment_amount
         public IActionResult Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "prexc");
-            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated").ToList());
+            ViewBag.filter = new FilterSidebar("master_data", "Suballotment_amount");
+            var json = JsonSerializer.Serialize(_context.Suballotment_amount.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
-            return View("~/Views/Prexc/Index.cshtml");
+            return View("~/Views/Suballotment_amount/Index.cshtml");
         }
 
-        // GET: Prexc/Details/5
+        // GET: Suballotment_amount/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -69,17 +69,17 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc
+            var suballotment_amount = await _context.Suballotment_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
+            if (suballotment_amount == null)
             {
                 return NotFound();
             }
 
-            return View(prexc);
+            return View(suballotment_amount);
         }
 
-        // GET: Prexc/Create
+        // GET: Suballotment_amount/Create
         public IActionResult Create()
         {
             return View();
@@ -93,30 +93,30 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SavePrexc(List<PrexcData> data)
+        public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
         {
-            var data_holder = this._context.Prexc;
+            var data_holder = this._context.Suballotment_amount;
 
             foreach (var item in data)
             {
                 if (item.Id == 0) //save
                 {
-                    var prexc = new Prexc(); //clear object
-                    prexc.Id = item.Id;
-                    prexc.pap_title = item.pap_title;
-                    prexc.pap_code1 = item.pap_code1;
-                    prexc.pap_code2 = item.pap_code2;
-                    prexc.status = "activated";
-                    prexc.token = item.token;
+                    var suballotment_amount = new Suballotment_amount(); //clear object
+                    suballotment_amount.Id = item.Id;
+                    suballotment_amount.Expenses = item.Expenses;
+                    suballotment_amount.Amount = item.Amount;
+                    suballotment_amount.Fund_source = item.Fund_source;
+                    suballotment_amount.status = "activated";
+                    suballotment_amount.token = item.token;
 
-                    this._context.Prexc.Update(prexc);
+                    this._context.Suballotment_amount.Update(suballotment_amount);
                     this._context.SaveChanges();
                 }
                 else
                 { //update
-                    data_holder.Find(item.Id).pap_title = item.pap_title;
-                    data_holder.Find(item.Id).pap_code1 = item.pap_code1;
-                    data_holder.Find(item.Id).pap_code2 = item.pap_code2;
+                    data_holder.Find(item.Id).Expenses = item.Expenses;
+                    data_holder.Find(item.Id).Amount = item.Amount;
+                    data_holder.Find(item.Id).Fund_source = item.Fund_source;
 
                     data_holder.Find(item.Id).status = "activated";
 
@@ -127,34 +127,34 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-        // POST: Prexc/Create
+        // POST: Suballotment_amount/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code,pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Create([Bind("Id,Expenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(prexc);
+                _context.Add(suballotment_amount);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(prexc);
+            return View(suballotment_amount);
         }
 
         [HttpPost]
 
-        public ActionResult AddPrexc(IEnumerable<Prexc> PrexcInput)
+        public ActionResult AddSuballotment_amount(IEnumerable<Suballotment_amount> Suballotment_amountInput)
 
         {
 
-            var p = PrexcInput;
+            var p = Suballotment_amountInput;
             return null;
 
         }
 
-        // GET: Prexc/Edit/5
+        // GET: Suballotment_amount/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -162,22 +162,22 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc.FindAsync(id);
-            if (prexc == null)
+            var suballotment_amount = await _context.Suballotment_amount.FindAsync(id);
+            if (suballotment_amount == null)
             {
                 return NotFound();
             }
-            return View(prexc);
+            return View(suballotment_amount);
         }
 
-        // POST: Prexc/Edit/5
+        // POST: Suballotment_amount/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,pap_title,pap_code,pap_code2")] Prexc prexc)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Expenses,Amount,Fund_source")] Suballotment_amount suballotment_amount)
         {
-            if (id != prexc.Id)
+            if (id != suballotment_amount.Id)
             {
                 return NotFound();
             }
@@ -186,12 +186,12 @@ namespace fmis.Controllers
             {
                 try
                 {
-                    _context.Update(prexc);
+                    _context.Update(suballotment_amount);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PrexcExists(prexc.Id))
+                    if (!Suballotment_amountExists(suballotment_amount.Id))
                     {
                         return NotFound();
                     }
@@ -202,10 +202,10 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(prexc);
+            return View(suballotment_amount);
         }
 
-        // GET:  Prexc/Delete/5
+        // GET:  Suballotment_amount/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -213,24 +213,24 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var prexc = await _context.Prexc
+            var suballotment_amount = await _context.Suballotment_amount
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
+            if (suballotment_amount == null)
             {
                 return NotFound();
             }
 
-            return View(prexc);
+            return View(suballotment_amount);
         }
 
-        // POST: Prexc/Delete/5
+        // POST: Suballotment_amount/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletePrexc(DeleteData data)
+        public async Task<IActionResult> DeleteSuballotment_amount(DeleteData data)
         {
             if (data.many_id.Count > 1)
             {
-                var data_holder = this._context.Prexc;
+                var data_holder = this._context.Suballotment_amount;
                 foreach (var many in data.many_id)
                 {
                     data_holder.Find(many.many_id).status = "deactivated";
@@ -240,7 +240,7 @@ namespace fmis.Controllers
             }
             else
             {
-                var data_holder = this._context.Prexc;
+                var data_holder = this._context.Suballotment_amount;
                 data_holder.Find(data.single_id).status = "deactivated";
                 data_holder.Find(data.single_id).token = data.single_token;
 
@@ -250,9 +250,9 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-        private bool PrexcExists(int id)
+        private bool Suballotment_amountExists(int id)
         {
-            return _context.Prexc.Any(e => e.Id == id);
+            return _context.Suballotment_amount.Any(e => e.Id == id);
         }
     }
 }

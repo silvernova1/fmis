@@ -25,7 +25,7 @@
         <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Sub Allotment</h7>
         <div class="pull-right">
             <div class="btn-group">
-                <input type="submit" value="Create" class="btn btn-success btn-xs" />
+                <input type="submit" value="Save" class="btn btn-success btn-xs" />
                 <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
             </div>
         </div>
@@ -80,9 +80,8 @@
             </div>
         </div>
     </div>
-    <input type="text" id="FundSourceId" value="@ViewBag.FundsId" />
-    <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
-    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+    <input type="text" id="SubId" value="@ViewBag.Id" />
+    <input type="hidden" class="suallotment_amount" value="@ViewBag.temp">
 </form>
 
 
@@ -108,25 +107,25 @@
 
 <script>
 
-    var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
+    var suballotment_amount = $.parseJSON($(".suballotment_amount").val());
     const data = [];
     var counter = 0;
 
 
-    $.each(fundsourceamount, function () {
-        data[counter] = [this.Account_title, this.Amount, this.Id, this.FundSourceId]
+    $.each(suballotment_amount, function () {
+        data[counter] = [this.Expenses, this.Amount, this.Id, this.SubId]
         counter++;
 
     })
 
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
-    var uacs_counter = 0;
+    var suballotment_amount = $.parseJSON($(".suballotment_amount").val());
+    const suballotment_amount_data = [];
+    var suballotment_amount_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Expenses
-        uacs_counter++;
+        suballotment_amount_data[suballotment_amount_counter] = this.Expenses
+        suballotment_amount_counter++;
     })
-    console.log(uacs_data);
+    console.log(suballotment_amount_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount');

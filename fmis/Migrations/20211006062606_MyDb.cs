@@ -505,6 +505,8 @@ namespace fmis.Migrations
                     Expenses = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<float>(type: "real", nullable: false),
                     Fund_source = table.Column<int>(type: "int", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Sub_allotmentSubId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

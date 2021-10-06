@@ -1,97 +1,216 @@
 ﻿@model IEnumerable<fmis.Models.Suballotment_amount>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Sub Allotment Amount</h2>
-<hr />
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 
-<div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
+<input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+<h3 style="color: #438eb9;">SUB ALLOTMENT AMOUNT  </h3>
+<hr />
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+<br />
+<br />
+<p style="color: #438eb9;">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
+<div id="example" class="hot"></div>
+<br />
+
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
 </div>
 
-<p>
-    <a class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> Add new SubAllotment_Amount</a>
-</p>
-<p>
-    <a class="btn btn-warning pull-right"><span class="glyphicon glyphicon-arrow-left"></span> Back</a>
 
-</p>
+<script>
 
-<style>
-</style>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Expenses
-            </th>
-            <th>
-                Amount
-            </th>
-            <th>
-                Fund Source
-            </th>
-            <th>Actions</th>
-            <th>Realignment</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                <select class="form-control" aria-label="Default select example">
-                    <option selected>Select UACS</option>
-                    <option value="1">Rusel</option>
-                    <option value="2">John</option>
-                    <option value="3">Carlo</option>
-                    <option value="3">Silver</option>
-                    <option value="3">Enerz</option>
-                </select>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                <select class="form-control" aria-label="Default select example">
-                    <option selected>Select Fund Source</option>
-                    <option value="1">Rusel</option>
-                    <option value="2">John</option>
-                    <option value="3">Carlo</option>
-                    <option value="3">Silver</option>
-                    <option value="3">Enerz</option>
-                </select>
-            </td>
-            <td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
-
-            </td>
-            <td>
-                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
-            </td>
-        </tr>
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
         }
-    </tbody>
-</table>
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify(lobi_type, {
+                    msg: lobi_msg,
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+    }
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('#loading_modal').modal('show');
+
+            var ajax_data = [];
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        Expenses: this[0] ? this[0] : " ",
+                        Amount: this[1] ? this[1] : " ",
+                        Id: this[2] ? this[2] : " ",
+                        token: this[3] ? this[3] : guid()
+                    }
+                );
+            });
+
+            ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Suballotment_amount")', 'success', 'Sucessfully saved the new rows!');
+
+            return false;
+        }
+    };
+
+
+    var suballotment_amount = $.parseJSON($(".suballotment_amount").val());
+
+    const data = [];
+    var counter = 0;
+    $.each(suballotment_amount, function () {
+        data[counter] = [this.Expenses, this.Amount, this.Id, this.token]
+        counter++;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        colWidths: [700, 350],
+        rowHeaders: true,
+        colHeaders: true,
+        undo: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_id = holder_data[selection[0][0]][2];
+
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_id = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_id.push({
+                    many_id: holder_data[j][2],
+                    many_token: guid() + holder_data[j][2]
+                })
+            }
+
+            if (single_id) {
+                var ajax_data = {
+                    "single_id": single_id,
+                    "many_id": many_id,
+                    "single_token": guid()
+                };
+
+                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Suballotment_amount")','warning','Successfully removed.');
+            }
+
+        },
+        afterUndo: function (index, column) {
+            Lobibox.notify("info", {
+                msg: "You are doing undo!",
+                sound: false
+            });
+            console.log(this.getData());
+        },
+        height: 'auto',
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        dataSchema: { Expenses: null, Amount: null},
+        columns: [
+            { data: 'Expenses ', type: 'numeric' },
+            { data: 'Amount', type: 'numeric' },
+            { data: 'Id ', type: 'text' },
+            { data: 'token ', type: 'text' },
+        ]
+    });
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'SUBALLOTMENT_AMOUNT',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+
+    hot.updateSettings({
+        colHeaders: ['EXPENSES', 'AMOUNT', 'ID','TOKEN'],
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
+        columns: [
+            {
+
+            },
+            {
+
+            },
+            {
+                // 2nd cell ID column had been hidden
+            },
+            {
+                // 3nd cell ID column had been hidden
+            },
+
+        ],
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+
+</script>
+
+

@@ -774,6 +774,12 @@ namespace fmis.Migrations
                     b.Property<int?>("Sub_allotmentSubId")
                         .HasColumnType("int");
 
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Sub_allotmentSubId");

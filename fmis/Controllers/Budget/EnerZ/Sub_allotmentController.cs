@@ -22,7 +22,7 @@ namespace fmis.Controllers
     public class Sub_allotmentController : Controller
     {
         private readonly Sub_allotmentContext _context;
-        private readonly UacsContext _uContext;
+        private readonly Suballotment_amountContext _sContext;
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
@@ -30,10 +30,10 @@ namespace fmis.Controllers
 
 
 
-        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
+        public Sub_allotmentController(Sub_allotmentContext context, Suballotment_amountContext sContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
-            _uContext = uContext;
+            _sContext = sContext;
             _bContext = bContext;
             _pContext = pContext;
             _MyDbContext = MyDbContext;
@@ -97,8 +97,8 @@ namespace fmis.Controllers
             var json = JsonSerializer.Serialize(_MyDbContext.Suballotment_amount
                 .Where(f => f.Sub_allotment.SubId == id).ToList());
             ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
-            ViewBag.uacs = uacs_data;
+            var suballotment_amount_data = JsonSerializer.Serialize(_MyDbContext.Suballotment_amount.ToList());
+            ViewBag.suballotment_amount = suballotment_amount_data;
 
 
             PopulatePrexcsDropDownList();
