@@ -13,34 +13,6 @@ namespace fmis.Data
     public class MyDbContext : DbContext
     {
 
-
-
-
-        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
-         {
-
-           *//*  modelBuilder.Entity<FundSource>()
-                 .HasOne(p => p.Budget_allotment)
-                 .WithMany(b => b.FundSources)
-                 .HasForeignKey(e => e.BudgetAllotmentId);*/
-
-        /*modelBuilder.Entity<FundSource>()
-        .HasOne(p => p.Budget_allotment)
-        .WithMany(b => b.FundSources);*/
-        /* .HasForeignKey(p => p.BudgetAllotmentForeignKey);*/
-
-        /*modelBuilder.Entity<Budget_allotment>()
-            .HasMany(b => b.FundSources)
-            .WithOne(p => p.Budget_allotment)
-            .OnDelete(DeleteBehavior.NoAction);*//*
-
-
-        modelBuilder.Entity<FundSource>().ToTable("FundSource");
-        modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
-
-    }*/
-
-
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
@@ -57,13 +29,12 @@ namespace fmis.Data
         public DbSet<Utilization> Utilization { get; set; }
         public DbSet<Yearly_reference> Yearly_reference { get; set; }
         public DbSet<Uacs> Uacs { get; set; }
-        public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
-        public object Suballotment_amount { get; internal set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -120,7 +91,6 @@ namespace fmis.Data
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
-            modelBuilder.Entity<Sub_allotment>().ToTable("Sub_allotment");
             /*modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");*/
 

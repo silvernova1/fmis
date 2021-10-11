@@ -68,8 +68,10 @@
         </div>
     </div>
 </div>
-<h3 style="color: #438eb9;">Allotment Class</h3>
-<hr />
+<h3 class="grey lighter smaller">
+   Allotment Class
+</h3>
+<hr>
 <p>
     <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModalCenter">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -103,9 +105,9 @@
                         <i class="ace-icon fa fa-edit"></i>Edit
                     </a> |
                     @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
-                <a asp-action="Delete" data-toggle="modal" data-target="#DeleteModalCenter" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
-                    <i class="ace-icon fa fa-trash"></i>Delete
-                </a>
+                    <a asp-action="Delete" data-toggle="modal" data-target="#DeleteModalCenter" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
+                        <i class="ace-icon fa fa-trash"></i>Delete
+                    </a>
                 </td>
             </tr>
         }

@@ -15,6 +15,7 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<fmis.Models.Appropriation> Appropriation { get; set; }
+        public DbSet<Appropriation> Appropriation { get; set; }
+
     }
 }

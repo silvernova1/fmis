@@ -8,7 +8,6 @@
     }
 }
 <form>
-
     <table class="table">
         <tbody>
             <tr>
@@ -46,19 +45,13 @@
                     @Html.DisplayFor(model => model.Pr_no)
                 </td>
             </tr>
-
-
-
             <tr>
                 <td class="col-sm-1"><strong>Total Amount</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                    <strong id="" class="obligation_amount">
-
-                    </strong>
+                    <strong id="" class="obligation_amount"> </strong>
                 </td>
             </tr>
-
             <tr>
                 <td class="col-sm-1"><strong>Dibursements</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
@@ -71,17 +64,14 @@
 <input type="hidden" class="uacsamount" value="@ViewBag.temp">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-
-<p style="margin-left: 5px; color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
 <div id="uacs_amount" class="hot handsontable htColumnHeaders"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
 
-
-
 <script>
+    var obligation_id = @Html.DisplayFor(model => model.Id);
 
     let guid = () => {
         let s4 = () => {
@@ -92,7 +82,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-      function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
+    function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -100,10 +90,6 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
                 console.log(output);
             }
         });
@@ -113,14 +99,13 @@
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
-
     $.each(uacsamount, function () {
         data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
         counter++;
         obligation_amount += this.Amount;
     })
-    $(".obligation_amount").html(obligation_amount);
 
+    $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -128,107 +113,123 @@
         uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
     })
+
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('uacs_amount');
     const hot = new Handsontable(container, {
-        data: data,
-        rowHeaders: true,
-        colHeaders: true,
-        colWidths: [300, 150, 150, 150, 150, 150, 150],
-        stretchH: 'all',
-        height: '200px',
-        search: {
-            searchResultClass: 'search-result-custom'
+    data: data,
+    rowHeaders: true,
+    colWidths: [300, 150, 150, 150, 150, 150, 150],
+    colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
+    columns: [
+        {
+            type: 'dropdown',
+            source: uacs_data
         },
-        contextMenu: ['row_above', 'row_below', 'remove_row'],
-        beforeRemoveRow: function (index, column) {
-            @*var selection = this.getSelected();
-            var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][7];
-            if (holder_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("DeleteUacsamount", "Uacsamounts")',
-                    dataType: "JSON",
-                    data: { id: holder_id },
-                    success: function (output) {
-                        console.log(output);
-                    }
-                });
-            }
-            Lobibox.notify("warning", {
-                msg: "Your selected row was remove",
-                sound: false
-            });
-        },*@
-
-            var selection = this.getSelected();
-            var holder_data = this.getData();
-            var single_id = holder_data[selection[0][0]][7];
-
-            console.log(selection);
-            console.log(holder_data);
-            console.log(column);
-
-            var first_column = selection[0][0];
-            var last_column = selection[0][2];
-            console.log(first_column);
-            console.log(last_column);
-            var many_id = [];
-            for (var j = first_column; j <= last_column; j++) {
-                many_id.push({
-                    many_id: holder_data[j][7],
-                    many_token: guid() + holder_data[j][7]
-                })
-            }
-
-            if (single_id) {
-                var ajax_data = {
-                    "single_id": single_id,
-                    "many_id": many_id,
-                    "single_token": guid()
-                };
-
-                ajaxServer(ajax_data,'@Url.Action("DeleteUacsamount", "Uacsamounts")','warning','Successfully removed.');
-            }
+        {
+            readOnly: true
+        },
+        {
 
         },
-        afterUndo: function (index, column) {
-            Lobibox.notify("info", {
-                msg: "You are doing undo!",
-                sound: false
-            });
-            console.log(this.getData());
-        },
+        {
 
-        hiddenColumns: {
-            columns: [7,8],
-            indicators: true
         },
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Account_title: null, Expense_code: null, Amount: null, Total_disbursement: null, Total_net_amount: null, Total_tax_amount: null, Total_others: null },
-        columns: [
-            {
-                data: 'Account_title ', type: 'text',
-            },
-            { data: 'Expense_code', type: 'text' },
-            { data: 'Amount', type: 'numeric' },
-            { data: 'Total_disbursement', type: 'numeric' },
-            { data: 'Total_net_amount', type: 'numeric' },
-            { data: 'Total_tax_amount', type: 'numeric' },
-            { data: 'Total_others', type: 'numeric' },
-            { data: 'Id ', type: 'text' },
-            { data: 'token ', type: 'text' },
-        ]
-    });
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-        console.log(queryResult);
-        hot.render();
-    });
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+            //HIDDEN ID
+        },
+        {
+            //HIDDEN TOKEN
+        },
+    ],
+    stretchH: 'all',
+    height: 'auto',
+    search: {
+        searchResultClass: 'search-result-custom'
+    },
+    contextMenu: ['row_above', 'row_below', 'remove_row'],
+    beforeRemoveRow: function (index, column) {
+
+        var selection = this.getSelected();
+        var holder_data = this.getData();
+        var single_token = holder_data[selection[0][0]][8];
+        console.log(selection);
+        console.log(holder_data);
+        console.log(column);
+        var first_column = selection[0][0];
+        var last_column = selection[0][2];
+        console.log(first_column);
+        console.log(last_column);
+        var many_token = [];
+        for (var j = first_column; j <= last_column; j++) {
+            many_token.push({
+                many_token: holder_data[j][8]
+            })
+        }
+        if (single_token) {
+            var ajax_data = {
+                "single_token": single_token,
+                "many_token": many_token,
+            };
+            console.log(ajax_data);
+            ajaxServer(ajax_data,'@Url.Action("DeleteUacsamount", "Uacsamounts")');
+        }
+    },
+    afterUndo: function (index, column) {
+
+    },
+    afterCreateRow: function (row, column) {
+        console.log(row);
+        console.log(column);
+        hot.setDataAtCell(row, 8, guid());
+    },
+    afterChange: function (changes, source) {
+        if (source === 'loadData') {
+            return; //don't save this change
+        }
+        console.log(changes);
+        var ajax_data = [];
+        $(".obligation_amount").html();
+        obligation_amount = 0;
+        $.each(hot.getSourceData(), function () {
+            ajax_data.push(
+                {
+                    ObligationId: obligation_id,
+                    Account_title: this[0],
+                    Expense_code: this[1],
+                    Amount: this[2],
+                    Total_disbursement: this[3],
+                    Total_net_amount: this[4],
+                    Total_tax_amount: this[5],
+                    Total_others: this[6],
+                    Id: this[7],
+                    token: this[8] ? this[8] : guid(),
+                }
+                );
+            obligation_amount += parseInt(this[2]);
+        });
+        $(".obligation_amount").html(obligation_amount);
+
+        ajaxServer(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');
+    },
+    hiddenColumns: {
+        columns: [7,8],
+        indicators: true
+    },
+    licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+  });
+
     const exportPlugin = hot.getPlugin('exportFile');
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
@@ -245,85 +246,6 @@
         });
     });
 
-
-
-    hot.updateSettings({
-        colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID' ,'TOKEN'],
-        columns: [
-            {
-                type: 'dropdown',
-                source: uacs_data
-            },
-            {
-                readOnly: true
-            },
-            {
-                
-            },
-            {
-            },
-            {     
-            },
-            {
-            },
-            {
-            },
-            {
-                //HIDDEN ID
-            },
-            {
-                //HIDDEN TOKEN
-            },
-        ],
-    });
-        var tableData = JSON.stringify(hot.getSourceData());
-        console.log(hot.getSourceData());
-        var obligation_id = @Html.DisplayFor(model => model.Id);
-        document.onkeydown = function (e) {
-            if (e.ctrlKey && e.keyCode === 83) {
-                $('#loading_modal').modal('show');
-                var ajax_data = [];
-                $(".obligation_amount").html();
-                obligation_amount = 0;
-                $.each(hot.getSourceData(), function () {
-                    ajax_data.push(
-                        {
-                            ObligationId: obligation_id,
-                            Account_title: this[0],
-                            Expense_code: this[1],
-                            Amount: this[2],
-                            Total_disbursement: this[3],
-                            Total_net_amount: this[4],
-                            Total_tax_amount: this[5],
-                            Total_others: this[6],
-                            Id: this[7],
-                            token: this[8] ? this[8] : guid(),
-                        }
-                     );
-                    obligation_amount += parseInt(this[2]);
-                });
-            $(".obligation_amount").html(obligation_amount);
-
-            ajaxServer(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")', 'success', 'Sucessfully saved the new rows!');
-
-            return false;
-
-
-           @* $.ajax({
-                type: 'POST',
-                url: '@Url.Action("SaveUacsamount", "Uacsamounts")',
-                dataType: "JSON",
-                data: { data: ajax_data },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-            });
-            return false;*@
-        }
-    };
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 </script>

@@ -14,23 +14,25 @@
 }
 
 <input type="hidden" class="obligation" value="@ViewBag.temp">
-<h3 style="color: #438eb9;">Obligation </h3>
-<hr />
+<h3 class="grey lighter smaller">
+    (ORS) Obligation Report Summary
+</h3>
+<hr>
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
-<p style="color: #438eb9; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
+<br />
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
-
-
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="width:90%;">
         <div class="modal-content">
-            <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
+            <h3 style="margin-left:20px;" class="grey lighter smaller-150">
+                UACS Amount Entry / Disbursement
+            </h3>
             <div class="modal-body ObligationContent">
 
             </div>
@@ -46,10 +48,7 @@
     </div>
 </div>
 
-
-
 <script>
-
 
     let guid = () => {
         let s4 = () => {
@@ -60,8 +59,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-
-    function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
+    function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -77,43 +75,6 @@
             }
     });
 }
-
-    document.onkeydown = function (e) {
-        if (e.ctrlKey && e.keyCode === 83) {
-            $('#loading_modal').modal('show');
-            var ajax_data = [];
-            $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        Date: this[0] ? this[0] : "",
-                        Dv: this[1] ? this[1] : "",
-                        Pr_no: this[2] ? this[2] : "",
-                        Po_no: this[3] ? this[3] : "",
-                        Payee: this[4] ? this[4] : "",
-                        Address: this[5] ? this[5] : "",
-                        Particulars: this[6] ? this[6] : "",
-                        Ors_no: this[7] ? this[7] : "",
-                        Fund_source: this[8] ? this[8] : "",
-                        Gross: this[9] ? this[9] : "",
-                        Created_by: this[10] ? this[10] : "",
-                        Date_recieved: this[11] ? this[11] : "",
-                        Time_recieved: this[12] ? this[12] : "",
-                        Date_released: this[13] ? this[13] : "",
-                        Time_released: this[14] ? this[14] : "",
-                        Id: this[15] ? this[15] : "",
-                        token: this[16] ? this[16] : guid()
-                    }
-                );
-            });
-
-            ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")', 'success', 'Sucessfully saved the new rows!');
-
-            return false;
-
-        }
-    };
-
-
     var obligation = $.parseJSON($(".obligation").val());
 
     const data = [];
@@ -130,174 +91,7 @@
         width: '100%',
         colWidths: 108,
         rowHeaders: true,
-        colHeaders: true,
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: {
-            items: {
-                "make_bold": {
-                    name: 'Print ORS',
-                    callback: function (key, options) {
-                        var selection = this.getSelected();
-                        var tempdata = this.getData();
-                        var data = [];
-                        var url = '@Url.Action("Export", "FundSource")';
-                        window.open(url);
-                    }
-                },
-                "": {
-                    name: 'UACS Amount Entry / Disbmt.',
-                    callback: function (key, options) {
-                        $("#exampleModal").modal('show');
-                        $(".ObligationContent").html(loading);
-                        var selection = this.getSelected();
-                        var holder_data = this.getData();
-                        var holder_id = holder_data[selection[0][0]][15]
-
-                        $.ajax({
-                        type: 'GET',
-                        headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-                        url: '@Url.Action("ObligationModal", "Obligations")',
-                        data: { id: holder_id },
-                        success: function (output) {
-                            @*console.log(output);*@
-                            setTimeout(function () {
-                                $(".ObligationContent").html(output);
-                            }, 500);
-                        }
-                    });
-
-
-                    }
-                }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-            }
-        },
-        beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
-            var holder_data = this.getData();
-            var single_id = holder_data[selection[0][0]][15];
-
-            console.log(selection);
-            console.log(holder_data);
-            console.log(column);
-
-            var first_column = selection[0][0];
-            var last_column = selection[0][2];
-            console.log(first_column);
-            console.log(last_column);
-            var many_id = [];
-            for (var j = first_column; j <= last_column; j++) {
-                many_id.push({
-                    many_id: holder_data[j][15],
-                    many_token: guid() + holder_data[j][15]
-                })
-            }
-
-            if (single_id) {
-                var ajax_data = {
-                    "single_id": single_id,
-                    "many_id": many_id,
-                    "single_token": guid()
-                };
-
-                ajaxServer(ajax_data,'@Url.Action("DeleteConfirmed", "Obligations")','warning','Successfully removed.');
-            }
-
-        },
-        afterUndo: function (index, column) {
-            Lobibox.notify("info", {
-                msg: "You are doing undo!",
-                sound: false
-            });
-            console.log(this.getData());
-        },
-          @*  var selection = this.getSelected();
-            var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][15]
-
-            if (holder_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("DeleteConfirmed", "Obligations")',
-                    dataType: "JSON",
-                    data: { id: holder_id },
-                    success: function (output) {
-                        console.log(output);
-                    }
-                });
-            }
-
-            Lobibox.notify("warning", {
-                msg: "Your selected row was remove",
-                sound: false
-            });
-
-        },*@
-        height: 'auto',
-        hiddenColumns: {
-            columns: [15,16],
-            indicators: true
-        },
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use onlWy
-        dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payee: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null },
-        columns: [
-            { data: 'Date ', type: 'date' },
-            { data: 'Dv', type: 'text' },
-            { data: 'Pr_no', type: 'text' },
-            { data: 'Po_no', type: 'text' },
-            { data: 'Payee', type: 'text' },
-            { data: 'Address', type: 'text' },
-            { data: 'Particulars', type: 'text' },
-            { data: 'Ors_no', type: 'numeric' },
-            { data: 'Fund_source', type: 'text' },
-            { data: 'Gross', type: 'text' },
-            { data: 'Created_by', type: 'text' },
-            { data: 'Date_recieved', type: 'text' },
-            { data: 'Time_recieved', type: 'text' },
-            { data: 'Date_released', type: 'text' },
-            { data: 'Time_released', type: 'text' },
-            { data: 'Id ', type: 'text' },
-            { data: 'token ', type: 'text' }
-
-        ]
-    });
-
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-
-        console.log(queryResult);
-        hot.validateCells();
-    });
-
-    const exportPlugin = hot.getPlugin('exportFile');
-
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
-
-
-    hot.updateSettings({
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
-        cell: [
-            {
-                row: 0,
-                col: 0,
-                className: 'custom-cell',
-            },
-        ],
         columns: [
             {
                 type: 'date',
@@ -359,6 +153,7 @@
                 type: 'time',
                 timeFormat: 'h:mm:ss a',
                 correctFormat: true
+
             },
             {
                 //HIDDEN ID
@@ -366,18 +161,153 @@
             {
                 //HIDDEN TOKEN
             },
-        ]
+        ],
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: {
+            items: {
+                "make_bold": {
+                    name: 'Print ORS',
+                    callback: function (key, options) {
+                        var selection = this.getSelected();
+                        var tempdata = this.getData();
+                        var data = [];
+                        var url = '@Url.Action("Export", "FundSource")';
+                        window.open(url);
+                    }
+                },
+                "": {
+                    name: 'UACS Amount Entry / Disbmt.',
+                    callback: function (key, options) {
+                        $("#exampleModal").modal('show');
+                        $(".ObligationContent").html(loading);
+                        var selection = this.getSelected();
+                        var holder_data = this.getData();
+                        var holder_id = holder_data[selection[0][0]][15]
+
+                        $.ajax({
+                        type: 'GET',
+                        headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                        url: '@Url.Action("ObligationModal", "Obligations")',
+                        data: { id: holder_id },
+                        success: function (output) {
+                            @*console.log(output);*@
+                            setTimeout(function () {
+                                $(".ObligationContent").html(output);
+                            }, 500);
+                        }
+                    });
+                    }
+                }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+            }
+        },
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][16];
+
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][16]
+                })
+            }
+
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token
+                };
+
+                ajaxServer(ajax_data,'@Url.Action("DeleteObligationModal", "Obligations")');
+            }
+
+        },
+        afterUndo: function (index, column) {
+
+        },
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 16, guid());
+        },
+         afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return; //don't save this change
+            }
+            console.log(changes);
+              var ajax_data = [];
+              $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        Date: this[0] ? this[0] : "",
+                        Dv: this[1] ? this[1] : "",
+                        Pr_no: this[2] ? this[2] : "",
+                        Po_no: this[3] ? this[3] : "",
+                        Payee: this[4] ? this[4] : "",
+                        Address: this[5] ? this[5] : "",
+                        Particulars: this[6] ? this[6] : "",
+                        Ors_no: this[7] ? this[7] : "",
+                        Fund_source: this[8] ? this[8] : "",
+                        Gross: this[9] ? this[9] : "",
+                        Created_by: this[10] ? this[10] : "",
+                        Date_recieved: this[11] ? this[11] : "",
+                        Time_recieved: this[12] ? this[12] : "",
+                        Date_released: this[13] ? this[13] : "",
+                        Time_released: this[14] ? this[14] : "",
+                        Id: this[15] ? this[15] : "",
+                        token: this[16]
+                    }
+                );
+              });
+
+            ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+        },
+        height: 'auto',
+        hiddenColumns: {
+            columns: [15,16],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use onlWy
+
+    });
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.validateCells();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
 
-
 </script>
 
-
-
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

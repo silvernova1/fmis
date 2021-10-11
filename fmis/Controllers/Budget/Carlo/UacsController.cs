@@ -37,17 +37,15 @@ namespace fmis.Controllers
             public string token { get; set; }
         }
 
-        public class ManyId
+        public class Many
         {
-            public int many_id { get; set; }
             public string many_token { get; set; }
         }
 
         public class DeleteData
         {
-            public int single_id { get; set; }
             public string single_token { get; set; }
-            public List<ManyId> many_id { get; set; }
+            public List<Many> many_token { get; set; }
         }
 
         // GET: Uacs
@@ -98,7 +96,15 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-                if (item.Id == 0) //save
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+
+                    this._context.SaveChanges();
+                }
+                else if(item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs = new Uacs(); //clear object
                     uacs.Id = item.Id;
@@ -109,15 +115,7 @@ namespace fmis.Controllers
 
                     this._context.Uacs.Update(uacs);
                     this._context.SaveChanges();
-                }
-                else
-                { //update
-                    data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Expense_code = item.Expense_code;
-                    data_holder.Find(item.Id).status = "activated";
-
-                    this._context.SaveChanges();
-                }
+                }    
             }
 
             return Json(data);
@@ -224,21 +222,21 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUacs(DeleteData data)
         {
-            if (data.many_id.Count > 1)
+            if (data.many_token.Count > 1)
             {
                 var data_holder = this._context.Uacs;
-                foreach (var many in data.many_id)
+                foreach (var many in data.many_token)
                 {
-                    data_holder.Find(many.many_id).status = "deactivated";
-                    data_holder.Find(many.many_id).token = many.many_token;
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.Uacs;
-                data_holder.Find(data.single_id).status = "deactivated";
-                data_holder.Find(data.single_id).token = data.single_token;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }

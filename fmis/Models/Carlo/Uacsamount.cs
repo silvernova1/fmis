@@ -22,7 +22,5 @@ namespace fmis.Models
         public string token { get; set; }
 
 
-       
-
     }
 }
