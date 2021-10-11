@@ -18,7 +18,6 @@ using Rotativa.AspNetCore;
 
 namespace fmis.Controllers
 {
-
     public class UacsamountsController : Controller
     {
         private readonly UacsamountContext _context;
@@ -44,18 +43,14 @@ namespace fmis.Controllers
 
         public class ManyId
         {
-            public int many_id { get; set; }
             public string many_token { get; set; }
         }
 
         public class DeleteData
         {
-            public int single_id { get; set; }
             public string single_token { get; set; }
-            public List<ManyId> many_id { get; set; }
+            public List<ManyId> many_token { get; set; }
         }
-
-
 
         // GET: Uacs
         public IActionResult Index()
@@ -98,15 +93,27 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveUacsamount(List<UacsamountData> data)
         {
-          
-
             var data_holder = this._context.Uacsamount;
-
             foreach (var item in data)
             {
-                if (item.Id == 0)
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_disbursement = item.Total_disbursement;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_net_amount = item.Total_net_amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_tax_amount = item.Total_tax_amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_others = item.Total_others;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+
+                    this._context.SaveChanges();
+                }
+                else if ( (item.Account_title != null || item.Expense_code != null) && (item.Amount.ToString() != null ||
+                          item.Total_disbursement.ToString() != null) && (item.Total_net_amount.ToString() != null || 
+                          item.Total_tax_amount.ToString() != null) && (item.Total_others.ToString() != null)) //save
+                {
                     var uacsamount = new Uacsamount();
                     uacsamount.Id = item.Id;
                     uacsamount.ObligationId = item.ObligationId;
@@ -121,20 +128,6 @@ namespace fmis.Controllers
                     uacsamount.token = item.token;
 
                     this._context.Uacsamount.Update(uacsamount);
-                    this._context.SaveChanges();
-                }
-                else
-                {
-                    data_holder.Find(item.Id).ObligationId = item.ObligationId;
-                    data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Expense_code = item.Expense_code;
-                    data_holder.Find(item.Id).Amount = item.Amount;
-                    data_holder.Find(item.Id).Total_disbursement = item.Total_disbursement;
-                    data_holder.Find(item.Id).Total_net_amount = item.Total_net_amount;
-                    data_holder.Find(item.Id).Total_tax_amount = item.Total_tax_amount;
-                    data_holder.Find(item.Id).Total_others = item.Total_others;
-                    data_holder.Find(item.Id).status = "activated";
-
                     this._context.SaveChanges();
                 }
             }
@@ -242,21 +235,21 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUacsamount(DeleteData data)
         {
-            if (data.many_id.Count > 1)
+            if (data.many_token.Count > 1)
             {
                 var data_holder = this._context.Uacsamount;
-                foreach (var many in data.many_id)
+                foreach (var many in data.many_token)
                 {
-                    data_holder.Find(many.many_id).status = "deactivated";
-                    data_holder.Find(many.many_id).token = many.many_token;
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
-            { 
+            {
                 var data_holder = this._context.Uacsamount;
-                data_holder.Find(data.single_id).status = "deactivated";
-                data_holder.Find(data.single_id).token = data.single_token;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }
@@ -270,4 +263,3 @@ namespace fmis.Controllers
         }
     }
 }
-

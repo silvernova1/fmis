@@ -15,7 +15,5 @@ namespace fmis.Models
         public DateTime Created_at { get; set; }
         [DataType(DataType.Date)]
         public DateTime Updated_at { get; set; }
-
-
     }
 }

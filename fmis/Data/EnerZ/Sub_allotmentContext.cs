@@ -10,7 +10,7 @@ namespace fmis.Data
     public class Sub_allotmentContext : DbContext
     {
         public DbSet<fmis.Models.Sub_allotment> Sub_allotment { get; set; }
-        public DbSet<fmis.Models.Suballotment_amount> Suballotment_amount { get; set; }
+        public DbSet<fmis.Models.Uacs> Uacs { get; set; }
 
 
         /*  protected override void OnModelCreating(ModelBuilder modelBuilder)

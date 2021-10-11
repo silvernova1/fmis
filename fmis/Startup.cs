@@ -12,8 +12,6 @@ using fmis.Data;
 using Microsoft.AspNetCore.Mvc;
 using Rotativa.AspNetCore;
 using fmis.Data.John;
-using DinkToPdf.Contracts;
-using DinkToPdf;
 using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
 using fmis.Data.silver;
@@ -29,7 +27,7 @@ namespace fmis
             
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration;
 
 
 
@@ -37,7 +35,6 @@ namespace fmis
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddControllers();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -70,6 +67,8 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
             services.AddDbContext<Yearly_referenceContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
+            services.AddDbContext<AppropriationContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<MyDbContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();

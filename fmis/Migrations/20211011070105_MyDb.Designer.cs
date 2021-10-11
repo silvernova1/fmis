@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211011070105_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,15 +98,10 @@ namespace fmis.Migrations
                     b.Property<string>("Remember_Token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Requesting_officeId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Did");
-
-                    b.HasIndex("Requesting_officeId");
 
                     b.ToTable("Designation");
                 });
@@ -338,26 +335,246 @@ namespace fmis.Migrations
                     b.Property<int?>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Requesting_officeId")
-                        .HasColumnType("int");
+                    b.Property<string>("PBarangay")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PMunicipality")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PProvince")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PStreet")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PSubdivision")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PZip_code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Phouse_no")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Psitio")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RBarangay")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RHouse_no")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RMunicipality")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RProvince")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RStreet")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RSubdivision")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RZip_code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Rsitio")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("account_number")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("bbalance_cto")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("blood_type")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("case_address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("case_contact")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("case_name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("cellno")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("citizenship")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("civil_status")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("designation")
+                    b.Property<DateTime?>("date_of_birth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("designation_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("disbursement_type")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("division")
+                    b.Property<int?>("division_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("emall_address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("employee_status")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("field_status")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("fname")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("gsis_idno")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("full_name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("gsis_polnno")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("section")
+                    b.Property<string>("height")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("inactive_area")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("indicate_country")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("job_status")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("lname")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("mname")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("name_ext")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("pagibig_no")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("phic_no")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("picture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("place_of_birth")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("region")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("region_zip")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("residential_address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("residential_municipality")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("residential_province")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("resigned_effectivity")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("salary_charge")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("sched")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("section_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("sex")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("sick_balance")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("signature")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("sss_no")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("telno")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("tin_no")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("updated_at")
                         .HasColumnType("datetime2");
@@ -366,11 +583,17 @@ namespace fmis.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("vacation_balance")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("weight")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.HasKey("Pid");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
-
-                    b.HasIndex("Requesting_officeId");
 
                     b.ToTable("Personal_Information");
                 });
@@ -412,13 +635,28 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Did")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Head_name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Pid")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("pi_userid")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("Did")
+                        .IsUnique();
+
+                    b.HasIndex("Pid")
+                        .IsUnique();
 
                     b.ToTable("Requesting_office");
                 });
@@ -685,15 +923,6 @@ namespace fmis.Migrations
                     b.Navigation("Yearly_reference");
                 });
 
-            modelBuilder.Entity("fmis.Models.Designation", b =>
-                {
-                    b.HasOne("fmis.Models.Requesting_office", "Requesting_office")
-                        .WithMany()
-                        .HasForeignKey("Requesting_officeId");
-
-                    b.Navigation("Requesting_office");
-                });
-
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
@@ -753,13 +982,26 @@ namespace fmis.Migrations
                         .WithMany("Personal_Information")
                         .HasForeignKey("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasOne("fmis.Models.Requesting_office", "Requesting_office")
-                        .WithMany()
-                        .HasForeignKey("Requesting_officeId");
-
                     b.Navigation("Budget_allotment");
+                });
 
-                    b.Navigation("Requesting_office");
+            modelBuilder.Entity("fmis.Models.Requesting_office", b =>
+                {
+                    b.HasOne("fmis.Models.Designation", "Designation")
+                        .WithOne("Requesting_office")
+                        .HasForeignKey("fmis.Models.Requesting_office", "Did")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.Personal_Information", "Personal_Information")
+                        .WithOne("Requesting_office")
+                        .HasForeignKey("fmis.Models.Requesting_office", "Pid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Designation");
+
+                    b.Navigation("Personal_Information");
                 });
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
@@ -800,6 +1042,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
                     b.Navigation("Ors_head");
+
+                    b.Navigation("Requesting_office");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
@@ -810,6 +1054,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
                 {
                     b.Navigation("Ors_head");
+
+                    b.Navigation("Requesting_office");
                 });
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>

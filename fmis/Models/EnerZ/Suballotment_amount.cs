@@ -15,8 +15,6 @@ namespace fmis.Models
         public int Expenses { get; set; }
         public float Amount { get; set; }
         public int Fund_source { get; set; }
-        public string status { get; set; }
-        public string token { get; set; }
 
         public Sub_allotment Sub_allotment { get; set; }
 

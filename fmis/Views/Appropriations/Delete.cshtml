@@ -1,4 +1,5 @@
-﻿@model fmis.Models.John.AllotmentClass
+﻿@model fmis.Models.Appropriation
+
 
 <br />
 <center>
@@ -10,14 +11,14 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Allotment Class</th>
-                    <th scope="col">Account Code</th>
+                    <th scope="col">Description </th>
+                    <th scope="col">Appropriation Code</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>@Html.DisplayFor(model => model.Allotment_Class)</td>
-                    <td>@Html.DisplayFor(model => model.Account_Code)</td>
+                    <td>@Html.DisplayFor(model => model.Description)</td>
+                    <td>@Html.DisplayFor(model => model.Code)</td>
                 </tr>
             </tbody>
         </table>
@@ -26,13 +27,9 @@
             <form asp-action="Delete">
                 <input type="hidden" asp-for="Id" />
                 <input type="submit" value="Delete" class="btn btn-danger btn-sm" /> |
-                <a data-dismiss="modal" class="btn btn-default btn-sm">Back to List</a>
+                <a data-dismiss="modal" class="btn btn-default btn-sm" >Back to List</a>
                 <hr />
             </form>
         </center>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

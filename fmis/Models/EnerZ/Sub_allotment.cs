@@ -19,10 +19,9 @@ namespace fmis.Models
         public int Ors_head { get; set; }
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
-        public int Budget_allotmentBudgetAllotmentId { get; set; }
 
         [ForeignKey("Prexc")]
-        public int Id { get; set; }
+        public int PId { get; set; }
         public Prexc Prexc { get; set; }
 
 

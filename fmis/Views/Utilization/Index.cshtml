@@ -1,93 +1,78 @@
 ﻿@model IEnumerable<fmis.Models.Utilization>
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@functions{
-    public string GetAntiXsrfRequestToken()
-    {
-        return Xsrf.GetAndStoreTokens(Context).RequestToken;
-    }
-}
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+
+
+
 
 <input type="hidden" class="utilization" value="@ViewBag.temp">
-<h5>UTILIZATION</h5>
+<h3 class="grey lighter smaller">
+   Utilization
+</h3>
+<hr />
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
-<p style="color: cornflowerblue; ">Please <b>ENTER</b> first then <b>CTRL + S</b> for saving the data.</p>
+<br />
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
+            <div class="modal-body ObligationModal">
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-success">Save</button>
+                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
-
-
-    let guid = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-
-    function ajaxServer(ajax_data, url, lobi_type, lobi_msg) {
-        $.ajax({
-            type: 'POST',
-            url: url,
-            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { data: ajax_data },
-            success: function (output) {
-                $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
-                console.log(output);
-            }
-    });
-}
 
     document.onkeydown = function (e) {
         if (e.ctrlKey && e.keyCode === 83) {
             $('#loading_modal').modal('show');
-            var ajax_data = [];
+
+            var json = [];
             $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        Date: this[0] ? this[0] : "",
-                        Dv: this[1] ? this[1] : "",
-                        Pr_no: this[2] ? this[2] : "",
-                        Po_no: this[3] ? this[3] : "",
-                        Payer: this[4] ? this[4] : "",
-                        Address: this[5] ? this[5] : "",
-                        Particulars: this[6] ? this[6] : "",
-                        Ors_no: this[7] ? this[7] : "",
-                        Fund_source: this[8] ? this[8] : "",
-                        Gross: this[9] ? this[9] : "",
-                        Created_by: this[10] ? this[10] : "",
-                        Date_recieved: this[11] ? this[11] : "",
-                        Time_recieved: this[12] ? this[12] : "",
-                        Date_released: this[13] ? this[13] : "",
-                        Time_released: this[14] ? this[14] : "",
-                        Id: this[15] ? this[15] : "",
-                        token: this[16] ? this[16] : guid()
-                    }
-                );
+                json.push({ Date: this[0], Dv: this[1], Pr_no: this[2], Po_no: this[3], Payer: this[4], Address: this[5], Particulars: this[6], Ors_no: this[7], Fund_source: this[8], Gross: this[9], Created_by: this[10], Date_recieved: this[11], Time_recieved: this[12], Date_released: this[13], Time_released: this[14], Id: this[15] } );
             });
 
-            ajaxServer(ajax_data, '@Url.Action("SaveUtilization", "Utilization")', 'success', 'Sucessfully saved the new rows!');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SaveUtilization", "Utilization")',
+                dataType: "JSON",
+                data: { data: json },
+                success: function (output) {
+                    $('#loading_modal').modal('hide');
+                    Lobibox.notify("success", {
+                        msg: "Successfully Saved...",
+                        sound: false
+                    });
+                    console.log(output);
+                }
+            });
 
             return false;
-
         }
     };
 
@@ -97,7 +82,7 @@
     const data = [];
     var counter = 0;
     $.each(utilization, function () {
-        data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payer, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id, this.token]
+        data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payer, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -106,7 +91,7 @@
     const hot = new Handsontable(container, {
         data: data,
         width: '100%',
-        colWidths: 108,
+        colWidths: 105,
         rowHeaders: true,
         colHeaders: true,
         search: {
@@ -116,55 +101,39 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_id = holder_data[selection[0][0]][15];
+            var holder_id = holder_data[selection[0][0]][15]
 
-            console.log(selection);
-            console.log(holder_data);
-            console.log(column);
-
-            var first_column = selection[0][0];
-            var last_column = selection[0][2];
-            console.log(first_column);
-            console.log(last_column);
-            var many_id = [];
-            for (var j = first_column; j <= last_column; j++) {
-                many_id.push({
-                    many_id: holder_data[j][15],
-                    many_token: guid() + holder_data[j][15]
-                })
+            if (holder_id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeleteUtilization", "Utilization")',
+                    dataType: "JSON",
+                    data: { id: holder_id },
+                    success: function (output) {
+                        console.log(output);
+                    }
+                });
             }
 
-            if (single_id) {
-                var ajax_data = {
-                    "single_id": single_id,
-                    "many_id": many_id,
-                    "single_token": guid()
-                };
-
-                ajaxServer(ajax_data,'@Url.Action("DeleteUtilization", "Utilization")','warning','Successfully removed.');
-            }
-
-        },
-        afterUndo: function (index, column) {
-            Lobibox.notify("info", {
-                msg: "You are doing undo!",
+            Lobibox.notify("warning", {
+                msg: "Your selected row was remove",
                 sound: false
             });
-            console.log(this.getData());
+
         },
         height: 'auto',
         hiddenColumns: {
-            columns: [15, 16],
+            columns: [15],
             indicators: true
         },
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use onlWy
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
         dataSchema: { Date: null, Dv: null, Pr_no: null, Po_no: null, Payer: null, Address: null, Particulars: null, Ors_no: null, Fund_source: null, Gross: null, Created_by: null, Date_recieved: null, Time_recieved: null, Date_released: null, Time_released: null },
         columns: [
             { data: 'Date ', type: 'date' },
             { data: 'Dv', type: 'text' },
             { data: 'Pr_no', type: 'text' },
             { data: 'Po_no', type: 'text' },
-            { data: 'Payer', type: 'text' },
+            { data: 'Payee', type: 'text' },
             { data: 'Address', type: 'text' },
             { data: 'Particulars', type: 'text' },
             { data: 'Ors_no', type: 'numeric' },
@@ -175,11 +144,11 @@
             { data: 'Time_recieved', type: 'text' },
             { data: 'Date_released', type: 'text' },
             { data: 'Time_released', type: 'text' },
-            { data: 'Id ', type: 'text' },
-            { data: 'token ', type: 'text' }
+            { data: 'Id ', type: 'text' }
 
         ]
     });
+
     Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
@@ -206,7 +175,7 @@
     });
 
     hot.updateSettings({
-        colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYER', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
+        colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYER', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID'],
         cell: [
             {
                 row: 0,
@@ -218,11 +187,9 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
-                correctFormat: true,
-                defaultDate: Date.now()
             },
             {
-                // 2nd cell is simple text, no special options here
+
             },
             {
 
@@ -276,12 +243,11 @@
                 timeFormat: 'h:mm:ss a',
                 correctFormat: true
             },
+
             {
-                //HIDDEN ID
+
             },
-            {
-                //HIDDEN TOKEN
-            },
+
         ]
     });
 

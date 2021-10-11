@@ -27,7 +27,7 @@ using fmis.Filters;
 
 namespace fmis.Controllers
 {
-    [Authorize]
+
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
@@ -78,7 +78,9 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
+
             [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -90,28 +92,38 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
+
+
             [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_recieved { get; set; }
+
             [DataType(DataType.Time)]
+            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
             public DateTime Time_recieved { get; set; }
+
             [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_released { get; set; }
-            [DataType(DataType.Time)]
+
+            [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Time_released { get; set; }
+
             public string token { get; set; }
+            public string status { get; set; }
+            
         }
 
         public class ManyId
         {
-            public int many_id { get; set; }
             public string many_token { get; set; }
         }
 
         public class DeleteData
         {
-            public int single_id { get; set; }
             public string single_token { get; set; }
-            public List<ManyId> many_id { get; set; }
+            public List<ManyId> many_token { get; set; }
         }
 
         // GET: Obligations
@@ -205,9 +217,35 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-                if (item.Id == 0)//SAVE
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = item.Date;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Payee = item.Payee;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Address = item.Address;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = item.Date_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = item.Time_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+
+                    this._context.SaveChanges();
+
+
+                }
+                else if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
+                         item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
+                         item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
+                         (item.Time_recieved.ToString() != null || item.Date_released.ToString() != null) && (item.Time_released.ToString() != null)) //save
+                {
+                    //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
                     obligation.Date = item.Date;
@@ -229,27 +267,6 @@ namespace fmis.Controllers
                     obligation.token = item.token;
 
                     this._context.Obligation.Update(obligation);
-                    this._context.SaveChanges();
-                }
-                else
-                {
-                    //UPDATE
-                    data_holder.Find(item.Id).Date = item.Date;
-                    data_holder.Find(item.Id).Dv = item.Dv;
-                    data_holder.Find(item.Id).Pr_no = item.Pr_no;
-                    data_holder.Find(item.Id).Payee = item.Payee;
-                    data_holder.Find(item.Id).Address = item.Address;
-                    data_holder.Find(item.Id).Particulars = item.Particulars;
-                    data_holder.Find(item.Id).Ors_no = item.Ors_no;
-                    data_holder.Find(item.Id).Fund_source = item.Fund_source;
-                    data_holder.Find(item.Id).Gross = item.Gross;
-                    data_holder.Find(item.Id).Created_by = item.Created_by;
-                    data_holder.Find(item.Id).Date_recieved = item.Date_recieved;
-                    data_holder.Find(item.Id).Time_recieved = item.Time_recieved;
-                    data_holder.Find(item.Id).Date_released = item.Date_released;
-                    data_holder.Find(item.Id).Time_released = item.Time_released;
-                    data_holder.Find(item.Id).status = "activated";
-
                     this._context.SaveChanges();
                 }
             }
@@ -279,13 +296,9 @@ namespace fmis.Controllers
         public ActionResult AddObligation(IEnumerable<Obligation> ObligationsInput)
 
         {
-
             var p = ObligationsInput;
             return null;
-
         }
-
-
 
         // GET: Obligations/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -359,23 +372,23 @@ namespace fmis.Controllers
         // POST: Obligations/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> DeleteConfirmed(DeleteData data)
+        public async Task <IActionResult> DeleteObligationModal(DeleteData data)
         {
-            if (data.many_id.Count > 1)
+            if (data.many_token.Count > 1)
             {
                 var data_holder = this._context.Obligation;
-                foreach (var many in data.many_id)
+                foreach (var many in data.many_token)
                 {
-                    data_holder.Find(many.many_id).status = "deactivated";
-                    data_holder.Find(many.many_id).token = many.many_token;
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.Obligation;
-                data_holder.Find(data.single_id).status = "deactivated";
-                data_holder.Find(data.single_id).token = data.single_token;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }

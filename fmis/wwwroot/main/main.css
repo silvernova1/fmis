@@ -4,6 +4,7 @@
 }
 
 .htCore tbody tr td, .htCore thead tr th, body {
+    
 }
 
 
@@ -16,3 +17,4 @@
 .modal-body {
     overflow-x: auto;
 }
+

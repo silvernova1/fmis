@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -20,17 +21,10 @@ namespace fmis.Controllers
         }
 
         // GET: Appropriations
-     /*   public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            ViewBag.Layout = "_Layout";
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             return View(await _context.Appropriation.ToListAsync());
-           
-        }*/
-
-        public IActionResult Index()
-        {
-            ViewBag.Layout = "_Layout";
-            return View("~/Views/Carlo/Appropriations/Index.cshtml");
         }
 
         // GET: Appropriations/Details/5
@@ -48,14 +42,13 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            ViewBag.Layout = "_Layout";
             return View(appropriation);
         }
 
         // GET: Appropriations/Create
         public IActionResult Create()
         {
-           
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             return View();
         }
 
@@ -66,19 +59,20 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
         {
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             if (ModelState.IsValid)
             {
                 _context.Add(appropriation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-          
             return View(appropriation);
         }
 
         // GET: Appropriations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             if (id == null)
             {
                 return NotFound();
@@ -89,7 +83,6 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-          
             return View(appropriation);
         }
 
@@ -100,6 +93,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
         {
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             if (id != appropriation.Id)
             {
                 return NotFound();
@@ -125,13 +119,13 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Layout = "_Layout";
             return View(appropriation);
         }
 
         // GET: Appropriations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             if (id == null)
             {
                 return NotFound();
@@ -144,7 +138,6 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-         
             return View(appropriation);
         }
 
@@ -153,6 +146,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
             var appropriation = await _context.Appropriation.FindAsync(id);
             _context.Appropriation.Remove(appropriation);
             await _context.SaveChangesAsync();

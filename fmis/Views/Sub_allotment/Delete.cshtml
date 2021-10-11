@@ -5,7 +5,7 @@
     Layout = null;
 }
 
-<center><h4>Are you sure you want to delete this Sub Allootment?</h4></center>
+<center><h4>Are you sure you want to delete this Sub Allotment?</h4></center>
 <div>
     <hr />
     @*<dl class="dl-horizontal">
@@ -42,7 +42,7 @@
         </dl>*@
     <center>
         <form asp-action="Delete">
-            <input type="hidden" asp-for="SubId" />
+
             <input type="submit" value="Delete" class="btn btn-danger" />
             <a asp-action="Index" asp-controller="Budget_allotments" class="btn btn-info">Back to List</a>
         </form>
