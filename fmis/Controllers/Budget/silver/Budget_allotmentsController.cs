@@ -39,54 +39,8 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
             return View(await ballots.ToListAsync());
-        }
 
-        // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            PopulateHeadDropDownList();
-
-            List<Ors_head> oh = new List<Ors_head>();
-
-            oh = (from c in _orssContext.Ors_head select c).ToList();
-            oh.Insert(0, new Ors_head { Id = 0, Head_name = "--Select ORS Head--" });
-
-            ViewBag.message = oh;
-            ViewBag.BudgetId = id;
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var budget_allotment = await _context.Budget_allotments
-                .Include(s => s.FundSources)
-                .Include(s => s.Personal_Information)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
-            if (budget_allotment == null)
-            {
-                return NotFound();
-            }
-
-            return View(budget_allotment);
-        }
-
-        // Populate Ord Head
-        private void PopulateHeadDropDownList(object selectedPrexc = null)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var prexsQuery = from d in _context.Personal_information
-                             orderby d.userid
-                             select d;
-
-            ViewBag.Pid = new SelectList((from s in _context.Personal_information.ToList()
-                                          select new
-                                          {
-                                              Pid = s.Pid,
-                                              ps = s.fname + " " + s.mname + " " + s.lname
-                                          }),
-                                         "Pid", "ps",
-                                         null);
+          /*  return View("~/Views/silver/Budget_allotments/Index.cshtml", await _context.Budget_allotments.ToListAsync());*/
         }
 
         // GET: Budget_allotments/Create
@@ -104,7 +58,8 @@ namespace fmis.Controllers
                              orderby d.YearlyReference
                              select d;
             ViewBag.YearlyReferenceId = new SelectList((from s in _context.Yearly_reference.ToList()
-                                         select new
+                                        where !_context.Budget_allotments.Any(ro => ro.YearlyReferenceId == s.YearlyReferenceId)
+                                        select new
                                          {
                                              YearlyReferenceId = s.YearlyReferenceId,
                                              yr = s.YearlyReference
@@ -144,6 +99,8 @@ namespace fmis.Controllers
             PopulateYrDropDownList(budget_allotment.YearlyReferenceId);
             return View(budget_allotment);
         }
+
+         
         // GET: Budget_allotments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

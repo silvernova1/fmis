@@ -19,9 +19,9 @@ namespace fmis.Controllers
 {
     public class UploadFileController : Controller
     {
-        private PersonalInformationContext Context { get; }
+        private Data.silver.PersonalInformationMysqlContext Context { get; }
 
-        public UploadFileController(PersonalInformationContext _context)
+        public UploadFileController(Data.silver.PersonalInformationMysqlContext _context)
         {
             this.Context = _context;
         }
@@ -121,7 +121,7 @@ namespace fmis.Controllers
                         else if (col == 2)
                             personal_information.userid = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 3)
-                            personal_information.picture = checkExcel(worksheet.Cells[row, col].Text as string);
+                           /* personal_information.picture = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 4)
                             personal_information.signature = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 5)
@@ -246,7 +246,7 @@ namespace fmis.Controllers
                             personal_information.resigned_effectivity = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 71)
                             personal_information.Rsitio = checkExcel(worksheet.Cells[row, col].Text as string);
-                        else if (col == 67)
+                        else if (col == 67)*/
                             personal_information.created_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 68)
                             personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
@@ -257,8 +257,8 @@ namespace fmis.Controllers
                     personal_informations.Add(personal_information);
 
                     if (!string.IsNullOrWhiteSpace(personal_information.userid)) {
-                        this.Context.Personal_Information.Add(personal_information);
-                        this.Context.SaveChanges();
+                        /*this.Context.Personal_Information.Add(personal_information);
+                        this.Context.SaveChanges();*/
                     }
                         
                     //sb.Append(Environment.NewLine);

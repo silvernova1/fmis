@@ -108,13 +108,13 @@ namespace fmis.Data
             modelBuilder.Entity<Designation>()
            .HasKey(s => s.Did);
 
-            modelBuilder.Entity<Requesting_office>()
+           /* modelBuilder.Entity<Requesting_office>()
             .HasOne<Personal_Information>(p => p.Personal_Information)
-            .WithOne(s => s.Requesting_office);
+            .WithOne(s => s.Requesting_office);*/
 
-            modelBuilder.Entity<Requesting_office>()
+           /* modelBuilder.Entity<Requesting_office>()
             .HasOne<Designation>(d => d.Designation)
-            .WithOne(s => s.Requesting_office);
+            .WithOne(s => s.Requesting_office);*/
 
             //Yearylyref
 

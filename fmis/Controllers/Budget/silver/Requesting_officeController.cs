@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
+using fmis.Data.silver;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
@@ -14,100 +15,92 @@ namespace fmis.Controllers.Budget.silver
 {
     public class Requesting_officeController : Controller
     {
-        private readonly Requesting_officeContext _context;
-        private readonly PersonalInformationContext _PContext;
+        private readonly RequestingOfficeContext _context;
         private readonly DesignationContext _DContext;
+        private readonly PersonalInformationMysqlContext _pis_context;
 
-        public Requesting_officeController(Requesting_officeContext context, PersonalInformationContext PContext, DesignationContext DContext)
+        public Requesting_officeController(RequestingOfficeContext context, DesignationContext DContext, PersonalInformationMysqlContext pis_context)
         {
             _context = context;
-            _PContext = PContext;
             _DContext = DContext;
+            _pis_context = pis_context;
         }
 
         // GET: Requesting_office
-        public async Task<IActionResult> Index(int? id)
+        public IActionResult Index(int? id)
         {
             ViewBag.PsId = id;
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-            var reqoffices = _context.Requesting_office
-            .Include(c => c.Personal_Information)
-            .Include(d => d.Designation)
-            .AsNoTracking();
-            return View(await reqoffices.ToListAsync());
 
-            //return View(await _context.Requesting_office.ToListAsync());
+            var requesting_office = _context.Requesting_office.ToList();
+
+            string concat_userid = "(";
+            int count = 0;
+            foreach (var item in requesting_office)
+            {
+                count++;
+
+                if (count == 1)
+                    concat_userid += "'" + item.pi_userid + "'";
+                else
+                    concat_userid += ",'" + item.pi_userid + "'";
+            }
+
+            concat_userid += ")";
+
+            if (requesting_office.Count < 1)
+                concat_userid = "('')"; //default condition para sa mysql
+
+            return View(_pis_context.forRequestingOffice(concat_userid));
+        }
+
+        public IActionResult Information()
+        {
+            var pi_userid_existing = _pis_context.findPersonalInformation("0454");
+
+            return Json(pi_userid_existing);
         }
 
         // GET: Requesting_office/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(string pi_userid)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             ViewBag.layout = "_Layout";
-            if (id == null)
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            if (pi_userid == "")
             {
                 return NotFound();
             }
-            var requesting_office = await _context.Requesting_office
-                .FirstOrDefaultAsync(m => m.Id == id);
+            PersonalInformationMysqlContext mysql_context = HttpContext.RequestServices.GetService(typeof(PersonalInformationMysqlContext)) as PersonalInformationMysqlContext;
+            var requesting_office = mysql_context.findPersonalInformation(pi_userid);
+
             if (requesting_office == null)
             {
                 return NotFound();
             }
             return View(requesting_office);
         }
+
         // GET: Requesting_office/Create
-        public IActionResult Create(int? id)
+        public IActionResult Create()
         {
-            ViewBag.layout = "_Layout";
-            PopulatePsDropDownList();
-            PopulateDsDropDownList();
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-
-            /*List<Personal_Information> oh = new List<Personal_Information>();
-
-            oh = (from c in _Context.Personal_Information select c).ToList();
-            oh.Insert(0, new Personal_Information { id = 0, fname = "--SelectA Ice cream--" });
-
-            ViewBag.message = oh;
-            ViewBag.layout = "_Layout";*/
+            PopulatePsDropDownList();
             return View();
         }
+
         // POST: Requesting_office/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Head_name,Position,Created_at,Updated_at,Pid,Did")] Requesting_office requesting_office)
+        public async Task<IActionResult> Create([Bind("Id,pi_userid")] Requesting_office requesting_office)
         {
-            /*if (Ors_head.Id == 0)
-           {
-
-               ModelState.AddModelError("", "Select ORS Head");
-
-           }
-
-           int SelectValue = Ors_head.Id;
-           ViewBag.SelectedValue = Ors_head.Id;*/
-
-            /*List<Prexc> p = new List<Prexc>();
-
-            p = (from c in _pContext.Prexc select c).ToList();
-            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
-
-            ViewBag.message = p;*/
-
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-
             try
             {
                 if (ModelState.IsValid)
                 {
-                    List<Prexc> p = new List<Prexc>();
-
-
-
                     _context.Add(requesting_office);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -115,45 +108,42 @@ namespace fmis.Controllers.Budget.silver
             }
             catch (RetryLimitExceededException /* dex */)
             {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
-            PopulatePsDropDownList(requesting_office.Pid);
-            PopulateDsDropDownList(requesting_office.Did);
-            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
-
+            PopulatePsDropDownList();
             return View(requesting_office);
             /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
+
         // GET: Requesting_office/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string pi_userid)
         {
-            ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-            if (id == null)
+            var Requesting_office = await _context.Requesting_office
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.pi_userid == pi_userid);
+
+            ViewBag.pi_userid_existing = _pis_context.findPersonalInformation("'" + pi_userid + "'");
+
+            PopulatePsDropDownList();
+
+            if (Requesting_office == null)
             {
                 return NotFound();
             }
-            var requesting_office = await _context.Requesting_office.FindAsync(id);
-            if (requesting_office == null)
-            {
-                return NotFound();
-            }
-            return View(requesting_office);
+
+            return View(Requesting_office);
         }
+
         // POST: Requesting_office/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Head_name,Position,Created_at,Updated_at")] Requesting_office requesting_office)
+        public async Task<IActionResult> Edit([Bind("Id,pi_userid")] Requesting_office requesting_office)
         {
-            ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-            if (id != requesting_office.Id)
-            {
-                return NotFound();
-            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -174,80 +164,53 @@ namespace fmis.Controllers.Budget.silver
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(requesting_office);
         }
 
         // Personal Information Dropdown
-
-        private void PopulatePsDropDownList(object selectedPrexc = null)
+        private void PopulatePsDropDownList()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-            var prexsQuery = from d in _PContext.Personal_Information
-                             orderby d.userid
-                             select d;
-
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
-
-            ViewBag.Pid = new SelectList((from s in _PContext.Personal_Information.ToList()
-                                         select new
-                                         {
-                                             Pid = s.Pid,
-                                             ps = s.fname + " " +  s.mname + " " + s.lname
-                                         }),
-       "Pid",
-       "ps",
-       null);
+            ViewBag.pi_userid = new SelectList((from s in _pis_context.allPersonalInformation()
+                                                where !_context.Requesting_office.Any(ro => ro.pi_userid == s.userid)
+                                                select new
+                                                {
+                                                    pi_userid = s.userid,
+                                                    ps = s.full_name
+                                                }),
+                                          "pi_userid",
+                                          "ps",
+                                           null);
 
         }
 
-        private void PopulateDsDropDownList(object selectedPrexc = null)
-        {
-            var prexsQuery = from d in _DContext.Designation
-                             orderby d.Description
-                             select d;
-
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
-
-            ViewBag.Did = new SelectList((from s in _DContext.Designation.ToList()
-                                          select new
-                                          {
-                                              Did = s.Did,
-                                              ds = s.Description
-                                          }),
-       "Did",
-       "ds",
-       null);
-
-        }
-
-
-
-
-
-
-        // GET: Requesting_office/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string pi_userid)
         {
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
-            ViewBag.layout = "_Layout";
-            if (id == null)
-            {
-                return NotFound();
-            }
+    
+
+            ViewBag.pi_userid_existing = _pis_context.findPersonalInformation("'" + pi_userid + "'");
+
+            //return Json(ViewBag.pi_userid_existing.full_name);
+
             var requesting_office = await _context.Requesting_office
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.pi_userid == pi_userid);
+
+            PopulatePsDropDownList();
+
             if (requesting_office == null)
             {
                 return NotFound();
             }
+
             return View(requesting_office);
         }
+
         // POST: Requesting_office/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             var requesting_office = await _context.Requesting_office.FindAsync(id);
             _context.Requesting_office.Remove(requesting_office);
             await _context.SaveChangesAsync();
@@ -256,8 +219,8 @@ namespace fmis.Controllers.Budget.silver
 
         private bool Requesting_officeExists(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             return _context.Requesting_office.Any(e => e.Id == id);
         }
+
     }
 }
