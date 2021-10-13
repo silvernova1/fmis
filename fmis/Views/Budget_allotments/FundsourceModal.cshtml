@@ -1,27 +1,12 @@
 ﻿@model fmis.Models.Budget_allotment
 
 @{
+    ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3 style="color: #438eb9;">Fund Source List</h3>
+<h2>Fund Source List</h2>
 <hr />
-
-<div class="modal fade" id="fundsourcemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <h4 style="margin-top:20px; margin-left:20px; ">Uacs Amount Entry / Disbursement</h4>
-            <div class="modal-footer">
-                @*   <button type="button" class="btn btn-sm btn-success">
-                    Save <i class="ace-icon fa fa-save"></i>
-                </button>*@
-                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
-                    Close <i class="ace-icon fa fa-close"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
@@ -42,14 +27,9 @@
         </div>
     </div>
 </div>
-
 <p>
-    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#fundsourcemodal">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </a>
-    | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
 </p>
-<br />
 <table class="table">
     <thead>
         <tr>
@@ -83,17 +63,11 @@
                     <select class="form-control" asp-for="BudgetAllotmentId" asp-items="@(new SelectList(ViewBag.message,"Id","Head_name"))"></select>
                 </td>
                 <td>
-                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-primary btn-sm">
-                        <i class="ace-icon fa fa-edit"></i>Edit
-                    </a>
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">
-                        <i class="ace-icon fa fa-trash"></i>Delete
-                    </a>
+                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-info btn-sm">
-                        <i class="ace-icon fa fa-exchange"></i>Funds Realignment
-                    </a>
+                    <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
                 </td>
             </tr>
         }

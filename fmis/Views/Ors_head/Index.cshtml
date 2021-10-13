@@ -25,9 +25,9 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+               @* <td>
                     @Html.DisplayFor(modelItem => item.Personal_Information.fname) @Html.DisplayFor(modelItem => item.Personal_Information.mname) @Html.DisplayFor(modelItem => item.Personal_Information.lname)
-                </td>
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Designation.Description)
                 </td>

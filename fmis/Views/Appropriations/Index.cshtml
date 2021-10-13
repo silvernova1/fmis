@@ -1,0 +1,81 @@
+﻿
+@model IEnumerable<fmis.Models.Appropriation>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--EDIT MODAL-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<h3 class="grey lighter smaller">
+    Appropriation 
+</h3>
+<hr>
+<p>
+    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Appropriation Code
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.Id">
+                        <i class="ace-icon fa fa-edit"></i>Edit</a> |
+                    <a asp-action="Delete" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#DeleteModal" asp-route-id="@item.Id">
+                        <i class="ace-icon fa fa-trash"></i>Delete
+                        </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

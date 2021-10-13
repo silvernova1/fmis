@@ -1,0 +1,219 @@
+﻿
+@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<input type="hidden" class="fundsrealignment" value="@ViewBag.temp">
+<div class="alert alert-block alert-success">
+    <p>Funds Realignment</p>
+</div>
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+<br />
+<br />
+<br />
+<div id="example" class="hot"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
+</div>
+<script>
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+     function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify(lobi_type, {
+                    msg: lobi_msg,
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+    }
+
+    var fundsrealignment = $.parseJSON($(".fundsrealignment").val());
+    const data = [];
+    var counter = 0;
+    $.each(fundsrealignment, function () {
+        data[counter] = [this.Realignment_from, this.Realignment_from, this.Realignment_amount, this.Id, this.token]
+        counter++;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        colWidths: [350, 350, 350],
+        rowHeaders: true,
+        colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
+        columns: [
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+
+        ],
+        undo: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][4];
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][4]
+                })
+            }
+
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+
+                ajaxServer(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
+            }
+
+        },
+        afterUndo: function (index, column) {
+
+        },
+        afterCreateRow: function (row, column) {
+
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 4, guid());
+        },
+        afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return; //don't save this change
+            }
+
+            console.log(changes);
+
+            var ajax_data = [];
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        Realignment_from: this[0] ? this[0] : " ",
+                        Realignment_to: this[1] ? this[1] : " ",
+                        Realignment_amount: this[2] ? this[2] : " ",
+                        Id: this[3] ? this[3] : " ",
+                        token: this[4]
+                    }
+                );
+            });
+
+             ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+        },
+        height: 'auto',
+        hiddenColumns: {
+            columns: [3,4],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+
+    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'FudnsRealignment',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
+
+    hot.updateSettings({
+
+        cell: [
+            {
+                row: 0,
+                col: 0,
+                className: 'custom-cell',
+            },
+        ],
+        columns: [
+            {
+
+            },
+            {
+
+            },
+            {
+
+            },
+            {
+               //HIDDEN ID
+            },
+            {
+               //HIDDEN TOKEN
+            },
+
+        ],
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+
+
+</script>

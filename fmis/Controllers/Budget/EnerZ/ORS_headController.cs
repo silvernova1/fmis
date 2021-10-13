@@ -12,7 +12,7 @@ using fmis.Filters;
 
 namespace fmis.Controllers.Budget.EnerZ
 {
-    public class Ors_headController : Controller
+   /* public class Ors_headController : Controller
     {
         private readonly Ors_headContext _context;
         private readonly PersonalInformationContext _PContext;
@@ -62,13 +62,13 @@ namespace fmis.Controllers.Budget.EnerZ
             PopulatePsDropDownList();
             PopulateDsDropDownList();
 
-            /*List<Personal_Information> oh = new List<Personal_Information>();
+            *//*List<Personal_Information> oh = new List<Personal_Information>();
 
             oh = (from c in _Context.Personal_Information select c).ToList();
             oh.Insert(0, new Personal_Information { id = 0, fname = "--SelectA Ice cream--" });
 
             ViewBag.message = oh;
-            ViewBag.layout = "_Layout";*/
+            ViewBag.layout = "_Layout";*//*
             return View();
         }
         // POST: Ors_head/Create
@@ -78,7 +78,7 @@ namespace fmis.Controllers.Budget.EnerZ
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Head_name,Position,Created_at,Updated_at,Pid,Did")] Ors_head ors_head)
         {
-            /*if (Ors_head.Id == 0)
+            *//*if (Ors_head.Id == 0)
            {
                ModelState.AddModelError("", "Select ORS Head");
            }
@@ -88,7 +88,7 @@ namespace fmis.Controllers.Budget.EnerZ
             /*List<Prexc> p = new List<Prexc>();
             p = (from c in _pContext.Prexc select c).ToList();
             p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
-            ViewBag.message = p;*/
+            ViewBag.message = p;*//*
             try
             {
                 if (ModelState.IsValid)
@@ -99,7 +99,7 @@ namespace fmis.Controllers.Budget.EnerZ
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch (RetryLimitExceededException /* dex */)
+            catch (RetryLimitExceededException *//* dex *//*)
             {
                 //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
@@ -109,7 +109,7 @@ namespace fmis.Controllers.Budget.EnerZ
             //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
 
             return View(ors_head);
-            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
+            *//*return View("~/Views/Budget_allotments/Index.cshtml");*//*
         }
         // GET: Ors_head/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -167,12 +167,12 @@ namespace fmis.Controllers.Budget.EnerZ
             var prexsQuery = from d in _PContext.Personal_Information
                              orderby d.userid
                              select d;
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
+            *//*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*//*
             ViewBag.Pid = new SelectList((from s in _PContext.Personal_Information.ToList()
                                           select new
                                           {
                                               Pid = s.Pid,
-                                              ps = s.fname + " " + s.mname + " " + s.lname
+                                             *//* ps = s.fname + " " + s.mname + " " + s.lname*//*
                                           }),
                                              "Pid",
                                              "ps",
@@ -183,7 +183,7 @@ namespace fmis.Controllers.Budget.EnerZ
             var prexsQuery = from d in _DContext.Designation
                              orderby d.Description
                              select d;
-            /*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*/
+            *//*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*//*
             ViewBag.Did = new SelectList((from s in _DContext.Designation.ToList()
                                           select new
                                           {
@@ -223,6 +223,6 @@ namespace fmis.Controllers.Budget.EnerZ
         private bool Ors_headExists(int id)
         {
             return _context.Ors_head.Any(e => e.Id == id);
-        }
-    }
+        }*/
+    
 }

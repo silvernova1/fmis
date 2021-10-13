@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Rotativa.AspNetCore;
 using fmis.Data.John;
 using Microsoft.AspNetCore.Identity;
-using fmis.Areas.Identity.Data;
+using fmis.Data.Carlo;
+using fmis.Data.silver;
 
 namespace fmis
 {
@@ -26,7 +27,7 @@ namespace fmis
             
         }
 
-        public IConfiguration Configuration;/* { get; }*/
+        public IConfiguration Configuration;
 
 
 
@@ -38,18 +39,8 @@ namespace fmis
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
-
             services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
-
-            
-
-            /*services.AddIdentity<fmisUser, IdentityRole>()
-            .AddEntityFrameworkStores<fmisContext>()
-            .AddDefaultTokenProviders();*/
-
-            services.AddDbContext<PersonalInformationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("PersonalInformationContext")));
             services.AddDbContext<DesignationContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
             services.AddDbContext<DivisionContext>(options =>
@@ -62,8 +53,6 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
             services.AddDbContext<UtilizationContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
-            services.AddDbContext<Requesting_officeContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Requesting_officeContext")));
             services.AddDbContext<UacsContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<UacsamountContext>(options =>
@@ -78,6 +67,8 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
             services.AddDbContext<Yearly_referenceContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
+            services.AddDbContext<AppropriationContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<MyDbContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -88,25 +79,30 @@ namespace fmis
              options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Sub_allotmentContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Suballotment_amountContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Obligated_amountContext>(options =>
-          options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+            services.AddDbContext<FundsRealignmentContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<RequestingOfficeContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
 
+            services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
+            services.AddDatabaseDeveloperPageExceptionFilter();
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
             }
             else
             {
