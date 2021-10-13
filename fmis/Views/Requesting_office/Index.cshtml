@@ -6,12 +6,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <!-- Modal -->
-<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="CreateModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            
+
         </div>
     </div>
 </div>
@@ -29,7 +28,7 @@
 <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-           
+
         </div>
     </div>
 </div>
@@ -80,7 +79,7 @@
                     @Html.DisplayFor(modelItem => item.designation)
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-primary"  asp-action="Edit" data-target="#EditModal" data-toggle="modal"  asp-route-pi_userid="@item.userid">
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" data-target="#EditModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
                         <i class="ace-icon fa fa-edit"></i>Update
                     </a> |
                     <a class="btn btn-sm btn-danger" asp-action="Delete" data-target="#DeleteModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
