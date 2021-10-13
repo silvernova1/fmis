@@ -10,6 +10,7 @@ using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
+using System.Text.Json;
 
 namespace fmis.Controllers
 {
@@ -42,8 +43,16 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> FundsourceModal(int? id)
         {
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var json = JsonSerializer.Serialize(_context.FundSourceAmount
+                .Where(f => f.FundSource.FundSourceId == id).ToList());
+            ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_context.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             PopulateHeadDropDownList();
 

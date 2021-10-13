@@ -27,7 +27,6 @@ using fmis.Filters;
 
 namespace fmis.Controllers
 {
-    [Authorize]
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;

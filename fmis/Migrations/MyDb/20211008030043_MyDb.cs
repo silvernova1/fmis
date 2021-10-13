@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations
+namespace fmis.Migrations.MyDb
 {
     public partial class MyDb : Migration
     {
@@ -397,7 +397,6 @@ namespace fmis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FundsId = table.Column<int>(type: "int", nullable: false),
                     Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<float>(type: "real", nullable: false),
                     FundSourceId = table.Column<int>(type: "int", nullable: true)

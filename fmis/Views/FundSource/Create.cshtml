@@ -10,7 +10,7 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
 
 
@@ -80,7 +80,7 @@
             </div>
         </div>
     </div>
-    <input type="text" id="FundSourceId" value="@ViewBag.FundsId" />
+    <input type="hidden" id="FundSourceId" value="@ViewBag.FundsId" />
     <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
 </form>
@@ -100,11 +100,11 @@
 
 
 
-<script>
+@*<script>
     $(document).ready(function () {
         $('.prexc').select2();
     });
-</script>
+</script>*@
 
 <script>
 
@@ -242,7 +242,34 @@
             });
             return false;
         }
-    };
+    }
+   @* var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+    $("#Create").on("click", function () {
+        console.log("gana");
+        $('#loading_modal').modal('show');
+        var json = [];
+        $.each(hot.getSourceData(), function () {
+            json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
+        });
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Create", "FundSource")',
+            dataType: "JSON",
+            data: { data: json },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify("success", {
+                    msg: "Successfully Saved...",
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+        return false;
+
+    });*@
+
 </script>
 
 

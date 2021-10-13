@@ -1,20 +1,20 @@
 ﻿@model fmis.Models.John.AllotmentClass
 
 
-<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3>Create new Allotment Class</h3></center>
+@*<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+*@<center><h3>Create new Allotment Class</h3></center>
 <hr />
 <div class="container">
     <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <h5>Allotment Class: </h5>
+                <center><h5>Allotment Class</h5></center>
                 <input asp-for="Allotment_Class" class="form-control" />
                 <span asp-validation-for="Allotment_Class" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <h5>Allotment Code: </h5>
+                <center><h5>Account Code</h5></center>
                 <input asp-for="Account_Code" class="form-control" />
                 <span asp-validation-for="Account_Code" class="text-danger"></span>
             </div>
@@ -24,33 +24,6 @@
         </form>
     </div>
 </div>
-
-<!--<center>
-    <h2>Create New</h2>
-</center>
-<hr />
-<div class="container">
-    <center>
-        <div class="col-md-6">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Allotment_Class" class="control-label">Allotment Class</label>
-                    <input asp-for="Allotment_Class" class="form-control" required />
-                    <span asp-validation-for="Allotment_Class" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Account_Code" class="control-label">Account Code</label>
-                    <input asp-for="Account_Code" class="form-control" required />
-                    <span asp-validation-for="Account_Code" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-success btn-lg" /> | <a asp-action="Index">Back to List</a>
-                </div>
-            </form>
-        </div>
-    </center>
-</div>  -->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

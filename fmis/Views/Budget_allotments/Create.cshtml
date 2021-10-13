@@ -13,6 +13,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <h6>Yearly Reference :</h6>
+                <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+                <input type="hidden" id="FundSourceId" value="@ViewBag.FundsId" />
                 <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
                 @*@Html.DropDownList("YearlyReferenceId", null, htmlAttributes: new { @class = "form-control" })*@
             </div>

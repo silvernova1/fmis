@@ -5,6 +5,12 @@
     ViewData["Title"] = "Log in";
 }
 
+<style>
+    a {
+        display: inline-block;
+    }
+</style>
+
 <div class="card" id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
     <br><br><br>
             <center>
@@ -34,10 +40,12 @@
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
                     </div>
+                    <br />
+                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
                 </div>
                 <br>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-block btn-flat" style="margin-left:70%; font-size:13px;">SIGN IN <i class="bi bi-box-arrow-in-right"></i> </button> 
+                    <button type="submit" class="btn btn-success btn-block btn-flat" style="margin-left:70%; font-size:13px;">SIGN IN <i class="bi bi-box-arrow-in-right"></i> </button>
                 </div>
             </form>
         </section>

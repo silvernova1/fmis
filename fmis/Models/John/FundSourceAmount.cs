@@ -11,7 +11,6 @@ namespace fmis.Models.John
     {
         [Key]
         public int Id { get; set; }
-        public int FundsId { get; set; }
         public string Account_title { get; set; }
         public float Amount { get; set; }
 

@@ -57,16 +57,6 @@ namespace fmis.Controllers.Budget.John
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
-            /*List<FundSource> item = _context.FundSource.Include(f => f.Budget_allotment).ToList();*/
-            /* var item = _context.FundSource.FromSqlRaw("Select * from FundSource")
-                   .ToList();
-             return View(item);*/
-
-            /* return View(await _context.FundSource
-                 .Include(s => s.Budget_allotment)
-                 .Where(m => m.Budget_allotmentBudgetAllotmentId == id)
-                 .ToListAsync());*/
-
             return View(await _context.FundSource.ToListAsync());
 
 
@@ -114,21 +104,6 @@ namespace fmis.Controllers.Budget.John
             p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
 
             ViewBag.message = p;
-            //TempData["Uacs"] = await _dbContext.Uacs.ToListAsync();
-            //var item = await _bContext.Budget_allotment.Where(b => b.BudgetAllotmentId == 1).Select(b => b.BudgetAllotmentId).SingleOrDefaultAsync();
-            //TempData["FundSource"] = await _context.FundSource.ToListAsync();
-
-            /*
-                        Budget_allotment budget_allotment = new Budget_allotment()
-                        {
-                            BudgetAllotmentId = 7
-                        };*/
-
-
-            //var FundSource = await _bContext.Budget_allotment.(u => u.BudgetAllotmentId).Select(u => u.BudgetAllotmentId).FirstOrDefaultAsync();
-
-            //FundSource FundSource = _context.FundSource.Include(p => p.Budget_allotment).Where(p => p.Budget_allotment.BudgetAllotmentId == id).FirstOrDefault();
-
 
             var fundsource = _context.FundSource
                 .FirstOrDefaultAsync(m => m.FundSourceId == id);
@@ -156,21 +131,20 @@ namespace fmis.Controllers.Budget.John
                     var fundsourceamount = new FundSourceAmount();
                     
                     fundsourceamount.Id = item.Id;
-                    fundsourceamount.FundsId = item.FundsId;
                     fundsourceamount.Account_title = item.Account_title;
                     fundsourceamount.Amount = item.Amount;
 
                     this._MyDbContext.FundSourceAmount.Update(fundsourceamount);
                     this._MyDbContext.SaveChanges();
                 }
-                else
+                /*else
                 {
-                    /*data_holder.Find(item.Id).FundsId = item.FundsId;
+                    data_holder.Find(item.Id).FundsId = item.FundsId;
                     data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Amount = item.Amount;*/
+                    data_holder.Find(item.Id).Amount = item.Amount;
 
                     this._MyDbContext.SaveChanges();
-                }
+                }*/
             }
 
             return Json(data);
@@ -243,30 +217,6 @@ namespace fmis.Controllers.Budget.John
 
         }
 
-
-        /*new SelectList(departmentsQuery.AsNoTracking(), "Id", "pap_title", selectedDepartment);
-}*/
-
-        /*private void PopulatePrexcsDropDownList(object selectedPrexc = null)
-        {
-            var prexsQuery = from d in _pContext.Prexc
-                             orderby d.pap_title
-                             select d;
-
-            *//*ViewBag.Id = new SelectList(prexsQuery, "Id", "pap_title", selectedPrexc);*//*
-
-            ViewBag.Id = new SelectList((from s in _pContext.Prexc.ToList()
-                                         select new
-                                         {
-                                             Id = s.Id,
-                                             prexc = s.pap_title + " ( " + s.pap_code1 + ")"
-                                         }),
-       "Id",
-       "prexc",
-       null);
-
-        }*/
-
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -318,6 +268,7 @@ namespace fmis.Controllers.Budget.John
             return View(fundSource);
         }
 
+
         // POST: FundSource/Delete/5
         [HttpPost]
         public IActionResult DeleteFundsourceamount(int id)
@@ -329,27 +280,24 @@ namespace fmis.Controllers.Budget.John
             return Json(id);
         }
 
+        // POST: FundSource/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var fundSource = await _context.FundSource.FindAsync(id);
+            _context.FundSource.Remove(fundSource);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
+        }
+
         private bool FundSourceExists(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             return _context.FundSource.Any(e => e.FundSourceId == id);
         }
-
-
-       /* private static PdfPCell PhraseCell(Phrase phrase, int align)
-        {
-            PdfPCell cell = new PdfPCell(phrase);
-            cell.BorderColor = BaseColor.BLACK;
-            cell.VerticalAlignment = Element.ALIGN_TOP;
-            cell.HorizontalAlignment = align;
-            cell.PaddingBottom = 2f;
-            cell.PaddingTop = 0f;
-            return cell;
-        }*/
-
-
-
-
 
         //EXPORTING PDF FILE
 

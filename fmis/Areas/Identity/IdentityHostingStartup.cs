@@ -20,7 +20,9 @@ namespace fmis.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("UserContextConnection")));
 
-                services.AddDefaultIdentity<fmisUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<fmisUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                    .AddRoles<IdentityRole>()
+                    .AddDefaultTokenProviders()
                     .AddEntityFrameworkStores<UserContext>();
             });
         }
