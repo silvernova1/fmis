@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations
+namespace fmis.Migrations.User
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20211008024613_User")]
+    [Migration("20211013033016_User")]
     partial class User
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.Carlo;
+using fmis.Data.silver;
 
 namespace fmis.Data
 {
@@ -34,6 +35,11 @@ namespace fmis.Data
         public DbSet<Uacsamount> Uacsamount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
+        public DbSet<Sub_allotment> Sub_allotment { get; set; }
+        public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
+        public DbSet<Ors_head> Ors_head { get; set; }
+        public DbSet<Appropriation> Appropriation { get; set; }
+        public DbSet<Obligated_amount> Obligated_amount { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,14 +48,13 @@ namespace fmis.Data
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.FundSources);
-            /*.HasForeignKey(p => p.BudgetAllotmentId);*/
+            
 
 
             //1:M relationship to budget allotments and sub allotments
             modelBuilder.Entity<Sub_allotment>()
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.Sub_allotments);
-            /*.HasForeignKey(p => p.BudgetAllotmentId);*/
 
 
             //1:M relationship
@@ -69,31 +74,28 @@ namespace fmis.Data
             modelBuilder.Entity<Designation>()
            .HasKey(s => s.Did);
 
-           /* modelBuilder.Entity<Requesting_office>()
+            /*modelBuilder.Entity<Requesting_office>()
             .HasOne<Personal_Information>(p => p.Personal_Information)
             .WithOne(s => s.Requesting_office);*/
 
-           /* modelBuilder.Entity<Requesting_office>()
-            .HasOne<Designation>(d => d.Designation)
-            .WithOne(s => s.Requesting_office);*/
 
-            //Yearylyref
 
-            modelBuilder.Entity<Yearly_reference>()
-           .HasKey(s => s.YearlyReferenceId);
+         //Yearylyref
 
-            modelBuilder.Entity<Budget_allotment>()
-            .HasOne<Yearly_reference>(d => d.Yearly_reference)
-            .WithOne(s => s.Budget_allotment);
+         modelBuilder.Entity<Yearly_reference>()
+        .HasKey(s => s.YearlyReferenceId);
+
+         modelBuilder.Entity<Budget_allotment>()
+         .HasOne<Yearly_reference>(d => d.Yearly_reference)
+         .WithOne(s => s.Budget_allotment);
 
 
 
 
-            modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
-            modelBuilder.Entity<FundSource>().ToTable("FundSource");
-            /*modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
-            modelBuilder.Entity<Requesting_office>().ToTable("Requesting_office");*/
+         modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
+         modelBuilder.Entity<FundSource>().ToTable("FundSource");
+         modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
 
-        }
+     }
     }
 }

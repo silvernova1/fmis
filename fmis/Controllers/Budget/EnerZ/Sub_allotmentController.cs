@@ -57,7 +57,7 @@ namespace fmis.Controllers.Budget.EnerZ
             }
 
             var sub_allotment = await _context.Sub_allotment
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.SubId == id);
             if (sub_allotment == null)
             {
                 return NotFound();
@@ -111,7 +111,7 @@ namespace fmis.Controllers.Budget.EnerZ
                 //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
-            PopulatePrexcsDropDownList(sub_allotment.Id);
+            PopulatePrexcsDropDownList(sub_allotment.SubId);
             //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
 
             return View(sub_allotment);
@@ -132,7 +132,7 @@ namespace fmis.Controllers.Budget.EnerZ
             {
                 return NotFound();
             }
-            PopulatePrexcsDropDownList(sub_allotment.Id);
+            PopulatePrexcsDropDownList(sub_allotment.SubId);
             return View(sub_allotment);
         }
 
@@ -184,7 +184,7 @@ namespace fmis.Controllers.Budget.EnerZ
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Sub_allotmentExists(sub_allotment.Id))
+                    if (!Sub_allotmentExists(sub_allotment.SubId))
                     {
                         return NotFound();
                     }
@@ -209,7 +209,7 @@ namespace fmis.Controllers.Budget.EnerZ
             }
 
             var sub_allotment = await _context.Sub_allotment
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.SubId == id);
             if (sub_allotment == null)
             {
                 return NotFound();
@@ -232,7 +232,7 @@ namespace fmis.Controllers.Budget.EnerZ
 
         private bool Sub_allotmentExists(int id)
         {
-            return _context.Sub_allotment.Any(e => e.Id == id);
+            return _context.Sub_allotment.Any(e => e.SubId == id);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations
+namespace fmis.Migrations.User
 {
     public partial class User : Migration
     {

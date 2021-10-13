@@ -15,6 +15,7 @@ using fmis.Data.John;
 using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
 using fmis.Data.silver;
+using fmis.Areas.Identity.Data;
 
 namespace fmis
 {
@@ -27,7 +28,7 @@ namespace fmis
             
         }
 
-        public IConfiguration Configuration;
+        public IConfiguration Configuration { get; }
 
 
 
@@ -36,6 +37,9 @@ namespace fmis
         {
 
             services.AddControllers();
+
+
+            
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
@@ -76,24 +80,24 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Ors_headContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Sub_allotmentContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Suballotment_amountContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Obligated_amountContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
             services.AddDbContext<FundsRealignmentContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDbContext<RequestingOfficeContext>(options =>
+            /*services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDatabaseDeveloperPageExceptionFilter();*/
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,7 +129,7 @@ namespace fmis
                 endpoints.MapRazorPages();
             });
 
-            RotativaConfiguration.Setup(env.ContentRootPath, "wwwroot/Rotativa");
+
         }
     }
 }
