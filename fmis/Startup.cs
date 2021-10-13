@@ -15,7 +15,6 @@ using fmis.Data.John;
 using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
 using fmis.Data.silver;
-using fmis.Areas.Identity.Data;
 
 namespace fmis
 {
@@ -38,8 +37,6 @@ namespace fmis
 
             services.AddControllers();
 
-
-            
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
@@ -93,11 +90,11 @@ namespace fmis
             services.AddDbContext<FundsRealignmentContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            /*services.AddDbContext<RequestingOfficeContext>(options =>
+            services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
-            services.AddDatabaseDeveloperPageExceptionFilter();*/
+            services.AddDatabaseDeveloperPageExceptionFilter();
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
