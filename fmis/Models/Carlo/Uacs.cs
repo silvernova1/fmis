@@ -9,7 +9,7 @@ namespace fmis.Models
 {
     public class Uacs
     {
-        public int Id { get; set; }
+        public int UacsId { get; set; }
         public string Account_title { get; set; }
         public string Expense_code { get; set; }
         public string status { get; set; }

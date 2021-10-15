@@ -583,7 +583,7 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UacsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -603,7 +603,7 @@ namespace fmis.Migrations
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UacsId");
 
                     b.HasIndex("Obligated_amountId");
 
