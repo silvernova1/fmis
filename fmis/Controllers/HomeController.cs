@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-    [Authorize(Roles = "BUDGET")]
+    /*[Authorize(Roles = "BUDGET")]*/
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
