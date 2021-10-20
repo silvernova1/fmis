@@ -72,7 +72,6 @@
 
 <script>
     var obligation_id = @Html.DisplayFor(model => model.Id);
-
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -81,7 +80,6 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -94,26 +92,23 @@
             }
         });
     }
-
     var uacsamount = $.parseJSON($(".uacsamount").val());
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
     $.each(uacsamount, function () {
-        data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
+        data[counter] = [this.UacsId, [], this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
         counter++;
         obligation_amount += this.Amount;
     })
-
     $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
+        uacs_data[uacs_counter] = this.UacsId, this.Account_title
         uacs_counter++;
     })
-
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
@@ -132,19 +127,20 @@
             readOnly: true
         },
         {
-
+            type: 'numeric',
+            numericFormat: {
+                pattern: '0,0.00',
+                culture: 'en-Ph' 
+            },
+            allowEmpty: false
         },
         {
-
         },
         {
-
         },
         {
-
         },
         {
-
         },
         {
             //HIDDEN ID
@@ -160,7 +156,6 @@
     },
     contextMenu: ['row_above', 'row_below', 'remove_row'],
     beforeRemoveRow: function (index, column) {
-
         var selection = this.getSelected();
         var holder_data = this.getData();
         var single_token = holder_data[selection[0][0]][8];
@@ -187,7 +182,6 @@
         }
     },
     afterUndo: function (index, column) {
-
     },
     afterCreateRow: function (row, column) {
         console.log(row);
@@ -206,7 +200,7 @@
             ajax_data.push(
                 {
                     ObligationId: obligation_id,
-                    Account_title: this[0],
+                    UacsId: this[0],
                     Expense_code: this[1],
                     Amount: this[2],
                     Total_disbursement: this[3],
@@ -214,13 +208,12 @@
                     Total_tax_amount: this[5],
                     Total_others: this[6],
                     Id: this[7],
-                    token: this[8] ? this[8] : guid(),
+                    token: this[8],
                 }
                 );
             obligation_amount += parseInt(this[2]);
         });
         $(".obligation_amount").html(obligation_amount);
-
         ajaxServer(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');
     },
     hiddenColumns: {
@@ -229,7 +222,6 @@
     },
     licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
   });
-
     const exportPlugin = hot.getPlugin('exportFile');
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
@@ -245,7 +237,6 @@
             rowHeaders: true
         });
     });
-
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
 </script>

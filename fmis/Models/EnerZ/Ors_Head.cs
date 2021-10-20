@@ -11,9 +11,7 @@ namespace fmis.Models
     {
         [Key]
         public int Id { get; set; }
-
         public string pi_userid { get; set; }
-
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
     }

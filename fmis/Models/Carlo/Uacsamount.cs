@@ -11,8 +11,7 @@ namespace fmis.Models
     {
         public int Id { get; set; }
         public int ObligationId { get; set; }
-        public string Account_title { get; set; }
-        public string Expense_code { get; set; }
+        public int UacsId { get; set; }
         public float Amount { get; set; }
         public float Total_disbursement { get; set; }
         public float Total_net_amount { get; set; }
@@ -20,7 +19,9 @@ namespace fmis.Models
         public float Total_others { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+      /*  public Uacs uacs { get; set; }*/
 
+ 
 
     }
 }
