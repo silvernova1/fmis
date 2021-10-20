@@ -25,7 +25,6 @@ namespace fmis.Data
         public DbSet<fmis.Models.John.FundSource> FundSources { get; set; }
         public DbSet<Obligation> Obligation { get; set; }
         public DbSet<Prexc> Prexc { get; set; }
-        public DbSet<Personal_Information> Personal_information { get; set; }
         public DbSet<Requesting_office> Requesting_office { get; set; }
         public DbSet<Utilization> Utilization { get; set; }
         public DbSet<Yearly_reference> Yearly_reference { get; set; }
@@ -48,7 +47,7 @@ namespace fmis.Data
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.FundSources);
-            
+
 
 
             //1:M relationship to budget allotments and sub allotments
@@ -80,22 +79,22 @@ namespace fmis.Data
 
 
 
-         //Yearylyref
+            //Yearylyref
 
-         modelBuilder.Entity<Yearly_reference>()
-        .HasKey(s => s.YearlyReferenceId);
+            modelBuilder.Entity<Yearly_reference>()
+           .HasKey(s => s.YearlyReferenceId);
 
-         modelBuilder.Entity<Budget_allotment>()
-         .HasOne<Yearly_reference>(d => d.Yearly_reference)
-         .WithOne(s => s.Budget_allotment);
-
-
+            modelBuilder.Entity<Budget_allotment>()
+            .HasOne<Yearly_reference>(d => d.Yearly_reference)
+            .WithOne(s => s.Budget_allotment);
 
 
-         modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
-         modelBuilder.Entity<FundSource>().ToTable("FundSource");
-         modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
 
-     }
+
+            modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
+            modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
+
+        }
     }
 }
