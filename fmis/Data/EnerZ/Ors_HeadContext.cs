@@ -13,6 +13,6 @@ namespace fmis.Data
             : base(options)
         {
         }
-        public DbSet<fmis.Models.Ors_head> Ors_head { get; set; }
+        public DbSet<Ors_head> Ors_head { get; set; }
     }
 }

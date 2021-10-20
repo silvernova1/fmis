@@ -1,40 +1,32 @@
 ﻿@model fmis.Models.Ors_head
 
-@{
-    ViewData["Title"] = "Edit";
-}
 
-<h2>Edit</h2>
 
-<h4>Ors Head</h4>
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3>Update new Ors Head</h3></center>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div class="container">
+    <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            @* <div class="form-group">
-                    <label asp-for="Id" class="control-label"></label>
-                    <input asp-for="Id" class="form-control" />
-                    <span asp-validation-for="Id" class="text-danger"></span>
-                </div>*@
+            <input type="hidden" name="id" value="@Html.DisplayFor(model => model.Id)" />
             <div class="form-group">
-                <label asp-for="Head_name" class="control-label"></label>
-                <input asp-for="Head_name" class="form-control" />
-                <span asp-validation-for="Head_name" class="text-danger"></span>
+                <label class="control-label"> FullName </label>
+                <select class="form-control select2" asp-for="pi_userid" asp-items="ViewBag.pi_userid">
+                    <option value="@ViewBag.pi_userid_existing.userid">@ViewBag.pi_userid_existing.full_name</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="Position" class="control-label"></label>
-                <input asp-for="Position" class="form-control" />
-                <span asp-validation-for="Position" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-success" />|
-                <a class="btn btn-default" asp-action="Index">Back to List</a>
+                <input type="submit" value="Save" class="btn btn-sm btn-success" />|
+                <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+
+<script>
+    $(".select2").select2({
+        placeholder: "Select Head Name",
+    });
+</script>

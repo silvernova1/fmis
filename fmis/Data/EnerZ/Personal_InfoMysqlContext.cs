@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
 
-namespace fmis.Data.silver
+namespace fmis.Data
 {
-    public class PersonalInformationMysqlContext
+    public class Personal_InfoMysqlContext
     {
         public string ConnectionString { get; set; }
 
-        public PersonalInformationMysqlContext(string connectionString)
+        public Personal_InfoMysqlContext(string connectionString)
         {
             this.ConnectionString = connectionString;
         }
@@ -65,15 +65,15 @@ namespace fmis.Data.silver
             return list;
         }
 
-        public List<Personal_Information> forRequestingOffice(string userid)
+        public List<Personal_Information> forOrs_head(string userid)
         {
             List<Personal_Information> list = new List<Personal_Information>();
 
             using (MySqlConnection conn = GetConnection())
             {
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT pi.id,CONCAT(pi.fname, ' ', pi.mname, ' ', pi.lname) AS full_name,divs.description as division FROM pis.personal_information pi left join dts.division divs on divs.id = pi.division_id ORDER BY pi.id DESC LIMIT 10", conn);
-               /* MySqlCommand cmd = new MySqlCommand(@"
+                //MySqlCommand cmd = new MySqlCommand("SELECT pi.id,CONCAT(pi.fname, ' ', pi.mname, ' ', pi.lname) AS full_name,divs.description as division FROM pis.personal_information pi left join dts.division divs on divs.id = pi.division_id ORDER BY pi.id DESC LIMIT 10", conn);
+                MySqlCommand cmd = new MySqlCommand(@"
                     select 
 	                    pi.id,
                         pi.userid,
@@ -103,7 +103,7 @@ namespace fmis.Data.silver
                             designation = reader["designation"].ToString()
                         });
                     }
-                }*/
+                }
             }
 
             return list;
@@ -147,3 +147,4 @@ namespace fmis.Data.silver
         }
     }
 }
+

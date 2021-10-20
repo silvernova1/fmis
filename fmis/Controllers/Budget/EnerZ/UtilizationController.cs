@@ -31,52 +31,17 @@ namespace fmis.Controllers
     public class UtilizationController : Controller
     {
         private readonly UtilizationContext _context;
-        private readonly UacsamountContext _Ucontext;
-        private readonly UacsContext _UacsContext;
 
-        public UtilizationController(UtilizationContext context, UacsamountContext Ucontext, UacsContext UacsContext)
+        public UtilizationController(UtilizationContext context)
         {
             _context = context;
-            _Ucontext = Ucontext;
-            _UacsContext = UacsContext;
         }
-        public IActionResult PrintPdf()
-        {
-
-            return new ViewAsPdf("PrintPdf")
-            {
-                CustomSwitches = "--page-offset 0 --footer-center [page] --footer-font-size 12",
-                PageSize = Rotativa.AspNetCore.Options.Size.A4
-            };
-        }
-
-
-        public DateTime CheckExcelDate(string excel_data)
-        {
-            string dateString = @"d/M/yyyy";
-
-            DateTime date1 = DateTime.ParseExact(dateString, @"d/M/yyyy",
-            System.Globalization.CultureInfo.InvariantCulture);
-            if (dateString == null)
-                return DateTime.ParseExact(dateString, @"d/M/yyyy",
-                System.Globalization.CultureInfo.InvariantCulture);
-
-            return (DateTime)date1;
-
-
-        }
-
-        public IActionResult CreateD()
-        {
-
-            return View("~/Views/Obligations/PrintPdf.cshtml");
-
-        }
-
 
         public class UtilizationData
         {
             public int Id { get; set; }
+            [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -88,31 +53,45 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
+
+
+            [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_recieved { get; set; }
+
+            [DataType(DataType.Time)]
+            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
             public DateTime Time_recieved { get; set; }
+
+            [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_released { get; set; }
+
+            [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Time_released { get; set; }
-            public string status { get; set; }
+
             public string token { get; set; }
+            public string status { get; set; }
+
         }
 
-        public class ManyId
+        public class Many
         {
-            public int many_id { get; set; }
             public string many_token { get; set; }
         }
 
         public class DeleteData
         {
-            public int single_id { get; set; }
             public string single_token { get; set; }
-            public List<ManyId> many_id { get; set; }
+            public List<Many> many_token { get; set; }
         }
 
         // GET: Utilization
         public IActionResult Index()
         {
             ViewBag.filter = new FilterSidebar("ors", "utilization");
+            ViewBag.layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.Utilization.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
             return View("~/Views/Utilization/Index.cshtml");
@@ -136,37 +115,9 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
-
-        [HttpGet]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UtlizationModal(int? id)
-        {
-            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.Amount == id).ToList());
-            ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
-            ViewBag.uacs = uacs_data;
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var utilization = await _context.Utilization
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (utilization == null)
-            {
-                return NotFound();
-            }
-
-            return View("~/Views/Utilization/UtilizationModal.cshtml", utilization);
-
-        }
-
         // GET: Utilization/Create
         public IActionResult Create()
         {
-
-
             return View();
         }
 
@@ -177,6 +128,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SaveUtilization(List<UtilizationData> data)
         {
 
@@ -184,9 +136,36 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-                if (item.Id == 0) //save
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                    var utilization = new Utilization();//clear object
+
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = item.Date;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Payer = item.Payer;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Address = item.Address;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = item.Date_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = item.Time_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+
+                    this._context.SaveChanges();
+
+
+                }
+                else if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payer != null ||
+                         item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
+                         item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
+                         (item.Time_recieved.ToString() != null || item.Date_released.ToString() != null) && (item.Time_released.ToString() != null)) //save
+                {
+
+                    var utilization = new Utilization(); //CLEAR OBJECT
                     utilization.Id = item.Id;
                     utilization.Date = item.Date;
                     utilization.Dv = item.Dv;
@@ -209,31 +188,10 @@ namespace fmis.Controllers
                     this._context.Utilization.Update(utilization);
                     this._context.SaveChanges();
                 }
-                else
-                { //update
-                    data_holder.Find(item.Id).Date = item.Date;
-                    data_holder.Find(item.Id).Dv = item.Dv;
-                    data_holder.Find(item.Id).Pr_no = item.Pr_no;
-                    data_holder.Find(item.Id).Po_no = item.Po_no;
-                    data_holder.Find(item.Id).Payer = item.Payer;
-                    data_holder.Find(item.Id).Address = item.Address;
-                    data_holder.Find(item.Id).Particulars = item.Particulars;
-                    data_holder.Find(item.Id).Ors_no = item.Ors_no;
-                    data_holder.Find(item.Id).Fund_source = item.Fund_source;
-                    data_holder.Find(item.Id).Gross = item.Gross;
-                    data_holder.Find(item.Id).Created_by = item.Created_by;
-                    data_holder.Find(item.Id).Date_recieved = item.Date_recieved;
-                    data_holder.Find(item.Id).Time_recieved = item.Time_recieved;
-                    data_holder.Find(item.Id).Date_released = item.Date_released;
-                    data_holder.Find(item.Id).Time_released = item.Time_released;
-
-                    data_holder.Find(item.Id).status = "activated";
-
-                    this._context.SaveChanges();
-                }
             }
 
             return Json(data);
+
         }
 
         // POST: Utilization/Create
@@ -257,10 +215,8 @@ namespace fmis.Controllers
         public ActionResult AddUtilization(IEnumerable<Utilization> UtilizationInput)
 
         {
-
             var p = UtilizationInput;
             return null;
-
         }
 
         // GET: Utilization/Edit/5
@@ -314,26 +270,44 @@ namespace fmis.Controllers
             return View(utilization);
         }
 
+        // GET: Utilization/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var utilization = await _context.Utilization
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (utilization == null)
+            {
+                return NotFound();
+            }
+
+            return View(utilization);
+        }
+
         // POST: Utilization/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUtilization(DeleteData data)
         {
-            if (data.many_id.Count > 1)
+            if (data.many_token.Count > 1)
             {
                 var data_holder = this._context.Utilization;
-                foreach (var many in data.many_id)
+                foreach (var many in data.many_token)
                 {
-                    data_holder.Find(many.many_id).status = "deactivated";
-                    data_holder.Find(many.many_id).token = many.many_token;
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.Utilization;
-                data_holder.Find(data.single_id).status = "deactivated";
-                data_holder.Find(data.single_id).token = data.single_token;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }

@@ -92,8 +92,13 @@ namespace fmis
             services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
 
+            services.Add(new ServiceDescriptor(typeof(Personal_InfoMysqlContext), new Personal_InfoMysqlContext(Configuration.GetConnectionString("Personal_InfoMysqlContext"))));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
