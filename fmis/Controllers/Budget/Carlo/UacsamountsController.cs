@@ -30,7 +30,7 @@ namespace fmis.Controllers
         public class UacsamountData
         {
             public int ObligationId { get; set; }
-            public string Account_title { get; set; }
+            public int UacsId { get; set; }
             public string Expense_code { get; set; }
             public float Amount { get; set; }
             public float Total_disbursement { get; set; }
@@ -99,8 +99,7 @@ namespace fmis.Controllers
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().UacsId = item.UacsId;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_disbursement = item.Total_disbursement;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_net_amount = item.Total_net_amount;
@@ -110,15 +109,14 @@ namespace fmis.Controllers
 
                     this._context.SaveChanges();
                 }
-                else if ( (item.Account_title != null || item.Expense_code != null) && (item.Amount.ToString() != null ||
-                          item.Total_disbursement.ToString() != null) && (item.Total_net_amount.ToString() != null || 
+                else if ((item.UacsId.ToString() != null || item.Expense_code != null) && (item.Amount.ToString() != null ||
+                          item.Total_disbursement.ToString() != null) && (item.Total_net_amount.ToString() != null ||
                           item.Total_tax_amount.ToString() != null) && (item.Total_others.ToString() != null)) //save
                 {
                     var uacsamount = new Uacsamount();
                     uacsamount.Id = item.Id;
                     uacsamount.ObligationId = item.ObligationId;
-                    uacsamount.Account_title = item.Account_title;
-                    uacsamount.Expense_code = item.Expense_code;
+                    uacsamount.UacsId = item.UacsId;
                     uacsamount.Amount = item.Amount;
                     uacsamount.Total_disbursement = item.Total_disbursement;
                     uacsamount.Total_net_amount = item.Total_net_amount;

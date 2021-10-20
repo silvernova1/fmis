@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using fmis.Data.Carlo;
 using System.Text.Json;
 using fmis.Models.Carlo;
+using fmis.Data;
 
 namespace fmis.Controllers.Budget.Carlo
 {
@@ -14,10 +15,12 @@ namespace fmis.Controllers.Budget.Carlo
     {
 
         private readonly FundsRealignmentContext _context;
+        private readonly UacsContext _UacsContext;
 
-        public FundsRealignmentController(FundsRealignmentContext context)
+        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext)
         {
             _context = context;
+            _UacsContext = UacsContext;
         }
 
         public class FundsRealignmentData
@@ -43,9 +46,11 @@ namespace fmis.Controllers.Budget.Carlo
         public IActionResult Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            ViewBag.Layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.FundsRealignment.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
 
@@ -95,16 +100,16 @@ namespace fmis.Controllers.Budget.Carlo
                 var data_holder = this._context.FundsRealignment;
                 foreach (var many in data.many_token)
                 {
-                    data_holder.Find(many.many_token).status = "deactivated";
-                    data_holder.Find(many.many_token).token = many.many_token;
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.FundsRealignment;
-                data_holder.Find(data.single_token).status = "deactivated";
-                data_holder.Find(data.single_token).token = data.single_token;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }
