@@ -110,7 +110,7 @@ namespace fmis.Controllers
             List<Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
-            oh.Insert(0, new Ors_head { Id = 0, Head_name = "--Select ORS Head--" });
+            oh.Insert(0, new Ors_head { Id = 0, pi_userid = "--Select ORS Head--" });
 
             ViewBag.message = oh;
             ViewBag.BudgetId = id;

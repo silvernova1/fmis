@@ -89,6 +89,9 @@ namespace fmis
             services.AddDbContext<FundsRealignmentContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<SubAllotment_RealignmentContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("SubAllotment_RealignmentContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
 

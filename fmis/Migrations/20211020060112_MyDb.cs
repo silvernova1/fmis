@@ -256,7 +256,7 @@ namespace fmis.Migrations
                 name: "Uacs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    UacsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -266,7 +266,7 @@ namespace fmis.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Uacs", x => x.Id);
+                    table.PrimaryKey("PK_Uacs", x => x.UacsId);
                     table.ForeignKey(
                         name: "FK_Uacs_Obligated_amount_Obligated_amountId",
                         column: x => x.Obligated_amountId,
@@ -439,6 +439,8 @@ namespace fmis.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<float>(type: "real", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
