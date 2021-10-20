@@ -21,7 +21,7 @@ namespace fmis.Models
         public int Budget_allotmentBudgetAllotmentId { get; set; }
 
         [ForeignKey("Prexc")]
-        public int PId { get; set; }
+        public int Id { get; set; }
         public Prexc Prexc { get; set; }
 
 

@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211019031353_MyDb")]
+    [Migration("20211020085040_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -244,6 +244,12 @@ namespace fmis.Migrations
 
                     b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -513,7 +519,7 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Prexc_code")
@@ -532,7 +538,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("PId")
+                    b.HasIndex("Id")
                         .IsUnique();
 
                     b.ToTable("Sub_allotment");
@@ -563,7 +569,7 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UacsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -583,7 +589,7 @@ namespace fmis.Migrations
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UacsId");
 
                     b.HasIndex("Obligated_amountId");
 
@@ -597,14 +603,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Account_title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float>("Amount")
                         .HasColumnType("real");
-
-                    b.Property<string>("Expense_code")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
@@ -620,6 +620,9 @@ namespace fmis.Migrations
 
                     b.Property<float>("Total_tax_amount")
                         .HasColumnType("real");
+
+                    b.Property<int>("UacsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -801,7 +804,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithOne("Sub_Allotment")
-                        .HasForeignKey("fmis.Models.Sub_allotment", "PId")
+                        .HasForeignKey("fmis.Models.Sub_allotment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

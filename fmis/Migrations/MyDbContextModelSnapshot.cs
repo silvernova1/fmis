@@ -517,7 +517,7 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Prexc_code")
@@ -536,7 +536,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("PId")
+                    b.HasIndex("Id")
                         .IsUnique();
 
                     b.ToTable("Sub_allotment");
@@ -802,7 +802,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithOne("Sub_Allotment")
-                        .HasForeignKey("fmis.Models.Sub_allotment", "PId")
+                        .HasForeignKey("fmis.Models.Sub_allotment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
