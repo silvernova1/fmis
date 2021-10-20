@@ -44,6 +44,17 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            /*modelBuilder.Entity<Uacs>()
+            .HasOne<Uacsamount>(s => s.Uacsamount)
+            .WithOne(ad => ad.Uacs)
+            .HasForeignKey<Uacsamount>(ad => ad.UacsId);*/
+
+          /*  modelBuilder.Entity<Uacs>()
+            .HasOne<Uacsamount>(s => s.uacsamount)
+            .WithOne(ad => ad.uacs)
+            .HasForeignKey<Uacsamount>(ad => ad.UacsId);*/
+
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)

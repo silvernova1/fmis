@@ -15,10 +15,7 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
 
-/*
+     /*   public Uacsamount uacsamount { get; set; }*/
 
-        public int FundSourceId { get; set; }
-        public Models.John.FundSource FundSource { get; set; }*/
-        
     }
 }

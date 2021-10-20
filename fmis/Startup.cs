@@ -39,7 +39,7 @@ namespace fmis
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
-            services.AddDbContext<fmisContext>(options =>
+                            services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
