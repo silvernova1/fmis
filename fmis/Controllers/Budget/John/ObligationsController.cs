@@ -112,7 +112,7 @@ namespace fmis.Controllers
 
             public string token { get; set; }
             public string status { get; set; }
-            
+
         }
 
         public class ManyId
@@ -162,7 +162,7 @@ namespace fmis.Controllers
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
-           
+
             if (id == null)
             {
                 return NotFound();
@@ -372,7 +372,7 @@ namespace fmis.Controllers
         // POST: Obligations/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> DeleteObligationModal(DeleteData data)
+        public async Task<IActionResult> DeleteObligationModal(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {

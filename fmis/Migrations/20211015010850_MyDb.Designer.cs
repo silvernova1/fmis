@@ -3,15 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+<<<<<<< HEAD:fmis/Migrations/20211019031353_MyDb.Designer.cs
+    [Migration("20211019031353_MyDb")]
+=======
+    [Migration("20211015010850_MyDb")]
+>>>>>>> 39f510b40e7331997b4d1e0549b41d9b975d88f9:fmis/Migrations/20211015010850_MyDb.Designer.cs
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,12 +248,6 @@ namespace fmis.Migrations
 
                     b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("token")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

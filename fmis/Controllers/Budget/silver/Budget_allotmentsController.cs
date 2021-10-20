@@ -100,7 +100,39 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
-         
+
+        // GET: Budget_allotments/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            /*PopulateHeadDropDownList();*/
+
+            List<Ors_head> oh = new List<Ors_head>();
+
+            oh = (from c in _orssContext.Ors_head select c).ToList();
+            oh.Insert(0, new Ors_head { Id = 0, Head_name = "--Select ORS Head--" });
+
+            ViewBag.message = oh;
+            ViewBag.BudgetId = id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var budget_allotment = await _context.Budget_allotments
+                .Include(s => s.FundSources)
+                .Include(s => s.Sub_allotments)
+                .Include(s => s.Personal_Information)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+            if (budget_allotment == null)
+            {
+                return NotFound();
+            }
+
+            return View(budget_allotment);
+        }
+
+
         // GET: Budget_allotments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

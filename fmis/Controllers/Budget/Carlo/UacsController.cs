@@ -18,7 +18,7 @@ using Rotativa.AspNetCore;
 using fmis.Filters;
 
 namespace fmis.Controllers
-{
+{ 
 
     public class UacsController : Controller
     {
@@ -33,7 +33,7 @@ namespace fmis.Controllers
         {
             public string Account_title { get; set; }
             public string Expense_code { get; set; }
-            public int Id { get; set; }
+            public int UacsId { get; set; }
             public string token { get; set; }
         }
 
@@ -58,24 +58,7 @@ namespace fmis.Controllers
             return View("~/Views/Carlo/Uacs/Index.cshtml");
         }
 
-        // GET: Obligations/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var uacs = await _context.Uacs
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (uacs == null)
-            {
-                return NotFound();
-            }
-
-            return View(uacs);
-        }
-
+     
         // GET: Obligations/Create
         public IActionResult Create()
         {
@@ -107,7 +90,7 @@ namespace fmis.Controllers
                 else if(item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs = new Uacs(); //clear object
-                    uacs.Id = item.Id;
+                    uacs.UacsId = item.UacsId;
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
                     uacs.status = "activated";
@@ -138,7 +121,6 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-
         public ActionResult AddUacs(IEnumerable<Uacs> UacsInput)
 
         {
@@ -164,58 +146,8 @@ namespace fmis.Controllers
             return View(uacs);
         }
 
-        // POST: Uacs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Account_title,Expense_code")] Uacs uacs)
-        {
-            if (id != uacs.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(uacs);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UacsExists(uacs.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(uacs);
-        }
-
-        // GET: Uacs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var uacs = await _context.Uacs
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (uacs == null)
-            {
-                return NotFound();
-            }
-
-            return View(uacs);
-        }
+      
+    
 
         // POST: Uacs/Delete/5
         [HttpPost]
@@ -244,10 +176,7 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-        private bool UacsExists(int id)
-        {
-            return _context.Uacs.Any(e => e.Id == id);
-        }
+       
     }
 }
 
