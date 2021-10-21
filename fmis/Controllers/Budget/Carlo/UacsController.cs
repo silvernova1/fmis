@@ -90,7 +90,7 @@ namespace fmis.Controllers
                 else if(item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs = new Uacs(); //clear object
-                    uacs.UacsId = item.UacsId;
+                    uacs.Account_title = item.Account_title;
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
                     uacs.status = "activated";
