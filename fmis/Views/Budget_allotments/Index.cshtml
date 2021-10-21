@@ -50,12 +50,12 @@
                     @Html.DisplayFor(modelItem => item.Allotment_code)
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@item.BudgetAllotmentId">
+                    <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-id="@item.BudgetAllotmentId">
                         <i class="ace-icon fa fa-arrow-right"></i>Fund Source
                     </a>
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="index" asp-route-id="">
+                    <a class="btn btn-sm btn-default"  asp-action="Suballotment" asp-route-id="@item.BudgetAllotmentId">
                         <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                     </a>
                 </td>
