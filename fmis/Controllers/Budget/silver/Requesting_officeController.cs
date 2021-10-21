@@ -53,6 +53,7 @@ namespace fmis.Controllers.Budget.silver
                 concat_userid = "('')"; //default condition para sa mysql
 
             return View(_pis_context.forRequestingOffice(concat_userid));
+            /*return View("~/Views/silver/Requesting_office/Index.cshtml", _pis_context.forRequestingOffice(concat_userid));*/
         }
 
         public IActionResult Information()

@@ -27,7 +27,7 @@ namespace fmis
             
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration;
 
 
 
@@ -92,6 +92,8 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
+            services.AddDbContext<ManageUsersContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("ManageUsersContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<fmis.Models.Personal_Information>
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Modal -->
+<div class="modal fade" id="CreateModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--EDIT MODAL-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<h2>Personal Information System Users</h2>
+<p>
+    <a class="btn btn-success btn-sm" asp-action="Create" data-target="#CreateModal" data-toggle="modal">
+        <i class="ace-icon fa fa-plus"></i>Create
+    </a>
+</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User Id
+            </th>
+            <th>
+                Full Name
+            </th>
+            <th>
+                User Name
+            </th>
+            <th>
+                Password
+            </th>
+            <th>
+                Actions
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+         {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.userid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.full_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.password)
+            </td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-action="Edit" data-target="#EditModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
+                    <i class="ace-icon fa fa-edit"></i>Update
+                </a> |
+                <a class="btn btn-sm btn-danger" asp-action="Delete" data-target="#DeleteModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
+                    <i class="ace-icon fa fa-trash"></i>Delete
+                </a>
+            </td>
+        </tr>
+         }
+    </tbody>
+</table>

@@ -65,6 +65,11 @@ namespace fmis.Data.silver
             return list;
         }
 
+        internal string forManageUsers(string concat_UserId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Personal_Information> forRequestingOffice(string userid)
         {
             List<Personal_Information> list = new List<Personal_Information>();

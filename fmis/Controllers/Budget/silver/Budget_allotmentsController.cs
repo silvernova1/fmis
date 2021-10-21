@@ -11,6 +11,7 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 
+
 namespace fmis.Controllers
 {
     public class Budget_allotmentsController : Controller
@@ -39,8 +40,8 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
             return View(await ballots.ToListAsync());
-
-          /*  return View("~/Views/silver/Budget_allotments/Index.cshtml", await _context.Budget_allotments.ToListAsync());*/
+            /* return View("~/Views/silver/Budget_allotments/Index.cshtml");*/
+            /*return View("~/Views/silver/Budget_allotments/Index.cshtml", await ballots.ToListAsync());*/
         }
 
         // GET: Budget_allotments/Create
