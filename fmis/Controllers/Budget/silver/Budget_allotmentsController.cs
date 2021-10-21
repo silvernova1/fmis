@@ -11,6 +11,7 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 
+
 namespace fmis.Controllers
 {
     public class Budget_allotmentsController : Controller
@@ -39,8 +40,8 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
             return View(await ballots.ToListAsync());
-
-          /*  return View("~/Views/silver/Budget_allotments/Index.cshtml", await _context.Budget_allotments.ToListAsync());*/
+            /* return View("~/Views/silver/Budget_allotments/Index.cshtml");*/
+            /*return View("~/Views/silver/Budget_allotments/Index.cshtml", await ballots.ToListAsync());*/
         }
 
         // GET: Budget_allotments/Create
@@ -102,7 +103,37 @@ namespace fmis.Controllers
 
 
         // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Fundsource(int? id)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            /*PopulateHeadDropDownList();*/
+
+            List<Ors_head> oh = new List<Ors_head>();
+
+            oh = (from c in _orssContext.Ors_head select c).ToList();
+            oh.Insert(0, new Ors_head { Id = 0, pi_userid = "--Select ORS Head--" });
+
+            ViewBag.message = oh;
+            ViewBag.BudgetId = id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var budget_allotment = await _context.Budget_allotments
+                .Include(s => s.FundSources)
+                .Include(s => s.Sub_allotments)
+                .Include(s => s.Personal_Information)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+            if (budget_allotment == null)
+            {
+                return NotFound();
+            }
+
+            return View(budget_allotment);
+        }
+
+        public async Task<IActionResult> Suballotment(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
