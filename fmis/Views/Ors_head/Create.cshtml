@@ -1,44 +1,32 @@
 ﻿@model fmis.Models.Ors_head
 
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h2>Create</h2>
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3>Create new Requesting Office</h3></center>
 
-<h4>ORS HEAD</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="container">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-                    <label asp-for="Head_name" class="control-label"></label>
-                    <select class="form-control" asp-items="@(new SelectList(ViewBag.message,"id","fname"))"></select>
-                    <input asp-for="Head_name" class="form-control" />
-                    <span asp-validation-for="Head_name" class="text-danger"></span>
-                </div>*@
             <div class="form-group">
-                <label class="control-label"> Head Name</label>
-                @Html.DropDownList("Pid", null, htmlAttributes: new { @class = "form-control" })
-                @*@Html.DropDownList("Pid", String.Empty)
-                        @Html.DropDownList("Id" + "pap_code1",
-                    (IEnumerable<SelectListItem>)ViewBag.Id,
-                    "Select Prexc Enerz")*@
+                <label class="control-label"> FullName </label>
+                <select class="form-control requestingoffice" asp-for="pi_userid" asp-items="ViewBag.pi_userid"></select>
+
+                @*<label class="control-label"> FullName </label>
+                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "requestingoffice form-control" })*@
             </div>
             <div class="form-group">
-                <label class="control-label"> Head Information</label>
-                @Html.DropDownList("Did", null, htmlAttributes: new { @class = "form-control" })
+                <input type="submit" value="Create" class="btn btn-sm btn-success" />|
+                <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
             </div>
-            @*<div class="form-group">
-                    <label asp-for="Position" class="control-label"></label>
-                    <input asp-for="Position" class="form-control" />
-                    <span asp-validation-for="Position" class="text-danger"></span>
-                </div>*@
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success" />|
-                <a class="btn btn-default" asp-action="Index">Back to List</a>
-            </div>
+            <br />
         </form>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.ors_head').select2();
+    });
+</script>

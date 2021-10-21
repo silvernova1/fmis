@@ -9,16 +9,13 @@ namespace fmis.Models
 {
     public class Uacs
     {
-        public int Id { get; set; }
+        public int UacsId { get; set; }
         public string Account_title { get; set; }
         public string Expense_code { get; set; }
         public string status { get; set; }
         public string token { get; set; }
 
-/*
+     /*   public Uacsamount uacsamount { get; set; }*/
 
-        public int FundSourceId { get; set; }
-        public Models.John.FundSource FundSource { get; set; }*/
-        
     }
 }
