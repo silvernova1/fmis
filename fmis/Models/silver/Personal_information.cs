@@ -23,6 +23,8 @@ namespace fmis.Models
         public string section { get; set; }
         [StringLength(100)]
         public string designation { get; set; }
+        public string password { get; set; }
+        public string username { get; set; }
         [DataType(DataType.Date)]
         public DateTime created_at { get; set; }
         [DataType(DataType.Date)]
@@ -30,7 +32,7 @@ namespace fmis.Models
 
         public Requesting_office Requesting_office { get; set; }
         public Budget_allotment Budget_allotment { get; set; }
-        public Ors_head Ors_head { get; set; }
+       
 
 
     }

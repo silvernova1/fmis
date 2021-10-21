@@ -65,6 +65,11 @@ namespace fmis.Data.silver
             return list;
         }
 
+        internal string ForRequestingOffice(string concat_UserId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Personal_Information> forRequestingOffice(string userid)
         {
             List<Personal_Information> list = new List<Personal_Information>();
@@ -72,8 +77,8 @@ namespace fmis.Data.silver
             using (MySqlConnection conn = GetConnection())
             {
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT pi.id,CONCAT(pi.fname, ' ', pi.mname, ' ', pi.lname) AS full_name,divs.description as division FROM pis.personal_information pi left join dts.division divs on divs.id = pi.division_id ORDER BY pi.id DESC LIMIT 10", conn);
-               /* MySqlCommand cmd = new MySqlCommand(@"
+                //MySqlCommand cmd = new MySqlCommand("SELECT pi.id,CONCAT(pi.fname, ' ', pi.mname, ' ', pi.lname) AS full_name,divs.description as division FROM pis.personal_information pi left join dts.division divs on divs.id = pi.division_id ORDER BY pi.id DESC LIMIT 10", conn);
+                MySqlCommand cmd = new MySqlCommand(@"
                     select 
 	                    pi.id,
                         pi.userid,
@@ -103,7 +108,7 @@ namespace fmis.Data.silver
                             designation = reader["designation"].ToString()
                         });
                     }
-                }*/
+                }
             }
 
             return list;

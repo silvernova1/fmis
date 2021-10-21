@@ -27,7 +27,7 @@ namespace fmis
             
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration;
 
 
 
@@ -37,9 +37,10 @@ namespace fmis
 
             services.AddControllers();
 
+
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
-                            services.AddDbContext<fmisContext>(options =>
+            services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
@@ -91,14 +92,11 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
-
-            services.Add(new ServiceDescriptor(typeof(Personal_InfoMysqlContext), new Personal_InfoMysqlContext(Configuration.GetConnectionString("Personal_InfoMysqlContext"))));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<ManageUsersContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("ManageUsersContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-            
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
