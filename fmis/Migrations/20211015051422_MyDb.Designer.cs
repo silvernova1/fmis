@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211015051422_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +75,7 @@ namespace fmis.Migrations
                     b.HasIndex("YearlyReferenceId")
                         .IsUnique();
 
-                    b.ToTable("Budget_allotment");
+                    b.ToTable("Budget_allotments");
                 });
 
             modelBuilder.Entity("fmis.Models.Carlo.FundsRealignment", b =>
@@ -219,7 +221,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Id");
 
-                    b.ToTable("FundSource");
+                    b.ToTable("FundSources");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
@@ -371,7 +373,8 @@ namespace fmis.Migrations
                     b.HasIndex("Did")
                         .IsUnique();
 
-                    b.HasIndex("Pid");
+                    b.HasIndex("Pid")
+                        .IsUnique();
 
                     b.HasIndex("Sub_AllotmentSubId");
 
@@ -405,9 +408,6 @@ namespace fmis.Migrations
                     b.Property<string>("full_name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("section")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -418,9 +418,6 @@ namespace fmis.Migrations
                     b.Property<string>("userid")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("username")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Pid");
 
@@ -813,8 +810,8 @@ namespace fmis.Migrations
                         .IsRequired();
 
                     b.HasOne("fmis.Models.Personal_Information", "Personal_Information")
-                        .WithMany()
-                        .HasForeignKey("Pid")
+                        .WithOne("Ors_head")
+                        .HasForeignKey("fmis.Models.Ors_head", "Pid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -899,6 +896,11 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
                 {
                     b.Navigation("Uacs");
+                });
+
+            modelBuilder.Entity("fmis.Models.Personal_Information", b =>
+                {
+                    b.Navigation("Ors_head");
                 });
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>

@@ -172,7 +172,7 @@
                 @Html.Raw("active")">
                     <a asp-controller="Prexc" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Fund Source | PREXC 
+                        Fund Source | PREXC
                     </a>
 
                     <b class="arrow"></b>
@@ -212,6 +212,15 @@
                     <a asp-controller="Yearly_reference" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Yearly Budget Ref
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "ManageUsers")
+                @Html.Raw("active")">
+                    <a asp-controller="ManageUsers" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Manage Users
                     </a>
 
                     <b class="arrow"></b>

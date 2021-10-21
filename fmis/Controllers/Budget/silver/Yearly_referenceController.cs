@@ -26,6 +26,7 @@ namespace fmis.Controllers
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             return View(await _context.Yearly_reference.ToListAsync());
+            /* return View("~/Views/silver/Yearly_reference/Index.cshtml", await _context.Yearly_reference.ToListAsync());*/
         }
 
         // GET: Yearly_reference/Details/5

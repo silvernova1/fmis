@@ -1,0 +1,33 @@
+﻿
+@model fmis.Models.silver.ManageUsers
+
+
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3>Create new Requesting Office</h3></center>
+
+<hr />
+<div class="container">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label"> FullName </label>
+                <select class="form-control ManageUsers" asp-for="UserId" asp-items="ViewBag.UserId"></select>
+
+                @*<label class="control-label"> FullName </label>
+                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "requestingoffice form-control" })*@
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-sm btn-success" />|
+                <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
+            </div>
+            <br />
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.requestingoffice').select2();
+    });
+</script>

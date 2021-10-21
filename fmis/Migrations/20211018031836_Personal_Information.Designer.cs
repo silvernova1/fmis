@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211013032904_MyDb")]
-    partial class MyDb
+    [Migration("20211018031836_Personal_Information")]
+    partial class Personal_Information
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -373,8 +373,7 @@ namespace fmis.Migrations
                     b.HasIndex("Did")
                         .IsUnique();
 
-                    b.HasIndex("Pid")
-                        .IsUnique();
+                    b.HasIndex("Pid");
 
                     b.HasIndex("Sub_AllotmentSubId");
 
@@ -408,6 +407,9 @@ namespace fmis.Migrations
                     b.Property<string>("full_name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("password")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("section")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -418,6 +420,9 @@ namespace fmis.Migrations
                     b.Property<string>("userid")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("username")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Pid");
 
@@ -732,6 +737,27 @@ namespace fmis.Migrations
                     b.ToTable("Yearly_reference");
                 });
 
+            modelBuilder.Entity("fmis.Models.silver.ManageUsers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ManageUsers");
+                });
+
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
@@ -789,8 +815,8 @@ namespace fmis.Migrations
                         .IsRequired();
 
                     b.HasOne("fmis.Models.Personal_Information", "Personal_Information")
-                        .WithOne("Ors_head")
-                        .HasForeignKey("fmis.Models.Ors_head", "Pid")
+                        .WithMany()
+                        .HasForeignKey("Pid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -875,11 +901,6 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
                 {
                     b.Navigation("Uacs");
-                });
-
-            modelBuilder.Entity("fmis.Models.Personal_Information", b =>
-                {
-                    b.Navigation("Ors_head");
                 });
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>
