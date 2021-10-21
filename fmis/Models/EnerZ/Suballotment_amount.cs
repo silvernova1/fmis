@@ -12,9 +12,8 @@ namespace fmis.Models
     {
         [Key]
         public int Id { get; set; }
-        public int Expenses { get; set; }
+        public string Expenses { get; set; }
         public float Amount { get; set; }
-        public int Fund_source { get; set; }
 
         public Sub_allotment Sub_allotment { get; set; }
 

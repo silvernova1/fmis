@@ -143,7 +143,7 @@ namespace fmis.Controllers
 
         [HttpPost]
 
-        public ActionResult AddUacs(IEnumerable<Prexc> PrexcInput)
+        public ActionResult AddPrexc(IEnumerable<Prexc> PrexcInput)
 
         {
 

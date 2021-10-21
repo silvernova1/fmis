@@ -8,6 +8,14 @@
 <h2>Fund Source List</h2>
 <hr />
 
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -28,7 +36,7 @@
     </div>
 </div>
 <p>
-    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
 </p>
 <table class="table">
     <thead>

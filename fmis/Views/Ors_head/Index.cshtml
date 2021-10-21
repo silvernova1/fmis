@@ -1,12 +1,45 @@
-﻿@model IEnumerable<fmis.Models.Ors_head>
+﻿@model IEnumerable<fmis.Models.Personal_Information>
+
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>ORS HEAD</h2>
+
+<!-- Modal -->
+<div class="modal fade" id="CreateModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--EDIT MODAL-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<h2>List of ORS Head /Authorized Representative</h2>
 <p>
-    <a class="btn btn-success" asp-action="Create">Create New</a>
+    <a class="btn btn-success btn-sm" asp-action="Create" data-target="#CreateModal" data-toggle="modal">
+        <i class="ace-icon fa fa-plus"></i>Create
+    </a>
 </p>
+
 
 <table class="table">
     <thead>
@@ -15,9 +48,17 @@
                 Head Name
             </th>
             <th>
-               Head Information
+                Division
             </th>
-            <th> Actions</th>
+            <th>
+                Section
+            </th>
+            <th>
+                Head Informatu
+            </th>
+            <th>
+                Actions
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -25,16 +66,25 @@
         @foreach (var item in Model)
         {
             <tr>
-               @* <td>
-                    @Html.DisplayFor(modelItem => item.Personal_Information.fname) @Html.DisplayFor(modelItem => item.Personal_Information.mname) @Html.DisplayFor(modelItem => item.Personal_Information.lname)
-                </td>*@
                 <td>
-                    @Html.DisplayFor(modelItem => item.Designation.Description)
+                    @Html.DisplayFor(modelItem => item.full_name)
                 </td>
                 <td>
-                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Update</a> |
-                    @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
+                    @Html.DisplayFor(modelItem => item.division)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.section)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.designation)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" data-target="#EditModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
+                        <i class="ace-icon fa fa-edit"></i>Update
+                    </a> |
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" data-target="#DeleteModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
+                        <i class="ace-icon fa fa-trash"></i>Delete
+                    </a>
                 </td>
             </tr>
         }
