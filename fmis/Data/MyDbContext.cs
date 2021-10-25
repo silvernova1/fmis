@@ -35,6 +35,7 @@ namespace fmis.Data
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
+        public DbSet<SummaryReport> SummaryReport { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,14 +63,17 @@ namespace fmis.Data
 
 
             //arnell
-
             modelBuilder.Entity<Personal_Information>()
            .HasKey(s => s.Pid);
             modelBuilder.Entity<ManageUsers>()
            .HasKey(s => s.Id);
 
-            //Yearylyref
+            modelBuilder.Entity<Personal_Information>()
+           .HasKey(s => s.Pid);
+            modelBuilder.Entity<Requesting_office>()
+           .HasKey(s => s.Id);
 
+            //Yearylyref
             modelBuilder.Entity<Yearly_reference>()
            .HasKey(s => s.YearlyReferenceId);
 
