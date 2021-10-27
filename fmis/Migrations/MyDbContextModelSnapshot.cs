@@ -359,12 +359,21 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
+<<<<<<< HEAD
                     b.Property<string>("Personalinfo_userid")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
+=======
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("pi_userid")
+                        .HasColumnType("nvarchar(max)");
+
+>>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58
                     b.HasKey("Id");
 
                     b.ToTable("Ors_head");
@@ -775,6 +784,24 @@ namespace fmis.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ManageUsers");
+                });
+
+            modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("datefrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("dateto")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SummaryReport");
                 });
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
