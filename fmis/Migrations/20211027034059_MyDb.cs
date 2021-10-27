@@ -141,11 +141,7 @@ namespace fmis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.cs
                     Personalinfo_userid = table.Column<string>(type: "nvarchar(max)", nullable: true),
-=======
-                    pi_userid = table.Column<string>(type: "nvarchar(max)", nullable: true),
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.cs
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -206,16 +202,11 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.cs
                 name: "SubAllotment_Realignment",
-=======
-                name: "SummaryReport",
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.cs
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.cs
                     Realignment_from = table.Column<int>(type: "int", nullable: false),
                     Realignment_to = table.Column<int>(type: "int", nullable: false),
                     Realignment_amount = table.Column<float>(type: "real", nullable: false),
@@ -225,14 +216,20 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SubAllotment_Realignment", x => x.Id);
-=======
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SummaryReport",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     datefrom = table.Column<DateTime>(type: "datetime2", nullable: false),
                     dateto = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SummaryReport", x => x.Id);
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -512,11 +509,8 @@ namespace fmis.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Expenses = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<float>(type: "real", nullable: false),
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.cs
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-=======
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.cs
                     Sub_allotmentSubId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -634,11 +628,10 @@ namespace fmis.Migrations
                 name: "Suballotment_amount");
 
             migrationBuilder.DropTable(
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.cs
                 name: "SubAllotment_Realignment");
-=======
+
+            migrationBuilder.DropTable(
                 name: "SummaryReport");
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.cs
 
             migrationBuilder.DropTable(
                 name: "Uacs");
@@ -650,17 +643,10 @@ namespace fmis.Migrations
                 name: "Utilization");
 
             migrationBuilder.DropTable(
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.cs
                 name: "FundSource");
 
             migrationBuilder.DropTable(
                 name: "Ors_head");
-=======
-                name: "Ors_head");
-
-            migrationBuilder.DropTable(
-                name: "FundSource");
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.cs
 
             migrationBuilder.DropTable(
                 name: "Requesting_office");

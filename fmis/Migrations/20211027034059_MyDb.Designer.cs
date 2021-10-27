@@ -10,11 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.Designer.cs
-    [Migration("20211026021014_MyDb")]
-=======
-    [Migration("20211024235014_MyDb")]
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.Designer.cs
+    [Migration("20211027034059_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -365,21 +361,12 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-<<<<<<< HEAD:fmis/Migrations/20211026021014_MyDb.Designer.cs
                     b.Property<string>("Personalinfo_userid")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
-=======
-                    b.Property<DateTime>("Updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("pi_userid")
-                        .HasColumnType("nvarchar(max)");
-
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58:fmis/Migrations/20211024235014_MyDb.Designer.cs
                     b.HasKey("Id");
 
                     b.ToTable("Ors_head");

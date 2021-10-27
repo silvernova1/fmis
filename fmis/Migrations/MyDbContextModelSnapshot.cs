@@ -359,21 +359,12 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-<<<<<<< HEAD
                     b.Property<string>("Personalinfo_userid")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
-=======
-                    b.Property<DateTime>("Updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("pi_userid")
-                        .HasColumnType("nvarchar(max)");
-
->>>>>>> 983c3f46de4098865cfbff1b871a19e3bd355f58
                     b.HasKey("Id");
 
                     b.ToTable("Ors_head");
