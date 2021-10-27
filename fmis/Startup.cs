@@ -90,12 +90,20 @@ namespace fmis
             services.AddDbContext<FundsRealignmentContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<SubAllotment_RealignmentContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("SubAllotment_RealignmentContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<RequestingOfficeContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
             services.AddDbContext<ManageUsersContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("ManageUsersContext")));
-
+            /*services.AddDbContext<SummaryReportContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));*/
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
+            //amalio
+            services.Add(new ServiceDescriptor(typeof(Personal_InfoMysqlContext), new Personal_InfoMysqlContext(Configuration.GetConnectionString("Personal_InfoMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
         }    
 

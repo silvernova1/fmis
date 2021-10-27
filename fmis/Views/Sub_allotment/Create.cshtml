@@ -53,8 +53,7 @@
             </div>
         </div>
     </div>
-    <input type="hidden" id="SubId" value="ViewBag.FundsId" />
-    <input type="hidden" id="FundSourceId" value="@ViewBag.FundsId" />
+    <input type="hidden" id="SubId" value="@ViewBag.SubId" />
     <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
 </form>
@@ -198,7 +197,7 @@
             $('#loading_modal').modal('show');
             var json = [];
             $.each(hot.getSourceData(), function () {
-                json.push({ Expenses: this[0], Amount: this[1], Id: this[2], SubId: $('#Id').val() });
+                json.push({ Expenses: this[0], Amount: this[1], Id: this[2], SubId: $('#SubId').val() });
             });
             $.ajax({
                 type: 'POST',

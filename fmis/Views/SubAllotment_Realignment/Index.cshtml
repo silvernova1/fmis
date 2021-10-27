@@ -1,7 +1,6 @@
-﻿@model IEnumerable<fmis.Models.Prexc>
+﻿
+@model IEnumerable<fmis.Models.SubAllotment_Realignment>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
-
-
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,9 +13,10 @@
     }
 }
 
-<input type="hidden" class="prexc" value="@ViewBag.temp">
+<input type="hidden" class="suballotment_realignment" value="@ViewBag.temp">
+<input type="hidden" class="uacs" value="@ViewBag.uacs">
 <h3 class="grey lighter smaller">
-    Fund Source | PREXC
+    Sub Allotment Realignment
 </h3>
 <hr>
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
@@ -28,10 +28,7 @@
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
-
-
 <script>
-
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -41,7 +38,9 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function ajaxServer(ajax_data, url) {
+
+
+     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -49,44 +48,55 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
+
                 console.log(output);
             }
         });
     }
 
-    var prexc = $.parseJSON($(".prexc").val());
+    var suballotment_realignment = $.parseJSON($(".suballotment_realignment").val());
     const data = [];
     var counter = 0;
-    $.each(prexc, function () {
-        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2, this.Id, this.token]
+    $.each(suballotment_realignment, function () {
+        data[counter] = [this.Realignment_from, this.Realignment_from, this.Realignment_amount, this.Id, this.token]
         counter++;
+    })
+
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data[uacs_counter] = this.Account_title
+        uacs_counter++;
     })
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [700, 350, 350],
-        colHeaders: ['ACCOUNT TITLE', 'CODE', 'CODE2', 'ID', 'TOKEN'],
+        colWidths: [350, 350, 350],
+        rowHeaders: true,
+        colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
-
+                type: 'dropdown',
+                source: uacs_data
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data
             },
             {
 
             },
             {
-
+                //HIDDEN ID
             },
             {
-                // 2nd cell ID column had been hidden
-            },
-            {
-                // 3nd cell ID column had been hidden
+                //HIDDEN TOKEN
             },
 
         ],
-        rowHeaders: true,
         undo: true,
         search: {
             searchResultClass: 'search-result-custom'
@@ -96,13 +106,11 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][4];
-            @*console.log(selection);
-            console.log(holder_data);
-            console.log(column);*@
+
             var first_column = selection[0][0];
             var last_column = selection[0][2];
-            @*console.log(first_column);
-            console.log(last_column);*@
+            console.log(first_column);
+            console.log(last_column);
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
@@ -113,13 +121,12 @@
             if (single_token) {
                 var ajax_data = {
                     "single_token": single_token,
-                    "many_token": many_token
+                    "many_token": many_token,
                 };
 
-                console.log(ajax_data);
-
-                ajaxServer(ajax_data,'@Url.Action("DeletePrexc", "Prexc")');
+                ajaxServer(ajax_data,'@Url.Action("DeleteSubAllotment_Realignment", "SubAllotment_Realignment")');
             }
+
         },
         afterUndo: function (index, column) {
 
@@ -141,18 +148,18 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        pap_title: this[0] ? this[0] : " ",
-                        pap_code1: this[1] ? this[1] : " ",
-                        pap_code2: this[2] ? this[2] : " ",
+                        Realignment_from: this[0] ? this[0] : " ",
+                        Realignment_to: this[1] ? this[1] : " ",
+                        Realignment_amount: this[2] ? this[2] : " ",
                         Id: this[3] ? this[3] : " ",
-                        token: this[4] ? this[4] : guid()
+                        token: this[4]
                     }
                 );
             });
 
-            ajaxServer(ajax_data, '@Url.Action("SavePrexc", "Prexc")');
+             ajaxServer(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
         },
-        height: 'auto',
+        height: '250px',
         hiddenColumns: {
             columns: [3,4],
             indicators: true
@@ -160,31 +167,10 @@
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-
-        console.log(queryResult);
-        hot.render();
-    });
-
-    const exportPlugin = hot.getPlugin('exportFile');
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'UACS',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
 
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
 
 </script>

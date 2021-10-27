@@ -65,6 +65,11 @@ namespace fmis.Data
             return list;
         }
 
+        internal string ForOrs_head(string concat_UserId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Personal_Information> forOrs_head(string userid)
         {
             List<Personal_Information> list = new List<Personal_Information>();
@@ -147,4 +152,3 @@ namespace fmis.Data
         }
     }
 }
-

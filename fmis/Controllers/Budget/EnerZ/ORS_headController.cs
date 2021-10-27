@@ -25,12 +25,12 @@ namespace fmis.Controllers
             _pis_context = pis_context;
         }
 
-        // GET: Ors_head
+        // GET:  Ors_head
         public IActionResult Index(int? id)
         {
             ViewBag.PsId = id;
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("master_data", "ors_head");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
 
             var ors_head = _context.Ors_head.ToList();
 
@@ -41,9 +41,9 @@ namespace fmis.Controllers
                 count++;
 
                 if (count == 1)
-                    concat_userid += "'" + item.pi_userid + "'";
+                    concat_userid += "'" + item.Personalinfo_userid + "'";
                 else
-                    concat_userid += ",'" + item.pi_userid + "'";
+                    concat_userid += ",'" + item.Personalinfo_userid + "'";
             }
 
             concat_userid += ")";
@@ -52,6 +52,7 @@ namespace fmis.Controllers
                 concat_userid = "('')"; //default condition para sa mysql
 
             return View(_pis_context.forOrs_head(concat_userid));
+            /*return View("~/Views/silver/Requesting_office/Index.cshtml", _pis_context.forRequestingOffice(concat_userid));*/
         }
 
         public IActionResult Information()
@@ -61,11 +62,11 @@ namespace fmis.Controllers
             return Json(pi_userid_existing);
         }
 
-        // GET: Ors_head/Details/5
+        // GET:  Ors_head/Details/5
         public IActionResult Details(string pi_userid)
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("master_data", "ors_head");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             if (pi_userid == "")
             {
                 return NotFound();
@@ -80,22 +81,22 @@ namespace fmis.Controllers
             return View(ors_head);
         }
 
-        // GET: Ors_head/Create
+        // GET:  Ors_head/Create
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ors_head");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             PopulatePsDropDownList();
             return View();
         }
 
-        // POST: Ors_head/Create
+        // POST:  Ors_head/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,pi_userid")] Ors_head ors_head)
+        public async Task<IActionResult> Create([Bind("Id,Personalinfo_userid")] Ors_head ors_head)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ors_head");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             try
             {
                 if (ModelState.IsValid)
@@ -114,19 +115,19 @@ namespace fmis.Controllers
             /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
 
-        // GET: Ors_head/Edit/5
+        // GET:  Ors_head/Edit/5
         public async Task<IActionResult> Edit(string pi_userid)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ors_head");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
             var Ors_head = await _context.Ors_head
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.pi_userid == pi_userid);
+                .FirstOrDefaultAsync(m => m.Personalinfo_userid == pi_userid);
 
             ViewBag.pi_userid_existing = _pis_context.findPersonalInformation("'" + pi_userid + "'");
 
             PopulatePsDropDownList();
 
-            if (Ors_head== null)
+            if (Ors_head == null)
             {
                 return NotFound();
             }
@@ -134,12 +135,12 @@ namespace fmis.Controllers
             return View(Ors_head);
         }
 
-        // POST: Ors_head/Edit/5
+        // POST: Requesting_office/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Id,pi_userid")] Ors_head ors_head)
+        public async Task<IActionResult> Edit([Bind("Id,Personalinfo_userid")] Ors_head ors_head)
         {
             ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
 
@@ -171,7 +172,7 @@ namespace fmis.Controllers
         private void PopulatePsDropDownList()
         {
             ViewBag.pi_userid = new SelectList((from s in _pis_context.allPersonalInformation()
-                                                where !_context.Ors_head.Any(ro => ro.pi_userid == s.userid)
+                                                where !_context.Ors_head.Any(ro => ro.Personalinfo_userid == s.userid)
                                                 select new
                                                 {
                                                     pi_userid = s.userid,
@@ -185,7 +186,7 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> Delete(string pi_userid)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ors_head");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
 
 
             ViewBag.pi_userid_existing = _pis_context.findPersonalInformation("'" + pi_userid + "'");
@@ -193,7 +194,7 @@ namespace fmis.Controllers
             //return Json(ViewBag.pi_userid_existing.full_name);
 
             var ors_head = await _context.Ors_head
-                .FirstOrDefaultAsync(m => m.pi_userid == pi_userid);
+                .FirstOrDefaultAsync(m => m.Personalinfo_userid == pi_userid);
 
             PopulatePsDropDownList();
 
@@ -205,7 +206,7 @@ namespace fmis.Controllers
             return View(ors_head);
         }
 
-        // POST: Ors_head/Delete/5
+        // POST:  Ors_head/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
