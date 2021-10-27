@@ -1,32 +1,29 @@
 ﻿@model fmis.Models.Ors_head
 
 
-<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3>Create new Requesting Office</h3></center>
+    <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal"></button>
+    <center><h3>Create new Ors Head</h3></center>
 
-<hr />
-<div class="container">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label class="control-label"> FullName </label>
-                <select class="form-control requestingoffice" asp-for="pi_userid" asp-items="ViewBag.pi_userid"></select>
-
-                @*<label class="control-label"> FullName </label>
-                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "requestingoffice form-control" })*@
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-sm btn-success" />|
-                <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
-            </div>
-            <br />
-        </form>
+    <hr />
+    <div class="container">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label"> FullName </label>
+                    <select class="form-control ors_head" asp-for="Personalinfo_userid" asp-items="ViewBag.pi_userid"></select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-sm btn-success" />|
+                    <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
+                </div>
+                <br />
+            </form>
+        </div>
     </div>
-</div>
 
-<script>
-    $(document).ready(function () {
-        $('.ors_head').select2();
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            $('.ors_head').select2();
+        });
+    </script>

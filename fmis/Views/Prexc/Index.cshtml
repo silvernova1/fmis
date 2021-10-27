@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<fmis.Models.Prexc>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,7 +16,7 @@
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-   Fund Source | PREXC
+    Fund Source | PREXC
 </h3>
 <hr>
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />

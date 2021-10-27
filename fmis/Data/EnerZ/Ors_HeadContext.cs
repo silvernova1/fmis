@@ -12,6 +12,7 @@ namespace fmis.Data
         public Ors_headContext(DbContextOptions<Ors_headContext> options)
             : base(options)
         {
+
         }
         public DbSet<Ors_head> Ors_head { get; set; }
     }

@@ -31,6 +31,7 @@ namespace fmis.Data
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
         public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
+        public DbSet<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
         public DbSet<Ors_head> Ors_head { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<Obligated_amount> Obligated_amount { get; set; }

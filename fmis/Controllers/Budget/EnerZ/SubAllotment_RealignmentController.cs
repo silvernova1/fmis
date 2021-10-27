@@ -14,17 +14,19 @@ namespace fmis.Controllers
     {
 
         private readonly SubAllotment_RealignmentContext _context;
+        private readonly UacsContext _UacsContext;
 
-        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context)
+        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext)
         {
             _context = context;
+            _UacsContext = UacsContext;
         }
 
         public class SubAllotment_RealignmentData
         {
             public int Realignment_from { get; set; }
             public int Realignment_to { get; set; }
-            public int Realignment_amount { get; set; }
+            public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
             public string token { get; set; }
@@ -44,9 +46,11 @@ namespace fmis.Controllers
         public IActionResult Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            ViewBag.Layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.SubAllotment_Realignment.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
+            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
             return View("~/Views/SubAllotment_Realignment/Index.cshtml");
         }
 
@@ -96,16 +100,16 @@ namespace fmis.Controllers
                 var data_holder = this._context.SubAllotment_Realignment;
                 foreach (var many in data.many_token)
                 {
-                    data_holder.Find(many.many_token).status = "deactivated";
-                    data_holder.Find(many.many_token).token = many.many_token;
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.SubAllotment_Realignment;
-                data_holder.Find(data.single_token).status = "deactivated";
-                data_holder.Find(data.single_token).token = data.single_token;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }
