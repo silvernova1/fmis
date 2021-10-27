@@ -21,10 +21,13 @@ namespace fmis.Controllers
     public class UacsamountsController : Controller
     {
         private readonly UacsamountContext _context;
-
-        public UacsamountsController(UacsamountContext context)
+        private readonly UacsContext _Ucontext;
+      
+        public UacsamountsController(UacsamountContext context, UacsContext ucontext)
         {
             _context = context;
+            _Ucontext = ucontext;
+                   
         }
 
         public class UacsamountData
@@ -91,9 +94,10 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveUacsamount(List<UacsamountData> data)
+        public IActionResult SaveUacsamount(List<UacsamountData> data, List<Uacs> data1)
         {
             var data_holder = this._context.Uacsamount;
+          
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
@@ -114,9 +118,20 @@ namespace fmis.Controllers
                           item.Total_tax_amount.ToString() != null) && (item.Total_others.ToString() != null)) //save
                 {
                     var uacsamount = new Uacsamount();
+
                     uacsamount.Id = item.Id;
                     uacsamount.ObligationId = item.ObligationId;
-                    uacsamount.UacsId = item.UacsId;
+                    var query = _Ucontext.Uacs
+                               .Join(
+                                _Ucontext.Uacs,
+                                uacs => uacs.UacsId,
+                                uacsamount => uacsamount.UacsId,
+                                (uacs, uacsamount) => new
+                                {
+                                    uacsamount = uacsamount.UacsId,
+                                    uacs = uacs.Account_title + "" + uacs.Expense_code
+                                }
+                            ).ToList();
                     uacsamount.Amount = item.Amount;
                     uacsamount.Total_disbursement = item.Total_disbursement;
                     uacsamount.Total_net_amount = item.Total_net_amount;

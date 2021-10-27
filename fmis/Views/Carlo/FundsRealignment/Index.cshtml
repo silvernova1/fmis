@@ -58,7 +58,7 @@
     const data = [];
     var counter = 0;
     $.each(fundsrealignment, function () {
-        data[counter] = [this.Realignment_from, this.Realignment_from, this.Realignment_amount, this.Id, this.token]
+        data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
         counter++;
     })
 
@@ -66,9 +66,21 @@
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
-        uacs_counter++;
+        uacs_data[uacs_counter] = this.UacsId
+            uacs_counter++;
+
+        console.log(uacs_counter);
     })
+
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data1 = [];
+    var uacs_counter1 = 0;
+    $.each(uacs, function () {
+        uacs_data1[uacs_counter1] = this.UacsId
+            uacs_counter1++;
+    })
+
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
@@ -84,7 +96,7 @@
             },
             {
                 type: 'dropdown',
-                source: uacs_data
+                source: uacs_data1
             },
             {
 

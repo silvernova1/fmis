@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using fmis.Models.Carlo;
 
 namespace fmis.Models
 {
@@ -15,7 +16,8 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
 
-     /*   public Uacsamount uacsamount { get; set; }*/
+        public List<FundsRealignment> FundsRealignments { get; set; }
+
 
     }
 }

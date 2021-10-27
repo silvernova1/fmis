@@ -8,6 +8,9 @@ namespace fmis.Data
 {
     public class MyDbContext : DbContext
     {
+        public MyDbContext()
+        {
+        }
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
@@ -39,6 +42,13 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //1:M relationship to uacs and funds realignment
+            modelBuilder.Entity<FundsRealignment>()
+            .HasOne(p => p.uacs)
+            .WithMany(b => b.FundsRealignments);
+
+
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
