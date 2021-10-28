@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
+@model IEnumerable<fmis.Models.SubAllotment_Realignment>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,10 @@
     }
 }
 
-<input type="hidden" class="fundsrealignment" value="@ViewBag.temp">
+<input type="hidden" class="suballotment_realignment" value="@ViewBag.temp">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <h3 class="grey lighter smaller">
-    Funds Realignment
+    Sub Allotment Realignment
 </h3>
 <hr>
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
@@ -48,17 +48,17 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                
+
                 console.log(output);
             }
         });
     }
 
-    var fundsrealignment = $.parseJSON($(".fundsrealignment").val());
+    var suballotment_realignment = $.parseJSON($(".suballotment_realignment").val());
     const data = [];
     var counter = 0;
-    $.each(fundsrealignment, function () {
-        data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
+    $.each(suballotment_realignment, function () {
+        data[counter] = [this.Realignment_from, this.Realignment_from, this.Realignment_amount, this.Id, this.token]
         counter++;
     })
 
@@ -66,21 +66,9 @@
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.UacsId
-            uacs_counter++;
-
-        console.log(uacs_counter);
+        uacs_data[uacs_counter] = this.Account_title
+        uacs_counter++;
     })
-
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data1 = [];
-    var uacs_counter1 = 0;
-    $.each(uacs, function () {
-        uacs_data1[uacs_counter1] = this.UacsId
-            uacs_counter1++;
-    })
-
-
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
@@ -96,7 +84,7 @@
             },
             {
                 type: 'dropdown',
-                source: uacs_data1
+                source: uacs_data
             },
             {
 
@@ -136,7 +124,7 @@
                     "many_token": many_token,
                 };
 
-                ajaxServer(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
+                ajaxServer(ajax_data,'@Url.Action("DeleteSubAllotment_Realignment", "SubAllotment_Realignment")');
             }
 
         },
@@ -169,7 +157,7 @@
                 );
             });
 
-             ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+             ajaxServer(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
         },
         height: '250px',
         hiddenColumns: {
@@ -179,7 +167,7 @@
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
 
-  
+
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
 

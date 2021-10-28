@@ -163,25 +163,7 @@
                         var data = [];
                         var url = '@Url.Action("Export", "Utilization")';
                         window.open(url);
-                    }
-                },
-                "": {
-                    name: 'UACS Amount Entry / Disbmt.',
-                    callback: function (key, options) {
-                     
-
-                        $.ajax({
-                        type: 'GET',
-                        headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-                        url: '@Url.Action("ObligationModal", "Obligations")',
-                        data: { id: holder_id },
-                        success: function (output) {
-                            @*console.log(output);*@
-                            setTimeout(function () {
-                                $(".ObligationContent").html(output);
-                            }, 500);
-                        }
-                    });
+                   
                     }
                 }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
             }

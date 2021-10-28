@@ -146,6 +146,7 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved;

@@ -135,14 +135,15 @@
                     <b class="arrow"></b>
                 </li>
 
-               @* <li class="">
-                    <a href="form-elements-2.html">
+                <li class="@if(ViewBag.filter.sub == "SummaryReport")
+                    @Html.Raw("active")">
+                    <a asp-area="" asp-controller="SummaryReport" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        ORS SUMMARY
+                        SUMMARY REPORTS
                     </a>
 
                     <b class="arrow"></b>
-                </li>*@
+                </li>
             </ul>
         </li>
 
@@ -221,6 +222,15 @@
                     <a asp-controller="ManageUsers" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Manage Users
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "Appropriations")
+                @Html.Raw("active")">
+                    <a asp-controller="Appropriations" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Appropriations
                     </a>
 
                     <b class="arrow"></b>

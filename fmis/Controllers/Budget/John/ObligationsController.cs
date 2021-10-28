@@ -7,13 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Models.Carlo;
+using fmis.Models.John;
+using fmis.Models.silver;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Graphics;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using Syncfusion.Drawing;
 using System.IO;
+using Syncfusion.Pdf.Grid;
+using RectangleF = Syncfusion.Drawing.RectangleF;
+using SizeF = Syncfusion.Drawing.SizeF;
+using Color = Syncfusion.Drawing.Color;
+using PointF = Syncfusion.Drawing.PointF;
+using Syncfusion.Pdf.Tables;
 using fmis.Filters;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -22,6 +34,8 @@ using System.Globalization;
 using iTextSharp.tool.xml;
 using Image = iTextSharp.text.Image;
 using Grpc.Core;
+using fmis.ViewModel;
+using fmis.DataHealpers;
 
 namespace fmis.Controllers
 {
@@ -32,6 +46,8 @@ namespace fmis.Controllers
         private readonly UacsamountContext _Ucontext;
         private readonly UacsContext _UacsContext;
         private readonly MyDbContext _MyDbContext;
+
+        ORSReporting rpt_ors = new ORSReporting();
 
         public ObligationsController(ObligationContext context, UacsamountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
         {
@@ -78,7 +94,6 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
-
             [DataType(DataType.Date)]
             [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date { get; set; }
@@ -92,24 +107,18 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-
-
             [DataType(DataType.Date)]
             [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_recieved { get; set; }
-
             [DataType(DataType.Time)]
             [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
             public DateTime Time_recieved { get; set; }
-
             [DataType(DataType.Date)]
             [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_released { get; set; }
-
             [DataType(DataType.Date)]
             [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Time_released { get; set; }
-
             public string token { get; set; }
             public string status { get; set; }
 
@@ -197,9 +206,6 @@ namespace fmis.Controllers
         public IActionResult Create()
         {
 
-
-
-
             return View();
         }
 
@@ -220,7 +226,7 @@ namespace fmis.Controllers
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = item.Date;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = Convert.ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
@@ -401,15 +407,15 @@ namespace fmis.Controllers
             return _context.Obligation.Any(e => e.Id == id);
         }
 
-
-
-
         //EXPORTING PDF FILE
 
-        public ActionResult PrintOrs(String id)
+        public async Task<IActionResult> PrintOrs(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var ors = _MyDbContext.Obligation.Where(p => p.Id == ID).FirstOrDefault();
+            var ors = await _context.Obligation
+                .FirstOrDefaultAsync(m => m.Id == ID);
+
+
 
             string ExportData = "This is pdf generated";
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -465,13 +471,14 @@ namespace fmis.Controllers
                 Font column3_font = FontFactory.GetFont("Arial", 8, Font.BOLD, BaseColor.BLACK);
 
                 table3.AddCell(new PdfPCell(new Paragraph("No :", arial_font_10)) { Padding = 6f, Border = 0 });
-                //table3.AddCell(new PdfPCell(new Paragraph("" + " - 01101101 - " + ors.Date.ToString("yyyy-MM") + " - " + "")) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                table3.AddCell(new PdfPCell(new Paragraph(ors.Ors_no + "" + ("") + "" + "", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
+
                 table3.AddCell(new PdfPCell(new Paragraph("Fund :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph("" + "-01101101", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                table3.AddCell(new PdfPCell(new Paragraph("" + "", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph("", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5, PaddingBottom = 4 });
@@ -486,7 +493,7 @@ namespace fmis.Controllers
                 table_row_2.WidthPercentage = 100f;
                 table_row_2.SetWidths(tbt_row2_width);
                 table_row_2.AddCell(new PdfPCell(new Paragraph("Payee", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_2.AddCell(new PdfPCell(new Paragraph("")));
+                table_row_2.AddCell(new PdfPCell(new Paragraph(ors.Payee , arial_font_10)));
                 table_row_2.AddCell(new PdfPCell(new Paragraph("", arial_font_10)));
 
 
@@ -507,7 +514,7 @@ namespace fmis.Controllers
                 table_row_4.WidthPercentage = 100f;
                 table_row_4.SetWidths(tbt_row4_width);
                 table_row_4.AddCell(new PdfPCell(new Paragraph("Address", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_4.AddCell(new PdfPCell(new Paragraph("")));
+                table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address, arial_font_10)));
                 table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 
@@ -572,7 +579,7 @@ namespace fmis.Controllers
 
 
                 table_row_6.AddCell(new PdfPCell(new Paragraph(/*"\n" + FundSourceDetails.ResponsibilityNumber + "\n\n" + ors.FundSource,*/ /*table_row_5_font*/)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
+                table_row_6.AddCell(new PdfPCell(new Paragraph(ors.Particulars , table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
                 table_row_6.AddCell(new PdfPCell(new Paragraph(/*"\n" + FundSourceDetails.PrexcCode, table_row_5_font*/)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
@@ -732,9 +739,9 @@ namespace fmis.Controllers
                 table_row_12.WidthPercentage = 100f;
                 table_row_12.SetWidths(new float[] { 12, 20, 28, 15, 15, 10, 20 });
 
-                table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 13 });
+                table_row_12.AddCell(new PdfPCell(new Paragraph("", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 13 });
                 table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 13 });
-                table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToString("yyyy-MM") + " - ")) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100 });
+                table_row_12.AddCell(new PdfPCell(new Paragraph("" + " - ")) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100 });
                 table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100 });
                 table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100 });
                 table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100 });
@@ -774,8 +781,8 @@ namespace fmis.Controllers
 
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, reader);
                 doc.Close(); return File(stream.ToArray(), "application/pdf");
+
             }
         }
-
     }
 }

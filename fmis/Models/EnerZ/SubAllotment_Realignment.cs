@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace fmis.Models.Carlo
+namespace fmis.Models
 {
-    public class FundsRealignment
+    public class SubAllotment_Realignment
     {
         public int Id { get; set; }
         public int Realignment_from { get; set; }
@@ -13,10 +13,5 @@ namespace fmis.Models.Carlo
         public float Realignment_amount { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-
-        public Uacs uacs { get; set; }
-
-       
     }
-
 }

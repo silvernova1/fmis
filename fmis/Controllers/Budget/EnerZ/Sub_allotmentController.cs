@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using fmis.Data.John;
+using fmis.Models.John;
 using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
@@ -16,7 +18,6 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
-
 namespace fmis.Controllers
 {
     public class Sub_allotmentController : Controller
@@ -42,6 +43,7 @@ namespace fmis.Controllers
 
         public class Suballotment_amountData
         {
+            public int FundsId { get; set; }
             public int Id { get; set; }
             public string Expenses { get; set; }
             public float Amount { get; set; }
@@ -190,7 +192,7 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-            PopulatePrexcsDropDownList(sub_allotment.SubId);
+            PopulatePrexcsDropDownList(sub_allotment.Id);
             return View(sub_allotment);
         }
 

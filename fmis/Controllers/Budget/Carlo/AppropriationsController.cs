@@ -23,7 +23,7 @@ namespace fmis.Controllers
         // GET: Appropriations
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             return View(await _context.Appropriation.ToListAsync());
         }
 
@@ -48,18 +48,16 @@ namespace fmis.Controllers
         // GET: Appropriations/Create
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             return View();
         }
 
-        // POST: Appropriations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+   
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (ModelState.IsValid)
             {
                 _context.Add(appropriation);
@@ -72,7 +70,7 @@ namespace fmis.Controllers
         // GET: Appropriations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (id == null)
             {
                 return NotFound();
@@ -86,14 +84,12 @@ namespace fmis.Controllers
             return View(appropriation);
         }
 
-        // POST: Appropriations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (id != appropriation.Id)
             {
                 return NotFound();
@@ -125,7 +121,7 @@ namespace fmis.Controllers
         // GET: Appropriations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (id == null)
             {
                 return NotFound();
@@ -146,7 +142,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            ViewBag.filter = new FilterSidebar("Home", "Dashboard");
+            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             var appropriation = await _context.Appropriation.FindAsync(id);
             _context.Appropriation.Remove(appropriation);
             await _context.SaveChangesAsync();

@@ -8,6 +8,9 @@ namespace fmis.Data
 {
     public class MyDbContext : DbContext
     {
+        public MyDbContext()
+        {
+        }
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
@@ -31,14 +34,23 @@ namespace fmis.Data
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
         public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
+        public DbSet<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
         public DbSet<Ors_head> Ors_head { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
+        public DbSet<SummaryReport> SummaryReport { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //1:M relationship to uacs and funds realignment
+            modelBuilder.Entity<FundsRealignment>()
+            .HasOne(p => p.uacs)
+            .WithMany(b => b.FundsRealignments);
+
+
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
             .HasOne(p => p.Budget_allotment)
@@ -62,14 +74,17 @@ namespace fmis.Data
 
 
             //arnell
-
             modelBuilder.Entity<Personal_Information>()
            .HasKey(s => s.Pid);
             modelBuilder.Entity<ManageUsers>()
            .HasKey(s => s.Id);
 
-            //Yearylyref
+            modelBuilder.Entity<Personal_Information>()
+           .HasKey(s => s.Pid);
+            modelBuilder.Entity<Requesting_office>()
+           .HasKey(s => s.Id);
 
+            //Yearylyref
             modelBuilder.Entity<Yearly_reference>()
            .HasKey(s => s.YearlyReferenceId);
 

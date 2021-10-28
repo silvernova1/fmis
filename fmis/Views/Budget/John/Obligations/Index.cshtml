@@ -13,16 +13,27 @@
     }
 }
 
+
+<style>
+    .filterHeader {
+        color: black;
+    }
+
+    input {
+        width: 750px;
+    }
+</style>
+
 <input type="hidden" class="obligation" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
     (ORS) Obligation Report Summary
 </h3>
 <hr>
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
-<br />
+
 <br />
 <div id="example" class="hot"></div>
+
+
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
@@ -36,9 +47,6 @@
             <div class="modal-body ObligationContent">
             </div>
             <div class="modal-footer">
-                @*   <button type="button" class="btn btn-sm btn-success">
-                        Save <i class="ace-icon fa fa-save"></i>
-                    </button>*@
                 <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
                     Close <i class="ace-icon fa fa-close"></i>
                 </button>
@@ -49,6 +57,7 @@
 
 <script>
 
+
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -57,6 +66,48 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
+
+    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+        const filtersPlugin = hot.getPlugin('filters');
+
+        filtersPlugin.removeConditions(colIndex);
+        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+        filtersPlugin.filter();
+    }, 100);
+
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFn(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
+        div.className = 'filterHeader';
+
+        addEventListeners(input, colIndex);
+
+        div.appendChild(input);
+
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
+
 
     function ajaxServer(ajax_data, url) {
         $.ajax({
@@ -72,8 +123,9 @@
                 });
                 console.log(output);
             }
-    });
-}
+        });
+    }
+
     var obligation = $.parseJSON($(".obligation").val());
 
     const data = [];
@@ -87,9 +139,22 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '100%',
-        colWidths: 108,
         rowHeaders: true,
+        width: '100%',
+        height: 'auto',
+        className: 'as-you-type-demo',
+        filters: true,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
+        colWidths: 100,
+        manualColumnResize: true,
+
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
         columns: [
             {
@@ -99,7 +164,7 @@
                 defaultDate: Date.now()
             },
             {
-                // 2nd cell is simple text, no special options here
+
             },
             {
 
@@ -155,10 +220,10 @@
 
             },
             {
-                //HIDDEN ID
+
             },
             {
-                //HIDDEN TOKEN
+
             },
         ],
         search: {
@@ -170,9 +235,9 @@
                     name: 'Print ORS',
                     callback: function (key, options) {
                         var selection = this.getSelected();
-                        var tempdata = this.getData();
-                        var data = [];
-                        var url = '@Url.Action("PrintOrs", "Obligations")';
+                        var holder_data = this.getData();
+                        var holder_id = holder_data[selection[0][0]][15];
+                        var url = '@Url.Action("PrintOrs", "Obligations")' + "?id=" + holder_id;
                         window.open(url);
                     }
                 },
@@ -191,7 +256,6 @@
                         url: '@Url.Action("ObligationModal", "Obligations")',
                         data: { id: holder_id },
                         success: function (output) {
-                            @*console.log(output);*@
                             setTimeout(function () {
                                 $(".ObligationContent").html(output);
                             }, 500);
@@ -241,7 +305,7 @@
         },
          afterChange: function (changes, source) {
             if (source === 'loadData') {
-                return; //don't save this change
+                return;
             }
             console.log(changes);
               var ajax_data = [];
@@ -276,34 +340,14 @@
             columns: [15,16],
             indicators: true
         },
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use onlWy
+        licenseKey: 'non-commercial-and-evaluation',
 
     });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-
-        console.log(queryResult);
-        hot.validateCells();
-    });
-
+ 
     const exportPlugin = hot.getPlugin('exportFile');
 
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
+  
 
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());

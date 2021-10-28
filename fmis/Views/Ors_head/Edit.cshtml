@@ -13,7 +13,7 @@
             <input type="hidden" name="id" value="@Html.DisplayFor(model => model.Id)" />
             <div class="form-group">
                 <label class="control-label"> FullName </label>
-                <select class="form-control select2" asp-for="pi_userid" asp-items="ViewBag.pi_userid">
+                <select class="form-control select2" asp-for="Personalinfo_userid" asp-items="ViewBag.pi_userid">
                     <option value="@ViewBag.pi_userid_existing.userid">@ViewBag.pi_userid_existing.full_name</option>
                 </select>
             </div>
@@ -27,6 +27,6 @@
 
 <script>
     $(".select2").select2({
-        placeholder: "Select Head Name",
+        placeholder: "Select Full Name",
     });
 </script>

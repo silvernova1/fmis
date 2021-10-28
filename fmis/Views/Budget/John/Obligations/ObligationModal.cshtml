@@ -71,6 +71,7 @@
 </div>
 
 <script>
+    
     var obligation_id = @Html.DisplayFor(model => model.Id);
     let guid = () => {
         let s4 = () => {
@@ -80,6 +81,50 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
+
+    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+        const filtersPlugin = hot.getPlugin('filters');
+
+        filtersPlugin.removeConditions(colIndex);
+        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+        filtersPlugin.filter();
+    }, 100);
+
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFn(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
+        div.className = 'filterHeader';
+
+        addEventListeners(input, colIndex);
+
+        div.appendChild(input);
+
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
+
+
+
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -97,7 +142,7 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(uacsamount, function () {
-        data[counter] = [this.UacsId, [], this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
+        data[counter] = [this.UacsId, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
         counter++;
         obligation_amount += this.Amount;
     })
@@ -106,10 +151,11 @@
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.UacsId, this.Account_title
+        uacs_data[uacs_counter] = this.UacsId,
         uacs_counter++;
     })
     console.log(uacs_data);
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('uacs_amount');
@@ -124,6 +170,7 @@
             source: uacs_data
         },
         {
+            type: 'text',
             readOnly: true
         },
         {
@@ -135,12 +182,36 @@
             allowEmpty: false
         },
         {
+            type: 'numeric',
+            numericFormat: {
+                pattern: '0,0.00',
+                culture: 'en-Ph'
+            },
+            allowEmpty: false
         },
         {
+            type: 'numeric',
+            numericFormat: {
+                pattern: '0,0.00',
+                culture: 'en-Ph'
+            },
+            allowEmpty: false
         },
         {
+            type: 'numeric',
+            numericFormat: {
+                pattern: '0,0.00',
+                culture: 'en-Ph'
+            },
+            allowEmpty: false
         },
         {
+            type: 'numeric',
+            numericFormat: {
+                pattern: '0,0.00',
+                culture: 'en-Ph'
+            },
+            allowEmpty: false
         },
         {
             //HIDDEN ID
@@ -150,7 +221,17 @@
         },
     ],
     stretchH: 'all',
-    height: 'auto',
+    height: '250px',
+    className: 'as-you-type-demo',
+    filters: true,
+    afterGetColHeader: addInput,
+    beforeOnCellMouseDown(event, coords) {
+        // Deselect the column after clicking on input.
+        if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+            event.stopImmediatePropagation();
+            this.deselectCell();
+        }
+    },
     search: {
         searchResultClass: 'search-result-custom'
     },
@@ -192,6 +273,7 @@
         if (source === 'loadData') {
             return; //don't save this change
         }
+        console.log(hot.getSourceData());
         console.log(changes);
         var ajax_data = [];
         $(".obligation_amount").html();
