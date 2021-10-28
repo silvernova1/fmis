@@ -8,6 +8,7 @@ using fmis.Data.Carlo;
 using System.Text.Json;
 using fmis.Models.Carlo;
 using fmis.Data;
+using fmis.Models;
 
 namespace fmis.Controllers.Budget.Carlo
 {
@@ -26,7 +27,7 @@ namespace fmis.Controllers.Budget.Carlo
         public class FundsRealignmentData
         {
             public int Realignment_from { get; set; }
-            public int Realignment_to { get; set; }
+            public int Realignment_to { get; set; }                                         
             public int Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
@@ -60,12 +61,10 @@ namespace fmis.Controllers.Budget.Carlo
         public IActionResult SaveFundsRealignment(List<FundsRealignmentData> data)
         {
             var data_holder = this._context.FundsRealignment;
-
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
                 {
-
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_from = item.Realignment_from;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_to = item.Realignment_to;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
@@ -78,6 +77,7 @@ namespace fmis.Controllers.Budget.Carlo
                 {  
                     var funds = new FundsRealignment(); //CLEAR OBJECT
                     funds.Id = item.Id;
+                    funds.uacs.Account_title =  "";
                     funds.Realignment_from = item.Realignment_from;
                     funds.Realignment_to = item.Realignment_to;
                     funds.Realignment_amount = item.Realignment_amount;

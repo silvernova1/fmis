@@ -13,6 +13,9 @@ namespace fmis.Models.Carlo
         public float Realignment_amount { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+
+        public Uacs uacs { get; set; }
+
        
     }
 

@@ -226,6 +226,15 @@
 
                     <b class="arrow"></b>
                 </li>
+                <li class="@if(ViewBag.filter.sub == "Appropriations")
+                @Html.Raw("active")">
+                    <a asp-controller="Appropriations" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Appropriations
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
 
 
             </ul>
