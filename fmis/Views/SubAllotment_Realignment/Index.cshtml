@@ -19,12 +19,19 @@
     Sub Allotment Realignment
 </h3>
 <hr>
+  <div class="pull-right">
+    <div class="btn-group">
+        <input type="submit" value="Save" class="btn btn-success btn-xs" />
+        <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+    </div>
+   </div>
 <input id="search_field2" style="float: left" type="search" placeholder="Search" />
 <br />
 <br />
 <br />
 <div id="example" class="hot"></div>
 <br />
+
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
@@ -74,7 +81,7 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [350, 350, 350],
+        colWidths: [500, 550, 550],
         rowHeaders: true,
         colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
