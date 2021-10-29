@@ -61,8 +61,6 @@ namespace fmis.Data
             .HasOne(p => p.Budget_allotment)
             .WithMany(b => b.FundSources);
 
-
-
             //1:M relationship to budget allotments and sub allotments
             modelBuilder.Entity<Sub_allotment>()
             .HasOne(p => p.Budget_allotment)
