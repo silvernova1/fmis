@@ -50,6 +50,11 @@ namespace fmis.Data
             .HasOne(p => p.uacs)
             .WithMany(b => b.FundsRealignments);
 
+            //1:M relationship to uacs and funds realignment
+            modelBuilder.Entity<SubAllotment_Realignment>()
+            .HasOne(p => p.uacs)
+            .WithMany(b => b.SubAllotment_Realignment);
+
 
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
@@ -71,6 +76,14 @@ namespace fmis.Data
 
             modelBuilder.Entity<FundSource>()
            .HasKey(s => s.FundSourceId);
+
+            //1:M relationship
+            modelBuilder.Entity<Suballotment_amount>()
+            .HasOne(p => p.Sub_allotment)
+            .WithMany(b => b.Suballotment_amount);
+
+            modelBuilder.Entity<Sub_allotment>()
+           .HasKey(s => s.SubId);
 
 
             //arnell
