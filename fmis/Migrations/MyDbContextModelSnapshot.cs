@@ -364,11 +364,11 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Personalinfo_userid")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("pi_userid")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -383,6 +383,9 @@ namespace fmis.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("Budget_allotmentBudgetAllotmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Ors_headId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Requesting_officeId")
@@ -422,6 +425,8 @@ namespace fmis.Migrations
                     b.HasKey("Pid");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
+
+                    b.HasIndex("Ors_headId");
 
                     b.HasIndex("Requesting_officeId");
 
@@ -510,6 +515,33 @@ namespace fmis.Migrations
                     b.ToTable("Section");
                 });
 
+            modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Realignment_amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Realignment_from")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Realignment_to")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubAllotment_Realignment");
+                });
+
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
                     b.Property<int>("SubId")
@@ -563,6 +595,12 @@ namespace fmis.Migrations
 
                     b.Property<int?>("Sub_allotmentSubId")
                         .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -744,6 +782,24 @@ namespace fmis.Migrations
                     b.ToTable("ManageUsers");
                 });
 
+            modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("datefrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("dateto")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SummaryReport");
+                });
+
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
@@ -813,11 +869,17 @@ namespace fmis.Migrations
                         .WithMany("Personal_Information")
                         .HasForeignKey("Budget_allotmentBudgetAllotmentId");
 
+                    b.HasOne("fmis.Models.Ors_head", "Ors_head")
+                        .WithMany()
+                        .HasForeignKey("Ors_headId");
+
                     b.HasOne("fmis.Models.Requesting_office", "Requesting_office")
                         .WithMany()
                         .HasForeignKey("Requesting_officeId");
 
                     b.Navigation("Budget_allotment");
+
+                    b.Navigation("Ors_head");
 
                     b.Navigation("Requesting_office");
                 });
