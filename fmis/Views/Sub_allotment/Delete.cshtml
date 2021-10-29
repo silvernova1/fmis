@@ -40,11 +40,11 @@
                 @Html.DisplayFor(model => model.Respo)
             </dd>
         </dl>*@
-   <center>
+    <center>
         <form asp-action="Delete">
             <input type="hidden" asp-for="SubId" />
             <input type="submit" value="Delete" class="btn btn-danger" />
             <a asp-action="Index" asp-controller="Budget_allotments" class="btn btn-info">Back to List</a>
         </form>
-   </center>
+    </center>
 </div>
