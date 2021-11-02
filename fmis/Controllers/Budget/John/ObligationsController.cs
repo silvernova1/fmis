@@ -85,8 +85,6 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -98,17 +96,9 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_recieved { get; set; }
-            [DataType(DataType.Time)]
-            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
             public DateTime Time_recieved { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Date_released { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime Time_released { get; set; }
             public string token { get; set; }
             public string status { get; set; }
@@ -217,7 +207,7 @@ namespace fmis.Controllers
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = Convert.ToDateTime(item.Date);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = item.Date.ToShortDateString();
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
@@ -226,11 +216,12 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = item.Date_released;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = item.Time_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved.ToShortDateString();
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved.ToLongTimeString();
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = item.Date_released.ToShortDateString();
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = item.Time_released.ToLongTimeString();
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
                     this._context.SaveChanges();
@@ -245,7 +236,7 @@ namespace fmis.Controllers
                     //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
-                    obligation.Date = item.Date;
+                    obligation.Date = item.Date.ToShortDateString();
                     obligation.Dv = item.Dv;
                     obligation.Pr_no = item.Pr_no;
                     obligation.Po_no = item.Po_no;
@@ -256,10 +247,10 @@ namespace fmis.Controllers
                     obligation.Fund_source = item.Fund_source;
                     obligation.Gross = item.Gross;
                     obligation.Created_by = item.Created_by;
-                    obligation.Date_recieved = item.Date_recieved;
-                    obligation.Time_recieved = item.Time_recieved;
-                    obligation.Date_released = item.Date_released;
-                    obligation.Time_released = item.Time_released;
+                    obligation.Date_recieved = item.Date_recieved.ToShortDateString();
+                    obligation.Time_recieved = item.Time_recieved.ToLongTimeString();
+                    obligation.Date_released = item.Date_released.ToShortDateString();
+                    obligation.Time_released = item.Time_released.ToLongTimeString();
                     obligation.status = "activated";
                     obligation.token = item.token;
 
@@ -465,9 +456,9 @@ namespace fmis.Controllers
                 table3.AddCell(new PdfPCell(new Paragraph(ors.Ors_no + "" + ("") + "" + "", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+              /*  table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-
+*/
                 table3.AddCell(new PdfPCell(new Paragraph("Fund :", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph("" + "", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 

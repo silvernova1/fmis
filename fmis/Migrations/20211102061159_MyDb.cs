@@ -95,7 +95,7 @@ namespace fmis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Dv = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Pr_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Po_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -106,10 +106,10 @@ namespace fmis.Migrations
                     Fund_source = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gross = table.Column<float>(type: "real", nullable: false),
                     Created_by = table.Column<int>(type: "int", nullable: false),
-                    Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date_recieved = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Time_recieved = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date_released = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Time_released = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -185,26 +185,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<< HEAD:fmis/Migrations/20211028061415_MyDb.cs
-=======
-                name: "SubAllotment_Realignment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Realignment_from = table.Column<int>(type: "int", nullable: false),
-                    Realignment_to = table.Column<int>(type: "int", nullable: false),
-                    Realignment_amount = table.Column<float>(type: "real", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubAllotment_Realignment", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
->>>>>>> 8ad3c7f95615dc6666ff26e8fd7de2c2a95db31f:fmis/Migrations/20211027091035_MyDb.cs
                 name: "SummaryReport",
                 columns: table => new
                 {
@@ -685,9 +665,6 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "FundSource");
-
-            migrationBuilder.DropTable(
-                name: "Ors_head");
 
             migrationBuilder.DropTable(
                 name: "Ors_head");

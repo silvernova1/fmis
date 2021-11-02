@@ -82,48 +82,6 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
-        const filtersPlugin = hot.getPlugin('filters');
-
-        filtersPlugin.removeConditions(colIndex);
-        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
-        filtersPlugin.filter();
-    }, 100);
-
-    const addEventListeners = (input, colIndex) => {
-        input.addEventListener('keydown', event => {
-            debounceFn(colIndex, event);
-        });
-    };
-
-    // Build elements which will be displayed in header.
-    const getInitializedElements = colIndex => {
-        const div = document.createElement('div');
-        const input = document.createElement('input');
-
-        div.className = 'filterHeader';
-
-        addEventListeners(input, colIndex);
-
-        div.appendChild(input);
-
-        return div;
-    };
-
-    // Add elements to header on `afterGetColHeader` hook.
-    const addInput = (col, TH) => {
-        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
-        if (typeof col !== 'number') {
-            return col;
-        }
-
-        if (col >= 0 && TH.childElementCount < 2) {
-            TH.appendChild(getInitializedElements(col));
-        }
-    };
-
-
-
 
     function ajaxServer(ajax_data, url) {
         $.ajax({
@@ -222,19 +180,6 @@
     ],
     stretchH: 'all',
     height: '250px',
-    className: 'as-you-type-demo',
-    filters: true,
-    afterGetColHeader: addInput,
-    beforeOnCellMouseDown(event, coords) {
-        // Deselect the column after clicking on input.
-        if (coords.row === -1 && event.target.nodeName === 'INPUT') {
-            event.stopImmediatePropagation();
-            this.deselectCell();
-        }
-    },
-    search: {
-        searchResultClass: 'search-result-custom'
-    },
     contextMenu: ['row_above', 'row_below', 'remove_row'],
     beforeRemoveRow: function (index, column) {
         var selection = this.getSelected();

@@ -10,11 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211028061415_MyDb.Designer.cs
-    [Migration("20211028061415_MyDb")]
-=======
-    [Migration("20211027091035_MyDb")]
->>>>>>> 8ad3c7f95615dc6666ff26e8fd7de2c2a95db31f:fmis/Migrations/20211027091035_MyDb.Designer.cs
+    [Migration("20211102061159_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -310,14 +306,14 @@ namespace fmis.Migrations
                     b.Property<int>("Created_by")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date_recieved")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date_recieved")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date_released")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date_released")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Dv")
                         .HasColumnType("nvarchar(max)");
@@ -343,11 +339,11 @@ namespace fmis.Migrations
                     b.Property<string>("Pr_no")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Time_recieved")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Time_recieved")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Time_released")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Time_released")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -537,12 +533,9 @@ namespace fmis.Migrations
                     b.Property<int>("Realignment_to")
                         .HasColumnType("int");
 
-<<<<<<< HEAD:fmis/Migrations/20211028061415_MyDb.Designer.cs
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
 
-=======
->>>>>>> 8ad3c7f95615dc6666ff26e8fd7de2c2a95db31f:fmis/Migrations/20211027091035_MyDb.Designer.cs
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -551,11 +544,8 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
-<<<<<<< HEAD:fmis/Migrations/20211028061415_MyDb.Designer.cs
                     b.HasIndex("UacsId");
 
-=======
->>>>>>> 8ad3c7f95615dc6666ff26e8fd7de2c2a95db31f:fmis/Migrations/20211027091035_MyDb.Designer.cs
                     b.ToTable("SubAllotment_Realignment");
                 });
 
@@ -904,7 +894,7 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
                 {
                     b.HasOne("fmis.Models.Uacs", "uacs")
-                        .WithMany()
+                        .WithMany("SubAllotment_Realignment")
                         .HasForeignKey("UacsId");
 
                     b.Navigation("uacs");
@@ -977,6 +967,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("FundsRealignments");
+
+                    b.Navigation("SubAllotment_Realignment");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>

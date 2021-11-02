@@ -117,10 +117,6 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
                 console.log(output);
             }
         });
@@ -154,7 +150,6 @@
         },
         colWidths: 100,
         manualColumnResize: true,
-
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
         columns: [
             {
@@ -200,24 +195,27 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                correctFormat: true,
+                defaultDate: Date.now()
             },
 
             {
                 type: 'time',
-                timeFormat: 'h:mm:ss a',
+                timeFormat: 'HH:mm:ss',
                 correctFormat: true
             },
 
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                correctFormat: true,
+                defaultDate: Date.now()
             },
 
             {
                 type: 'time',
-                timeFormat: 'h:mm:ss a',
+                timeFormat: 'HH:mm:ss',
                 correctFormat: true
-
             },
             {
 
@@ -344,11 +342,6 @@
         licenseKey: 'non-commercial-and-evaluation',
 
     });
-
-
-    const exportPlugin = hot.getPlugin('exportFile');
-
-
 
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
