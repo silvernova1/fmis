@@ -95,10 +95,7 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
+
                 console.log(output);
             }
         });
@@ -311,13 +308,13 @@
 
     });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+   @* Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
 
         console.log(queryResult);
         hot.validateCells();
-    });
+    });*@
 
     const exportPlugin = hot.getPlugin('exportFile');
 
