@@ -531,12 +531,9 @@ namespace fmis.Migrations
                     b.Property<int>("Realignment_to")
                         .HasColumnType("int");
 
-<<<<<<< HEAD
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
 
-=======
->>>>>>> 8ad3c7f95615dc6666ff26e8fd7de2c2a95db31f
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -545,11 +542,8 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
-<<<<<<< HEAD
                     b.HasIndex("UacsId");
 
-=======
->>>>>>> 8ad3c7f95615dc6666ff26e8fd7de2c2a95db31f
                     b.ToTable("SubAllotment_Realignment");
                 });
 
@@ -898,7 +892,7 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
                 {
                     b.HasOne("fmis.Models.Uacs", "uacs")
-                        .WithMany()
+                        .WithMany("SubAllotment_Realignment")
                         .HasForeignKey("UacsId");
 
                     b.Navigation("uacs");
@@ -971,6 +965,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("FundsRealignments");
+
+                    b.Navigation("SubAllotment_Realignment");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>

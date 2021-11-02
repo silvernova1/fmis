@@ -311,13 +311,13 @@
 
     });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+   @* Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
 
         console.log(queryResult);
         hot.validateCells();
-    });
+    });*@
 
     const exportPlugin = hot.getPlugin('exportFile');
 
