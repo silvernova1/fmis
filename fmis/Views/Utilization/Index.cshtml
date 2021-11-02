@@ -95,10 +95,7 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
+
                 console.log(output);
             }
         });

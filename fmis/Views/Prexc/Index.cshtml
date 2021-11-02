@@ -96,16 +96,13 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
+               
                 console.log(output);
             }
         });
     }
 
-   @* function ajaxServer(ajax_data, url) {
+    function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -116,7 +113,7 @@
                 console.log(output);
             }
         });
-    }*@
+    }
 
     var prexc = $.parseJSON($(".prexc").val());
     const data = [];
