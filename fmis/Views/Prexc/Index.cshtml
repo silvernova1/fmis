@@ -13,15 +13,22 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
+<style>
+    .filterHeader {
+        color: black;
+    }
+
+    input {
+        width: 750px;
+    }
+</style>
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
     Fund Source | PREXC
 </h3>
 <hr>
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
-<br />
+@*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
 <br />
 <div id="example" class="hot"></div>
 <br />
@@ -39,6 +46,60 @@
                 .substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+        const filtersPlugin = hot.getPlugin('filters');
+
+        filtersPlugin.removeConditions(colIndex);
+        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+        filtersPlugin.filter();
+    }, 100);
+
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFn(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
+        div.className = 'filterHeader';
+
+        addEventListeners(input, colIndex);
+
+        div.appendChild(input);
+
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+               
+                console.log(output);
+            }
+        });
     }
 
     function ajaxServer(ajax_data, url) {
@@ -96,13 +157,8 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][4];
-            @*console.log(selection);
-            console.log(holder_data);
-            console.log(column);*@
             var first_column = selection[0][0];
             var last_column = selection[0][2];
-            @*console.log(first_column);
-            console.log(last_column);*@
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
@@ -132,7 +188,7 @@
         },
         afterChange: function (changes, source) {
             if (source === 'loadData') {
-                return; //don't save this change
+                return; 
             }
 
             console.log(changes);
@@ -145,7 +201,7 @@
                         pap_code1: this[1] ? this[1] : " ",
                         pap_code2: this[2] ? this[2] : " ",
                         Id: this[3] ? this[3] : " ",
-                        token: this[4] ? this[4] : guid()
+                        token: this[4]
                     }
                 );
             });
@@ -153,6 +209,16 @@
             ajaxServer(ajax_data, '@Url.Action("SavePrexc", "Prexc")');
         },
         height: 'auto',
+        className: 'as-you-type-demo',
+        filters: true,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
         hiddenColumns: {
             columns: [3,4],
             indicators: true
@@ -160,13 +226,13 @@
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+    @*Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
 
         console.log(queryResult);
         hot.render();
-    });
+    });*@
 
     const exportPlugin = hot.getPlugin('exportFile');
     button.addEventListener('click', () => {

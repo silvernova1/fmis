@@ -39,11 +39,14 @@
     <thead>
         <tr>
             <th>
-                Sub Allotment Code
+                Fund Source Code
             </th>
             <th>
-                Sub Allotment Title
+                Fund Source Title
             </th>
+           @* <th>
+                ORS Head
+            </th>*@
             <th>
                 Actions
             </th>
@@ -53,25 +56,25 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Suballotment_code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Suballotment_title)
-            </td>
-            @*  <td>
-            @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
-        </td>*@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SubId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                <a asp-action="Delete" asp-route-id="@item.SubId" class="btn btn-danger btn-sm" data-toggle="modal">Delete<span class="glyphicon glyphicon-trash"></span></a>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_title)
+                </td>
+                @*  <td>
+                        @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
+                    </td>*@
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.SubId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-action="Delete" asp-route-id="@item.SubId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-            </td>
-            <td>
-                <a asp-controller="SubAllotment_Realignment" asp-action="Index" class="btn btn-info"><span class="glyphicon glyphicon-transfer" ></span>SubAllotment_Realignment</a>
-            </td>
-        </tr>
+                </td>
+                <td>
+                    <a asp-controller="SubAllotment_Realignment" asp-action="Index" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>SubAllotment_Realignment</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

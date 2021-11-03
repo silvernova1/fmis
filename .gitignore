@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /fmis/Controllers/Budget/EnerZ/SubAllotmentsController.cs
 /fmis/Migrations/20210929042535_MyDb.cs
 /fmis/Migrations/20210929042535_MyDb.Designer.cs
+/fmis/Migrations/20211029070331_MyDb.cs
+/fmis/Migrations/20211029070331_MyDb.Designer.cs

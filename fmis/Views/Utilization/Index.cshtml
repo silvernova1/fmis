@@ -13,14 +13,22 @@
     }
 }
 
+<style>
+    .filterHeader {
+        color: black;
+    }
+
+    input {
+        width: 750px;
+    }
+</style>
+
 <input type="hidden" class="utilization" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
     UTILIZATION
 </h3>
 <hr>
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
-<br />
+@*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
 <br />
 <div id="example" class="hot"></div>
 <br />
@@ -39,6 +47,46 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
+    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+        const filtersPlugin = hot.getPlugin('filters');
+
+        filtersPlugin.removeConditions(colIndex);
+        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+        filtersPlugin.filter();
+    }, 100);
+
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFn(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
+        div.className = 'filterHeader';
+
+        addEventListeners(input, colIndex);
+
+        div.appendChild(input);
+
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -47,10 +95,7 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
+
                 console.log(output);
             }
         });
@@ -69,6 +114,17 @@
     const hot = new Handsontable(container, {
         data: data,
         width: '100%',
+        height: 'auto',
+        className: 'as-you-type-demo',
+        filters: true,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
         colWidths: 108,
         rowHeaders: true,
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYER', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
@@ -194,7 +250,7 @@
                     "many_token": many_token
                 };
 
-                console.log(ajax_data);
+              @*  console.log(ajax_data);*@
 
                 ajaxServer(ajax_data,'@Url.Action("DeleteUtilization", "Utilization")');
             }
@@ -252,13 +308,13 @@
 
     });
 
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+   @* Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
         const search = hot.getPlugin('search');
         const queryResult = search.query(this.value);
 
         console.log(queryResult);
         hot.validateCells();
-    });
+    });*@
 
     const exportPlugin = hot.getPlugin('exportFile');
 

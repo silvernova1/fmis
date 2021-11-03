@@ -77,7 +77,6 @@ namespace fmis.Controllers.Budget.Carlo
                 {  
                     var funds = new FundsRealignment(); //CLEAR OBJECT
                     funds.Id = item.Id;
-                    funds.uacs.Account_title =  "";
                     funds.Realignment_from = item.Realignment_from;
                     funds.Realignment_to = item.Realignment_to;
                     funds.Realignment_amount = item.Realignment_amount;
