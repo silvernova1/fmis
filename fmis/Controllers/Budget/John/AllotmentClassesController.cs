@@ -121,7 +121,17 @@ namespace fmis.Controllers.Budget.John
             return View(allotmentClass);
         }
 
-        // GET: AllotmentClasses/Delete/5
+        
+        public async Task<ActionResult> Delete(String id)
+        {
+            Int32 ID = Convert.ToInt32(id);
+            var allotmentClass = await _context.AllotmentClass.Where(p => p.Id == ID).FirstOrDefaultAsync();
+            _context.AllotmentClass.Remove(allotmentClass);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        /*// GET: AllotmentClasses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,7 +158,7 @@ namespace fmis.Controllers.Budget.John
             _context.AllotmentClass.Remove(allotmentClass);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool AllotmentClassExists(int id)
         {

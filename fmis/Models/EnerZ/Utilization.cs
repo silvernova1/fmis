@@ -25,5 +25,7 @@ namespace fmis.Models
         public DateTime Time_released { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+
+        public ICollection<Budget_allotment> Budget_allotments { get; set; }
     }
 }

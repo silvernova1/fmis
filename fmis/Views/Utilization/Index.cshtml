@@ -215,9 +215,9 @@
                     name: 'Print BUR',
                     callback: function (key, options) {
                         var selection = this.getSelected();
-                        var tempdata = this.getData();
-                        var data = [];
-                        var url = '@Url.Action("Export", "Utilization")';
+                        var holder_data = this.getData();
+                        var holder_id = holder_data[selection[0][0]][15];
+                        var url = '@Url.Action("PrintBur", "Utilization")' + "?id=" + holder_id;
                         window.open(url);
                    
                     }
