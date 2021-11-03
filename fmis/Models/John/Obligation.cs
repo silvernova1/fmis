@@ -12,7 +12,7 @@ namespace fmis.Models
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         public string Dv { get; set; }
         public string Pr_no { get; set; }
@@ -27,23 +27,22 @@ namespace fmis.Models
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        public string Date_recieved { get; set; }
+        public DateTime Date_recieved { get; set; }
 
         [DataType(DataType.Time)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh/:mm}")]
-        public string Time_recieved { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
+        public DateTime Time_recieved { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        public string Date_released { get; set; }
+        public DateTime Date_released { get; set; }
 
         [DataType(DataType.Time)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh/:mm")]
-        public string Time_released { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
+        public DateTime Time_released { get; set; }
 
         public string status { get; set; }
         public string token { get; set; }
-
 
 
     }

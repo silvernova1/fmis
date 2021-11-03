@@ -95,7 +95,7 @@ namespace fmis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Dv = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Pr_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Po_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -106,10 +106,10 @@ namespace fmis.Migrations
                     Fund_source = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gross = table.Column<float>(type: "real", nullable: false),
                     Created_by = table.Column<int>(type: "int", nullable: false),
-                    Date_recieved = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Time_recieved = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date_released = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Time_released = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },

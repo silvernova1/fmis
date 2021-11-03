@@ -304,14 +304,14 @@ namespace fmis.Migrations
                     b.Property<int>("Created_by")
                         .HasColumnType("int");
 
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Date_recieved")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date_recieved")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Date_released")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date_released")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Dv")
                         .HasColumnType("nvarchar(max)");
@@ -337,11 +337,11 @@ namespace fmis.Migrations
                     b.Property<string>("Pr_no")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Time_recieved")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Time_recieved")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Time_released")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Time_released")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
