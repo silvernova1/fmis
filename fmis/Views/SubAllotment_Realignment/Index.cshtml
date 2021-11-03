@@ -13,24 +13,15 @@
     }
 }
 
-<style>
-    .filterHeader {
-        color: black;
-    }
-
-    input {
-        width: 750px;
-    }
-</style>
-
 <input type="hidden" class="suballotment_realignment" value="@ViewBag.temp">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <h3 class="grey lighter smaller">
     Sub Allotment Realignment
 </h3>
-
 <hr>
-@*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
+<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+<br />
+<br />
 <br />
 <div id="example" class="hot"></div>
 <br />
@@ -46,60 +37,6 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
-    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
-        const filtersPlugin = hot.getPlugin('filters');
-
-        filtersPlugin.removeConditions(colIndex);
-        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
-        filtersPlugin.filter();
-    }, 100);
-
-    const addEventListeners = (input, colIndex) => {
-        input.addEventListener('keydown', event => {
-            debounceFn(colIndex, event);
-        });
-    };
-
-    // Build elements which will be displayed in header.
-    const getInitializedElements = colIndex => {
-        const div = document.createElement('div');
-        const input = document.createElement('input');
-
-        div.className = 'filterHeader';
-
-        addEventListeners(input, colIndex);
-
-        div.appendChild(input);
-
-        return div;
-    };
-
-    // Add elements to header on `afterGetColHeader` hook.
-    const addInput = (col, TH) => {
-        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
-        if (typeof col !== 'number') {
-            return col;
-        }
-
-        if (col >= 0 && TH.childElementCount < 2) {
-            TH.appendChild(getInitializedElements(col));
-        }
-    };
-
-     @*function ajaxServer(ajax_data, url) {
-        $.ajax({
-            type: 'POST',
-            url: url,
-            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { data: ajax_data },
-            success: function (output) {
-                $('#loading_modal').modal('hide');
-
-                console.log(output);
-            }
-        });
-     }*@
 
     function ajaxServer(ajax_data, url) {
         $.ajax({
@@ -157,7 +94,6 @@
             },
 
         ],
-        rowHeaders: true,
         undo: true,
         search: {
             searchResultClass: 'search-result-custom'
@@ -221,16 +157,6 @@
              ajaxServer(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
         },
         height: '250px',
-        className: 'as-you-type-demo',
-        filters: true,
-        afterGetColHeader: addInput,
-        beforeOnCellMouseDown(event, coords) {
-            // Deselect the column after clicking on input.
-            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
-                event.stopImmediatePropagation();
-                this.deselectCell();
-            }
-        },
         hiddenColumns: {
             columns: [3,4],
             indicators: true

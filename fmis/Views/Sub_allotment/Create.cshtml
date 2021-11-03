@@ -1,5 +1,4 @@
 ﻿@model fmis.Models.Sub_allotment
-@using fmis.Models
 @*@{
 
         Budget_allotment Budget_allotment = new Budget_allotment();
@@ -10,7 +9,7 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
@@ -18,72 +17,76 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
-<div style="margin: 20px;">
-    <form asp-action="Create">
-        <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
-        <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
-            <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
-            <div class="pull-right">
-                <div class="btn-group">
-                    <input type="submit" value="Save" class="btn btn-success btn-xs" />
-                    <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Prexc" class="control-label"></label>
-                    @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
-                </div>
-                <div class="form-group">
-                    <label asp-for="Suballotment_title" class="control-label"></label>
-                    <input asp-for="Suballotment_title" class="form-control" required>
-                    <span asp-validation-for="Suballotment_title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <textarea asp-for="Description" class="form-control" required></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="Suballotment_code" class="control-label"></label>
-                    <input asp-for="Suballotment_code" class="form-control" required />
-                    <span asp-validation-for="Suballotment_code" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Responsibility_number" class="control-label"></label>
-                    <input asp-for="Responsibility_number" class="form-control" required />
-                    <span asp-validation-for="Responsibility_number" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <input type="hidden" id="SubId" value="@ViewBag.SubId" />
-        <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
-        <input type="hidden" class="uacs" value="@ViewBag.uacs">
-    </form>
 
-    <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-    <br />
-    <p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
-    <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
-    <br />
-    <div class="controls" hidden>
-        <button id="export-file">Download CSV</button>
+<form asp-action="Create">
+    <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+    <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+        <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Save" class="btn btn-success btn-xs" />
+                <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+            </div>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Prexc" class="control-label"></label>
+                @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+            </div>
+            <div class="form-group">
+                <label asp-for="Suballotment_title" class="control-label"></label>
+                <input asp-for="Suballotment_title" class="form-control" required>
+                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Suballotment_code" class="control-label"></label>
+                <input asp-for="Suballotment_code" class="form-control" required />
+                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Responsibility_number" class="control-label"></label>
+                <input asp-for="Responsibility_number" class="form-control" required />
+                <span asp-validation-for="Responsibility_number" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="SubId" value="@ViewBag.SubId" />
+    <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+</form>
+
+
+<br />
+<input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+<br />
+<br />
+<br />
+<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+<div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
 </div>
 
 
-    @*<script>
-            $(document).ready(function () {
-                $('.prexc').select2();
-            });
-        </script>*@
 
-    <script>
+@*<script>
+        $(document).ready(function () {
+            $('.prexc').select2();
+        });
+    </script>*@
+
+<script>
 
     var suballotment_amount = $.parseJSON($(".suballotment_amount").val());
     const data = [];
@@ -106,7 +109,7 @@
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
-    const container = document.getElementById('suballotment_amaount');
+    const container = document.getElementById('fundsource_amount');
     const hot = new Handsontable(container, {
         data: data,
         rowHeaders: true,
@@ -220,4 +223,62 @@
             return false;
         }
     }
-    </script>
+   @* var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+    $("#Create").on("click", function () {
+        console.log("gana");
+        $('#loading_modal').modal('show');
+        var json = [];
+        $.each(hot.getSourceData(), function () {
+            json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
+        });
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Create", "FundSource")',
+            dataType: "JSON",
+            data: { data: json },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                Lobibox.notify("success", {
+                    msg: "Successfully Saved...",
+                    sound: false
+                });
+                console.log(output);
+            }
+        });
+        return false;
+
+    });*@
+
+</script>
+
+
+<!--<table class="table">
+    <thead>
+        <tr>
+            <th>-->
+@*   @FundSource.FundSourceTitle*@
+<!--</th>
+<th>-->
+@* @FundSource.FundSourceTitleCode*@
+<!--</th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>-->
+@*   @foreach (var item in Uacs)
+    {
+        <tr>
+            <td style="width: 800px;">
+                @item.Account_title
+            </td>
+            <td>
+                    <select class="form-control" aria-label="Default select example">
+                        <option selected>Select ORS Head</option>
+                        <option value="1">@item.Account_title</option>
+                    </select>
+                </td>
+        </tr>
+    }*@
+<!--</tbody>
+</table>-->
