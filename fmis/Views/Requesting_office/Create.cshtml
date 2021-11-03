@@ -11,10 +11,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label"> FullName </label>
-                <select class="form-control requestingoffice" asp-for="pi_userid" asp-items="ViewBag.pi_userid"></select>
-
-                @*<label class="control-label"> FullName </label>
-                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "requestingoffice form-control" })*@
+                <select class="requestingoffice" asp-for="pi_userid" asp-items="ViewBag.pi_userid"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-sm btn-success" />|
