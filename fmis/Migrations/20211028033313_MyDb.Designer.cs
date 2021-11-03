@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211028033313_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -536,9 +538,6 @@ namespace fmis.Migrations
                     b.Property<int>("Realignment_to")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UacsId")
-                        .HasColumnType("int");
-
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -546,8 +545,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UacsId");
 
                     b.ToTable("SubAllotment_Realignment");
                 });
@@ -898,15 +895,6 @@ namespace fmis.Migrations
                     b.Navigation("Requesting_office");
                 });
 
-            modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
-                {
-                    b.HasOne("fmis.Models.Uacs", "uacs")
-                        .WithMany("SubAllotment_Realignment")
-                        .HasForeignKey("UacsId");
-
-                    b.Navigation("uacs");
-                });
-
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
@@ -974,8 +962,6 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("FundsRealignments");
-
-                    b.Navigation("SubAllotment_Realignment");
                 });
 
             modelBuilder.Entity("fmis.Models.Utilization", b =>

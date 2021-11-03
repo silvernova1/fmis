@@ -154,37 +154,8 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment, List<Suballotment_amountData> data)
+        public async Task<IActionResult> Create([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var data_holder = this._MyDbContext.Suballotment_amount.Include(c => c.Sub_allotment);
-            foreach (var item in data)
-            {
-                if (item.Id == 0)
-                {
-
-                    var suballotment_amount = new Suballotment_amount();
-
-                    suballotment_amount.Id = item.Id;
-                    suballotment_amount.Expenses = item.Expenses;
-                    suballotment_amount.Amount = item.Amount;
-
-                    this._MyDbContext.Suballotment_amount.Update(suballotment_amount);
-                    this._MyDbContext.SaveChanges();
-                }
-                /*else
-                {
-                    data_holder.Find(item.Id).FundsId = item.FundsId;
-                    data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Amount = item.Amount;
-
-                    this._MyDbContext.SaveChanges();
-                }*/
-            }
-
-            return Json(data);
-
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
             {
@@ -195,18 +166,17 @@ namespace fmis.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch (RetryLimitExceededException /* dex */)
+            catch (RetryLimitExceededException)
             {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
+
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
-            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
 
-            /*return View(fundSource);*/
-            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
+
+            return View(sub_allotment);
+
         }
-
 
         // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int? id)
