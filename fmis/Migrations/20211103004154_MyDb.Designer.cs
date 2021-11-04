@@ -11,7 +11,6 @@ namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
     [Migration("20211103040803_MyDb")]
-    [Migration("20211103004154_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

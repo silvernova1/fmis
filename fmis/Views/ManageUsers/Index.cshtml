@@ -57,38 +57,37 @@
                 Actions
             </th>
             <th>
-                Opttions
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
-         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.userid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.full_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.username)
-            </td>
-            <td>
-                <a class="btn btn-sm btn-success">
-                    <i class="fa fa-key" aria-hidden="true"></i>Reset Password
-                </a>
-            </td>
-            <td>
-                <a class="btn btn-sm btn-primary" asp-action="Edit" data-target="#EditModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
-                    <i class="ace-icon fa fa-edit"></i>Update
-                </a> |
-                <a class="btn btn-sm btn-danger" asp-action="Delete" data-target="#DeleteModal" data-toggle="modal" asp-route-pi_userid="@item.userid">
-                    <i class="ace-icon fa fa-trash"></i>Delete
-                </a>
-            </td>
-        </tr>
-         }
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.userid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.full_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.username)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" data-target="#EditModal" data-toggle="modal" asp-route-UserId="@item.userid">
+                        <i class="ace-icon fa fa-edit"></i>Update
+                    </a> |
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" data-target="#DeleteModal" data-toggle="modal" asp-route-UserId="@item.userid">
+                        <i class="ace-icon fa fa-trash"></i>Delete
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-success">
+                        <i class="fa fa-key" aria-hidden="true"></i>Reset Password
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

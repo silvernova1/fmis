@@ -51,9 +51,6 @@ namespace fmis.Controllers.Budget.silver
 
             return View(_pis_context.forRequestingOffice(concat_UserId));
         }
-        // DRI USA TA KUTOB HA
-
-
 
         // GET: Requesting_office/Details/5
         public IActionResult Details(string UserId)
@@ -87,7 +84,7 @@ namespace fmis.Controllers.Budget.silver
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,username")] ManageUsers ManageUsers)
+        public async Task<IActionResult> Create([Bind("Id,UserId")] ManageUsers ManageUsers)
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
             try
