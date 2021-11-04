@@ -28,6 +28,7 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 
+
 namespace fmis.Controllers
 {
 
@@ -85,9 +86,7 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Date { get; set; }
+            public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
             public string Po_no { get; set; }
@@ -98,21 +97,12 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Date_recieved { get; set; }
-            [DataType(DataType.Time)]
-            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
-            public DateTime Time_recieved { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Date_released { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Time_released { get; set; }
+            public string Date_recieved { get; set; }
+            public string Time_recieved { get; set; }
+            public string Date_released { get; set; }
+            public string Time_released { get; set; }
             public string token { get; set; }
             public string status { get; set; }
-
         }
 
         public class ManyId
@@ -126,12 +116,36 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
+
+
         // GET: Obligations
         public IActionResult Index()
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation");
-            var json = JsonSerializer.Serialize(_context.Obligation.Where(s => s.status == "activated").ToList());
+            var obligations = _context.Obligation.Where(s => s.status == "activated")
+                .Select(x => new ObligationData()
+                {
+                    Id = x.Id,
+                    Date = x.Date.ToShortDateString(),
+                    Dv = x.Dv,
+                    Pr_no = x.Pr_no,
+                    Po_no = x.Po_no,
+                    Payee = x.Payee,
+                    Address = x.Address,
+                    Particulars = x.Particulars,
+                    Ors_no = x.Ors_no,
+                    Fund_source = x.Fund_source,
+                    Gross = x.Gross,
+                    Created_by = x.Created_by,
+                    Date_recieved = x.Date_recieved.ToShortDateString(),
+                    Time_recieved = x.Time_recieved.ToString("HH:mm:ss"),
+                    Date_released = x.Date_released.ToShortDateString(),
+                    Time_released = x.Time_released.ToString("HH:mm:ss"),
+                    token = x.token,
+                    status = x.status
+            });
+            var json = JsonSerializer.Serialize(obligations.ToList());
             ViewBag.temp = json;
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
@@ -200,6 +214,17 @@ namespace fmis.Controllers
             return View();
         }
 
+
+        private DateTime ToDateTime(string date)
+        {
+            if (DateTime.TryParse(date, out DateTime result))
+            {
+                return result;
+            }
+
+            return DateTime.MinValue;
+        }
+
         public ActionResult AddData(List<string[]> dataListFromTable)
         {
             var dataListTable = dataListFromTable;
@@ -212,12 +237,14 @@ namespace fmis.Controllers
 
             var data_holder = this._context.Obligation;
 
+
             foreach (var item in data)
             {
+
+
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = Convert.ToDateTime(item.Date);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
@@ -226,26 +253,26 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = item.Date_released;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = item.Time_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = ToDateTime(item.Date_recieved);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = ToDateTime(item.Time_recieved);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = ToDateTime(item.Date_released);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = ToDateTime(item.Time_released);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
                     this._context.SaveChanges();
 
-
                 }
-                else if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
-                         item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
-                         item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
-                         (item.Time_recieved.ToString() != null || item.Date_released.ToString() != null) && (item.Time_released.ToString() != null)) //save
+                else /*if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
+                        item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
+                        item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
+                        (item.Time_recieved.ToString() != null || item.Date_released != null) && (item.Time_released.ToString() != null))*/ //save
                 {
                     //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
-                    obligation.Date = item.Date;
+                    obligation.Date = ToDateTime(item.Date);
                     obligation.Dv = item.Dv;
                     obligation.Pr_no = item.Pr_no;
                     obligation.Po_no = item.Po_no;
@@ -256,10 +283,10 @@ namespace fmis.Controllers
                     obligation.Fund_source = item.Fund_source;
                     obligation.Gross = item.Gross;
                     obligation.Created_by = item.Created_by;
-                    obligation.Date_recieved = item.Date_recieved;
-                    obligation.Time_recieved = item.Time_recieved;
-                    obligation.Date_released = item.Date_released;
-                    obligation.Time_released = item.Time_released;
+                    obligation.Date_recieved = ToDateTime(item.Date_recieved);
+                    obligation.Time_recieved = ToDateTime(item.Time_recieved);
+                    obligation.Date_released = ToDateTime(item.Date_released);
+                    obligation.Time_released = ToDateTime(item.Time_released);
                     obligation.status = "activated";
                     obligation.token = item.token;
 
@@ -465,9 +492,9 @@ namespace fmis.Controllers
                 table3.AddCell(new PdfPCell(new Paragraph(ors.Ors_no + "" + ("") + "" + "", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+              /*  table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-
+*/
                 table3.AddCell(new PdfPCell(new Paragraph("Fund :", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph("" + "", column3_font)) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 

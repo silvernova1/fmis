@@ -16,7 +16,7 @@ namespace fmis.Models
         public string Address { get; set; }
         public string Particulars { get; set; }
         public int Ors_no { get; set; }
-        public string Fund_source { get; set; } 
+        public string Fund_source { get; set; }
         public float Gross { get; set; }
         public int Created_by { get; set; }
         public DateTime Date_recieved { get; set; }
@@ -29,3 +29,4 @@ namespace fmis.Models
         public ICollection<Budget_allotment> Budget_allotments { get; set; }
     }
 }
+

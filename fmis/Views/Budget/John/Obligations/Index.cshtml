@@ -117,10 +117,6 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                Lobibox.notify(lobi_type, {
-                    msg: lobi_msg,
-                    sound: false
-                });
                 console.log(output);
             }
         });
@@ -152,9 +148,8 @@
                 this.deselectCell();
             }
         },
-        colWidths: 100,
+        colWidths: [140, 200, 200, 200, 300, 300, 700, 100, 200, 200, 200, 200, 200, 200, 200],
         manualColumnResize: true,
-
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
         columns: [
             {
@@ -200,24 +195,27 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                correctFormat: true,
+    
             },
 
             {
                 type: 'time',
-                timeFormat: 'h:mm:ss a',
+                timeFormat: 'HH:mm:ss',
                 correctFormat: true
             },
 
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                correctFormat: true,
+       
             },
 
             {
                 type: 'time',
-                timeFormat: 'h:mm:ss a',
+                timeFormat: 'HH:mm:ss',
                 correctFormat: true
-
             },
             {
 
@@ -234,7 +232,6 @@
                 "make_bold": {
                     name: 'Print ORS',
                     callback: function (key, options) {
-                        
                         var selection = this.getSelected();
                         var holder_data = this.getData();
                         var holder_id = holder_data[selection[0][0]][15];
@@ -344,11 +341,6 @@
         licenseKey: 'non-commercial-and-evaluation',
 
     });
-
-
-    const exportPlugin = hot.getPlugin('exportFile');
-
-
 
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());

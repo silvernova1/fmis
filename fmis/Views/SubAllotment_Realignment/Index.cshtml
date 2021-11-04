@@ -45,6 +45,7 @@
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
             data: { data: ajax_data },
             success: function (output) {
+                $('#loading_modal').modal('hide');
                
                 console.log(output);
             }
@@ -63,15 +64,25 @@
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
+        uacs_data[uacs_counter] = this.UacsId
         uacs_counter++;
+
+        console.log(uacs_counter);
+    })
+
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data1 = [];
+    var uacs_counter1 = 0;
+    $.each(uacs, function () {
+        uacs_data1[uacs_counter1] = this.UacsId
+        uacs_counter1++;
     })
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [500, 550, 550],
+        colWidths: [350, 350, 350],
         rowHeaders: true,
         colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
@@ -81,7 +92,7 @@
             },
             {
                 type: 'dropdown',
-                source: uacs_data
+                source: uacs_data1
             },
             {
 
