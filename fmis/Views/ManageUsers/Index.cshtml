@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<h2>Personal Information System Users</h2>
+<h2>User Management</h2>
 <p>
     <a class="btn btn-success btn-sm" asp-action="Create" data-target="#CreateModal" data-toggle="modal">
         <i class="ace-icon fa fa-plus"></i>Create
@@ -51,13 +51,13 @@
                 Full Name
             </th>
             <th>
-                User Name
-            </th>
-            <th>
-                Password
+                User Logins
             </th>
             <th>
                 Actions
+            </th>
+            <th>
+                Opttions
             </th>
             <th></th>
         </tr>
@@ -76,7 +76,9 @@
                 @Html.DisplayFor(modelItem => item.username)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.password)
+                <a class="btn btn-sm btn-success">
+                    <i class="fa fa-key" aria-hidden="true"></i>Reset Password
+                </a>
             </td>
             <td>
                 <a class="btn btn-sm btn-primary" asp-action="Edit" data-target="#EditModal" data-toggle="modal" asp-route-pi_userid="@item.userid">

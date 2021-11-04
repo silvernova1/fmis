@@ -105,10 +105,9 @@ namespace fmis.Controllers.Budget.silver
             }
             PopulatePsDropDownList();
             return View(ManageUsers);
-            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
 
-        // GET: Requesting_office/Edit/5
+        // GET: manageusers/Edit/5
         public async Task<IActionResult> Edit(string UserId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");

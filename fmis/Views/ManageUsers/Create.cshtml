@@ -3,7 +3,7 @@
 
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3>Create new Requesting Office</h3></center>
+<center><h3>Create new User</h3></center>
 
 <hr />
 <div class="container">
@@ -14,8 +14,6 @@
                 <label class="control-label"> FullName </label>
                 <select class="form-control ManageUsers" asp-for="UserId" asp-items="ViewBag.UserId"></select>
 
-                @*<label class="control-label"> FullName </label>
-                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "requestingoffice form-control" })*@
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-sm btn-success" />|
@@ -28,6 +26,6 @@
 
 <script>
     $(document).ready(function () {
-        $('.requestingoffice').select2();
+        $('.ManageUsers').select2();
     });
 </script>
