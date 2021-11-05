@@ -13,7 +13,7 @@ namespace fmis.DataHealpers
         public String GetOrsCode(String ors_allotment)
         {
             var Budget_allotments = db.Budget_allotments.Where(p => p.BudgetAllotmentId.ToString() == ors_allotment).FirstOrDefault();
-            return Budget_allotments.Allotment_code ?? "";
+            return Budget_allotments.Allotment_code ?? "Allotment Code 234";
         }
     }
 }

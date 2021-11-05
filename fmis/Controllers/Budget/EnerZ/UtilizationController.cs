@@ -331,10 +331,6 @@ namespace fmis.Controllers
             Int32 Id = Convert.ToInt32(id);
             var bur = _MyDbContext.Utilization.Where(p => p.Id == Id).FirstOrDefault();
 
-
-
-
-
             string ExportData = "This is pdf generated";
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
@@ -407,7 +403,7 @@ namespace fmis.Controllers
                 Font column3_font = FontFactory.GetFont("Arial", 8, Font.BOLD, BaseColor.BLACK);
 
                 table3.AddCell(new PdfPCell(new Paragraph("No :", arial_font_10)) { Padding = 6f, Border = 0 });
-                table3.AddCell(new PdfPCell(new Paragraph("" + " - 01101101 - " + "2021" + " - " + "09", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                table3.AddCell(new PdfPCell(new Paragraph(rpt_ors.GetOrsCode(bur.Budget_allotments.ToString()) + " - 01101101 - " + "2021" + " - " + "09", column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                 table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
                 table3.AddCell(new PdfPCell(new Paragraph(bur.Date.ToShortDateString(), column3_font)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
