@@ -1,12 +1,5 @@
 ﻿@model fmis.Models.John.FundSource
 @using fmis.Models.John;
-@*@{
-
-        Budget_allotment Budget_allotment = new Budget_allotment();
-        FundSource FundSource = TempData["FundSource"] as FundSource;
-        List<Uacs> Uacs = TempData["Uacs"] as List<Uacs>;
-    }*@
-
 
 @{
     ViewData["Title"] = "Create";
@@ -19,7 +12,7 @@
 
 
 <div style="margin: 20px;">
-    <form asp-action="Create">
+    <form asp-action="Create" id="Create">
         <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
@@ -196,8 +189,15 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
-    document.onkeydown = function (e) {
-        if (e.ctrlKey && e.keyCode === 83) {
+
+
+  @*  $("#savefs").submit(function (event) {
+        alert("Handler for .submit() called.");
+        event.preventDefault();
+    });*@
+
+
+    $("#Create").submit(function (event) {
             $('#loading_modal').modal('show');
             var json = [];
             $.each(hot.getSourceData(), function () {
@@ -205,7 +205,7 @@
             });
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("SaveFundsourceamount", "FundSource")',
+                url: '@Url.Action("Create", "FundSource")',
                 dataType: "JSON",
                 data: { data: json },
                 success: function (output) {
@@ -218,64 +218,8 @@
                 }
             });
             return false;
-        }
-    }
-   @* var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
-    $("#Create").on("click", function () {
-        console.log("gana");
-        $('#loading_modal').modal('show');
-        var json = [];
-        $.each(hot.getSourceData(), function () {
-            json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
-        });
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("Create", "FundSource")',
-            dataType: "JSON",
-            data: { data: json },
-            success: function (output) {
-                $('#loading_modal').modal('hide');
-                Lobibox.notify("success", {
-                    msg: "Successfully Saved...",
-                    sound: false
-                });
-                console.log(output);
-            }
-        });
-        return false;
-
-    });*@
+    });
 
 </script>
 
 
-<!--<table class="table">
-    <thead>
-        <tr>
-            <th>-->
-@*   @FundSource.FundSourceTitle*@
-<!--</th>
-<th>-->
-@* @FundSource.FundSourceTitleCode*@
-<!--</th>
-        <th></th>
-    </tr>
-</thead>
-<tbody>-->
-@*   @foreach (var item in Uacs)
-    {
-        <tr>
-            <td style="width: 800px;">
-                @item.Account_title
-            </td>
-            <td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">@item.Account_title</option>
-                    </select>
-                </td>
-        </tr>
-    }*@
-<!--</tbody>
-</table>-->

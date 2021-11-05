@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211103004154_MyDb")]
+    [Migration("20211104075831_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,15 +67,10 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UtilizationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
 
                     b.HasKey("BudgetAllotmentId");
-
-                    b.HasIndex("UtilizationId");
 
                     b.HasIndex("YearlyReferenceId")
                         .IsUnique();
@@ -814,10 +809,6 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
-                    b.HasOne("fmis.Models.Utilization", null)
-                        .WithMany("Budget_allotments")
-                        .HasForeignKey("UtilizationId");
-
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
                         .WithOne("Budget_allotment")
                         .HasForeignKey("fmis.Models.Budget_allotment", "YearlyReferenceId")
@@ -978,11 +969,6 @@ namespace fmis.Migrations
                     b.Navigation("FundsRealignments");
 
                     b.Navigation("SubAllotment_Realignment");
-                });
-
-            modelBuilder.Entity("fmis.Models.Utilization", b =>
-                {
-                    b.Navigation("Budget_allotments");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>

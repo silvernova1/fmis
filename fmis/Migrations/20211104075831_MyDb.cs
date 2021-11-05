@@ -327,18 +327,11 @@ namespace fmis.Migrations
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false),
-                    UtilizationId = table.Column<int>(type: "int", nullable: true)
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Budget_allotment", x => x.BudgetAllotmentId);
-                    table.ForeignKey(
-                        name: "FK_Budget_allotment_Utilization_UtilizationId",
-                        column: x => x.UtilizationId,
-                        principalTable: "Utilization",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Budget_allotment_Yearly_reference_YearlyReferenceId",
                         column: x => x.YearlyReferenceId,
@@ -546,11 +539,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Budget_allotment_UtilizationId",
-                table: "Budget_allotment",
-                column: "UtilizationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Budget_allotment_YearlyReferenceId",
                 table: "Budget_allotment",
                 column: "YearlyReferenceId",
@@ -673,6 +661,9 @@ namespace fmis.Migrations
                 name: "Uacsamount");
 
             migrationBuilder.DropTable(
+                name: "Utilization");
+
+            migrationBuilder.DropTable(
                 name: "FundSource");
 
             migrationBuilder.DropTable(
@@ -695,9 +686,6 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Obligated_amount");
-
-            migrationBuilder.DropTable(
-                name: "Utilization");
 
             migrationBuilder.DropTable(
                 name: "Yearly_reference");

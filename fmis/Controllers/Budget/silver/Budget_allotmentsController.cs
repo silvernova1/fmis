@@ -10,7 +10,7 @@ using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
-
+using fmis.Data.silver;
 
 namespace fmis.Controllers
 {
@@ -20,14 +20,16 @@ namespace fmis.Controllers
         private readonly FundSourceContext _Context;
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
+        private readonly PersonalInformationMysqlContext _pis_context;
 
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext)
+        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context)
         {
             _context = context;
             _Context = Context;
             _osContext = osContext;
             _orssContext = orssContext;
+            _pis_context = pis_context;
         }
 
         // GET: Budget_allotments
@@ -52,6 +54,29 @@ namespace fmis.Controllers
             return View();
         }
 
+
+
+
+        private void PopulatePsDropDownList()
+        {
+            ViewBag.pi_userid = new SelectList((from s in _pis_context.allPersonalInformation()
+                                                where !_context.Requesting_office.Any(ro => ro.pi_userid == s.userid)
+                                                select new
+                                                {
+                                                    pi_userid = s.userid,
+                                                    ps = s.full_name
+                                                }),
+                                          "pi_userid",
+                                          "ps",
+                                           null);
+
+        }
+
+
+
+
+
+
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
@@ -59,13 +84,13 @@ namespace fmis.Controllers
                              orderby d.YearlyReference
                              select d;
             ViewBag.YearlyReferenceId = new SelectList((from s in _context.Yearly_reference.ToList()
-                                        where !_context.Budget_allotments.Any(ro => ro.YearlyReferenceId == s.YearlyReferenceId)
-                                        select new
-                                         {
-                                             YearlyReferenceId = s.YearlyReferenceId,
-                                             yr = s.YearlyReference
-                                         }),
-                                         "YearlyReferenceId","yr"
+                                                        where !_context.Budget_allotments.Any(ro => ro.YearlyReferenceId == s.YearlyReferenceId)
+                                                        select new
+                                                        {
+                                                            YearlyReferenceId = s.YearlyReferenceId,
+                                                            yr = s.YearlyReference
+                                                        }),
+                                         "YearlyReferenceId", "yr"
                                          );
 
             List<Yearly_reference> oh = new List<Yearly_reference>();
@@ -93,7 +118,7 @@ namespace fmis.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch (RetryLimitExceededException )
+            catch (RetryLimitExceededException)
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
@@ -107,6 +132,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
+            PopulatePsDropDownList();
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -137,6 +163,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
+            PopulatePsDropDownList();
 
             List<Ors_head> oh = new List<Ors_head>();
 
