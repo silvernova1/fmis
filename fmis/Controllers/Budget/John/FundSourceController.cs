@@ -160,6 +160,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
 
+
             foreach (var item in data)
             {
                 if (item.Id == 0)
@@ -174,39 +175,17 @@ namespace fmis.Controllers.Budget.John
                     this._MyDbContext.FundSourceAmount.Update(fundsourceamount);
                     this._MyDbContext.SaveChanges();
                 }
-                /*else
+
+                if (ModelState.IsValid)
                 {
-                    data_holder.Find(item.Id).FundsId = item.FundsId;
-                    data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Amount = item.Amount;
+                    _context.Add(fundSource);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
 
-                    this._MyDbContext.SaveChanges();
-                }*/
+                
             }
-
-            return Json(data);
-
-
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            try
-            {
-                 if (ModelState.IsValid)
-                    {
-                        _context.Add(fundSource);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                    }
-            }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulatePrexcsDropDownList(fundSource.Id);
-            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
-
-            /*return View(fundSource);*/
-            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
+            return View(fundSource);
         }
 
         // GET: FundSource/Edit/5

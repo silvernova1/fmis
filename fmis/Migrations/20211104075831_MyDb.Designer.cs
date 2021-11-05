@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211028033313_MyDb")]
+    [Migration("20211104075831_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,15 +67,10 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UtilizationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
 
                     b.HasKey("BudgetAllotmentId");
-
-                    b.HasIndex("UtilizationId");
 
                     b.HasIndex("YearlyReferenceId")
                         .IsUnique();
@@ -538,6 +533,9 @@ namespace fmis.Migrations
                     b.Property<int>("Realignment_to")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UacsId")
+                        .HasColumnType("int");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -545,6 +543,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UacsId");
 
                     b.ToTable("SubAllotment_Realignment");
                 });
@@ -809,10 +809,6 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
-                    b.HasOne("fmis.Models.Utilization", null)
-                        .WithMany("Budget_allotments")
-                        .HasForeignKey("UtilizationId");
-
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
                         .WithOne("Budget_allotment")
                         .HasForeignKey("fmis.Models.Budget_allotment", "YearlyReferenceId")
@@ -895,6 +891,15 @@ namespace fmis.Migrations
                     b.Navigation("Requesting_office");
                 });
 
+            modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
+                {
+                    b.HasOne("fmis.Models.Uacs", "uacs")
+                        .WithMany("SubAllotment_Realignment")
+                        .HasForeignKey("UacsId");
+
+                    b.Navigation("uacs");
+                });
+
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
@@ -962,11 +967,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("FundsRealignments");
-                });
 
-            modelBuilder.Entity("fmis.Models.Utilization", b =>
-                {
-                    b.Navigation("Budget_allotments");
+                    b.Navigation("SubAllotment_Realignment");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
