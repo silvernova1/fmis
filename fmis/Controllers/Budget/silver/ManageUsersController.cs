@@ -71,7 +71,7 @@ namespace fmis.Controllers.Budget.silver
             return View(ManageUsers);
         }
 
-        // GET: Requesting_office/Create
+        // GET: manageuser/Create
         public IActionResult Create()
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
