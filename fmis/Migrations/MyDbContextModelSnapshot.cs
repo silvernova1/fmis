@@ -86,11 +86,11 @@ namespace fmis.Migrations
                     b.Property<float>("Realignment_amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("Realignment_from")
-                        .HasColumnType("int");
+                    b.Property<string>("Realignment_from")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Realignment_to")
-                        .HasColumnType("int");
+                    b.Property<string>("Realignment_to")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
@@ -650,8 +650,14 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Account_title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Amount")
                         .HasColumnType("real");
+
+                    b.Property<string>("Expense_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
@@ -667,9 +673,6 @@ namespace fmis.Migrations
 
                     b.Property<float>("Total_tax_amount")
                         .HasColumnType("real");
-
-                    b.Property<int>("UacsId")
-                        .HasColumnType("int");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -818,11 +821,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Carlo.FundsRealignment", b =>
                 {
-                    b.HasOne("fmis.Models.Uacs", "uacs")
+                    b.HasOne("fmis.Models.Uacs", "Uacs")
                         .WithMany("FundsRealignments")
                         .HasForeignKey("UacsId");
 
-                    b.Navigation("uacs");
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.Designation", b =>

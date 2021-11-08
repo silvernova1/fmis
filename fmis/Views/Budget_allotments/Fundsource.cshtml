@@ -36,7 +36,7 @@
     </div>
 </div>
 <p>
-    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
 </p>
 <table class="table">
     <thead>
@@ -76,7 +76,7 @@
                     <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-action="Index" class="btn btn-info"><span class="glyphicon glyphicon-transfer" ></span>Funds Realignment</a>
+                    <a asp-controller="FundsRealignment" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer" ></span> Funds Realignment</a>
                 </td>
             </tr>
          }

@@ -47,7 +47,7 @@ namespace fmis.Data
 
             //1:M relationship to uacs and funds realignment
             modelBuilder.Entity<FundsRealignment>()
-            .HasOne(p => p.uacs)
+            .HasOne(p => p.Uacs)
             .WithMany(b => b.FundsRealignments);
 
             //1:M relationship to uacs and funds realignment
@@ -105,6 +105,7 @@ namespace fmis.Data
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<FundsRealignment>().ToTable("FundsRealignment");
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
 
         }
