@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211105010252_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,11 +88,11 @@ namespace fmis.Migrations
                     b.Property<float>("Realignment_amount")
                         .HasColumnType("real");
 
-                    b.Property<string>("Realignment_from")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Realignment_from")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Realignment_to")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Realignment_to")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
@@ -650,14 +652,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Account_title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float>("Amount")
                         .HasColumnType("real");
-
-                    b.Property<string>("Expense_code")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
@@ -673,6 +669,9 @@ namespace fmis.Migrations
 
                     b.Property<float>("Total_tax_amount")
                         .HasColumnType("real");
+
+                    b.Property<int>("UacsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -824,11 +823,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Carlo.FundsRealignment", b =>
                 {
-                    b.HasOne("fmis.Models.Uacs", "Uacs")
+                    b.HasOne("fmis.Models.Uacs", "uacs")
                         .WithMany("FundsRealignments")
                         .HasForeignKey("UacsId");
 
-                    b.Navigation("Uacs");
+                    b.Navigation("uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.Designation", b =>

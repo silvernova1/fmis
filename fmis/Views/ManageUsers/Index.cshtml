@@ -33,13 +33,54 @@
     </div>
 </div>
 
+<!--password-->
+<div class="container">
+    <a href="#" data-target="#pwdModal" data-toggle="modal">Forgot my password</a>
+</div>
+
+<!--modal-->
+<div id="pwdModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h1 class="text-center">What's My Password?</h1>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="text-center">
+
+                                <p>If you have forgotten your password you can reset it here.</p>
+                                <div class="panel-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <input class="form-control input-lg" placeholder="E-mail Address" name="email" type="email">
+                                        </div>
+                                        <input class="btn btn-lg btn-primary btn-block" value="Send My Password" type="submit">
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button class="btn btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h2>User Management</h2>
 <p>
     <a class="btn btn-success btn-sm" asp-action="Create" data-target="#CreateModal" data-toggle="modal">
         <i class="ace-icon fa fa-plus"></i>Create
     </a>
 </p>
-
 
 <table class="table">
     <thead>
@@ -83,7 +124,7 @@
                     </a>
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-success">
+                    <a class="btn btn-sm btn-success" asp-action="Reset Password" data-target="#pwdModal" data-toggle="modal" asp-route-UserId="@item.userid">
                         <i class="fa fa-key" aria-hidden="true"></i>Reset Password
                     </a>
                 </td>

@@ -12,18 +12,18 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col">ID</th>
                     <th scope="col">FullName</th>
-                    @*<th scope="col">Division</th>
-                    <th scope="col">Section</th>
-                    <th scope="col">Designation</th>*@
+                    <th scope="col">UserLogin</th>
+                    <th scope="col">Role</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+                    <td>@ViewBag.UserId_existing.userid</td>
                     <td>@ViewBag.UserId_existing.full_name</td>
-                    @*<td>@ViewBag.pi_userid_existing.division</td>
-                    <td>@ViewBag.pi_userid_existing.section</td>
-                    <td>@ViewBag.pi_userid_existing.designation</td>*@
+                    <td>@ViewBag.UserId_existing.username</td>
+                    <td>wla pa nkuha</td>
                 </tr>
             </tbody>
         </table>
