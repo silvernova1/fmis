@@ -10,11 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211105010252_MyDb.Designer.cs
     [Migration("20211105010252_MyDb")]
-=======
-    [Migration("20211104075831_MyDb")]
->>>>>>> 4b3419e3d361c5b837eb1b84adec5960e1f2f974:fmis/Migrations/20211104075831_MyDb.Designer.cs
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
