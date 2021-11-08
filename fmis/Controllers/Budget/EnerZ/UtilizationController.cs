@@ -42,9 +42,7 @@ namespace fmis.Controllers
         public class UtilizationData
         {
             public int Id { get; set; }
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Date { get; set; }
+            public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
             public string Po_no { get; set; }
@@ -55,30 +53,15 @@ namespace fmis.Controllers
             public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-
-
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Date_recieved { get; set; }
-
-            [DataType(DataType.Time)]
-            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
-            public DateTime Time_recieved { get; set; }
-
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Date_released { get; set; }
-
-            [DataType(DataType.Date)]
-            [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-            public DateTime Time_released { get; set; }
-
+            public string Date_recieved { get; set; }
+            public string Time_recieved { get; set; }
+            public string Date_released { get; set; }
+            public string Time_released { get; set; }
             public string token { get; set; }
             public string status { get; set; }
-
         }
 
-        public class Many
+        public class ManyId
         {
             public string many_token { get; set; }
         }
@@ -86,7 +69,7 @@ namespace fmis.Controllers
         public class DeleteData
         {
             public string single_token { get; set; }
-            public List<Many> many_token { get; set; }
+            public List<ManyId> many_token { get; set; }
         }
 
         // GET: Utilization
@@ -94,7 +77,29 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("ors", "utilization");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(_context.Utilization.Where(s => s.status == "activated").ToList());
+            var utilization = _context.Utilization.Where(s => s.status == "activated")
+                 .Select(x => new UtilizationData()
+                 {
+                     Id = x.Id,
+                     Date = x.Date.ToShortDateString(),
+                     Dv = x.Dv,
+                     Pr_no = x.Pr_no,
+                     Po_no = x.Po_no,
+                     Payer = x.Payer,
+                     Address = x.Address,
+                     Particulars = x.Particulars,
+                     Ors_no = x.Ors_no,
+                     Fund_source = x.Fund_source,
+                     Gross = x.Gross,
+                     Created_by = x.Created_by,
+                     Date_recieved = x.Date_recieved.ToShortDateString(),
+                     Time_recieved = x.Time_recieved.ToString("HH:mm:ss"),
+                     Date_released = x.Date_released.ToShortDateString(),
+                     Time_released = x.Time_released.ToString("HH:mm:ss"),
+                     token = x.token,
+                     status = x.status
+                 });
+            var json = JsonSerializer.Serialize(utilization.ToList());
             ViewBag.temp = json;
             return View("~/Views/Utilization/Index.cshtml");
         }
@@ -120,7 +125,19 @@ namespace fmis.Controllers
         // GET: Utilization/Create
         public IActionResult Create()
         {
+
             return View();
+        }
+
+
+        private DateTime ToDateTime(string date)
+        {
+            if (DateTime.TryParse(date, out DateTime result))
+            {
+                return result;
+            }
+
+            return DateTime.MinValue;
         }
 
         public ActionResult AddData(List<string[]> dataListFromTable)
@@ -130,18 +147,18 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult SaveUtilization(List<UtilizationData> data)
         {
 
             var data_holder = this._context.Utilization;
+
 
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = item.Date;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
@@ -152,25 +169,26 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = item.Date_recieved;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = item.Time_recieved;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = item.Date_released;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = item.Time_released;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = ToDateTime(item.Date_recieved);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = ToDateTime(item.Time_recieved);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = ToDateTime(item.Date_released);
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = ToDateTime(item.Time_released);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
                     this._context.SaveChanges();
 
 
                 }
-                else if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payer != null ||
+                else /*if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payer != null ||
                          item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
                          item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
-                         (item.Time_recieved.ToString() != null || item.Date_released.ToString() != null) && (item.Time_released.ToString() != null)) //save
+                         (item.Time_recieved.ToString() != null || item.Date_released.ToString() != null) && (item.Time_released.ToString() != null))*/ //save
                 {
 
+                    //UPDATE
                     var utilization = new Utilization(); //CLEAR OBJECT
                     utilization.Id = item.Id;
-                    utilization.Date = item.Date;
+                    utilization.Date = ToDateTime(item.Date);
                     utilization.Dv = item.Dv;
                     utilization.Pr_no = item.Pr_no;
                     utilization.Po_no = item.Po_no;
@@ -181,10 +199,10 @@ namespace fmis.Controllers
                     utilization.Fund_source = item.Fund_source;
                     utilization.Gross = item.Gross;
                     utilization.Created_by = item.Created_by;
-                    utilization.Date_recieved = item.Date_recieved;
-                    utilization.Time_recieved = item.Time_recieved;
-                    utilization.Date_released = item.Date_released;
-                    utilization.Time_released = item.Time_released;
+                    utilization.Date_recieved = ToDateTime(item.Date_recieved);
+                    utilization.Time_recieved = ToDateTime(item.Time_recieved);
+                    utilization.Date_released = ToDateTime(item.Date_released);
+                    utilization.Time_released = ToDateTime(item.Time_released);
                     utilization.status = "activated";
                     utilization.token = item.token;
 
@@ -330,9 +348,6 @@ namespace fmis.Controllers
 
             Int32 Id = Convert.ToInt32(id);
             var bur = _MyDbContext.Utilization.Where(p => p.Id == Id).FirstOrDefault();
-
-
-
 
 
             string ExportData = "This is pdf generated";
