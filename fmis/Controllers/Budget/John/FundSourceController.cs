@@ -116,10 +116,12 @@ namespace fmis.Controllers.Budget.John
 
 
         [HttpPost]
-        public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
+        public async Task<IActionResult> SaveFundsourceamount([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data, int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
+
+            ViewBag.BudgetId = id;
 
             foreach (var item in data)
             {
@@ -145,7 +147,26 @@ namespace fmis.Controllers.Budget.John
                 }*/
             }
 
-            return Json(data);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(fundSource);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulatePrexcsDropDownList(fundSource.Id);
+            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
+
+            return View(fundSource);
+
+
         }
 
         // POST: FundSource/Create
@@ -153,9 +174,36 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data, int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
+
+            ViewBag.BudgetId = id;
+
+            foreach (var item in data)
+            {
+                if (item.Id == 0)
+                {
+
+                    var fundsourceamount = new FundSourceAmount();
+
+                    fundsourceamount.Id = item.Id;
+                    fundsourceamount.Account_title = item.Account_title;
+                    fundsourceamount.Amount = item.Amount;
+
+                    this._MyDbContext.FundSourceAmount.Update(fundsourceamount);
+                    this._MyDbContext.SaveChanges();
+                }
+                /*else
+                {
+                    data_holder.Find(item.Id).FundsId = item.FundsId;
+                    data_holder.Find(item.Id).Account_title = item.Account_title;
+                    data_holder.Find(item.Id).Amount = item.Amount;
+
+                    this._MyDbContext.SaveChanges();
+                }*/
+            }
             try
             {
                 if (ModelState.IsValid)

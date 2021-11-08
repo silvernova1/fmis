@@ -159,7 +159,7 @@ namespace fmis.Controllers
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
 
-            return View(sub_allotment);
+            return View("~/Views/Budget_allotments/Suballotment.cshtml",sub_allotment);
 
         }
 

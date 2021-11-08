@@ -574,9 +574,6 @@ namespace fmis.Migrations
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Sub_allotmentSubId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
 
@@ -589,8 +586,6 @@ namespace fmis.Migrations
 
                     b.HasIndex("Id")
                         .IsUnique();
-
-                    b.HasIndex("Sub_allotmentSubId");
 
                     b.ToTable("Sub_allotment");
                 });
@@ -932,10 +927,6 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("fmis.Models.Sub_allotment", null)
-                        .WithMany("Sub_allotments")
-                        .HasForeignKey("Sub_allotmentSubId");
-
                     b.Navigation("Budget_allotment");
 
                     b.Navigation("Prexc");
@@ -984,8 +975,6 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
                     b.Navigation("Personal_Information");
-
-                    b.Navigation("Sub_allotments");
 
                     b.Navigation("Suballotment_amount");
                 });

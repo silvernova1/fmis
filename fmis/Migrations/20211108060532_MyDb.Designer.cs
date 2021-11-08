@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211108031421_MyDb")]
+    [Migration("20211108060532_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -393,6 +393,9 @@ namespace fmis.Migrations
                     b.Property<int?>("Requesting_officeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Sub_allotmentSubId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
@@ -431,6 +434,8 @@ namespace fmis.Migrations
                     b.HasIndex("Ors_headId");
 
                     b.HasIndex("Requesting_officeId");
+
+                    b.HasIndex("Sub_allotmentSubId");
 
                     b.ToTable("Personal_Information");
                 });
@@ -784,6 +789,9 @@ namespace fmis.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserRole")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
@@ -887,6 +895,10 @@ namespace fmis.Migrations
                         .WithMany()
                         .HasForeignKey("Requesting_officeId");
 
+                    b.HasOne("fmis.Models.Sub_allotment", null)
+                        .WithMany("Personal_Information")
+                        .HasForeignKey("Sub_allotmentSubId");
+
                     b.Navigation("Budget_allotment");
 
                     b.Navigation("Ors_head");
@@ -964,6 +976,8 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
+                    b.Navigation("Personal_Information");
+
                     b.Navigation("Suballotment_amount");
                 });
 

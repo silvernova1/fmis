@@ -4,29 +4,30 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Create</h2>
-<h4>Budget Allotment</h4>
+<h3 class="grey lighter smaller">
+    Create Budget Allotment
+</h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Yearly_reference" class="control-label"></label>
+                <label>Yearly Reference</label>
                 <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Allotment_series" class="control-label"></label>
+                <label>Allotment Series</label>
                 <input asp-for="Allotment_series" class="form-control" />
                 <span asp-validation-for="Allotment_series" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Allotment_title" class="control-label"></label>
+                <label>Allotment Title</label>
                 <input asp-for="Allotment_title" class="form-control" />
                 <span asp-validation-for="Allotment_title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Allotment_code" class="control-label"></label>
+                <label>Allotment Code</label>
                 <input asp-for="Allotment_code" class="form-control" />
                 <span asp-validation-for="Allotment_code" class="text-danger"></span>
             </div>

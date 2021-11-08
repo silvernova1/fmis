@@ -33,10 +33,6 @@
     </div>
 </div>
 
-<!--password-->
-<div class="container">
-    <a href="#" data-target="#pwdModal" data-toggle="modal">Forgot my password</a>
-</div>
 
 <!--modal-->
 <div id="pwdModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -75,13 +71,16 @@
     </div>
 </div>
 
-<h2>User Management</h2>
+<h3 class="grey lighter smaller">
+    User Management
+</h3>
+<hr />
 <p>
     <a class="btn btn-success btn-sm" asp-action="Create" data-target="#CreateModal" data-toggle="modal">
-        <i class="ace-icon fa fa-plus"></i>Create
+        <i class="ace-icon fa fa-plus"></i>Create New
     </a>
 </p>
-
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -124,8 +123,8 @@
                     </a>
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-success" asp-action="Reset Password" data-target="#pwdModal" data-toggle="modal" asp-route-UserId="@item.userid">
-                        <i class="fa fa-key" aria-hidden="true"></i>Reset Password
+                    <a class="btn btn-sm btn-primary" asp-action="Reset Password" data-target="#pwdModal" data-toggle="modal" asp-route-UserId="@item.userid">
+                        <i class="fa fa-key" aria-hidden="true"></i> Reset Password
                     </a>
                 </td>
             </tr>
