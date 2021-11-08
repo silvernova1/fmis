@@ -13,19 +13,9 @@ namespace fmis.Data
         public DbSet<fmis.Models.Uacs> Uacs { get; set; }
         public object Requesting_office { get; internal set; }
 
-
-        /*  protected override void OnModelCreating(ModelBuilder modelBuilder)
-          {
-              modelBuilder.Entity<Uacs>()
-                  .HasOne(p => p.FundSource)
-                  .WithMany(b => b.Uacs);
-          }
-  */
-
         public Sub_allotmentContext(DbContextOptions<Sub_allotmentContext> options)
             : base(options)
         {
         }
-
     }
 }

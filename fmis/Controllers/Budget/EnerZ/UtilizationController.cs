@@ -24,7 +24,6 @@ using fmis.DataHealpers;
 
 namespace fmis.Controllers
 {
-
     public class UtilizationController : Controller
     {
         ORSReporting rpt_ors = new ORSReporting();
@@ -32,7 +31,6 @@ namespace fmis.Controllers
 
         private readonly UtilizationContext _context;
         private readonly MyDbContext _MyDbContext;
-
         public UtilizationController(UtilizationContext context, MyDbContext MyDbContext)
         {
             _context = context;
@@ -60,7 +58,6 @@ namespace fmis.Controllers
             public string token { get; set; }
             public string status { get; set; }
         }
-
         public class ManyId
         {
             public string many_token { get; set; }
@@ -129,7 +126,6 @@ namespace fmis.Controllers
             return View();
         }
 
-
         private DateTime ToDateTime(string date)
         {
             if (DateTime.TryParse(date, out DateTime result))
@@ -152,12 +148,10 @@ namespace fmis.Controllers
 
             var data_holder = this._context.Utilization;
 
-
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
@@ -176,8 +170,6 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
                     this._context.SaveChanges();
-
-
                 }
                 else /*if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payer != null ||
                          item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
@@ -339,8 +331,6 @@ namespace fmis.Controllers
             return _context.Utilization.Any(e => e.Id == id);
         }
 
-
-
         //EXPORTING PDF FILE
 
         public FileResult PrintBur(String id)
@@ -361,7 +351,6 @@ namespace fmis.Controllers
                 PdfPTable table = null;
 
                 var titleFont = FontFactory.GetFont("Arial", 16, iTextSharp.text.Font.BOLD);
-
 
                 table = new PdfPTable(1);
                 table.TotalWidth = 800f;
@@ -408,8 +397,6 @@ namespace fmis.Controllers
                 table2.AddCell(new PdfPCell(new Paragraph("Regional Office 7", arial_font_10)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
                 table2.AddCell(new PdfPCell(new Paragraph("Central Visayas, Osmeña Blvd. Cebu City", arial_font_10)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
 
-
-
                 var no_left_bor = new PdfPCell(table2);
                 no_left_bor.DisableBorderSide(4);
                 table.AddCell(no_left_bor);
@@ -445,7 +432,6 @@ namespace fmis.Controllers
                 table_row_2.AddCell(new PdfPCell(new Paragraph(bur.Payer, arial_font_10)));
                 table_row_2.AddCell(new PdfPCell(new Paragraph("", arial_font_10)));
 
-
                 PdfFile.Add(table_row_2);
 
                 var table_row_3 = new PdfPTable(3);
@@ -465,7 +451,6 @@ namespace fmis.Controllers
                 table_row_4.AddCell(new PdfPCell(new Paragraph("Address", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_4.AddCell(new PdfPCell(new Paragraph(bur.Address, arial_font_10)));
                 table_row_4.AddCell(new PdfPCell(new Paragraph()));
-
 
                 PdfFile.Add(table_row_4);
 
@@ -535,15 +520,12 @@ namespace fmis.Controllers
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
                 PdfFile.Add(table_row_6);
 
-
                 var table_row_7 = new PdfPTable(5);
                 float[] tbt_row7_width = { 5, 10, 5, 5, 5 };
 
                 table_row_7.WidthPercentage = 100f;
                 table_row_7.SetWidths(tbt_row7_width);
                 table_row_7.AddCell(new PdfPCell(new Paragraph("", table_row_5_font)) { Border = 14, HorizontalAlignment = Element.ALIGN_CENTER });
-
-
 
                 //REMOVE BORDER
                 PdfPTable po_dv = new PdfPTable(2);
@@ -557,11 +539,8 @@ namespace fmis.Controllers
                 // END OF REMOVE BORDER
                 table_row_7.AddCell(new PdfPCell(po_dv) { Border = 14 });
 
-
-
                 table_row_7.AddCell(new PdfPCell(new Paragraph("", table_row_5_font)) { Border = 14, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_7.AddCell(new PdfPCell(new Paragraph("", table_row_5_font)) { Border = 14, HorizontalAlignment = Element.ALIGN_CENTER });
-
 
                 PdfPTable tbt_total_amt = new PdfPTable(1);
                 float[] tbt_total_amt_width = { 10 };
@@ -575,25 +554,20 @@ namespace fmis.Controllers
 
                 PdfFile.Add(table_row_7);
 
-
                 PdfPTable table_row_8 = new PdfPTable(4);
                 float[] w_table_row_8 = { 5, 20, 5, 20 };
                 table_row_8.WidthPercentage = 100f;
                 table_row_8.SetWidths(w_table_row_8);
-
 
                 table_row_8.AddCell(new PdfPCell(new Paragraph("A.", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Certified:", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("B.", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Certified:", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))));
 
-
-
                 table_row_8.AddCell(new PdfPCell(new Paragraph("")) { FixedHeight = 50f, Border = 13 });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Charges to appropriation/ allotment necessary, lawful and under my direct supervision; and supporting documents valid, proper and legal \n", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { FixedHeight = 50f, Border = 13 });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("")) { FixedHeight = 50f, Border = 13 });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Allotment available and obligated for the purpose/adjustment necessary as indicated above \n", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { FixedHeight = 50f, Border = 13 });
-
 
                 //SIGNATURE 1
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Signature :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { Border = 14 });
@@ -604,7 +578,6 @@ namespace fmis.Controllers
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Signature :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { Border = 14 });
 
                 table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { Border = 14 });
-
 
                 //var ors_requesting_head = db.ors_head_request.Where(p => p.Name == ors.head_requesting_office).FirstOrDefault();
 
@@ -618,7 +591,6 @@ namespace fmis.Controllers
                                    ors_head = fsh.ors_head
                                }).FirstOrDefault();*/
 
-
                 //var ors_head = db.ors_head_request.Where(p => p.ID.ToString() == ors_fsh.ors_head.ToString()).FirstOrDefault();
 
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
@@ -627,19 +599,16 @@ namespace fmis.Controllers
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
-
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Position :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Enero Amalio" != null ? "Master Programmer" : "", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Position", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
-
                 table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-
 
                 //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
                 table_row_8.AddCell(new PdfPCell(new Paragraph("")));
@@ -651,7 +620,6 @@ namespace fmis.Controllers
                 table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Date", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
                 table_row_8.AddCell(new PdfPCell(new Paragraph(DateTime.Now.ToString("MM/dd/yyyy"), new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
-
 
                 PdfFile.Add(table_row_8);
 
@@ -703,7 +671,6 @@ namespace fmis.Controllers
                 table_row_13.WidthPercentage = 100f;
                 table_row_13.SetWidths(new float[] { 12, 20, 28, 15, 15, 10, 20 });
 
-
                 table_row_13.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, Border = 12 });
                 table_row_13.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, Border = 12 });
                 table_row_13.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER });
@@ -713,7 +680,6 @@ namespace fmis.Controllers
                 table_row_13.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
                 PdfFile.Add(table_row_13);
-
 
                 PdfPTable table_row_14 = new PdfPTable(7);
                 table_row_14.WidthPercentage = 100f;
@@ -729,14 +695,10 @@ namespace fmis.Controllers
 
                 PdfFile.Add(table_row_14);
 
-
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
                 PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
 
-
             }
         }
-
-
     }
 }

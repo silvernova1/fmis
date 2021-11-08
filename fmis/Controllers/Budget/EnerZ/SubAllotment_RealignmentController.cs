@@ -12,7 +12,6 @@ namespace fmis.Controllers
 {
     public class SubAllotment_RealignmentController : Controller
     {
-
         private readonly SubAllotment_RealignmentContext _context;
         private readonly UacsContext _UacsContext;
 
@@ -73,7 +72,6 @@ namespace fmis.Controllers
                     this._context.SaveChanges();
                 }
                 else if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null) //SAVE
-
                 {
                     var Subs = new SubAllotment_Realignment(); //CLEAR OBJECT
                     Subs.Id = item.Id;
@@ -87,7 +85,6 @@ namespace fmis.Controllers
                     this._context.SaveChanges();
                 }
             }
-
             return Json(data);
         }
 
@@ -113,9 +110,7 @@ namespace fmis.Controllers
 
                 await _context.SaveChangesAsync();
             }
-
             return Json(data);
         }
-
     }
 }

@@ -28,9 +28,6 @@ namespace fmis.Controllers
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
 
-
-
-
         public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
@@ -40,7 +37,6 @@ namespace fmis.Controllers
             _MyDbContext = MyDbContext;
         }
 
-
         public class Suballotment_amountData
         {
             public int FundsId { get; set; }
@@ -49,17 +45,12 @@ namespace fmis.Controllers
             public float Amount { get; set; }
         }
 
-
         // GET:Sub_allotment
         public async Task<IActionResult> Index(int? id)
         {
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             return View(await _context.Sub_allotment.ToListAsync());
-
-
-
         }
 
         // GET:Sub_allotment/Details/5
@@ -77,7 +68,6 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
             return View(sub_allotment);
         }
 
@@ -90,7 +80,6 @@ namespace fmis.Controllers
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
-
 
             PopulatePrexcsDropDownList();
 
@@ -114,8 +103,6 @@ namespace fmis.Controllers
             return View();
         }
 
-
-
         [HttpPost]
         public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
         {
@@ -126,7 +113,6 @@ namespace fmis.Controllers
             {
                 if (item.Id == 0)
                 {
-
                     var suballotment_amount = new Suballotment_amount();
 
                     suballotment_amount.Id = item.Id;
@@ -172,7 +158,6 @@ namespace fmis.Controllers
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
-
 
             return View(sub_allotment);
 
@@ -247,7 +232,6 @@ namespace fmis.Controllers
             return View(sub_allotment);
         }
 
-
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -266,7 +250,6 @@ namespace fmis.Controllers
 
             return View(sub_allotment);
         }
-
 
         // POST:Sub_allotment/Delete/5
         [HttpPost]

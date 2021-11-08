@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
 
-
 namespace fmis.Models
 {
     public class Sub_allotment
@@ -21,15 +20,10 @@ namespace fmis.Models
         public int Budget_allotmentBudgetAllotmentId { get; set; }
 
         public List<Personal_Information> Personal_Information { get; set; }
-       
-
         [ForeignKey("Prexc")]
         public int Id { get; set; }
         public Prexc Prexc { get; set; }
-
-
         public Budget_allotment Budget_allotment { get; set; }
         public List<Suballotment_amount> Suballotment_amount { get; set; }
-
     }
 }

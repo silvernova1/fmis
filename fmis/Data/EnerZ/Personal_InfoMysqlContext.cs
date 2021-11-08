@@ -10,21 +10,17 @@ namespace fmis.Data
     public class Personal_InfoMysqlContext
     {
         public string ConnectionString { get; set; }
-
         public Personal_InfoMysqlContext(string connectionString)
         {
             this.ConnectionString = connectionString;
         }
-
         private MySqlConnection GetConnection()
         {
             return new MySqlConnection(ConnectionString);
         }
-
         public List<Personal_Information> allPersonalInformation()
         {
             List<Personal_Information> list = new List<Personal_Information>();
-
             using (MySqlConnection conn = GetConnection())
             {
                 conn.Open();
@@ -45,7 +41,6 @@ namespace fmis.Data
                     order by 
                         concat(pi.fname,' ',pi.lname) asc
                 ", conn);
-
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -61,19 +56,15 @@ namespace fmis.Data
                     }
                 }
             }
-
             return list;
         }
-
         internal string ForOrs_head(string concat_UserId)
         {
             throw new NotImplementedException();
         }
-
         public List<Personal_Information> forOrs_head(string userid)
         {
             List<Personal_Information> list = new List<Personal_Information>();
-
             using (MySqlConnection conn = GetConnection())
             {
                 conn.Open();
@@ -110,14 +101,11 @@ namespace fmis.Data
                     }
                 }
             }
-
             return list;
         }
-
         public Personal_Information findPersonalInformation(string pis_userid)
         {
             Personal_Information personal_information = new Personal_Information();
-
             using (MySqlConnection conn = GetConnection())
             {
                 conn.Open();
@@ -140,14 +128,12 @@ namespace fmis.Data
 
                 var reader = cmd.ExecuteReader();
                 reader.Read();
-
                 personal_information.full_name = reader["full_name"].ToString();
                 personal_information.userid = reader["userid"].ToString();
                 personal_information.division = reader["division"].ToString();
                 personal_information.section = reader["section"].ToString();
                 personal_information.designation = reader["designation"].ToString();
             }
-
             return personal_information;
         }
     }

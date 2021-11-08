@@ -24,7 +24,7 @@
 <div 
      class="btn-group pull-right">
    @* <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="submit" autocomplete="off"><span class="glyphicon glyphicon-save"></span> Save</button>*@
-    <a class="btn btn-danger btn-xs"asp-controller="Sub_allotment" asp-action="Index">Back to Sub Allotment </a>
+    <a class="btn btn-danger btn-xs"asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotement </a>
 </div>
 <br />
 <br />
@@ -181,10 +181,7 @@
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
 
-
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
-
-
 
 </script>

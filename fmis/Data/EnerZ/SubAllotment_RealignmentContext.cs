@@ -13,7 +13,6 @@ namespace fmis.Data
             : base(options)
         {
         }
-
         public DbSet<fmis.Models.SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
     }
 }

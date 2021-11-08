@@ -17,7 +17,6 @@ using fmis.Filters;
 
 namespace fmis.Controllers
 {
-
     public class PrexcController : Controller
     {
         private readonly PrexcContext _context;
@@ -144,10 +143,8 @@ namespace fmis.Controllers
         public ActionResult AddPrexc(IEnumerable<Prexc> PrexcInput)
 
         {
-
             var p = PrexcInput;
             return null;
-
         }
 
         // GET: Prexc/Edit/5
@@ -245,7 +242,6 @@ namespace fmis.Controllers
 
             return Json(data);
         }
-
         private bool PrexcExists(int id)
         {
             return _context.Prexc.Any(e => e.Id == id);

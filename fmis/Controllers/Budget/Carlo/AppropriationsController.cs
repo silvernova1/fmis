@@ -14,7 +14,6 @@ namespace fmis.Controllers
     public class AppropriationsController : Controller
     {
         private readonly AppropriationContext _context;
-
         public AppropriationsController(AppropriationContext context)
         {
             _context = context;
@@ -52,7 +51,6 @@ namespace fmis.Controllers
             return View();
         }
 
-   
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
@@ -84,7 +82,6 @@ namespace fmis.Controllers
             return View(appropriation);
         }
 
-  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)

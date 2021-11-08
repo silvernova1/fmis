@@ -19,6 +19,5 @@ namespace fmis.Models
         public string token { get; set; }
 
         public Sub_allotment Sub_Allotment { get; set; }
-
     }
 }
