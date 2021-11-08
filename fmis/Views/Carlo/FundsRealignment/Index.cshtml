@@ -38,8 +38,6 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-
-
      function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -62,11 +60,13 @@
         counter++;
     })
 
+   
+
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.UacsId
+        uacs_data[uacs_counter] = this.Account_title
             uacs_counter++;
 
         console.log(uacs_counter);
@@ -76,7 +76,7 @@
     const uacs_data1 = [];
     var uacs_counter1 = 0;
     $.each(uacs, function () {
-        uacs_data1[uacs_counter1] = this.UacsId
+        uacs_data1[uacs_counter1] = this.Account_title
             uacs_counter1++;
     })
 
@@ -179,10 +179,7 @@
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
 
-  
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
-
-
 
 </script>

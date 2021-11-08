@@ -26,9 +26,9 @@ namespace fmis.Controllers.Budget.Carlo
 
         public class FundsRealignmentData
         {
-            public int Realignment_from { get; set; }
-            public int Realignment_to { get; set; }                                         
-            public int Realignment_amount { get; set; }
+            public string Realignment_from { get; set; }
+            public string Realignment_to { get; set; }                                         
+            public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
             public string token { get; set; }

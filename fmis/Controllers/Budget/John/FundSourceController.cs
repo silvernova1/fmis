@@ -30,8 +30,6 @@ namespace fmis.Controllers.Budget.John
         private readonly MyDbContext _MyDbContext;
 
         
-
-
         public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
@@ -155,38 +153,31 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
-
-
-            foreach (var item in data)
+            try
             {
-                if (item.Id == 0)
-                {
-
-                    var fundsourceamount = new FundSourceAmount();
-
-                    fundsourceamount.Id = item.Id;
-                    fundsourceamount.Account_title = item.Account_title;
-                    fundsourceamount.Amount = item.Amount;
-
-                    this._MyDbContext.FundSourceAmount.Update(fundsourceamount);
-                    this._MyDbContext.SaveChanges();
-                }
-
                 if (ModelState.IsValid)
                 {
                     _context.Add(fundSource);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-
-                
             }
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulatePrexcsDropDownList(fundSource.Id);
+            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
+
             return View(fundSource);
+            /*return View("~/Views/Budget_allotments/Index.cshtml");*/
         }
+
+
 
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -174,6 +174,7 @@ namespace fmis.Controllers
         {
             var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id && s.status == "activated").ToList());
             ViewBag.temp = json;
+
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
 

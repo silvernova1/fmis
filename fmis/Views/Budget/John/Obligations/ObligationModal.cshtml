@@ -100,7 +100,7 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(uacsamount, function () {
-        data[counter] = [this.UacsId, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
+        data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
         counter++;
         obligation_amount += this.Amount;
     })
@@ -109,7 +109,7 @@
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.UacsId,
+        uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
     })
     console.log(uacs_data);
@@ -227,7 +227,7 @@
             ajax_data.push(
                 {
                     ObligationId: obligation_id,
-                    UacsId: this[0],
+                    Account_title: this[0],
                     Expense_code: this[1],
                     Amount: this[2],
                     Total_disbursement: this[3],
