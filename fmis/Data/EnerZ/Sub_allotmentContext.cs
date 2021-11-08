@@ -11,6 +11,7 @@ namespace fmis.Data
     {
         public DbSet<fmis.Models.Sub_allotment> Sub_allotment { get; set; }
         public DbSet<fmis.Models.Uacs> Uacs { get; set; }
+        public object Requesting_office { get; internal set; }
 
 
         /*  protected override void OnModelCreating(ModelBuilder modelBuilder)

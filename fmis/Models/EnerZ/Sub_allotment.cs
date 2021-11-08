@@ -20,6 +20,9 @@ namespace fmis.Models
         public string Description { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
 
+        public List<Personal_Information> Personal_Information { get; set; }
+       
+
         [ForeignKey("Prexc")]
         public int Id { get; set; }
         public Prexc Prexc { get; set; }
