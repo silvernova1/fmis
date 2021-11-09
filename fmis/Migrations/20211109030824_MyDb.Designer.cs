@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211108060532_MyDb")]
+    [Migration("20211109030824_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,9 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UacsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fundsource_id")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
@@ -532,11 +535,11 @@ namespace fmis.Migrations
                     b.Property<float>("Realignment_amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("Realignment_from")
-                        .HasColumnType("int");
+                    b.Property<string>("Realignment_from")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Realignment_to")
-                        .HasColumnType("int");
+                    b.Property<string>("Realignment_to")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");

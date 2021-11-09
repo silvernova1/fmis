@@ -31,6 +31,7 @@ namespace fmis.Controllers
 
         public IActionResult Dashboard()
         {
+            ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home");
             ViewBag.layout = "_Layout";
             return View("~/Views/Home/Index.cshtml");

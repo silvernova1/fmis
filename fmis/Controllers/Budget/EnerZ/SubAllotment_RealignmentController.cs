@@ -23,8 +23,8 @@ namespace fmis.Controllers
 
         public class SubAllotment_RealignmentData
         {
-            public int Realignment_from { get; set; }
-            public int Realignment_to { get; set; }
+            public string Realignment_from { get; set; }
+            public string Realignment_to { get; set; }
             public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }

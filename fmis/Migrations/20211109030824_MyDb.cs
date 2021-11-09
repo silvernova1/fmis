@@ -353,6 +353,7 @@ namespace fmis.Migrations
                     Realignment_amount = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_id = table.Column<int>(type: "int", nullable: false),
                     UacsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -372,8 +373,8 @@ namespace fmis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Realignment_from = table.Column<int>(type: "int", nullable: false),
-                    Realignment_to = table.Column<int>(type: "int", nullable: false),
+                    Realignment_from = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Realignment_to = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Realignment_amount = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),

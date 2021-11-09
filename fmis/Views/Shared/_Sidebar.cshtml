@@ -46,13 +46,95 @@
             </a>
         </li>
 
-        <li class="">
-            <a asp-area="" asp-controller="Home" asp-action="Dashboard">
-                <i class="menu-icon fa fa-bank"></i>
-                <span class="menu-text">
-                    DOH7 BUDGET
-                </span>
+        <li class="@if(ViewBag.filter.main == "master_data")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-file"></i>
+                <span class="menu-text"> Master Data </span>
+
+                <b class="arrow fa fa-angle-down"></b>
             </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "uacs")
+                @Html.Raw("active")">
+                    <a asp-controller="Uacs" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        UACS Expense Code@* @Html.Raw(ViewBag.filter.sub)*@
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "prexc")
+                @Html.Raw("active")">
+                    <a asp-controller="Prexc" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Fund Source | PREXC
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "yearlyreference")
+                @Html.Raw("active")">
+                    <a asp-controller="Yearly_reference" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Yearly Budget Ref
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "budgetallotment")
+                @Html.Raw("active")">
+                    <a asp-controller="Budget_allotments" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Budget Allotments
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "requestingoffice")
+                @Html.Raw("active")">
+                    <a asp-controller="Requesting_office" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        ORS/Requesting Head
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "allotmentclass")
+                @Html.Raw("active")">
+                    <a asp-controller="AllotmentClasses" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Allotment Class
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "Appropriations")
+                @Html.Raw("active")">
+                    <a asp-controller="Appropriations" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Appropriations
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "ManageUsers")
+                @Html.Raw("active")">
+                    <a asp-controller="ManageUsers" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Manage Users
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+
+            </ul>
         </li>
 
         <li class="@if(ViewBag.filter.main == "ors")
@@ -147,157 +229,65 @@
             </ul>
         </li>
 
-        <li class="@if(ViewBag.filter.main == "master_data")
-                @Html.Raw("active open")">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-file"></i>
-                <span class="menu-text"> Master Data </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-                <li class="@if(ViewBag.filter.sub == "uacs")
-                @Html.Raw("active")">
-                    <a asp-controller="Uacs" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        UACS Expense Code@* @Html.Raw(ViewBag.filter.sub)*@
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="@if(ViewBag.filter.sub == "prexc")
-                @Html.Raw("active")">
-                    <a asp-controller="Prexc" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Fund Source | PREXC
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="@if(ViewBag.filter.sub == "allotmentclass")
-                @Html.Raw("active")">
-                    <a asp-controller="AllotmentClasses" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Allotment Class
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="@if(ViewBag.filter.sub == "budgetallotment")
-                @Html.Raw("active")">
-                    <a asp-controller="Budget_allotments" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Budget Allotments
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="@if(ViewBag.filter.sub == "requestingoffice")
-                @Html.Raw("active")">
-                    <a asp-controller="Requesting_office" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        ORS/Requesting Head
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="@if(ViewBag.filter.sub == "yearlyreference")
-                @Html.Raw("active")">
-                    <a asp-controller="Yearly_reference" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Yearly Budget Ref
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="@if(ViewBag.filter.sub == "ManageUsers")
-                @Html.Raw("active")">
-                    <a asp-controller="ManageUsers" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Manage Users
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="@if(ViewBag.filter.sub == "Appropriations")
-                @Html.Raw("active")">
-                    <a asp-controller="Appropriations" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Appropriations
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
 
 
-            </ul>
-        </li>
-
-     
         <!--<!-- UPLOAD FILE -->
         <!--<li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
-                @Html.Raw("active open")">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-upload"></i>
-                <span class="menu-text">
-                    <b>Upload Data</b>
-                </span>
+            @Html.Raw("active open")">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-upload"></i>
+            <span class="menu-text">
+                <b>Upload Data</b>
+            </span>
 
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
 
-            <b class="arrow"></b>
+        <b class="arrow"></b>
 
-            <ul class="submenu">
-                <li class="
-                    @if(ViewBag.filter_sidebar == "upload_file/personal_information")
-                        @Html.Raw("active")
-                ">
-                    <a asp-controller="UploadFile" asp-action="UploadFile">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Personal Information
-                    </a>
-                </li>
+        <ul class="submenu">
+            <li class="
+                @if(ViewBag.filter_sidebar == "upload_file/personal_information")
+                    @Html.Raw("active")
+            ">
+                <a asp-controller="UploadFile" asp-action="UploadFile">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    Personal Information
+                </a>
+            </li>
 
-                <li class="@if(ViewBag.filter_sidebar == "upload_file/designation")
-                        @Html.Raw("active")">
-                    <a asp-controller="UploadDesignation" asp-action="UploadDesignation">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Designation
-                    </a>
-                </li>
+            <li class="@if(ViewBag.filter_sidebar == "upload_file/designation")
+                    @Html.Raw("active")">
+                <a asp-controller="UploadDesignation" asp-action="UploadDesignation">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    Designation
+                </a>
+            </li>
 
-                <li class="@if(ViewBag.filter_sidebar == "upload_file/division")
-                        @Html.Raw("active")">
-                    <a asp-controller="UploadDivision" asp-action="UploadDivision">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Division
-                    </a>
-                </li>
+            <li class="@if(ViewBag.filter_sidebar == "upload_file/division")
+                    @Html.Raw("active")">
+                <a asp-controller="UploadDivision" asp-action="UploadDivision">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    Division
+                </a>
+            </li>
 
-                <li class="@if(ViewBag.filter_sidebar == "upload_file/section")
-                        @Html.Raw("active")">
-                    <a asp-controller="UploadSection" asp-action="UploadSection">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Section
-                    </a>
-                </li>
+            <li class="@if(ViewBag.filter_sidebar == "upload_file/section")
+                    @Html.Raw("active")">
+                <a asp-controller="UploadSection" asp-action="UploadSection">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    Section
+                </a>
+            </li>
 
-                <li class=" @Html.Raw("active open")">
-                    <a href="buttons.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        ORS
-                    </a>
-                </li>
-            </ul>
-        </li>-->
+            <li class=" @Html.Raw("active open")">
+                <a href="buttons.html">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    ORS
+                </a>
+            </li>
+        </ul>
+    </li>-->
         @* <li class="@if(ViewBag.filter_sidebar == "gallery")
                         @Html.Raw("active")">
             <a asp-controller="Home" asp-action="Gallery">

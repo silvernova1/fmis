@@ -95,6 +95,9 @@ namespace fmis.Migrations
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
 
+                    b.Property<int>("fundsource_id")
+                        .HasColumnType("int");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -530,11 +533,11 @@ namespace fmis.Migrations
                     b.Property<float>("Realignment_amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("Realignment_from")
-                        .HasColumnType("int");
+                    b.Property<string>("Realignment_from")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Realignment_to")
-                        .HasColumnType("int");
+                    b.Property<string>("Realignment_to")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");

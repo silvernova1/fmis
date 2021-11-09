@@ -149,7 +149,7 @@ namespace fmis.Controllers
                 {
                     _context.Add(sub_allotment);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
                 }
             }
             catch (RetryLimitExceededException)
@@ -159,8 +159,7 @@ namespace fmis.Controllers
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
 
-            return View("~/Views/Budget_allotments/Suballotment.cshtml",sub_allotment);
-
+            return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
         }
 
         // GET: Sub_allotment/Edit/5

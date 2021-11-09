@@ -200,10 +200,7 @@
             $.each(hot.getSourceData(), function () {
                 json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
             });
-            //Serialize the form datas.
             var valdata = $("#Create").serialize();
-            //to get alert popup
-            alert(valdata);
             $.ajax({
                 url: '@Url.Action("SaveFundsourceamount", "FundSource")',
                 type: "POST",

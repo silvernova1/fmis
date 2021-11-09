@@ -153,7 +153,8 @@ namespace fmis.Controllers.Budget.John
                 {
                     _context.Add(fundSource);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                
+                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -162,9 +163,8 @@ namespace fmis.Controllers.Budget.John
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
             PopulatePrexcsDropDownList(fundSource.Id);
-            //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
-
-            return View(fundSource);
+        
+            return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
 
 
         }
@@ -228,8 +228,12 @@ namespace fmis.Controllers.Budget.John
 
 
         // GET: FundSource/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? BudgetId)
         {
+
+            ViewBag.BudgetId = BudgetId;
+            
+
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {

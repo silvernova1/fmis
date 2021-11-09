@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.Carlo;
 
 namespace fmis.Models.John
 {

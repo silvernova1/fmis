@@ -31,6 +31,7 @@ namespace fmis.Controllers.Budget.Carlo
             public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
+            public int fundsource_id { get; set; }
             public string token { get; set; }
         }
 
@@ -45,13 +46,19 @@ namespace fmis.Controllers.Budget.Carlo
             public List<ManyId> many_token { get; set; }
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int id)
         {
+            int fundsource_id = id;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var json = JsonSerializer.Serialize(_context.FundsRealignment.Where(s => s.status == "activated").ToList());
+            var json = JsonSerializer.Serialize(_context.FundsRealignment.Where(s => s.status == "activated")
+                .Where(x => x.fundsource_id == fundsource_id)
+                .ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
+
+
+            ViewBag.fundsource_id = fundsource_id;
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
@@ -72,11 +79,11 @@ namespace fmis.Controllers.Budget.Carlo
 
                     this._context.SaveChanges();
                 }
-                else if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null) //SAVE
+                else /*if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
                          
                 {  
                     var funds = new FundsRealignment(); //CLEAR OBJECT
-                    funds.Id = item.Id;
+                    funds.fundsource_id = item.fundsource_id;
                     funds.Realignment_from = item.Realignment_from;
                     funds.Realignment_to = item.Realignment_to;
                     funds.Realignment_amount = item.Realignment_amount;
