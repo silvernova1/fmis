@@ -114,9 +114,9 @@ namespace fmis.Controllers
 
                     this._context.SaveChanges();
                 }
-                else if ((item.Account_title.ToString() != null || item.Expense_code != null) && (item.Amount.ToString() != null ||
+                else /*if ((item.Account_title.ToString() != null || item.Expense_code != null) && (item.Amount.ToString() != null ||
                           item.Total_disbursement.ToString() != null) && (item.Total_net_amount.ToString() != null ||
-                          item.Total_tax_amount.ToString() != null) && (item.Total_others.ToString() != null)) //save
+                          item.Total_tax_amount.ToString() != null) && (item.Total_others.ToString() != null)) *///save
                 {
                     var uacsamount = new Uacsamount();
 

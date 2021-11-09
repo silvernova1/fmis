@@ -148,7 +148,7 @@
                 this.deselectCell();
             }
         },
-        colWidths: [140, 200, 200, 200, 300, 300, 700, 100, 200, 200, 200, 200, 200, 200, 200],
+        colWidths: 108,
         manualColumnResize: true,
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
         columns: [
@@ -183,7 +183,7 @@
 
             {
                 type: 'dropdown',
-                source: ['Rusel', 'John', 'Carlo', 'Arnel', 'Amalio']
+                source: ['Fundsource 1', 'FundSource 2', 'FundSource 3']
             },
 
             {
@@ -333,7 +333,7 @@
 
             ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
         },
-        height: 'auto',
+        height: '350px',
         hiddenColumns: {
             columns: [15,16],
             indicators: true
