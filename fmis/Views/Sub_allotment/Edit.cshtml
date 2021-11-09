@@ -8,11 +8,13 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h3 style="color: #438eb9;">Edit Sub Allotment</h3>
+<h3 class="grey lighter smaller">
+    Edit Sub Allotment
+</h3>
 <hr />
 <form asp-action="Edit" method="post">
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class=" btn btn-primary btn-sm" asp-action="Index">Back to List</a>
+        <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Suballotment" asp-route-id="@ViewBag.BudgetId">Back to List</a>
     </div>
     <div class="row">
         <div class="col-md-6">

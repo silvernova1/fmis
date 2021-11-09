@@ -378,6 +378,7 @@ namespace fmis.Migrations
                     Realignment_amount = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_id = table.Column<int>(type: "int", nullable: false),
                     UacsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

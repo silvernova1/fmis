@@ -78,7 +78,7 @@
                     <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer" ></span> Funds Realignment</a>
+                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer" ></span> Funds Realignment</a>
                 </td>
             </tr>
          }

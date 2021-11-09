@@ -13,7 +13,7 @@ namespace fmis.Models
         public float Realignment_amount { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-
+        public int fundsource_id { get; set; }
         public Uacs uacs { get; set; }
     }
 }

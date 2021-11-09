@@ -163,8 +163,11 @@ namespace fmis.Controllers
         }
 
         // GET: Sub_allotment/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? BudgetId)
         {
+
+            ViewBag.BudgetId = BudgetId;
+
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {

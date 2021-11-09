@@ -542,6 +542,9 @@ namespace fmis.Migrations
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
 
+                    b.Property<int>("fundsource_id")
+                        .HasColumnType("int");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 

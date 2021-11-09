@@ -60,7 +60,6 @@
         counter++;
     })
 
-   
 
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
@@ -163,7 +162,7 @@
                         Realignment_from: this[0] ? this[0] : " ",
                         Realignment_to: this[1] ? this[1] : " ",
                         Realignment_amount: this[2] ? this[2] : " ",
-                        Id: this[3] ? this[3] : " ",
+                        fundsource_id: @ViewBag.fundsource_id,
                         token: this[4]
                     }
                 );

@@ -26,6 +26,7 @@
 </div>
 <br />
 <br />
+<br />
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
@@ -59,7 +60,7 @@
     const data = [];
     var counter = 0;
     $.each(suballotment_realignment, function () {
-        data[counter] = [this.Realignment_from, this.Realignment_from, this.Realignment_amount, this.Id, this.token]
+        data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
         counter++;
     })
 
@@ -67,7 +68,7 @@
     const uacs_data = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.UacsId
+        uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
 
         console.log(uacs_counter);
@@ -77,7 +78,7 @@
     const uacs_data1 = [];
     var uacs_counter1 = 0;
     $.each(uacs, function () {
-        uacs_data1[uacs_counter1] = this.UacsId
+        uacs_data1[uacs_counter1] = this.Account_title
         uacs_counter1++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -162,7 +163,7 @@
                         Realignment_from: this[0] ? this[0] : " ",
                         Realignment_to: this[1] ? this[1] : " ",
                         Realignment_amount: this[2] ? this[2] : " ",
-                        Id: this[3] ? this[3] : " ",
+                        fundsource_id: @ViewBag.fundsource_id,
                         token: this[4]
                     }
                 );
