@@ -42,7 +42,7 @@ namespace fmis.Controllers.Budget.John
 
         public class FundsourceamountData
         {
-            public int FundsId { get; set; }
+            public int FundSourceId { get; set; }
             public string Account_title { get; set; }
             public float Amount { get; set; }
             public int Id { get; set; }
@@ -97,7 +97,7 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-                .Where(f => f.FundSource.FundSourceId == id && f.status == "activated").ToList());
+                .Where(f => f.FundSourceId == id && f.status == "activated").ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
@@ -152,6 +152,7 @@ namespace fmis.Controllers.Budget.John
                     var fundsource = new FundSourceAmount();
 
                     fundsource.Id = item.Id;
+                    fundsource.FundSourceId = item.FundSourceId;
                     fundsource.Account_title = item.Account_title;
                     fundsource.Amount = item.Amount;
                     fundsource.status = "activated";
@@ -196,7 +197,7 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data, int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
+            var data_holder = this._MyDbContext.FundSourceAmount;
 
             ViewBag.BudgetId = id;
 

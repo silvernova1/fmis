@@ -248,7 +248,7 @@ namespace fmis.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int?>("FundSourceId")
+                    b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
@@ -258,8 +258,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FundSourceId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -884,15 +882,6 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
-            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
-                {
-                    b.HasOne("fmis.Models.John.FundSource", "FundSource")
-                        .WithMany("FundSourceAmounts")
-                        .HasForeignKey("FundSourceId");
-
-                    b.Navigation("FundSource");
-                });
-
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
@@ -977,11 +966,6 @@ namespace fmis.Migrations
                     b.Navigation("Sub_allotments");
 
                     b.Navigation("Suballotment_amounts");
-                });
-
-            modelBuilder.Entity("fmis.Models.John.FundSource", b =>
-                {
-                    b.Navigation("FundSourceAmounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>

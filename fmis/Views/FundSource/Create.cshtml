@@ -97,8 +97,8 @@
 
 <script>
 
-
-    let guid = () => {
+    var fundsource_id = @ViewBag.FundsId;
+        let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -214,6 +214,7 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
+                        FundSourceId: fundsource_id,
                         Account_title: this[0],
                         Amount: this[1],
                         Id: this[2],

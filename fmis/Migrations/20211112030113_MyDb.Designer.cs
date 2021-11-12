@@ -10,11 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211111084755_MyDb.Designer.cs
-    [Migration("20211111084755_MyDb")]
-=======
-    [Migration("20211109063233_MyDb")]
->>>>>>> bb7651d6e642ccf75d944c1f9efbdf357e23d0c2:fmis/Migrations/20211109063233_MyDb.Designer.cs
+    [Migration("20211112030113_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -254,7 +250,7 @@ namespace fmis.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int?>("FundSourceId")
+                    b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
@@ -264,8 +260,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FundSourceId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -890,15 +884,6 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
-            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
-                {
-                    b.HasOne("fmis.Models.John.FundSource", "FundSource")
-                        .WithMany("FundSourceAmounts")
-                        .HasForeignKey("FundSourceId");
-
-                    b.Navigation("FundSource");
-                });
-
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
                 {
                     b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
@@ -983,11 +968,6 @@ namespace fmis.Migrations
                     b.Navigation("Sub_allotments");
 
                     b.Navigation("Suballotment_amounts");
-                });
-
-            modelBuilder.Entity("fmis.Models.John.FundSource", b =>
-                {
-                    b.Navigation("FundSourceAmounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
