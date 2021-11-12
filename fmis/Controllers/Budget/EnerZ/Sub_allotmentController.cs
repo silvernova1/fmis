@@ -19,6 +19,7 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 namespace fmis.Controllers
+
 {
     public class Sub_allotmentController : Controller
     {
@@ -42,7 +43,7 @@ namespace fmis.Controllers
             public int FundsId { get; set; }
             public int Id { get; set; }
             public string Expenses { get; set; }
-            public float Amount { get; set; }
+            public string Amount { get; set; }
         }
 
         // GET:Sub_allotment
@@ -220,6 +221,7 @@ namespace fmis.Controllers
                 {
                     _context.Update(sub_allotment);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -232,9 +234,9 @@ namespace fmis.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+              /*  return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });*/
             }
-            return View(sub_allotment);
+            return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
         }
 
         // GET: Sub_allotment/Delete/5
@@ -276,7 +278,7 @@ namespace fmis.Controllers
             var sub_allotment = await _context.Sub_allotment.FindAsync(id);
             _context.Sub_allotment.Remove(sub_allotment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
 
         }
 

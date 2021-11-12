@@ -76,10 +76,10 @@
                 @Html.DisplayFor(modelItem => item.Suballotment_title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SaamountId)
+                @Html.DisplayFor(modelItem => item.BAmountId)
             </td>
             <td>
-               @* @Html.DropDownList("Amount", null, htmlAttributes: new { @class = "Sub Allotment Amount" })*@
+                @Html.DisplayFor(modelItem => item.RAmountId)
             </td>
             <td>
                 @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })

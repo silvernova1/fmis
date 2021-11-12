@@ -129,7 +129,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Fundsource(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            /*PopulateHeadDropDownList();*/
+           /* PopulateHeadDropDownList();*/
             PopulatePsDropDownList();
 
             List<Ors_head> oh = new List<Ors_head>();
@@ -208,6 +208,7 @@ namespace fmis.Controllers
                 .Include(s => s.FundSources)
                 .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
+                .Include(s => s.Suballotment_amounts)
 
 
 

@@ -10,11 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211111084755_MyDb.Designer.cs
-    [Migration("20211111084755_MyDb")]
-=======
-    [Migration("20211109063233_MyDb")]
->>>>>>> bb7651d6e642ccf75d944c1f9efbdf357e23d0c2:fmis/Migrations/20211109063233_MyDb.Designer.cs
+    [Migration("20211112012857_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -571,6 +567,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BAmountId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
@@ -583,11 +582,11 @@ namespace fmis.Migrations
                     b.Property<string>("Prexc_code")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RAmountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SaamountId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
