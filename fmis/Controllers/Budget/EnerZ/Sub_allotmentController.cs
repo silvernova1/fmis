@@ -118,7 +118,7 @@ namespace fmis.Controllers
 
                     suballotment_amount.Id = item.Id;
                     suballotment_amount.Expenses = item.Expenses;
-                    suballotment_amount.Amount = item.Amount;
+                    /*suballotment_amount.Amount = item.Amount;*/
 
                     this._MyDbContext.Suballotment_amount.Update(suballotment_amount);
                     this._MyDbContext.SaveChanges();
