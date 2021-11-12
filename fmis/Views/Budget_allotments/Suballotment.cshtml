@@ -5,38 +5,39 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="widget-box">
-    <div class="widget-header widget-header-flat widget-header-small">
-        <h5 class="widget-title ">
-            <i class="ace-icon fa fa-signal"></i>
-           Sub Allotment
-        </h5>
-    </div>
+<h3 class="grey lighter smaller">
+    FSub Allotments
+</h3>
+<hr />
+<div class="row" style="margin-right:50px;">
+    <div class="space-5"></div>
 
-    <div class="widget-body">
-        <div class="widget-main">
-            @*  <div id="piechart-placeholder"></div>
-                <hr>*@
-            <div class="clearfix">
-                <div class="grid2">
-                    <span class="label label-info arrowed arrowed-right">
-                        Beginning Balance
-                    </span>
-                    <center><h5 class="bigger obligation_amount"></h5></center>
-                </div>
-
-                <div class="grid2">
-                    <span class="label label-danger arrowed arrowed-right">
-                        Remaining Balance
-                    </span>
-                    <center><h5 class="bigger obligation_amount"></h5></center>
-                </div>
+    <div class="col-sm-5 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
             </div>
-        </div><!-- /.widget-main -->
-    </div><!-- /.widget-body -->
-</div><!-- /.widget-box -->
-<br />
-<!-- The Modal -->
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">3,501,956.00</span>
+                <div class="infobox-content">Beginning Balance</div>
+            </div>
+        </div>
+
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">1,552,276.00</span>
+                <div class="infobox-content">Remaining Balance</div>
+            </div>
+        </div>
+        <div class="space-6"></div>
+    </div>
+    <div class="vspace-12-sm"></div>
+</div><!-- /.row -->
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg" style="width:50%;">
         <div class="modal-content">
@@ -66,9 +67,9 @@
 <p>
     <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i> Create New
-    </a> | 
+    </a> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
-         Back to Budget Allotment
+        Back to Budget Allotment
     </a>
 </p>
 <br />
