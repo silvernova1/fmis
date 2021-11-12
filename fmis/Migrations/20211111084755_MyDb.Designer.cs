@@ -10,7 +10,11 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
+<<<<<<< HEAD:fmis/Migrations/20211111084755_MyDb.Designer.cs
+    [Migration("20211111084755_MyDb")]
+=======
     [Migration("20211109063233_MyDb")]
+>>>>>>> bb7651d6e642ccf75d944c1f9efbdf357e23d0c2:fmis/Migrations/20211109063233_MyDb.Designer.cs
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -582,6 +586,9 @@ namespace fmis.Migrations
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SaamountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
 
@@ -605,8 +612,11 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Expenses")
                         .HasColumnType("nvarchar(max)");
@@ -621,6 +631,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
                     b.HasIndex("Sub_allotmentSubId");
 
@@ -942,9 +954,15 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>
                 {
+                    b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
+                        .WithMany("Suballotment_amounts")
+                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
+
                     b.HasOne("fmis.Models.Sub_allotment", "Sub_allotment")
                         .WithMany("Suballotment_amount")
                         .HasForeignKey("Sub_allotmentSubId");
+
+                    b.Navigation("Budget_allotment");
 
                     b.Navigation("Sub_allotment");
                 });
@@ -963,6 +981,8 @@ namespace fmis.Migrations
                     b.Navigation("Personal_Information");
 
                     b.Navigation("Sub_allotments");
+
+                    b.Navigation("Suballotment_amounts");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>

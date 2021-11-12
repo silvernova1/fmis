@@ -21,15 +21,18 @@ namespace fmis.Controllers
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
+        private readonly Suballotment_amountContext _saContext;
 
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context)
+        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Suballotment_amountContext sa_Context)
+
         {
             _context = context;
             _Context = Context;
             _osContext = osContext;
             _orssContext = orssContext;
             _pis_context = pis_context;
+            _saContext = sa_Context;
         }
 
         // GET: Budget_allotments
@@ -56,7 +59,6 @@ namespace fmis.Controllers
 
 
 
-
         private void PopulatePsDropDownList()
         {
             ViewBag.pi_userid = new SelectList((from s in _pis_context.allPersonalInformation()
@@ -71,10 +73,6 @@ namespace fmis.Controllers
                                            null);
 
         }
-
-
-
-
 
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
@@ -105,7 +103,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId,Id")] Budget_allotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -172,14 +170,47 @@ namespace fmis.Controllers
 
             ViewBag.message = oh;
             ViewBag.BudgetId = id;
+
             if (id == null)
             {
                 return NotFound();
             }
+
+             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            /*PopulateHeadDropDownList();*/
+            PopulatePsDropDownList();
+
+            {
+                ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+                var prexsQuery = from d in _context.Suballotment_amount
+                                 orderby d.Amount
+                                 select d;
+                ViewBag.Amount = new SelectList((from s in _context.Suballotment_amount.ToList()
+                                                            where !_context.Budget_allotments.Any(ro => ro.BudgetAllotmentId == s.Id)
+                                                            select new
+                                                            {
+                                                                Amount = s.Id,
+                                                                Ps = s.Amount
+                                                            }),
+                                             "Id", "Beginning Balance"
+                                             );
+
+                List<Suballotment_amount> sa = new List<Suballotment_amount>();
+
+                sa = (from s in _saContext.Suballotment_amount select s).ToList();
+                sa.Insert(0, new Suballotment_amount { Id = 0, Amount= "--Beginning Balance--" });
+
+                ViewBag.message = sa;
+                ViewBag.BudgetId = id;
+            }
+
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
                 .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
+
+
+
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
             if (budget_allotment == null)
