@@ -148,15 +148,26 @@
                 this.deselectCell();
             }
         },
-        colWidths: [140, 200, 200, 200, 300, 300, 700, 100, 200, 200, 200, 200, 200, 200, 200],
+        colWidths: 108,
         manualColumnResize: true,
         colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
         columns: [
-            {
+             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
                 correctFormat: true,
-                defaultDate: Date.now()
+                // datePicker additional options (see https://github.com/dbushell/Pikaday#configuration)
+                datePickerConfig: {
+                    // First day of the week (0: Sunday, 1: Monday, etc)
+                    firstDay: 0,
+                    showWeekNumber: true,
+                    numberOfMonths: 1,
+                    defaultDate: Date.now(),
+                    disableDayFn: function (date) {
+                        // Disable Sunday and Saturday
+                        return date.getDay() === 0 || date.getDay() === 6;
+                    }
+                }
             },
             {
 
@@ -191,27 +202,46 @@
 
             {
             },
-
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
                 correctFormat: true,
-    
+                // datePicker additional options (see https://github.com/dbushell/Pikaday#configuration)
+                datePickerConfig: {
+                    // First day of the week (0: Sunday, 1: Monday, etc)
+                    firstDay: 0,
+                    showWeekNumber: true,
+                    numberOfMonths: 1,
+                    defaultDate: Date.now(),
+                    disableDayFn: function (date) {
+                        // Disable Sunday and Saturday
+                        return date.getDay() === 0 || date.getDay() === 6;
+                    }
+                }
             },
-
             {
                 type: 'time',
                 timeFormat: 'HH:mm:ss',
                 correctFormat: true
-            },
 
+            },
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
                 correctFormat: true,
-       
+                // datePicker additional options (see https://github.com/dbushell/Pikaday#configuration)
+                datePickerConfig: {
+                    // First day of the week (0: Sunday, 1: Monday, etc)
+                    firstDay: 0,
+                    showWeekNumber: true,
+                    numberOfMonths: 1,
+                    defaultDate: Date.now(),
+                    disableDayFn: function (date) {
+                        // Disable Sunday and Saturday
+                        return date.getDay() === 0 || date.getDay() === 6;
+                    }
+                }
             },
-
             {
                 type: 'time',
                 timeFormat: 'HH:mm:ss',
