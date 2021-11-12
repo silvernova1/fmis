@@ -19,8 +19,7 @@
     Funds Realignment
 </h3>
 <hr>
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
-<br />
+<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
 <div id="example" class="hot"></div>
@@ -46,7 +45,7 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                
+
                 console.log(output);
             }
         });

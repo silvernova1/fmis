@@ -3,15 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+<<<<<<< HEAD:fmis/Migrations/20211111084755_MyDb.Designer.cs
+    [Migration("20211111084755_MyDb")]
+=======
+    [Migration("20211109063233_MyDb")]
+>>>>>>> bb7651d6e642ccf75d944c1f9efbdf357e23d0c2:fmis/Migrations/20211109063233_MyDb.Designer.cs
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
