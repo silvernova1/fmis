@@ -19,6 +19,7 @@ namespace fmis.Models.John
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
+  
 
 
         [ForeignKey("Prexc")]

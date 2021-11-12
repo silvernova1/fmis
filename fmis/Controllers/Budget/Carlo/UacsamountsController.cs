@@ -98,7 +98,7 @@ namespace fmis.Controllers
           
             foreach (var item in data)
             {
-              /*  _Ucontext.Uacs.FirstOrDefault(x => x.Account_title == "account_title");*/
+              
 
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
@@ -122,17 +122,6 @@ namespace fmis.Controllers
 
                     uacsamount.Id = item.Id;
                     uacsamount.ObligationId = item.ObligationId;
-                    /*var query = _Ucontext.Uacs
-                               .Join(
-                                _Ucontext.Uacs,
-                                uacs => uacs.UacsId,
-                                uacsamount => uacsamount.UacsId,
-                                (uacs, uacsamount) => new
-                                {
-                                    uacsamount = uacsamount.UacsId,
-                                    uacs = uacs.Account_title + "" + uacs.Expense_code
-                                }
-                            ).ToList();*/
                     uacsamount.Account_title = item.Account_title;
                     uacsamount.Expense_code = item.Expense_code;
                     uacsamount.Amount = item.Amount;
