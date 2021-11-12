@@ -180,6 +180,9 @@ namespace fmis.Controllers
                 return NotFound();
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
+
+           /* return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });*/
+
             return View(sub_allotment);
         }
 
