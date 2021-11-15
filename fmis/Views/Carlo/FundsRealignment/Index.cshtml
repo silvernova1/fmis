@@ -20,46 +20,26 @@
     Funds Realignment
 </h3>
 <hr />
-<div class="row" style="margin-right:50px;">
-    <div class="space-5"></div>
 
-    <div class="col-sm-5 infobox-container">
-        <div class="infobox infobox-green">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
-            </div>
-
-            <div class="infobox-data">
-                <span class="infobox-data-number">3,501,956.00</span>
-                <div class="infobox-content">Beginning Balance</div>
-            </div>
-        </div>
-
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-
-            <div class="infobox-data">
-                <span class="infobox-data-number">1,552,276.00</span>
-                <div class="infobox-content">Remaining Balance</div>
-            </div>
-        </div>
-        <div class="space-6"></div>
-    </div>
-    <div class="vspace-12-sm"></div>
-</div><!-- /.row -->
 
 <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
+<div class="">
+    <div class="row">
+        <div class="col-sm-2 infobox-container">
+            <div class="infobox infobox-blue">
+                <div class="infobox-data">
+                        <span class="infobox-data-number fundsource_amount"></span>
+                        <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
+                </div>
+            </div>           
+        </div>
+    </div><!-- /.row -->
+</div>
+<br />
 <div id="example" class="hot"></div>
 <br />
-<div class="pull-right">
-    <h5 class="green">Funds Realignment Total: <strong id="" class="fundsource_amount"> </strong></h5>
-
-</div>
-
 <script>
     let guid = () => {
         let s4 = () => {

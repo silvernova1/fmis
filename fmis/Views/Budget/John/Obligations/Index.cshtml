@@ -14,6 +14,9 @@
 }
 
 
+@*<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />*@
+
 <style>
     .filterHeader {
         color: black;
@@ -153,19 +156,8 @@
              {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                defaultDate: Date.now(),
                 correctFormat: true,
-                // datePicker additional options (see https://github.com/dbushell/Pikaday#configuration)
-                datePickerConfig: {
-                    // First day of the week (0: Sunday, 1: Monday, etc)
-                    firstDay: 0,
-                    showWeekNumber: true,
-                    numberOfMonths: 1,
-                    defaultDate: Date.now(),
-                    disableDayFn: function (date) {
-                        // Disable Sunday and Saturday
-                        return date.getDay() === 0 || date.getDay() === 6;
-                    }
-                }
             },
             {
 
@@ -203,19 +195,8 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                defaultDate: Date.now(),
                 correctFormat: true,
-                // datePicker additional options (see https://github.com/dbushell/Pikaday#configuration)
-                datePickerConfig: {
-                    // First day of the week (0: Sunday, 1: Monday, etc)
-                    firstDay: 0,
-                    showWeekNumber: true,
-                    numberOfMonths: 1,
-                    defaultDate: Date.now(),
-                    disableDayFn: function (date) {
-                        // Disable Sunday and Saturday
-                        return date.getDay() === 0 || date.getDay() === 6;
-                    }
-                }
             },
             {
                 type: 'time',
@@ -226,19 +207,8 @@
             {
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
+                defaultDate: Date.now(),
                 correctFormat: true,
-                // datePicker additional options (see https://github.com/dbushell/Pikaday#configuration)
-                datePickerConfig: {
-                    // First day of the week (0: Sunday, 1: Monday, etc)
-                    firstDay: 0,
-                    showWeekNumber: true,
-                    numberOfMonths: 1,
-                    defaultDate: Date.now(),
-                    disableDayFn: function (date) {
-                        // Disable Sunday and Saturday
-                        return date.getDay() === 0 || date.getDay() === 6;
-                    }
-                }
             },
             {
                 type: 'time',
@@ -361,7 +331,7 @@
 
             ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
         },
-        height: '350px',
+       
         hiddenColumns: {
             columns: [15,16],
             indicators: true

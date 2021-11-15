@@ -132,6 +132,7 @@ namespace fmis.Controllers
             /*PopulateHeadDropDownList();*/
             //PopulatePsDropDownList();
 
+
             List<Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
@@ -161,7 +162,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+           /* PopulatePsDropDownList();*/
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -178,7 +179,7 @@ namespace fmis.Controllers
 
              ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+           /* PopulatePsDropDownList();*/
 
             {
                 ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
