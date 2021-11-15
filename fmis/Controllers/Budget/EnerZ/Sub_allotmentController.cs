@@ -18,6 +18,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
+
 namespace fmis.Controllers
 
 {
@@ -44,6 +45,18 @@ namespace fmis.Controllers
             public int Id { get; set; }
             public string Expenses { get; set; }
             public string Amount { get; set; }
+            public string token { get; set; }
+        }
+
+        public class ManyId
+        {
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public string single_token { get; set; }
+            public List<ManyId> many_token { get; set; }
         }
 
         // GET:Sub_allotment
@@ -105,36 +118,98 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
+        public async Task<IActionResult> SaveSuballotment_amount([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment, List<Suballotment_amount> data, int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var data_holder = this._MyDbContext.Suballotment_amount.Include(c => c.Sub_allotment);
+            ViewBag.BudgetId = id;
+            var data_holder = _MyDbContext.Suballotment_amount;
 
             foreach (var item in data)
             {
-                if (item.Id == 0)
+
+
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                    var suballotment_amount = new Suballotment_amount();
 
-                    suballotment_amount.Id = item.Id;
-                    suballotment_amount.Expenses = item.Expenses;
-                    /*suballotment_amount.Amount = item.Amount;*/
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expenses= item.Expenses;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
-                    this._MyDbContext.Suballotment_amount.Update(suballotment_amount);
                     this._MyDbContext.SaveChanges();
                 }
-                /*else
+                else
                 {
-                    data_holder.Find(item.Id).FundsId = item.FundsId;
-                    data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Amount = item.Amount;
+                    var suballotment = new Suballotment_amount();
 
+                    suballotment.Id = item.Id;
+                    suballotment.Id = item.Id;
+                    suballotment.Expenses = item.Expenses;
+                    suballotment.Amount = item.Amount;
+                    suballotment.status = "activated";
+                    suballotment.token = item.token;
+
+                    _MyDbContext.Suballotment_amount.Update(suballotment);
                     this._MyDbContext.SaveChanges();
-                }*/
+                }
+
+                return Json(data);
+
             }
 
-            return Json(data);
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(sub_allotment);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
+                }
+            }
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulatePrexcsDropDownList(sub_allotment.Id);
+
+            return RedirectToAction("Fundsource", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
+
+
         }
+
+        /* [HttpPost]
+         public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
+         {
+             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+             var data_holder = this._MyDbContext.Suballotment_amount.Include(c => c.Sub_allotment);
+
+             foreach (var item in data)
+             {
+                 if (item.Id == 0)
+                 {
+                     var suballotment_amount = new Suballotment_amount();
+
+                     suballotment_amount.Id = item.Id;
+                     suballotment_amount.Expenses = item.Expenses;
+                     *//*suballotment_amount.Amount = item.Amount;*//*
+
+                     this._MyDbContext.Suballotment_amount.Update(suballotment_amount);
+                     this._MyDbContext.SaveChanges();
+                 }
+                 *//*else
+                 {
+                     data_holder.Find(item.Id).FundsId = item.FundsId;
+                     data_holder.Find(item.Id).Account_title = item.Account_title;
+                     data_holder.Find(item.Id).Amount = item.Amount;
+
+                     this._MyDbContext.SaveChanges();
+                 }*//*
+             }
+
+             return Json(data);
+         }*/
 
         // POST: Sub_allotment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -267,6 +342,33 @@ namespace fmis.Controllers
             this._MyDbContext.Suballotment_amount.Remove(suballotment_amount);
             this._MyDbContext.SaveChangesAsync();
             return Json(id);
+        }
+
+        // POST: Sub_allotment/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> DeleteSuballotment_amount(DeleteData data)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            if (data.many_token.Count > 1)
+            {
+                var data_holder = _MyDbContext.Suballotment_amount;
+                foreach (var many in data.many_token)
+                {
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = _MyDbContext.Suballotment_amount;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
         // POST: Sub_allotment/Delete/5
