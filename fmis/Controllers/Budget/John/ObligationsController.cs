@@ -193,28 +193,13 @@ namespace fmis.Controllers
             return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", obligation);
         }
 
-        /* public IActionResult ObligationModal(int? id)
-         {
-             if (id == null)
-             {
-                 return NotFound();
-             }
-             var obligation =  _context.Obligation
-                 .FirstOrDefaultAsync(m => m.Id == id);
-             if (obligation == null)
-             {
-                 return NotFound();
-             }
-             return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml",obligation);
-         }*/
-
         // GET: Obligations/Create
         public IActionResult Create()
         {
 
             return View();
         }
-
+        
 
         private DateTime ToDateTime(string date)
         {
