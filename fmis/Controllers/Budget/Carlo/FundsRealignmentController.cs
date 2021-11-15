@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using fmis.Data.Carlo;
 using System.Text.Json;
 using fmis.Models.Carlo;
+using fmis.Models.John;
 using fmis.Data;
+using fmis.Data.John;
 using fmis.Models;
 
 namespace fmis.Controllers.Budget.Carlo
@@ -17,11 +19,13 @@ namespace fmis.Controllers.Budget.Carlo
 
         private readonly FundsRealignmentContext _context;
         private readonly UacsContext _UacsContext;
+        private readonly FundSourceAmountContext _FAContext;
 
-        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext)
+        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext)
         {
             _context = context;
             _UacsContext = UacsContext;
+            _FAContext = FAContext;
         }
 
         public class FundsRealignmentData
@@ -56,9 +60,10 @@ namespace fmis.Controllers.Budget.Carlo
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
-
-
             ViewBag.fundsource_id = fundsource_id;
+
+            var fundsourceamount = JsonSerializer.Serialize(_FAContext.FundSourceAmount.ToList());
+            ViewBag.fundsourceamount = fundsourceamount;
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }

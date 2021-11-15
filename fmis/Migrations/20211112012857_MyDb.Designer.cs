@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211112012857_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,10 +250,7 @@ namespace fmis.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FundSourceId")
+                    b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
@@ -262,7 +261,7 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
+                    b.HasIndex("FundSourceId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -892,11 +891,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
                 {
-                    b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
+                    b.HasOne("fmis.Models.John.FundSource", "FundSource")
                         .WithMany("FundSourceAmounts")
-                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
+                        .HasForeignKey("FundSourceId");
 
-                    b.Navigation("Budget_allotment");
+                    b.Navigation("FundSource");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
@@ -976,8 +975,6 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
-                    b.Navigation("FundSourceAmounts");
-
                     b.Navigation("FundSources");
 
                     b.Navigation("Personal_Information");
@@ -985,6 +982,11 @@ namespace fmis.Migrations
                     b.Navigation("Sub_allotments");
 
                     b.Navigation("Suballotment_amounts");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.FundSource", b =>
+                {
+                    b.Navigation("FundSourceAmounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>

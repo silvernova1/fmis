@@ -15,18 +15,51 @@
 
 <input type="hidden" class="fundsrealignment" value="@ViewBag.temp">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
+
 <h3 class="grey lighter smaller">
     Funds Realignment
 </h3>
-<hr>
+<hr />
+<div class="row" style="margin-right:50px;">
+    <div class="space-5"></div>
+
+    <div class="col-sm-5 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">3,501,956.00</span>
+                <div class="infobox-content">Beginning Balance</div>
+            </div>
+        </div>
+
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">1,552,276.00</span>
+                <div class="infobox-content">Remaining Balance</div>
+            </div>
+        </div>
+        <div class="space-6"></div>
+    </div>
+    <div class="vspace-12-sm"></div>
+</div><!-- /.row -->
+
 <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
 <div id="example" class="hot"></div>
 <br />
-<div class="controls" hidden>
-    <button id="export-file">Download CSV</button>
+<div class="pull-right">
+    <h5 class="green">Funds Realignment Total: <strong id="" class="fundsource_amount"> </strong></h5>
+
 </div>
+
 <script>
     let guid = () => {
         let s4 = () => {
@@ -51,15 +84,16 @@
         });
     }
 
+    var fundsource_amount = 0;
     var fundsrealignment = $.parseJSON($(".fundsrealignment").val());
     const data = [];
     var counter = 0;
     $.each(fundsrealignment, function () {
         data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
         counter++;
+        fundsource_amount += this.Realignment_amount;
     })
-
-
+    $(".fundsource_amount").html(fundsource_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -155,6 +189,8 @@
             console.log(changes);
 
             var ajax_data = [];
+            $(".fundsource_amount").html();
+            fundsource_amount = 0;
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
@@ -165,11 +201,12 @@
                         token: this[4]
                     }
                 );
+                fundsource_amount += parseInt(this[2]);
             });
-
+            $(".fundsource_amount").html(fundsource_amount);
              ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
         },
-        height: '250px',
+        height: 'auto',
         hiddenColumns: {
             columns: [3,4],
             indicators: true

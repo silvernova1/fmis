@@ -5,11 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h3 class="grey lighter smaller">
+    Sub Allotment List
+</h3>
+<hr />
+
 <div class="widget-box">
     <div class="widget-header widget-header-flat widget-header-small">
-        <h5 class="widget-title ">
+        <h5 class="widget-title">
             <i class="ace-icon fa fa-signal"></i>
-           Sub Allotment
+            Fund Source
         </h5>
     </div>
 
@@ -35,8 +40,9 @@
         </div><!-- /.widget-main -->
     </div><!-- /.widget-body -->
 </div><!-- /.widget-box -->
-<br />
 <!-- The Modal -->
+<br />
+
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg" style="width:50%;">
         <div class="modal-content">
@@ -64,12 +70,7 @@
     </div>
 </div>
 <p>
-    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
-        <i class="ace-icon fa fa-plus "></i> Create New
-    </a> | 
-    <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
-         Back to Budget Allotment
-    </a>
+    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
 </p>
 <br />
 <table class="table">
@@ -107,10 +108,10 @@
                     @Html.DisplayFor(modelItem => item.Suballotment_title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SaamountId)
+                    @Html.DisplayFor(modelItem => item.BAmountId)
                 </td>
                 <td>
-                    @* @Html.DropDownList("Amount", null, htmlAttributes: new { @class = "Sub Allotment Amount" })*@
+                    @Html.DisplayFor(modelItem => item.RAmountId)
                 </td>
                 @*<td>
                     @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
