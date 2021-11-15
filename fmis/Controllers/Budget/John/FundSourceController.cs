@@ -29,7 +29,7 @@ namespace fmis.Controllers.Budget.John
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
 
-        
+
         public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
@@ -128,15 +128,14 @@ namespace fmis.Controllers.Budget.John
 
 
         [HttpPost]
-        public async Task<IActionResult> SaveFundsourceamount([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data, int? id)
+        public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            ViewBag.BudgetId = id;
+
             var data_holder = _MyDbContext.FundSourceAmount;
 
             foreach (var item in data)
             {
-
 
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
@@ -161,32 +160,8 @@ namespace fmis.Controllers.Budget.John
                     _MyDbContext.FundSourceAmount.Update(fundsource);
                     this._MyDbContext.SaveChanges();
                 }
-
-                return Json(data);
-
             }
-
-
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(fundSource);
-                    await _context.SaveChangesAsync();
-                
-                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
-                }
-            }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulatePrexcsDropDownList(fundSource.Id);
-        
-            return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
-
-
+            return Json(data);
         }
 
         // POST: FundSource/Create
@@ -252,7 +227,7 @@ namespace fmis.Controllers.Budget.John
         {
 
             ViewBag.BudgetId = BudgetId;
-            
+
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
@@ -673,7 +648,7 @@ namespace fmis.Controllers.Budget.John
 
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                table_row_8.AddCell(new PdfPCell(new Paragraph("Enero Amalio" != null ? "Enerz": "", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                table_row_8.AddCell(new PdfPCell(new Paragraph("Enero Amalio" != null ? "Enerz" : "", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
@@ -783,7 +758,7 @@ namespace fmis.Controllers.Budget.John
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
                 PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
 
-                
+
             }
         }
     }

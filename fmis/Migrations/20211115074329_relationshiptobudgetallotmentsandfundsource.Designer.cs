@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211115074329_relationshiptobudgetallotmentsandfundsource")]
+    partial class relationshiptobudgetallotmentsandfundsource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -568,9 +570,6 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BAmountId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
@@ -583,11 +582,11 @@ namespace fmis.Migrations
                     b.Property<string>("Prexc_code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RAmountId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SaamountId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
