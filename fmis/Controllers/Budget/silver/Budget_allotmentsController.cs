@@ -130,7 +130,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
            /* PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+           // PopulatePsDropDownList();
 
 
             var sumfunds = _context.FundSourceAmount.Where(x=>x.Budget_allotment.BudgetAllotmentId == id).Sum(x => x.Amount);
@@ -166,7 +166,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            /*PopulatePsDropDownList();*/
+            //PopulatePsDropDownList();
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -180,13 +180,8 @@ namespace fmis.Controllers
             {
                 return NotFound();
             }
-
-             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            /*PopulateHeadDropDownList();*/
-            //PopulatePsDropDownList();
-
+   
             {
-                ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
                 var prexsQuery = from d in _context.Suballotment_amount
                                  orderby d.Amount
                                  select d;
