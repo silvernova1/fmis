@@ -132,6 +132,11 @@ namespace fmis.Controllers
             /*PopulateHeadDropDownList();*/
             //PopulatePsDropDownList();
 
+
+            var sumfunds = _context.FundSourceAmount.Where(x=>x.Budget_allotment.BudgetAllotmentId == id).Sum(x => x.Amount);
+
+            ViewBag.sumfunds = sumfunds;
+
             List<Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
@@ -161,7 +166,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+            /*PopulatePsDropDownList();*/
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -178,7 +183,7 @@ namespace fmis.Controllers
 
              ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+            //PopulatePsDropDownList();
 
             {
                 ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");

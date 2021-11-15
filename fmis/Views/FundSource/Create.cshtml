@@ -87,17 +87,10 @@
     </div>
 </form>
 
-
-
-<script>
-    $(document).ready(function () {
-        $('.prexc').select2();
-    });
-</script>
-
 <script>
 
-    var fundsource_id = @ViewBag.FundsId;
+    var FundSourceId = @ViewBag.FundsId;
+
         let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -106,6 +99,7 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
+
 
 
     function ajaxServer(ajax_data, url) {
@@ -131,6 +125,7 @@
         counter++;
         obligation_amount += this.Amount;
     })
+
     $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
@@ -139,6 +134,7 @@
         uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
     })
+
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
@@ -169,6 +165,7 @@
             searchResultClass: 'search-result-custom'
         },
         contextMenu: ['row_above', 'row_below', 'remove_row'],
+
         beforeRemoveRow: function (index, column) {
         var selection = this.getSelected();
         var holder_data = this.getData();
@@ -214,7 +211,8 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        FundSourceId: fundsource_id,
+
+                        FundSourceId: FundSourceId,
                         Account_title: this[0],
                         Amount: this[1],
                         Id: this[2],
@@ -270,4 +268,3 @@
         });
     });*@
 </script>
-

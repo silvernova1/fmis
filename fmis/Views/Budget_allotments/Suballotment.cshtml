@@ -112,9 +112,9 @@
                 <td>
                     @* @Html.DropDownList("Amount", null, htmlAttributes: new { @class = "Sub Allotment Amount" })*@
                 </td>
-                <td>
+                @*<td>
                     @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
-                </td>
+                </td>*@
                 <td>
                     <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
                     <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
