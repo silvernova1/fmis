@@ -133,7 +133,7 @@ namespace fmis.Controllers
            // PopulatePsDropDownList();
 
 
-            var sumfunds = _context.FundSourceAmount.Where(x=>x.Budget_allotment.BudgetAllotmentId == id).Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Where(x=>x.BudgetId == id).Sum(x => x.Amount);
 
             ViewBag.sumfunds = sumfunds;
 

@@ -21,7 +21,7 @@
 
 
 
-<form asp-action="SaveFundsourceamount" id="Create">
+<form asp-action="Create">
     <div style="margin:20px;">
         <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
         <input type="text" asp-for="FundSourceId" value="@ViewBag.FundsId" />
@@ -90,6 +90,7 @@
 <script>
 
     var FundSourceId = @ViewBag.FundsId;
+    var BudgetId = @ViewBag.BudgetId;
 
         let guid = () => {
         let s4 = () => {
@@ -212,6 +213,7 @@
                 ajax_data.push(
                     {
                         FundSourceId: FundSourceId,
+                        BudgetId: BudgetId,
                         Account_title: this[0],
                         Amount: this[1],
                         Id: this[2],
