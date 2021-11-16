@@ -250,10 +250,10 @@ namespace fmis.Controllers
                     this._context.SaveChanges();
 
                 }
-                else if ((item.Date != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
+                else /*if ((item.Date != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
                         item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
                         item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
-                        (item.Time_recieved.ToString() != null || item.Date_released != null) && (item.Time_released.ToString() != null))
+                        (item.Time_recieved.ToString() != null || item.Date_released != null) && (item.Time_released.ToString() != null))*/
                 {
                     //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT

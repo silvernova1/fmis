@@ -15,7 +15,7 @@
 
 
 @*<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />*@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />*@
 
 <style>
     .filterHeader {
@@ -59,288 +59,288 @@
 <script>
 
 
-    let guid = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
+		let guid = () => {
+			let s4 = () => {
+				return Math.floor((1 + Math.random()) * 0x10000)
+					.toString(16)
+					.substring(1);
+			}
+			return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+		}
 
-    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
-        const filtersPlugin = hot.getPlugin('filters');
+		const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+			const filtersPlugin = hot.getPlugin('filters');
 
-        filtersPlugin.removeConditions(colIndex);
-        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
-        filtersPlugin.filter();
-    }, 100);
+			filtersPlugin.removeConditions(colIndex);
+			filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+			filtersPlugin.filter();
+		}, 100);
 
-    const addEventListeners = (input, colIndex) => {
-        input.addEventListener('keydown', event => {
-            debounceFn(colIndex, event);
-        });
-    };
+		const addEventListeners = (input, colIndex) => {
+			input.addEventListener('keydown', event => {
+				debounceFn(colIndex, event);
+			});
+		};
 
-    // Build elements which will be displayed in header.
-    const getInitializedElements = colIndex => {
-        const div = document.createElement('div');
-        const input = document.createElement('input');
+		// Build elements which will be displayed in header.
+		const getInitializedElements = colIndex => {
+			const div = document.createElement('div');
+			const input = document.createElement('input');
 
-        div.className = 'filterHeader';
+			div.className = 'filterHeader';
 
-        addEventListeners(input, colIndex);
+			addEventListeners(input, colIndex);
 
-        div.appendChild(input);
+			div.appendChild(input);
 
-        return div;
-    };
+			return div;
+		};
 
-    // Add elements to header on `afterGetColHeader` hook.
-    const addInput = (col, TH) => {
-        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
-        if (typeof col !== 'number') {
-            return col;
-        }
+		// Add elements to header on `afterGetColHeader` hook.
+		const addInput = (col, TH) => {
+			// Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+			if (typeof col !== 'number') {
+				return col;
+			}
 
-        if (col >= 0 && TH.childElementCount < 2) {
-            TH.appendChild(getInitializedElements(col));
-        }
-    };
+			if (col >= 0 && TH.childElementCount < 2) {
+				TH.appendChild(getInitializedElements(col));
+			}
+		};
 
 
 
-    function ajaxServer(ajax_data, url) {
-        $.ajax({
-            type: 'POST',
-            url: url,
-            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { data: ajax_data },
-            success: function (output) {
-                $('#loading_modal').modal('hide');
-                console.log(output);
-            }
-        });
-    }
+		function ajaxServer(ajax_data, url) {
+			$.ajax({
+				type: 'POST',
+				url: url,
+				headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+				data: { data: ajax_data },
+				success: function (output) {
+					$('#loading_modal').modal('hide');
+					console.log(output);
+				}
+			});
+		}
 
-    var obligation = $.parseJSON($(".obligation").val());
+		var obligation = $.parseJSON($(".obligation").val());
 
-    const data = [];
-    var counter = 0;
-    $.each(obligation, function () {
-        data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id , this.token]
-        counter++;
-    })
-    const searchField = document.querySelector('#search_field2');
-    const button = document.querySelector('#export-file');
-    const container = document.getElementById('example');
-    const hot = new Handsontable(container, {
-        data: data,
-        rowHeaders: true,
-        width: '100%',
-        height: 'auto',
-        className: 'as-you-type-demo',
-        filters: true,
-        afterGetColHeader: addInput,
-        beforeOnCellMouseDown(event, coords) {
-            // Deselect the column after clicking on input.
-            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
-                event.stopImmediatePropagation();
-                this.deselectCell();
-            }
-        },
-        colWidths: 108,
-        manualColumnResize: true,
-        colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
-        columns: [
-             {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-                defaultDate: Date.now(),
-                correctFormat: true,
-            },
-            {
+		const data = [];
+		var counter = 0;
+		$.each(obligation, function () {
+			data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id , this.token]
+			counter++;
+		})
+		const searchField = document.querySelector('#search_field2');
+		const button = document.querySelector('#export-file');
+		const container = document.getElementById('example');
+		const hot = new Handsontable(container, {
+			data: data,
+			rowHeaders: true,
+			width: '100%',
+			height: 'auto',
+			className: 'as-you-type-demo',
+			filters: true,
+			afterGetColHeader: addInput,
+			beforeOnCellMouseDown(event, coords) {
+				// Deselect the column after clicking on input.
+				if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+					event.stopImmediatePropagation();
+					this.deselectCell();
+				}
+			},
+			colWidths: 108,
+			manualColumnResize: true,
+			colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
+			columns: [
+				 {
+					type: 'date',
+					dateFormat: 'MM/DD/YYYY',
+					defaultDate: Date.now(),
+					correctFormat: true,
+				},
+				{
 
-            },
-            {
+				},
+				{
 
-            },
-            {
+				},
+				{
 
-            },
-            {
+				},
+				{
 
-            },
-            {
+				},
+				{
 
-            },
-            {
+				},
+				{
 
-            },
+				},
 
-            {
+				{
 
-            },
+				},
 
-            {
-                type: 'dropdown',
-                source: ['Fundsource 1', 'FundSource 2', 'FundSource 3']
-            },
+				{
+					type: 'dropdown',
+					source: ['Fundsource 1', 'FundSource 2', 'FundSource 3']
+				},
 
-            {
-            },
+				{
+				},
 
-            {
-            },
-            {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-                defaultDate: Date.now(),
-                correctFormat: true,
-            },
-            {
-                type: 'time',
-                timeFormat: 'HH:mm:ss',
-                correctFormat: true
+				{
+				},
+				{
+					type: 'date',
+					dateFormat: 'MM/DD/YYYY',
+					defaultDate: Date.now(),
+					correctFormat: true,
+				},
+				{
+					type: 'time',
+					timeFormat: 'HH:mm:ss',
+					correctFormat: true
 
-            },
-            {
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-                defaultDate: Date.now(),
-                correctFormat: true,
-            },
-            {
-                type: 'time',
-                timeFormat: 'HH:mm:ss',
-                correctFormat: true
-            },
-            {
+				},
+				{
+					type: 'date',
+					dateFormat: 'MM/DD/YYYY',
+					defaultDate: Date.now(),
+					correctFormat: true,
+				},
+				{
+					type: 'time',
+					timeFormat: 'HH:mm:ss',
+					correctFormat: true
+				},
+				{
 
-            },
-            {
+				},
+				{
 
-            },
-        ],
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: {
-            items: {
-                "make_bold": {
-                    name: 'Print ORS',
-                    callback: function (key, options) {
-                        var selection = this.getSelected();
-                        var holder_data = this.getData();
-                        var holder_id = holder_data[selection[0][0]][15];
-                        var url = '@Url.Action("PrintOrs", "Obligations")' + "?id=" + holder_id;
-                        window.open(url);
-                    }
-                },
-                "": {
-                    name: 'UACS Amount Entry / Disbmt.',
-                    callback: function (key, options) {
-                        $("#exampleModal").modal('show');
-                        $(".ObligationContent").html(loading);
-                        var selection = this.getSelected();
-                        var holder_data = this.getData();
-                        var holder_id = holder_data[selection[0][0]][15]
+				},
+			],
+			search: {
+				searchResultClass: 'search-result-custom'
+			},
+			contextMenu: {
+				items: {
+					"make_bold": {
+						name: 'Print ORS',
+						callback: function (key, options) {
+							var selection = this.getSelected();
+							var holder_data = this.getData();
+							var holder_id = holder_data[selection[0][0]][15];
+							var url = '@Url.Action("PrintOrs", "Obligations")' + "?id=" + holder_id;
+							window.open(url);
+						}
+					},
+					"": {
+						name: 'UACS Amount Entry / Disbmt.',
+						callback: function (key, options) {
+							$("#exampleModal").modal('show');
+							$(".ObligationContent").html(loading);
+							var selection = this.getSelected();
+							var holder_data = this.getData();
+							var holder_id = holder_data[selection[0][0]][15]
 
-                        $.ajax({
-                        type: 'GET',
-                        headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-                        url: '@Url.Action("ObligationModal", "Obligations")',
-                        data: { id: holder_id },
-                        success: function (output) {
-                            setTimeout(function () {
-                                $(".ObligationContent").html(output);
-                            }, 500);
-                        }
-                    });
-                    }
-                }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-            }
-        },
-        beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
-            var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][16];
+							$.ajax({
+							type: 'GET',
+							headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+							url: '@Url.Action("ObligationModal", "Obligations")',
+							data: { id: holder_id },
+							success: function (output) {
+								setTimeout(function () {
+									$(".ObligationContent").html(output);
+								}, 500);
+							}
+						});
+						}
+					}, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+				}
+			},
+			beforeRemoveRow: function (index, column) {
+				var selection = this.getSelected();
+				var holder_data = this.getData();
+				var single_token = holder_data[selection[0][0]][16];
 
-            console.log(selection);
-            console.log(holder_data);
-            console.log(column);
+				console.log(selection);
+				console.log(holder_data);
+				console.log(column);
 
-            var first_column = selection[0][0];
-            var last_column = selection[0][2];
-            console.log(first_column);
-            console.log(last_column);
-            var many_token = [];
-            for (var j = first_column; j <= last_column; j++) {
-                many_token.push({
-                    many_token: holder_data[j][16]
-                })
-            }
+				var first_column = selection[0][0];
+				var last_column = selection[0][2];
+				console.log(first_column);
+				console.log(last_column);
+				var many_token = [];
+				for (var j = first_column; j <= last_column; j++) {
+					many_token.push({
+						many_token: holder_data[j][16]
+					})
+				}
 
-            if (single_token) {
-                var ajax_data = {
-                    "single_token": single_token,
-                    "many_token": many_token
-                };
+				if (single_token) {
+					var ajax_data = {
+						"single_token": single_token,
+						"many_token": many_token
+					};
 
-                ajaxServer(ajax_data,'@Url.Action("DeleteObligationModal", "Obligations")');
-            }
+					ajaxServer(ajax_data,'@Url.Action("DeleteObligationModal", "Obligations")');
+				}
 
-        },
-        afterUndo: function (index, column) {
+			},
+			afterUndo: function (index, column) {
 
-        },
-        afterCreateRow: function (row, column) {
-            console.log(row);
-            console.log(column);
-            hot.setDataAtCell(row, 16, guid());
-        },
-         afterChange: function (changes, source) {
-            if (source === 'loadData') {
-                return;
-            }
-            console.log(changes);
-              var ajax_data = [];
-              $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        Date: this[0] ? this[0] : "",
-                        Dv: this[1] ? this[1] : "",
-                        Pr_no: this[2] ? this[2] : "",
-                        Po_no: this[3] ? this[3] : "",
-                        Payee: this[4] ? this[4] : "",
-                        Address: this[5] ? this[5] : "",
-                        Particulars: this[6] ? this[6] : "",
-                        Ors_no: this[7] ? this[7] : "",
-                        Fund_source: this[8] ? this[8] : "",
-                        Gross: this[9] ? this[9] : "",
-                        Created_by: this[10] ? this[10] : "",
-                        Date_recieved: this[11] ? this[11] : "",
-                        Time_recieved: this[12] ? this[12] : "",
-                        Date_released: this[13] ? this[13] : "",
-                        Time_released: this[14] ? this[14] : "",
-                        Id: this[15] ? this[15] : "",
-                        token: this[16]
-                    }
-                );
-              });
+			},
+			afterCreateRow: function (row, column) {
+				console.log(row);
+				console.log(column);
+				hot.setDataAtCell(row, 16, guid());
+			},
+			 afterChange: function (changes, source) {
+				if (source === 'loadData') {
+					return;
+				}
+				console.log(changes);
+				  var ajax_data = [];
+				  $.each(hot.getSourceData(), function () {
+					ajax_data.push(
+						{
+							Date: this[0] ? this[0] : "",
+							Dv: this[1] ? this[1] : "",
+							Pr_no: this[2] ? this[2] : "",
+							Po_no: this[3] ? this[3] : "",
+							Payee: this[4] ? this[4] : "",
+							Address: this[5] ? this[5] : "",
+							Particulars: this[6] ? this[6] : "",
+							Ors_no: this[7] ? this[7] : "",
+							Fund_source: this[8] ? this[8] : "",
+							Gross: this[9] ? this[9] : "",
+							Created_by: this[10] ? this[10] : "",
+							Date_recieved: this[11] ? this[11] : "",
+							Time_recieved: this[12] ? this[12] : "",
+							Date_released: this[13] ? this[13] : "",
+							Time_released: this[14] ? this[14] : "",
+							Id: this[15] ? this[15] : "",
+							token: this[16]
+						}
+					);
+				  });
 
-            ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
-        },
-       
-        hiddenColumns: {
-            columns: [15,16],
-            indicators: true
-        },
-        licenseKey: 'non-commercial-and-evaluation',
+				ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+			},
 
-    });
+			hiddenColumns: {
+				columns: [15,16],
+				indicators: true
+			},
+			licenseKey: 'non-commercial-and-evaluation',
 
-    var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
+		});
+
+		var tableData = JSON.stringify(hot.getSourceData());
+		console.log(hot.getSourceData());
 
 </script>

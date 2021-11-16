@@ -36,11 +36,16 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
+
+            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
+
+            ViewBag.sumfunds = sumfunds;
+
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
@@ -130,10 +135,10 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
            /* PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+          /*  PopulatePsDropDownList();*/
 
 
-            var sumfunds = _context.FundSourceAmount.Where(x=>x.Budget_allotment.BudgetAllotmentId == id).Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
 
             ViewBag.sumfunds = sumfunds;
 
@@ -167,7 +172,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+           /* PopulatePsDropDownList();*/
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -184,7 +189,7 @@ namespace fmis.Controllers
 
              ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+            /*PopulatePsDropDownList();*/
 
             {
                 ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");

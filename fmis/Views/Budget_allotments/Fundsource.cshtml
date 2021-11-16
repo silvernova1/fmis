@@ -19,7 +19,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">3,501,956.00</span>
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
                 <div class="infobox-content">Beginning Balance</div>
             </div>
         </div>
@@ -29,17 +29,16 @@
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
 
-                <div class="grid2">
-                    <span class="label label-danger arrowed arrowed-right">
-                        Remaining Balance
-                    </span>
-                    <center><h5 class="bigger">@ViewBag.sumfunds</h5></center>
-                </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
+                <div class="infobox-content">Remaining Balance</div>
             </div>
+        </div>
         </div><!-- /.widget-main -->
     </div><!-- /.widget-body -->
-</div><!-- /.widget-box -->
-<!-- The Modal -->
+<br />
+<br />
+<br />
 <br />
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg" style="width:50%;">
@@ -91,7 +90,12 @@
             <th>
                 Actions
             </th>
-            <th>Funds Realignment</th>
+            <th>
+                 Funds Realignment
+            </th>
+            <th>
+            Fund Source Total
+            </th>
         </tr>
     </thead>
     <tbody>
