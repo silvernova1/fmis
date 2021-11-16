@@ -5,27 +5,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="widget-box">
-    <div class="widget-header widget-header-flat widget-header-small">
-        <h5 class="widget-title">
-            <i class="ace-icon fa fa-signal"></i>
-            Fund Source
-        </h5>
-    </div>
+<h3 class="grey lighter smaller">
+    Fund Source
+</h3>
+<hr />
+<div class="row  pull-left">
+    <div class="space-5"></div>
 
-    <div class="widget-body">
-        <div class="widget-main">
-            @*  <div id="piechart-placeholder"></div>
-                <hr>*@
-            <div class="clearfix">
-                <div class="grid2">
-                    <span class="label label-info arrowed arrowed-right">
-                        Beginning Balance
-                    </span>
-                    <center><h5 class="bigger">@ViewBag.sumfunds</h5></center>
-                </div>
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
 
-                @*asdsd*@
+            <div class="infobox-data">
+                <span class="infobox-data-number">3,501,956.00</span>
+                <div class="infobox-content">Beginning Balance</div>
+            </div>
+        </div>
+
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
 
                 <div class="grid2">
                     <span class="label label-danger arrowed arrowed-right">
@@ -39,7 +41,6 @@
 </div><!-- /.widget-box -->
 <!-- The Modal -->
 <br />
-
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg" style="width:50%;">
         <div class="modal-content">
@@ -70,14 +71,11 @@
 <p>
     <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i>Create New
-    </a> | 
+    </a> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
-         Back to Budget Allotment
+        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
 </p>
-
-
-<br />
 <table class="table">
     <thead>
         <tr>
