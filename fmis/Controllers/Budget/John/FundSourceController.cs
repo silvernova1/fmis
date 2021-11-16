@@ -47,6 +47,7 @@ namespace fmis.Controllers.Budget.John
             public float Amount { get; set; }
             public int Id { get; set; }
             public string token { get; set; }
+            public int BudgetId { get; set; }
         }
 
         public class ManyId
@@ -152,6 +153,7 @@ namespace fmis.Controllers.Budget.John
 
                     fundsource.Id = item.Id;
                     fundsource.FundSourceId = item.FundSourceId;
+                    fundsource.BudgetId = item.BudgetId;
                     fundsource.Account_title = item.Account_title;
                     fundsource.Amount = item.Amount;
                     fundsource.status = "activated";
@@ -205,7 +207,7 @@ namespace fmis.Controllers.Budget.John
                 {
                     _context.Add(fundSource);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -290,7 +292,7 @@ namespace fmis.Controllers.Budget.John
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
             }
             return View(fundSource);
         }
