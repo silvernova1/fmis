@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211116003754_AddingFundTotal")]
+    partial class AddingFundTotal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,7 +253,7 @@ namespace fmis.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("BudgetId")
+                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("FundSourceId")
@@ -264,6 +266,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -826,12 +830,6 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("SummaryReports")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UacsId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("datefrom")
                         .HasColumnType("datetime2");
 
@@ -839,8 +837,6 @@ namespace fmis.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UacsId");
 
                     b.ToTable("SummaryReport");
                 });
@@ -897,6 +893,15 @@ namespace fmis.Migrations
                     b.Navigation("Budget_allotment");
 
                     b.Navigation("Prexc");
+                });
+
+            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+                {
+                    b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
+                        .WithMany("FundSourceAmounts")
+                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
+
+                    b.Navigation("Budget_allotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
@@ -974,17 +979,10 @@ namespace fmis.Migrations
                         .HasForeignKey("Obligated_amountId");
                 });
 
-            modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
-                {
-                    b.HasOne("fmis.Models.Uacs", "Uacs")
-                        .WithMany()
-                        .HasForeignKey("UacsId");
-
-                    b.Navigation("Uacs");
-                });
-
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>
                 {
+                    b.Navigation("FundSourceAmounts");
+
                     b.Navigation("FundSources");
 
                     b.Navigation("Personal_Information");

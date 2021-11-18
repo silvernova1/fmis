@@ -1,15 +1,45 @@
 ﻿@model fmis.Models.Budget_allotment
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Fundsource";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h3 class="grey lighter smaller">
-    Fund Source List</h3>
+    Fund Source
+</h3>
 <hr />
+<div class="row  pull-left">
+    <div class="space-5"></div>
 
-<!-- The Modal -->
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
+                <div class="infobox-content">Beginning Balance</div>
+            </div>
+        </div>
+
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
+                <div class="infobox-content">Remaining Balance</div>
+            </div>
+        </div>
+        </div><!-- /.widget-main -->
+    </div><!-- /.widget-body -->
+<br />
+<br />
+<br />
+<br />
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg" style="width:50%;">
         <div class="modal-content">
@@ -36,10 +66,15 @@
         </div>
     </div>
 </div>
+
 <p>
-    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a> |
+    <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
+        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
+    </a>
 </p>
-<br />
 <table class="table">
     <thead>
         <tr>
@@ -55,7 +90,12 @@
             <th>
                 Actions
             </th>
-            <th>Funds Realignment</th>
+            <th>
+                 Funds Realignment
+            </th>
+            <th>
+            Fund Source Total
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -70,17 +110,18 @@
                 </td>
 
                 <td>
-                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                    @*                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                    *@
                 </td>
                 <td>
                     <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
 
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer" ></span> Funds Realignment</a>
+                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                 </td>
             </tr>
-         }
+        }
     </tbody>
 </table>

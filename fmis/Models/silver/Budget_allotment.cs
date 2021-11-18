@@ -20,7 +20,9 @@ namespace fmis.Models
         public DateTime Updated_at { get; set; }
 
         public List<FundSource> FundSources { get; set; }
+        /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
         public List<Sub_allotment> Sub_allotments { get; set; }
+        public List<Suballotment_amount> Suballotment_amounts { get; set; }
 
         public List<Personal_Information> Personal_Information { get; set; }
 
@@ -28,6 +30,9 @@ namespace fmis.Models
         public int YearlyReferenceId { get; set; }
         public Yearly_reference Yearly_reference { get; set; }
         /*public IList<FundSource> FundSource { get; set; }*/
+
+
+        
 
     }
 }

@@ -1,11 +1,14 @@
 ﻿@model fmis.Models.John.FundSource
 @using fmis.Models.John;
-@*@{
-        Budget_allotment Budget_allotment = new Budget_allotment();
-        FundSource FundSource = TempData["FundSource"] as FundSource;
-        List<Uacs> Uacs = TempData["Uacs"] as List<Uacs>;
-    }*@
 
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 
 @{
     ViewData["Title"] = "Create";
@@ -18,15 +21,16 @@
 
 
 
-<form asp-action="SaveFundsourceamount" id="Create">
+<form asp-action="Create">
     <div style="margin:20px;">
         <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+        <input type="hidden" asp-for="FundSourceId" value="@ViewBag.FundsId" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
             <div class="pull-right">
                 <div class="btn-group">
-                    <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-xs"/>
-                    <a asp-action="Index" class="btn btn-danger btn-xs">Exit</a>
+                    <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-xs" />
+                    <a class="btn btn-danger btn-xs" asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.BudgetId">Exit</a>
                 </div>
             </div>
         </div>
@@ -59,22 +63,20 @@
                     <input asp-for="Respo" class="form-control" required />
                     <span asp-validation-for="Respo" class="text-danger"></span>
                 </div>
+                <strong id="" class="obligation_amount"> </strong>
             </div>
         </div>
         <input type="hidden" id="FundSourceId" value="@ViewBag.FundsId" />
         <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
 
-
-
-
         <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
         <br />
         <br />
         <br />
-@*        <p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
-*@        <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+        @*        <p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>
+        *@        <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
         <br />
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
@@ -82,22 +84,47 @@
     </div>
 </form>
 
-
-
-@*<script>
-        $(document).ready(function () {
-            $('.prexc').select2();
-        });
-    </script>*@
-
 <script>
+
+    var FundSourceId = @ViewBag.FundsId;
+    var BudgetId = @ViewBag.BudgetId;
+
+        let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+
     var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
     const data = [];
     var counter = 0;
+    var obligation_amount = 0;
     $.each(fundsourceamount, function () {
-        data[counter] = [this.Account_title, this.Amount, this.Id, this.FundSourceId]
+        data[counter] = [this.Account_title, this.Amount, this.Id, this.token]
         counter++;
+        obligation_amount += this.Amount;
     })
+
+    $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -105,6 +132,7 @@
         uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
     })
+
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
@@ -114,70 +142,7 @@
         rowHeaders: true,
         colHeaders: true,
         colWidths: [150, 150],
-        stretchH: 'all',
-        height: '200px',
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: ['row_above', 'row_below', 'remove_row'],
-        beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
-            var holder_data = this.getData();
-            var holder_id = holder_data[selection[0][0]][2];
-            if (holder_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("DeleteFundsourceamount", "FundSource")',
-                    dataType: "JSON",
-                    data: { id: holder_id },
-                    success: function (output) {
-                        console.log(output);
-                    }
-                });
-            }
-            Lobibox.notify("warning", {
-                msg: "Your selected row was remove",
-                sound: false
-            });
-        },
-        hiddenColumns: {
-            columns: [2],
-            indicators: true
-        },
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-        dataSchema: { Account_title: null, Amount: null, },
-        columns: [
-            {
-                data: 'Account_title ', type: 'text',
-            },
-            { data: 'Amount', type: 'numeric' },
-            { data: 'Id ', type: 'text' },
-            { data: 'Budget_allotmentBudgetAllotmentId', type: 'text' },
-        ]
-    });
-    Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        const search = hot.getPlugin('search');
-        const queryResult = search.query(this.value);
-        console.log(queryResult);
-        hot.render();
-    });
-    const exportPlugin = hot.getPlugin('exportFile');
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'UACS',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
-    hot.updateSettings({
-        colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'FundSourceId'],
+        colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
                 type: 'dropdown',
@@ -186,20 +151,96 @@
             {
             },
             {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
             },
         ],
+        stretchH: 'all',
+        height: '200px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+
+        beforeRemoveRow: function (index, column) {
+        var selection = this.getSelected();
+        var holder_data = this.getData();
+        var single_token = holder_data[selection[0][0]][3];
+        console.log(selection);
+        console.log(holder_data);
+        console.log(column);
+        var first_column = selection[0][0];
+        var last_column = selection[0][2];
+        console.log(first_column);
+        console.log(last_column);
+        var many_token = [];
+        for (var j = first_column; j <= last_column; j++) {
+            many_token.push({
+                many_token: holder_data[j][3]
+            })
+        }
+        if (single_token) {
+            var ajax_data = {
+                "single_token": single_token,
+                "many_token": many_token,
+            };
+            console.log(ajax_data);
+            ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+        }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 3, guid());
+        },
+        afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return; //don't save this change
+            }
+            console.log(hot.getSourceData());
+            console.log(changes);
+            var ajax_data = [];
+            $(".obligation_amount").html();
+            obligation_amount = 0;
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        FundSourceId: FundSourceId,
+                        BudgetId: BudgetId,
+                        Account_title: this[0],
+                        Amount: this[1],
+                        Id: this[2],
+                        token: this[3],
+                    }
+                );
+                obligation_amount += parseInt(this[1]);
+            });
+            $(".obligation_amount").html(obligation_amount);
+        ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');
+    },
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
 
 
-    $(document).ready(function () {
+    @*$(document).ready(function () {
         $("#btnsubmit").click(function (e) {
             $('#loading_modal').modal('show');
             var json = [];
             $.each(hot.getSourceData(), function () {
                 json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
             });
+            $(".obligation_amount").html();
+            obligation_amount = 0;
             var valdata = $("#Create").serialize();
             $.ajax({
                 url: '@Url.Action("SaveFundsourceamount", "FundSource")',
@@ -219,64 +260,9 @@
                     });
                     console.log(output);
                 }
-            });
-        });
-    });
 
-   @* var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
-    $("#Create").on("click", function () {
-        console.log("gana");
-        $('#loading_modal').modal('show');
-        var json = [];
-        $.each(hot.getSourceData(), function () {
-            json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
+            });
+            $(".obligation_amount").html(obligation_amount);
         });
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("Create", "FundSource")',
-            dataType: "JSON",
-            data: { data: json },
-            success: function (output) {
-                $('#loading_modal').modal('hide');
-                Lobibox.notify("success", {
-                    msg: "Successfully Saved...",
-                    sound: false
-                });
-                console.log(output);
-            }
-        });
-        return false;
     });*@
 </script>
-
-
-<!--<table class="table">
-    <thead>
-        <tr>
-            <th>-->
-@*   @FundSource.FundSourceTitle*@
-<!--</th>
-<th>-->
-@* @FundSource.FundSourceTitleCode*@
-<!--</th>
-        <th></th>
-    </tr>
-</thead>
-<tbody>-->
-@*   @foreach (var item in Uacs)
-    {
-        <tr>
-            <td style="width: 800px;">
-                @item.Account_title
-            </td>
-            <td>
-                    <select class="form-control" aria-label="Default select example">
-                        <option selected>Select ORS Head</option>
-                        <option value="1">@item.Account_title</option>
-                    </select>
-                </td>
-        </tr>
-    }*@
-<!--</tbody>
-</table>-->

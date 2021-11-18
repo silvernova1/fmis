@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using fmis.Data.Carlo;
 using System.Text.Json;
 using fmis.Models.Carlo;
+using fmis.Models.John;
 using fmis.Data;
+using fmis.Data.John;
 using fmis.Models;
 
 namespace fmis.Controllers.Budget.Carlo
@@ -17,11 +19,15 @@ namespace fmis.Controllers.Budget.Carlo
 
         private readonly FundsRealignmentContext _context;
         private readonly UacsContext _UacsContext;
+        private readonly FundSourceAmountContext _FAContext;
+        private readonly FundSourceContext _FContext;
 
-        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext)
+        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext)
         {
             _context = context;
             _UacsContext = UacsContext;
+            _FAContext = FAContext;
+            _FContext = FContext;
         }
 
         public class FundsRealignmentData
@@ -56,9 +62,13 @@ namespace fmis.Controllers.Budget.Carlo
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
-
-
             ViewBag.fundsource_id = fundsource_id;
+
+            var fundsourceamount = JsonSerializer.Serialize(_FAContext.FundSourceAmount.ToList());
+            ViewBag.fundsourceamount = fundsourceamount;
+
+            var fundsource = JsonSerializer.Serialize(_FContext.FundSource.ToList());
+            ViewBag.fundsource = fundsource;
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
@@ -86,7 +96,6 @@ namespace fmis.Controllers.Budget.Carlo
                     funds.fundsource_id = item.fundsource_id;
                     funds.Realignment_from = item.Realignment_from;
                     funds.Realignment_to = item.Realignment_to;
-                    funds.Realignment_amount = item.Realignment_amount;
                     funds.status = "activated";
                     funds.token = item.token;
 

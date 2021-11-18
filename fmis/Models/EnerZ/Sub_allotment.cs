@@ -18,6 +18,10 @@ namespace fmis.Models
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
+        public int BAmountId { get; set; }
+        public int RAmountId { get; set; }
+
+
 
         public List<Personal_Information> Personal_Information { get; set; }
         [ForeignKey("Prexc")]

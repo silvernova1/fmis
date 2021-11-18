@@ -15,19 +15,31 @@
 
 <input type="hidden" class="fundsrealignment" value="@ViewBag.temp">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
+
 <h3 class="grey lighter smaller">
     Funds Realignment
 </h3>
-<hr>
-<input id="search_field2" style="float: left" type="search" placeholder="Search" />
+<hr />
+
+
+<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
+<div class="">
+    <div class="row">
+        <div class="col-sm-2 infobox-container">
+            <div class="infobox infobox-blue">
+                <div class="infobox-data">
+                        <span class="infobox-data-number fundsource_amount"></span>
+                        <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
+                </div>
+            </div>           
+        </div>
+    </div><!-- /.row -->
+</div>
 <br />
 <div id="example" class="hot"></div>
 <br />
-<div class="controls" hidden>
-    <button id="export-file">Download CSV</button>
-</div>
 <script>
     let guid = () => {
         let s4 = () => {
@@ -46,21 +58,22 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                
+
                 console.log(output);
             }
         });
     }
 
+    var fundsource_amount = 0;
     var fundsrealignment = $.parseJSON($(".fundsrealignment").val());
     const data = [];
     var counter = 0;
     $.each(fundsrealignment, function () {
         data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
         counter++;
+        fundsource_amount += this.Realignment_amount;
     })
-
-
+    $(".fundsource_amount").html(fundsource_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -156,6 +169,8 @@
             console.log(changes);
 
             var ajax_data = [];
+            $(".fundsource_amount").html();
+            fundsource_amount = 0;
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
@@ -166,11 +181,12 @@
                         token: this[4]
                     }
                 );
+                fundsource_amount += parseInt(this[2]);
             });
-
+            $(".fundsource_amount").html(fundsource_amount);
              ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
         },
-        height: '250px',
+        height: 'auto',
         hiddenColumns: {
             columns: [3,4],
             indicators: true

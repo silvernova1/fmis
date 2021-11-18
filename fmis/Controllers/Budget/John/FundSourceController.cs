@@ -29,7 +29,7 @@ namespace fmis.Controllers.Budget.John
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
 
-        
+
         public FundSourceController(FundSourceContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
         {
             _context = context;
@@ -42,10 +42,23 @@ namespace fmis.Controllers.Budget.John
 
         public class FundsourceamountData
         {
-            public int FundsId { get; set; }
+            public int FundSourceId { get; set; }
             public string Account_title { get; set; }
             public float Amount { get; set; }
             public int Id { get; set; }
+            public string token { get; set; }
+            public int BudgetId { get; set; }
+        }
+
+        public class ManyId
+        {
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public string single_token { get; set; }
+            public List<ManyId> many_token { get; set; }
         }
 
 
@@ -85,7 +98,7 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-                .Where(f => f.FundSource.FundSourceId == id).ToList());
+                .Where(f => f.FundSourceId == id && f.status == "activated").ToList());
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
@@ -116,57 +129,41 @@ namespace fmis.Controllers.Budget.John
 
 
         [HttpPost]
-        public async Task<IActionResult> SaveFundsourceamount([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data, int? id)
+        public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
 
-            ViewBag.BudgetId = id;
+            var data_holder = _MyDbContext.FundSourceAmount;
 
             foreach (var item in data)
             {
-                if (item.Id == 0)
+
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
-                    var fundsourceamount = new FundSourceAmount();
-                    
-                    fundsourceamount.Id = item.Id;
-                    fundsourceamount.Account_title = item.Account_title;
-                    fundsourceamount.Amount = item.Amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
-                    this._MyDbContext.FundSourceAmount.Update(fundsourceamount);
                     this._MyDbContext.SaveChanges();
                 }
-                /*else
+                else
                 {
-                    data_holder.Find(item.Id).FundsId = item.FundsId;
-                    data_holder.Find(item.Id).Account_title = item.Account_title;
-                    data_holder.Find(item.Id).Amount = item.Amount;
+                    var fundsource = new FundSourceAmount();
 
+                    fundsource.Id = item.Id;
+                    fundsource.FundSourceId = item.FundSourceId;
+                    fundsource.BudgetId = item.BudgetId;
+                    fundsource.Account_title = item.Account_title;
+                    fundsource.Amount = item.Amount;
+                    fundsource.status = "activated";
+                    fundsource.token = item.token;
+
+                    _MyDbContext.FundSourceAmount.Update(fundsource);
                     this._MyDbContext.SaveChanges();
-                }*/
-            }
-
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(fundSource);
-                    await _context.SaveChangesAsync();
-                
-                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
                 }
             }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulatePrexcsDropDownList(fundSource.Id);
-        
-            return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
-
-
+            return Json(data);
         }
 
         // POST: FundSource/Create
@@ -177,7 +174,7 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, List<FundsourceamountData> data, int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var data_holder = this._MyDbContext.FundSourceAmount.Include(c => c.FundSource);
+            var data_holder = this._MyDbContext.FundSourceAmount;
 
             ViewBag.BudgetId = id;
 
@@ -210,7 +207,7 @@ namespace fmis.Controllers.Budget.John
                 {
                     _context.Add(fundSource);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -232,7 +229,7 @@ namespace fmis.Controllers.Budget.John
         {
 
             ViewBag.BudgetId = BudgetId;
-            
+
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
@@ -295,15 +292,17 @@ namespace fmis.Controllers.Budget.John
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
             }
             return View(fundSource);
         }
 
 
         // GET: FundSource/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? BudgetId)
         {
+            ViewBag.BudgetId = BudgetId;
+
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)
             {
@@ -323,15 +322,30 @@ namespace fmis.Controllers.Budget.John
 
         // POST: FundSource/Delete/5
         [HttpPost]
-        public IActionResult DeleteFundsourceamount(int id)
+        public async Task<IActionResult> DeleteFundsourceamount(DeleteData data)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var fundsourceamount = this._MyDbContext.FundSourceAmount.Find(id);
-            this._MyDbContext.FundSourceAmount.Remove(fundsourceamount);
-            this._MyDbContext.SaveChangesAsync();
-            return Json(id);
-        }
+            if (data.many_token.Count > 1)
+            {
+                var data_holder = _MyDbContext.FundSourceAmount;
+                foreach (var many in data.many_token)
+                {
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = _MyDbContext.FundSourceAmount;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
+        }
         // POST: FundSource/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -341,7 +355,8 @@ namespace fmis.Controllers.Budget.John
             var fundSource = await _context.FundSource.FindAsync(id);
             _context.FundSource.Remove(fundSource);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            /*return RedirectToAction(nameof(Index));*/
+            return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
 
         }
 
@@ -635,7 +650,7 @@ namespace fmis.Controllers.Budget.John
 
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                table_row_8.AddCell(new PdfPCell(new Paragraph("Enero Amalio" != null ? "Enerz": "", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                table_row_8.AddCell(new PdfPCell(new Paragraph("Enero Amalio" != null ? "Enerz" : "", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                 table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
@@ -745,7 +760,7 @@ namespace fmis.Controllers.Budget.John
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
                 PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
 
-                
+
             }
         }
     }

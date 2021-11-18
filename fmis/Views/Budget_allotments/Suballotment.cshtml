@@ -6,11 +6,42 @@
 }
 
 <h3 class="grey lighter smaller">
-    Sub Allotment List
+    Sub Allotments
 </h3>
 <hr />
+<div class="row  pull-left">
+    <div class="space-5"></div>
 
-<!-- The Modal -->
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">3,501,956.00</span>
+                <div class="infobox-content">Beginning Balance</div>
+            </div>
+        </div>
+
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">1,552,276.00</span>
+                <div class="infobox-content">Remaining Balance</div>
+            </div>
+        </div>
+
+    </div>
+    <div class="vspace-12-sm"></div>
+</div><!-- /.row -->
+<br />
+<br />
+<br />
+<br />
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg" style="width:50%;">
         <div class="modal-content">
@@ -38,9 +69,13 @@
     </div>
 </div>
 <p>
-    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">Create New</a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
+    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
+        <i class="ace-icon fa fa-plus "></i> Create New
+    </a> |
+    <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
+        Back to Budget Allotment
+    </a>
 </p>
-<br />
 <table class="table">
     <thead>
         <tr>
@@ -49,6 +84,12 @@
             </th>
             <th>
                 Sub Allotment Title
+            </th>
+            <th>
+                Beginning Balance
+            </th>
+            <th>
+                Remaining Balance
             </th>
             <th>
                 ORS Head
@@ -60,27 +101,33 @@
         </tr>
     </thead>
     <tbody>
-      @foreach (var item in Model.Sub_allotments)
-       {
-          <tr>
-             <td>
-                @Html.DisplayFor(modelItem => item.Suballotment_code)
-             </td>
-             <td>
-                @Html.DisplayFor(modelItem => item.Suballotment_title)
-             </td>
-             <td>
-                 @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
-             </td>
-             <td>
-                <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+        @foreach (var item in Model.Sub_allotments)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_title)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.SaamountId)*@
+                </td>
+                <td>
+                    @* @Html.DropDownList("Amount", null, htmlAttributes: new { @class = "Sub Allotment Amount" })*@
+                </td>
+                <td>
+                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                </td>
+                <td>
+                    <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-             </td>
-            <td>
-                <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-            </td>
-        </tr>
-       }
+                </td>
+                <td>
+                    <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
