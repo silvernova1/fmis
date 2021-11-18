@@ -1,16 +1,58 @@
-﻿@model IEnumerable<fmis.Models.silver.SummaryReport>
+﻿@model IEnumerable<fmis.Models.Uacs>
 
-
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <h3 class="grey lighter smaller">
-   Export Excel
+    Export Excel
 </h3>
+<br />
+<h4>Grand Total</h4>
+
+<table style="font-size: 8pt;" class="table" border="1">
+    <thead>
+        <tr>
+            <th>UACS</th>
+            <th></th>
+            <th>FUND SOURCE</th>
+            <th>PROGRAM</th>
+            <th> ALLOTMENTS</th>
+            <th> REALIGNMENT</th>
+            <th> OBLIGATIONS</th>
+            <th>BALANCE</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>PREXC</th>
+            <th>CODE</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>@*@Html.DisplayFor(modelItem => item.FundsRealignments)*@</td>
+                <td></td>
+
+            </tr>
+           
+        }
+    </tbody>
+</table>
+
 <hr>
 <h5>FmIS Reports</h5>
 <table>
-
     <tbody>
-        <br />
         <tr>
             <td>Format</td>
             <td>

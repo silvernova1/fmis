@@ -17,6 +17,5 @@ namespace fmis.Data
         }
 
         public DbSet<fmis.Models.Uacs> Uacs { get; set; }
-
     }
 }

@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211109063233_MyDb")]
+    [Migration("20211112083452_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -813,6 +813,12 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("SummaryReports")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UacsId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("datefrom")
                         .HasColumnType("datetime2");
 
@@ -820,6 +826,8 @@ namespace fmis.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UacsId");
 
                     b.ToTable("SummaryReport");
                 });
@@ -954,6 +962,15 @@ namespace fmis.Migrations
                     b.HasOne("fmis.Models.Obligated_amount", null)
                         .WithMany("Uacs")
                         .HasForeignKey("Obligated_amountId");
+                });
+
+            modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
+                {
+                    b.HasOne("fmis.Models.Uacs", "Uacs")
+                        .WithMany()
+                        .HasForeignKey("UacsId");
+
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.Budget_allotment", b =>

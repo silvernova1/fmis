@@ -11,7 +11,6 @@ namespace fmis.Data
     {
         public DbSet<fmis.Models.Sub_allotment> Sub_allotment { get; set; }
         public DbSet<fmis.Models.Uacs> Uacs { get; set; }
-        public object Requesting_office { get; internal set; }
 
         public Sub_allotmentContext(DbContextOptions<Sub_allotmentContext> options)
             : base(options)

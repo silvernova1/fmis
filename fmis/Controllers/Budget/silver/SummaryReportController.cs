@@ -4,16 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Filters;
+using fmis.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace fmis.Controllers.Budget.silver
 {
-    public class SummaryReportController: Controller
+    public class SummaryReportController : Controller
     {
-        public IActionResult Index()
+        private readonly MyDbContext _context;
+
+        public SummaryReportController(MyDbContext context)
         {
-            ViewBag.Layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("budget_report", "SummaryReport");
-            return View("~/Views/SummaryReport/Index.cshtml");
+            _context = context;
         }
+
+        // GET: AllotmentClasses
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
+            ViewBag.layout = "_Layout";
+
+            return View( await _context.Uacs
+                .ToListAsync());
+        }
+
+
+
+
     }
 }

@@ -186,20 +186,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SummaryReport",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    datefrom = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    dateto = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SummaryReport", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Uacsamount",
                 columns: table => new
                 {
@@ -386,6 +372,28 @@ namespace fmis.Migrations
                     table.PrimaryKey("PK_SubAllotment_Realignment", x => x.Id);
                     table.ForeignKey(
                         name: "FK_SubAllotment_Realignment_Uacs_UacsId",
+                        column: x => x.UacsId,
+                        principalTable: "Uacs",
+                        principalColumn: "UacsId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SummaryReport",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SummaryReports = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    datefrom = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    dateto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UacsId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SummaryReport", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SummaryReport_Uacs_UacsId",
                         column: x => x.UacsId,
                         principalTable: "Uacs",
                         principalColumn: "UacsId",
@@ -624,6 +632,11 @@ namespace fmis.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_SubAllotment_Realignment_UacsId",
                 table: "SubAllotment_Realignment",
+                column: "UacsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SummaryReport_UacsId",
+                table: "SummaryReport",
                 column: "UacsId");
 
             migrationBuilder.CreateIndex(
