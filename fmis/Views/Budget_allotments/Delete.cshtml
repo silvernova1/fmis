@@ -5,36 +5,28 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
+<h3 class="red smaller">
+</h3>
+<div class="alert alert-danger">
+    <h5>
+        Are you sure you want to delete?
+    </h5>
+</div>
+<hr />
 <div>
-    <h4>Budget_allotment</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Allotment_series)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Allotment_series)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Allotment_title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Allotment_title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Allotment_code)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Allotment_code)
-        </dd>
-    </dl>
-
-    <form asp-action="Delete">
+    <div class="col-xs-12">
+        <h5>
+            Allotment Series : <b>@Html.DisplayFor(model => model.Allotment_series)</b>
+        </h5>
+        <h5>
+            Allotment Title:  <b>@Html.DisplayFor(model => model.Allotment_title)</b>
+        </h5>
+        <h5>
+            Allotment Code:  <b>@Html.DisplayFor(model => model.Allotment_code)</b>
+        </h5>
+        <hr />
         <input type="hidden" asp-for="BudgetAllotmentId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a class="btn btn-default" asp-action="Index">Back to List</a>
-    </form>
+        <input type="submit" value="Delete" class="btn btn-danger btn-sm" /> |
+        <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
+    </div>
 </div>

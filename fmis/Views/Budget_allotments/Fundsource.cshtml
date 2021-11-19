@@ -91,10 +91,13 @@
                 Actions
             </th>
             <th>
-                 Funds Realignment
+                Funds Realignment
             </th>
             <th>
-            Fund Source Total
+                Beginning Balance
+            </th>
+            <th>
+               Remaining Balance
             </th>
         </tr>
     </thead>
@@ -120,6 +123,18 @@
                 </td>
                 <td>
                     <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    @* <br />
+        <span class="grey">BB: </span>
+        <b class="green">180,560.00</b>
+        <br />
+        <span class="grey">RB: </span>
+        <b class="red">1,260.750.00</b>*@
+                </td>
+                <td>
+                    <b class="green">180,560.00</b>
+                </td>
+                <td>
+                    <b class="red">1,260.750.00</b>
                 </td>
             </tr>
         }
