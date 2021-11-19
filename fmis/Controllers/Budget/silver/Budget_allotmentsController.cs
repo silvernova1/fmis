@@ -126,6 +126,19 @@ namespace fmis.Controllers
             /*PopulateHeadDropDownList();*/
             /*PopulatePsDropDownList();*/
 
+
+            var sumfunds = _context.FundSourceAmount
+                .Where(x => x.BudgetId == id)
+                .Sum(x => x.Amount);
+
+            ViewBag.sumfunds = sumfunds;
+
+            var subfunds = _context.FundSourceAmount
+                .Sum(x => x.Amount);
+
+            ViewBag.subfunds = subfunds;
+
+
             List<Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
