@@ -124,7 +124,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+            /*PopulatePsDropDownList();*/
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -155,7 +155,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            PopulatePsDropDownList();
+           /* PopulatePsDropDownList();*/
 
             List<Ors_head> oh = new List<Ors_head>();
 
