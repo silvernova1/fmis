@@ -21,64 +21,65 @@
 
 
 <form asp-action="Create">
-    <input type="hidden" name="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
     <div style="margin:20px;">
-        <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
-            <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
-            <div class="pull-right">
-                <div class="btn-group">
-                    <input type="submit" value="Save" class="btn btn-success btn-xs" />
-                    <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+            <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+                <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <input type="submit" value="Save" class="btn btn-success btn-xs" />
+                        <a class="btn btn-danger btn-xs" asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.BudgetId">Exit</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Prexc" class="control-label"></label>
-                    @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+            <div class="row">
+                <div class="col-md-6">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Prexc" class="control-label"></label>
+                        @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Suballotment_title" class="control-label"></label>
+                        <input asp-for="Suballotment_title" class="form-control" required>
+                        <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" required></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Suballotment_title" class="control-label"></label>
-                    <input asp-for="Suballotment_title" class="form-control" required>
-                    <span asp-validation-for="Suballotment_title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <textarea asp-for="Description" class="form-control" required></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Suballotment_code" class="control-label"></label>
+                        <input asp-for="Suballotment_code" class="form-control" required />
+                        <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Responsibility_number" class="control-label"></label>
+                        <input asp-for="Responsibility_number" class="form-control" required />
+                        <span asp-validation-for="Responsibility_number" class="text-danger"></span>
+                    </div>
+                    <strong id="" class="obligation_amount"> </strong>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="Suballotment_code" class="control-label"></label>
-                    <input asp-for="Suballotment_code" class="form-control" required />
-                    <span asp-validation-for="Suballotment_code" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Responsibility_number" class="control-label"></label>
-                    <input asp-for="Responsibility_number" class="form-control" required />
-                    <span asp-validation-for="Responsibility_number" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <input type="hidden" id="SubId" value="@ViewBag.SubId" />
-        <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
-        <input type="hidden" class="uacs" value="@ViewBag.uacs">
+            <input type="hidden" id="FundSourceId" />
+            <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+            <input type="hidden" class="uacs" value="@ViewBag.uacs">
 
 
-        <br />
-        <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-        <br />
-        <br />
-        <br />
-        @*<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>*@
-        <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
-        <br />
-        <div class="controls" hidden>
-            <button id="export-file">Download CSV</button>
-        </div>
+            <br />
+            <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+            <br />
+            <br />
+            <br />
+            @*<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>*@
+            <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+            <br />
+            <div class="controls" hidden>
+                <button id="export-file">Download CSV</button>
+            </div>
     </div>
 </form>
 
@@ -91,6 +92,7 @@
 <script>
 
     var sub_allotment_id = @ViewBag.FundsId;
+    var BudgetId = @ViewBag.BudgetId;
         let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)

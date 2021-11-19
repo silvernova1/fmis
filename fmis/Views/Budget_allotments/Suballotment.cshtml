@@ -1,7 +1,7 @@
 ﻿@model fmis.Models.Budget_allotment
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Sub_allotment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,7 +19,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">3,501,956.00</span>
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
                 <div class="infobox-content">Beginning Balance</div>
             </div>
         </div>
@@ -30,14 +30,12 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">1,552,276.00</span>
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
-
-    </div>
-    <div class="vspace-12-sm"></div>
-</div><!-- /.row -->
+    </div><!-- /.widget-main -->
+</div><!-- /.widget-body -->
 <br />
 <br />
 <br />
@@ -86,20 +84,16 @@
                 Sub Allotment Title
             </th>
             <th>
-                Beginning Balance
-            </th>
-            <th>
-                Remaining Balance
-            </th>
-            <th>
                 ORS Head
             </th>
             <th>
-                Actions
+                Funds Realignment
             </th>
-            <th>Funds Realignment</th>
+            <th>
+                Fund Source Total
+            </th>
         </tr>
-    </thead>
+</thead>
     <tbody>
         @foreach (var item in Model.Sub_allotments)
         {
@@ -111,13 +105,7 @@
                     @Html.DisplayFor(modelItem => item.Suballotment_title)
                 </td>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.SaamountId)*@
-                </td>
-                <td>
-                    @* @Html.DropDownList("Amount", null, htmlAttributes: new { @class = "Sub Allotment Amount" })*@
-                </td>
-                <td>
-                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                  @*  @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
                 </td>
                 <td>
                     <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
