@@ -85,12 +85,7 @@
             <th>
                 Sub Allotment Title
             </th>
-            <th>
-                Beginning Balance
-            </th>
-            <th>
-                Remaining Balance
-            </th>
+
             <th>
                 ORS Head
             </th>
@@ -98,36 +93,43 @@
                 Actions
             </th>
             <th>Funds Realignment</th>
+            <th>
+                Beginning Balance
+            </th>
+            <th>
+                Remaining Balance
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Sub_allotments)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suballotment_code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suballotment_title)
-                </td>
-                <td>
-                    @*@Html.DisplayFor(modelItem => item.SaamountId)*@
-                </td>
-                <td>
-                    @* @Html.DropDownList("Amount", null, htmlAttributes: new { @class = "Sub Allotment Amount" })*@
-                </td>
-                <td>
-                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
-                </td>
-                <td>
-                    <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                    <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Suballotment_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Suballotment_title)
+            </td>
 
-                </td>
-                <td>
-                    <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                </td>
-            </tr>
+            <td>
+                @*  @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
+            </td>
+            <td>
+                <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+
+            </td>
+            <td>
+                <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+            </td>
+            <td>
+                <b class="green">180,560.00</b>
+            </td>
+            <td>
+                <b class="red">1,260.750.00</b>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
