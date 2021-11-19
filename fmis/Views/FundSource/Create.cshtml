@@ -24,7 +24,6 @@
 <form asp-action="Create">
     <div style="margin:20px;">
         <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
-        <input type="hidden" asp-for="FundSourceId" value="@ViewBag.FundsId" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
             <div class="pull-right">
@@ -66,7 +65,7 @@
                 <strong id="" class="obligation_amount"> </strong>
             </div>
         </div>
-        <input type="hidden" id="FundSourceId" value="@ViewBag.FundsId" />
+        <input type="hidden" id="FundSourceId"/>
         <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
 
