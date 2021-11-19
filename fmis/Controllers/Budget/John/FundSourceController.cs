@@ -98,9 +98,12 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-                .Where(f => f.FundSourceId == id && f.status == "activated").ToList());
+            .Where(f => f.FundSourceId == id && f.status == "activated").ToList());
+
             ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.
+                
+                ToList());
             ViewBag.uacs = uacs_data;
 
 
