@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using fmis.Filters;
 using fmis.Data;
 using Microsoft.EntityFrameworkCore;
+using fmis.Models;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -23,13 +24,14 @@ namespace fmis.Controllers.Budget.silver
         {
             ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
             ViewBag.layout = "_Layout";
+            ViewBag.FundSource = "_Layout";
 
-            return View( await _context.Uacs
+            return View(await _context.Uacs
+                .Include(i => i.FundsRealignments)
                 .ToListAsync());
+            /*.ThenInclude(x => x.FirstOrDefault()?.fundsource_id)*/
+
         }
-
-
-
 
     }
 }
