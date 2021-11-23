@@ -90,8 +90,6 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-
-
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -124,7 +122,6 @@
         uacs_data[uacs_counter] = this.Account_title
         uacs_counter++;
     })
-
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');

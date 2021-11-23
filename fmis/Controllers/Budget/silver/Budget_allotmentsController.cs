@@ -46,6 +46,12 @@ namespace fmis.Controllers
 
             ViewBag.sumfunds = sumfunds;
 
+            var subfunds = _context.Suballotment_amount.Sum(x => x.Amount);
+
+            ViewBag.subfunds = subfunds;
+
+
+
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
@@ -177,7 +183,11 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-           /* PopulatePsDropDownList();*/
+            /* PopulatePsDropDownList();*/
+
+            var subfunds = _context.Suballotment_amount.Sum(x => x.Amount);
+
+            ViewBag.subfunds = subfunds;
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -192,9 +202,9 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            /*PopulateHeadDropDownList();*/
-            /*PopulatePsDropDownList();*/
+          /*   ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            *//*PopulateHeadDropDownList();*/
+            /*PopulatePsDropDownList();*//*
 
             {
                 ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
@@ -219,12 +229,12 @@ namespace fmis.Controllers
                 ViewBag.message = sa;
                 ViewBag.BudgetId = id;
             }
-
+*/
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
                 .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
-                .Include(s => s.Suballotment_amounts)
+               /* .Include(s => s.Suballotment_amounts)*/
 
 
 
