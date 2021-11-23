@@ -30,7 +30,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.sumfunds</span>
+                <span class="infobox-data-number">0</span>
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
@@ -124,17 +124,20 @@
                 <td>
                     <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                     @* <br />
-        <span class="grey">BB: </span>
-        <b class="green">180,560.00</b>
-        <br />
-        <span class="grey">RB: </span>
-        <b class="red">1,260.750.00</b>*@
-                </td>
-                <td>
+                    <span class="grey">BB: </span>
                     <b class="green">180,560.00</b>
+                    <br />
+                    <span class="grey">RB: </span>
+                    <b class="red">1,260.750.00</b>*@
                 </td>
                 <td>
-                    <b class="red">1,260.750.00</b>
+                    @{ 
+                        var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
+                    }
+                    <span>@amount.FirstOrDefault(x=>x.Id == item.Id)?.Amount</span>
+                </td>
+                <td>
+                    <b class="red">0</b>
                 </td>
             </tr>
         }

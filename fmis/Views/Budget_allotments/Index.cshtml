@@ -87,10 +87,13 @@
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                    <b class="green">180,560.00</b>
+                    @{
+                        var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
+                    }
+                <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
                     <br />
                     <span class="grey">RB: </span>
-                    <b class="red">1,260.750.00</b>
+                    <b class="red">00</b>
                 </td>
                 <td>
                     <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-id="@item.BudgetAllotmentId">
@@ -98,10 +101,10 @@
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                    <b class="green">98,560.00</b>
+                    <b class="green">00</b>
                     <br />
                     <span class="grey">RB: </span>
-                    <b class="red">15,750.00</b>
+                    <b class="red">00</b>
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">

@@ -11,6 +11,9 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Data.silver;
+using System.Globalization;
+using fmis.Models.John;
+using fmis.ViewModel;
 
 namespace fmis.Controllers
 {
@@ -33,17 +36,32 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
+
+            var sumfunds = _context.FundSourceAmount
+                .Sum(x => x.Amount);
+
+            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-Ph"));
+
+            //sum of the amounts
+            var query = _context.FundSources
+                .Select(x => new FundSourceAmount
+                {
+                    Id = x.Id,
+                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.Id).Select(x => x.Amount).Sum()
+                });
+
+
+            ViewBag.Query = query.ToList();
+
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
             return View(await ballots.ToListAsync());
-            /* return View("~/Views/silver/Budget_allotments/Index.cshtml");*/
-            /*return View("~/Views/silver/Budget_allotments/Index.cshtml", await ballots.ToListAsync());*/
         }
 
         // GET: Budget_allotments/Create
@@ -128,18 +146,72 @@ namespace fmis.Controllers
 
 
             var sumfunds = _context.FundSourceAmount
-                .Where(x => x.BudgetId == id)
+                .Where(x => x.FundSourceId == id)
                 .Sum(x => x.Amount);
+                 ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-Ph"));
 
-            ViewBag.sumfunds = sumfunds;
-
-            var subfunds = _context.FundSourceAmount
-                .Sum(x => x.Amount);
-
-            ViewBag.subfunds = subfunds;
+            var subfunds = _context.FundSourceAmount;
+            /*
+                        List<FundSource> fundsource = _context.FundSources.ToList();
+                        List<FundSourceAmount> fundsourceamounts = _context.FundSourceAmount.ToList();*/
 
 
-            List<Ors_head> oh = new List<Ors_head>();
+
+            /*var query = from ri in _context.FundSourceAmount
+                        join rr in _context.FundSources
+                           on ri.FundSourceId equals rr.Id
+                        where rr.FundSourceId == id
+                        group ri by ri.Account_title into g
+                        select new
+                        {
+                            Id = g.Key,
+                            fundstotal = g.Sum(x=>x.Amount)
+                        };*/
+
+            var query = _context.FundSources
+                .Select(x => new FundSourceAmount
+                {
+                    Id = x.Id,
+                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.Id).Select(x=>x.Amount).Sum()
+                });
+
+
+            ViewBag.Query = query.ToList();
+
+
+            /*var result = from fundsourceamount in _context.FundSourceAmount
+                         join fundsource in _context.FundSources on fundsourceamount.Id equals fundsource.FundSourceId into Fundsource
+                         from m in Fundsource.DefaultIfEmpty()
+                        select new
+                         {
+                             Id = fundsourceamount.Id,
+                             Amount = fundsourceamount.Amount,
+                             FundSourceId = m.FundSourceId
+                         };
+
+            ViewBag.result = result;*/
+
+
+            /*  List<FundSource> fundsource = _context.FundSources.ToList();
+              List<FundSourceAmount> fundsourceamounts = _context.FundSourceAmount.ToList();
+
+              var fundsSubTotal = from e in fundsource
+                                  join d in fundsourceamounts on e.Id equals d.FundSourceId into table1
+                                   from d in table1.ToList()
+                                   select new FundsViewModel
+                                   {
+                                       fundsource = e,
+                                       fundsourceamounts = d,
+                                   };*/
+
+
+
+
+
+
+
+
+            List <Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
             oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
