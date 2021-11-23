@@ -11,9 +11,6 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Data.silver;
-using System.Globalization;
-using fmis.Models.John;
-using fmis.ViewModel;
 
 namespace fmis.Controllers
 {
@@ -24,15 +21,18 @@ namespace fmis.Controllers
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
+        private readonly Suballotment_amountContext _saContext;
 
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context)
+        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Suballotment_amountContext sa_Context)
+
         {
             _context = context;
             _Context = Context;
             _osContext = osContext;
             _orssContext = orssContext;
             _pis_context = pis_context;
+            _saContext = sa_Context;
         }
 
         // GET: Budget_allotments
@@ -42,26 +42,16 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
 
-            var sumfunds = _context.FundSourceAmount
-                .Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
 
-            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-Ph"));
-
-            //sum of the amounts
-            var query = _context.FundSources
-                .Select(x => new FundSourceAmount
-                {
-                    Id = x.Id,
-                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.Id).Select(x => x.Amount).Sum()
-                });
-
-
-            ViewBag.Query = query.ToList();
+            ViewBag.sumfunds = sumfunds;
 
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
             return View(await ballots.ToListAsync());
+            /* return View("~/Views/silver/Budget_allotments/Index.cshtml");*/
+            /*return View("~/Views/silver/Budget_allotments/Index.cshtml", await ballots.ToListAsync());*/
         }
 
         // GET: Budget_allotments/Create
@@ -71,6 +61,9 @@ namespace fmis.Controllers
             PopulateYrDropDownList();
             return View();
         }
+
+
+
 
         private void PopulatePsDropDownList()
         {
@@ -86,6 +79,11 @@ namespace fmis.Controllers
                                            null);
 
         }
+
+
+
+
+
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
@@ -115,7 +113,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId,Id")] Budget_allotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -141,77 +139,16 @@ namespace fmis.Controllers
         public async Task<IActionResult> Fundsource(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            /*PopulateHeadDropDownList();*/
-            /*PopulatePsDropDownList();*/
+           /* PopulateHeadDropDownList();*/
+          /*  PopulatePsDropDownList();*/
 
 
-            var sumfunds = _context.FundSourceAmount
-                .Where(x => x.FundSourceId == id)
-                .Sum(x => x.Amount);
-                 ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-Ph"));
+            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
 
-            var subfunds = _context.FundSourceAmount;
-            /*
-                        List<FundSource> fundsource = _context.FundSources.ToList();
-                        List<FundSourceAmount> fundsourceamounts = _context.FundSourceAmount.ToList();*/
+            ViewBag.sumfunds = sumfunds;
 
 
-
-            /*var query = from ri in _context.FundSourceAmount
-                        join rr in _context.FundSources
-                           on ri.FundSourceId equals rr.Id
-                        where rr.FundSourceId == id
-                        group ri by ri.Account_title into g
-                        select new
-                        {
-                            Id = g.Key,
-                            fundstotal = g.Sum(x=>x.Amount)
-                        };*/
-
-            var query = _context.FundSources
-                .Select(x => new FundSourceAmount
-                {
-                    Id = x.Id,
-                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.Id).Select(x=>x.Amount).Sum()
-                });
-
-
-            ViewBag.Query = query.ToList();
-
-
-            /*var result = from fundsourceamount in _context.FundSourceAmount
-                         join fundsource in _context.FundSources on fundsourceamount.Id equals fundsource.FundSourceId into Fundsource
-                         from m in Fundsource.DefaultIfEmpty()
-                        select new
-                         {
-                             Id = fundsourceamount.Id,
-                             Amount = fundsourceamount.Amount,
-                             FundSourceId = m.FundSourceId
-                         };
-
-            ViewBag.result = result;*/
-
-
-            /*  List<FundSource> fundsource = _context.FundSources.ToList();
-              List<FundSourceAmount> fundsourceamounts = _context.FundSourceAmount.ToList();
-
-              var fundsSubTotal = from e in fundsource
-                                  join d in fundsourceamounts on e.Id equals d.FundSourceId into table1
-                                   from d in table1.ToList()
-                                   select new FundsViewModel
-                                   {
-                                       fundsource = e,
-                                       fundsourceamounts = d,
-                                   };*/
-
-
-
-
-
-
-
-
-            List <Ors_head> oh = new List<Ors_head>();
+            List<Ors_head> oh = new List<Ors_head>();
 
             oh = (from c in _orssContext.Ors_head select c).ToList();
             oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
@@ -249,14 +186,48 @@ namespace fmis.Controllers
 
             ViewBag.message = oh;
             ViewBag.BudgetId = id;
+
             if (id == null)
             {
                 return NotFound();
             }
+
+             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            /*PopulateHeadDropDownList();*/
+            /*PopulatePsDropDownList();*/
+
+            {
+                ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+                var prexsQuery = from d in _context.Suballotment_amount
+                                 orderby d.Amount
+                                 select d;
+                ViewBag.Amount = new SelectList((from s in _context.Suballotment_amount.ToList()
+                                                            where !_context.Budget_allotments.Any(ro => ro.BudgetAllotmentId == s.Id)
+                                                            select new
+                                                            {
+                                                                Amount = s.Id,
+                                                                Ps = s.Amount
+                                                            }),
+                                             "Id", "Beginning Balance"
+                                             );
+
+                List<Suballotment_amount> sa = new List<Suballotment_amount>();
+
+                sa = (from s in _saContext.Suballotment_amount select s).ToList();
+                sa.Insert(0, new Suballotment_amount { Id = 0, Amount= "--Beginning Balance--" });
+
+                ViewBag.message = sa;
+                ViewBag.BudgetId = id;
+            }
+
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
                 .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
+                .Include(s => s.Suballotment_amounts)
+
+
+
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
             if (budget_allotment == null)

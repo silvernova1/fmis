@@ -15,7 +15,7 @@
     <thead>
         <tr>
             <th>UACS</th>
-            <th></th>
+            <th>ACCOUNT TITLE</th>
             <th>FUND SOURCE</th>
             <th>PROGRAM</th>
             <th> ALLOTMENTS</th>
@@ -34,16 +34,23 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>@*@Html.DisplayFor(modelItem => item.FundsRealignments)*@</td>
-                <td></td>
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
+            <td>@Html.DisplayFor(modelItem => item.Account_title)</td>
+            @*<td>@Html.DisplayNameFor(model => model.)</td>*@
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>@item.SubAllotment_Realignment</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
 
-            </tr>
+        </tr>
            
         }
     </tbody>

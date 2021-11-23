@@ -97,8 +97,9 @@ namespace fmis
              options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
             services.AddDbContext<ManageUsersContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("ManageUsersContext")));
-           /* services.AddDbContext<SummaryReportContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));*/
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<SummaryReportContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
