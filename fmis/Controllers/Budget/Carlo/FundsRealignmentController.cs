@@ -96,6 +96,7 @@ namespace fmis.Controllers.Budget.Carlo
                     funds.fundsource_id = item.fundsource_id;
                     funds.Realignment_from = item.Realignment_from;
                     funds.Realignment_to = item.Realignment_to;
+                    funds.Realignment_amount = item.Realignment_amount;
                     funds.status = "activated";
                     funds.token = item.token;
 
