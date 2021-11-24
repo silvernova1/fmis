@@ -87,10 +87,10 @@
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                    @{
+                   @* @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
+                <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>*@
                     <br />
                     <span class="grey">RB: </span>
                     <b class="red">00</b>

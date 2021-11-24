@@ -80,11 +80,6 @@ namespace fmis.Controllers
 
         }
 
-
-
-
-
-
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
@@ -142,11 +137,9 @@ namespace fmis.Controllers
            /* PopulateHeadDropDownList();*/
           /*  PopulatePsDropDownList();*/
 
-
             var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
 
             ViewBag.sumfunds = sumfunds;
-
 
             List<Ors_head> oh = new List<Ors_head>();
 
