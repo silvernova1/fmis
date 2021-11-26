@@ -90,7 +90,7 @@
                     @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
+               @* <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>*@
                     <br />
                     <span class="grey">RB: </span>
                     <b class="red">00</b>
@@ -101,7 +101,11 @@
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                    <b class="green">00</b>
+                    @{
+                        var Amount = (List<fmis.Models.Suballotment_amount>)ViewBag.Query;
+                    }
+                 @* <b class="green">@Amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>*@
+                  @*  <b class="green">00</b>*@
                     <br />
                     <span class="grey">RB: </span>
                     <b class="red">00</b>

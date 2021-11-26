@@ -111,7 +111,7 @@
                 @Html.DisplayFor(modelItem => item.Suballotment_title)
             </td>
             <td>
-               @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
+                @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
             </td>
             <td>
                 <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
@@ -121,9 +121,18 @@
             <td>
                 <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
             </td>
-            <td>
+            @*<td>
                 <b class="green">180,560.00</b>
             </td>
+            <td>
+                <b class="red">1,260.750.00</b>
+            </td>*@
+       @* <td>
+            @{
+                var Amount = (List<fmis.Models.Suballotment_amount>)ViewBag.Query;
+            }
+            <span>@Amount.FirstOrDefault(x => x.Id == item.Id)?.Amount</span>
+        </td>*@
             <td>
                 <b class="red">1,260.750.00</b>
             </td>
