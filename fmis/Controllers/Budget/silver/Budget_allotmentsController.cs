@@ -11,6 +11,8 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Data.silver;
+using fmis.Models.John;
+using System.Globalization;
 
 namespace fmis.Controllers
 {
@@ -42,9 +44,21 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
 
-            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
+            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
 
-            ViewBag.sumfunds = sumfunds;
+
+            //START Query of the amounts
+            var query = _context.Budget_allotments
+                .Select(x => new FundSourceAmount
+                {
+                    BudgetId = x.BudgetAllotmentId,
+                    Amount = _context.FundSourceAmount.Where(i => i.BudgetId == x.BudgetAllotmentId).Sum(x => x.Amount)
+                });
+
+
+            ViewBag.Query = query.ToList();
+            //END Sum of the amounts
 
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
@@ -136,16 +150,31 @@ namespace fmis.Controllers
 
 
         // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Fundsource(int? id)
+        public async Task<IActionResult> Fundsource(int? id, float FundsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-           /* PopulateHeadDropDownList();*/
-          /*  PopulatePsDropDownList();*/
+            /* PopulateHeadDropDownList();*/
+            /*  PopulatePsDropDownList();*/
 
 
-            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
 
-            ViewBag.sumfunds = sumfunds;
+
+            //START Query of the amounts
+            var query = _context.FundSources
+                .Select(x => new FundSourceAmount
+                {
+                    Id = x.Id,
+                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.Amount).Sum()
+                });
+
+
+            ViewBag.Query = query.ToList();
+
+
+
+            //END Sum of the amounts
 
 
             List<Ors_head> oh = new List<Ors_head>();
@@ -155,6 +184,7 @@ namespace fmis.Controllers
 
             ViewBag.message = oh;
             ViewBag.BudgetId = id;
+
             if (id == null)
             {
                 return NotFound();

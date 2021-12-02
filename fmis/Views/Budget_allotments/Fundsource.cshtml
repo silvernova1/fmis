@@ -1,5 +1,5 @@
 ﻿@model fmis.Models.Budget_allotment
-
+@using System.Globalization;
 @{
     ViewData["Title"] = "Fundsource";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -34,8 +34,8 @@
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
-        </div><!-- /.widget-main -->
-    </div><!-- /.widget-body -->
+    </div><!-- /.widget-main -->
+</div><!-- /.widget-body -->
 <br />
 <br />
 <br />
@@ -97,7 +97,7 @@
                 Beginning Balance
             </th>
             <th>
-               Remaining Balance
+                Remaining Balance
             </th>
         </tr>
     </thead>
@@ -124,22 +124,34 @@
                 <td>
                     <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                     @* <br />
-                    <span class="grey">BB: </span>
-                    <b class="green">180,560.00</b>
-                    <br />
-                    <span class="grey">RB: </span>
-                    <b class="red">1,260.750.00</b>*@
+                        <span class="grey">BB: </span>
+                        <b class="green">180,560.00</b>
+                        <br />
+                        <span class="grey">RB: </span>
+                        <b class="red">1,260.750.00</b>*@
                 </td>
                 <td>
-                    @{ 
+                    @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                    <span>@amount.FirstOrDefault(x=>x.Id == item.Id)?.Amount</span>
+                    <span>@amount.FirstOrDefault(x => x.Id == item.Id)?.Amount.ToString("C", new CultureInfo("en-PH"))</span>
                 </td>
                 <td>
-                    <b class="red">0</b>
+                    <b class="red">@Html.DisplayFor(modelItem => item.Remainingbal)</b>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script type="text/javascript">
+    function getOption(data) {
+        var item_id = data.get(0).id;
+        var complaint_id = data.get(0).value;
+        var url = '@Url.Action("Fundsource", "Budget_allotments")' + "?id=" + item_id + "&ComplainStatus=" + complaint_id;
+
+        $.get(url, function (result) {
+            console.log(result)
+        });
+    }
+</script>

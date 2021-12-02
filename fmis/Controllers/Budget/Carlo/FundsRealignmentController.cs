@@ -64,11 +64,7 @@ namespace fmis.Controllers.Budget.Carlo
             ViewBag.uacs = uacs_data;
             ViewBag.fundsource_id = fundsource_id;
 
-            var fundsourceamount = JsonSerializer.Serialize(_FAContext.FundSourceAmount.ToList());
-            ViewBag.fundsourceamount = fundsourceamount;
-
-            var fundsource = JsonSerializer.Serialize(_FContext.FundSource.ToList());
-            ViewBag.fundsource = fundsource;
+       
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
@@ -77,7 +73,9 @@ namespace fmis.Controllers.Budget.Carlo
         [ValidateAntiForgeryToken]
         public IActionResult SaveFundsRealignment(List<FundsRealignmentData> data)
         {
+
             var data_holder = this._context.FundsRealignment;
+            var funds_amount = this._context.FundsRealignment;
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE

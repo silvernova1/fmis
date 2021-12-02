@@ -24,19 +24,7 @@
 
 <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
-<br />
-<div class="">
-    <div class="row">
-        <div class="col-sm-2 infobox-container">
-            <div class="infobox infobox-blue">
-                <div class="infobox-data">
-                        <span class="infobox-data-number fundsource_amount"></span>
-                        <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
-                </div>
-            </div>           
-        </div>
-    </div><!-- /.row -->
-</div>
+
 <br />
 <div id="example" class="hot"></div>
 <br />
@@ -168,6 +156,8 @@
 
             console.log(changes);
 
+            var bla = $('#Realignment_amount').val();
+
             var ajax_data = [];
             $(".fundsource_amount").html();
             fundsource_amount = 0;
@@ -184,7 +174,8 @@
                 fundsource_amount += parseInt(this[2]);
             });
             $(".fundsource_amount").html(fundsource_amount);
-             ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+            ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+            console.log(bla);
         },
         height: '250px',
         hiddenColumns: {
@@ -196,5 +187,12 @@
 
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+</script>
+
+<script>
+    
+
+    
 
 </script>

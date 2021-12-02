@@ -78,7 +78,7 @@
 
 <script>
 
-    var FundSourceId = @ViewBag.FundsId;
+    var FundSourceId = @TempData["fundsId"];
     var BudgetId = @ViewBag.BudgetId;
 
         let guid = () => {
@@ -211,9 +211,10 @@
                 );
                 obligation_amount += parseInt(this[1]);
             });
+            console.log(ajax_data);
             $(".obligation_amount").html(obligation_amount);
-        ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');
-    },
+            ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');
+        },
         hiddenColumns: {
             columns: [2,3],
             indicators: true
