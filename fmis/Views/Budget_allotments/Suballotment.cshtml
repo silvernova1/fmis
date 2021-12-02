@@ -1,7 +1,7 @@
 ﻿@model fmis.Models.Budget_allotment
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Sub_allotment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,7 +19,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">3,501,956.00</span>
+                <span class="infobox-data-number">@ViewBag.subfunds</span>
                 <div class="infobox-content">Beginning Balance</div>
             </div>
         </div>
@@ -30,14 +30,12 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">1,552,276.00</span>
+                <span class="infobox-data-number">@ViewBag.subfunds</span>
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
-
-    </div>
-    <div class="vspace-12-sm"></div>
-</div><!-- /.row -->
+    </div><!-- /.widget-main -->
+</div><!-- /.widget-body -->
 <br />
 <br />
 <br />
@@ -73,7 +71,7 @@
         <i class="ace-icon fa fa-plus "></i> Create New
     </a> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
-        Back to Budget Allotment
+        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
 </p>
 <table class="table">
@@ -85,14 +83,15 @@
             <th>
                 Sub Allotment Title
             </th>
-
             <th>
                 ORS Head
             </th>
             <th>
                 Actions
             </th>
-            <th>Funds Realignment</th>
+            <th>
+                Funds Realignment
+            </th>
             <th>
                 Beginning Balance
             </th>
@@ -100,7 +99,7 @@
                 Remaining Balance
             </th>
         </tr>
-    </thead>
+</thead>
     <tbody>
         @foreach (var item in Model.Sub_allotments)
         {
@@ -111,9 +110,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Suballotment_title)
             </td>
-
             <td>
-                @*  @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
+                @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
             </td>
             <td>
                 <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
@@ -123,9 +121,18 @@
             <td>
                 <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
             </td>
-            <td>
+            @*<td>
                 <b class="green">180,560.00</b>
             </td>
+            <td>
+                <b class="red">1,260.750.00</b>
+            </td>*@
+       @* <td>
+            @{
+                var Amount = (List<fmis.Models.Suballotment_amount>)ViewBag.Query;
+            }
+            <span>@Amount.FirstOrDefault(x => x.Id == item.Id)?.Amount</span>
+        </td>*@
             <td>
                 <b class="red">1,260.750.00</b>
             </td>

@@ -82,10 +82,10 @@ namespace fmis.Data
             modelBuilder.Entity<FundSource>()
            .HasKey(s => s.FundSourceId);
 
-            //1:M relationship
+          /*  //1:M relationship
             modelBuilder.Entity<Suballotment_amount>()
             .HasOne(p => p.Sub_allotment)
-            .WithMany(b => b.Suballotment_amount);
+            .WithMany(b => b.Suballotment_amount);*/
 
             modelBuilder.Entity<Sub_allotment>()
            .HasKey(s => s.SubId);

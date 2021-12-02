@@ -14,11 +14,15 @@ namespace fmis.Controllers
     {
         private readonly SubAllotment_RealignmentContext _context;
         private readonly UacsContext _UacsContext;
+        private readonly Suballotment_amountContext _SAContext;
+        private readonly Sub_allotmentContext _SContext;
 
-        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext)
+        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext, Suballotment_amountContext SAContext, Sub_allotmentContext SContext)
         {
             _context = context;
             _UacsContext = UacsContext;
+            _SAContext = SAContext;
+            _SContext = SContext;
         }
 
         public class SubAllotment_RealignmentData
@@ -54,8 +58,13 @@ namespace fmis.Controllers
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
-
             ViewBag.fundsource_id = fundsource_id;
+
+            var suballotment_amount = JsonSerializer.Serialize(_SAContext.Suballotment_amount.ToList());
+            ViewBag.suballotment_amount = suballotment_amount;
+
+            var sub_allotment= JsonSerializer.Serialize(_SContext.Sub_allotment.ToList());
+            ViewBag.sub_allotment = sub_allotment;
 
             return View("~/Views/SubAllotment_Realignment/Index.cshtml");
         }
@@ -65,7 +74,6 @@ namespace fmis.Controllers
         public IActionResult SaveSubAllotment_Realignment(List<SubAllotment_RealignmentData> data)
         {
             var data_holder = this._context.SubAllotment_Realignment;
-
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
@@ -78,7 +86,7 @@ namespace fmis.Controllers
 
                     this._context.SaveChanges();
                 }
-                else if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null) //SAVE
+                else /*if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null) //SAVE*/
                 {
                     var Subs = new SubAllotment_Realignment(); //CLEAR OBJECT
                     Subs.fundsource_id = item.fundsource_id;

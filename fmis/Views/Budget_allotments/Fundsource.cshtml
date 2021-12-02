@@ -66,7 +66,6 @@
         </div>
     </div>
 </div>
-
 <p>
     <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -103,7 +102,7 @@
     </thead>
     <tbody>
         @foreach (var item in Model.FundSources)
-        {
+         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
@@ -140,7 +139,7 @@
                     <b class="red">@Html.DisplayFor(modelItem => item.Remainingbal)</b>
                 </td>
             </tr>
-        }
+         }
     </tbody>
 </table>
 

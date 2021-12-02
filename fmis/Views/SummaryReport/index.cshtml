@@ -34,14 +34,16 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
+         <tr>
             <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
             <td>@Html.DisplayFor(modelItem => item.Account_title)</td>
-            @*<td>@Html.DisplayNameFor(model => model.)</td>*@
+            <td>@ViewBag.sumfunds</td>
             <td></td>
             <td></td>
             <td></td>
-            <td>@item.SubAllotment_Realignment</td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
