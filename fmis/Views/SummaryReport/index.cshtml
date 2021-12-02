@@ -51,10 +51,8 @@
             <td></td>
             <td></td>
             <td></td>
-
         </tr>
-           
-        }
+         }
     </tbody>
 </table>
 
@@ -83,4 +81,7 @@
     </tbody>
 </table>
 <br />
-<button type="submit" class="btn btn-success btn-sm"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+<form  asp-action="ExportSummaryReports" asp-controller="SummaryReport" method="post">
+    <button type="submit" class="btn btn-success btn-sm">  <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+</form>
+

@@ -116,8 +116,6 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-
-
         // GET: Obligations
         public IActionResult Index()
         {
