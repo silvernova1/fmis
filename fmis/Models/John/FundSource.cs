@@ -19,7 +19,7 @@ namespace fmis.Models.John
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
-        public float FundsTotal { get; set; }
+        public float Remainingbal { get; set; }
   
 
 

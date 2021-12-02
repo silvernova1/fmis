@@ -98,19 +98,22 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-            .Where(f => f.status == "activated").ToList());
-
+            .Where(f => f.status == "activated" && f.BudgetId == 0).ToList());
             ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.
-                
-                ToList());
+
+
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
 
 
             PopulatePrexcsDropDownList();
 
             ViewBag.BudgetId = id;
-            ViewBag.FundsId = id;
+
+            var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
+            TempData["fundsId"] = fundsId;
+
+            // ViewBag.FundsId = id;
 
             List<Prexc> p = new List<Prexc>();
 
@@ -126,6 +129,7 @@ namespace fmis.Controllers.Budget.John
                 return NotFound();
             }
 
+            
             return View();
         }
 
@@ -137,6 +141,8 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var data_holder = _MyDbContext.FundSourceAmount;
+            float fundsource_balance = 0;
+            int fundsource_id = 0;
 
             foreach (var item in data)
             {
@@ -147,8 +153,9 @@ namespace fmis.Controllers.Budget.John
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-
                     this._MyDbContext.SaveChanges();
+
+                    fundsource_id = data_holder.Where(s => s.token == item.token).FirstOrDefault().FundSourceId;
                 }
                 else
                 {
@@ -161,11 +168,20 @@ namespace fmis.Controllers.Budget.John
                     fundsource.Amount = item.Amount;
                     fundsource.status = "activated";
                     fundsource.token = item.token;
-
                     _MyDbContext.FundSourceAmount.Update(fundsource);
                     this._MyDbContext.SaveChanges();
+
+                    fundsource_id = item.FundSourceId;
                 }
+
+                fundsource_balance += item.Amount;
             }
+
+            /*var fundsource_holder = _MyDbContext.FundSources;
+            fundsource_holder.Where(s => s.FundSourceId == fundsource_id).FirstOrDefault().Remainingbal = fundsource_balance;
+            fundsource_holder.Where(s => s.FundSourceId == fundsource_id).FirstOrDefault().Remainingbal = fundsource_balance;
+            this._MyDbContext.SaveChanges();*/
+
             return Json(data);
         }
 
@@ -181,8 +197,27 @@ namespace fmis.Controllers.Budget.John
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(fundSource);
+                    float fundsource_amount_balance = 0;
+                    var fund_amount_holder = _MyDbContext.FundSourceAmount;
+                    await fund_amount_holder.Where(s => s.FundSourceId == fundSource.FundSourceId).SumAsync(s=>s.Amount);
+
+                    fundSource.Remainingbal = 0;
+                    foreach (var fund_amount in fund_amount_holder)
+                    {
+                        fundsource_amount_balance += fund_amount.Amount;
+                    }
+
+                    fundSource.Remainingbal = fundsource_amount_balance;
+
+
+                    _context.Add(fundSource); 
                     await _context.SaveChangesAsync();
+                    TempData["ID"] = fundSource.FundSourceId;
+
+                    
+
+                    
+
                     return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
                 }
             }
