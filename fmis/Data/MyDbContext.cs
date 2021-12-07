@@ -40,8 +40,8 @@ namespace fmis.Data
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
-        public DbSet<Saob> Saob { get; set; }
-   
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -74,10 +74,10 @@ namespace fmis.Data
             modelBuilder.Entity<FundSource>()
            .HasKey(s => s.FundSourceId);
 
-            //1:M relationship
+          /*  //1:M relationship
             modelBuilder.Entity<Suballotment_amount>()
             .HasOne(p => p.Sub_allotment)
-            .WithMany(b => b.Suballotment_amount);
+            .WithMany(b => b.Suballotment_amount);*/
 
             modelBuilder.Entity<Sub_allotment>()
            .HasKey(s => s.SubId);

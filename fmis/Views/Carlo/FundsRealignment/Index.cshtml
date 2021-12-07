@@ -23,24 +23,19 @@
 <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
-<div class="row  pull-left">
-    <div class="space-5"></div>
-    <div class="col-xs-12 infobox-container">
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-
-            <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.sumfunds</span>
-                <div class="infobox-content grey">REMAINING BALANCE</div>
-            </div>
+<div class="">
+    <div class="row">
+        <div class="col-sm-2 infobox-container">
+            <div class="infobox infobox-blue">
+                <div class="infobox-data">
+                        <span class="infobox-data-number fundsource_amount"></span>
+                        <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
+                </div>
+            </div>           
         </div>
-    </div>
-    <div class="vspace-12-sm"></div>
-</div><!-- /.row -->
-<br /><br />
-<br /><br />
+    </div><!-- /.row -->
+</div>
+<br />
 <div id="example" class="hot"></div>
 <br />
 <script>
@@ -264,6 +259,8 @@
 
             console.log(source);
 
+            var bla = $('#Realignment_amount').val();
+
             var ajax_data = [];
             $(".fundsource_amount").html();
             fundsource_amount = 0;
@@ -300,7 +297,7 @@
                 return ;
             }
             $(".fundsource_amount").html(fundsource_amount);
-            ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+             ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
         },
         type: 'key-value-list',
         source: uacs_data,
@@ -313,5 +310,12 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
+
+</script>
+
+<script>
+    
+
+    
 
 </script>
