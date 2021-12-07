@@ -200,6 +200,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("Beginning_balance")
+                        .HasColumnType("real");
+
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
@@ -212,13 +215,10 @@ namespace fmis.Migrations
                     b.Property<string>("FundSourceTitleCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("PrexcId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PrexcCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Remainingbal")
+                    b.Property<float>("Remaining_balance")
                         .HasColumnType("real");
 
                     b.Property<string>("Respo")
@@ -228,7 +228,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("PrexcId");
 
                     b.ToTable("FundSource");
                 });
@@ -486,24 +486,6 @@ namespace fmis.Migrations
                     b.ToTable("Requesting_office");
                 });
 
-            modelBuilder.Entity("fmis.Models.Saob", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("datefrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("dateto")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Saob");
-                });
-
             modelBuilder.Entity("fmis.Models.Section", b =>
                 {
                     b.Property<int>("Id")
@@ -688,8 +670,8 @@ namespace fmis.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("Expense_code")
-                        .HasColumnType("int");
+                    b.Property<long>("Expense_code")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
@@ -890,7 +872,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("PrexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
