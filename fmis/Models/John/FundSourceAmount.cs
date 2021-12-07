@@ -13,6 +13,7 @@ namespace fmis.Models.John
         public int Id { get; set; }
         public string Account_title { get; set; }
         public float Amount { get; set; }
+        public float RemainingBalAmount { get; set; }
         public string status { get; set; }
         public string token { get; set; }
         public int FundSourceId { get; set; }

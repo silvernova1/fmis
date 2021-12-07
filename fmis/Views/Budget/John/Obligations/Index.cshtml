@@ -52,6 +52,7 @@
                     Close <i class="ace-icon fa fa-close"></i>
                 </button>
             </div>
+            <input type="hidden" class="fundsource" value="@ViewBag.fundsource">
         </div>
     </div>
 </div>
@@ -125,6 +126,15 @@
 
 		var obligation = $.parseJSON($(".obligation").val());
 
+    var fundsource = $.parseJSON($(".fundsource").val());
+    const fundsource_data = [];
+    var fundsource_counter = 0;
+    $.each(fundsource, function () {
+        fundsource_data[fundsource_counter] = this.FundSourceTitle
+			fundsource_counter++;
+		})
+    console.log(fundsource_data);
+
 		const data = [];
 		var counter = 0;
 		$.each(obligation, function () {
@@ -138,7 +148,7 @@
 			data: data,
 			rowHeaders: true,
 			width: '100%',
-			height: 'auto',
+			height: '250px',
 			className: 'as-you-type-demo',
 			filters: true,
 			afterGetColHeader: addInput,
@@ -179,12 +189,13 @@
 				},
 
 				{
-
+                    data: 'ORS NUMBER',
+                    readOnly: true
 				},
 
 				{
 					type: 'dropdown',
-					source: ['Fundsource 1', 'FundSource 2', 'FundSource 3']
+                    source: fundsource_data
 				},
 
 				{
