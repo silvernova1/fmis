@@ -136,14 +136,17 @@
                     <span>@amount.FirstOrDefault(x => x.Id == item.Id)?.Amount.ToString("C", new CultureInfo("en-PH"))</span>
                 </td>
                 <td>
-                    <b class="red">@Html.DisplayFor(modelItem => item.Remainingbal)</b>
+                    @{
+                        var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Rembal;
+                    }
+                    <b class="red">@rembalamount.FirstOrDefault(x => x.Id == item.Id)?.RemainingBalAmount.ToString("C", new CultureInfo("en-PH"))</b>
                 </td>
             </tr>
          }
     </tbody>
 </table>
 
-<script type="text/javascript">
+@*<script type="text/javascript">
     function getOption(data) {
         var item_id = data.get(0).id;
         var complaint_id = data.get(0).value;
@@ -154,3 +157,4 @@
         });
     }
 </script>
+*@

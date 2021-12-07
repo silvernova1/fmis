@@ -257,6 +257,9 @@ namespace fmis.Migrations
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
+                    b.Property<float>("RemainingBalAmount")
+                        .HasColumnType("real");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 

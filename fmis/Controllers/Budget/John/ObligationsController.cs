@@ -147,6 +147,8 @@ namespace fmis.Controllers
             });
             var json = JsonSerializer.Serialize(obligations.ToList());
             ViewBag.temp = json;
+            var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.ToList());
+            ViewBag.fundsource = fundsource_data;
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
