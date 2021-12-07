@@ -168,6 +168,15 @@
 
                     <b class="arrow"></b>
                 </li>
+                <li class="@if(ViewBag.filter.sub == "temp")
+                @Html.Raw("active")">
+                    <a asp-controller="Temp" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                       TEMPORARY HANDSONTABLE
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
             </ul>
         </li>
 

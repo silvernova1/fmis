@@ -10,13 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211207070439_Mydb.Designer.cs
-    [Migration("20211207070439_Mydb")]
-    partial class Mydb
-=======
-    [Migration("20211207072757_AddBbalanceRbalance")]
-    partial class AddBbalanceRbalance
->>>>>>> 3886a1221182585194d1205bf1509ac792085546:fmis/Migrations/20211207072757_AddBbalanceRbalance.Designer.cs
+    [Migration("20211207024946_MyDb")]
+    partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -207,9 +202,6 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Beginning_balance")
-                        .HasColumnType("real");
-
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
@@ -228,7 +220,7 @@ namespace fmis.Migrations
                     b.Property<string>("PrexcCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Remaining_balance")
+                    b.Property<float>("Remainingbal")
                         .HasColumnType("real");
 
                     b.Property<string>("Respo")
@@ -627,9 +619,6 @@ namespace fmis.Migrations
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
-
-                    b.Property<float>("Remsubamount")
-                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");

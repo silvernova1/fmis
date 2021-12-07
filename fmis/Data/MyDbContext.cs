@@ -40,23 +40,15 @@ namespace fmis.Data
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
-       
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
-
-            //1:M relationship to uacs and funds realignment
-            modelBuilder.Entity<FundsRealignment>()
-            .HasOne(p => p.Uacs)
-            .WithMany(b => b.FundsRealignments);
 
             //1:M relationship to uacs and funds realignment
             modelBuilder.Entity<SubAllotment_Realignment>()
             .HasOne(p => p.uacs)
             .WithMany(b => b.SubAllotment_Realignment);
-
 
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()

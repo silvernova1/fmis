@@ -10,13 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211207070439_Mydb.Designer.cs
-    [Migration("20211207070439_Mydb")]
-    partial class Mydb
-=======
-    [Migration("20211207072757_AddBbalanceRbalance")]
-    partial class AddBbalanceRbalance
->>>>>>> 3886a1221182585194d1205bf1509ac792085546:fmis/Migrations/20211207072757_AddBbalanceRbalance.Designer.cs
+    [Migration("20211207073210_UpdatePrexcId")]
+    partial class UpdatePrexcId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -222,11 +217,8 @@ namespace fmis.Migrations
                     b.Property<string>("FundSourceTitleCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("PrexcId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PrexcCode")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Remaining_balance")
                         .HasColumnType("real");
@@ -238,7 +230,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("PrexcId");
 
                     b.ToTable("FundSource");
                 });
@@ -628,9 +620,6 @@ namespace fmis.Migrations
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Remsubamount")
-                        .HasColumnType("real");
-
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -885,7 +874,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("PrexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

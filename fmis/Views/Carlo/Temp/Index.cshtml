@@ -1,0 +1,167 @@
+﻿
+
+
+<h3 class="grey lighter smaller">
+    TEMP HANDSONTABLE
+</h3>
+<hr>
+<input type="hidden" class="uacs" value="@ViewBag.uacs">
+<div id="example"></div>
+
+<script>
+
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data = []
+    var uacs_counter = 0;
+    var exp_code = "";
+    $.each(uacs, function () {
+        var json_data = new Object();
+        json_data._id = this.UacsId;
+        json_data.label = this.Account_title;
+        json_data.exp_code = this.Expense_code;
+        uacs_data[uacs_counter] = json_data;
+        uacs_counter++;
+    });
+
+    console.log(uacs_data);
+
+    /**
+   * The cell type adds supports for displaing the label value except the key in the key-value
+   * dropdown editor type.
+   */
+    class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
+        prepare(row, col, prop, td, value, cellProperties) {
+            super.prepare(row, col, prop, td, value, cellProperties);
+
+            Object.assign(this.htOptions, {
+                licenseKey: 'non-commercial-and-evaluation',
+                data: this.cellProperties.source,
+                columns: [
+                    {
+                        data: '_id',
+                    },
+                    {
+                        data: 'label',
+                    }
+                ],
+                hiddenColumns: {
+                    columns: [1],
+                },
+                colWidths: 500,
+                beforeValueRender(value, { row, instance }) {
+                    return instance.getDataAtRowProp(row, 'label');
+                },
+            });
+
+            if (cellProperties.keyValueListCells) {
+                this.htOptions.cells = cellProperties.keyValueListCells;
+            }
+            if (this.htEditor) {
+                this.htEditor.destroy();
+            }
+
+            this.htEditor = new Handsontable(this.htContainer, this.htOptions);
+        }
+
+        setValue(value) {
+            if (this.htEditor) {
+                const index = this.htEditor.getDataAtProp('_id').findIndex(id => id === value);
+
+                if (index !== -1) {
+                    value = this.htEditor.getDataAtRowProp(index, 'label');
+                    exp_code = this.htEditor.getDataAtRowProp(index, 'exp_code');
+                }
+            }
+            super.setValue(value);
+        }
+
+        getValue() {
+            const value = super.getValue();
+            @*console.log(value);*@
+
+            if (this.htEditor) {
+                const labels = this.htEditor.getDataAtProp('label');
+                const row = labels.indexOf(value);
+
+                if (row !== -1) {
+                    return this.htEditor.getDataAtRowProp(row, '_id');
+                }
+            }
+            return value;
+        }
+    }
+
+    const keyValueListValidator = function (value, callback) {
+        let valueToValidate = value;
+
+        if (valueToValidate === null || valueToValidate === void 0) {
+            valueToValidate = '';
+        }
+
+        if (this.allowEmpty && valueToValidate === '') {
+            callback(true);
+        } else {
+            callback(this.source.find(({ _id }) => _id === value) ? true : false);
+        }
+    };
+    const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
+        const item = cellProperties.source.find(({ _id }) => _id === value);
+
+        if (item) {
+            value = item.label;
+        }
+
+        Handsontable.renderers.getRenderer('autocomplete').call(hot, hot, TD, row, col, prop, value, cellProperties);
+    };
+
+    Handsontable.cellTypes.registerCellType('key-value-list', {
+        editor: KeyValueListEditor,
+        validator: keyValueListValidator,
+        renderer: keyValueListRenderer,
+    });
+
+    const example = document.getElementById('example');
+   
+    const hot = new Handsontable(example, {
+        data: Handsontable.helper.createSpreadsheetData(2, 0),
+        colWidths: [350, 350, 350],
+        columns: [
+            {
+              
+            },
+            {
+                type: 'text',
+                readOnly: true
+            },
+        ],
+        width: 'auto',
+        height: 500,
+        rowHeights: 23,
+        rowHeaders: true,
+        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE'],
+        licenseKey: 'non-commercial-and-evaluation',
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        afterChange(changes) {
+            if (!changes) {
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (exp_code == newValue)
+                    return;
+                hot.setDataAtCell(row, col+1, exp_code);
+            });
+            console.log(this.getDataAtCell(changes[0][0],changes[0][1]));
+        },
+        type: 'key-value-list',
+        source: uacs_data,
+    });
+
+  
+
+@*
+    console.log(select_source);*@
+    
+
+   
+</script>
