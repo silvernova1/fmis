@@ -20,7 +20,7 @@ namespace fmis.Controllers.Budget.silver
         }
 
         // GET: AllotmentClasses
-        public async Task<IActionResult> Index()
+     /*   public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
             ViewBag.layout = "_Layout";
@@ -29,9 +29,9 @@ namespace fmis.Controllers.Budget.silver
             return View(await _context.Uacs
                 .Include(i => i.FundsRealignments)
                 .ToListAsync());
-            /*.ThenInclude(x => x.FirstOrDefault()?.fundsource_id)*/
+            .ThenInclude(x => x.FirstOrDefault()?.fundsource_id)
 
-        }
+        }*/
 
     }
 }

@@ -32,8 +32,8 @@ namespace fmis.Controllers.Budget.Carlo
 
         public class FundsRealignmentData
         {
-            public string Realignment_from { get; set; }
-            public string Realignment_to { get; set; }                                         
+            public int Realignment_from { get; set; }
+            public int Realignment_to { get; set; }                                         
             public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
@@ -64,11 +64,8 @@ namespace fmis.Controllers.Budget.Carlo
             ViewBag.uacs = uacs_data;
             ViewBag.fundsource_id = fundsource_id;
 
-            var fundsourceamount = JsonSerializer.Serialize(_FAContext.FundSourceAmount.ToList());
-            ViewBag.fundsourceamount = fundsourceamount;
-
-            var fundsource = JsonSerializer.Serialize(_FContext.FundSource.ToList());
-            ViewBag.fundsource = fundsource;
+            var sumfunds = _FAContext.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("##,#0.00");
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
@@ -87,10 +84,11 @@ namespace fmis.Controllers.Budget.Carlo
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
-                    this._context.SaveChanges();
+                    this._context.SaveChanges(); 
                 }
-                else /*if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
-                         
+                else /*if (item.Realignment_from != null || item.Realignment_to != null & item.Realignment_amount.ToString() != null) 
+                if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
+
                 {  
                     var funds = new FundsRealignment(); //CLEAR OBJECT
                     funds.fundsource_id = item.fundsource_id;

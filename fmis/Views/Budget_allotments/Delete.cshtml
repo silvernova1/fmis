@@ -15,18 +15,20 @@
 <hr />
 <div>
     <div class="col-xs-12">
-        <h5>
+        <h6>
             Allotment Series : <b>@Html.DisplayFor(model => model.Allotment_series)</b>
-        </h5>
-        <h5>
+        </h6>
+        <h6>
             Allotment Title:  <b>@Html.DisplayFor(model => model.Allotment_title)</b>
-        </h5>
-        <h5>
+        </h6>
+        <h6>
             Allotment Code:  <b>@Html.DisplayFor(model => model.Allotment_code)</b>
-        </h5>
+        </h6>
         <hr />
-        <input type="hidden" asp-for="BudgetAllotmentId" />
-        <input type="submit" value="Delete" class="btn btn-danger btn-sm" /> |
-        <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="BudgetAllotmentId" />
+            <input type="submit" value="Delete" class="btn btn-danger btn-sm" /> |
+            <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
+        </form>
     </div>
 </div>

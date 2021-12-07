@@ -11,6 +11,7 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Data.silver;
+using fmis.Models.John;
 
 namespace fmis.Controllers
 {
@@ -41,10 +42,9 @@ namespace fmis.Controllers
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
-
+                
             var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
-
-            ViewBag.sumfunds = sumfunds;
+            ViewBag.sumfunds = sumfunds.ToString("##,#0.00");
 
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
@@ -62,9 +62,6 @@ namespace fmis.Controllers
             return View();
         }
 
-
-
-
         private void PopulatePsDropDownList()
         {
             ViewBag.pi_userid = new SelectList((from s in _pis_context.allPersonalInformation()
@@ -79,11 +76,6 @@ namespace fmis.Controllers
                                            null);
 
         }
-
-
-
-
-
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
@@ -140,12 +132,21 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
            /* PopulateHeadDropDownList();*/
-          /*  PopulatePsDropDownList();*/
-
+           /*  PopulatePsDropDownList();*/
 
             var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("##,#0.00"); ;
 
-            ViewBag.sumfunds = sumfunds;
+            //sum of the amounts
+            var query = _context.FundSources
+                .Select(x => new FundSourceAmount
+                {
+                    Id = x.Id,
+                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.Id).Select(x => x.Amount).Sum()
+                });
+
+
+            ViewBag.Query = query.ToList();
 
 
             List<Ors_head> oh = new List<Ors_head>();
@@ -177,7 +178,10 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-           /* PopulatePsDropDownList();*/
+            /* PopulatePsDropDownList();*/
+
+            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("##,#0.00"); ;
 
             List<Ors_head> oh = new List<Ors_head>();
 

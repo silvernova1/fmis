@@ -100,6 +100,8 @@ namespace fmis
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<SummaryReportContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));
+            services.AddDbContext<SaobContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("SaobContext")));
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
 

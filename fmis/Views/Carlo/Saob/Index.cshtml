@@ -1,14 +1,12 @@
 ﻿@model IEnumerable<fmis.Models.Saob>
 
 
-
 <h3 class="grey lighter smaller">
    Statement of Allotments, Obligations and Balance
 </h3>
 <hr>
 <h5>SAOB REPORTS</h5>
 <table>
-
     <tbody>
         <tr>
             <td>Format</td>
@@ -31,4 +29,6 @@
     </tbody>
 </table>
 <br />
-<button type="submit" class="btn btn-success btn-sm"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+<form method="post" asp-controller="Saob" asp-action="ExportSaob">
+    <button type="submit" class="btn btn-success btn-sm"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+</form>

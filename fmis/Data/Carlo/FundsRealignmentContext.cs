@@ -15,5 +15,6 @@ namespace fmis.Data.Carlo
         }
 
         public DbSet<fmis.Models.Carlo.FundsRealignment> FundsRealignment { get; set; }
+        public object FundSourceAmount { get; internal set; }
     }
 }

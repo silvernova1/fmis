@@ -20,27 +20,123 @@
     Funds Realignment
 </h3>
 <hr />
-
-
 <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
-<div class="">
-    <div class="row">
-        <div class="col-sm-2 infobox-container">
-            <div class="infobox infobox-blue">
-                <div class="infobox-data">
-                        <span class="infobox-data-number fundsource_amount"></span>
-                        <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
-                </div>
-            </div>           
+<div class="row  pull-left">
+    <div class="space-5"></div>
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+
+            <div class="infobox-data">
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
+                <div class="infobox-content grey">REMAINING BALANCE</div>
+            </div>
         </div>
-    </div><!-- /.row -->
-</div>
-<br />
+    </div>
+    <div class="vspace-12-sm"></div>
+</div><!-- /.row -->
+<br /><br />
+<br /><br />
 <div id="example" class="hot"></div>
 <br />
 <script>
+
+    class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
+        prepare(row, col, prop, td, value, cellProperties) {
+            super.prepare(row, col, prop, td, value, cellProperties);
+
+            Object.assign(this.htOptions, {
+                licenseKey: 'non-commercial-and-evaluation',
+                data: this.cellProperties.source,
+                columns: [
+                    {
+                        data: '_id',
+                    },
+                    {
+                        data: 'label',
+                    }
+                ],
+                hiddenColumns: {
+                    columns: [1],
+                },
+                colWidths: 500,
+                beforeValueRender(value, { row, instance }) {
+                    return instance.getDataAtRowProp(row, 'label');
+                },
+            });
+
+            if (cellProperties.keyValueListCells) {
+                this.htOptions.cells = cellProperties.keyValueListCells;
+            }
+            if (this.htEditor) {
+                this.htEditor.destroy();
+            }
+
+            this.htEditor = new Handsontable(this.htContainer, this.htOptions);
+        }
+
+        setValue(value) {
+            if (this.htEditor) {
+                const index = this.htEditor.getDataAtProp('_id').findIndex(id => id === value);
+
+                if (index !== -1) {
+                    value = this.htEditor.getDataAtRowProp(index, 'label');
+                }
+            }
+            super.setValue(value);
+        }
+
+        getValue() {
+            const value = super.getValue();
+            @* console.log(value);*@
+
+            if (this.htEditor) {
+                const labels = this.htEditor.getDataAtProp('label');
+                const row = labels.indexOf(value);
+
+
+                if (row !== -1) {
+                    return this.htEditor.getDataAtRowProp(row, '_id');
+                }
+            }
+            return value;
+        }
+    }
+
+    const keyValueListValidator = function (value, callback) {
+        let valueToValidate = value;
+
+        if (valueToValidate === null || valueToValidate === void 0) {
+            valueToValidate = '';
+        }
+
+        if (this.allowEmpty && valueToValidate === '') {
+            callback(true);
+        } else {
+            callback(this.source.find(({ _id }) => _id === value) ? true : false);
+        }
+    };
+    const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
+        const item = cellProperties.source.find(({ _id }) => _id === value);
+
+        if (item) {
+            value = item.label;
+        }
+
+        Handsontable.renderers.getRenderer('autocomplete').call(hot, hot, TD, row, col, prop, value, cellProperties);
+    };
+
+    Handsontable.cellTypes.registerCellType('key-value-list', {
+        editor: KeyValueListEditor,
+        validator: keyValueListValidator,
+        renderer: keyValueListRenderer,
+    });
+
+
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -58,7 +154,6 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-
                 console.log(output);
             }
         });
@@ -74,24 +169,20 @@
         fundsource_amount += this.Realignment_amount;
     })
     $(".fundsource_amount").html(fundsource_amount);
+
+  
     var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
+    var uacs_data = []
     var uacs_counter = 0;
+
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
-            uacs_counter++;
-
-        console.log(uacs_counter);
-    })
-
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data1 = [];
-    var uacs_counter1 = 0;
-    $.each(uacs, function () {
-        uacs_data1[uacs_counter1] = this.Account_title
-            uacs_counter1++;
-    })
-
+        var json_data = new Object();
+        json_data._id = this.UacsId;
+        json_data.label = this.Account_title;
+        json_data.exp_code = this.Expense_code;
+        uacs_data[uacs_counter] = json_data;
+        uacs_counter++;
+    });
 
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
@@ -103,15 +194,13 @@
         colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
-                type: 'dropdown',
-                source: uacs_data
-            },
-            {
-                type: 'dropdown',
-                source: uacs_data1
+
             },
             {
 
+            },
+            {
+                type: 'text'
             },
             {
                 //HIDDEN ID
@@ -161,17 +250,26 @@
             console.log(column);
             hot.setDataAtCell(row, 4, guid());
         },
-        afterChange: function (changes, source) {
-            if (source === 'loadData') {
-                return; //don't save this change
-            }
+       afterChange: function (changes, source) {
 
-            console.log(changes);
+            if (source === 'loadData')
+                return; //don't save this change
+
+            @*var url = "" + "?id=" +@ViewBag.fundsourcfundsource_id;
+            $.get(url, function (result) {
+                var remaining_balance = result;
+            });*@
+
+            var remaining_balance = @ViewBag.sumfunds;
+
+            console.log(source);
 
             var ajax_data = [];
             $(".fundsource_amount").html();
             fundsource_amount = 0;
+            var realignment_amount = 0;
             $.each(hot.getSourceData(), function () {
+                realignment_amount += parseInt(this[2]);
                 ajax_data.push(
                     {
                         Realignment_from: this[0] ? this[0] : " ",
@@ -181,11 +279,31 @@
                         token: this[4]
                     }
                 );
-                fundsource_amount += parseInt(this[2]);
             });
+            if (realignment_amount > remaining_balance) {
+                Lobibox.alert("warning", {
+                    msg: "Insufficient balance!",
+                    width: 350,
+                    sound: false,
+                });
+
+                changes.forEach(([row, col, oldValue, newValue]) => {
+                    if (oldValue == newValue)
+                        return;
+                    console.log(row);
+                    console.log(col);
+                    console.log(oldValue);
+                    console.log(newValue);
+                    hot.setDataAtCell(row, col, 0);
+                });
+
+                return ;
+            }
             $(".fundsource_amount").html(fundsource_amount);
-             ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+            ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
         },
+        type: 'key-value-list',
+        source: uacs_data,
         height: '250px',
         hiddenColumns: {
             columns: [3,4],
@@ -195,6 +313,5 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
 
 </script>

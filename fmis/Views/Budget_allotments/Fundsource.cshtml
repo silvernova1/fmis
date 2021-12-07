@@ -30,7 +30,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">0</span>
+                <span class="infobox-data-number">@ViewBag.sumfunds</span>
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
@@ -113,31 +113,26 @@
                 </td>
 
                 <td>
-                    @*                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                    @* @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
                     *@
                 </td>
                 <td>
-                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-primary btn-sm">Edit <span class="glyphicon glyphicon-edit"></span></a>
 
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                    @* <br />
-                    <span class="grey">BB: </span>
-                    <b class="green">180,560.00</b>
-                    <br />
-                    <span class="grey">RB: </span>
-                    <b class="red">1,260.750.00</b>*@
+                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                 </td>
                 <td>
                     @{ 
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                    <span>@amount.FirstOrDefault(x=>x.Id == item.Id)?.Amount</span>
+                    <span></span>
+                    <b class="green">@amount.FirstOrDefault(x => x.Id == item.Id)?.Amount</b>
                 </td>
                 <td>
-                    <b class="red">0</b>
+                    <b class="red">@ViewBag.sumfunds</b>
                 </td>
             </tr>
         }
