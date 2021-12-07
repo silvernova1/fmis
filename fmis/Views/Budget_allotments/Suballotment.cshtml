@@ -1,5 +1,5 @@
 ﻿@model fmis.Models.Budget_allotment
-
+@using System.Globalization;
 @{
     ViewData["Title"] = "Sub_allotment";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -19,7 +19,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">3,501,956.00</span>
+                <span class="infobox-data-number">@ViewBag.subfunds</span>
                 <div class="infobox-content">Beginning Balance</div>
             </div>
         </div>
@@ -30,7 +30,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">1,552,276.00</span>
+                <span class="infobox-data-number">0</span>
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
@@ -99,35 +99,57 @@
                 Remaining Balance
             </th>
         </tr>
-</thead>
+    </thead>
     <tbody>
-        @foreach (var item in Model.Sub_allotments)
+       @foreach (var item in Model.Sub_allotments)
         {
-        <tr>
-            <td>
+           <tr>
+               <td>
                 @Html.DisplayFor(modelItem => item.Suballotment_code)
-            </td>
-            <td>
+              </td>
+              <td>
                 @Html.DisplayFor(modelItem => item.Suballotment_title)
-            </td>
-            <td>
+              </td>
+              <td>
                 @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
-            </td>
-            <td>
+              </td>
+               <td>
                 <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
                 <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-            </td>
-            <td>
+               </td>
+               <td>
                 <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-            </td>
-            <td>
-                <b class="green">180,560.00</b>
-            </td>
-            <td>
-                <b class="red">1,260.750.00</b>
-            </td>
-        </tr>
-        }
+                </td>
+               @*<td>
+               <b class="green">180,560.00</b>
+               </td>
+                <td>
+              <b class="red">1,260.750.00</b>
+             </td>*@
+             <td>
+                @{
+                    var Amount = (List<fmis.Models.Suballotment_amount>)ViewBag.SubQuery;
+                }
+                <span>@Amount.FirstOrDefault(x => x.Id == item.Id)?.Amount.ToString("C", new CultureInfo("en-PH"))</span>
+             </td>
+             <td>
+                <b class="red">@Html.DisplayFor(modelItem => item.Remainbal)</b>
+             </td>
+
+          </tr>
+         }
     </tbody>
 </table>
+
+<script type="text/javascript">
+    function getOption(data) {
+        var item_id = data.get(0).id;
+        var complaint_id = data.get(0).value;
+        var url = '@Url.Action("Sub_allotment", "Budget_allotments")' + "?id=" + item_id + "&ComplainStatus=" + complaint_id;
+
+        $.get(url, function (result) {
+            console.log(result)
+        });
+    }
+</script>

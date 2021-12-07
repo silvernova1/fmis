@@ -1,5 +1,14 @@
 ﻿@model fmis.Models.John.FundSource
 
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -63,10 +72,10 @@
 </form>
 
 @*<script>
-    $(document).ready(function () {
-        $('.prexc').select2();
-    });
-</script>*@
+        $(document).ready(function () {
+            $('.prexc').select2();
+        });
+    </script>*@
 
 <script>
 
@@ -81,6 +90,21 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
+
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
 
 
 
@@ -178,7 +202,7 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        FundSourceId: FundSourceId,
+                        @*FundSourceId: FundSourceId,*@
                         BudgetId: BudgetId,
                         Account_title: this[0],
                         Amount: this[1],
