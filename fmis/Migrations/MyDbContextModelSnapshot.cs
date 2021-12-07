@@ -620,6 +620,9 @@ namespace fmis.Migrations
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
+                    b.Property<float>("Remsubamount")
+                        .HasColumnType("real");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 

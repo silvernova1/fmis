@@ -44,6 +44,7 @@ namespace fmis.Controllers
             public int Id { get; set; }
             public string Expenses { get; set; }
             public float Amount { get; set; }
+            public float Remsubamount { get; set; }
             public string token { get; set; }
             public int FundSourceId { get; set; }
             public int BudgetId { get; set; }
@@ -94,6 +95,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.Suballotment_amount
                 .Where(f => f.FundSourceId == id && f.status == "activated").ToList());
+           
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.
 
@@ -103,7 +105,10 @@ namespace fmis.Controllers
             PopulatePrexcsDropDownList();
 
             ViewBag.BudgetId = id;
-            ViewBag.FundsId = id;
+            /*  ViewBag.FundsId = id;*/
+
+            var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
+            TempData["fundsId"] = fundsId;
 
             List<Prexc> p = new List<Prexc>();
 
@@ -137,6 +142,7 @@ namespace fmis.Controllers
 
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expenses = item.Expenses;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Remsubamount = data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
                     this._MyDbContext.SaveChanges();
@@ -150,6 +156,7 @@ namespace fmis.Controllers
                     suballotment_amount.BudgetId = item.BudgetId;
                     suballotment_amount.Expenses = item.Expenses;
                     suballotment_amount.Amount = item.Amount;
+                    suballotment_amount.Remsubamount = item.Amount;
                     suballotment_amount.status = "activated";
                     suballotment_amount.token = item.token;
 
@@ -165,7 +172,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment, int? id)
+        public async Task<IActionResult> Create([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment, int? id, Suballotment_amount Subsamount)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -174,6 +181,8 @@ namespace fmis.Controllers
                 {
                     _context.Add(sub_allotment);
                     await _context.SaveChangesAsync();
+                    TempData["ID"] = sub_allotment.SubId;
+
                     return RedirectToAction("Suballotment", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
                 }
             }

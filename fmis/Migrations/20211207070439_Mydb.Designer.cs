@@ -10,13 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211206010423_MyDB.Designer.cs
-    [Migration("20211206010423_MyDB")]
-    partial class MyDB
-=======
-    [Migration("20211202023717_MyDb")]
-    partial class MyDb
->>>>>>> 5845e94269db228e5d53edc64021db7ee93a7108:fmis/Migrations/20211202023717_MyDb.Designer.cs
+    [Migration("20211207070439_Mydb")]
+    partial class Mydb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -263,6 +258,9 @@ namespace fmis.Migrations
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
+
+                    b.Property<float>("RemainingBalAmount")
+                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -623,6 +621,9 @@ namespace fmis.Migrations
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
+
+                    b.Property<float>("Remsubamount")
+                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");

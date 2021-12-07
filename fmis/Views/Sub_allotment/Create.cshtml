@@ -84,16 +84,21 @@
     </div>
 </form>
 
-<script>
+@*<script>
         $(document).ready(function () {
             $('.prexc').select2();
         });
-    </script>
+    </script*@>
 
 <script>
 
-    var sub_allotment_id = @ViewBag.FundsId;
+    @*var sub_allotment_id = @ViewBag.FundsId;*@
+    var FundSourceId = @TempData["fundsId"];
     var BudgetId = @ViewBag.BudgetId;
+
+  @*   var FundSourceId = @TempData["fundsId"];
+    var BudgetId = @ViewBag.BudgetId;*@
+
         let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -210,7 +215,9 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        SubId: sub_allotment_id,
+                        @*SubId: sub_allotment_id,*@
+                        FundSourceId: FundSourceId,
+                        BudgetId: BudgetId,
                         Expenses: this[0],
                         Amount: this[1],
                         Id: this[2],

@@ -103,41 +103,44 @@
     <tbody>
        @foreach (var item in Model.Sub_allotments)
         {
-           <tr>
-               <td>
+        <tr>
+            <td>
                 @Html.DisplayFor(modelItem => item.Suballotment_code)
-              </td>
-              <td>
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Suballotment_title)
-              </td>
-              <td>
+            </td>
+            <td>
                 @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
-              </td>
-               <td>
+            </td>
+            <td>
                 <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
                 <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
-               </td>
-               <td>
+            </td>
+            <td>
                 <a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                </td>
-               @*<td>
-               <b class="green">180,560.00</b>
-               </td>
-                <td>
-              <b class="red">1,260.750.00</b>
-             </td>*@
-             <td>
+            </td>
+            @*<td>
+          <b class="green">180,560.00</b>
+          </td>
+           <td>
+         <b class="red">1,260.750.00</b>
+        </td>*@
+            <td>
                 @{
                     var Amount = (List<fmis.Models.Suballotment_amount>)ViewBag.SubQuery;
                 }
                 <span>@Amount.FirstOrDefault(x => x.Id == item.Id)?.Amount.ToString("C", new CultureInfo("en-PH"))</span>
-             </td>
-             <td>
-                <b class="red">@Html.DisplayFor(modelItem => item.Remainbal)</b>
-             </td>
+            </td>
+            <td>
+                @{
+                    var Remsubamount = (List<fmis.Models.Suballotment_amount>)ViewBag.Subal;
+                }
+                <b class="red">@Remsubamount.FirstOrDefault(x => x.Id == item.Id)?.Remsubamount.ToString("C", new CultureInfo("en-PH"))</b>
+            </td>
 
-          </tr>
+        </tr>
          }
     </tbody>
 </table>
