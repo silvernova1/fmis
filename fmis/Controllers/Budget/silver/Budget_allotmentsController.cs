@@ -38,14 +38,16 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? BudgetId)
         {
+            ViewBag.BudgetId = BudgetId;
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
 
             var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
             ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
+
 
 
             //START Query of beginning balance
@@ -78,8 +80,6 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .AsNoTracking();
             return View(await ballots.ToListAsync());
-            /* return View("~/Views/silver/Budget_allotments/Index.cshtml");*/
-            /*return View("~/Views/silver/Budget_allotments/Index.cshtml", await ballots.ToListAsync());*/
         }
 
         // GET: Budget_allotments/Create
@@ -161,14 +161,14 @@ namespace fmis.Controllers
 
 
         // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Fundsource(int? id, float FundsTotal)
+        public async Task<IActionResult> Fundsource(int? BudgetId, float FundsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /* PopulateHeadDropDownList();*/
             /*  PopulatePsDropDownList();*/
 
 
-            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == BudgetId).Sum(x => x.Amount);
             ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
 
 
@@ -176,7 +176,7 @@ namespace fmis.Controllers
             var query = _context.FundSources
                 .Select(x => new FundSourceAmount
                 {
-                    Id = x.Id,
+                    Id = x.PrexcId,
                     Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.Amount).Sum()
                 });
 
@@ -187,7 +187,7 @@ namespace fmis.Controllers
             var rembal = _context.FundSources
                 .Select(x => new FundSourceAmount
                 {
-                    Id = x.Id,
+                    Id = x.PrexcId,
                     RemainingBalAmount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.RemainingBalAmount).Sum()
                 });
 
@@ -202,9 +202,9 @@ namespace fmis.Controllers
             oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
 
             ViewBag.message = oh;
-            ViewBag.BudgetId = id;
+            ViewBag.BudgetId = BudgetId;
 
-            if (id == null)
+            if (BudgetId == null)
             {
                 return NotFound();
             }
@@ -213,7 +213,7 @@ namespace fmis.Controllers
                 .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == BudgetId);
             if (budget_allotment == null)
             {
                 return NotFound();

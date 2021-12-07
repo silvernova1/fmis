@@ -18,7 +18,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">1,261,520.00@*@ViewBag.sumfunds*@</span>
+                <span class="infobox-data-number">0.00</span>
                 <div class="infobox-content grey">BEGINNING BALANCE</div>
             </div>
         </div>
@@ -29,7 +29,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">536,259.00@*@ViewBag.sumfunds*@</span>
+                <span class="infobox-data-number">0.00</span>
                 <div class="infobox-content grey">REMAINING BALANCE</div>
             </div>
         </div>
@@ -82,18 +82,18 @@
                     @Html.DisplayFor(modelItem => item.Allotment_code)
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-id="@item.BudgetAllotmentId">
+                    <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-BudgetId="@item.BudgetAllotmentId">
                         <i class="ace-icon fa fa-arrow-right"></i>Fund Source
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                  @*  @{
+                    @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
+                    <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
                     <br />
                     <span class="grey">RB: </span>
-                    <b class="red">@ViewBag.sumfunds</b>
+                    <b class="red">0.00</b>
                 </td>
                 <td>
                     <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-id="@item.BudgetAllotmentId">
@@ -101,10 +101,10 @@
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                    <b class="green">@ViewBag.sumfunds</b>
+                    <b class="green">0.00</b>
                     <br />
                     <span class="grey">RB: </span>
-                    <b class="red">@ViewBag.sumfunds</b>
+                    <b class="red">0.00</b>
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
@@ -120,7 +120,7 @@
     </tbody>
 </table>
 
-@*<script type="text/javascript">
+@*@*<script type="text/javascript">
         jQuery(function ($) {
             $('.easy-pie-chart.percentage').each(function () {
                 var $box = $(this).closest('.infobox');

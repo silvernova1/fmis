@@ -121,22 +121,21 @@
                     <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                    @* <br />
-                    <span class="grey">BB: </span>
-                    <b class="green">180,560.00</b>
-                    <br />
-                    <span class="grey">RB: </span>
-                    <b class="red">1,260.750.00</b>*@
+                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                 </td>
                 <td>
                     @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                    <span>@amount.FirstOrDefault(x=>x.Id == item.Id)?.Amount</span>
+                    <span>@amount.FirstOrDefault(x=>x.Id == item.PrexcId)?.Amount</span>
                 </td>
                 <td>
-                    <b class="red">0</b>
+                    <b class="red">
+                        @{
+                            var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Rembal;
+                        }
+                        <span>@rembalamount.FirstOrDefault(x => x.Id == item.PrexcId)?.RemainingBalAmount</span>
+                    </b>
                 </td>
             </tr>
          }

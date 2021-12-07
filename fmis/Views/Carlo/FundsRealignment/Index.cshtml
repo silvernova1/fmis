@@ -20,7 +20,7 @@
     Funds Realignment
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
+<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.fundsource_id" asp-route-BudgetId="@ViewBag.BudgetId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
 <br />
 <br />
 <div class="">
@@ -28,8 +28,8 @@
         <div class="col-sm-2 infobox-container">
             <div class="infobox infobox-blue">
                 <div class="infobox-data">
-                        <span class="infobox-data-number fundsource_amount"></span>
-                        <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
+                        <span class="infobox-data-number ">@ViewBag.Rembal</span>
+                        <h6 class="infobox-content grey smaller">REMAINING BALANCE</h6>
                 </div>
             </div>           
         </div>
@@ -255,11 +255,10 @@
                 var remaining_balance = result;
             });*@
 
-            var remaining_balance = @ViewBag.sumfunds;
+            var remaining_balance = @ViewBag.Rembal;
 
             console.log(source);
 
-            var bla = $('#Realignment_amount').val();
 
             var ajax_data = [];
             $(".fundsource_amount").html();

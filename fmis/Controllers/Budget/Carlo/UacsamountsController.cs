@@ -107,7 +107,7 @@ namespace fmis.Controllers
                         data_holder.Where(s => s.token == item.token).FirstOrDefault().UacsId = item.UacsId;
 
                     if (item.Expense_code != "")
-                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = (int)long.Parse(item.Expense_code);
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = Int64.Parse(item.Expense_code);
 
                     if (item.Amount != 0)
                         data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
@@ -144,7 +144,7 @@ namespace fmis.Controllers
                         uacsamount.UacsId = item.UacsId;
 
                     if (item.Expense_code != "")
-                        uacsamount.Expense_code = (int)long.Parse(item.Expense_code);
+                        uacsamount.Expense_code = Int64.Parse(item.Expense_code);
 
                     if (item.Amount != 0)
                         uacsamount.Amount = item.Amount;

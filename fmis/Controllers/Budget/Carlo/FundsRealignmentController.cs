@@ -52,20 +52,35 @@ namespace fmis.Controllers.Budget.Carlo
             public List<ManyId> many_token { get; set; }
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int fundsource_id, int BudgetId)
         {
-            int fundsource_id = id;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_context.FundsRealignment.Where(s => s.status == "activated")
                 .Where(x => x.fundsource_id == fundsource_id)
                 .ToList());
+
+            ViewBag.remaining_balance = await _FContext.FundSource.FindAsync(fundsource_id);
+
+            return Json(ViewBag.remaining_balance);
+
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
             ViewBag.fundsource_id = fundsource_id;
+            ViewBag.BudgetId = BudgetId;
 
-            var sumfunds = _FAContext.FundSourceAmount.Sum(x => x.Amount);
-            ViewBag.sumfunds = sumfunds.ToString("##,#0.00");
+            /*     var rembalamount = _FAContext.FundSourceAmount.Sum(x => x.Amount);
+                   ViewBag.sumfunds = rembalamount.ToString("##,#0.00");*/
+
+            var rembal = _FAContext.FundSourceAmount
+               .Select(x => new FundSourceAmount
+               {
+                   Id = x.Id,
+                   RemainingBalAmount = _FAContext.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.RemainingBalAmount).Sum()
+               });
+
+            ViewBag.Rembal = rembal.FirstOrDefault().RemainingBalAmount;
+            //END Sum of remaining balance
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }

@@ -42,13 +42,13 @@ namespace fmis.Controllers.Budget.Carlo
             });
 
        
-            var saobs = from saob in _context.Saob.Take(10)
-                        select saob;
+           /* var saobs = from saob in _context.Saob.Take(10)
+                        select saob;*/
 
-            foreach (var saob in saobs)
+          /*  foreach (var saob in saobs)
             {
                 dt.Rows.Add(saob.datefrom, saob.dateto);
-            }
+            }*/
 
             using (XLWorkbook wb = new XLWorkbook())
             {

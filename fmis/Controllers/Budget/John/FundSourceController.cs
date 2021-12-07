@@ -141,7 +141,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var data_holder = _MyDbContext.FundSourceAmount;
-            int fundsource_id = 0;
+         /*   int fundsource_id = 0;*/
 
             foreach (var item in data)
             {
@@ -181,7 +181,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, int? id, FundSourceAmount fundsamount)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, int? id, FundSourceAmount fundsamount, Budget_allotment budget)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -207,7 +207,7 @@ namespace fmis.Controllers.Budget.John
 
                     
 
-                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
+                    return RedirectToAction("Fundsource", "Budget_allotments", new { BudgetId = 1 });
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -215,7 +215,7 @@ namespace fmis.Controllers.Budget.John
                 //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
-            PopulatePrexcsDropDownList(fundSource.Id);
+            PopulatePrexcsDropDownList(fundSource.PrexcId);
             //return View(await _context.FundSource.Include(c => c.Budget_allotment).Where());
 
             return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
@@ -253,7 +253,7 @@ namespace fmis.Controllers.Budget.John
             {
                 return NotFound();
             }
-            PopulatePrexcsDropDownList(fundSource.Id);
+            PopulatePrexcsDropDownList(fundSource.PrexcId);
             return View(fundSource);
         }
 
@@ -330,6 +330,8 @@ namespace fmis.Controllers.Budget.John
             return View(fundSource);
         }
 
+        
+
 
         // POST: FundSource/Delete/5
         [HttpPost]
@@ -367,8 +369,8 @@ namespace fmis.Controllers.Budget.John
             _context.FundSource.Remove(fundSource);
             await _context.SaveChangesAsync();
             /*return RedirectToAction(nameof(Index));*/
-            return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
-
+      /*      return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });*/
+            return RedirectToAction("Fundsource", "Budget_allotments", new { BudgetId = 1 });
         }
 
         private bool FundSourceExists(int id)
