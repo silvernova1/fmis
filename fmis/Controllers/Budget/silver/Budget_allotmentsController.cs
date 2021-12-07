@@ -90,9 +90,6 @@ namespace fmis.Controllers
             return View();
         }
 
-
-
-
         private void PopulatePsDropDownList()
         {
             ViewBag.pi_userid = new SelectList((from s in _pis_context.allPersonalInformation()

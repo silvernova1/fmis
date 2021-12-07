@@ -40,7 +40,7 @@ namespace fmis.Data
         public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
-
+       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
