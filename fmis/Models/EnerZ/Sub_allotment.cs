@@ -18,7 +18,7 @@ namespace fmis.Models
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
-        public float FundsTotal { get; set; }
+        public float Remainbal { get; set; }
 
 
 

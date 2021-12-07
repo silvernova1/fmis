@@ -21,7 +21,7 @@
 <hr>
     <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
-<br />
+<!--<br />
 <div class="">
     <div class="row">
         <div class="col-sm-2 infobox-container">
@@ -32,8 +32,8 @@
                 </div>
             </div>
         </div>
-    </div><!-- /.row -->
-</div>
+    </div>--><!-- /.row -->
+<!--</div>-->
 <br />
 <div id="example" class="hot"></div>
 <br />
@@ -163,6 +163,8 @@
 
             console.log(changes);
 
+            var bal = $('#SubRealignment_amount').val();
+
             var ajax_data = [];
             $(".suballotment_amount").html();
             suballotment_amount = 0;
@@ -180,7 +182,9 @@
             });
             $(".suballotment_amount").html(suballotment_amount);
 
-             ajaxServer(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+            ajaxServer(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+            console.log(bal);
+
         },
         height: 'auto',
         hiddenColumns: {
