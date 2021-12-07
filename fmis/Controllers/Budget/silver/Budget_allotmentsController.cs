@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Data.silver;
 using fmis.Models.John;
+using System.Globalization;
 
 namespace fmis.Controllers
 {
@@ -42,9 +43,36 @@ namespace fmis.Controllers
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
-                
-            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
-            ViewBag.sumfunds = sumfunds.ToString("##,#0.00");
+
+            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
+
+
+            //START Query of beginning balance
+            var query = _context.Budget_allotments
+                .Select(x => new FundSourceAmount
+                {
+                    BudgetId = x.BudgetAllotmentId,
+                    Amount = _context.FundSourceAmount.Where(i => i.BudgetId == x.BudgetAllotmentId).Sum(x => x.Amount)
+                });
+
+
+            ViewBag.Query = query.ToList();
+            //END Sum of beginning balance
+
+
+            //START Query of remaining balance
+            var rembal = _context.Budget_allotments
+                .Select(x => new FundSourceAmount
+                {
+                    BudgetId = x.BudgetAllotmentId,
+                    Amount = _context.FundSourceAmount.Where(i => i.BudgetId == x.BudgetAllotmentId).Sum(x => x.RemainingBalAmount)
+                });
+
+
+            ViewBag.Rembal = rembal.ToList();
+            //END Sum of remaining balance
+
 
             var ballots = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
@@ -76,6 +104,11 @@ namespace fmis.Controllers
                                            null);
 
         }
+
+
+
+
+
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
@@ -128,25 +161,39 @@ namespace fmis.Controllers
 
 
         // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Fundsource(int? id)
+        public async Task<IActionResult> Fundsource(int? id, float FundsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-           /* PopulateHeadDropDownList();*/
-           /*  PopulatePsDropDownList();*/
+            /* PopulateHeadDropDownList();*/
+            /*  PopulatePsDropDownList();*/
 
-            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
-            ViewBag.sumfunds = sumfunds.ToString("##,#0.00"); ;
 
-            //sum of the amounts
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
+
+
+            //START Query of the amounts
             var query = _context.FundSources
                 .Select(x => new FundSourceAmount
                 {
                     Id = x.Id,
-                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.Id).Select(x => x.Amount).Sum()
+                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.Amount).Sum()
+                });
+
+            ViewBag.Query = query.ToList();
+            //END Sum of the amounts
+
+            //START Query of remaining balance
+            var rembal = _context.FundSources
+                .Select(x => new FundSourceAmount
+                {
+                    Id = x.Id,
+                    RemainingBalAmount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.RemainingBalAmount).Sum()
                 });
 
 
-            ViewBag.Query = query.ToList();
+            ViewBag.Rembal = rembal.ToList();
+            //END Sum of remaining balance
 
 
             List<Ors_head> oh = new List<Ors_head>();
@@ -156,6 +203,7 @@ namespace fmis.Controllers
 
             ViewBag.message = oh;
             ViewBag.BudgetId = id;
+
             if (id == null)
             {
                 return NotFound();
@@ -178,10 +226,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
-            /* PopulatePsDropDownList();*/
-
-            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
-            ViewBag.sumfunds = sumfunds.ToString("##,#0.00"); ;
+           /* PopulatePsDropDownList();*/
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -217,8 +262,8 @@ namespace fmis.Controllers
 
                 List<Suballotment_amount> sa = new List<Suballotment_amount>();
 
-                sa = (from s in _saContext.Suballotment_amount select s).ToList();
-                sa.Insert(0, new Suballotment_amount { Id = 0, Amount= "--Beginning Balance--" });
+                /*sa = (from s in _saContext.Suballotment_amount select s).ToList();
+                sa.Insert(0, new Suballotment_amount { Id = 0, Amount= "--Beginning Balance--" });*/
 
                 ViewBag.message = sa;
                 ViewBag.BudgetId = id;

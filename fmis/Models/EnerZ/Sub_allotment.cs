@@ -18,16 +18,23 @@ namespace fmis.Models
         public string Responsibility_number { get; set; }
         public string Description { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
-        public int BAmountId { get; set; }
-        public int RAmountId { get; set; }
+        public float FundsTotal { get; set; }
 
 
 
-        public List<Personal_Information> Personal_Information { get; set; }
         [ForeignKey("Prexc")]
         public int Id { get; set; }
         public Prexc Prexc { get; set; }
+
         public Budget_allotment Budget_allotment { get; set; }
-        public List<Suballotment_amount> Suballotment_amount { get; set; }
+
+
+
+        /* public List<Personal_Information> Personal_Information { get; set; }
+         [ForeignKey("Prexc")]
+         public int Id { get; set; }
+         public Prexc Prexc { get; set; }
+         public Budget_allotment Budget_allotment { get; set; }
+         public List<Suballotment_amount> Suballotment_amount { get; set; }*/
     }
 }

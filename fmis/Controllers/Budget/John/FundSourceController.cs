@@ -98,19 +98,22 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-            .Where(f => f.status == "activated").ToList());
-
+            .Where(f => f.status == "activated" && f.BudgetId == 0).ToList());
             ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.
-                
-                ToList());
+
+
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
 
 
             PopulatePrexcsDropDownList();
 
             ViewBag.BudgetId = id;
-            ViewBag.FundsId = id;
+
+            var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
+            TempData["fundsId"] = fundsId;
+
+            // ViewBag.FundsId = id;
 
             List<Prexc> p = new List<Prexc>();
 
@@ -126,6 +129,7 @@ namespace fmis.Controllers.Budget.John
                 return NotFound();
             }
 
+            
             return View();
         }
 
@@ -137,6 +141,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var data_holder = _MyDbContext.FundSourceAmount;
+            int fundsource_id = 0;
 
             foreach (var item in data)
             {
@@ -146,8 +151,8 @@ namespace fmis.Controllers.Budget.John
 
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().RemainingBalAmount = data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-
                     this._MyDbContext.SaveChanges();
                 }
                 else
@@ -159,13 +164,15 @@ namespace fmis.Controllers.Budget.John
                     fundsource.BudgetId = item.BudgetId;
                     fundsource.Account_title = item.Account_title;
                     fundsource.Amount = item.Amount;
+                    fundsource.RemainingBalAmount = fundsource.Amount;
                     fundsource.status = "activated";
                     fundsource.token = item.token;
-
                     _MyDbContext.FundSourceAmount.Update(fundsource);
                     this._MyDbContext.SaveChanges();
                 }
+
             }
+
             return Json(data);
         }
 
@@ -174,15 +181,32 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, int? id)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,Id")] FundSource fundSource, int? id, FundSourceAmount fundsamount)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(fundSource);
+                    /*float fundsource_amount_balance = 0;
+                    var fund_amount_holder = _MyDbContext.FundSourceAmount;
+                    await fund_amount_holder.Where(fundsamount=>fundsamount.FundSourceId == fundSource.FundSourceId).ToListAsync();
+
+                    fundsamount.RemainingBalAmount = 0;
+                    foreach (var fund_amount in fund_amount_holder)
+                    {
+                        fundsource_amount_balance = fund_amount.Amount;
+                    }
+
+                    fundsamount.RemainingBalAmount = fundsource_amount_balance;
+
+*/
+                    _context.Add(fundSource); 
                     await _context.SaveChangesAsync();
+                    TempData["ID"] = fundSource.FundSourceId;
+
+                    
+
                     return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
                 }
             }
@@ -203,6 +227,17 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int? id, int? BudgetId)
         {
+            var fundsource = _MyDbContext.FundSources.Find(id);
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
+            .Where(f => f.status == "activated" && f.FundSourceId == fundsource.FundSourceId).ToList());
+            ViewBag.temp = json;
+
+
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            ViewBag.uacs = uacs_data;
+
 
             ViewBag.BudgetId = BudgetId;
 

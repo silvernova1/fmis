@@ -41,11 +41,14 @@ namespace fmis.Controllers
 
         public class Suballotment_amountData
         {
-            public int FundsId { get; set; }
             public int Id { get; set; }
             public string Expenses { get; set; }
-            public string Amount { get; set; }
+            public float Amount { get; set; }
             public string token { get; set; }
+            public int FundSourceId { get; set; }
+            public int BudgetId { get; set; }
+
+
         }
 
         public class ManyId
@@ -90,9 +93,11 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.Suballotment_amount
-                .Where(f => f.Sub_allotment.SubId == id).ToList());
+                .Where(f => f.FundSourceId == id && f.status == "activated").ToList());
             ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.
+
+                ToList());
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcsDropDownList();
@@ -118,20 +123,19 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveSuballotment_amount([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment, List<Suballotment_amount> data, int? id)
+        public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            ViewBag.BudgetId = id;
+
             var data_holder = _MyDbContext.Suballotment_amount;
 
             foreach (var item in data)
             {
 
-
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expenses= item.Expenses;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expenses = item.Expenses;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
@@ -139,84 +143,29 @@ namespace fmis.Controllers
                 }
                 else
                 {
-                    var suballotment = new Suballotment_amount();
+                    var suballotment_amount = new Suballotment_amount();
 
-                    suballotment.Id = item.Id;
-                    suballotment.Id = item.Id;
-                    suballotment.Expenses = item.Expenses;
-                    suballotment.Amount = item.Amount;
-                    suballotment.status = "activated";
-                    suballotment.token = item.token;
+                    suballotment_amount.Id = item.Id;
+                    suballotment_amount.FundSourceId = item.FundSourceId;
+                    suballotment_amount.BudgetId = item.BudgetId;
+                    suballotment_amount.Expenses = item.Expenses;
+                    suballotment_amount.Amount = item.Amount;
+                    suballotment_amount.status = "activated";
+                    suballotment_amount.token = item.token;
 
-                    _MyDbContext.Suballotment_amount.Update(suballotment);
+                    _MyDbContext.Suballotment_amount.Update(suballotment_amount);
                     this._MyDbContext.SaveChanges();
                 }
-
-                return Json(data);
-
             }
-
-
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(sub_allotment);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction("Fundsource", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
-                }
-            }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulatePrexcsDropDownList(sub_allotment.Id);
-
-            return RedirectToAction("Fundsource", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
-
-
+            return Json(data);
         }
-
-        /* [HttpPost]
-         public IActionResult SaveSuballotment_amount(List<Suballotment_amountData> data)
-         {
-             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-             var data_holder = this._MyDbContext.Suballotment_amount.Include(c => c.Sub_allotment);
-
-             foreach (var item in data)
-             {
-                 if (item.Id == 0)
-                 {
-                     var suballotment_amount = new Suballotment_amount();
-
-                     suballotment_amount.Id = item.Id;
-                     suballotment_amount.Expenses = item.Expenses;
-                     *//*suballotment_amount.Amount = item.Amount;*//*
-
-                     this._MyDbContext.Suballotment_amount.Update(suballotment_amount);
-                     this._MyDbContext.SaveChanges();
-                 }
-                 *//*else
-                 {
-                     data_holder.Find(item.Id).FundsId = item.FundsId;
-                     data_holder.Find(item.Id).Account_title = item.Account_title;
-                     data_holder.Find(item.Id).Amount = item.Amount;
-
-                     this._MyDbContext.SaveChanges();
-                 }*//*
-             }
-
-             return Json(data);
-         }*/
 
         // POST: Sub_allotment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment)
+        public async Task<IActionResult> Create([Bind("SubId,Prexc_code,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,Id")] Sub_allotment sub_allotment, int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -225,7 +174,7 @@ namespace fmis.Controllers
                 {
                     _context.Add(sub_allotment);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
+                    return RedirectToAction("Suballotment", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
                 }
             }
             catch (RetryLimitExceededException)
@@ -235,7 +184,7 @@ namespace fmis.Controllers
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
 
-            return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
+            return RedirectToAction("Suballotment", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
         }
 
         // GET: Sub_allotment/Edit/5
@@ -257,7 +206,7 @@ namespace fmis.Controllers
             }
             PopulatePrexcsDropDownList(sub_allotment.Id);
 
-           /* return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });*/
+            /* return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });*/
 
             return View(sub_allotment);
         }
@@ -296,7 +245,7 @@ namespace fmis.Controllers
                 {
                     _context.Update(sub_allotment);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
+                    return RedirectToAction("Suballotment", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -309,9 +258,9 @@ namespace fmis.Controllers
                         throw;
                     }
                 }
-              /*  return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });*/
+                /*  return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });*/
             }
-            return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
+            return RedirectToAction("Suballotment", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
         }
 
         // GET: Sub_allotment/Delete/5
@@ -380,7 +329,7 @@ namespace fmis.Controllers
             var sub_allotment = await _context.Sub_allotment.FindAsync(id);
             _context.Sub_allotment.Remove(sub_allotment);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Suballotment", "Budget_allotments", new { id = "1" });
+            return RedirectToAction("Suballotment", "Budget_allotments", new { id = sub_allotment.Budget_allotmentBudgetAllotmentId });
 
         }
 

@@ -14,10 +14,5 @@ namespace fmis.Data
         {
         }
         public DbSet<fmis.Models.Suballotment_amount> Suballotment_amount { get; set; }
-
-        internal object suballotment_amount()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

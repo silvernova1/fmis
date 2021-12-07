@@ -34,14 +34,10 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
+         <tr>
             <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
             <td>@Html.DisplayFor(modelItem => item.Account_title)</td>
-            @*<td>@Html.DisplayNameFor(model => model.)</td>*@
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>@item.SubAllotment_Realignment</td>
+            <td>@ViewBag.sumfunds</td>
             <td></td>
             <td></td>
             <td></td>
@@ -49,10 +45,14 @@
             <td></td>
             <td></td>
             <td></td>
-
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
-           
-        }
+         }
     </tbody>
 </table>
 
@@ -81,4 +81,7 @@
     </tbody>
 </table>
 <br />
-<button type="submit" class="btn btn-success btn-sm"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+<form  asp-action="ExportSummaryReports" asp-controller="SummaryReport" method="post">
+    <button type="submit" class="btn btn-success btn-sm">  <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+</form>
+

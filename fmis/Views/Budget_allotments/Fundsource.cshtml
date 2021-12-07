@@ -1,5 +1,5 @@
 ﻿@model fmis.Models.Budget_allotment
-
+@using System.Globalization;
 @{
     ViewData["Title"] = "Fundsource";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -30,12 +30,12 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.sumfunds</span>
+                <span class="infobox-data-number">0</span>
                 <div class="infobox-content">Remaining Balance</div>
             </div>
         </div>
-        </div><!-- /.widget-main -->
-    </div><!-- /.widget-body -->
+    </div><!-- /.widget-main -->
+</div><!-- /.widget-body -->
 <br />
 <br />
 <br />
@@ -66,7 +66,6 @@
         </div>
     </div>
 </div>
-
 <p>
     <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -97,13 +96,13 @@
                 Beginning Balance
             </th>
             <th>
-               Remaining Balance
+                Remaining Balance
             </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.FundSources)
-        {
+         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
@@ -113,28 +112,49 @@
                 </td>
 
                 <td>
-                    @* @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                    @*                    @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
                     *@
                 </td>
                 <td>
-                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-primary btn-sm">Edit <span class="glyphicon glyphicon-edit"></span></a>
+                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
 
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    <a asp-controller="FundsRealignment" asp-route-id="@item.FundSourceId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    @* <br />
+                        <span class="grey">BB: </span>
+                        <b class="green">180,560.00</b>
+                        <br />
+                        <span class="grey">RB: </span>
+                        <b class="red">1,260.750.00</b>*@
                 </td>
                 <td>
-                    @{ 
+                    @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                    <span></span>
-                    <b class="green">@amount.FirstOrDefault(x => x.Id == item.Id)?.Amount</b>
+                    <span>@amount.FirstOrDefault(x => x.Id == item.Id)?.Amount.ToString("C", new CultureInfo("en-PH"))</span>
                 </td>
                 <td>
-                    <b class="red">@ViewBag.sumfunds</b>
+                    @{
+                        var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Rembal;
+                    }
+                    <b class="red">@rembalamount.FirstOrDefault(x => x.Id == item.Id)?.RemainingBalAmount.ToString("C", new CultureInfo("en-PH"))</b>
                 </td>
             </tr>
-        }
+         }
     </tbody>
 </table>
+
+@*<script type="text/javascript">
+    function getOption(data) {
+        var item_id = data.get(0).id;
+        var complaint_id = data.get(0).value;
+        var url = '@Url.Action("Fundsource", "Budget_allotments")' + "?id=" + item_id + "&ComplainStatus=" + complaint_id;
+
+        $.get(url, function (result) {
+            console.log(result)
+        });
+    }
+</script>
+*@
