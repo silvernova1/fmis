@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
+﻿@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Index";
@@ -20,118 +19,15 @@
     Funds Realignment
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.fundsource_id" asp-route-BudgetId="@ViewBag.BudgetId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
+
+
+<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
-<br />
-<div class="">
-    <div class="row">
-        <div class="col-sm-2 infobox-container">
-            <div class="infobox infobox-blue">
-                <div class="infobox-data">
-                        <span class="infobox-data-number ">@ViewBag.Rembal</span>
-                        <h6 class="infobox-content grey smaller">REMAINING BALANCE</h6>
-                </div>
-            </div>           
-        </div>
-    </div><!-- /.row -->
-</div>
+
 <br />
 <div id="example" class="hot"></div>
 <br />
 <script>
-
-    class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
-        prepare(row, col, prop, td, value, cellProperties) {
-            super.prepare(row, col, prop, td, value, cellProperties);
-
-            Object.assign(this.htOptions, {
-                licenseKey: 'non-commercial-and-evaluation',
-                data: this.cellProperties.source,
-                columns: [
-                    {
-                        data: '_id',
-                    },
-                    {
-                        data: 'label',
-                    }
-                ],
-                hiddenColumns: {
-                    columns: [1],
-                },
-                colWidths: 500,
-                beforeValueRender(value, { row, instance }) {
-                    return instance.getDataAtRowProp(row, 'label');
-                },
-            });
-
-            if (cellProperties.keyValueListCells) {
-                this.htOptions.cells = cellProperties.keyValueListCells;
-            }
-            if (this.htEditor) {
-                this.htEditor.destroy();
-            }
-
-            this.htEditor = new Handsontable(this.htContainer, this.htOptions);
-        }
-
-        setValue(value) {
-            if (this.htEditor) {
-                const index = this.htEditor.getDataAtProp('_id').findIndex(id => id === value);
-
-                if (index !== -1) {
-                    value = this.htEditor.getDataAtRowProp(index, 'label');
-                }
-            }
-            super.setValue(value);
-        }
-
-        getValue() {
-            const value = super.getValue();
-            @* console.log(value);*@
-
-            if (this.htEditor) {
-                const labels = this.htEditor.getDataAtProp('label');
-                const row = labels.indexOf(value);
-
-
-                if (row !== -1) {
-                    return this.htEditor.getDataAtRowProp(row, '_id');
-                }
-            }
-            return value;
-        }
-    }
-
-    const keyValueListValidator = function (value, callback) {
-        let valueToValidate = value;
-
-        if (valueToValidate === null || valueToValidate === void 0) {
-            valueToValidate = '';
-        }
-
-        if (this.allowEmpty && valueToValidate === '') {
-            callback(true);
-        } else {
-            callback(this.source.find(({ _id }) => _id === value) ? true : false);
-        }
-    };
-    const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
-        const item = cellProperties.source.find(({ _id }) => _id === value);
-
-        if (item) {
-            value = item.label;
-        }
-
-        Handsontable.renderers.getRenderer('autocomplete').call(hot, hot, TD, row, col, prop, value, cellProperties);
-    };
-
-    Handsontable.cellTypes.registerCellType('key-value-list', {
-        editor: KeyValueListEditor,
-        validator: keyValueListValidator,
-        renderer: keyValueListRenderer,
-    });
-
-
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -161,11 +57,9 @@
     $.each(fundsrealignment, function () {
         data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
         counter++;
-        fundsource_amount += this.Realignment_amount;
+        fundsource_amount = 99
     })
     $(".fundsource_amount").html(fundsource_amount);
-
-  
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data = []
     var uacs_counter = 0;
@@ -249,13 +143,7 @@
 
             if (source === 'loadData')
                 return; //don't save this change
-
-            @*var url = "" + "?id=" +@ViewBag.fundsourcfundsource_id;
-            $.get(url, function (result) {
-                var remaining_balance = result;
-            });*@
-
-            var remaining_balance = @ViewBag.Rembal;
+            }
 
             console.log(source);
 
@@ -309,6 +197,7 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 
 </script>
 
@@ -317,4 +206,4 @@
 
     
 
-</script>
+    </script>

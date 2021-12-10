@@ -21,13 +21,15 @@ namespace fmis.Controllers.Budget.Carlo
         private readonly UacsContext _UacsContext;
         private readonly FundSourceAmountContext _FAContext;
         private readonly FundSourceContext _FContext;
+        private readonly MyDbContext _allContext;
 
-        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext)
+        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext, MyDbContext allContext)
         {
             _context = context;
             _UacsContext = UacsContext;
             _FAContext = FAContext;
             _FContext = FContext;
+            _allContext = allContext;
         }
 
         public class FundsRealignmentData
@@ -69,18 +71,7 @@ namespace fmis.Controllers.Budget.Carlo
             ViewBag.fundsource_id = fundsource_id;
             ViewBag.BudgetId = BudgetId;
 
-            /*     var rembalamount = _FAContext.FundSourceAmount.Sum(x => x.Amount);
-                   ViewBag.sumfunds = rembalamount.ToString("##,#0.00");*/
-
-            var rembal = _FAContext.FundSourceAmount
-               .Select(x => new FundSourceAmount
-               {
-                   Id = x.Id,
-                   RemainingBalAmount = _FAContext.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.RemainingBalAmount).Sum()
-               });
-
-            ViewBag.Rembal = rembal.FirstOrDefault().RemainingBalAmount;
-            //END Sum of remaining balance
+       
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
