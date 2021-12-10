@@ -92,7 +92,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public IActionResult Create(int? id)
+        public IActionResult Create(int? budget_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
@@ -106,10 +106,10 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
 
-            ViewBag.BudgetId = id;
+            ViewBag.BudgetId = budget_id;
 
-            var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
-            TempData["fundsId"] = fundsId;
+            /*var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
+            TempData["fundsId"] = fundsId;*/
 
             // ViewBag.FundsId = id;
 
@@ -121,7 +121,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.message = p;
 
             var fundsource = _context.FundSource
-                .FirstOrDefaultAsync(m => m.FundSourceId == id);
+                .FirstOrDefaultAsync(m => m.FundSourceId == budget_id);
             if (fundsource == null)
             {
                 return NotFound();
