@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211207073210_UpdatePrexcId")]
-    partial class UpdatePrexcId
+    [Migration("20211209004846_MyDb")]
+    partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -564,20 +564,23 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("Beginbal")
+                        .HasColumnType("real");
+
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("FundsTotal")
-                        .HasColumnType("real");
-
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Prexc_code")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Remainbal")
+                        .HasColumnType("real");
 
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
@@ -611,14 +614,14 @@ namespace fmis.Migrations
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Expenses")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
+
+                    b.Property<float>("Remsubamount")
+                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -627,8 +630,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
                     b.ToTable("Suballotment_amount");
                 });
@@ -932,13 +933,6 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
-            modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>
-                {
-                    b.HasOne("fmis.Models.Budget_allotment", null)
-                        .WithMany("Suballotment_amounts")
-                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
-                });
-
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.HasOne("fmis.Models.Obligated_amount", null)
@@ -962,8 +956,6 @@ namespace fmis.Migrations
                     b.Navigation("Personal_Information");
 
                     b.Navigation("Sub_allotments");
-
-                    b.Navigation("Suballotment_amounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>

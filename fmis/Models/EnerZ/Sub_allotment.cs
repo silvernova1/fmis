@@ -19,6 +19,9 @@ namespace fmis.Models
         public string Description { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
         public float Remainbal { get; set; }
+        public float Beginbal { get; set; }
+
+
 
 
 

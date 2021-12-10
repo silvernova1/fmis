@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class Mydb : Migration
+    public partial class MyDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -73,6 +73,24 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FundSourceAmount", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FundsRealignment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Realignment_from = table.Column<int>(type: "int", nullable: false),
+                    Realignment_to = table.Column<int>(type: "int", nullable: false),
+                    Realignment_amount = table.Column<float>(type: "real", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundsRealignment", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,8 +248,8 @@ namespace fmis.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ObligationId = table.Column<int>(type: "int", nullable: false),
-                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
                     Amount = table.Column<float>(type: "real", nullable: false),
                     Total_disbursement = table.Column<float>(type: "real", nullable: false),
                     Total_net_amount = table.Column<float>(type: "real", nullable: false),
@@ -367,31 +385,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FundsRealignment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Realignment_from = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Realignment_to = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Realignment_amount = table.Column<float>(type: "real", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    fundsource_id = table.Column<int>(type: "int", nullable: false),
-                    UacsId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FundsRealignment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FundsRealignment_Uacs_UacsId",
-                        column: x => x.UacsId,
-                        principalTable: "Uacs",
-                        principalColumn: "UacsId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SubAllotment_Realignment",
                 columns: table => new
                 {
@@ -444,14 +437,14 @@ namespace fmis.Migrations
                 {
                     FundSourceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrexcCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    Remainingbal = table.Column<float>(type: "real", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Beginning_balance = table.Column<float>(type: "real", nullable: false),
+                    Remaining_balance = table.Column<float>(type: "real", nullable: false),
+                    PrexcId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -463,8 +456,8 @@ namespace fmis.Migrations
                         principalColumn: "BudgetAllotmentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FundSource_Prexc_Id",
-                        column: x => x.Id,
+                        name: "FK_FundSource_Prexc_PrexcId",
+                        column: x => x.PrexcId,
                         principalTable: "Prexc",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -525,6 +518,7 @@ namespace fmis.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
                     Remainbal = table.Column<float>(type: "real", nullable: false),
+                    Beginbal = table.Column<float>(type: "real", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -566,14 +560,9 @@ namespace fmis.Migrations
                 column: "Budget_allotmentBudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FundSource_Id",
+                name: "IX_FundSource_PrexcId",
                 table: "FundSource",
-                column: "Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FundsRealignment_UacsId",
-                table: "FundsRealignment",
-                column: "UacsId");
+                column: "PrexcId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Personal_Information_Budget_allotmentBudgetAllotmentId",
