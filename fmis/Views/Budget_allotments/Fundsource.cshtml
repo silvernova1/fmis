@@ -1,9 +1,7 @@
 ﻿@model fmis.Models.Budget_allotment
 @using System.Globalization;
-@{
-    ViewData["Title"] = "Fundsource";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Fundsource";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <h3 class="grey lighter smaller">
     Fund Source
@@ -40,21 +38,25 @@
 <br />
 <br />
 <br />
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" >
+<div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body" id="fund_source_create">
-
-            </div>
         </div>
     </div>
 </div>
 
+@*<div class="modal fade" id="editModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="fund_source_edit">
+            </div>
+        </div>
+    </div>*@
+
 <div class="modal" id="editModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg"  role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body" id="fund_source_edit">
-                
+
             </div>
         </div>
     </div>
@@ -80,7 +82,7 @@
     </div>
 </div>
 <p>
-    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@ViewBag.BudgetId)" >
+    <a asp-controller="FundSource" asp-action="Create" data-backdrop="static" data-keyboard="false" class="btn btn-success btn-sm" onclick="fundSourceToken()" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i>Create New
     </a> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
@@ -115,44 +117,38 @@
     </thead>
     <tbody>
         @foreach (var item in Model.FundSources)
-         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+    </td>
 
-                <td>
-                    @* @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
-                    *@
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.BudgetId,@item.FundSourceId)" data-backdrop="static" data-keyboard="false">Edit <span class="glyphicon glyphicon-edit"></span></button>
+    <td>
+        @* @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+        *@
+    </td>
+    <td>
+        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.BudgetId,@item.FundSourceId)" data-backdrop="static" data-keyboard="false">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
-                </td>
-                <td>
-                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                </td>
-                <td>
-                    @{
-                        var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
-                    }
-                    <span>@amount.FirstOrDefault(x=>x.Id == item.PrexcId)?.Amount</span>
-                </td>
-                <td>
-                   @* <b class="red">
-                        @{
-                            var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Rembal;
-                        }
-                        <span>@rembalamount.FirstOrDefault(x => x.Id == item.PrexcId)?.RemainingBalAmount</span>
-                    </b>*@
-                </td>
-
-            </tr>
-         }
+        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+    </td>
+    <td>
+        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+    </td>
+    <td>
+        @{ var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query; }
+        <span>@amount.FirstOrDefault(x => x.Id == item.PrexcId)?.Amount</span>
+    </td>
+    <td>
+        <b class="red">
+            @{ var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.rembal; }
+            <span>@rembalamount.FirstOrDefault(x => x.Id == item.PrexcId)?.RemainingBalAmount</span>
+        </b>
+    </td>
+</tr>}
     </tbody>
 </table>
 
@@ -170,23 +166,6 @@
 
         });
     }
-
-    function createFundSource(budget_id) {
-        fundSourceToken();
-        $("#createModal").modal('show');
-        $("#fund_source_create").html(loading);
-        var url = '@Url.Action("Create", "FundSource")';
-        url += "?budget_id=" + budget_id;
-        $.get(url, function (result) {
-            setTimeout(function () {
-                $("#fund_source_crate").html(result);
-            }, 500);
-
-        });
-
-    }
-
-
 
     let generate_token = () => {
         let s4 = () => {

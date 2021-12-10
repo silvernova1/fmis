@@ -63,7 +63,7 @@ namespace fmis.Controllers
             var totalbud = _context.Suballotment_amount.Sum(x => x.Amount);
             ViewBag.totalbud = totalbud.ToString("C", new CultureInfo("en-PH"));
 
- 
+
 
             var que = _context.Budget_allotments
                .Select(x => new Suballotment_amount
@@ -187,6 +187,7 @@ namespace fmis.Controllers
                     RemainingBalAmount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.RemainingBalAmount).Sum()
                 });
 
+            ViewBag.rembal = rembal.ToList();
 
             //END Sum of the amounts
 
@@ -199,16 +200,22 @@ namespace fmis.Controllers
             ViewBag.message = oh;
             ViewBag.BudgetId = BudgetId;
 
+            
+
             if (BudgetId == null)
             {
                 return NotFound();
             }
+
+            
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
-                .Include(s => s.Sub_allotments)
+                /*.Include(s => s.Sub_allotments)*/
                 .Include(s => s.Personal_Information)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == BudgetId);
+                .SingleOrDefaultAsync(m => m.BudgetAllotmentId == BudgetId);
+
+
             if (budget_allotment == null)
             {
                 return NotFound();
@@ -253,8 +260,8 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-           /*  ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            *//*PopulateHeadDropDownList();*/
+            /*  ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+             *//*PopulateHeadDropDownList();*/
             /*PopulatePsDropDownList();*//*
 
             {

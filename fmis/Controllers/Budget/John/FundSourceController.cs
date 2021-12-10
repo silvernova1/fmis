@@ -92,7 +92,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public IActionResult Create(int? budget_id)
+        public IActionResult Create(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
@@ -106,10 +106,10 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
 
-            ViewBag.BudgetId = budget_id;
+            ViewBag.BudgetId = id;
 
-            /*var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
-            TempData["fundsId"] = fundsId;*/
+            var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
+            TempData["fundsId"] = fundsId;
 
             // ViewBag.FundsId = id;
 
@@ -121,7 +121,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.message = p;
 
             var fundsource = _context.FundSource
-                .FirstOrDefaultAsync(m => m.FundSourceId == budget_id);
+                .FirstOrDefaultAsync(m => m.FundSourceId == id);
             if (fundsource == null)
             {
                 return NotFound();
@@ -138,7 +138,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var data_holder = _MyDbContext.FundSourceAmount;
-         /*   int fundsource_id = 0;*/
+            /*   int fundsource_id = 0;*/
 
             foreach (var item in data)
             {
@@ -186,7 +186,7 @@ namespace fmis.Controllers.Budget.John
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
             funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
-            
+
             await _MyDbContext.SaveChangesAsync();
 
             /*TempData["ID"] = fundSource.FundSourceId;*/
@@ -212,7 +212,7 @@ namespace fmis.Controllers.Budget.John
 
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-       
+
 
             var fundSource = await _context.FundSource.FindAsync(fund_source_id);
             if (fundSource == null)
@@ -232,11 +232,11 @@ namespace fmis.Controllers.Budget.John
                                    orderby d.pap_title
                                    select d;
             ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList()
-                                         select new
-                                         {
-                                             PrexcId = s.Id,
-                                             prexc = s.pap_title + " ( " + s.pap_code1 + ")"
-                                         }),
+                                              select new
+                                              {
+                                                  PrexcId = s.Id,
+                                                  prexc = s.pap_title + " ( " + s.pap_code1 + ")"
+                                              }),
                                        "PrexcId",
                                        "prexc",
                                        null);
@@ -332,7 +332,7 @@ namespace fmis.Controllers.Budget.John
             _context.FundSource.Remove(fundSource);
             await _context.SaveChangesAsync();
             /*return RedirectToAction(nameof(Index));*/
-      /*      return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });*/
+            /*      return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });*/
             return RedirectToAction("Fundsource", "Budget_allotments", new { BudgetId = 1 });
         }
 

@@ -36,8 +36,7 @@ namespace fmis
         {
 
             services.AddControllers();
-
-
+    
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
             services.AddDbContext<fmisContext>(options =>

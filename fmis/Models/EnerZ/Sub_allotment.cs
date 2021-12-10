@@ -22,9 +22,6 @@ namespace fmis.Models
         public float Beginbal { get; set; }
 
 
-
-
-
         [ForeignKey("Prexc")]
         public int Id { get; set; }
         public Prexc Prexc { get; set; }
