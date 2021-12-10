@@ -22,7 +22,6 @@
                 <div class="infobox-content grey">BEGINNING BALANCE</div>
             </div>
         </div>
-
         <div class="infobox infobox-red">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
@@ -33,12 +32,15 @@
                 <div class="infobox-content grey">REMAINING BALANCE</div>
             </div>
         </div>
-
     </div>
     <div class="vspace-12-sm"></div>
 </div><!-- /.row -->
-<br /><br />
-<br /><br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 <div>
     <a class=" btn btn-sm btn-success" asp-action="Create">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -90,7 +92,8 @@
                     @{
                         var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
                     }
-                    <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
+
+                <b class="green">@amount.FirstOrDefault(x => x.BudgetId == item.BudgetAllotmentId)?.Amount.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
                     <span class="grey">RB: </span>
                     <b class="red">0.00</b>
@@ -101,7 +104,7 @@
                     </a>
                     <br />
                     <span class="grey">BB: </span>
-                    <b class="green">0.00</b>
+                    <b class="green">00</b>
                     <br />
                     <span class="grey">RB: </span>
                     <b class="red">0.00</b>
