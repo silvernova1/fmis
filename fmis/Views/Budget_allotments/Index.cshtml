@@ -12,35 +12,31 @@
 <div class="row  pull-left">
     <div class="space-5"></div>
     <div class="col-xs-12 infobox-container">
-        <div class="infobox infobox-green">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
+            <div class="infobox infobox-green">
+                <div class="infobox-icon">
+                    <i class="ace-icon fa fa-money"></i>
+                </div>
+                <div class="infobox-data">
+                    <span class="infobox-data-number">@ViewBag.totalbudget</span>
+                    <div class="infobox-content grey">BEGINNING BALANCE</div>
+                </div>
             </div>
+            <div class="infobox infobox-red">
+                <div class="infobox-icon">
+                    <i class="ace-icon fa fa-calculator"></i>
+                </div>
 
-            <div class="infobox-data">
-                <span class="infobox-data-number">0.00</span>
-                <div class="infobox-content grey">BEGINNING BALANCE</div>
+                <div class="infobox-data">
+                    <span class="infobox-data-number">@ViewBag.totalbud</span>
+                    <div class="infobox-content grey">REMAINING BALANCE</div>
+                </div>
             </div>
         </div>
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-
-            <div class="infobox-data">
-                <span class="infobox-data-number">0.00</span>
-                <div class="infobox-content grey">REMAINING BALANCE</div>
-            </div>
-        </div>
-    </div>
     <div class="vspace-12-sm"></div>
 </div><!-- /.row -->
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
+            
+<br /><br />
+<br /><br />
 <div>
     <a class=" btn btn-sm btn-success" asp-action="Create">
         <i class="ace-icon fa fa-plus "></i>Create New

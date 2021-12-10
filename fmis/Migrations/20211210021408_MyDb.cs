@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class MyDB : Migration
+    public partial class MyDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,7 +66,8 @@ namespace fmis.Migrations
                     Amount = table.Column<float>(type: "real", nullable: false),
                     RemainingBalAmount = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceId = table.Column<int>(type: "int", nullable: false),
                     BudgetId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -133,6 +134,7 @@ namespace fmis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Fund_source = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Dv = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Pr_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -141,7 +143,6 @@ namespace fmis.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Particulars = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ors_no = table.Column<int>(type: "int", nullable: false),
-                    Fund_source = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gross = table.Column<float>(type: "real", nullable: false),
                     Created_by = table.Column<int>(type: "int", nullable: false),
                     Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -436,14 +437,15 @@ namespace fmis.Migrations
                 {
                     FundSourceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrexcCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    Remainingbal = table.Column<float>(type: "real", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    PrexcId = table.Column<int>(type: "int", nullable: false),
+                    Beginning_balance = table.Column<float>(type: "real", nullable: false),
+                    Remaining_balance = table.Column<float>(type: "real", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -455,8 +457,8 @@ namespace fmis.Migrations
                         principalColumn: "BudgetAllotmentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FundSource_Prexc_Id",
-                        column: x => x.Id,
+                        name: "FK_FundSource_Prexc_PrexcId",
+                        column: x => x.PrexcId,
                         principalTable: "Prexc",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -558,9 +560,9 @@ namespace fmis.Migrations
                 column: "Budget_allotmentBudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FundSource_Id",
+                name: "IX_FundSource_PrexcId",
                 table: "FundSource",
-                column: "Id");
+                column: "PrexcId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Personal_Information_Budget_allotmentBudgetAllotmentId",

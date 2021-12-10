@@ -41,8 +41,25 @@
 <br />
 <br />
 <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-lg" style="width:50%;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+@*<div class="modal fade" id="editModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="fund_source_edit">
+        </div>
+    </div>
+</div>*@
+
+<div class="modal" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg"  role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="fund_source_edit">
+                
+            </div>
         </div>
     </div>
 </div>
@@ -67,7 +84,7 @@
     </div>
 </div>
 <p>
-    <a asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
+    <a asp-controller="FundSource" asp-action="Create"  data-backdrop="static" data-keyboard="false" class="btn btn-success btn-sm" onclick="fundSourceToken()" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i>Create New
     </a> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
@@ -116,7 +133,7 @@
                     *@
                 </td>
                 <td>
-                    <a asp-controller="FundSource" asp-action="Edit" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-primary btn-sm">Edit <span class="glyphicon glyphicon-edit"></span></a>
+                    <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.BudgetId,@item.FundSourceId)" data-backdrop="static" data-keyboard="false">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
                     <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
                 </td>
@@ -130,12 +147,12 @@
                     <span>@amount.FirstOrDefault(x=>x.Id == item.PrexcId)?.Amount</span>
                 </td>
                 <td>
-                    <b class="red">
+                   @* <b class="red">
                         @{
                             var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Rembal;
                         }
                         <span>@rembalamount.FirstOrDefault(x => x.Id == item.PrexcId)?.RemainingBalAmount</span>
-                    </b>
+                    </b>*@
                 </td>
 
             </tr>
@@ -143,15 +160,32 @@
     </tbody>
 </table>
 
-@*<script type="text/javascript">
-    function getOption(data) {
-        var item_id = data.get(0).id;
-        var complaint_id = data.get(0).value;
-        var url = '@Url.Action("Fundsource", "Budget_allotments")' + "?id=" + item_id + "&ComplainStatus=" + complaint_id;
+<script>
 
+    function getEditFundSource(budget_id, fund_source_id) {
+        $("#editModal").modal('show');
+        $("#fund_source_edit").html(loading);
+        var url = '@Url.Action("Edit", "FundSource")';
+        url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
         $.get(url, function (result) {
-            console.log(result)
+            setTimeout(function () {
+                $("#fund_source_edit").html(result);
+            }, 500);
+
         });
     }
+
+    let generate_token = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function fundSourceToken() {
+        fundsource_token = generate_token();
+        $("#funds_input_token").val(fundsource_token);
+    }
 </script>
-*@

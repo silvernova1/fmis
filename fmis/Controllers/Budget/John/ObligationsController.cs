@@ -86,6 +86,7 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
+            public string Fund_source { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -94,7 +95,6 @@ namespace fmis.Controllers
             public string Address { get; set; }
             public string Particulars { get; set; }
             public int Ors_no { get; set; }
-            public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
             public string Date_recieved { get; set; }
@@ -125,6 +125,7 @@ namespace fmis.Controllers
                 .Select(x => new ObligationData()
                 {
                     Id = x.Id,
+                    Fund_source = x.Fund_source,
                     Date = x.Date.ToShortDateString(),
                     Dv = x.Dv,
                     Pr_no = x.Pr_no,
@@ -133,7 +134,6 @@ namespace fmis.Controllers
                     Address = x.Address,
                     Particulars = x.Particulars,
                     Ors_no = x.Ors_no,
-                    Fund_source = x.Fund_source,
                     Gross = x.Gross,
                     Created_by = x.Created_by,
                     Date_recieved = x.Date_recieved.ToShortDateString(),
@@ -230,6 +230,7 @@ namespace fmis.Controllers
 
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
@@ -238,7 +239,6 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Address = item.Address;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = ToDateTime(item.Date_recieved);
@@ -258,6 +258,7 @@ namespace fmis.Controllers
                     //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
+                    obligation.Fund_source = item.Fund_source;
                     obligation.Date = ToDateTime(item.Date);
                     obligation.Dv = item.Dv;
                     obligation.Pr_no = item.Pr_no;
@@ -266,7 +267,6 @@ namespace fmis.Controllers
                     obligation.Address = item.Address;
                     obligation.Particulars = item.Particulars;
                     obligation.Ors_no = item.Ors_no;
-                    obligation.Fund_source = item.Fund_source;
                     obligation.Gross = item.Gross;
                     obligation.Created_by = item.Created_by;
                     obligation.Date_recieved = ToDateTime(item.Date_recieved);

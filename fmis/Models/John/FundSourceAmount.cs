@@ -15,7 +15,8 @@ namespace fmis.Models.John
         public float Amount { get; set; }
         public float RemainingBalAmount { get; set; }
         public string status { get; set; }
-        public string token { get; set; }
+        public string fundsource_amount_token { get; set; }
+        public string fundsource_token { get; set; }
         public int FundSourceId { get; set; }
         public int BudgetId { get; set; }
 

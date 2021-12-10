@@ -63,15 +63,13 @@ namespace fmis.Controllers.Budget.Carlo
 
             ViewBag.remaining_balance = await _FContext.FundSource.FindAsync(fundsource_id);
 
-            return Json(ViewBag.remaining_balance);
+          /*  return Json(ViewBag.remaining_balance);*/
 
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
             ViewBag.fundsource_id = fundsource_id;
             ViewBag.BudgetId = BudgetId;
-
-       
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }

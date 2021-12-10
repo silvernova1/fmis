@@ -109,7 +109,6 @@ namespace fmis.Controllers
                     if (item.Expense_code != "")
                         data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = Int64.Parse(item.Expense_code);
 
-                    if (item.Amount != 0)
                         data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
 
                     if (item.Total_disbursement != 0)

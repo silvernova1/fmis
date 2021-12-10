@@ -61,7 +61,9 @@ namespace fmis.Controllers
             //END Sum of the amounts
 
             var totalbud = _context.Suballotment_amount.Sum(x => x.Amount);
-            ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
+            ViewBag.totalbud = totalbud.ToString("C", new CultureInfo("en-PH"));
+
+ 
 
             var que = _context.Budget_allotments
                .Select(x => new Suballotment_amount
@@ -103,11 +105,6 @@ namespace fmis.Controllers
                                            null);
 
         }
-
-
-
-
-
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
@@ -186,7 +183,7 @@ namespace fmis.Controllers
             var rembal = _context.FundSources
                 .Select(x => new FundSourceAmount
                 {
-                    Id = x.Id,
+                    Id = x.PrexcId,
                     RemainingBalAmount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.RemainingBalAmount).Sum()
                 });
 
@@ -290,8 +287,6 @@ namespace fmis.Controllers
                 .Include(s => s.Personal_Information)
                 /*.Include(s => s.Suballotment_amounts)*/
 
-
-
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
             if (budget_allotment == null)
@@ -357,8 +352,6 @@ namespace fmis.Controllers
             }
             return View(budget_allotment);
         }
-
-
 
         // GET: Budget_allotments/Delete/5
         public async Task<IActionResult> Delete(int? id)

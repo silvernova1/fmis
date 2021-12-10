@@ -224,6 +224,9 @@ namespace fmis.Migrations
                     b.Property<string>("Respo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("FundSourceId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
@@ -255,10 +258,13 @@ namespace fmis.Migrations
                     b.Property<float>("RemainingBalAmount")
                         .HasColumnType("real");
 
-                    b.Property<string>("status")
+                    b.Property<string>("fundsource_amount_token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("token")
+                    b.Property<string>("fundsource_token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
