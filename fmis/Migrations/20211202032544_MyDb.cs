@@ -430,7 +430,7 @@ namespace fmis.Migrations
                     FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    FundsTotal = table.Column<float>(type: "real", nullable: false),
+                    Remainingbal = table.Column<float>(type: "real", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

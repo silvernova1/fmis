@@ -11,6 +11,7 @@ using System.Data;
 using ClosedXML.Excel;
 using System.IO;
 using fmis.Models.John;
+using System.Globalization;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -28,16 +29,15 @@ namespace fmis.Controllers.Budget.silver
         {
             ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
 
-            var sumfunds = _context.FundSourceAmount.Sum(x => x.Amount);
-            ViewBag.sumfunds = sumfunds;
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
 
+            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
 
 
             return View(await _context.Uacs
                 .Include(i => i.FundsRealignments)
-
-
-
                 .ToListAsync());
 
         }
