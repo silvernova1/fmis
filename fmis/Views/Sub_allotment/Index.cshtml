@@ -70,7 +70,8 @@
                     <a asp-action="Delete" asp-route-id="@item.SubId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
-                    <a asp-controller="SubAllotment_Realignment" asp-route-id="@item.SubId" asp-action="Index" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>SubAllotment_Realignment</a>
+                    @*<a asp-controller="SubAllotment_Realignment" asp-route-id="@item.SubId" asp-action="Index" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>SubAllotment_Realignment</a>*@
+                    <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
                 </td>
             </tr>
          }

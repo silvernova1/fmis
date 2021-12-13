@@ -23,10 +23,10 @@ namespace fmis.Controllers
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
-        private readonly Suballotment_amountContext _saContext;
+        private readonly Sub_allotmentContext _saContext;
 
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Suballotment_amountContext sa_Context)
+        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
 
         {
             _context = context;
@@ -73,7 +73,7 @@ namespace fmis.Controllers
                });
 
 
-            ViewBag.SubQuery = que.ToList();
+            ViewBag.Begquery = que.ToList();
             //END Sum of the amounts
 
             var ballots = _context.Budget_allotments
@@ -210,7 +210,7 @@ namespace fmis.Controllers
             
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
-                /*.Include(s => s.Sub_allotments)*/
+                .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.BudgetAllotmentId == BudgetId);
@@ -224,13 +224,13 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
-        public async Task<IActionResult> Suballotment(int? id)
+        public async Task<IActionResult> Suballotment(int? BudgetId, float FundsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             /*PopulateHeadDropDownList();*/
             /* PopulatePsDropDownList();*/
 
-            var subfunds = _context.Suballotment_amount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            var subfunds = _context.Suballotment_amount.Where(s => s.BudgetId == BudgetId).Sum(x => x.Amount);
             ViewBag.subfunds = subfunds.ToString("C", new CultureInfo("en-PH"));
 
 
@@ -243,7 +243,19 @@ namespace fmis.Controllers
                 });
 
 
-            ViewBag.SubQuery = que.ToList();
+            ViewBag.Begquery = que.ToList();
+
+            //END Sum of the amounts
+
+            //START Query of remaining balance
+            var rem = _context.Sub_allotment
+                .Select(x => new Suballotment_amount
+                {
+                    Id = x.Id,
+                    Remainingsubamount = _context.Suballotment_amount.Where(i => i.FundSourceId == x.SubId).Select(x => x.Remainingsubamount).Sum()
+                });
+
+            ViewBag.Remquery = rem.ToList();
 
             //END Sum of the amounts
 
@@ -253,9 +265,9 @@ namespace fmis.Controllers
             oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
 
             ViewBag.message = oh;
-            ViewBag.BudgetId = id;
+            ViewBag.BudgetId = BudgetId;
 
-            if (id == null)
+            if (BudgetId == null)
             {
                 return NotFound();
             }
@@ -295,7 +307,7 @@ namespace fmis.Controllers
                 /*.Include(s => s.Suballotment_amounts)*/
 
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == BudgetId);
             if (budget_allotment == null)
             {
                 return NotFound();
