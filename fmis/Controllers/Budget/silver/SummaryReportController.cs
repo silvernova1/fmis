@@ -7,6 +7,10 @@ using fmis.Filters;
 using fmis.Data;
 using Microsoft.EntityFrameworkCore;
 using fmis.Models;
+using System.Globalization;
+using System.Data;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -20,18 +24,58 @@ namespace fmis.Controllers.Budget.silver
         }
 
         // GET: AllotmentClasses
-     /*   public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
-            ViewBag.layout = "_Layout";
-            ViewBag.FundSource = "_Layout";
+
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
+
+            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
+            ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
+
 
             return View(await _context.Uacs
-                .Include(i => i.FundsRealignments)
+               /* .Include(i => i.Account_title)*/
                 .ToListAsync());
-            .ThenInclude(x => x.FirstOrDefault()?.fundsource_id)
 
-        }*/
+        }
 
+        [HttpPost]
+        public IActionResult ExportSummaryReports()
+        {
+            DataTable dt = new DataTable("Grid");
+            dt.Columns.AddRange(new DataColumn[10] {
+                new DataColumn("Uacs"),
+                new DataColumn("Account Title"),
+                new DataColumn("Fund Source"),
+                new DataColumn("Program"),
+                new DataColumn("Allotment"),
+                new DataColumn("Realignment"),
+                new DataColumn("Obligations"),
+                new DataColumn("Balance"),
+                new DataColumn("Prexc"),
+                new DataColumn("Code"),
+            });
+
+            /*var summary = from Summaryreport in _context.SummaryReport.Take(10)
+                        select Summaryreport;
+
+            foreach (var Summaryreport in summary)
+            {
+                dt.Rows.Add( Summaryreport.Uacs.Account_title, Summaryreport.Uacs.Expense_code);
+            }*/
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Categories.xlsx");
+                }
+            }
+
+        }
     }
 }
