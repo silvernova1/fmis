@@ -14,6 +14,5 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
         public int fundsource_id { get; set; }
-        public Uacs uacs { get; set; }
     }
 }

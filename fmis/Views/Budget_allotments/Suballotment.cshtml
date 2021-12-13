@@ -67,7 +67,7 @@
     </div>
 </div>
 <p>
-    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
+    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-BudgetId="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
         <i class="ace-icon fa fa-plus "></i> Create New
     </a> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
@@ -131,9 +131,9 @@
             <td>
                 <b class="red">
                     @{
-                        var Remsubamount = (List<fmis.Models.Suballotment_amount>)ViewBag.Remquery;
+                        var Remainingsubamount = (List<fmis.Models.Suballotment_amount>)ViewBag.Remquery;
                     }
-                    <span>@Remsubamount.FirstOrDefault(x => x.Id == item.Id)?.Remsubamount</span>
+                    <span>@Remainingsubamount.FirstOrDefault(x => x.Id == item.Id)?.Remainingsubamount</span>
                 </b>
             </td>
 

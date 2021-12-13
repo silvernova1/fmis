@@ -45,11 +45,11 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+/*
             //1:M relationship to uacs and funds realignment
             modelBuilder.Entity<SubAllotment_Realignment>()
             .HasOne(p => p.uacs)
-            .WithMany(b => b.SubAllotment_Realignment);
+            .WithMany(b => b.SubAllotment_Realignment);*/
 
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
@@ -105,6 +105,7 @@ namespace fmis.Data
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<Sub_allotment>().ToTable("Sub_allotment");
             modelBuilder.Entity<FundsRealignment>().ToTable("FundsRealignment");
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
