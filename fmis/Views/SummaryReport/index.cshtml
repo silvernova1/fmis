@@ -33,16 +33,16 @@
     </thead>
     <tbody>
         @foreach (var item in Model)
-        {
+         {
          <tr>
             <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
             <td>@Html.DisplayFor(modelItem => item.Account_title)</td>
+            <td></td>
+            <td></td>
             <td>@ViewBag.sumfunds</td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>@ViewBag.totalbudget</td>
             <td></td>
             <td></td>
             <td></td>
