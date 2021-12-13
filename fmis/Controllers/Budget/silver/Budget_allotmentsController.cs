@@ -185,7 +185,6 @@ namespace fmis.Controllers
 
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
-                .Include(s => s.Sub_allotments)
                 .Include(s => s.Personal_Information)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.BudgetAllotmentId == budget_id);
