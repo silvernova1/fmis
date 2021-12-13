@@ -51,6 +51,9 @@ namespace fmis.Controllers
             return View();
         }
 
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)

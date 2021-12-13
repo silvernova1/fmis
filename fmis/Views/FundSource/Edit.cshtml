@@ -1,65 +1,234 @@
 ﻿@model fmis.Models.John.FundSource
 
-@{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
 }
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h3 class="grey lighter smaller">
-    Edit Fund Source
-</h3>
-<hr />
-<form asp-action="Edit" method="post">
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.BudgetId">Back to List</a>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="FundSourceId" />
-            <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" />
-
-
-            <div class="form-group">
-                <label asp-for="Prexc" class="control-label"></label>
-                @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+<div class="row">
+    <form asp-action="Edit" method="post">
+        <div style="margin:20px;">
+            @*<div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.BudgetId">Back to List</a>
+            </div>*@
+            <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+                <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Fund Source)</h7>
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <input type="submit" value="Save" class="btn btn-success btn-xs" onclick="refreshPage()" />
+                        <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+                    </div>
+                </div>
             </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="FundSourceId" />
+                    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
 
-            <div class="form-group">
-                <label asp-for="FundSourceTitle" class="control-label"></label>
-                <input asp-for="FundSourceTitle" class="form-control" />
-                <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label asp-for="Prexc" class="control-label"></label>
+                        @*@Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })*@
+                        <input asp-for="FundSourceTitle" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FundSourceTitle" class="control-label"></label>
+                        <input asp-for="FundSourceTitle" class="form-control" />
+                        <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="FundSourceTitleCode" class="control-label"></label>
+                        <input asp-for="FundSourceTitleCode" class="form-control" />
+                        <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Respo" class="control-label"></label>
+                        <input asp-for="Respo" class="form-control" />
+                        <span asp-validation-for="Respo" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <input type="hidden" id="FundSourceId" />
+            <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
+            <input type="hidden" class="uacs" value="@ViewBag.uacs">
+            <br />
+            <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+            <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+            <br />
+            <div class="controls" hidden>
+                <button id="export-file">Download CSV</button>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="FundSourceTitleCode" class="control-label"></label>
-                <input asp-for="FundSourceTitleCode" class="form-control" />
-                <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Respo" class="control-label"></label>
-                <input asp-for="Respo" class="form-control" />
-                <span asp-validation-for="Respo" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-</form>
+    </form>
+</div>
+
+@*<script>
+        $(document).ready(function () {
+            $('.prexc').select2();
+        });
+    </script>*@
 
 <script>
-    $(document).ready(function () {
-        $('.prexc').select2();
-    });
-</script>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    function refreshPage() {
+        window.location.reload();
+    }
+
+    @*var FundSourceId = @ViewBag.FundsId;*@
+    var BudgetId = @ViewBag.BudgetId;
+
+        let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+    var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
+    const data = [];
+    var counter = 0;
+    var obligation_amount = 0;
+    $.each(fundsourceamount, function () {
+        data[counter] = [this.Account_title, this.Amount, this.Id, this.token]
+        counter++;
+        obligation_amount += this.Amount;
+    })
+
+    $(".obligation_amount").html(obligation_amount);
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data[uacs_counter] = this.Account_title
+        uacs_counter++;
+    })
+    console.log(uacs_data);
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('fundsource_amount');
+    const hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [150, 150],
+        colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data
+            },
+            {
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: '200px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+
+        beforeRemoveRow: function (index, column) {
+        var selection = this.getSelected();
+        var holder_data = this.getData();
+        var single_token = holder_data[selection[0][0]][3];
+        console.log(selection);
+        console.log(holder_data);
+        console.log(column);
+        var first_column = selection[0][0];
+        var last_column = selection[0][2];
+        console.log(first_column);
+        console.log(last_column);
+        var many_token = [];
+        for (var j = first_column; j <= last_column; j++) {
+            many_token.push({
+                many_token: holder_data[j][3]
+            })
+        }
+        if (single_token) {
+            var ajax_data = {
+                "single_token": single_token,
+                "many_token": many_token,
+            };
+            console.log(ajax_data);
+            ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+        }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 3, guid());
+        },
+        afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return; //don't save this change
+            }
+            console.log(hot.getSourceData());
+            console.log(changes);
+            var ajax_data = [];
+            $(".obligation_amount").html();
+            obligation_amount = 0;
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        @*FundSourceId: FundSourceId,*@
+                        BudgetId: BudgetId,
+                        Account_title: this[0],
+                        Amount: this[1],
+                        Id: this[2],
+                        token: this[3],
+                    }
+                );
+                obligation_amount += parseInt(this[1]);
+            });
+            console.log(ajax_data);
+            $(".obligation_amount").html(obligation_amount);
+            ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');
+        },
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+</script>

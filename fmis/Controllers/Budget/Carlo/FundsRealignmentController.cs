@@ -21,19 +21,21 @@ namespace fmis.Controllers.Budget.Carlo
         private readonly UacsContext _UacsContext;
         private readonly FundSourceAmountContext _FAContext;
         private readonly FundSourceContext _FContext;
+        private readonly MyDbContext _allContext;
 
-        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext)
+        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext, MyDbContext allContext)
         {
             _context = context;
             _UacsContext = UacsContext;
             _FAContext = FAContext;
             _FContext = FContext;
+            _allContext = allContext;
         }
 
         public class FundsRealignmentData
         {
-            public string Realignment_from { get; set; }
-            public string Realignment_to { get; set; }                                         
+            public int Realignment_from { get; set; }
+            public int Realignment_to { get; set; }                                         
             public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
@@ -52,19 +54,22 @@ namespace fmis.Controllers.Budget.Carlo
             public List<ManyId> many_token { get; set; }
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int fundsource_id, int BudgetId)
         {
-            int fundsource_id = id;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var json = JsonSerializer.Serialize(_context.FundsRealignment.Where(s => s.status == "activated")
                 .Where(x => x.fundsource_id == fundsource_id)
                 .ToList());
+
+            ViewBag.remaining_balance = await _FContext.FundSource.FindAsync(fundsource_id);
+
+          /*  return Json(ViewBag.remaining_balance);*/
+
             ViewBag.temp = json;
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
             ViewBag.fundsource_id = fundsource_id;
-
-       
+            ViewBag.BudgetId = BudgetId;
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml");
         }
@@ -73,9 +78,7 @@ namespace fmis.Controllers.Budget.Carlo
         [ValidateAntiForgeryToken]
         public IActionResult SaveFundsRealignment(List<FundsRealignmentData> data)
         {
-
             var data_holder = this._context.FundsRealignment;
-            var funds_amount = this._context.FundsRealignment;
             foreach (var item in data)
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
@@ -85,10 +88,11 @@ namespace fmis.Controllers.Budget.Carlo
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
-                    this._context.SaveChanges();
+                    this._context.SaveChanges(); 
                 }
-                else /*if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
-                         
+                else /*if (item.Realignment_from != null || item.Realignment_to != null & item.Realignment_amount.ToString() != null) 
+                if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
+
                 {  
                     var funds = new FundsRealignment(); //CLEAR OBJECT
                     funds.fundsource_id = item.fundsource_id;

@@ -68,6 +68,7 @@
     <Folder Include="wwwroot\Rotativa\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="wwwroot\assets\js\jquery.signalR-2.4.1.min.js" />
   </ItemGroup>
 </Project>

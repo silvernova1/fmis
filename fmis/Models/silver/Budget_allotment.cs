@@ -22,7 +22,7 @@ namespace fmis.Models
         public List<FundSource> FundSources { get; set; }
         /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
         public List<Sub_allotment> Sub_allotments { get; set; }
-        public List<Suballotment_amount> Suballotment_amounts { get; set; }
+       /* public List<Suballotment_amount> Suballotment_amounts { get; set; }*/
 
         public List<Personal_Information> Personal_Information { get; set; }
 

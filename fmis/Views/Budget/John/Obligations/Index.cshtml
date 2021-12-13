@@ -25,6 +25,7 @@
     input {
         width: 750px;
     }
+
 </style>
 
 <input type="hidden" class="obligation" value="@ViewBag.temp">
@@ -52,6 +53,7 @@
                     Close <i class="ace-icon fa fa-close"></i>
                 </button>
             </div>
+            <input type="hidden" class="fundsource" value="@ViewBag.fundsource">
         </div>
     </div>
 </div>
@@ -125,10 +127,19 @@
 
 		var obligation = $.parseJSON($(".obligation").val());
 
+    var fundsource = $.parseJSON($(".fundsource").val());
+    const fundsource_data = [];
+    var fundsource_counter = 0;
+    $.each(fundsource, function () {
+        fundsource_data[fundsource_counter] = this.FundSourceTitle
+			fundsource_counter++;
+		})
+    console.log(fundsource_data);
+
 		const data = [];
 		var counter = 0;
 		$.each(obligation, function () {
-			data[counter] = [this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Fund_source, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id , this.token]
+            data[counter] = [this.Fund_source, this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id , this.token]
 			counter++;
 		})
 		const searchField = document.querySelector('#search_field2');
@@ -137,10 +148,10 @@
 		const hot = new Handsontable(container, {
 			data: data,
 			rowHeaders: true,
-			width: '100%',
-			height: 'auto',
 			className: 'as-you-type-demo',
 			filters: true,
+			width:'auto',
+			height: '300px',
 			afterGetColHeader: addInput,
 			beforeOnCellMouseDown(event, coords) {
 				// Deselect the column after clicking on input.
@@ -149,10 +160,14 @@
 					this.deselectCell();
 				}
 			},
-			colWidths: 108,
+            colWidths: [210,100,70,70,100,100,150,150,100,100,100,100,100,100,100,100],
 			manualColumnResize: true,
-			colHeaders: ['DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'FUND SOURCE', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
+            colHeaders: ['FUND SOURCE & SUB ALLOTMENT','DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
 			columns: [
+                {
+                    type: 'dropdown',
+                    source: fundsource_data,
+                },
 				 {
 					type: 'date',
 					dateFormat: 'MM/DD/YYYY',
@@ -179,18 +194,14 @@
 				},
 
 				{
+                    
+				},
+				{
 
 				},
 
 				{
-					type: 'dropdown',
-					source: ['Fundsource 1', 'FundSource 2', 'FundSource 3']
-				},
 
-				{
-				},
-
-				{
 				},
 				{
 					type: 'date',
@@ -308,15 +319,15 @@
 				  $.each(hot.getSourceData(), function () {
 					ajax_data.push(
 						{
-							Date: this[0] ? this[0] : "",
-							Dv: this[1] ? this[1] : "",
-							Pr_no: this[2] ? this[2] : "",
-							Po_no: this[3] ? this[3] : "",
-							Payee: this[4] ? this[4] : "",
-							Address: this[5] ? this[5] : "",
-							Particulars: this[6] ? this[6] : "",
-							Ors_no: this[7] ? this[7] : "",
-							Fund_source: this[8] ? this[8] : "",
+                            Fund_source: this[0] ? this[0] : "",
+							Date: this[1] ? this[1] : "",
+							Dv: this[2] ? this[2] : "",
+							Pr_no: this[3] ? this[3] : "",
+							Po_no: this[4] ? this[4] : "",
+							Payee: this[5] ? this[5] : "",
+							Address: this[6] ? this[6] : "",
+							Particulars: this[7] ? this[7] : "",
+							Ors_no: this[8] ? this[8] : "",
 							Gross: this[9] ? this[9] : "",
 							Created_by: this[10] ? this[10] : "",
 							Date_recieved: this[11] ? this[11] : "",

@@ -16,8 +16,6 @@ namespace fmis.Models
         public string Expense_code { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-        public List<FundsRealignment> FundsRealignments { get; set; }
         public List<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
-
     }
 }

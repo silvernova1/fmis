@@ -86,13 +86,10 @@ namespace fmis.Migrations
                     b.Property<float>("Realignment_amount")
                         .HasColumnType("real");
 
-                    b.Property<string>("Realignment_from")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Realignment_from")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Realignment_to")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UacsId")
+                    b.Property<int>("Realignment_to")
                         .HasColumnType("int");
 
                     b.Property<int>("fundsource_id")
@@ -105,8 +102,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UacsId");
 
                     b.ToTable("FundsRealignment");
                 });
@@ -205,6 +200,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("Beginning_balance")
+                        .HasColumnType("real");
+
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
@@ -217,23 +215,23 @@ namespace fmis.Migrations
                     b.Property<string>("FundSourceTitleCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("PrexcId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PrexcCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Remainingbal")
+                    b.Property<float>("Remaining_balance")
                         .HasColumnType("real");
 
                     b.Property<string>("Respo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FundSourceId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("PrexcId");
 
                     b.ToTable("FundSource");
                 });
@@ -257,10 +255,16 @@ namespace fmis.Migrations
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("status")
+                    b.Property<float>("RemainingBalAmount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("fundsource_amount_token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("token")
+                    b.Property<string>("fundsource_token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -564,20 +568,23 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("Beginbal")
+                        .HasColumnType("real");
+
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("FundsTotal")
-                        .HasColumnType("real");
-
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Prexc_code")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Remainbal")
+                        .HasColumnType("real");
 
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
@@ -611,14 +618,14 @@ namespace fmis.Migrations
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Budget_allotmentBudgetAllotmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Expenses")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
+
+                    b.Property<float>("Remsubamount")
+                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -627,8 +634,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
                     b.ToTable("Suballotment_amount");
                 });
@@ -669,14 +674,11 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Account_title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<string>("Expense_code")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("Expense_code")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
@@ -692,6 +694,9 @@ namespace fmis.Migrations
 
                     b.Property<float>("Total_tax_amount")
                         .HasColumnType("real");
+
+                    b.Property<int>("UacsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -849,15 +854,6 @@ namespace fmis.Migrations
                     b.Navigation("Yearly_reference");
                 });
 
-            modelBuilder.Entity("fmis.Models.Carlo.FundsRealignment", b =>
-                {
-                    b.HasOne("fmis.Models.Uacs", "Uacs")
-                        .WithMany("FundsRealignments")
-                        .HasForeignKey("UacsId");
-
-                    b.Navigation("Uacs");
-                });
-
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
                     b.HasOne("fmis.Models.Ors_head", "Ors_head")
@@ -883,7 +879,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("PrexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -941,13 +937,6 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
-            modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>
-                {
-                    b.HasOne("fmis.Models.Budget_allotment", null)
-                        .WithMany("Suballotment_amounts")
-                        .HasForeignKey("Budget_allotmentBudgetAllotmentId");
-                });
-
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.HasOne("fmis.Models.Obligated_amount", null)
@@ -971,8 +960,6 @@ namespace fmis.Migrations
                     b.Navigation("Personal_Information");
 
                     b.Navigation("Sub_allotments");
-
-                    b.Navigation("Suballotment_amounts");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
@@ -987,8 +974,6 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
-                    b.Navigation("FundsRealignments");
-
                     b.Navigation("SubAllotment_Realignment");
                 });
 

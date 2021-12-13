@@ -31,7 +31,7 @@ namespace fmis.Controllers
         public class UacsamountData
         {
             public int ObligationId { get; set; }
-            public string Account_title { get; set; }
+            public int UacsId { get; set; }
             public string Expense_code { get; set; }
             public float Amount { get; set; }
             public float Total_disbursement { get; set; }
@@ -40,6 +40,7 @@ namespace fmis.Controllers
             public float Total_others { get; set; }
             public int Id { get; set; }
             public string token { get; set; }
+            public string status { get; set; }
         }
 
         public class ManyId
@@ -92,45 +93,78 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveUacsamount(List<UacsamountData> data, List<Uacs> data1)
+        public IActionResult SaveUacsamount(List<UacsamountData> data)
         {
+
             var data_holder = this._context.Uacsamount;
-          
+
             foreach (var item in data)
             {
-              
-
+                
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
+                    if (item.UacsId != 0)
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().UacsId = item.UacsId;
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_disbursement = item.Total_disbursement;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_net_amount = item.Total_net_amount;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_tax_amount = item.Total_tax_amount;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_others = item.Total_others;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                    if (item.Expense_code != "")
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = Int64.Parse(item.Expense_code);
+
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Amount = item.Amount;
+
+                    if (item.Total_disbursement != 0)
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_disbursement = item.Total_disbursement;
+
+                    if (item.Total_net_amount != 0)
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_net_amount = item.Total_net_amount;
+
+                    if (item.Total_tax_amount != 0)
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_tax_amount = item.Total_tax_amount;
+
+                    if (item.Total_others != 0)
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().Total_others = item.Total_others;
+
+                    if (item.status != "")
+                        data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
                     this._context.SaveChanges();
                 }
-                else /*if ((item.Account_title.ToString() != null || item.Expense_code != null) && (item.Amount.ToString() != null ||
-                          item.Total_disbursement.ToString() != null) && (item.Total_net_amount.ToString() != null ||
-                          item.Total_tax_amount.ToString() != null) && (item.Total_others.ToString() != null)) *///save
+
+                else
                 {
                     var uacsamount = new Uacsamount();
+                
+                    if (item.Id != 0)
+                        uacsamount.Id = item.Id;
 
-                    uacsamount.Id = item.Id;
-                    uacsamount.ObligationId = item.ObligationId;
-                    uacsamount.Account_title = item.Account_title;
-                    uacsamount.Expense_code = item.Expense_code;
-                    uacsamount.Amount = item.Amount;
-                    uacsamount.Total_disbursement = item.Total_disbursement;
-                    uacsamount.Total_net_amount = item.Total_net_amount;
-                    uacsamount.Total_tax_amount = item.Total_tax_amount;
-                    uacsamount.Total_others = item.Total_others;
-                    uacsamount.status = "activated";
-                    uacsamount.token = item.token;
+                    if (item.ObligationId != 0)
+                        uacsamount.ObligationId = item.ObligationId;
+
+                    if (item.UacsId != 0)
+                        uacsamount.UacsId = item.UacsId;
+
+                    if (item.Expense_code != "")
+                        uacsamount.Expense_code = Int64.Parse(item.Expense_code);
+
+                    if (item.Amount != 0)
+                        uacsamount.Amount = item.Amount;
+
+                    if (item.Total_disbursement != 0)
+                        uacsamount.Total_disbursement = item.Total_disbursement;
+
+                    if (item.Total_net_amount != 0)
+                        uacsamount.Total_net_amount = item.Total_net_amount;
+
+                    if (item.Total_tax_amount != 0)
+                        uacsamount.Total_tax_amount = item.Total_tax_amount;
+
+                    if (item.Total_others != 0)
+                        uacsamount.Total_others = item.Total_others;
+
+                    if (item.status != "")
+                        uacsamount.status = "activated";
+
+                    if (item.token != "")
+                        uacsamount.token = item.token;
 
                     this._context.Uacsamount.Update(uacsamount);
                     this._context.SaveChanges();

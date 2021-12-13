@@ -7,6 +7,7 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
+
 <form>
     <table class="table">
         <tbody>
@@ -49,7 +50,7 @@
                 <td class="col-sm-1"><strong>Total Amount</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                    <strong class="obligation_amount"> </strong>
+                    <strong class="obligation_amount"></strong>
                 </td>
             </tr>
             <tr>
@@ -71,7 +72,102 @@
 </div>
 
 <script>
-    
+
+    var exp_code = 0;
+    var default_token = "";
+
+    class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
+        prepare(row, col, prop, td, value, cellProperties) {
+            super.prepare(row, col, prop, td, value, cellProperties);
+
+            Object.assign(this.htOptions, {
+                licenseKey: 'non-commercial-and-evaluation',
+                data: this.cellProperties.source,
+                columns: [
+                    {
+                        data: '_id',
+                    },
+                    {
+                        data: 'label',
+                    }
+                ],
+                hiddenColumns: {
+                    columns: [1],
+                },
+                colWidths: 500,
+                beforeValueRender(value, { row, instance }) {
+                    return instance.getDataAtRowProp(row, 'label');
+                },
+            });
+
+            if (cellProperties.keyValueListCells) {
+                this.htOptions.cells = cellProperties.keyValueListCells;
+            }
+            if (this.htEditor) {
+                this.htEditor.destroy();
+            }
+
+            this.htEditor = new Handsontable(this.htContainer, this.htOptions);
+        }
+
+        setValue(value) {
+            if (this.htEditor) {
+                const index = this.htEditor.getDataAtProp('_id').findIndex(id => id === value);
+
+                if (index !== -1) {
+                    value = this.htEditor.getDataAtRowProp(index, 'label');
+                    exp_code = this.htEditor.getDataAtRowProp(index, 'exp_code');
+                }
+            }
+            super.setValue(value);
+        }
+
+        getValue() {
+            const value = super.getValue();
+            @* console.log(value);*@
+
+            if (this.htEditor) {
+                const labels = this.htEditor.getDataAtProp('label');
+                const row = labels.indexOf(value);
+
+                if (row !== -1) {
+                    return this.htEditor.getDataAtRowProp(row, '_id');
+                }
+            }
+            return value;
+        }
+    }
+
+    const keyValueListValidator = function (value, callback) {
+        let valueToValidate = value;
+
+        if (valueToValidate === null || valueToValidate === void 0) {
+            valueToValidate = '';
+        }
+
+        if (this.allowEmpty && valueToValidate === '') {
+            callback(true);
+        } else {
+            callback(this.source.find(({ _id }) => _id === value) ? true : false);
+        }
+    };
+    const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
+        const item = cellProperties.source.find(({ _id }) => _id === value);
+
+        if (item) {
+            value = item.label;
+        }
+
+        Handsontable.renderers.getRenderer('autocomplete').call(hot, hot, TD, row, col, prop, value, cellProperties);
+    };
+
+    Handsontable.cellTypes.registerCellType('key-value-list', {
+        editor: KeyValueListEditor,
+        validator: keyValueListValidator,
+        renderer: keyValueListRenderer,
+    });
+
+
     var obligation_id = @Html.DisplayFor(model => model.Id);
     let guid = () => {
         let s4 = () => {
@@ -82,8 +178,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-
-    function ajaxServer(ajax_data, url) {
+    function ajaxServerAmount(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -99,23 +194,27 @@
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
+
     $.each(uacsamount, function () {
-        data[counter] = [this.Account_title, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
+        data[counter] = [this.UacsId, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
         counter++;
         obligation_amount += this.Amount;
     })
     $(".obligation_amount").html(obligation_amount);
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
-    var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data[uacs_counter] = [this.Account_title, this.Expense_code].join()
-        uacs_counter++;
-    })
-    console.log(uacs_data);
 
-    const searchField = document.querySelector('#search_field2');
-    const button = document.querySelector('#export-file');
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data = []
+    var uacs_counter = 0;
+
+    $.each(uacs, function () {
+        var json_data = new Object();
+        json_data._id = this.UacsId;
+        json_data.label = this.Account_title;
+        json_data.exp_code = this.Expense_code;
+        uacs_data[uacs_counter] = json_data;
+        uacs_counter++;
+    });
+
     const container = document.getElementById('uacs_amount');
     const hot = new Handsontable(container, {
     data: data,
@@ -124,19 +223,17 @@
     colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
     columns: [
         {
-            type: 'dropdown',
-            source: uacs_data
+
         },
         {
             type: 'text',
             readOnly: true,
-            source: uacs_data.Expense_code
         },
         {
             type: 'numeric',
             numericFormat: {
                 pattern: '0,0.00',
-                culture: 'en-Ph' 
+                culture: 'en-Ph'
             },
             allowEmpty: false
         },
@@ -205,7 +302,7 @@
                 "many_token": many_token,
             };
             console.log(ajax_data);
-            ajaxServer(ajax_data,'@Url.Action("DeleteUacsamount", "Uacsamounts")');
+            ajaxServerAmount(ajax_data,'@Url.Action("DeleteUacsamount", "Uacsamounts")');
         }
     },
     afterUndo: function (index, column) {
@@ -215,20 +312,51 @@
         console.log(column);
         hot.setDataAtCell(row, 8, guid());
     },
-    afterChange: function (changes, source) {
-        if (source === 'loadData') {
-            return; //don't save this change
+    afterChange(changes) {
+        if (!changes) {
+            return;
         }
-        console.log(hot.getSourceData());
-        console.log(changes);
-        var ajax_data = [];
+        changes.forEach(([row, col, oldValue, newValue]) => {
+            if (exp_code == newValue)
+                return;
+            if (col == 0) {
+                var selection = this.getSelected();
+                var holder_data = this.getData();
+                var single_token = holder_data[selection[0][0]][8];
+                var ajax_data = [];
+                $(".obligation_amount").html();
+                obligation_amount = 0;
+                hot.setDataAtCell(row, col + 1, exp_code);
+                ajax_data.push({
+                    ObligationId: obligation_id,
+                    //UacsId: this.getDataAtCell(changes[0][0], changes[0][1]),
+                    UacsId: hot.getDataAtCell(row, col),
+                    Expense_code: hot.getDataAtCell(row, col + 1),
+                    Amount: this[2] = "",
+                    Total_disbursement: 0,
+                    Total_net_amount: 0,
+                    Total_tax_amount: 0,
+                    Total_others: 0,
+                    Id: 0,
+                    token: single_token
+                });
+
+                console.log(ajax_data);
+                $(".obligation_amount").html(obligation_amount);
+                ajaxServerAmount(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');
+
+            }
+
+        });
+       @* console.log(this.getDataAtCell(changes[0][0], changes[0][1]));*@
+        @*
         $(".obligation_amount").html();
         obligation_amount = 0;
         $.each(hot.getSourceData(), function () {
             ajax_data.push(
                 {
                     ObligationId: obligation_id,
-                    Account_title: this[0],
+                    UacsId: this[0],
                     Expense_code: this[1],
                     Amount: this[2],
                     Total_disbursement: this[3],
@@ -238,33 +366,23 @@
                     Id: this[7],
                     token: this[8],
                 }
-                );
+            );
             obligation_amount += parseInt(this[2]);
         });
         $(".obligation_amount").html(obligation_amount);
-        ajaxServer(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');
-    },
+        ajaxServerAmount(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');*@
+        },
+        type: 'key-value-list',
+        source: uacs_data,
     hiddenColumns: {
         columns: [7,8],
         indicators: true
     },
     licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
   });
-    const exportPlugin = hot.getPlugin('exportFile');
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'UACS',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
-    var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
+
+  var tableData = JSON.stringify(hot.getSourceData());
+@*    console.log(hot.getSourceData());
+*@
+
 </script>
