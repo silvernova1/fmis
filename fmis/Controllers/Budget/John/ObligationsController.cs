@@ -145,9 +145,13 @@ namespace fmis.Controllers
             });
             var json = JsonSerializer.Serialize(obligations.ToList());
             ViewBag.temp = json;
-            var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.ToList());
-            ViewBag.fundsource = fundsource_data;
-            return View("~/Views/Budget/John/Obligations/Index.cshtml");
+            /*var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.Select(x => x.FundSourceTitle)
+                        .Union(_MyDbContext.Sub_allotment.Select(x => x.Suballotment_title)).ToListAsync());*/
+            var fundsource_data = _MyDbContext.FundSources.Select(x => new { Table = "Fundsource", Id = x.FundSourceId, Title = x.FundSourceTitle })
+                            .Union(_MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }));
+            return Json(fundsource_data);
+            /*ViewBag.fundsource = fundsource_data;
+            return View("~/Views/Budget/John/Obligations/Index.cshtml");*/
         }
 
         // GET: Obligations/Details/5
