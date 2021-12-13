@@ -92,13 +92,9 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public IActionResult Create(int? id)
+        public IActionResult Create(int budget_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-            .Where(f => f.status == "activated" && f.BudgetId == 0).ToList());
-            ViewBag.temp = json;
-
 
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
@@ -106,26 +102,7 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
 
-            ViewBag.BudgetId = id;
-
-            var fundsId = Convert.ToInt32(TempData["ID"]) + 1;
-            TempData["fundsId"] = fundsId;
-
-            // ViewBag.FundsId = id;
-
-            List<Prexc> p = new List<Prexc>();
-
-            p = (from c in _pContext.Prexc select c).ToList();
-            p.Insert(0, new Prexc { Id = 0, pap_title = "--Select PREXC--" });
-
-            ViewBag.message = p;
-
-            var fundsource = _context.FundSource
-                .FirstOrDefaultAsync(m => m.FundSourceId == id);
-            if (fundsource == null)
-            {
-                return NotFound();
-            }
+            ViewBag.budget_id = budget_id;
 
             return View();
         }
@@ -138,7 +115,6 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var data_holder = _MyDbContext.FundSourceAmount;
-            /*   int fundsource_id = 0;*/
 
             foreach (var item in data)
             {
@@ -177,20 +153,20 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,PrexcId,token")] FundSource fundSource, int? id, FundSourceAmount fundsamount, Budget_allotment budget)
+        public async Task<IActionResult> Create([Bind("FundSourceId,PrexcCode,FundSourceTitle,Description,FundSourceTitleCode,Respo,Budget_allotmentBudgetAllotmentId,PrexcId,token")] FundSource fundSource, int? id, FundSourceAmount fundsamount, Budget_allotment budget, int budget_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
             _context.Add(fundSource);
             await _context.SaveChangesAsync();
+
+            ViewBag.budget_id = budget_id;
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
             funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
 
             await _MyDbContext.SaveChangesAsync();
 
-            /*TempData["ID"] = fundSource.FundSourceId;*/
-            return RedirectToAction("Fundsource", "Budget_allotments", new { BudgetId = fundSource.Budget_allotmentBudgetAllotmentId });
+            return RedirectToAction("Fundsource", "Budget_allotments", new { budget_id = fundSource.Budget_allotmentBudgetAllotmentId });
         }
 
         // GET: FundSource/Edit/5
@@ -208,7 +184,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.uacs = uacs_data;
 
 
-            ViewBag.BudgetId = budget_id;
+            ViewBag.budget_id = budget_id;
 
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
@@ -242,7 +218,6 @@ namespace fmis.Controllers.Budget.John
                                        null);
 
         }
-
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -251,27 +226,27 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Edit(FundSource fundSource)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            if (ModelState.IsValid)
+
+            var fundsource_data = _MyDbContext.FundSources;
+
+            if (fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault() != null) //update
             {
-                try
-                {
-                    _context.Update(fundSource);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FundSourceExists(fundSource.FundSourceId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });
+                fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().FundSourceTitle = fundSource.FundSourceTitle;
+                fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().Description = fundSource.Description;
+                fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().FundSourceTitleCode = fundSource.FundSourceTitleCode;
+                fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().Respo = fundSource.Respo;
+                this._MyDbContext.SaveChanges();
             }
-            return View(fundSource);
+            else
+            {
+                _context.Update(fundSource);
+                await _context.SaveChangesAsync();
+            }
+
+
+            ViewBag.budget_id = fundSource.Budget_allotmentBudgetAllotmentId;
+
+            return RedirectToAction("Fundsource", "Budget_allotments", new { budget_id = fundSource.Budget_allotmentBudgetAllotmentId });
         }
 
 
@@ -349,9 +324,6 @@ namespace fmis.Controllers.Budget.John
 
             Int32 Id = Convert.ToInt32(id);
             var ors = _MyDbContext.Obligation.Where(p => p.Id == Id).FirstOrDefault();
-
-
-
 
             string ExportData = "This is pdf generated";
             using (MemoryStream stream = new System.IO.MemoryStream())

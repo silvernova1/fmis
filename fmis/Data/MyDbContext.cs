@@ -3,6 +3,7 @@ using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.Carlo;
 using fmis.Models.silver;
+using System;
 
 namespace fmis.Data
 {
@@ -108,6 +109,11 @@ namespace fmis.Data
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
 
+        }
+
+        internal static object Where(Func<object, bool> p)
+        {
+            throw new NotImplementedException();
         }
     }
 }

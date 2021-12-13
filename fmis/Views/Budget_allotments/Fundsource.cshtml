@@ -38,19 +38,15 @@
 <br />
 <br />
 <br />
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-lg">
+<div class="modal" id="createModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+            <div class="modal-body" id="fund_source_create">
+
+            </div>
         </div>
     </div>
 </div>
-
-@*<div class="modal fade" id="editModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="fund_source_edit">
-            </div>
-        </div>
-    </div>*@
 
 <div class="modal" id="editModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
@@ -82,9 +78,9 @@
     </div>
 </div>
 <p>
-    <a asp-controller="FundSource" asp-action="Create" data-backdrop="static" data-keyboard="false" class="btn btn-success btn-sm" onclick="fundSourceToken()" asp-route-id="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
+    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm"  onclick="createFundSource(@ViewBag.budget_id)">
         <i class="ace-icon fa fa-plus "></i>Create New
-    </a> |
+    </button> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
@@ -131,7 +127,7 @@
         *@
     </td>
     <td>
-        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.BudgetId,@item.FundSourceId)" data-backdrop="static" data-keyboard="false">Edit <span class="glyphicon glyphicon-edit"></span></button>
+        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)" >Edit <span class="glyphicon glyphicon-edit"></span></button>
 
         <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
     </td>
@@ -148,23 +144,35 @@
             <span>@rembalamount.FirstOrDefault(x => x.Id == item.PrexcId)?.RemainingBalAmount</span>
         </b>
     </td>
-</tr>}
+</tr>
+        }
     </tbody>
 </table>
 
 <script>
 
+     function createFundSource(budget_id) {
+         $("#createModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_create").html(loading);
+         var url = '@Url.Action("Create", "FundSource")';
+         url += "?budget_id=" + budget_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#fund_source_create").html(result);
+            }, 500);
+         });
+     }
+
     function getEditFundSource(budget_id, fund_source_id) {
-        $("#editModal").modal('show');
-        $("#fund_source_edit").html(loading);
-        var url = '@Url.Action("Edit", "FundSource")';
-        url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
-        $.get(url, function (result) {
+         $("#editModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_edit").html(loading);
+         var url = '@Url.Action("Edit", "FundSource")';
+         url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
+         $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_edit").html(result);
             }, 500);
-
-        });
+         });
     }
 
     let generate_token = () => {

@@ -21,14 +21,14 @@
 
 <form asp-action="Create">
     <input hidden type="text" id="funds_input_token" name="token" value=""/>
-    <div style="margin:20px;">
-        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+    <div>
+        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Fund Source)</h7>
             <div class="pull-right">
                 <div class="btn-group">
-                    <input type="submit" id="btnsubmit" onclick="fundSourceToken; refreshPage()" value="Create" class="btn btn-success btn-xs" />
-                    <a class="btn btn-danger btn-xs" data-dismiss="modal" onclick="refreshPage()" >Exit</a>
+                    <input type="submit" id="btnsubmit" onclick="fundSourceToken" value="Create"  class="btn btn-success btn-xs" />
+                    <a class="btn btn-danger btn-xs" data-dismiss="modal" >Exit</a>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
         <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-        <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+        <div id="fundsource_amount_create" class="hot handsontable htColumnHeaders"></div>
         <br />
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
@@ -78,12 +78,8 @@
 </form>
 
 <script>
-    function refreshPage() {
-        window.location.reload();
-    }
 
-    var FundSourceId = @TempData["fundsId"];
-    var BudgetId = @ViewBag.BudgetId;
+    var BudgetId = @ViewBag.budget_id;
 
     var fundsource_token = generate_token();
 
@@ -102,17 +98,10 @@
         });
     }
 
-    var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
-    $.each(fundsourceamount, function () {
-        data[counter] = [this.Account_title, this.Amount, this.Id, this.token]
-        counter++;
-        obligation_amount += this.Amount;
-    })
 
-    $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -123,7 +112,7 @@
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
-    const container = document.getElementById('fundsource_amount');
+    const container = document.getElementById('fundsource_amount_create');
     const hot = new Handsontable(container, {
         data: data,
         rowHeaders: true,
@@ -136,12 +125,13 @@
                 source: uacs_data
             },
             {
+
             },
             {
-                //HIDDEN ID
+                //HIDDEN FUNDSOURCE TOKEN
             },
             {
-                //HIDDEN TOKEN
+                //HIDDEN FUNDSOURCE AMOUNT TOKEN
             },
         ],
         stretchH: 'all',
@@ -180,16 +170,13 @@
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
-            console.log(row);
-            console.log(column);
-            console.log(fundsource_token);
+            console.log(generate_token());
             hot.setDataAtCell(row, 3, generate_token());
         },
         afterChange: function (changes, source) {
             if (source === 'loadData') {
                 return; //don't save this change
             }
-            console.log(hot.getSourceData());
             console.log(changes);
             var ajax_data = [];
             $(".obligation_amount").html();
@@ -197,7 +184,6 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        FundSourceId: FundSourceId,
                         BudgetId: BudgetId,
                         Account_title: this[0],
                         Amount: this[1],
@@ -222,37 +208,4 @@
     console.log(hot.getSourceData());
 
 
-    @*$(document).ready(function () {
-        $("#btnsubmit").click(function (e) {
-            $('#loading_modal').modal('show');
-            var json = [];
-            $.each(hot.getSourceData(), function () {
-                json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
-            });
-            $(".obligation_amount").html();
-            obligation_amount = 0;
-            var valdata = $("#Create").serialize();
-            $.ajax({
-                url: '@Url.Action("SaveFundsourceamount", "FundSource")',
-                type: "POST",
-                dataType: 'json',
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                data: {
-                    data: json, valdata
-
-
-                },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-
-            });
-            $(".obligation_amount").html(obligation_amount);
-        });
-    });*@
 </script>

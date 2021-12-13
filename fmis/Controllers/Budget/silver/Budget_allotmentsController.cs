@@ -157,16 +157,12 @@ namespace fmis.Controllers
 
 
         // GET: Budget_allotments/Details/5
-        public async Task<IActionResult> Fundsource(int? BudgetId, float FundsTotal)
+        public async Task<IActionResult> Fundsource(int budget_id, float FundsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            /* PopulateHeadDropDownList();*/
-            /*  PopulatePsDropDownList();*/
-
-
-            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == BudgetId).Sum(x => x.Amount);
+       
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == budget_id).Sum(x => x.Amount);
             ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
-
 
             //START Query of the amounts
             var query = _context.FundSources
@@ -175,7 +171,6 @@ namespace fmis.Controllers
                     Id = x.PrexcId,
                     Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.Amount).Sum()
                 });
-
 
             ViewBag.Query = query.ToList();
 
@@ -198,28 +193,14 @@ namespace fmis.Controllers
             oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
 
             ViewBag.message = oh;
-            ViewBag.BudgetId = BudgetId;
+            ViewBag.budget_id = budget_id;
 
-            
-
-            if (BudgetId == null)
-            {
-                return NotFound();
-            }
-
-            
             var budget_allotment = await _context.Budget_allotments
                 .Include(s => s.FundSources)
                 /*.Include(s => s.Sub_allotments)*/
                 .Include(s => s.Personal_Information)
                 .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.BudgetAllotmentId == BudgetId);
-
-
-            if (budget_allotment == null)
-            {
-                return NotFound();
-            }
+                .SingleOrDefaultAsync(m => m.BudgetAllotmentId == budget_id);
 
             return View(budget_allotment);
         }
