@@ -10,6 +10,7 @@ namespace fmis.Models
     {
         public int Id { get; set; }
         public int source_id { get; set; }
+        public string source_title { get; set; }
         public string source_type { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
