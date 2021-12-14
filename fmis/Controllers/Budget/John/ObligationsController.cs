@@ -28,10 +28,8 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 
-
 namespace fmis.Controllers
 {
-
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
@@ -59,7 +57,6 @@ namespace fmis.Controllers
             };
         }
 
-
         public DateTime CheckExcelDate(string excel_data)
         {
             string dateString = @"d/M/yyyy";
@@ -71,22 +68,14 @@ namespace fmis.Controllers
                 System.Globalization.CultureInfo.InvariantCulture);
 
             return (DateTime)date1;
-
-
         }
-
-        public IActionResult CreateD()
-        {
-
-            return View("~/Views/Obligations/PrintPdf.cshtml");
-
-        }
-
 
         public class ObligationData
         {
             public int Id { get; set; }
-            public string Fund_source { get; set; }
+            public int source_id { get; set; }
+            public string source_title { get; set; }
+            public string source_type { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -125,7 +114,9 @@ namespace fmis.Controllers
                 .Select(x => new ObligationData()
                 {
                     Id = x.Id,
-                  /*  Fund_source = x.Fund_source,*/
+                    source_id = x.source_id,
+                    source_title = x.source_title,
+                    source_type = x.source_type,
                     Date = x.Date.ToShortDateString(),
                     Dv = x.Dv,
                     Pr_no = x.Pr_no,
@@ -225,17 +216,15 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveObligation(List<ObligationData> data)
         {
-
             var data_holder = this._context.Obligation;
-
-
             foreach (var item in data)
             {
 
-
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                 /*   data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;*/
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().source_id = item.source_id;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().source_title = item.source_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().source_type = item.source_type;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
@@ -255,15 +244,14 @@ namespace fmis.Controllers
                     this._context.SaveChanges();
 
                 }
-                else /*if ((item.Date != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
-                        item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
-                        item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
-                        (item.Time_recieved.ToString() != null || item.Date_released != null) && (item.Time_released.ToString() != null))*/
+                else 
                 {
                     //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
-                  /*  obligation.Fund_source = item.Fund_source;*/
+                    obligation.source_id = item.source_id;
+                    obligation.source_title = item.source_title;
+                    obligation.source_type = item.source_type;
                     obligation.Date = ToDateTime(item.Date);
                     obligation.Dv = item.Dv;
                     obligation.Pr_no = item.Pr_no;
@@ -285,9 +273,7 @@ namespace fmis.Controllers
                     this._context.SaveChanges();
                 }
             }
-
             return Json(data);
-
         }
 
         // POST: Obligations/Create

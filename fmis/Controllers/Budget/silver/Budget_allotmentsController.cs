@@ -42,40 +42,14 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
 
-            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
-            ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
 
-            //START Query of the amounts
-            var query = _context.Budget_allotments
-                .Select(x => new FundSourceAmount
-                {
-                    BudgetId = x.BudgetAllotmentId,
-                    Amount = _context.FundSourceAmount.Where(i => i.BudgetId == x.BudgetAllotmentId).Sum(x => x.Amount)
-                });
-
-            ViewBag.Query = query.ToList();
-            //END Sum of the amounts
-
-            var totalbud = _context.Suballotment_amount.Sum(x => x.Amount);
-            ViewBag.totalbud = totalbud.ToString("C", new CultureInfo("en-PH"));
-
-            var que = _context.Budget_allotments
-               .Select(x => new Suballotment_amount
-               {
-                   BudgetId = x.BudgetAllotmentId,
-                   Amount = _context.Suballotment_amount.Where(i => i.BudgetId == x.BudgetAllotmentId).Sum(x => x.Amount)
-               });
-
-
-            ViewBag.Begquery = que.ToList();
-            //END Sum of the amounts
-
-            var ballots = _context.Budget_allotments
+            var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
-            .AsNoTracking();
-            return View(await ballots.ToListAsync());
-            /* return View("~/Views/silver/Budget_allotments/Index.cshtml");*/
-            /*return View("~/Views/silver/Budget_allotments/Index.cshtml", await ballots.ToListAsync());*/
+            .Include(x => x.FundSources)
+            .AsNoTracking()
+            .ToListAsync();
+
+            return View(budget_allotment);
         }
 
         // GET: Budget_allotments/Create
@@ -156,9 +130,9 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
        
-            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == budget_id).Sum(x => x.Amount);
-
-            ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
+            var fund_source = _context.FundSources.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
+            ViewBag.beginning_balance = fund_source.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.remaining_balance = fund_source.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             //START Query of the amounts
             var query = _context.FundSources

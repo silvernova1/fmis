@@ -13,10 +13,6 @@
     }
 }
 
-
-@*<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />*@
-
 <style>
     .filterHeader {
         color: black;
@@ -60,6 +56,8 @@
 
 <script>
 
+    var SOURCE_TITLE = "";
+
     class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
         prepare(row, col, prop, td, value, cellProperties) {
             super.prepare(row, col, prop, td, value, cellProperties);
@@ -99,7 +97,8 @@
                 const index = this.htEditor.getDataAtProp('source_id').findIndex(id => id === value);
 
                 if (index !== -1) {
-                    value = this.htEditor.getDataAtRowProp(index, 'source_title');
+					value = this.htEditor.getDataAtRowProp(index, 'source_title');
+                    SOURCE_TITLE = value;
                 }
             }
             super.setValue(value);
@@ -134,7 +133,7 @@
         }
     };
     const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
-        const item = cellProperties.source.find(({ source_id }) => source_id === value);
+		const item = cellProperties.source.find(({ source_id }) => source_id === value);
 
         if (item) {
             value = item.source_title;
@@ -227,7 +226,7 @@
 	const data = [];
 	var counter = 0;
 	$.each(obligation, function () {
-        data[counter] = [this.Fund_source, this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id , this.token]
+		data[counter] = [this.source_title, this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id, this.token]
 		counter++;
 	})
 	const searchField = document.querySelector('#search_field2');
@@ -416,11 +415,13 @@
 				return;
 			}
 			console.log(changes);
-				var ajax_data = [];
-				$.each(hot.getSourceData(), function () {
+			var ajax_data = [];
+                console.log(hot.getSourceData());
+			$.each(hot.getSourceData(), function () {
 				ajax_data.push(
 					{
-                        Fund_source: this[0] ? this[0] : "",
+						source_id: this[0] ? this[0] : "",
+						source_title: SOURCE_TITLE,
 						Date: this[1] ? this[1] : "",
 						Dv: this[2] ? this[2] : "",
 						Pr_no: this[3] ? this[3] : "",
@@ -439,7 +440,7 @@
 						token: this[16]
 					}
 				);
-				});
+			});
 
 			ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 		},

@@ -15,7 +15,7 @@
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.totalbudget</span>
+                <span class="infobox-data-number" id="total_beginning_balance"></span>
                 <div class="infobox-content grey">BEGINNING BALANCE</div>
             </div>
         </div>
@@ -24,13 +24,8 @@
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.totalbud</span>
-                <div class="infobox-content grey">BEGINNING BALANCE</div>
-            </div>
-        </div>
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
+                <span class="infobox-data-number" id="total_remaining_balance"></span>
+                <div class="infobox-content grey">REMAINING BALANCE</div>
             </div>
         </div>
     </div>
@@ -68,57 +63,70 @@
         </tr>
     </thead>
     <tbody>
+        @{ 
+            float total_beginning_balance = 0;
+            float total_remaining_balance = 0;
+        }
         @foreach (var item in Model)
         {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Allotment_series)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Allotment_title)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Allotment_code)
-    </td>
-    <td>
-        <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-budget_id="@item.BudgetAllotmentId">
-            <i class="ace-icon fa fa-arrow-right"></i>Fund Source
-        </a>
-        <br />
-        <span class="grey">BB: </span>
-        @{ var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query; }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_series)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_code)
+            </td>
+            <td>
+                <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-budget_id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-arrow-right"></i>Fund Source
+                </a>
+                <br />
+                <span class="grey">BB: </span>
+                @{ 
+                    var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance);
+                    total_beginning_balance += beginning_balance;
+                }
+                <b class="green">@beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                <br />
+                <span class="grey">RB: </span>
+                @{ 
+                    var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
+                    total_remaining_balance += remaining_balance;
+                }
+                <b class="red">@remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-BudgetId="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-plus"></i>Sub-Allotment
+                </a>
+                <br />
+                <span class="grey">BB: </span>
+                <b class="green">00</b>
+                <br />
+                <span class="grey">RB: </span>
+                <b class="red">0.00</b>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-edit"></i>Edit
+                </a>
 
-        <b class="green">@amount.FirstOrDefault(x => x.BudgetId == item.BudgetAllotmentId)?.Amount.ToString("C", new CultureInfo("en-PH"))</b>
-        <br />
-        <span class="grey">RB: </span>
-        <b class="red">0.00</b>
-    </td>
-    <td>
-        <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-budget_id="@item.BudgetAllotmentId">
-            <i class="ace-icon fa fa-plus"></i>Sub Allotment
-        </a>
-        <br />
-        <span class="grey">BB: </span>
-        @{ var beginningamount = (List<fmis.Models.Suballotment_amount>)ViewBag.Begquery; }
-
-        <b class="green">@beginningamount.FirstOrDefault(x => x.BudgetId == item.BudgetAllotmentId)?.Amount.ToString("C", new CultureInfo("en-PH"))</b>
-        <b class="green">00</b>
-        <br />
-        <span class="grey">RB: </span>
-        <b class="red">0.00</b>
-    </td>
-    <td>
-        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
-            <i class="ace-icon fa fa-edit"></i>Edit
-        </a>
-
-        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
-            <i class="ace-icon fa fa-trash"></i>Delete
-        </a>
-    </td>
-</tr>}
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-trash"></i>Delete
+                </a>
+            </td>
+        </tr>
+        }
     </tbody>
 </table>
+
+<script>
+    $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
+</script>
