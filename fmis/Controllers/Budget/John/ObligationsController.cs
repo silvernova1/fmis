@@ -117,7 +117,7 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation");
@@ -125,7 +125,7 @@ namespace fmis.Controllers
                 .Select(x => new ObligationData()
                 {
                     Id = x.Id,
-                    Fund_source = x.Fund_source,
+                  /*  Fund_source = x.Fund_source,*/
                     Date = x.Date.ToShortDateString(),
                     Dv = x.Dv,
                     Pr_no = x.Pr_no,
@@ -141,17 +141,18 @@ namespace fmis.Controllers
                     Date_released = x.Date_released.ToShortDateString(),
                     Time_released = x.Time_released.ToString("HH:mm:ss"),
                     token = x.token,
-                    status = x.status
+                    status = x.status 
             });
-            var json = JsonSerializer.Serialize(obligations.ToList());
-            ViewBag.temp = json;
-            /*var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.Select(x => x.FundSourceTitle)
-                        .Union(_MyDbContext.Sub_allotment.Select(x => x.Suballotment_title)).ToListAsync());*/
-            var fundsource_data = _MyDbContext.FundSources.Select(x => new { Table = "Fundsource", Id = x.FundSourceId, Title = x.FundSourceTitle })
-                            .Union(_MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }));
-            return Json(fundsource_data);
-            /*ViewBag.fundsource = fundsource_data;
-            return View("~/Views/Budget/John/Obligations/Index.cshtml");*/
+            var obligation_json = await obligations.AsNoTracking()
+                                    .ToListAsync();
+            ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
+
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, source_type = "fund_source" })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, source_type = "sub_allotment" });
+
+            ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
+
+            return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
         // GET: Obligations/Details/5
@@ -234,7 +235,7 @@ namespace fmis.Controllers
 
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
+                 /*   data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;*/
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
@@ -262,7 +263,7 @@ namespace fmis.Controllers
                     //UPDATE
                     var obligation = new Obligation(); //CLEAR OBJECT
                     obligation.Id = item.Id;
-                    obligation.Fund_source = item.Fund_source;
+                  /*  obligation.Fund_source = item.Fund_source;*/
                     obligation.Date = ToDateTime(item.Date);
                     obligation.Dv = item.Dv;
                     obligation.Pr_no = item.Pr_no;
