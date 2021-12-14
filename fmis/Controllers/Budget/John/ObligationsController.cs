@@ -141,17 +141,18 @@ namespace fmis.Controllers
                     Date_released = x.Date_released.ToShortDateString(),
                     Time_released = x.Time_released.ToString("HH:mm:ss"),
                     token = x.token,
-                    status = x.status
+                    status = x.status 
             });
             var json = JsonSerializer.Serialize(obligations.ToList());
             ViewBag.temp = json;
-            /*var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.Select(x => x.FundSourceTitle)
-                        .Union(_MyDbContext.Sub_allotment.Select(x => x.Suballotment_title)).ToListAsync());*/
             var fundsource_data = _MyDbContext.FundSources.Select(x => new { Table = "Fundsource", Id = x.FundSourceId, Title = x.FundSourceTitle })
-                            .Union(_MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }));
-            return Json(fundsource_data);
-            /*ViewBag.fundsource = fundsource_data;
-            return View("~/Views/Budget/John/Obligations/Index.cshtml");*/
+                              .Union(_MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }).AsEnumerable());
+            /* var fundsource_data = _MyDbContext.FundSources.Select(x => new { Table = "Fundsource", Id = x.FundSourceId, Title = x.FundSourceTitle })
+                               .Union(_MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }));*/
+            /* return Json(fundsource_data);*/
+            ViewBag.fundsource = fundsource_data;
+
+            return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
         // GET: Obligations/Details/5

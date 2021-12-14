@@ -60,6 +60,95 @@
 
 <script>
 
+    class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
+        prepare(row, col, prop, td, value, cellProperties) {
+            super.prepare(row, col, prop, td, value, cellProperties);
+
+            Object.assign(this.htOptions, {
+                licenseKey: 'non-commercial-and-evaluation',
+                data: this.cellProperties.source,
+                columns: [
+                    {
+                        data: '_id',
+                    },
+                    {
+                        data: 'label',
+                    }
+                ],
+                hiddenColumns: {
+                    columns: [1],
+                },
+                colWidths: 500,
+                beforeValueRender(value, { row, instance }) {
+                    return instance.getDataAtRowProp(row, 'label');
+                },
+            });
+
+            if (cellProperties.keyValueListCells) {
+                this.htOptions.cells = cellProperties.keyValueListCells;
+            }
+            if (this.htEditor) {
+                this.htEditor.destroy();
+            }
+
+            this.htEditor = new Handsontable(this.htContainer, this.htOptions);
+        }
+
+        setValue(value) {
+            if (this.htEditor) {
+                const index = this.htEditor.getDataAtProp('_id').findIndex(id => id === value);
+
+                if (index !== -1) {
+                    value = this.htEditor.getDataAtRowProp(index, 'label');
+                }
+            }
+            super.setValue(value);
+        }
+
+        getValue() {
+            const value = super.getValue();
+            @* console.log(value);*@
+
+            if (this.htEditor) {
+                const labels = this.htEditor.getDataAtProp('label');
+                const row = labels.indexOf(value);
+
+                if (row !== -1) {
+                    return this.htEditor.getDataAtRowProp(row, '_id');
+                }
+            }
+            return value;
+        }
+    }
+
+    const keyValueListValidator = function (value, callback) {
+        let valueToValidate = value;
+
+        if (valueToValidate === null || valueToValidate === void 0) {
+            valueToValidate = '';
+        }
+
+        if (this.allowEmpty && valueToValidate === '') {
+            callback(true);
+        } else {
+            callback(this.source.find(({ _id }) => _id === value) ? true : false);
+        }
+    };
+    const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
+        const item = cellProperties.source.find(({ _id }) => _id === value);
+
+        if (item) {
+            value = item.label;
+        }
+
+        Handsontable.renderers.getRenderer('autocomplete').call(hot, hot, TD, row, col, prop, value, cellProperties);
+    };
+
+    Handsontable.cellTypes.registerCellType('key-value-list', {
+        editor: KeyValueListEditor,
+        validator: keyValueListValidator,
+        renderer: keyValueListRenderer,
+    });
 
 		let guid = () => {
 			let s4 = () => {
@@ -110,8 +199,6 @@
 			}
 		};
 
-
-
 		function ajaxServer(ajax_data, url) {
 			$.ajax({
 				type: 'POST',
@@ -128,13 +215,17 @@
 		var obligation = $.parseJSON($(".obligation").val());
 
     var fundsource = $.parseJSON($(".fundsource").val());
-    const fundsource_data = [];
+    var fundsource_data = [];
     var fundsource_counter = 0;
     $.each(fundsource, function () {
-        fundsource_data[fundsource_counter] = this.FundSourceTitle
+		var json_data = new Object();
+		json_data._id = this.id;
+		json_data.label = this.fundsource;
+		fundsource_data[fundsource_counter] = json_data;
 			fundsource_counter++;
 		})
-    console.log(fundsource_data);
+	console.log(fundsource_data);
+
 
 		const data = [];
 		var counter = 0;
@@ -342,7 +433,8 @@
 
 				ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 			},
-
+			type: 'key-value-list',
+			source: fundsource_data,
 			hiddenColumns: {
 				columns: [15,16],
 				indicators: true

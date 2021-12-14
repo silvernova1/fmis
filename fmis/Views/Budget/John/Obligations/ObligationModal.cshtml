@@ -348,29 +348,6 @@
             }
 
         });
-       @* console.log(this.getDataAtCell(changes[0][0], changes[0][1]));*@
-        @*
-        $(".obligation_amount").html();
-        obligation_amount = 0;
-        $.each(hot.getSourceData(), function () {
-            ajax_data.push(
-                {
-                    ObligationId: obligation_id,
-                    UacsId: this[0],
-                    Expense_code: this[1],
-                    Amount: this[2],
-                    Total_disbursement: this[3],
-                    Total_net_amount: this[4],
-                    Total_tax_amount: this[5],
-                    Total_others: this[6],
-                    Id: this[7],
-                    token: this[8],
-                }
-            );
-            obligation_amount += parseInt(this[2]);
-        });
-        $(".obligation_amount").html(obligation_amount);
-        ajaxServerAmount(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');*@
         },
         type: 'key-value-list',
         source: uacs_data,

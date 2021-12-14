@@ -251,9 +251,10 @@ namespace fmis.Controllers.Budget.John
 
 
         // GET: FundSource/Delete/5
-        public async Task<IActionResult> Delete(int? id, int? BudgetId)
+        public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
         {
             ViewBag.BudgetId = BudgetId;
+            ViewBag.budget_id = budget_id;
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id == null)

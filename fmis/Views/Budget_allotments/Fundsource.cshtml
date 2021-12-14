@@ -61,19 +61,8 @@
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+            
+            
         </div>
     </div>
 </div>
@@ -129,7 +118,7 @@
     <td>
         <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)" >Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
     </td>
     <td>
         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
@@ -161,6 +150,18 @@
                 $("#fund_source_create").html(result);
             }, 500);
          });
+    }
+
+     function deleteFundSource(budget_id) {
+         $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_delete").html(loading);
+         var url = '@Url.Action("Delete", "FundSource")';
+         url += "?budget_id=" + budget_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#fund_source_delete").html(result);
+            }, 500);
+         });
      }
 
     function getEditFundSource(budget_id, fund_source_id) {
@@ -174,6 +175,8 @@
             }, 500);
          });
     }
+
+
 
     let generate_token = () => {
         let s4 = () => {
