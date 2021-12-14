@@ -309,7 +309,7 @@ namespace fmis.Controllers.Budget.John
             await _context.SaveChangesAsync();
             /*return RedirectToAction(nameof(Index));*/
             /*      return RedirectToAction("Fundsource", "Budget_allotments", new { id = fundSource.Budget_allotmentBudgetAllotmentId });*/
-            return RedirectToAction("Fundsource", "Budget_allotments", new { BudgetId = 1 });
+            return RedirectToAction("Fundsource", "Budget_allotments", new { budget_id = fundSource.Budget_allotmentBudgetAllotmentId });
         }
 
         private bool FundSourceExists(int id)
