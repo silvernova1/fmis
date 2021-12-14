@@ -39,7 +39,6 @@ namespace fmis.Controllers.Budget.John
             _MyDbContext = MyDbContext;
         }
 
-
         public class FundsourceamountData
         {
             public int FundSourceId { get; set; }
@@ -62,13 +61,10 @@ namespace fmis.Controllers.Budget.John
             public List<ManyId> many_token { get; set; }
         }
 
-
         // GET: FundSource
         public async Task<IActionResult> Index(int? id)
         {
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
             return View(await _context.FundSource.ToListAsync());
         }
 
@@ -106,8 +102,6 @@ namespace fmis.Controllers.Budget.John
 
             return View();
         }
-
-
 
         [HttpPost]
         public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
@@ -179,13 +173,10 @@ namespace fmis.Controllers.Budget.John
             .Where(f => f.status == "activated" && f.FundSourceId == fundsource.FundSourceId).ToList());
             ViewBag.temp = json;
 
-
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
 
-
             ViewBag.budget_id = budget_id;
-
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
@@ -248,7 +239,6 @@ namespace fmis.Controllers.Budget.John
 
             return RedirectToAction("Fundsource", "Budget_allotments", new { budget_id = fundSource.Budget_allotmentBudgetAllotmentId });
         }
-
 
         // GET: FundSource/Delete/5
         public async Task<IActionResult> Delete(int? id, int? BudgetId)

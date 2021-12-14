@@ -14,22 +14,18 @@
     Layout = null;
 }
 
-
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
 <form asp-action="Create">
-    <div style="margin:20px;">
-        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+    <input hidden type="text" id="funds_input_token" name="token" value="" />
+    <div >
+        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
-            <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source</h7>
+            <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Sub Allotment)</h7>
             <div class="pull-right">
                 <div class="btn-group">
-               @*     <input type="submit" value="Save" class="btn btn-success btn-xs" />
-        <a class="btn btn-danger btn-xs" asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.BudgetId">Exit</a>*@
-                    <input type="submit" id="btnsubmit" onclick="fundSourceToken; refreshPage()" value="Create" class="btn btn-success btn-xs" />
-                    <a class="btn btn-danger btn-xs" data-dismiss="modal" onclick="refreshPage()">Exit</a>
+                     <input type="submit" id="btnsubmit" onclick="fundSourceToken" value="Create" class="btn btn-success btn-xs" />
+                      <a class="btn btn-danger btn-xs" data-dismiss="modal" onclick="refreshPage()">Exit</a>
                 </div>
             </div>
         </div>
@@ -38,16 +34,18 @@
             <div class="col-md-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    @*<label asp-for="Prexc" class="control-label"></label>*@
+                   @* <label asp-for="Prexc" class="control-label"></label>*@
                     <label>Prexc:</label>
                     @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
                 </div>
                 <div class="form-group">
+                   @* <label asp-for="Suballotment_title" class="control-label"></label>*@
                     <label>Suballotment_title:</label>
                     <input asp-for="Suballotment_title" class="form-control" required>
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    @*<label asp-for="Description" class="control-label"></label>*@
                     <label>Description:</label>
                     <textarea asp-for="Description" class="form-control" required></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
@@ -55,6 +53,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
+                    @*<label asp-for="Suballotment_code" class="control-label"></label>*@
                     <label>Suballotment_code:</label>
                     <input asp-for="Suballotment_code" class="form-control" required />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
@@ -71,15 +70,11 @@
         <input type="hidden" id="FundSourceId" />
         <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
-
-
         <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
         <br />
-        <br />
-        <br />
         @*<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>*@
-        <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+        <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
         <br />
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
@@ -87,20 +82,13 @@
     </div>
 </form>
 
-@*<script>
-        $(document).ready(function () {
-            $('.prexc').select2();
-        });
-    </script*@>
-
 <script>
-    function refreshPage() {
-        window.location.reload();
-    }
+
+     var BudgetId = @ViewBag.budget_id;
 
     @*var sub_allotment_id = @ViewBag.FundsId;*@
-    var FundSourceId = @TempData["fundsId"];
-    var BudgetId = @ViewBag.BudgetId;
+   @* var FundSourceId = @TempData["fundsId"];
+    var BudgetId = @ViewBag.BudgetId;*@
 
   @*   var FundSourceId = @TempData["fundsId"];
     var BudgetId = @ViewBag.BudgetId;*@
