@@ -19,14 +19,18 @@
                 <div class="infobox-content grey">BEGINNING BALANCE</div>
             </div>
         </div>
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number">@ViewBag.totalbud</span>
+                <div class="infobox-content grey">BEGINNING BALANCE</div>
+            </div>
+        </div>
         <div class="infobox infobox-red">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
-            </div>
-
-            <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.totalbud</span>
-                <div class="infobox-content grey">REMAINING BALANCE</div>
             </div>
         </div>
     </div>
@@ -93,11 +97,14 @@
         <b class="red">0.00</b>
     </td>
     <td>
-        <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-BudgetId="@item.BudgetAllotmentId">
-            <i class="ace-icon fa fa-plus"></i>Sub-Allotment
+        <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-budget_id="@item.BudgetAllotmentId">
+            <i class="ace-icon fa fa-plus"></i>Sub Allotment
         </a>
         <br />
         <span class="grey">BB: </span>
+        @{ var beginningamount = (List<fmis.Models.Suballotment_amount>)ViewBag.Begquery; }
+
+        <b class="green">@beginningamount.FirstOrDefault(x => x.BudgetId == item.BudgetAllotmentId)?.Amount.ToString("C", new CultureInfo("en-PH"))</b>
         <b class="green">00</b>
         <br />
         <span class="grey">RB: </span>

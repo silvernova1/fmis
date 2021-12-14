@@ -22,7 +22,7 @@ namespace fmis.Models
         public float Beginning_balance { get; set; }
         public string token { get; set; }
         [ForeignKey("Prexc")]
-        public int Id { get; set; }
+        public int PrexcId { get; set; }
         public Prexc Prexc { get; set; }
         public Budget_allotment Budget_allotment { get; set; }
     }

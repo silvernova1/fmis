@@ -66,6 +66,7 @@
         </div>
     </div>
 </div>
+
 <p>
     <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm"  onclick="createFundSource(@ViewBag.budget_id)">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -121,7 +122,7 @@
         <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
     </td>
     <td>
-        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+        <a asp-controller="FundsRealignment" asp-route-sub_allotment_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
     </td>
     <td>
         @{ var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query; }
