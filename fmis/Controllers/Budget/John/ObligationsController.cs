@@ -117,7 +117,7 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation");
@@ -145,13 +145,14 @@ namespace fmis.Controllers
             });
             var json = JsonSerializer.Serialize(obligations.ToList());
             ViewBag.temp = json;
-            /*var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.Select(x => x.FundSourceTitle)
-                        .Union(_MyDbContext.Sub_allotment.Select(x => x.Suballotment_title)).ToListAsync());*/
-            var fundsource_data = _MyDbContext.FundSources.Select(x => new { Table = "Fundsource", Id = x.FundSourceId, Title = x.FundSourceTitle })
-                            .Union(_MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }));
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { Id = x.FundSourceId, Title = x.FundSourceTitle, Source = "Fundsource" })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { Id = y.SubId, Title = y.Suballotment_title, Source = "SubAllotment" });
+
+            /* var fundsource_data =  _MyDbContext.FundSources.Select(x => new { Table = "Fundsource" ,Id = x.FundSourceId, Title = x.FundSourceTitle })
+                             .Union( _MyDbContext.Sub_allotment.Select(x => new { Table = "SubAllotment", Id = x.SubId, Title = x.Suballotment_title }).ToList());*/
             return Json(fundsource_data);
-            /*ViewBag.fundsource = fundsource_data;
-            return View("~/Views/Budget/John/Obligations/Index.cshtml");*/
+            ViewBag.fundsource = fundsource_data;
+            return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
         // GET: Obligations/Details/5
