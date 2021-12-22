@@ -43,7 +43,7 @@ namespace fmis.Controllers.Budget.John
         {
             public int FundSourceId { get; set; }
             public string Account_title { get; set; }
-            public float Amount { get; set; }
+            public decimal Amount { get; set; }
             public int Id { get; set; }
             public string fundsource_amount_token { get; set; }
             public string fundsource_token { get; set; }
@@ -117,7 +117,6 @@ namespace fmis.Controllers.Budget.John
                 {
                     data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().Amount = item.Amount;
-                    data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().RemainingBalAmount = data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().Amount;
                     data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().status = "activated";
                     this._MyDbContext.SaveChanges();
                 }
@@ -130,7 +129,6 @@ namespace fmis.Controllers.Budget.John
                     fundsource.BudgetId = item.BudgetId;
                     fundsource.Account_title = item.Account_title;
                     fundsource.Amount = item.Amount;
-                    fundsource.RemainingBalAmount = fundsource.Amount;
                     fundsource.status = "activated";
                     fundsource.fundsource_amount_token = item.fundsource_amount_token;
                     fundsource.fundsource_token = item.fundsource_token;

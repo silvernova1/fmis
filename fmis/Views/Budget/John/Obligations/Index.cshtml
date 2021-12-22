@@ -22,6 +22,10 @@
         width: 750px;
     }
 
+    .wtHider {
+		margin-bottom: 50px;
+	}
+
 </style>
 
 <input type="hidden" class="obligation" value="@ViewBag.obligation_json">
@@ -55,8 +59,8 @@
 </div>
 
 <script>
-
-    var SOURCE_TITLE = "";
+	var SOURCE_TYPE= "";
+	var CHECK_AFTER_ROW = false;
 
     class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
         prepare(row, col, prop, td, value, cellProperties) {
@@ -98,7 +102,7 @@
 
                 if (index !== -1) {
 					value = this.htEditor.getDataAtRowProp(index, 'source_title');
-                    SOURCE_TITLE = value;
+                    SOURCE_TYPE = this.htEditor.getDataAtRowProp(index, 'source_type');
                 }
             }
             super.setValue(value);
@@ -202,43 +206,64 @@
 			data: { data: ajax_data },
 			success: function (output) {
 				$('#loading_modal').modal('hide');
-				console.log(output);
+				@*console.log(output);*@
 			}
 		});
 	}
 
 	var obligation = $.parseJSON($(".obligation").val());
-	console.log(obligation);
+	@*console.log(obligation);*@
     var fundsource = $.parseJSON($(".fundsource").val());
     var fundsource_data = [];
-    var fundsource_counter = 0;
-    $.each(fundsource, function () {
+	var fundsource_counter = 0;
+
+    @*var json_data = new Object();
+    json_data.source_id = 0;
+    json_data.source_title = "==Please Select==";
+	json_data.source_type = "";
+    fundsource_data[0] = json_data;*@
+
+	$.each(fundsource, function () {
 		var json_data = new Object();
-        json_data.source_id = this.source_id;
+		json_data.source_id = this.source_id;
 		json_data.source_title = this.source_title;
 		json_data.source_type = this.source_type;
 		fundsource_data[fundsource_counter] = json_data;
-			fundsource_counter++;
-		})
-	console.log(fundsource_data);
-
+		fundsource_counter++;
+	});
 
 	const data = [];
 	var counter = 0;
 	$.each(obligation, function () {
-		data[counter] = [this.source_title, this.Date, this.Dv, this.Pr_no, this.Po_no, this.Payee, this.Address, this.Particulars, this.Ors_no, this.Gross, this.Created_by, this.Date_recieved, this.Time_recieved, this.Date_released, this.Time_released, this.Id, this.token]
+		data[counter] = [
+			this.source_id, //0
+			this.Date, //2
+			this.Dv, //3
+			this.Pr_no, //4
+			this.Po_no, //5
+			this.Payee, //6
+			this.Address, //7
+			this.Particulars, //8
+			this.Ors_no, //9
+			this.Gross, //10
+			this.Created_by, //11
+			this.Date_recieved, //12
+			this.Time_recieved, //13
+			this.Date_released, //14
+			this.Time_released, //15
+			this.Id, //16
+			this.obligation_token //17
+		]
 		counter++;
 	})
-	const searchField = document.querySelector('#search_field2');
-	const button = document.querySelector('#export-file');
 	const container = document.getElementById('example');
 	const hot = new Handsontable(container, {
 		data: data,
 		rowHeaders: true,
+		colHeaders: true,
 		className: 'as-you-type-demo',
 		filters: true,
-		width:'auto',
-		height: '300px',
+		stretchH: 'all',
 		afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
@@ -247,12 +272,13 @@
 				this.deselectCell();
 			}
 		},
-        colWidths: [210,100,70,70,100,100,150,150,100,100,100,100,100,100,100,100],
-		manualColumnResize: true,
+		colWidths: [210, 100, 70, 70, 100, 100, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100],
+		height: 'auto',
         colHeaders: ['FUND SOURCE & SUB ALLOTMENT','DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'GROSS', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
+				
 			},
 			{
 				//DATE
@@ -327,7 +353,7 @@
 				correctFormat: true
 			},
 			{
-				
+
 			},
 			{
 
@@ -355,19 +381,26 @@
 						$(".ObligationContent").html(loading);
 						var selection = this.getSelected();
 						var holder_data = this.getData();
-						var holder_id = holder_data[selection[0][0]][15]
+						var holder_id = holder_data[selection[0][0]][15];
+						var token = holder_data[selection[0][0]][16];
+                        console.log(token);
+                        console.log(holder_data);
 
 						$.ajax({
-						type: 'GET',
-						headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-						url: '@Url.Action("ObligationModal", "Obligations")',
-						data: { id: holder_id },
-						success: function (output) {
-							setTimeout(function () {
-								$(".ObligationContent").html(output);
-							}, 500);
-						}
-					});
+							type: 'GET',
+							headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+							url: '@Url.Action("ObligationModal", "Obligations")',
+							data: {
+								id: holder_id,
+								token: token
+							},
+							success: function (output) {
+								setTimeout(function () {
+									$(".ObligationContent").html(output);
+								}, 500);
+							}
+						});
+						@*console.log('@Url.Action("ObligationModal", "Obligations")' + "/" + holder_id + "?token=" + token);*@
 					}
 				}, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
 			}
@@ -377,14 +410,14 @@
 			var holder_data = this.getData();
 			var single_token = holder_data[selection[0][0]][16];
 
-			console.log(selection);
+			@*console.log(selection);
 			console.log(holder_data);
-			console.log(column);
+			console.log(column);*@
 
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
-			console.log(first_column);
-			console.log(last_column);
+			@*console.log(first_column);
+			console.log(last_column);*@
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
@@ -406,43 +439,73 @@
 
 		},
 		afterCreateRow: function (row, column) {
-			console.log(row);
-			console.log(column);
+			CHECK_AFTER_ROW = true;
 			hot.setDataAtCell(row, 16, guid());
 		},
-			afterChange: function (changes, source) {
-			if (source === 'loadData') {
+		afterChange: function (changes, source) {
+			if (source === 'loadData')
 				return;
-			}
-			console.log(changes);
-			var ajax_data = [];
-                console.log(hot.getSourceData());
-			$.each(hot.getSourceData(), function () {
-				ajax_data.push(
-					{
-						source_id: this[0] ? this[0] : "",
-						source_title: SOURCE_TITLE,
-						Date: this[1] ? this[1] : "",
-						Dv: this[2] ? this[2] : "",
-						Pr_no: this[3] ? this[3] : "",
-						Po_no: this[4] ? this[4] : "",
-						Payee: this[5] ? this[5] : "",
-						Address: this[6] ? this[6] : "",
-						Particulars: this[7] ? this[7] : "",
-						Ors_no: this[8] ? this[8] : "",
-						Gross: this[9] ? this[9] : "",
-						Created_by: this[10] ? this[10] : "",
-						Date_recieved: this[11] ? this[11] : "",
-						Time_recieved: this[12] ? this[12] : "",
-						Date_released: this[13] ? this[13] : "",
-						Time_released: this[14] ? this[14] : "",
-						Id: this[15] ? this[15] : "",
-						token: this[16]
-					}
-				);
-			});
 
-			ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+			changes.forEach(([row, col, oldValue, newValue]) => {
+				if (col == 0) {
+					var ajax_data = [];
+                    ajax_data.push(
+                        {
+							source_id: hot.getDataAtCell(row, 0),
+							source_type: SOURCE_TYPE,
+                            Date: hot.getDataAtCell(row, 1),
+                            Dv: hot.getDataAtCell(row, 2),
+                            Pr_no: hot.getDataAtCell(row, 3),
+                            Po_no: hot.getDataAtCell(row, 4),
+                            Payee: hot.getDataAtCell(row, 5),
+                            Address: hot.getDataAtCell(row, 6),
+                            Particulars: hot.getDataAtCell(row, 7),
+                            Ors_no: hot.getDataAtCell(row, 8),
+                            Gross: hot.getDataAtCell(row, 9),
+                            Created_by: hot.getDataAtCell(row, 10),
+                            Date_recieved: hot.getDataAtCell(row, 11),
+                            Time_recieved: hot.getDataAtCell(row, 12),
+                            Date_released: hot.getDataAtCell(row, 13),
+							Time_released: hot.getDataAtCell(row, 14),
+							obligation_token: hot.getDataAtCell(row, 16)
+                        }
+					);
+                    console.log(ajax_data);
+					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+				}
+				else {
+					var ajax_data = [];
+					$.each(hot.getSourceData(), function () {
+						ajax_data.push(
+							{
+								source_id: this[0] ? this[0] : "",
+								source_type: SOURCE_TYPE,
+								Date: this[1] ? this[1] : "",
+								Dv: this[2] ? this[2] : "",
+								Pr_no: this[3] ? this[3] : "",
+								Po_no: this[4] ? this[4] : "",
+								Payee: this[5] ? this[5] : "",
+								Address: this[6] ? this[6] : "",
+								Particulars: this[7] ? this[7] : "",
+								Ors_no: this[8] ? this[8] : "",
+								Gross: this[9] ? this[9] : "",
+								Created_by: this[10] ? this[10] : "",
+								Date_recieved: this[11] ? this[11] : "",
+								Time_recieved: this[12] ? this[12] : "",
+								Date_released: this[13] ? this[13] : "",
+								Time_released: this[14] ? this[14] : "",
+								obligation_token: this[16]
+							}
+						);
+					});
+					@*console.log(hot.getSourceData());*@
+                    if (!CHECK_AFTER_ROW)
+						ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+
+					CHECK_AFTER_ROW =  false;
+					return;
+				}
+            });
 		},
 		type: 'key-value-list',
 		source: fundsource_data,
@@ -452,9 +515,10 @@
 		},
 		licenseKey: 'non-commercial-and-evaluation',
 
+
 	});
 
 	var tableData = JSON.stringify(hot.getSourceData());
-	console.log(hot.getSourceData());
+@*	console.log(hot.getSourceData());*@
 
 </script>

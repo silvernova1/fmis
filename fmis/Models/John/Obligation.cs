@@ -10,12 +10,10 @@ namespace fmis.Models
     {
         public int Id { get; set; }
         public int source_id { get; set; }
-        public string source_title { get; set; }
         public string source_type { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
-
         public string Dv { get; set; }
         public string Pr_no { get; set; }
         public string Po_no { get; set; }
@@ -44,7 +42,7 @@ namespace fmis.Models
         public DateTime Time_released { get; set; }
 
         public string status { get; set; }
-        public string token { get; set; }
+        public string obligation_token { get; set; }
 
 
     }

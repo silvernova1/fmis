@@ -63,8 +63,7 @@ namespace fmis.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<float>(type: "real", nullable: false),
-                    RemainingBalAmount = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     fundsource_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -111,31 +110,12 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Obligated_amount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Obligation_id = table.Column<int>(type: "int", nullable: false),
-                    Expense_Title = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<float>(type: "real", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Obligated_amount", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Obligation",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     source_id = table.Column<int>(type: "int", nullable: false),
-                    source_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     source_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Dv = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -152,11 +132,34 @@ namespace fmis.Migrations
                     Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Obligation", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ObligationAmount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ObligationId = table.Column<int>(type: "int", nullable: false),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Total_disbursement = table.Column<float>(type: "real", nullable: false),
+                    Total_net_amount = table.Column<float>(type: "real", nullable: false),
+                    Total_tax_amount = table.Column<float>(type: "real", nullable: false),
+                    Total_others = table.Column<float>(type: "real", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    obligation_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ObligationAmount", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -246,25 +249,19 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Uacsamount",
+                name: "Uacs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    UacsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ObligationId = table.Column<int>(type: "int", nullable: false),
-                    UacsId = table.Column<int>(type: "int", nullable: false),
-                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
-                    Amount = table.Column<float>(type: "real", nullable: false),
-                    Total_disbursement = table.Column<float>(type: "real", nullable: false),
-                    Total_net_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_tax_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_others = table.Column<float>(type: "real", nullable: false),
+                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Uacsamount", x => x.Id);
+                    table.PrimaryKey("PK_Uacs", x => x.UacsId);
                 });
 
             migrationBuilder.CreateTable(
@@ -312,29 +309,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Uacs",
-                columns: table => new
-                {
-                    UacsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Obligated_amountId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Uacs", x => x.UacsId);
-                    table.ForeignKey(
-                        name: "FK_Uacs_Obligated_amount_Obligated_amountId",
-                        column: x => x.Obligated_amountId,
-                        principalTable: "Obligated_amount",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Designation",
                 columns: table => new
                 {
@@ -362,30 +336,6 @@ namespace fmis.Migrations
                         principalTable: "Requesting_office",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Budget_allotment",
-                columns: table => new
-                {
-                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Allotment_series = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Allotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Budget_allotment", x => x.BudgetAllotmentId);
-                    table.ForeignKey(
-                        name: "FK_Budget_allotment_Yearly_reference_YearlyReferenceId",
-                        column: x => x.YearlyReferenceId,
-                        principalTable: "Yearly_reference",
-                        principalColumn: "YearlyReferenceId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -436,6 +386,30 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Budget_allotment",
+                columns: table => new
+                {
+                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Allotment_series = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Allotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Budget_allotment", x => x.BudgetAllotmentId);
+                    table.ForeignKey(
+                        name: "FK_Budget_allotment_Yearly_reference_YearlyReferenceId",
+                        column: x => x.YearlyReferenceId,
+                        principalTable: "Yearly_reference",
+                        principalColumn: "YearlyReferenceId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FundSource",
                 columns: table => new
                 {
@@ -447,8 +421,9 @@ namespace fmis.Migrations
                     Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
                     PrexcId = table.Column<int>(type: "int", nullable: false),
-                    Beginning_balance = table.Column<float>(type: "real", nullable: false),
-                    Remaining_balance = table.Column<float>(type: "real", nullable: false),
+                    Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -605,11 +580,6 @@ namespace fmis.Migrations
                 name: "IX_SummaryReport_UacsId",
                 table: "SummaryReport",
                 column: "UacsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Uacs_Obligated_amountId",
-                table: "Uacs",
-                column: "Obligated_amountId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -642,6 +612,9 @@ namespace fmis.Migrations
                 name: "Obligation");
 
             migrationBuilder.DropTable(
+                name: "ObligationAmount");
+
+            migrationBuilder.DropTable(
                 name: "Personal_Information");
 
             migrationBuilder.DropTable(
@@ -658,9 +631,6 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "SummaryReport");
-
-            migrationBuilder.DropTable(
-                name: "Uacsamount");
 
             migrationBuilder.DropTable(
                 name: "Utilization");
@@ -682,9 +652,6 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Yearly_reference");
-
-            migrationBuilder.DropTable(
-                name: "Obligated_amount");
         }
     }
 }

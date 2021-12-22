@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<fmis.Models.Budget_allotment>
 @using System.Globalization;
 @{ ViewData["Title"] = "Index";
-                Layout = "~/Views/Shared/_Layout.cshtml"; }
+Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <h3 class="grey lighter smaller">
     Budget Allotments
@@ -15,24 +15,37 @@
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_beginning_balance"></span>
-                <div class="infobox-content grey">BEGINNING BALANCE</div>
+                <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color:grey;"> </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-orange2">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_utilization_amount" style="font-size:11pt; color:grey;"></span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Utilization Balance </span>
+                </div>
             </div>
         </div>
         <div class="infobox infobox-red">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
-
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_remaining_balance"></span>
-                <div class="infobox-content grey">REMAINING BALANCE</div>
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;"> </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
             </div>
         </div>
     </div>
     <div class="vspace-12-sm"></div>
 </div><!-- /.row -->
-
 <br />
 <br />
 <br />
@@ -65,8 +78,9 @@
     </thead>
     <tbody>
         @{ 
-            float total_beginning_balance = 0;
-            float total_remaining_balance = 0;
+            decimal total_beginning_balance = 0;
+            decimal total_remaining_balance = 0;
+            decimal total_utilization_amount = 0;
         }
         @foreach (var item in Model)
         {
@@ -89,18 +103,28 @@
                 </a>
                 <br />
                 <span class="grey">BB: </span>
-                @{ 
+                @{
                     var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance);
                     total_beginning_balance += beginning_balance;
                 }
                 <b class="green">@beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
                 <br />
+
+                <span class="grey">UB: </span>
+                         @{
+                             var utilization_amount = item.FundSources.Sum(x => x.utilization_amount);
+                             total_utilization_amount += utilization_amount;
+                }
+                <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                <br />
                 <span class="grey">RB: </span>
-                @{ 
+                @{
                     var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
                     total_remaining_balance += remaining_balance;
                 }
                 <b class="red">@remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+
+
             </td>
             <td>
                 <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-BudgetId="@item.BudgetAllotmentId">
@@ -108,7 +132,10 @@
                 </a>
                 <br />
                 <span class="grey">BB: </span>
-                <b class="green">00</b>
+                <b class="green">0.00</b>
+                <br />
+                <span class="grey">UB: </span>
+                <b class="orange">0.00</b>
                 <br />
                 <span class="grey">RB: </span>
                 <b class="red">0.00</b>
@@ -129,5 +156,6 @@
 
 <script>
     $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_utilization_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 </script>
