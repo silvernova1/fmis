@@ -3,15 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+<<<<<<< HEAD:fmis/Migrations/20211222062414_MyDb.Designer.cs
+    [Migration("20211222062414_MyDb")]
+=======
+    [Migration("20211214111549_MyDb")]
+>>>>>>> 5f255945c5e08238a5b7b61fe9a25684c8b90307:fmis/Migrations/20211214111549_MyDb.Designer.cs
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +65,6 @@ namespace fmis.Migrations
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Code2")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -70,12 +73,6 @@ namespace fmis.Migrations
 
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
-
-                    b.Property<int>("active")
-                        .HasColumnType("int");
-
-                    b.Property<string>("year")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BudgetAllotmentId");
 
@@ -236,13 +233,8 @@ namespace fmis.Migrations
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-                    b.Property<string>("type")
-                        .HasColumnType("nvarchar(max)");
-=======
                     b.Property<decimal>("utilization_amount")
                         .HasColumnType("decimal(18,2)");
->>>>>>> 0caad4faf366ea7515e3cbf9287156b4965ec3c9
 
                     b.HasKey("FundSourceId");
 
@@ -609,7 +601,7 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("PrexcId")
                         .HasColumnType("int");
 
                     b.Property<string>("Prexc_code")
@@ -634,7 +626,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("PrexcId")
                         .IsUnique();
 
                     b.ToTable("Sub_allotment");
@@ -917,7 +909,7 @@ namespace fmis.Migrations
 
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithOne("Sub_Allotment")
-                        .HasForeignKey("fmis.Models.Sub_allotment", "Id")
+                        .HasForeignKey("fmis.Models.Sub_allotment", "PrexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -21,8 +21,9 @@ namespace fmis.Models.John
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         public Prexc Prexc { get; set; }
-        public float Beginning_balance { get; set; }
-        public float Remaining_balance { get; set; }
+        public decimal Beginning_balance { get; set; }
+        public decimal Remaining_balance { get; set; }
+        public decimal utilization_amount { get; set; }
         public string token { get; set; }
 
 

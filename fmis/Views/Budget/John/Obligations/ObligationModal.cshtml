@@ -36,7 +36,7 @@
                 <td class="col-sm-1"><strong>Fund Source</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                  @*  @Html.DisplayFor(model => model.Fund_source)*@
+                  @*  @Html.DisplayFor(model => model.source_title)*@
                 </td>
             </tr>
             <tr>
@@ -62,10 +62,10 @@
     </table>
 </form>
 
-<input type="hidden" class="uacsamount" value="@ViewBag.temp">
+<input type="hidden" class="obligation_amount_data" value="@ViewBag.obligation_amount">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-<div id="uacs_amount" class="hot handsontable htColumnHeaders"></div>
+<div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
@@ -169,7 +169,7 @@
 
 
     var obligation_id = @Html.DisplayFor(model => model.Id);
-    let guid = () => {
+    let generateObligationAmountToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -190,22 +190,22 @@
             }
         });
     }
-    var uacsamount = $.parseJSON($(".uacsamount").val());
-    const data = [];
+    var obligationamount = $.parseJSON($(".obligation_amount_data").val());
+    const obligation_amount_handsontable = [];
     var counter = 0;
     var obligation_amount = 0;
 
-    $.each(uacsamount, function () {
-        data[counter] = [this.UacsId, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.token]
+    $.each(obligationamount, function () {
+        obligation_amount_handsontable[counter] = [this.UacsId, this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.Id, this.obligation_token, this.obligation_amount_token]
         counter++;
         obligation_amount += this.Amount;
     })
     $(".obligation_amount").html(obligation_amount);
+    console.log(obligation_amount_handsontable);
 
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data = []
     var uacs_counter = 0;
-
     $.each(uacs, function () {
         var json_data = new Object();
         json_data._id = this.UacsId;
@@ -215,151 +215,166 @@
         uacs_counter++;
     });
 
-    const container = document.getElementById('uacs_amount');
+    const container = document.getElementById('obligation_handsontable');
     const hot = new Handsontable(container, {
-    data: data,
-    rowHeaders: true,
-    colWidths: [300, 150, 150, 150, 150, 150, 150],
-    colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
-    columns: [
-        {
+        data: obligation_amount_handsontable,
+        rowHeaders: true,
+        colWidths: [300, 150, 150, 150, 150, 150, 150],
+        colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
+        columns: [
+            {
 
-        },
-        {
-            type: 'text',
-            readOnly: true,
-        },
-        {
-            type: 'numeric',
-            numericFormat: {
-                pattern: '0,0.00',
-                culture: 'en-Ph'
             },
-            allowEmpty: false
-        },
-        {
-            type: 'numeric',
-            numericFormat: {
-                pattern: '0,0.00',
-                culture: 'en-Ph'
+            {
+                type: 'text',
+                readOnly: true,
             },
-            allowEmpty: false
-        },
-        {
-            type: 'numeric',
-            numericFormat: {
-                pattern: '0,0.00',
-                culture: 'en-Ph'
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                allowEmpty: false
             },
-            allowEmpty: false
-        },
-        {
-            type: 'numeric',
-            numericFormat: {
-                pattern: '0,0.00',
-                culture: 'en-Ph'
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                allowEmpty: false
             },
-            allowEmpty: false
-        },
-        {
-            type: 'numeric',
-            numericFormat: {
-                pattern: '0,0.00',
-                culture: 'en-Ph'
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                allowEmpty: false
             },
-            allowEmpty: false
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                allowEmpty: false
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                allowEmpty: false
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: '250px',
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][8];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][8]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+               @* console.log(ajax_data);*@
+                ajaxServerAmount(ajax_data,'@Url.Action("DeleteObligationAmount", "ObligationAmount")');
+            }
         },
-        {
-            //HIDDEN ID
+        afterUndo: function (index, column) {
         },
-        {
-            //HIDDEN TOKEN
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 7, @ViewBag.obligation_token);
+            hot.setDataAtCell(row, 8, generateObligationAmountToken());
         },
-    ],
-    stretchH: 'all',
-    height: '250px',
-    contextMenu: ['row_above', 'row_below', 'remove_row'],
-    beforeRemoveRow: function (index, column) {
-        var selection = this.getSelected();
-        var holder_data = this.getData();
-        var single_token = holder_data[selection[0][0]][8];
-        console.log(selection);
-        console.log(holder_data);
-        console.log(column);
-        var first_column = selection[0][0];
-        var last_column = selection[0][2];
-        console.log(first_column);
-        console.log(last_column);
-        var many_token = [];
-        for (var j = first_column; j <= last_column; j++) {
-            many_token.push({
-                many_token: holder_data[j][8]
-            })
-        }
-        if (single_token) {
-            var ajax_data = {
-                "single_token": single_token,
-                "many_token": many_token,
-            };
-            console.log(ajax_data);
-            ajaxServerAmount(ajax_data,'@Url.Action("DeleteUacsamount", "Uacsamounts")');
-        }
-    },
-    afterUndo: function (index, column) {
-    },
-    afterCreateRow: function (row, column) {
-        console.log(row);
-        console.log(column);
-        hot.setDataAtCell(row, 8, guid());
-    },
-    afterChange(changes) {
-        if (!changes) {
-            return;
-        }
-        changes.forEach(([row, col, oldValue, newValue]) => {
+        afterChange(changes) { 
+            if (!changes) {
+                return;
+            }
+            changes.forEach(([row, col, oldValue, newValue]) => {
             if (exp_code == newValue)
                 return;
-            if (col == 0) {
-                var selection = this.getSelected();
-                var holder_data = this.getData();
-                var single_token = holder_data[selection[0][0]][8];
-                var ajax_data = [];
-                $(".obligation_amount").html();
-                obligation_amount = 0;
-                hot.setDataAtCell(row, col + 1, exp_code);
-                ajax_data.push({
-                    ObligationId: obligation_id,
-                    //UacsId: this.getDataAtCell(changes[0][0], changes[0][1]),
-                    UacsId: hot.getDataAtCell(row, col),
-                    Expense_code: hot.getDataAtCell(row, col + 1),
-                    Amount: this[2] = "",
-                    Total_disbursement: 0,
-                    Total_net_amount: 0,
-                    Total_tax_amount: 0,
-                    Total_others: 0,
-                    Id: 0,
-                    token: single_token
-                });
-
-                console.log(ajax_data);
-                $(".obligation_amount").html(obligation_amount);
-                ajaxServerAmount(ajax_data, '@Url.Action("SaveUacsamount", "Uacsamounts")');
-
-            }
-
-        });
+                if (col == 0) {
+                    var ajax_data = [];
+                    $(".obligation_amount").html();
+                    obligation_amount = 0;
+                    hot.setDataAtCell(row, col + 1, exp_code);
+                    ajax_data.push({
+                        ObligationId: obligation_id,
+                        UacsId: hot.getDataAtCell(row, col),
+                        Expense_code: hot.getDataAtCell(row, col + 1),
+                        Amount: hot.getDataAtCell(row, col + 2),
+                        Total_disbursement: 0,
+                        Total_net_amount: 0,
+                        Total_tax_amount: 0,
+                        Total_others: 0,
+                        obligation_token: hot.getDataAtCell(row, col + 8),
+                        obligation_amount_token: hot.getDataAtCell(row, col + 9)
+                    });
+                    console.log(ajax_data);
+                    $(".obligation_amount").html(obligation_amount);
+                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                }
+                else {
+                    var ajax_data = [];
+                    $.each(hot.getSourceData(), function () {
+                        ajax_data.push({
+                            ObligationId: obligation_id,
+                            UacsId: this[0] ? this[0] : "",
+                            Expense_code: this[1] ? this[1] : "",
+                            Amount: this[2] ? this[2] : "",
+                            Total_disbursement: this[3] ? this[3] : "",
+                            Total_net_amount: this[4] ? this[4] : "",
+                            Total_tax_amount: this[5] ? this[5] : "",
+                            Total_others: this[6] ? this[6] : "",
+                            obligation_token: this[7] ? this[7] : "",
+                            obligation_amount_token: this[8] ? this[8] : "",
+                        });
+                    });
+                    console.log(hot.getSourceData());
+                    console.log(ajax_data);
+                    $(".obligation_amount").html(obligation_amount);
+                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                }   
+            });
         },
         type: 'key-value-list',
         source: uacs_data,
-    hiddenColumns: {
-        columns: [7,8],
-        indicators: true
-    },
-    licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-  });
+        hiddenColumns: {
+            columns: [7,8],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
 
-  var tableData = JSON.stringify(hot.getSourceData());
-@*    console.log(hot.getSourceData());
-*@
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
 
 </script>

@@ -40,9 +40,22 @@
 <br />
 <br />
 <br />
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-lg" style="width:50%;">
+<div class="modal" id="createModal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+            <div class="modal-body" id="sub_allotment_create">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="sub_allotment_create_edit">
+
+            </div>
         </div>
     </div>
 </div>
@@ -50,26 +63,16 @@
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+
+
         </div>
     </div>
 </div>
+
 <p>
-    <a asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" asp-route-BudgetId="@ViewBag.BudgetId" data-toggle="modal" data-target="#myModal">
-        <i class="ace-icon fa fa-plus "></i> Create New
-    </a> |
+    <button type="button" asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@ViewBag.budget_id)">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </button> |
     <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
@@ -102,7 +105,7 @@
     </thead>
     <tbody>
        @foreach (var item in Model.Sub_allotments)
-        {
+       {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Suballotment_code)
@@ -114,26 +117,24 @@
                 @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
             </td>
             <td>
-                <a asp-controller="Sub_allotment" asp-action="Edit" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+                <button class="btn btn-primary btn-sm" onclick="getEditSub_allotment(@ViewBag.budget_id,@item.SubId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
+
+                <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
             </td>
             <td>
-                @*<a asp-controller="SubAllotment_Realignment" asp-action="Index" asp-route-id="@item.SubId" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a*@>
-                <a asp-controller="SubAllotment_Realignment" asp-route-fundsource_id="@item.SubId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
+                <a asp-controller="SubAllotment_Realignment" asp-route-fundsource_id="@item.SubId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
             </td>
             <td>
-                @{
-                    var Amount = (List<fmis.Models.Suballotment_amount>)ViewBag.Begquery;
-                }
-                <span>@Amount.FirstOrDefault(x => x.Id == item.Id)?.Amount.</span>
+                @{ var amount = (List<fmis.Models.Suballotment_amount>)ViewBag.Query; }
+                <span>@amount.FirstOrDefault(x => x.Id == item.PrexcId)?.Amount</span>
             </td>
             <td>
                 <b class="red">
-                    @{
+                   @* @{
                         var Remainingsubamount = (List<fmis.Models.Suballotment_amount>)ViewBag.Remquery;
                     }
-                    <span>@Remainingsubamount.FirstOrDefault(x => x.Id == item.Id)?.Remainingsubamount</span>
+                    <span>@Remainingsubamount.FirstOrDefault(x => x.Id == item.Id)?.Remainingsubamount</span>*@
                 </b>
             </td>
 
@@ -143,15 +144,57 @@
     </tbody>
 </table>
 
-@*<script type="text/javascript">
-    function getOption(data) {
-        var item_id = data.get(0).id;
-        var complaint_id = data.get(0).value;
-        var url = '@Url.Action("Sub_allotment", "Budget_allotments")' + "?id=" + item_id + "&ComplainStatus=" + complaint_id;
+<script>
 
-        $.get(url, function (result) {
-            console.log(result)
-        });
+    function createSub_allotment(budget_id) {
+         $("#createModal").modal({ backdrop: 'static', keyboard: false });
+         $("#sub_allotment_create").html(loading);
+         var url = '@Url.Action("Create", "Sub_allotment")';
+         url += "?budget_id=" + budget_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#sub_allotment_create").html(result);
+            }, 500);
+         });
+    }
+
+    function deleteSub_allotment(budget_id) {
+         $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
+         $("#sub_allotment_delete").html(loading);
+         var url = '@Url.Action("Delete", "Sub_allotment")';
+         url += "?budget_id=" + budget_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#sub_allotment_delete").html(result);
+            }, 500);
+         });
+     }
+
+    function getEditSub_allotment(budget_id, sub_allotment_id) {
+         $("#editModal").modal({ backdrop: 'static', keyboard: false });
+        $("#sub_allotment_edit").html(loading);
+         var url = '@Url.Action("Edit", "Sub_allotment")';
+        url += "?budget_id=" + budget_id + "&sub_allotment_id=" + sub_allotment_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#sub_allotment_edit").html(result);
+            }, 500);
+         });
+    }
+
+
+
+    let generate_token = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function subAllotmentToken() {
+        suballotment_token = generate_token();
+        $("#subs_input_token").val(suballotment_token);
     }
 </script>
-*@

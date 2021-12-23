@@ -18,14 +18,21 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="Migrations\20211214061940_MyDb.cs" />
     <Compile Include="Migrations\20211214061940_MyDb.Designer.cs" />
     <Compile Include="Migrations\20211221052442_ChangesforReport.cs" />
     <Compile Include="Migrations\20211221052442_ChangesforReport.Designer.cs" />
+=======
+<<<<<<< HEAD
+    <Compile Include="Migrations\20211222062414_MyDb.cs" />
+    <Compile Include="Migrations\20211222062414_MyDb.Designer.cs" />
+>>>>>>> 0caad4faf366ea7515e3cbf9287156b4965ec3c9
     <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <WrapperTool>tlbimp</WrapperTool>
       <VersionMinor>9</VersionMinor>
@@ -38,6 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
+=======
+=======
+>>>>>>> 5f255945c5e08238a5b7b61fe9a25684c8b90307
+>>>>>>> 0caad4faf366ea7515e3cbf9287156b4965ec3c9
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="bootstrap" Version="5.0.2" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />
@@ -90,8 +101,12 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Folder Include="excel_reports\" />
     <Folder Include="rpt_saob\" />
+=======
+    <Folder Include="Migrations\" />
+>>>>>>> 0caad4faf366ea7515e3cbf9287156b4965ec3c9
     <Folder Include="ViewBag\" />
     <Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
     <Folder Include="wwwroot\Rotativa\" />

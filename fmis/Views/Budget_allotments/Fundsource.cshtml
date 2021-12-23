@@ -15,25 +15,43 @@
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-money"></i>
             </div>
-
             <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.sumfunds</span>
-                <div class="infobox-content">Beginning Balance</div>
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @ViewBag.beginning_balance
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+                </div>
             </div>
         </div>
-
+        <div class="infobox infobox-orange2">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @ViewBag.utilization_amount
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Utilization Balance </span>
+                </div>
+            </div>
+        </div>
         <div class="infobox infobox-red">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
-
             <div class="infobox-data">
-                <span class="infobox-data-number">@ViewBag.sumfunds</span>
-                <div class="infobox-content">Remaining Balance</div>
+                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                    @ViewBag.remaining_balance
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
             </div>
         </div>
-    </div><!-- /.widget-main -->
-</div><!-- /.widget-body -->
+    </div>
+</div>
 <br />
 <br />
 <br />
@@ -66,6 +84,7 @@
         </div>
     </div>
 </div>
+
 <p>
     <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm"  onclick="createFundSource(@ViewBag.budget_id)">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -96,6 +115,9 @@
                 Beginning Balance
             </th>
             <th>
+                Utilization Balance
+            </th>
+            <th>
                 Remaining Balance
             </th>
         </tr>
@@ -103,37 +125,42 @@
     <tbody>
         @foreach (var item in Model.FundSources)
         {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.FundSourceTitle)
-    </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FundSourceTitle)
+            </td>
 
-    <td>
-        @* @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
-        *@
-    </td>
-    <td>
-        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)" >Edit <span class="glyphicon glyphicon-edit"></span></button>
+            <td>
+                @* @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })
+                *@
+            </td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
-    </td>
-    <td>
-        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-    </td>
-    <td>
-        @{ var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query; }
-        <span>@amount.FirstOrDefault(x => x.Id == item.PrexcId)?.Amount</span>
-    </td>
-    <td>
-        <b class="red">
-           @* @{ var rembalamount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.rembal; }
-            <span>@rembalamount.FirstOrDefault(x => x.Id == item.PrexcId)?.RemainingBalAmount</span>*@
-        </b>
-    </td>
-</tr>
+                <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+            <td>
+                <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+            </td>
+            <td>
+                <b class="green">
+                    <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                </b>
+            </td>
+            <td>
+                <b class="orange">
+                    <span>@item.utilization_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                </b>
+            </td>
+            <td>
+                <b class="red">
+                    <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                </b>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
