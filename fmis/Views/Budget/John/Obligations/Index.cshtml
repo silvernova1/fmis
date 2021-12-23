@@ -411,13 +411,14 @@
 			hot.setDataAtCell(row, 16, guid());
 		},
 			afterChange: function (changes, source) {
-			if (source === 'loadData') {
+			if (source === 'loadData') 
 				return;
-			}
-			console.log(changes);
+			
+				console.log(changes);
+            var source_title = null;
 			var ajax_data = [];
                 console.log(hot.getSourceData());
-			$.each(hot.getSourceData(), function () {
+				$.each(hot.getSourceData(), function () {
 				ajax_data.push(
 					{
 						source_id: this[0] ? this[0] : "",
@@ -441,6 +442,27 @@
 					}
 				);
 			});
+
+
+                if (source_title == null) {
+                    Lobibox.alert("warning", {
+                        msg: "Select Fund Souce first",
+                        width: 350,
+                        sound: false,
+                    });
+
+                    changes.forEach(([row, col, oldValue, newValue]) => {
+                        if (oldValue == newValue)
+                            return;
+                        console.log(row);
+                        console.log(col);
+                        console.log(oldValue);
+                        console.log(newValue);
+                        hot.setDataAtCell(row, col, 0);
+                    });
+
+                    return;
+                }
 
 			ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 		},

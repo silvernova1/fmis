@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211214052459_MyDb")]
-    partial class MyDb
+    [Migration("20211221052442_ChangesforReport")]
+    partial class ChangesforReport
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,6 +61,9 @@ namespace fmis.Migrations
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -69,6 +72,12 @@ namespace fmis.Migrations
 
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
+
+                    b.Property<int>("active")
+                        .HasColumnType("int");
+
+                    b.Property<string>("year")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BudgetAllotmentId");
 
@@ -227,6 +236,9 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FundSourceId");
