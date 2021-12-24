@@ -165,22 +165,23 @@ namespace fmis.Controllers
 
         [HttpGet]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ObligationModal(int id,string obligation_token)
+        public async Task<IActionResult> openObligationAmount(int id,string obligation_token)
         {
             var obligation_amount = _Ucontext.ObligationAmount;
             var uacs_data = JsonSerializer.Serialize(await _UacsContext.Uacs.AsNoTracking().ToListAsync());
             ViewBag.uacs = uacs_data;
             ViewBag.obligation_token = obligation_token;
+           
 
             if (id != 0)
             {
                 ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.ObligationId == id && s.status == "activated").AsNoTracking().ToListAsync());
-                return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id));
+                return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id));
             }
             else 
             {
                 ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.obligation_token == obligation_token && s.status == "activated").AsNoTracking().ToListAsync());
-                return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.obligation_token == obligation_token));
+                return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.obligation_token == obligation_token));
             }
                 
         }
@@ -339,7 +340,7 @@ namespace fmis.Controllers
         // POST: Obligations/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteObligationModal(DeleteData data)
+        public async Task<IActionResult> DeleteObligation(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {
