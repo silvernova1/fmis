@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211221052442_ChangesforReport")]
+    partial class ChangesforReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,6 +61,9 @@ namespace fmis.Migrations
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -68,6 +73,7 @@ namespace fmis.Migrations
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
 
+<<<<<<< HEAD:fmis/Migrations/MyDbContextModelSnapshot.cs
                     b.Property<int>("fundstotal")
                         .HasColumnType("int");
 
@@ -76,6 +82,13 @@ namespace fmis.Migrations
 
                     b.Property<int>("substotal")
                         .HasColumnType("int");
+=======
+                    b.Property<int>("active")
+                        .HasColumnType("int");
+
+                    b.Property<string>("year")
+                        .HasColumnType("nvarchar(max)");
+>>>>>>> b473c288b2c6a435aa4a1b523d7135a6e473eaee:fmis/Migrations/20211221052442_ChangesforReport.Designer.cs
 
                     b.HasKey("BudgetAllotmentId");
 
@@ -209,8 +222,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Beginning_balance")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Beginning_balance")
+                        .HasColumnType("real");
 
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
@@ -227,8 +240,8 @@ namespace fmis.Migrations
                     b.Property<int>("PrexcId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Remaining_balance")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Remaining_balance")
+                        .HasColumnType("real");
 
                     b.Property<string>("Respo")
                         .HasColumnType("nvarchar(max)");
@@ -236,8 +249,8 @@ namespace fmis.Migrations
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("utilization_amount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("type")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FundSourceId");
 
@@ -258,14 +271,17 @@ namespace fmis.Migrations
                     b.Property<string>("Account_title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
+
+                    b.Property<float>("RemainingBalAmount")
+                        .HasColumnType("real");
 
                     b.Property<string>("fundsource_amount_token")
                         .HasColumnType("nvarchar(max)");
@@ -279,6 +295,36 @@ namespace fmis.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FundSourceAmount");
+                });
+
+            modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Expense_Title")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Obligation_id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Obligated_amount");
                 });
 
             modelBuilder.Entity("fmis.Models.Obligation", b =>
@@ -330,11 +376,11 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Time_released")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("obligation_token")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("source_id")
                         .HasColumnType("int");
+
+                    b.Property<string>("source_title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("source_type")
                         .HasColumnType("nvarchar(max)");
@@ -342,54 +388,12 @@ namespace fmis.Migrations
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Obligation");
-                });
-
-            modelBuilder.Entity("fmis.Models.ObligationAmount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<long>("Expense_code")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ObligationId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Total_disbursement")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Total_net_amount")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Total_others")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Total_tax_amount")
-                        .HasColumnType("real");
-
-                    b.Property<int>("UacsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("obligation_amount_token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("obligation_token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ObligationAmount");
                 });
 
             modelBuilder.Entity("fmis.Models.Ors_head", b =>
@@ -680,6 +684,9 @@ namespace fmis.Migrations
                     b.Property<string>("Expense_code")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Obligated_amountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -688,7 +695,51 @@ namespace fmis.Migrations
 
                     b.HasKey("UacsId");
 
+                    b.HasIndex("Obligated_amountId");
+
                     b.ToTable("Uacs");
+                });
+
+            modelBuilder.Entity("fmis.Models.Uacsamount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<long>("Expense_code")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ObligationId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Total_disbursement")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_net_amount")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_others")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_tax_amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("UacsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Uacsamount");
                 });
 
             modelBuilder.Entity("fmis.Models.Utilization", b =>
@@ -917,6 +968,13 @@ namespace fmis.Migrations
                     b.Navigation("prexc");
                 });
 
+            modelBuilder.Entity("fmis.Models.Uacs", b =>
+                {
+                    b.HasOne("fmis.Models.Obligated_amount", null)
+                        .WithMany("Uacs")
+                        .HasForeignKey("Obligated_amountId");
+                });
+
             modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
                 {
                     b.HasOne("fmis.Models.Uacs", "Uacs")
@@ -935,6 +993,19 @@ namespace fmis.Migrations
                     b.Navigation("Sub_allotments");
                 });
 
+<<<<<<< HEAD:fmis/Migrations/MyDbContextModelSnapshot.cs
+=======
+            modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
+                {
+                    b.Navigation("Uacs");
+                });
+
+            modelBuilder.Entity("fmis.Models.Prexc", b =>
+                {
+                    b.Navigation("Sub_Allotment");
+                });
+
+>>>>>>> b473c288b2c6a435aa4a1b523d7135a6e473eaee:fmis/Migrations/20211221052442_ChangesforReport.Designer.cs
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("SubAllotment_Realignment");

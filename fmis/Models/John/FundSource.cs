@@ -31,6 +31,11 @@ namespace fmis.Models.John
         /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
 
 
+        //ADDITIONAL FILEDS BASED ON OLD BUDGET SYSTEM
+
+        public String type { get; set; }
+
+
 
     }
 }

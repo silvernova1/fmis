@@ -36,7 +36,13 @@ namespace fmis.Models
         /*public IList<FundSource> FundSource { get; set; }*/
 
 
-        
+        //ADDITIONAL FIELDS BASED ON OLD BUDGET SYSTEM
+
+        public String year { get; set; }
+        public Int32 active { get; set; }
+        public String Code2 { get; set; }
+
+
 
     }
 }
