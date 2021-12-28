@@ -16,18 +16,17 @@
 }
 
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <form asp-action="Create">
-    <div style="margin:20px;">
-        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+    <input hidden type="text" id="funds_input_token" name="token" value="" />
+    <div>
+        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Fund Source)</h7>
             <div class="pull-right">
                 <div class="btn-group">
-                    <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-xs" />
-                    <a class="btn btn-danger btn-xs" asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.BudgetId">Exit</a>
+                    <input type="submit" id="btnsubmit" onclick="fundSourceToken " value="Create" class="btn btn-success btn-xs" />
+                    <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
                 </div>
             </div>
         </div>
@@ -37,7 +36,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label>Prexc:</label>
-                    @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+                    @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
                 </div>
                 <div class="form-group">
                     <label>FundSource Title:</label>
@@ -68,7 +67,7 @@
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
         <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-        <div id="fundsource_amount" class="hot handsontable htColumnHeaders"></div>
+        <div id="fundsource_amount_create" class="hot handsontable htColumnHeaders"></div>
         <br />
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
@@ -77,18 +76,18 @@
 </form>
 
 <script>
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2();
+    });
+</script>
 
-    var FundSourceId = @TempData["fundsId"];
-    var BudgetId = @ViewBag.BudgetId;
+<script>
 
-        let guid = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
+    var BudgetId = @ViewBag.budget_id;
+
+    var fundsource_token = generate_token();
+
+    $("#funds_input_token").val(fundsource_token);
 
     function ajaxServer(ajax_data, url) {
         $.ajax({
@@ -103,18 +102,10 @@
         });
     }
 
-
-    var fundsourceamount = $.parseJSON($(".fundsourceamount").val());
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
-    $.each(fundsourceamount, function () {
-        data[counter] = [this.Account_title, this.Amount, this.Id, this.token]
-        counter++;
-        obligation_amount += this.Amount;
-    })
 
-    $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     const uacs_data = [];
     var uacs_counter = 0;
@@ -125,7 +116,7 @@
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
-    const container = document.getElementById('fundsource_amount');
+    const container = document.getElementById('fundsource_amount_create');
     const hot = new Handsontable(container, {
         data: data,
         rowHeaders: true,
@@ -138,12 +129,13 @@
                 source: uacs_data
             },
             {
+
             },
             {
-                //HIDDEN ID
+                //HIDDEN FUNDSOURCE TOKEN
             },
             {
-                //HIDDEN TOKEN
+                //HIDDEN FUNDSOURCE AMOUNT TOKEN
             },
         ],
         stretchH: 'all',
@@ -154,43 +146,41 @@
         contextMenu: ['row_above', 'row_below', 'remove_row'],
 
         beforeRemoveRow: function (index, column) {
-        var selection = this.getSelected();
-        var holder_data = this.getData();
-        var single_token = holder_data[selection[0][0]][3];
-        console.log(selection);
-        console.log(holder_data);
-        console.log(column);
-        var first_column = selection[0][0];
-        var last_column = selection[0][2];
-        console.log(first_column);
-        console.log(last_column);
-        var many_token = [];
-        for (var j = first_column; j <= last_column; j++) {
-            many_token.push({
-                many_token: holder_data[j][3]
-            })
-        }
-        if (single_token) {
-            var ajax_data = {
-                "single_token": single_token,
-                "many_token": many_token,
-            };
-            console.log(ajax_data);
-            ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
-        }
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][3];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][3]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+                console.log(ajax_data);
+                ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+            }
         },
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
-            console.log(row);
-            console.log(column);
-            hot.setDataAtCell(row, 3, guid());
+            console.log(generate_token());
+            hot.setDataAtCell(row, 3, generate_token());
         },
         afterChange: function (changes, source) {
             if (source === 'loadData') {
                 return; //don't save this change
             }
-            console.log(hot.getSourceData());
             console.log(changes);
             var ajax_data = [];
             $(".obligation_amount").html();
@@ -198,12 +188,12 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        FundSourceId: FundSourceId,
                         BudgetId: BudgetId,
                         Account_title: this[0],
                         Amount: this[1],
                         Id: this[2],
-                        token: this[3],
+                        fundsource_amount_token: this[3],
+                        fundsource_token: fundsource_token
                     }
                 );
                 obligation_amount += parseInt(this[1]);
@@ -222,37 +212,4 @@
     console.log(hot.getSourceData());
 
 
-    @*$(document).ready(function () {
-        $("#btnsubmit").click(function (e) {
-            $('#loading_modal').modal('show');
-            var json = [];
-            $.each(hot.getSourceData(), function () {
-                json.push({ Account_title: this[0], Amount: this[1], Id: this[2], FundSourceId: $('#FundSourceId').val() });
-            });
-            $(".obligation_amount").html();
-            obligation_amount = 0;
-            var valdata = $("#Create").serialize();
-            $.ajax({
-                url: '@Url.Action("SaveFundsourceamount", "FundSource")',
-                type: "POST",
-                dataType: 'json',
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                data: {
-                    data: json, valdata
-
-
-                },
-                success: function (output) {
-                    $('#loading_modal').modal('hide');
-                    Lobibox.notify("success", {
-                        msg: "Successfully Saved...",
-                        sound: false
-                    });
-                    console.log(output);
-                }
-
-            });
-            $(".obligation_amount").html(obligation_amount);
-        });
-    });*@
 </script>

@@ -12,10 +12,11 @@ namespace fmis.Models
         [Key]
         public int Id { get; set; }
         public string Expenses { get; set; }
-        /*public string Amount { get; set; }*/
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
+        /*public float Remainingsubamount { get; set; }*/
         public string status { get; set; }
-        public string token { get; set; }
+        public string suballotment_amount_token { get; set; }
+        public string suballotment_token { get; set; }
         public int FundSourceId { get; set; }
         public int BudgetId { get; set; }
 

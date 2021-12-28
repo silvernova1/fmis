@@ -28,10 +28,10 @@
         <div class="col-sm-2 infobox-container">
             <div class="infobox infobox-blue">
                 <div class="infobox-data">
-                        <span class="infobox-data-number ">@ViewBag.Rembal</span>
-                        <h6 class="infobox-content grey smaller">REMAINING BALANCE</h6>
+                   <span class="infobox-data-number ">@ViewBag.remaining_balance</span>
+                    <h6 class="infobox-content grey smaller">REMAINING BALANCE</h6>
                 </div>
-            </div>           
+            </div>
         </div>
     </div><!-- /.row -->
 </div>
@@ -165,7 +165,7 @@
     })
     $(".fundsource_amount").html(fundsource_amount);
 
-  
+
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data = []
     var uacs_counter = 0;
@@ -255,9 +255,9 @@
                 var remaining_balance = result;
             });*@
 
-            var remaining_balance = @ViewBag.Rembal;
+            var remaining_balance = @ViewBag.remaining_balance;
 
-            console.log(source);
+           console.log(source);
 
 
             var ajax_data = [];
@@ -313,8 +313,8 @@
 </script>
 
 <script>
-    
 
-    
+
+
 
 </script>

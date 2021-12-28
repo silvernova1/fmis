@@ -28,20 +28,18 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 
-
 namespace fmis.Controllers
 {
-
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
-        private readonly UacsamountContext _Ucontext;
+        private readonly ObligationAmountContext _Ucontext;
         private readonly UacsContext _UacsContext;
         private readonly MyDbContext _MyDbContext;
 
         ORSReporting rpt_ors = new ORSReporting();
 
-        public ObligationsController(ObligationContext context, UacsamountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
+        public ObligationsController(ObligationContext context, ObligationAmountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
         {
             _context = context;
             _Ucontext = Ucontext;
@@ -59,7 +57,6 @@ namespace fmis.Controllers
             };
         }
 
-
         public DateTime CheckExcelDate(string excel_data)
         {
             string dateString = @"d/M/yyyy";
@@ -71,21 +68,14 @@ namespace fmis.Controllers
                 System.Globalization.CultureInfo.InvariantCulture);
 
             return (DateTime)date1;
-
-
         }
-
-        public IActionResult CreateD()
-        {
-
-            return View("~/Views/Obligations/PrintPdf.cshtml");
-
-        }
-
 
         public class ObligationData
         {
             public int Id { get; set; }
+            public int source_id { get; set; }
+            public string source_title { get; set; }
+            public string source_type { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -94,14 +84,13 @@ namespace fmis.Controllers
             public string Address { get; set; }
             public string Particulars { get; set; }
             public int Ors_no { get; set; }
-            public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
             public string Date_recieved { get; set; }
             public string Time_recieved { get; set; }
             public string Date_released { get; set; }
             public string Time_released { get; set; }
-            public string token { get; set; }
+            public string obligation_token { get; set; }
             public string status { get; set; }
         }
 
@@ -117,7 +106,7 @@ namespace fmis.Controllers
         }
 
         // GET: Obligations
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation");
@@ -125,6 +114,8 @@ namespace fmis.Controllers
                 .Select(x => new ObligationData()
                 {
                     Id = x.Id,
+                    source_id = x.source_id,
+                    source_type = x.source_type,
                     Date = x.Date.ToShortDateString(),
                     Dv = x.Dv,
                     Pr_no = x.Pr_no,
@@ -133,20 +124,24 @@ namespace fmis.Controllers
                     Address = x.Address,
                     Particulars = x.Particulars,
                     Ors_no = x.Ors_no,
-                    Fund_source = x.Fund_source,
                     Gross = x.Gross,
                     Created_by = x.Created_by,
                     Date_recieved = x.Date_recieved.ToShortDateString(),
                     Time_recieved = x.Time_recieved.ToString("HH:mm:ss"),
                     Date_released = x.Date_released.ToShortDateString(),
                     Time_released = x.Time_released.ToString("HH:mm:ss"),
-                    token = x.token,
-                    status = x.status
+                    obligation_token = x.obligation_token,
+                    status = x.status 
             });
-            var json = JsonSerializer.Serialize(obligations.ToList());
-            ViewBag.temp = json;
-            var fundsource_data = JsonSerializer.Serialize(_MyDbContext.FundSources.ToList());
-            ViewBag.fundsource = fundsource_data;
+            var obligation_json = await obligations.AsNoTracking()
+                                    .ToListAsync();
+            ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
+
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, source_type = "fund_source" })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, source_type = "sub_allotment" });
+
+            ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
+
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
@@ -170,36 +165,31 @@ namespace fmis.Controllers
 
         [HttpGet]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ObligationModal(int? id)
+        public async Task<IActionResult> ObligationModal(int id,string obligation_token)
         {
-            var json = JsonSerializer.Serialize(_Ucontext.Uacsamount.Where(s => s.ObligationId == id && s.status == "activated").ToList());
-            ViewBag.temp = json;
-
-            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
+            var obligation_amount = _Ucontext.ObligationAmount;
+            var uacs_data = JsonSerializer.Serialize(await _UacsContext.Uacs.AsNoTracking().ToListAsync());
             ViewBag.uacs = uacs_data;
+            ViewBag.obligation_token = obligation_token;
 
-            if (id == null)
+            if (id != 0)
             {
-                return NotFound();
+                ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.ObligationId == id && s.status == "activated").AsNoTracking().ToListAsync());
+                return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id));
             }
-
-            var obligation = await _context.Obligation
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (obligation == null)
+            else 
             {
-                return NotFound();
+                ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.obligation_token == obligation_token && s.status == "activated").AsNoTracking().ToListAsync());
+                return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.obligation_token == obligation_token));
             }
-
-            return View("~/Views/Budget/John/Obligations/ObligationModal.cshtml", obligation);
+                
         }
 
         // GET: Obligations/Create
         public IActionResult Create()
         {
-
             return View();
         }
-        
 
         private DateTime ToDateTime(string date)
         {
@@ -220,69 +210,36 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult SaveObligation(List<ObligationData> data)
         {
-
             var data_holder = this._context.Obligation;
-
-
             foreach (var item in data)
             {
+                var obligation = new Obligation(); //CLEAR OBJECT
+                if (data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefault() != null) //CHECK IF EXIST
+                    obligation = data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefault();
 
+                obligation.source_id = item.source_id;
+                obligation.source_type = item.source_type;
+                obligation.Date = ToDateTime(item.Date);
+                obligation.Dv = item.Dv;
+                obligation.Pr_no = item.Pr_no;
+                obligation.Po_no = item.Po_no;
+                obligation.Payee = item.Payee;
+                obligation.Address = item.Address;
+                obligation.Particulars = item.Particulars;
+                obligation.Ors_no = item.Ors_no;
+                obligation.Gross = item.Gross;
+                obligation.Created_by = item.Created_by;
+                obligation.Date_recieved = ToDateTime(item.Date_recieved);
+                obligation.Time_recieved = ToDateTime(item.Time_recieved);
+                obligation.Date_released = ToDateTime(item.Date_released);
+                obligation.Time_released = ToDateTime(item.Time_released);
+                obligation.status = "activated";
+                obligation.obligation_token = item.obligation_token;
 
-                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
-                {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Payee = item.Payee;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Address = item.Address;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = ToDateTime(item.Date_recieved);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = ToDateTime(item.Time_recieved);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = ToDateTime(item.Date_released);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = ToDateTime(item.Time_released);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-
-                    this._context.SaveChanges();
-
-                }
-                else /*if ((item.Date != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payee != null ||
-                        item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
-                        item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
-                        (item.Time_recieved.ToString() != null || item.Date_released != null) && (item.Time_released.ToString() != null))*/
-                {
-                    //UPDATE
-                    var obligation = new Obligation(); //CLEAR OBJECT
-                    obligation.Id = item.Id;
-                    obligation.Date = ToDateTime(item.Date);
-                    obligation.Dv = item.Dv;
-                    obligation.Pr_no = item.Pr_no;
-                    obligation.Po_no = item.Po_no;
-                    obligation.Payee = item.Payee;
-                    obligation.Address = item.Address;
-                    obligation.Particulars = item.Particulars;
-                    obligation.Ors_no = item.Ors_no;
-                    obligation.Fund_source = item.Fund_source;
-                    obligation.Gross = item.Gross;
-                    obligation.Created_by = item.Created_by;
-                    obligation.Date_recieved = ToDateTime(item.Date_recieved);
-                    obligation.Time_recieved = ToDateTime(item.Time_recieved);
-                    obligation.Date_released = ToDateTime(item.Date_released);
-                    obligation.Time_released = ToDateTime(item.Time_released);
-                    obligation.status = "activated";
-                    obligation.token = item.token;
-
-                    this._context.Obligation.Update(obligation);
-                    this._context.SaveChanges();
-                }
+                _context.Update(obligation);
+                _context.SaveChanges();
             }
-
             return Json(data);
-
         }
 
         // POST: Obligations/Create
@@ -389,16 +346,16 @@ namespace fmis.Controllers
                 var data_holder = this._context.Obligation;
                 foreach (var many in data.many_token)
                 {
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
+                    data_holder.Where(s => s.obligation_token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.obligation_token == many.many_token).FirstOrDefault().obligation_token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.Obligation;
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+                data_holder.Where(s => s.obligation_token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.obligation_token == data.single_token).FirstOrDefault().obligation_token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }

@@ -18,6 +18,10 @@ namespace fmis.Models
         public string Allotment_code { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+       /* public int substotal { get; set; }
+        public int fundstotal { get; set; }
+        public int subfundtotal { get; set; }*/
+
 
         public List<FundSource> FundSources { get; set; }
         /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/

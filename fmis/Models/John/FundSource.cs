@@ -18,11 +18,13 @@ namespace fmis.Models.John
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
         public int Budget_allotmentBudgetAllotmentId { get; set; }
-        public float Beginning_balance { get; set; } 
-        public float Remaining_balance { get; set; }
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         public Prexc Prexc { get; set; }
+        public decimal Beginning_balance { get; set; }
+        public decimal Remaining_balance { get; set; }
+        public decimal utilization_amount { get; set; }
+        public string token { get; set; }
 
 
         public Budget_allotment Budget_allotment { get; set; }

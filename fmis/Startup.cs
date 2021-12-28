@@ -36,10 +36,13 @@ namespace fmis
         {
 
             services.AddControllers();
-
+                
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddControllersWithViews();
+            /*services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );*/
             services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>
@@ -56,8 +59,8 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
             services.AddDbContext<UacsContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
-            services.AddDbContext<UacsamountContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("UacsamountContext")));
+            services.AddDbContext<ObligationAmountContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("ObligationAmountContext")));
             services.AddDbContext<AppropriationContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<AllotmentClassContext>(options =>
@@ -85,8 +88,6 @@ namespace fmis
             services.AddDbContext<Suballotment_amountContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDbContext<Obligated_amountContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Obligated_amountContext")));
             services.AddDbContext<FundsRealignmentContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();

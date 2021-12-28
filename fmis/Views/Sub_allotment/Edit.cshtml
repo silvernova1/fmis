@@ -1,33 +1,35 @@
 ﻿@model fmis.Models.Sub_allotment
 
-@{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
 }
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<h3 class="grey lighter smaller">
-    Edit Sub Allotment
-</h3>
-<hr />
 <form asp-action="Edit" method="post">
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Suballotment" asp-route-id="@ViewBag.BudgetId">Back to List</a>
+    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
+    <input type="hidden" asp-for="SubId" value="@ViewBag.sub_allotment_id" />
+    <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+        <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Sub Alloment)</h7>
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Save" class="btn btn-success btn-xs" />
+                <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+            </div>
+        </div>
     </div>
+    <br />
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SubId" />
-            <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" />
-
-
+            <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
             <div class="form-group">
-                <label asp-for="Prexc" class="control-label"></label>
-                @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+                <label asp-for="prexc" class="control-label"></label>
+                @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "prexc form-control" })
             </div>
-
             <div class="form-group">
                 <label asp-for="Suballotment_code" class="control-label"></label>
                 <input asp-for="Suballotment_code" class="form-control" />
@@ -52,6 +54,15 @@
             </div>
         </div>
     </div>
+    <input type="hidden" class="suballotment_amount_edit" value="@ViewBag.temp">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+    <br />
+    <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+    <div id="suballotment_amount_edit" class="hot handsontable htColumnHeaders"></div>
+    <br />
+    <div class="controls" hidden>
+        <button id="export-file">Download CSV</button>
+    </div>
 </form>
 
 <script>
@@ -60,6 +71,150 @@
     });
 </script>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+
+    var sub_allotment_id= @ViewBag.sub_allotment_id;
+    var budget_id = @ViewBag.budget_id;
+    var suballotment_token = generate_token();
+
+        let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+    var suballotment_amount_edit = $.parseJSON($(".suballotment_amount_edit").val());
+    const data = [];
+    var counter = 0;
+    var obligation_amount = 0;
+    $.each(suballotment_amount_edit, function () {
+        data[counter] = [this.Expenses, this.Amount, this.Id, this.suballotment_token, this.suballotment_amount_token]
+        counter++;
+        obligation_amount += this.Amount;
+    })
+
+    $(".obligation_amount").html(obligation_amount);
+    var uacs = $.parseJSON($(".uacs").val());
+    const uacs_data = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data[uacs_counter] = this.Account_title
+        uacs_counter++;
+    })
+    console.log(uacs_data);
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('suballotment_amount_edit');
+    const hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [150, 150],
+        colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data
+            },
+            {
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: '200px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+
+        beforeRemoveRow: function (index, column) {
+        var selection = this.getSelected();
+        var holder_data = this.getData();
+        var single_token = holder_data[selection[0][0]][3];
+        console.log(selection);
+        console.log(holder_data);
+        console.log(column);
+        var first_column = selection[0][0];
+        var last_column = selection[0][2];
+        console.log(first_column);
+        console.log(last_column);
+        var many_token = [];
+        for (var j = first_column; j <= last_column; j++) {
+            many_token.push({
+                many_token: holder_data[j][3]
+            })
+        }
+        if (single_token) {
+            var ajax_data = {
+                "single_token": single_token,
+                "many_token": many_token,
+            };
+            console.log(ajax_data);
+            ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+        }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 3, guid());
+        },
+        afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return; //don't save this change
+            }
+            console.log(hot.getSourceData());
+            console.log(changes);
+            var ajax_data = [];
+            $(".obligation_amount").html();
+            obligation_amount = 0;
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        FundSourceId: sub_allotment_id,
+                        budget_id: budget_id,
+                        Expenses: this[0],
+                        Amount: this[1],
+                        Id: this[2],
+                        suballotment_amount_token: this[3],
+                        suballotment_token: suballotment_token
+                    }
+                );
+                obligation_amount += parseInt(this[1]);
+            });
+            console.log(ajax_data);
+            $(".obligation_amount").html(obligation_amount);
+            ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+        },
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+</script>

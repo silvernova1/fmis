@@ -1,9 +1,7 @@
 ﻿@model IEnumerable<fmis.Models.Budget_allotment>
 @using System.Globalization;
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Index";
+Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <h3 class="grey lighter smaller">
     Budget Allotments
@@ -16,29 +14,42 @@
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-money"></i>
             </div>
-
             <div class="infobox-data">
-                <span class="infobox-data-number">0.00</span>
-                <div class="infobox-content grey">BEGINNING BALANCE</div>
+                <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color:grey;"> </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+                </div>
             </div>
         </div>
-
-        <div class="infobox infobox-red">
+        <div class="infobox infobox-orange2">
             <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
+                <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
-
             <div class="infobox-data">
-                <span class="infobox-data-number">0.00</span>
-                <div class="infobox-content grey">REMAINING BALANCE</div>
+                <span class="infobox-data-number" id="total_utilization_amount" style="font-size:11pt; color:grey;"></span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Utilization Balance </span>
+                </div>
             </div>
         </div>
-
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;"> </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="vspace-12-sm"></div>
 </div><!-- /.row -->
-<br /><br />
-<br /><br />
+<br />
+<br />
+<br />
+<br />
 <div>
     <a class=" btn btn-sm btn-success" asp-action="Create">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -66,147 +77,106 @@
         </tr>
     </thead>
     <tbody>
+        @{ 
+            decimal total_beginning_balance = 0;
+            decimal total_beginningsub_balance = 0;
+            decimal total_remaining_balance = 0;
+            decimal total_remainingsub_balance = 0;
+            decimal total_utilization_amount = 0;
+            decimal total_utilizationsub_amount = 0;
+        }
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_series)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_code)
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-BudgetId="@item.BudgetAllotmentId">
-                        <i class="ace-icon fa fa-arrow-right"></i>Fund Source
-                    </a>
-                    <br />
-                    <span class="grey">BB: </span>
-                    @{
-                        var amount = (List<fmis.Models.John.FundSourceAmount>)ViewBag.Query;
-                    }
-                    <b class="green">@amount.FirstOrDefault(x => x.Id == x.Id)?.Amount</b>
-                    <br />
-                    <span class="grey">RB: </span>
-                    <b class="red">0.00</b>
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-id="@item.BudgetAllotmentId">
-                        <i class="ace-icon fa fa-plus"></i>Sub-Allotment
-                    </a>
-                    <br />
-                    <span class="grey">BB: </span>
-                    <b class="green">0.00</b>
-                    <br />
-                    <span class="grey">RB: </span>
-                    <b class="red">0.00</b>
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
-                        <i class="ace-icon fa fa-edit"></i>Edit
-                    </a>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_series)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allotment_code)
+            </td>
+            <td>
+                <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-budget_id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-arrow-right"></i>Fund Source
+                </a>
+                <br />
+                <span class="grey">BB: </span>
+                @{
+                    var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance);
+                    total_beginning_balance += beginning_balance;
+                }
+                <b class="green">@beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                <br />
 
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
-                        <i class="ace-icon fa fa-trash"></i>Delete
-                    </a>
-                </td>
-            </tr>
+                <span class="grey">UB: </span>
+                         @{
+                             var utilization_amount = item.FundSources.Sum(x => x.utilization_amount);
+                             total_utilization_amount += utilization_amount;
+                }
+                <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                <br />
+                <span class="grey">RB: </span>
+                @{
+                    var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
+                    total_remaining_balance += remaining_balance;
+                }
+                <b class="red">@remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+
+
+            </td>
+            <td>
+                <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-budget_id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-plus"></i>Sub-Allotment
+                </a>
+                <br />
+                <span class="grey">BB: </span>
+                @{
+                    var beginningsub_balance = item.Sub_allotments.Sum(x => x.Beginningsub_balance);
+                    total_beginningsub_balance += beginning_balance;
+                }
+                <b class="green">@beginningsub_balance.ToString("C", new CultureInfo("en-PH"))</b>   
+                <br />
+
+                <span class="grey">UB: </span>
+                @{
+                    var utilizationsub_amount = item.Sub_allotments.Sum(x => x.utilization_amount);
+                    total_utilizationsub_amount += utilization_amount;
+                }
+                <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                <br />
+                <span class="grey">RB: </span>
+                @{
+                    var remainingsub_balance = item.Sub_allotments.Sum(x => x.Remainingsub_balance);
+                    total_remainingsub_balance += remaining_balance;
+                }
+                <b class="red">@remainingsub_balance.ToString("C", new CultureInfo("en-PH"))</b>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-edit"></i>Edit
+                </a>
+
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
+                    <i class="ace-icon fa fa-trash"></i>Delete
+                </a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
 
-@*@*<script type="text/javascript">
-        jQuery(function ($) {
-            $('.easy-pie-chart.percentage').each(function () {
-                var $box = $(this).closest('.infobox');
-                var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
-                var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)' : '#E2E2E2';
-                var size = parseInt($(this).data('size')) || 50;
-                $(this).easyPieChart({
-                    barColor: barColor,
-                    trackColor: trackColor,
-                    scaleColor: false,
-                    lineCap: 'butt',
-                    lineWidth: parseInt(size / 10),
-                    animate: ace.vars['old_ie'] ? false : 1000,
-                    size: size
-                });
-            })
+<script>
+    $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_utilization_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 
+     $("#total_beginningsub_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_utilizationsub_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_remainingsub_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
+</script>
 
-
-            //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
-            //but sometimes it brings up errors with normal resize event handlers
-            $.resize.throttleWindow = false;
-
-            var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '80px' });
-            var data = [
-
-                { label: "Beginning Balance", data: 80, color: "#82af6f" },
-                { label: "Remaining Balance", data: 20, color: "#DA5430" },
-            ]
-            function drawPieChart(placeholder, data, position) {
-                $.plot(placeholder, data, {
-                    series: {
-                        pie: {
-                            show: true,
-                            tilt: 0.8,
-                            highlight: {
-                                opacity: 0.25
-                            },
-                            stroke: {
-                                color: '#fff',
-                                width: 2
-                            },
-                            startAngle: 2
-                        }
-                    },
-                    legend: {
-                        show: true,
-                        position: position || "ne",
-                        labelBoxBorderColor: null,
-                        margin: [-30, 15]
-                    }
-                    ,
-                    grid: {
-                        hoverable: true,
-                        clickable: true
-                    }
-                })
-            }
-            drawPieChart(placeholder, data);
-
-            /**
-            we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
-            so that's not needed actually.
-            */
-            placeholder.data('chart', data);
-            placeholder.data('draw', drawPieChart);
-
-
-            //pie chart tooltip example
-            var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
-            var previousPoint = null;
-
-            placeholder.on('plothover', function (event, pos, item) {
-                if (item) {
-                    if (previousPoint != item.seriesIndex) {
-                        previousPoint = item.seriesIndex;
-                        var tip = item.series['label'] + " : " + item.series['percent'] + '%';
-                        $tooltip.show().children(0).text(tip);
-                    }
-                    $tooltip.css({ top: pos.pageY + 10, left: pos.pageX + 10 });
-                } else {
-                    $tooltip.hide();
-                    previousPoint = null;
-                }
-
-            });
-
-        })
-    </script>*@

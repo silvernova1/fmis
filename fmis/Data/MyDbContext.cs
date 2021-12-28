@@ -3,6 +3,7 @@ using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.Carlo;
 using fmis.Models.silver;
+using System;
 
 namespace fmis.Data
 {
@@ -29,7 +30,7 @@ namespace fmis.Data
         public DbSet<Uacs> Uacs { get; set; }
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
         public DbSet<Designation> Designation { get; set; }
-        public DbSet<Uacsamount> Uacsamount { get; set; }
+        public DbSet<ObligationAmount> ObligationAmount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
         public DbSet<Sub_allotment> Sub_allotment { get; set; }
@@ -37,18 +38,17 @@ namespace fmis.Data
         public DbSet<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
         public DbSet<Ors_head> Ors_head { get; set; }
         public DbSet<Appropriation> Appropriation { get; set; }
-        public DbSet<Obligated_amount> Obligated_amount { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+/*
             //1:M relationship to uacs and funds realignment
             modelBuilder.Entity<SubAllotment_Realignment>()
             .HasOne(p => p.uacs)
-            .WithMany(b => b.SubAllotment_Realignment);
+            .WithMany(b => b.SubAllotment_Realignment);*/
 
             //1:M relationship to budget allotments and fundsources
             modelBuilder.Entity<FundSource>()
@@ -104,10 +104,16 @@ namespace fmis.Data
 
             modelBuilder.Entity<Budget_allotment>().ToTable("Budget_allotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
+            modelBuilder.Entity<Sub_allotment>().ToTable("Sub_allotment");
             modelBuilder.Entity<FundsRealignment>().ToTable("FundsRealignment");
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
 
+        }
+
+        internal static object Where(Func<object, bool> p)
+        {
+            throw new NotImplementedException();
         }
     }
 }
