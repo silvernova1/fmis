@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using fmis.Models.John;
 
 namespace fmis.Models
 {
@@ -43,6 +45,10 @@ namespace fmis.Models
 
         public string status { get; set; }
         public string obligation_token { get; set; }
+
+        [ForeignKey("FundSource")]
+        public int? FundSourceId { get; set; }
+        public FundSource FundSource { get; set; }
 
 
     }

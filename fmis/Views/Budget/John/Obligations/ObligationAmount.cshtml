@@ -9,10 +9,13 @@
 }
 
 <style>
-    .wtHider {
-        margin-bottom: 200px;
-    }
-
+    @*wtSpreader*@
+   @* .wtHider > div.wtSpreader {
+        margin-bottom: 400px;
+    }*@
+  @*  .wtHider {
+        margin-bottom: 100px;
+    }*@
 </style>
 
 <form>
@@ -43,7 +46,7 @@
                 <td class="col-sm-1"><strong>Fund Source</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                  @*  @Html.DisplayFor(model => model.source_title)*@
+                   @* @Html.DisplayFor(model => model.s)*@
                 </td>
             </tr>
             <tr>
@@ -72,6 +75,7 @@
 <input type="hidden" class="obligation_amount_data" value="@ViewBag.obligation_amount">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input type="hidden" id="obligation_token" value="@ViewBag.obligation_token" />
+<input type="hidden" id="obligation_id" value="@Html.DisplayFor(model => model.Id)" />
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
 <div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
 <br />
@@ -87,7 +91,7 @@
     var CHECK_FIRST_ROW = false;
     var COUNT_AFTER_ROW = 0;
 
-    var obligation_id = @Html.DisplayFor(model => model.Id);
+    var obligation_id = $("#obligation_id").val();
     let generateObligationAmountToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -114,14 +118,16 @@
     var uacs_data_dropdown = []; //dara
     var uacs_data_array = []; //dara
     var get_account_title = []; //dara
+    var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data_dropdown[this.UacsId] = this.Account_title; //dara
+        uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
         var json_data = new Object(); //dara
         json_data.UacsId = this.UacsId; //dara
         json_data.Account_title = this.Account_title; //dara
         json_data.Expense_code = this.Expense_code; //dara
         uacs_data_array[this.Account_title] = json_data; //dara
         get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
     });
 
     var obligationamount = $.parseJSON($(".obligation_amount_data").val());
@@ -129,7 +135,17 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(obligationamount, function () {
-        obligation_amount_handsontable[counter] = [get_account_title[this.UacsId], this.Expense_code, this.Amount, this.Total_disbursement, this.Total_net_amount, this.Total_tax_amount, this.Total_others, this.obligation_token, this.obligation_amount_token]
+        obligation_amount_handsontable[counter] = [
+            get_account_title[this.UacsId],
+            this.Expense_code,
+            this.Amount,
+            this.Total_disbursement,
+            this.Total_net_amount,
+            this.Total_tax_amount,
+            this.Total_others,
+            this.obligation_token,
+            this.obligation_amount_token
+        ]
         counter++;
         obligation_amount += this.Amount;
     });
@@ -231,8 +247,9 @@
             hot.setDataAtCell(row, 7, $("#obligation_token").val());
             hot.setDataAtCell(row, 8, generateObligationAmountToken());
         },
-        afterChange(changes) {
-            if (!changes || CHECK_AFTER_ROW || COUNT_AFTER_ROW > 0) {
+        afterChange(changes, source) {
+            console.log(source);
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW || COUNT_AFTER_ROW > 0) {
                 CHECK_AFTER_ROW = false;
                 COUNT_AFTER_ROW--;
                 console.log("View Here!");
@@ -241,11 +258,13 @@
 
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if (col == 0) {
-                    var expense_code = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code; //dara
-                    if (expense_code == newValue) //dara
-                        return; //dara
+                    var expense_code = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code;
+
+                    if (expense_code == newValue)
+                        return;
 
                     var ajax_data = [];
+
                     ajax_data.push({
                         ObligationId: obligation_id,
                         UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
@@ -258,7 +277,7 @@
                         obligation_token: hot.getDataAtCell(row, col + 7),
                         obligation_amount_token: hot.getDataAtCell(row, col + 8)
                     });
-                    console.log(ajax_data);
+                    @*console.log(ajax_data);*@
                     $(".obligation_amount").html(obligation_amount);
                     ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
 
@@ -275,7 +294,7 @@
                     ajax_data.push({
                         ObligationId: obligation_id,
                         UacsId: uacs_data_array[this[0]].UacsId ? uacs_data_array[this[0]].UacsId : "",
-                        Expense_code: this[1] ? this[1] : "",
+                        Expense_code: uacs_data_array[this[0]].Expense_code ? uacs_data_array[this[0]].Expense_code : "",
                         Amount: this[2] ? this[2] : "",
                         Total_disbursement: this[3] ? this[3] : "",
                         Total_net_amount: this[4] ? this[4] : "",

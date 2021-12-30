@@ -76,8 +76,8 @@ namespace fmis.Controllers.Budget.John
             using (XLWorkbook wb = new XLWorkbook())
             {
 
-                int row = 1;
-                int col = 1;
+              /*  int row = 1;
+                int col = 1;*/
 
 
 

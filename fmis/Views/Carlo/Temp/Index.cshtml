@@ -10,15 +10,11 @@
     var uacs_data = []
     var uacs_counter = 0;
     var exp_code = "";
+
+
     var uacs_data_dropdown = []; //dara
     var uacs_data_array = []; //dara
     $.each(uacs, function () {
-        var json_data = new Object();
-        json_data._id = this.UacsId;
-        json_data.label = this.Account_title;
-        json_data.exp_code = this.Expense_code;
-        uacs_data[uacs_counter] = json_data;
-        uacs_counter++;
         uacs_data_dropdown[this.UacsId] = this.Account_title; //dara
         var json_data = new Object(); //dara
         json_data.UacsId = this.UacsId; //dara

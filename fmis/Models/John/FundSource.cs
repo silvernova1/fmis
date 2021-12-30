@@ -27,13 +27,17 @@ namespace fmis.Models.John
         public string token { get; set; }
 
 
-        public Budget_allotment Budget_allotment { get; set; }
-        /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
+        /*public Budget_allotment Budget_allotment { get; set; }
+        public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
 
 
         //ADDITIONAL FILEDS BASED ON OLD BUDGET SYSTEM
 
         public String type { get; set; }
+
+        [ForeignKey("Obligation")]
+        public int? ObligationId { get; set; }
+        public Obligation Obligation { get; set; }
 
 
 
