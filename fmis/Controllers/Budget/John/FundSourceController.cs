@@ -125,7 +125,7 @@ namespace fmis.Controllers.Budget.John
                     var fundsource = new FundSourceAmount();
 
                     fundsource.Id = item.Id;
-                    fundsource.FundSourceId = item.FundSourceId;
+                    fundsource.FundSourceId = item.FundSourceId == 0? null : item.FundSourceId;
                     fundsource.BudgetId = item.BudgetId;
                     fundsource.Account_title = item.Account_title;
                     fundsource.Amount = item.Amount;
@@ -167,12 +167,13 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int budget_id, int fund_source_id)
         {
-            var fundsource = _MyDbContext.FundSources.Find(fund_source_id);
+            var fundsource = _MyDbContext.FundSources.Where(x=>x.FundSourceId == fund_source_id)
+                .Include(x=>x.FundSourceAmounts.Where(x=>x.status == "activated")).FirstOrDefault();
+
+            //return Json(fundsource.FundSourceAmounts);
+
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-            .Where(f => f.status == "activated" && f.FundSourceId == fundsource.FundSourceId).ToList());
-            ViewBag.temp = json;
 
             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
             ViewBag.uacs = uacs_data;
@@ -182,13 +183,8 @@ namespace fmis.Controllers.Budget.John
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
-            var fundSource = await _context.FundSource.FindAsync(fund_source_id);
-            if (fundSource == null)
-            {
-                return NotFound();
-            }
-            PopulatePrexcsDropDownList(fundSource.PrexcId);
-            return View(fundSource);
+            PopulatePrexcsDropDownList(fundsource.PrexcId);
+            return View(fundsource);
         }
 
         /*DROPDOWN LIST FOR PREXC*/

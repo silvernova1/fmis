@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.John;
 
 namespace fmis.Models
 {
@@ -19,5 +20,6 @@ namespace fmis.Models
         public string token { get; set; }
 
         public Sub_allotment Sub_Allotment { get; set; }
+        public virtual ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
     }
 }

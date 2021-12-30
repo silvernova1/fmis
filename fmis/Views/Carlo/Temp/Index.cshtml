@@ -1,5 +1,101 @@
-﻿
+﻿<style>
+    .scrollit {
+        overflow: scroll;
+        height: 100px;
+    }
 
+</style>
+
+@*<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Relation to Michael</th>
+            <th>Saying</th>
+            <th>Net Worth</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Michael Bluth</td>
+            <td>Himself</td>
+            <td>That was a gimme</td>
+            <td class="text-right">$1,000,000.00</td>
+        </tr>
+        <tr>
+            <td>George Bluth</td>
+            <td>Father</td>
+            <td>There's always money in the banana stand</td>
+            <td class="text-right">$10,000,000.00</td>
+        </tr>
+        <tr>
+            <td>Lucille Bluth</td>
+            <td>Mother</td>
+            <td>AAAAAAHHHHHH (for Gene Parmesan)</td>
+            <td class="text-right">$5,000,000.00</td>
+        </tr>
+        <tr>
+            <td>GOB Bluth</td>
+            <td>Older Brother</td>
+            <td>Illusion, Michael</td>
+            <td class="text-right">$100.00</td>
+        </tr>
+        <tr>
+            <td>Lindsay Bluth</td>
+            <td>Twin Sister</td>
+            <td>Anithing</td>
+            <td class="text-right">$10.00</td>
+        </tr>
+        <tr>
+            <td>Buster Bluth</td>
+            <td>Younger Brother</td>
+            <td>I am not a monster!</td>
+            <td class="text-right">$1,000,000.00</td>
+        </tr>
+        <tr>
+            <td>George Michael Bluth</td>
+            <td>Son</td>
+            <td>Dangerous Cousins</td>
+            <td class="text-right">$100.00</td>
+        </tr>
+        <tr>
+            <td>Tobias Funke</td>
+            <td>Brother-in-law</td>
+            <td>Nevernude</td>
+            <td class="text-right">$5.00</td>
+        </tr>
+        <tr>
+            <td>Maeby Funke</td>
+            <td>Daughter-in-law</td>
+            <td>Marry me!</td>
+            <td class="text-right">$1,000,000.00</td>
+        </tr>
+        <tr>
+            <td>Ann Veal</td>
+            <td>Son's Girlfriend</td>
+            <td>Her?</td>
+            <td class="text-right">Priceless</td>
+        </tr>
+        <tr>
+            <td>Lucille Austero</td>
+            <td>None</td>
+            <td>My very oldest friend Lucille</td>
+            <td class="text-right">$10,000,000.00</td>
+        </tr>
+        <tr>
+            <td>Bob Loblaw</td>
+            <td>Attorney</td>
+            <td>Bob Loblaw's Law Blog</td>
+            <td class="text-right">$500,000.00</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right"><strong>Total Net Worth:</strong></td>
+            <td class="text-right"><strong>$27,500,215.00</strong></td>
+        </tr>
+    </tfoot>
+</table>*@
 
 <h3 class="grey lighter smaller">
     TEMP HANDSONTABLE
@@ -9,7 +105,7 @@
 <div id="example"></div>
 
 <script>
-
+    @*$('table').scrollTableBody();*@
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data = []
     var uacs_counter = 0;
@@ -29,7 +125,7 @@
    * The cell type adds supports for displaing the label value except the key in the key-value
    * dropdown editor type.
    */
-    class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
+    @*class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
         prepare(row, col, prop, td, value, cellProperties) {
             super.prepare(row, col, prop, td, value, cellProperties);
 
@@ -47,7 +143,7 @@
                 hiddenColumns: {
                     columns: [1],
                 },
-                colWidths: 500,
+                colWidths: 600,
                 beforeValueRender(value, { row, instance }) {
                     return instance.getDataAtRowProp(row, 'label');
                 },
@@ -77,7 +173,6 @@
 
         getValue() {
             const value = super.getValue();
-            @*console.log(value);*@
 
             if (this.htEditor) {
                 const labels = this.htEditor.getDataAtProp('label');
@@ -118,7 +213,7 @@
         editor: KeyValueListEditor,
         validator: keyValueListValidator,
         renderer: keyValueListRenderer,
-    });
+    });*@
 
     const example = document.getElementById('example');
    
@@ -127,10 +222,34 @@
         colWidths: [350, 350, 350],
         columns: [
             {
-              
+                source: uacs_data
             },
             {
-                type: 'text',
+                 type: 'dropdown',
+                 source: [
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                    "TEST1",
+                 ] 
+            },
+            {
+                type: 'dropdown',
                 readOnly: true
             },
         ],
@@ -138,7 +257,7 @@
         height: 500,
         rowHeights: 23,
         rowHeaders: true,
-        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE'],
+        colHeaders: ['ACCOUNT TITLE','DROPDOWN', 'EXPENSE CODE', ],
         licenseKey: 'non-commercial-and-evaluation',
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         afterChange(changes) {
@@ -149,12 +268,11 @@
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if (exp_code == newValue)
                     return;
-                hot.setDataAtCell(row, col+1, exp_code);
+                hot.setDataAtCell(row, col+2, exp_code);
             });
             console.log(this.getDataAtCell(changes[0][0],changes[0][1]));
         },
-        type: 'key-value-list',
-        source: uacs_data,
+        type: 'key-value-list'
     });
 
   

@@ -8,6 +8,12 @@
     }
 }
 
+<style>
+    .wtHider {
+        margin-bottom: 200px;
+    }
+</style>
+
 <form>
     <table class="table">
         <tbody>
@@ -64,6 +70,7 @@
 
 <input type="hidden" class="obligation_amount_data" value="@ViewBag.obligation_amount">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
+<input type="hidden" id="obligation_token" value="@ViewBag.obligation_token" />
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
 <div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
 <br />
@@ -75,6 +82,8 @@
 
     var exp_code = 0;
     var default_token = "";
+    var CHECK_AFTER_ROW = false;
+    var COUNT_AFTER_ROW = 0;
 
     class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
         prepare(row, col, prop, td, value, cellProperties) {
@@ -235,39 +244,34 @@
                     pattern: '0,0.00',
                     culture: 'en-Ph'
                 },
-                allowEmpty: false
             },
             {
                 type: 'numeric',
                 numericFormat: {
-                    pattern: '0,0.00',
                     culture: 'en-Ph'
                 },
-                allowEmpty: false
+                readOnly: true
             },
             {
                 type: 'numeric',
                 numericFormat: {
-                    pattern: '0,0.00',
+                    @*pattern: '0,0.00',*@
                     culture: 'en-Ph'
                 },
-                allowEmpty: false
+                readOnly: true
             },
             {
                 type: 'numeric',
                 numericFormat: {
-                    pattern: '0,0.00',
                     culture: 'en-Ph'
                 },
-                allowEmpty: false
+                readOnly: true
             },
             {
                 type: 'numeric',
                 numericFormat: {
-                    pattern: '0,0.00',
-                    culture: 'en-Ph'
                 },
-                allowEmpty: false
+                readOnly: true
             },
             {
                 //HIDDEN ID
@@ -277,7 +281,7 @@
             },
         ],
         stretchH: 'all',
-        height: '250px',
+        height: 'auto',
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
@@ -308,15 +312,19 @@
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
-            console.log(row);
-            console.log(column);
-            hot.setDataAtCell(row, 7, @ViewBag.obligation_token);
+            CHECK_AFTER_ROW = true; //make true taga add sa row para dile ma save sa db
+            COUNT_AFTER_ROW = 2;
+            hot.setDataAtCell(row, 7, $("#obligation_token").val());
             hot.setDataAtCell(row, 8, generateObligationAmountToken());
         },
-        afterChange(changes) { 
-            if (!changes) {
+        afterChange(changes) {
+            if (!changes || CHECK_AFTER_ROW || COUNT_AFTER_ROW > 0) {
+                CHECK_AFTER_ROW = false;
+                COUNT_AFTER_ROW--;
+                console.log("View Here!");
                 return;
             }
+            console.log("Check Here!");
             changes.forEach(([row, col, oldValue, newValue]) => {
             if (exp_code == newValue)
                 return;
@@ -334,8 +342,8 @@
                         Total_net_amount: 0,
                         Total_tax_amount: 0,
                         Total_others: 0,
-                        obligation_token: hot.getDataAtCell(row, col + 8),
-                        obligation_amount_token: hot.getDataAtCell(row, col + 9)
+                        obligation_token: hot.getDataAtCell(row, col + 7),
+                        obligation_amount_token: hot.getDataAtCell(row, col + 8)
                     });
                     console.log(ajax_data);
                     $(".obligation_amount").html(obligation_amount);
@@ -361,7 +369,7 @@
                     console.log(ajax_data);
                     $(".obligation_amount").html(obligation_amount);
                     ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-                }   
+                }
             });
         },
         type: 'key-value-list',

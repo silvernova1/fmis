@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211229012125_UacsRs")]
+    partial class UacsRs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,9 +260,6 @@ namespace fmis.Migrations
                     b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PrexcId")
-                        .HasColumnType("int");
-
                     b.Property<string>("fundsource_amount_token")
                         .HasColumnType("nvarchar(max)");
 
@@ -273,8 +272,6 @@ namespace fmis.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FundSourceId");
-
-                    b.HasIndex("PrexcId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -883,10 +880,6 @@ namespace fmis.Migrations
                         .WithMany("FundSourceAmounts")
                         .HasForeignKey("FundSourceId");
 
-                    b.HasOne("fmis.Models.Prexc", null)
-                        .WithMany("FundSourceAmounts")
-                        .HasForeignKey("PrexcId");
-
                     b.Navigation("FundSource");
                 });
 
@@ -974,8 +967,6 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>
                 {
-                    b.Navigation("FundSourceAmounts");
-
                     b.Navigation("Sub_Allotment");
                 });
 

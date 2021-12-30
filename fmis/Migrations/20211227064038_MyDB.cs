@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class MyDb : Migration
+    public partial class MyDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,25 +54,6 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Division", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FundSourceAmount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    fundsource_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceId = table.Column<int>(type: "int", nullable: false),
-                    BudgetId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FundSourceAmount", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -519,6 +500,31 @@ namespace fmis.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "FundSourceAmount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetId = table.Column<int>(type: "int", nullable: false),
+                    FundSourceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSourceAmount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FundSourceAmount_FundSource_FundSourceId",
+                        column: x => x.FundSourceId,
+                        principalTable: "FundSource",
+                        principalColumn: "FundSourceId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Budget_allotment_YearlyReferenceId",
                 table: "Budget_allotment",
@@ -544,6 +550,11 @@ namespace fmis.Migrations
                 name: "IX_FundSource_PrexcId",
                 table: "FundSource",
                 column: "PrexcId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceAmount_FundSourceId",
+                table: "FundSourceAmount",
+                column: "FundSourceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Personal_Information_Budget_allotmentBudgetAllotmentId",
@@ -597,9 +608,6 @@ namespace fmis.Migrations
                 name: "Division");
 
             migrationBuilder.DropTable(
-                name: "FundSource");
-
-            migrationBuilder.DropTable(
                 name: "FundSourceAmount");
 
             migrationBuilder.DropTable(
@@ -636,19 +644,22 @@ namespace fmis.Migrations
                 name: "Utilization");
 
             migrationBuilder.DropTable(
+                name: "FundSource");
+
+            migrationBuilder.DropTable(
                 name: "Ors_head");
 
             migrationBuilder.DropTable(
                 name: "Requesting_office");
 
             migrationBuilder.DropTable(
+                name: "Uacs");
+
+            migrationBuilder.DropTable(
                 name: "Budget_allotment");
 
             migrationBuilder.DropTable(
                 name: "Prexc");
-
-            migrationBuilder.DropTable(
-                name: "Uacs");
 
             migrationBuilder.DropTable(
                 name: "Yearly_reference");

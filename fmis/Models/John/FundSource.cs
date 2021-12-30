@@ -28,9 +28,6 @@ namespace fmis.Models.John
 
 
         public Budget_allotment Budget_allotment { get; set; }
-        /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
-
-
-
+        public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
     }
 }

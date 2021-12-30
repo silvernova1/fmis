@@ -1,0 +1,41 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>SAOB Reports</h3>
+            <form action="@Url.Action("DownloadSaob","Reports")" method="post">
+                @Html.AntiForgeryToken()
+                <table>
+                    <tr>
+                        <td>Format</td>
+                        <td>
+                            <select name="format" class="form-control">
+                                @*<option value="pdf">PDF</option>*@
+                                <option value="excel">EXCEL</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date From</td>
+                        <td><input type="date" name="date_from" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Date To</td>
+                        <td><input type="date" name="date_to" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button type="submit" class="btn btn-success btn-lg"> <span class="glyphicon glyphicon-print"></span> Print</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    @using (Html.BeginForm("Export", "Reports", FormMethod.Post))
+    {
+        <input type="submit" value="Export" />
+    }
+</div>

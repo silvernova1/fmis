@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace fmis.Models.John
@@ -16,10 +17,16 @@ namespace fmis.Models.John
         public string status { get; set; }
         public string fundsource_amount_token { get; set; }
         public string fundsource_token { get; set; }
-        public int FundSourceId { get; set; }
         public int BudgetId { get; set; }
-        /*public FundSource FundSource { get; set; }*/
+        public int? FundSourceId { get; set; }
+        [JsonIgnore]
+        public FundSource FundSource { get; set; }
+        public virtual ICollection<Uacs> Uacs { get; set; }
         /*public Budget_allotment Budget_allotment { get; set; }*/
+
+        /*[ForeignKey("FundSource")]
+        public int FundSourceId { get; set; }
+        public FundSource FundSource { get; set; }*/
 
     }
 }

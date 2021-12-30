@@ -382,17 +382,17 @@
 						var selection = this.getSelected();
 						var holder_data = this.getData();
 						var holder_id = holder_data[selection[0][0]][15];
-						var token = holder_data[selection[0][0]][16];
-                        console.log(token);
+                        var obligation_token = holder_data[selection[0][0]][16];
+                        console.log(obligation_token);
                         console.log(holder_data);
 
 						$.ajax({
 							type: 'GET',
 							headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-							url: '@Url.Action("ObligationModal", "Obligations")',
+							url: '@Url.Action("openObligationAmount", "Obligations")',
 							data: {
 								id: holder_id,
-								token: token
+                                obligation_token: obligation_token
 							},
 							success: function (output) {
 								setTimeout(function () {
