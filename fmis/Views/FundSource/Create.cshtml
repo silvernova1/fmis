@@ -1,4 +1,4 @@
-﻿ @model fmis.Models.John.FundSource
+﻿@model fmis.Models.John.FundSource
 @using fmis.Models.John;
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
@@ -23,7 +23,7 @@
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Fund Source)</h7>
             <div class="pull-right">
                 <div class="btn-group">
-                    <input type="submit" id="btnsubmit" onclick="fundSourceToken " value="Create" class="btn btn-success btn-xs" />
+                    <input type="submit" id="btnsubmit" onclick="fundSourceToken" value="Create" class="btn btn-success btn-xs" />
                     <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
                 </div>
             </div>
@@ -60,8 +60,7 @@
                 </div>
             </div>
         </div>
-        @*<input type="hidden" id="FundSourceId" />*@
-        <input type="hidden" asp-for="FundSourceId" id="FundSourceId"/>
+        <input type="hidden" id="FundSourceId" />
         <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
         <br />

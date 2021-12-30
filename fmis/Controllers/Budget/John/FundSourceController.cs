@@ -68,15 +68,15 @@ namespace fmis.Controllers.Budget.John
             return View(await _context.FundSource.ToListAsync());
         }
 
-      /*  public IActionResult sample_data()
-        {
-            var budget_allotment = _MyDbContext.Budget_allotments
-                .Include(x => x.FundSources)
-                    .ThenInclude(q => q.FundSourceAmounts)
-                    .ToList();
+        /*  public IActionResult sample_data()
+          {
+              var budget_allotment = _MyDbContext.Budget_allotments
+                  .Include(x => x.FundSources)
+                      .ThenInclude(q => q.FundSourceAmounts)
+                      .ToList();
 
-            return Json(budget_allotment);
-        }*/
+              return Json(budget_allotment);
+          }*/
 
         // GET: FundSource/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -149,7 +149,7 @@ namespace fmis.Controllers.Budget.John
                 if (data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault() != null) //CHECK IF EXIST
                     fundsource_amount = data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault();
 
-                fundsource_amount.FundSourceId = item.FundSourceId;
+                fundsource_amount.FundSourceId = item.FundSourceId == 0? null : item.FundSourceId;
                 fundsource_amount.BudgetId = item.BudgetId;
                 fundsource_amount.UacsId = item.UacsId;
                 fundsource_amount.Amount = item.Amount;
@@ -690,8 +690,11 @@ namespace fmis.Controllers.Budget.John
 
                 PdfFile.Add(table_row_14);
 
+
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
                 PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
+
+
             }
         }
     }
