@@ -16,9 +16,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="Migrations\20211229035829_MyDb.cs" />
-	  <Compile Include="Migrations\20211229035829_MyDb.Designer.cs" />
-	  <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
+		<Compile Include="Migrations\20211229035829_MyDb.cs" />
+		<Compile Include="Migrations\20211229035829_MyDb.Designer.cs" />
+		<Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

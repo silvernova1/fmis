@@ -235,8 +235,7 @@ namespace fmis.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Expenses = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<float>(type: "real", nullable: false),
-                    Remainingsubamount = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -396,6 +395,9 @@ namespace fmis.Migrations
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    substotal = table.Column<int>(type: "int", nullable: false),
+                    fundstotal = table.Column<int>(type: "int", nullable: false),
+                    subfundtotal = table.Column<int>(type: "int", nullable: false),
                     YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -491,16 +493,16 @@ namespace fmis.Migrations
                 {
                     SubId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Prexc_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suballotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    Remaining_balance = table.Column<float>(type: "real", nullable: false),
-                    Beginning_balance = table.Column<float>(type: "real", nullable: false),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PrexcId = table.Column<int>(type: "int", nullable: false)
+                    prexcId = table.Column<int>(type: "int", nullable: false),
+                    Remainingsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Beginningsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -512,8 +514,8 @@ namespace fmis.Migrations
                         principalColumn: "BudgetAllotmentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Sub_allotment_Prexc_PrexcId",
-                        column: x => x.PrexcId,
+                        name: "FK_Sub_allotment_Prexc_prexcId",
+                        column: x => x.prexcId,
                         principalTable: "Prexc",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -566,10 +568,9 @@ namespace fmis.Migrations
                 column: "Budget_allotmentBudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sub_allotment_PrexcId",
+                name: "IX_Sub_allotment_prexcId",
                 table: "Sub_allotment",
-                column: "PrexcId",
-                unique: true);
+                column: "prexcId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubAllotment_Realignment_UacsId",

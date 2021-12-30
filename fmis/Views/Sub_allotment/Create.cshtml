@@ -1,4 +1,5 @@
 ﻿@model fmis.Models.Sub_allotment
+@using fmis.Models
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
@@ -16,14 +17,14 @@
 
 <form asp-action="Create">
     <input hidden type="text" id="subs_input_token" name="token" value="" />
-    <div >
+    <div>
         <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Sub Allotment)</h7>
             <div class="pull-right">
                 <div class="btn-group">
-                     <input type="submit" id="btnsubmit" onclick="subAllotmentToken" value="Create" class="btn btn-success btn-xs" />
-                     <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+                    <input type="submit" id="btnsubmit" onclick="subAllotmentToken" value="Create" class="btn btn-success btn-xs" />
+                    <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
                 </div>
             </div>
         </div>
@@ -32,18 +33,15 @@
             <div class="col-md-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                   @* <label asp-for="Prexc" class="control-label"></label>*@
                     <label>Prexc:</label>
-                    @Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })
+                    @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
                 </div>
                 <div class="form-group">
-                   @* <label asp-for="Suballotment_title" class="control-label"></label>*@
                     <label>Suballotment_title:</label>
                     <input asp-for="Suballotment_title" class="form-control" required>
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    @*<label asp-for="Description" class="control-label"></label>*@
                     <label>Description:</label>
                     <textarea asp-for="Description" class="form-control" required></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
@@ -51,18 +49,15 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    @*<label asp-for="Suballotment_code" class="control-label"></label>*@
                     <label>Suballotment_code:</label>
                     <input asp-for="Suballotment_code" class="form-control" required />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    @*<label asp-for="Responsibility_number" class="control-label"></label>*@
                     <label>Responsibility_number:</label>
                     <input asp-for="Responsibility_number" class="form-control" required />
                     <span asp-validation-for="Responsibility_number" class="text-danger"></span>
                 </div>
-                <strong id="" class="obligation_amount"> </strong>
             </div>
         </div>
         <input type="hidden" id="SubId" />
@@ -70,8 +65,6 @@
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
         <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-        <br />
-        @*<p style="margin-left: 5px; color: cornflowerblue; ">Please ENTER first then CTRL + S for saving the data.</p>*@
         <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
         <br />
         <div class="controls" hidden>
@@ -90,9 +83,9 @@
 
     var BudgetId = @ViewBag.budget_id;
 
-    var sub_allotment_token = generate_token();
+    var suballotment_token = generate_token();
 
-    $("#subs_input_token").val(sub_allotment_token);
+    $("#subs_input_token").val(suballotment_token);
 
     function ajaxServer(ajax_data, url) {
         $.ajax({
@@ -194,8 +187,8 @@
                         Expenses: this[0],
                         Amount: this[1],
                         Id: this[2],
-                        sub_allotment_amount_token: this[3],
-                        sub_allotment_token: sub_allotment_token
+                        suballotment_amount_token: this[3],
+                        suballotment_token: suballotment_token
                     }
                 );
                 obligation_amount += parseInt(this[1]);
@@ -203,7 +196,7 @@
             console.log(ajax_data);
             $(".obligation_amount").html(obligation_amount);
             ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
-    },
+        },
         hiddenColumns: {
             columns: [2,3],
             indicators: true

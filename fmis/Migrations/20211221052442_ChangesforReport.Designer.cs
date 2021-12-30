@@ -73,11 +73,22 @@ namespace fmis.Migrations
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
 
+<<<<<<< HEAD:fmis/Migrations/MyDbContextModelSnapshot.cs
+                    b.Property<int>("fundstotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("subfundtotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("substotal")
+                        .HasColumnType("int");
+=======
                     b.Property<int>("active")
                         .HasColumnType("int");
 
                     b.Property<string>("year")
                         .HasColumnType("nvarchar(max)");
+>>>>>>> b473c288b2c6a435aa4a1b523d7135a6e473eaee:fmis/Migrations/20211221052442_ChangesforReport.Designer.cs
 
                     b.HasKey("BudgetAllotmentId");
 
@@ -588,8 +599,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Beginning_balance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Beginningsub_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
@@ -597,14 +608,8 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Prexc_code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Remaining_balance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Remainingsub_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
@@ -615,15 +620,20 @@ namespace fmis.Migrations
                     b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("prexcId")
+                        .HasColumnType("int");
+
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("utilization_amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SubId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
+                    b.HasIndex("prexcId");
 
                     b.ToTable("Sub_allotment");
                 });
@@ -635,8 +645,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
@@ -646,9 +656,6 @@ namespace fmis.Migrations
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
-
-                    b.Property<float>("Remainingsubamount")
-                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -950,15 +957,15 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("fmis.Models.Prexc", "Prexc")
-                        .WithOne("Sub_Allotment")
-                        .HasForeignKey("fmis.Models.Sub_allotment", "Id")
+                    b.HasOne("fmis.Models.Prexc", "prexc")
+                        .WithMany()
+                        .HasForeignKey("prexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Budget_allotment");
 
-                    b.Navigation("Prexc");
+                    b.Navigation("prexc");
                 });
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
@@ -986,6 +993,8 @@ namespace fmis.Migrations
                     b.Navigation("Sub_allotments");
                 });
 
+<<<<<<< HEAD:fmis/Migrations/MyDbContextModelSnapshot.cs
+=======
             modelBuilder.Entity("fmis.Models.Obligated_amount", b =>
                 {
                     b.Navigation("Uacs");
@@ -996,6 +1005,7 @@ namespace fmis.Migrations
                     b.Navigation("Sub_Allotment");
                 });
 
+>>>>>>> b473c288b2c6a435aa4a1b523d7135a6e473eaee:fmis/Migrations/20211221052442_ChangesforReport.Designer.cs
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("SubAllotment_Realignment");
