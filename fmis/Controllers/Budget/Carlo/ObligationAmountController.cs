@@ -87,7 +87,7 @@ namespace fmis.Controllers
             }
 
             //Utilized/calculation the fundsource/suballotment
-            if (obligation.source_type == "fund_source")
+            /*if (obligation.source_type == "fund_source")
             {
                 var fund_source = _MyDbContext.FundSources.Where(s => s.FundSourceId == obligation.source_id).FirstOrDefault();
                 fund_source.utilization_amount += utilized_amount;
@@ -99,7 +99,7 @@ namespace fmis.Controllers
             else if (obligation.source_type == "sub_allotment")
             {
                 //code ni amalio
-            }
+            }*/
 
             return Json(data);
         }

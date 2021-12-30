@@ -18,6 +18,10 @@ namespace fmis.Models
         public string Allotment_code { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+       /* public int substotal { get; set; }
+        public int fundstotal { get; set; }
+        public int subfundtotal { get; set; }*/
+
 
         public List<FundSource> FundSources { get; set; }
         /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
@@ -33,7 +37,13 @@ namespace fmis.Models
         /*public IList<FundSource> FundSource { get; set; }*/
 
 
-        
+        //ADDITIONAL FIELDS BASED ON OLD BUDGET SYSTEM
+
+        public String year { get; set; }
+        public Int32 active { get; set; }
+        public String Code2 { get; set; }
+
+
 
     }
 }

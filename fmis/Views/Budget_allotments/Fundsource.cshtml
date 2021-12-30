@@ -177,7 +177,19 @@
                 $("#fund_source_create").html(result);
             }, 500);
          });
-    }
+     }
+
+     function getEditFundSource(budget_id, fund_source_id) {
+         $("#editModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_edit").html(loading);
+         var url = '@Url.Action("Edit", "FundSource")';
+         url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#fund_source_edit").html(result);
+            }, 500);
+         });
+     }
 
      function deleteFundSource(budget_id) {
          $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
@@ -190,20 +202,6 @@
             }, 500);
          });
      }
-
-    function getEditFundSource(budget_id, fund_source_id) {
-         $("#editModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_edit").html(loading);
-         var url = '@Url.Action("Edit", "FundSource")';
-         url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
-         $.get(url, function (result) {
-            setTimeout(function () {
-                $("#fund_source_edit").html(result);
-            }, 500);
-         });
-    }
-
-
 
     let generate_token = () => {
         let s4 = () => {

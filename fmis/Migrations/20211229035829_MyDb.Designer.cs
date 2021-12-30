@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211229034401_AddingRS")]
-    partial class AddingRS
+    [Migration("20211229035829_MyDb")]
+    partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,6 +61,9 @@ namespace fmis.Migrations
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -69,6 +72,12 @@ namespace fmis.Migrations
 
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
+
+                    b.Property<int>("active")
+                        .HasColumnType("int");
+
+                    b.Property<string>("year")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BudgetAllotmentId");
 
@@ -217,6 +226,9 @@ namespace fmis.Migrations
                     b.Property<string>("FundSourceTitleCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ObligationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PrexcId")
                         .HasColumnType("int");
 
@@ -227,6 +239,9 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("type")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("utilization_amount")
@@ -248,19 +263,16 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Account_title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FundSourceId")
+                    b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PrexcId")
+                    b.Property<int>("UacsId")
                         .HasColumnType("int");
 
                     b.Property<string>("fundsource_amount_token")
@@ -273,10 +285,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FundSourceId");
-
-                    b.HasIndex("PrexcId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -305,6 +313,9 @@ namespace fmis.Migrations
 
                     b.Property<string>("Dv")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
 
                     b.Property<float>("Gross")
                         .HasColumnType("real");
@@ -343,6 +354,10 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FundSourceId")
+                        .IsUnique()
+                        .HasFilter("[FundSourceId] IS NOT NULL");
 
                     b.ToTable("Obligation");
                 });
@@ -595,8 +610,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Beginning_balance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Beginning_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
@@ -610,8 +625,8 @@ namespace fmis.Migrations
                     b.Property<string>("Prexc_code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Remaining_balance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Remaining_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
@@ -684,9 +699,6 @@ namespace fmis.Migrations
                     b.Property<string>("Expense_code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FundSourceAmountId")
-                        .HasColumnType("int");
-
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -694,8 +706,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UacsId");
-
-                    b.HasIndex("FundSourceAmountId");
 
                     b.ToTable("Uacs");
                 });
@@ -862,7 +872,7 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
-                    b.HasOne("fmis.Models.Budget_allotment", "Budget_allotment")
+                    b.HasOne("fmis.Models.Budget_allotment", null)
                         .WithMany("FundSources")
                         .HasForeignKey("Budget_allotmentBudgetAllotmentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -874,20 +884,14 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Budget_allotment");
-
                     b.Navigation("Prexc");
                 });
 
-            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
+            modelBuilder.Entity("fmis.Models.Obligation", b =>
                 {
                     b.HasOne("fmis.Models.John.FundSource", "FundSource")
-                        .WithMany("FundSourceAmounts")
-                        .HasForeignKey("FundSourceId");
-
-                    b.HasOne("fmis.Models.Prexc", null)
-                        .WithMany("FundSourceAmounts")
-                        .HasForeignKey("PrexcId");
+                        .WithOne("Obligation")
+                        .HasForeignKey("fmis.Models.Obligation", "FundSourceId");
 
                     b.Navigation("FundSource");
                 });
@@ -939,13 +943,6 @@ namespace fmis.Migrations
                     b.Navigation("Prexc");
                 });
 
-            modelBuilder.Entity("fmis.Models.Uacs", b =>
-                {
-                    b.HasOne("fmis.Models.John.FundSourceAmount", null)
-                        .WithMany("Uacs")
-                        .HasForeignKey("FundSourceAmountId");
-                });
-
             modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
                 {
                     b.HasOne("fmis.Models.Uacs", "Uacs")
@@ -966,18 +963,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
-                    b.Navigation("FundSourceAmounts");
-                });
-
-            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
-                {
-                    b.Navigation("Uacs");
+                    b.Navigation("Obligation");
                 });
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>
                 {
-                    b.Navigation("FundSourceAmounts");
-
                     b.Navigation("Sub_Allotment");
                 });
 

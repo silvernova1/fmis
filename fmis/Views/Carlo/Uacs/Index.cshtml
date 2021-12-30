@@ -109,7 +109,8 @@
     $.each(uacs, function () {
         data[counter] = [this.Account_title, this.Expense_code, this.Id, this.token]
         counter++;
-    })
+    });
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
@@ -230,7 +231,7 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
+    @*console.log(hot.getSourceData());*@
 
 </script>
 

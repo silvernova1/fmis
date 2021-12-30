@@ -79,8 +79,11 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
     <tbody>
         @{ 
             decimal total_beginning_balance = 0;
+            decimal total_beginningsub_balance = 0;
             decimal total_remaining_balance = 0;
+            decimal total_remainingsub_balance = 0;
             decimal total_utilization_amount = 0;
+            decimal total_utilizationsub_amount = 0;
         }
         @foreach (var item in Model)
         {
@@ -127,18 +130,31 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
             </td>
             <td>
-                <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-BudgetId="@item.BudgetAllotmentId">
+                <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-budget_id="@item.BudgetAllotmentId">
                     <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                 </a>
                 <br />
                 <span class="grey">BB: </span>
-                <b class="green">0.00</b>
+                @{
+                    var beginningsub_balance = item.Sub_allotments.Sum(x => x.Beginningsub_balance);
+                    total_beginningsub_balance += beginning_balance;
+                }
+                <b class="green">@beginningsub_balance.ToString("C", new CultureInfo("en-PH"))</b>   
                 <br />
+
                 <span class="grey">UB: </span>
-                <b class="orange">0.00</b>
+                @{
+                    var utilizationsub_amount = item.Sub_allotments.Sum(x => x.utilization_amount);
+                    total_utilizationsub_amount += utilization_amount;
+                }
+                <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
                 <br />
                 <span class="grey">RB: </span>
-                <b class="red">0.00</b>
+                @{
+                    var remainingsub_balance = item.Sub_allotments.Sum(x => x.Remainingsub_balance);
+                    total_remainingsub_balance += remaining_balance;
+                }
+                <b class="red">@remainingsub_balance.ToString("C", new CultureInfo("en-PH"))</b>
             </td>
             <td>
                 <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
@@ -158,4 +174,9 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
     $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
     $("#total_utilization_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
+
+     $("#total_beginningsub_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_utilizationsub_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_remainingsub_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 </script>
+

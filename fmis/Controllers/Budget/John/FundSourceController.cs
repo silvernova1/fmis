@@ -42,7 +42,7 @@ namespace fmis.Controllers.Budget.John
         public class FundsourceamountData
         {
             public int FundSourceId { get; set; }
-            public string Account_title { get; set; }
+            public int UacsId { get; set; }
             public decimal Amount { get; set; }
             public int Id { get; set; }
             public string fundsource_amount_token { get; set; }
@@ -68,6 +68,16 @@ namespace fmis.Controllers.Budget.John
             return View(await _context.FundSource.ToListAsync());
         }
 
+      /*  public IActionResult sample_data()
+        {
+            var budget_allotment = _MyDbContext.Budget_allotments
+                .Include(x => x.FundSources)
+                    .ThenInclude(q => q.FundSourceAmounts)
+                    .ToList();
+
+            return Json(budget_allotment);
+        }*/
+
         // GET: FundSource/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -88,53 +98,66 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Create
-        public IActionResult Create(int budget_id)
+        public async Task<IActionResult> Create(int budget_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-
             PopulatePrexcsDropDownList();
-
             ViewBag.budget_id = budget_id;
 
-            return View();
+            return View(); //open create
+        }
+
+        // GET: FundSource/Edit/5
+        public async Task<IActionResult> Edit(int budget_id, int fund_source_id)
+        {
+            var fundsource = _MyDbContext.FundSources.Find(fund_source_id);
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
+                                                .Where(f => f.status == "activated" && f.FundSourceId == fundsource.FundSourceId).ToList()
+                       );
+            ViewBag.temp = json;
+
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            ViewBag.uacs = uacs_data;
+
+            ViewBag.budget_id = budget_id;
+            ViewBag.fundsource_id = fund_source_id;
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+
+            var fundSource = await _context.FundSource.FindAsync(fund_source_id);
+            if (fundSource == null)
+            {
+                return NotFound();
+            }
+            PopulatePrexcsDropDownList(fundSource.PrexcId);
+            return View(fundSource);
         }
 
         [HttpPost]
         public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
             var data_holder = _MyDbContext.FundSourceAmount;
 
             foreach (var item in data)
             {
+                var fundsource_amount = new FundSourceAmount(); //CLEAR OBJECT
+                if (data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault() != null) //CHECK IF EXIST
+                    fundsource_amount = data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault();
 
-                if (data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault() != null) //update
-                {
-                    data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().Account_title = item.Account_title;
-                    data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().Amount = item.Amount;
-                    data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault().status = "activated";
-                    this._MyDbContext.SaveChanges();
-                }
-                else //save
-                {
-                    var fundsource = new FundSourceAmount();
-
-                    fundsource.Id = item.Id;
-                    fundsource.FundSourceId = item.FundSourceId == 0? null : item.FundSourceId;
-                    fundsource.BudgetId = item.BudgetId;
-                    fundsource.Account_title = item.Account_title;
-                    fundsource.Amount = item.Amount;
-                    fundsource.status = "activated";
-                    fundsource.fundsource_amount_token = item.fundsource_amount_token;
-                    fundsource.fundsource_token = item.fundsource_token;
-                    _MyDbContext.FundSourceAmount.Update(fundsource);
-                    this._MyDbContext.SaveChanges();
-                }
+                fundsource_amount.FundSourceId = item.FundSourceId;
+                fundsource_amount.BudgetId = item.BudgetId;
+                fundsource_amount.UacsId = item.UacsId;
+                fundsource_amount.Amount = item.Amount;
+                fundsource_amount.status = "activated";
+                fundsource_amount.fundsource_amount_token = item.fundsource_amount_token;
+                fundsource_amount.fundsource_token = item.fundsource_token;
+                _MyDbContext.FundSourceAmount.Update(fundsource_amount);
+                this._MyDbContext.SaveChanges();
             }
 
             return Json(data);
@@ -162,29 +185,6 @@ namespace fmis.Controllers.Budget.John
             await _MyDbContext.SaveChangesAsync();
 
             return RedirectToAction("Fundsource", "Budget_allotments", new { budget_id = fundSource.Budget_allotmentBudgetAllotmentId });
-        }
-
-        // GET: FundSource/Edit/5
-        public async Task<IActionResult> Edit(int budget_id, int fund_source_id)
-        {
-            var fundsource = _MyDbContext.FundSources.Where(x=>x.FundSourceId == fund_source_id)
-                .Include(x=>x.FundSourceAmounts.Where(x=>x.status == "activated")).FirstOrDefault();
-
-            //return Json(fundsource.FundSourceAmounts);
-
-
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
-            var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
-            ViewBag.uacs = uacs_data;
-
-            ViewBag.budget_id = budget_id;
-            ViewBag.fundsource_id = fund_source_id;
-
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
-            PopulatePrexcsDropDownList(fundsource.PrexcId);
-            return View(fundsource);
         }
 
         /*DROPDOWN LIST FOR PREXC*/
@@ -269,7 +269,7 @@ namespace fmis.Controllers.Budget.John
                 {
                     data_holder.Where(s => s.fundsource_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
                     data_holder.Where(s => s.fundsource_amount_token == many.many_token).FirstOrDefault().fundsource_amount_token = many.many_token;
-                    await _context.SaveChangesAsync();
+                    await _MyDbContext.SaveChangesAsync();
                 }
             }
             else
@@ -278,7 +278,7 @@ namespace fmis.Controllers.Budget.John
                 data_holder.Where(s => s.fundsource_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
                 data_holder.Where(s => s.fundsource_amount_token == data.single_token).FirstOrDefault().fundsource_amount_token = data.single_token;
 
-                await _context.SaveChangesAsync();
+                await _MyDbContext.SaveChangesAsync();
             }
 
             return Json(data);
@@ -690,11 +690,8 @@ namespace fmis.Controllers.Budget.John
 
                 PdfFile.Add(table_row_14);
 
-
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, PdfFile, reader);
                 PdfFile.Close(); return File(stream.ToArray(), "application/pdf");
-
-
             }
         }
     }

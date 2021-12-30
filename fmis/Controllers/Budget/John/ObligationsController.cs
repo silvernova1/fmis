@@ -137,8 +137,8 @@ namespace fmis.Controllers
                                     .ToListAsync();
             ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
 
-            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, source_type = "fund_source" })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, source_type = "sub_allotment" });
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source" })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
 
@@ -171,19 +171,19 @@ namespace fmis.Controllers
             var uacs_data = JsonSerializer.Serialize(await _UacsContext.Uacs.AsNoTracking().ToListAsync());
             ViewBag.uacs = uacs_data;
             ViewBag.obligation_token = obligation_token;
-           
 
             if (id != 0)
             {
                 ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.ObligationId == id && s.status == "activated").AsNoTracking().ToListAsync());
-                return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id));
+                var obligation = await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+                /*return Json(obligation);*/
+                return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
             }
             else 
             {
                 ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.obligation_token == obligation_token && s.status == "activated").AsNoTracking().ToListAsync());
                 return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.obligation_token == obligation_token));
             }
-                
         }
 
         // GET: Obligations/Create
@@ -209,15 +209,16 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveObligation(List<ObligationData> data)
+        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
             var data_holder = this._context.Obligation;
             foreach (var item in data)
             {
                 var obligation = new Obligation(); //CLEAR OBJECT
-                if (data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefault() != null) //CHECK IF EXIST
-                    obligation = data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefault();
-
+                if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
+                {
+                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+                }
                 obligation.source_id = item.source_id;
                 obligation.source_type = item.source_type;
                 obligation.Date = ToDateTime(item.Date);
@@ -238,7 +239,7 @@ namespace fmis.Controllers
                 obligation.obligation_token = item.obligation_token;
 
                 _context.Update(obligation);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             return Json(data);
         }
@@ -340,7 +341,7 @@ namespace fmis.Controllers
         // POST: Obligations/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteObligationModal(DeleteData data)
+        public async Task<IActionResult> DeleteObligation(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {

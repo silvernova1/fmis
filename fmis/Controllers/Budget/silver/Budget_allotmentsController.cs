@@ -46,11 +46,21 @@ namespace fmis.Controllers
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
+            .Include(x => x.Sub_allotments)
+
+
             .AsNoTracking()
             .ToListAsync();
 
             return View(budget_allotment);
         }
+
+      /*  [HttpPost]
+        public ActionResult Addition(Budget_allotment model)
+        {
+            model.Result = model.A + model.B;
+            return View(model);
+        }*/
 
         // GET: Budget_allotments/Create
         public IActionResult Create()
@@ -166,25 +176,26 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
-        public async Task<IActionResult> Suballotment(int budget_id, float FundsTotal)
+        public async Task<IActionResult> Suballotment(int budget_id, float SubsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
- 
-            var subfunds = _context.Suballotment_amount.Where(s => s.BudgetId == budget_id).Sum(x => x.Amount);
 
-            ViewBag.subfunds = subfunds.ToString("C", new CultureInfo("en-PH"));
-
+            var sub_Allotment = _context.Sub_allotment.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
+            ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginningsub_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.utilization_amount = sub_Allotment.Sum(x => x.utilization_amount).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remainingsub_balance).ToString("C", new CultureInfo("en-PH"));
 
             //START Query of the amounts
-            var query = _context.Sub_allotment
+            var subquery = _context.Sub_allotment
                 .Select(x => new Suballotment_amount
                 {
-                    Id = x.PrexcId,
+                    Id = x.prexcId,
                     Amount = _context.Suballotment_amount.Where(i => i.FundSourceId == x.SubId).Select(x => x.Amount).Sum()
                 });
 
-            ViewBag.Query = query.ToList();
-            //END
+            ViewBag.Query = subquery.ToList();
+
+            //END Sum of the amounts
 
             List<Ors_head> oh = new List<Ors_head>();
 
@@ -222,6 +233,7 @@ namespace fmis.Controllers
             }
             return View(budget_allotment);
         }
+
         // POST: Budget_allotments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -257,8 +269,6 @@ namespace fmis.Controllers
             }
             return View(budget_allotment);
         }
-
-
 
         // GET: Budget_allotments/Delete/5
         public async Task<IActionResult> Delete(int? id)

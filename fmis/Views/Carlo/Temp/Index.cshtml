@@ -1,103 +1,4 @@
-﻿<style>
-    .scrollit {
-        overflow: scroll;
-        height: 100px;
-    }
-
-</style>
-
-@*<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Relation to Michael</th>
-            <th>Saying</th>
-            <th>Net Worth</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Michael Bluth</td>
-            <td>Himself</td>
-            <td>That was a gimme</td>
-            <td class="text-right">$1,000,000.00</td>
-        </tr>
-        <tr>
-            <td>George Bluth</td>
-            <td>Father</td>
-            <td>There's always money in the banana stand</td>
-            <td class="text-right">$10,000,000.00</td>
-        </tr>
-        <tr>
-            <td>Lucille Bluth</td>
-            <td>Mother</td>
-            <td>AAAAAAHHHHHH (for Gene Parmesan)</td>
-            <td class="text-right">$5,000,000.00</td>
-        </tr>
-        <tr>
-            <td>GOB Bluth</td>
-            <td>Older Brother</td>
-            <td>Illusion, Michael</td>
-            <td class="text-right">$100.00</td>
-        </tr>
-        <tr>
-            <td>Lindsay Bluth</td>
-            <td>Twin Sister</td>
-            <td>Anithing</td>
-            <td class="text-right">$10.00</td>
-        </tr>
-        <tr>
-            <td>Buster Bluth</td>
-            <td>Younger Brother</td>
-            <td>I am not a monster!</td>
-            <td class="text-right">$1,000,000.00</td>
-        </tr>
-        <tr>
-            <td>George Michael Bluth</td>
-            <td>Son</td>
-            <td>Dangerous Cousins</td>
-            <td class="text-right">$100.00</td>
-        </tr>
-        <tr>
-            <td>Tobias Funke</td>
-            <td>Brother-in-law</td>
-            <td>Nevernude</td>
-            <td class="text-right">$5.00</td>
-        </tr>
-        <tr>
-            <td>Maeby Funke</td>
-            <td>Daughter-in-law</td>
-            <td>Marry me!</td>
-            <td class="text-right">$1,000,000.00</td>
-        </tr>
-        <tr>
-            <td>Ann Veal</td>
-            <td>Son's Girlfriend</td>
-            <td>Her?</td>
-            <td class="text-right">Priceless</td>
-        </tr>
-        <tr>
-            <td>Lucille Austero</td>
-            <td>None</td>
-            <td>My very oldest friend Lucille</td>
-            <td class="text-right">$10,000,000.00</td>
-        </tr>
-        <tr>
-            <td>Bob Loblaw</td>
-            <td>Attorney</td>
-            <td>Bob Loblaw's Law Blog</td>
-            <td class="text-right">$500,000.00</td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="3" class="text-right"><strong>Total Net Worth:</strong></td>
-            <td class="text-right"><strong>$27,500,215.00</strong></td>
-        </tr>
-    </tfoot>
-</table>*@
-
-<h3 class="grey lighter smaller">
+﻿<h3 class="grey lighter smaller">
     TEMP HANDSONTABLE
 </h3>
 <hr>
@@ -105,148 +6,37 @@
 <div id="example"></div>
 
 <script>
-    @*$('table').scrollTableBody();*@
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data = []
     var uacs_counter = 0;
     var exp_code = "";
+
+
+    var uacs_data_dropdown = []; //dara
+    var uacs_data_array = []; //dara
     $.each(uacs, function () {
-        var json_data = new Object();
-        json_data._id = this.UacsId;
-        json_data.label = this.Account_title;
-        json_data.exp_code = this.Expense_code;
-        uacs_data[uacs_counter] = json_data;
-        uacs_counter++;
+        uacs_data_dropdown[this.UacsId] = this.Account_title; //dara
+        var json_data = new Object(); //dara
+        json_data.UacsId = this.UacsId; //dara
+        json_data.Expense_code = this.Expense_code; //dara
+        uacs_data_array[this.Account_title] = json_data; //dara
     });
 
-    console.log(uacs_data);
+    console.log(uacs_data_array);
 
     /**
    * The cell type adds supports for displaing the label value except the key in the key-value
    * dropdown editor type.
    */
-    @*class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
-        prepare(row, col, prop, td, value, cellProperties) {
-            super.prepare(row, col, prop, td, value, cellProperties);
-
-            Object.assign(this.htOptions, {
-                licenseKey: 'non-commercial-and-evaluation',
-                data: this.cellProperties.source,
-                columns: [
-                    {
-                        data: '_id',
-                    },
-                    {
-                        data: 'label',
-                    }
-                ],
-                hiddenColumns: {
-                    columns: [1],
-                },
-                colWidths: 600,
-                beforeValueRender(value, { row, instance }) {
-                    return instance.getDataAtRowProp(row, 'label');
-                },
-            });
-
-            if (cellProperties.keyValueListCells) {
-                this.htOptions.cells = cellProperties.keyValueListCells;
-            }
-            if (this.htEditor) {
-                this.htEditor.destroy();
-            }
-
-            this.htEditor = new Handsontable(this.htContainer, this.htOptions);
-        }
-
-        setValue(value) {
-            if (this.htEditor) {
-                const index = this.htEditor.getDataAtProp('_id').findIndex(id => id === value);
-
-                if (index !== -1) {
-                    value = this.htEditor.getDataAtRowProp(index, 'label');
-                    exp_code = this.htEditor.getDataAtRowProp(index, 'exp_code');
-                }
-            }
-            super.setValue(value);
-        }
-
-        getValue() {
-            const value = super.getValue();
-
-            if (this.htEditor) {
-                const labels = this.htEditor.getDataAtProp('label');
-                const row = labels.indexOf(value);
-
-                if (row !== -1) {
-                    return this.htEditor.getDataAtRowProp(row, '_id');
-                }
-            }
-            return value;
-        }
-    }
-
-    const keyValueListValidator = function (value, callback) {
-        let valueToValidate = value;
-
-        if (valueToValidate === null || valueToValidate === void 0) {
-            valueToValidate = '';
-        }
-
-        if (this.allowEmpty && valueToValidate === '') {
-            callback(true);
-        } else {
-            callback(this.source.find(({ _id }) => _id === value) ? true : false);
-        }
-    };
-    const keyValueListRenderer = function (hot, TD, row, col, prop, value, cellProperties) {
-        const item = cellProperties.source.find(({ _id }) => _id === value);
-
-        if (item) {
-            value = item.label;
-        }
-
-        Handsontable.renderers.getRenderer('autocomplete').call(hot, hot, TD, row, col, prop, value, cellProperties);
-    };
-
-    Handsontable.cellTypes.registerCellType('key-value-list', {
-        editor: KeyValueListEditor,
-        validator: keyValueListValidator,
-        renderer: keyValueListRenderer,
-    });*@
 
     const example = document.getElementById('example');
-   
     const hot = new Handsontable(example, {
         data: Handsontable.helper.createSpreadsheetData(2, 0),
-        colWidths: [350, 350, 350],
+        colWidths: [350, 350],
         columns: [
             {
-                source: uacs_data
-            },
-            {
                  type: 'dropdown',
-                 source: [
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                    "TEST1",
-                 ] 
+                 source: uacs_data_dropdown
             },
             {
                 type: 'dropdown',
@@ -264,22 +54,12 @@
             if (!changes) {
                 return;
             }
-
             changes.forEach(([row, col, oldValue, newValue]) => {
-                if (exp_code == newValue)
-                    return;
-                hot.setDataAtCell(row, col+2, exp_code);
+                var expense_code = uacs_data_array[hot.getDataAtCell(row, 0)].Expense_code; //dara
+                if (expense_code == newValue) //dara
+                    return; //dara
+                hot.setDataAtCell(row, col + 1, expense_code); //dara
             });
-            console.log(this.getDataAtCell(changes[0][0],changes[0][1]));
-        },
-        type: 'key-value-list'
+        }
     });
-
-  
-
-@*
-    console.log(select_source);*@
-    
-
-   
 </script>

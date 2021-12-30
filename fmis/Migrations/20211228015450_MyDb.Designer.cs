@@ -10,8 +10,25 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
+<<<<<<< HEAD:fmis/Migrations/20211227064038_MyDB.Designer.cs
     [Migration("20211227064038_MyDB")]
     partial class MyDB
+=======
+<<<<<<< HEAD:fmis/Migrations/20211228015450_MyDb.Designer.cs
+    [Migration("20211228015450_MyDb")]
+=======
+<<<<<<< HEAD:fmis/Migrations/20211214061940_MyDb.Designer.cs
+    [Migration("20211214061940_MyDb")]
+=======
+<<<<<<< HEAD:fmis/Migrations/20211222062414_MyDb.Designer.cs
+    [Migration("20211222062414_MyDb")]
+=======
+    [Migration("20211214111549_MyDb")]
+>>>>>>> 5f255945c5e08238a5b7b61fe9a25684c8b90307:fmis/Migrations/20211214111549_MyDb.Designer.cs
+>>>>>>> 0caad4faf366ea7515e3cbf9287156b4965ec3c9:fmis/Migrations/20211214111549_MyDb.Designer.cs
+>>>>>>> b473c288b2c6a435aa4a1b523d7135a6e473eaee:fmis/Migrations/20211214111549_MyDb.Designer.cs
+    partial class MyDb
+>>>>>>> 0c7b10025972ba4d7f371d29f761198dc56acf26:fmis/Migrations/20211228015450_MyDb.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +85,15 @@ namespace fmis.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("YearlyReferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fundstotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("subfundtotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("substotal")
                         .HasColumnType("int");
 
                     b.HasKey("BudgetAllotmentId");
@@ -590,8 +616,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Beginning_balance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Beginningsub_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Budget_allotmentBudgetAllotmentId")
                         .HasColumnType("int");
@@ -599,14 +625,8 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PrexcId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Prexc_code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Remaining_balance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Remainingsub_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Responsibility_number")
                         .HasColumnType("nvarchar(max)");
@@ -617,15 +637,20 @@ namespace fmis.Migrations
                     b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("prexcId")
+                        .HasColumnType("int");
+
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("utilization_amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SubId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
-                    b.HasIndex("PrexcId")
-                        .IsUnique();
+                    b.HasIndex("prexcId");
 
                     b.ToTable("Sub_allotment");
                 });
@@ -637,8 +662,8 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
@@ -648,9 +673,6 @@ namespace fmis.Migrations
 
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
-
-                    b.Property<float>("Remainingsubamount")
-                        .HasColumnType("real");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -916,15 +938,15 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("fmis.Models.Prexc", "Prexc")
-                        .WithOne("Sub_Allotment")
-                        .HasForeignKey("fmis.Models.Sub_allotment", "PrexcId")
+                    b.HasOne("fmis.Models.Prexc", "prexc")
+                        .WithMany()
+                        .HasForeignKey("prexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Budget_allotment");
 
-                    b.Navigation("Prexc");
+                    b.Navigation("prexc");
                 });
 
             modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
@@ -945,6 +967,7 @@ namespace fmis.Migrations
                     b.Navigation("Sub_allotments");
                 });
 
+<<<<<<< HEAD:fmis/Migrations/20211227064038_MyDB.Designer.cs
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
                     b.Navigation("FundSourceAmounts");
@@ -955,6 +978,8 @@ namespace fmis.Migrations
                     b.Navigation("Sub_Allotment");
                 });
 
+=======
+>>>>>>> 0c7b10025972ba4d7f371d29f761198dc56acf26:fmis/Migrations/20211228015450_MyDb.Designer.cs
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
                     b.Navigation("SubAllotment_Realignment");

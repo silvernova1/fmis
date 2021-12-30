@@ -11,8 +11,9 @@
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
+    <input type="hidden" asp-for="SubId" value="@ViewBag.sub_allotment_id" />
     <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
-        <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Sub Allotment)</h7>
+        <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Sub Alloment)</h7>
         <div class="pull-right">
             <div class="btn-group">
                 <input type="submit" value="Save" class="btn btn-success btn-xs" />
@@ -24,15 +25,11 @@
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SubId" />
             <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
-
             <div class="form-group">
-                <label asp-for="Prexc" class="control-label"></label>
-                @*@Html.DropDownList("Id", null, htmlAttributes: new { @class = "prexc form-control" })*@
-                <input asp-for="Suballotment_title" class="form-control" />
+                <label asp-for="prexc" class="control-label"></label>
+                @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "prexc form-control" })
             </div>
-
             <div class="form-group">
                 <label asp-for="Suballotment_code" class="control-label"></label>
                 <input asp-for="Suballotment_code" class="form-control" />
@@ -57,28 +54,28 @@
             </div>
         </div>
     </div>
-    <input type="hidden" id="SubId" />
     <input type="hidden" class="suballotment_amount_edit" value="@ViewBag.temp">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
     <br />
     <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-    <div id="suballotment_amountt_edit" class="hot handsontable htColumnHeaders"></div>
+    <div id="suballotment_amount_edit" class="hot handsontable htColumnHeaders"></div>
     <br />
     <div class="controls" hidden>
         <button id="export-file">Download CSV</button>
     </div>
 </form>
 
-@*<script>
+<script>
     $(document).ready(function () {
         $('.prexc').select2();
     });
-</script*@>
+</script>
 
 <script>
 
-    @*var FundSourceId = @ViewBag.FundsId;*@
-    var BudgetId = @ViewBag.budget_id;
+    var sub_allotment_id= @ViewBag.sub_allotment_id;
+    var budget_id = @ViewBag.budget_id;
+    var suballotment_token = generate_token();
 
         let guid = () => {
         let s4 = () => {
@@ -108,7 +105,7 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(suballotment_amount_edit, function () {
-        data[counter] = [this.Expenses, this.Amount, this.Id, this.token]
+        data[counter] = [this.Expenses, this.Amount, this.Id, this.suballotment_token, this.suballotment_amount_token]
         counter++;
         obligation_amount += this.Amount;
     })
@@ -124,7 +121,7 @@
     console.log(uacs_data);
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
-    const container = document.getElementById('fundsource_amount_edit');
+    const container = document.getElementById('suballotment_amount_edit');
     const hot = new Handsontable(container, {
         data: data,
         rowHeaders: true,
@@ -175,7 +172,7 @@
                 "many_token": many_token,
             };
             console.log(ajax_data);
-            ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');;
+            ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
         }
         },
         afterUndo: function (index, column) {
@@ -197,12 +194,13 @@
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        @*FundSourceId: FundSourceId,*@
-                        BudgetId: BudgetId,
+                        FundSourceId: sub_allotment_id,
+                        budget_id: budget_id,
                         Expenses: this[0],
                         Amount: this[1],
                         Id: this[2],
-                        token: this[3],
+                        suballotment_amount_token: this[3],
+                        suballotment_token: suballotment_token
                     }
                 );
                 obligation_amount += parseInt(this[1]);
