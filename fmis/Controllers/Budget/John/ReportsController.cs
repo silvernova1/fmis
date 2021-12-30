@@ -95,7 +95,7 @@ namespace fmis.Controllers.Budget.John
 
 
             var ballots = from ballot in _MyDbContext.Budget_allotments.ToList()
-                            select ballot;
+                          select ballot;
 
             /*foreach (var customer in customers)
             {
@@ -169,8 +169,8 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(++ro, co).Value = "WrapText = true";
                 ws.Cell(ro, co).Style.Alignment.WrapText = true;*/
 
-              /*  int row = 1;
-                int col = 1;*/
+                /*  int row = 1;
+                  int col = 1;*/
 
 
 
@@ -388,24 +388,24 @@ namespace fmis.Controllers.Budget.John
                     var fsh = _MyDbContext.FundSources.Where(p => p.Budget_allotmentBudgetAllotmentId == budget_allotment.BudgetAllotmentId).ToString();
 
 
-/*
-                    var ballots = (from ba in _MyDbContext.Budget_allotments
-                                   join fs in _MyDbContext.FundSources
-                                   on ba.BudgetAllotmentId equals fs.Budget_allotmentBudgetAllotmentId
-                                   join fsa in _MyDbContext.FundSourceAmount
-                                   on fs.FundSourceId equals fsa.FundSourceId
-                                   join U in _MyDbContext.Uacs
-                                   on fsa.ac equals U.Account_title
-                                   select new
-                                   {
-                                       BaTitle = ba.Allotment_title,
-                                       BaCode = ba.Allotment_code,
-                                       SelectedFs = fs.Prexc.pap_code1,
-                                       fsTitle = fs.FundSourceTitle,
-                                       fsaAccTitle = fsa.Account_title,
-                                       fsaAmount = fsa.Amount,
-                                       UaccCode = U.Expense_code
-                                   }).ToList();*/
+                    /*
+                                        var ballots = (from ba in _MyDbContext.Budget_allotments
+                                                       join fs in _MyDbContext.FundSources
+                                                       on ba.BudgetAllotmentId equals fs.Budget_allotmentBudgetAllotmentId
+                                                       join fsa in _MyDbContext.FundSourceAmount
+                                                       on fs.FundSourceId equals fsa.FundSourceId
+                                                       join U in _MyDbContext.Uacs
+                                                       on fsa.ac equals U.Account_title
+                                                       select new
+                                                       {
+                                                           BaTitle = ba.Allotment_title,
+                                                           BaCode = ba.Allotment_code,
+                                                           SelectedFs = fs.Prexc.pap_code1,
+                                                           fsTitle = fs.FundSourceTitle,
+                                                           fsaAccTitle = fsa.Account_title,
+                                                           fsaAmount = fsa.Amount,
+                                                           UaccCode = U.Expense_code
+                                                       }).ToList();*/
 
 
                     var query = (from fundsource in _MyDbContext.FundSources
@@ -416,16 +416,17 @@ namespace fmis.Controllers.Budget.John
                                      papcode1 = prexc.pap_code1
                                  }).ToList();
 
-                    
+
                     foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
+                        var papcode = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+
+
+                        ws.Cell(currentRow, 1).Value = papcode;
+                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell(currentRow, 1).SetValue(papcode).SetDataType(XLDataType.Number);
+                        currentRow++;
                         
-                    /*    foreach (var uacs in query)
-                        {
-                                ws.Cell(currentRow, 1).Value = uacs.papcode1;
-                                ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                                currentRow++;
-                        }*/
 
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -433,15 +434,18 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         currentRow++;
-                        
+
 
 
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
                         {
                             total = 0;
 
-                           // ws.Cell(currentRow, 1).Value = fundsource_amount.aCCOUNT_T.ToUpper().ToString();
+                            ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x=>x.UacsId == fundsource_amount.UacsId)?.Account_title;
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+
+                            ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                            ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
                             ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
@@ -449,13 +453,14 @@ namespace fmis.Controllers.Budget.John
 
                             currentRow++;
                             total = (double)fundsource_amount.Amount;
-                            
+
                         }
 
                         allotment_total += (double)fundSource.Remaining_balance;
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.Allotment_title.ToUpper();
 
@@ -475,9 +480,10 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_title.ToUpper().ToString();
-                        
+
 
                     }
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
@@ -488,7 +494,7 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
                 }
 
-                
+
 
 
 
