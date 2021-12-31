@@ -38,16 +38,13 @@ namespace fmis.Controllers
         // GET: Budget_allotments
         public async Task<IActionResult> Index(int? id)
         {
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.layout = "_Layout";
-
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.Sub_allotments)
-
 
             .AsNoTracking()
             .ToListAsync();

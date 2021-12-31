@@ -76,6 +76,7 @@ namespace fmis.Controllers
             public int source_id { get; set; }
             public string source_title { get; set; }
             public string source_type { get; set; }
+            public decimal source_balance { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -131,9 +132,11 @@ namespace fmis.Controllers
                     Date_released = x.Date_released.ToShortDateString(),
                     Time_released = x.Time_released.ToString("HH:mm:ss"),
                     obligation_token = x.obligation_token,
-                    status = x.status 
-            });
-            var obligation_json = await obligations.AsNoTracking()
+                    status = x.status
+                });
+
+            var obligation_json = await obligations
+                                    .AsNoTracking()
                                     .ToListAsync();
             ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
 
@@ -141,7 +144,6 @@ namespace fmis.Controllers
                                     .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
-
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
@@ -163,8 +165,8 @@ namespace fmis.Controllers
             return View(obligation);
         }
 
-        [HttpGet]
-        [ValidateAntiForgeryToken]
+        /*[HttpGet]
+        [ValidateAntiForgeryToken]*/
         public async Task<IActionResult> openObligationAmount(int id,string obligation_token)
         {
             var obligation_amount = _Ucontext.ObligationAmount;
@@ -175,8 +177,12 @@ namespace fmis.Controllers
             if (id != 0)
             {
                 ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.ObligationId == id && s.status == "activated").AsNoTracking().ToListAsync());
-                var obligation = await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
-                /*return Json(obligation);*/
+                var obligation = await _context.Obligation
+                    .Include(x => x.ObligationAmounts)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                /*obligation.FundSources = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.source_id).ToListAsync();
+                return Json(obligation);*/
                 return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
             }
             else 

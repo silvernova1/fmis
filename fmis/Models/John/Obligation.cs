@@ -13,6 +13,7 @@ namespace fmis.Models
         public int Id { get; set; }
         public int source_id { get; set; }
         public string source_type { get; set; }
+        public decimal source_balance { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
@@ -46,11 +47,7 @@ namespace fmis.Models
         public string status { get; set; }
         public string obligation_token { get; set; }
 
-        [ForeignKey("FundSource")]
-        public int? FundSourceId { get; set; }
-        public FundSource FundSource { get; set; }
-
-
+        public ICollection<ObligationAmount> ObligationAmounts { get; set; }
     }
 }
 

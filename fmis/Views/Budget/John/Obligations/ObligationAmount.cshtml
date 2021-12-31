@@ -14,6 +14,31 @@
     }
 </style>
 
+<div class="col-xs-12 infobox-container" style=" margin-bottom: 10px">
+    <div class="infobox infobox-green">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-money"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color:grey;">₱1,100.00</span>
+            <div class="infobox-content">
+                <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+            </div>
+        </div>
+    </div>
+    <div class="infobox infobox-orange2">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-bar-chart-o"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_utilization_amount" style="font-size:11pt; color:grey;">₱0.00</span>
+            <div class="infobox-content">
+                <span class="label label-warning arrowed-in arrowed-in-right"> Total Amount </span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form>
     <table class="table">
         <tbody>
@@ -71,10 +96,7 @@
 <input type="hidden" class="obligation_amount_data" value="@ViewBag.obligation_amount">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input type="hidden" id="obligation_token" value="@ViewBag.obligation_token" />
-<<<<<<< HEAD:fmis/Views/Budget/John/Obligations/ObligationAmount.cshtml
-=======
 <input type="hidden" id="obligation_id" value="@Html.DisplayFor(model => model.Id)" />
->>>>>>> 0c7b10025972ba4d7f371d29f761198dc56acf26:fmis/Views/Budget/John/Obligations/ObligationModal.cshtml
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
 <div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
 <br />
@@ -281,27 +303,7 @@
                     hot.setDataAtCell(row, col + 1, expense_code);
                     CHECK_FIRST_ROW = true;
                 }
-                else {
-                    var ajax_data = [];
-                    $.each(hot.getSourceData(), function () {
-                        ajax_data.push({
-                            ObligationId: obligation_id,
-                            UacsId: this[0] ? this[0] : "",
-                            Expense_code: this[1] ? this[1] : "",
-                            Amount: this[2] ? this[2] : "",
-                            Total_disbursement: this[3] ? this[3] : "",
-                            Total_net_amount: this[4] ? this[4] : "",
-                            Total_tax_amount: this[5] ? this[5] : "",
-                            Total_others: this[6] ? this[6] : "",
-                            obligation_token: this[7] ? this[7] : "",
-                            obligation_amount_token: this[8] ? this[8] : "",
-                        });
-                    });
-                    console.log(hot.getSourceData());
-                    console.log(ajax_data);
-                    $(".obligation_amount").html(obligation_amount);
-                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-                }
+
             });
 
             if (CHECK_FIRST_ROW) {

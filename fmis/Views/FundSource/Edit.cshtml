@@ -1,6 +1,6 @@
 ﻿@model fmis.Models.John.FundSource
-
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
 
 @functions{
     public string GetAntiXsrfRequestToken()
@@ -9,8 +9,11 @@
     }
 }
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
-    <input type="hidden" asp-for="FundSourceId" value="@ViewBag.fundsource_id" />
+    <input type="hidden" asp-for="FundSourceId" value="@Model.FundSourceId" />
+    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@Model.Budget_allotmentBudgetAllotmentId" />
+    <input type="hidden" class="fundsource_amount_uacs" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+    <input type="hidden" class="fundsource_token" value="@Model.token">
     <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
         <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Fund Source)</h7>
         <div class="pull-right">
@@ -24,7 +27,6 @@
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
             <div class="form-group">
                 <label asp-for="Prexc" class="control-label"></label>
                 @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "prexc form-control" })
@@ -54,8 +56,6 @@
             </div>
         </div>
     </div>
-    <input type="hidden" class="fundsource_amount_edit" value="@ViewBag.temp">
-    <input type="hidden" class="uacs" value="@ViewBag.uacs">
     <br />
     <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
     <div id="fundsource_amount_edit" class="hot handsontable htColumnHeaders"></div>
@@ -75,10 +75,9 @@
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
 
-    var fundsource_id = @ViewBag.fundsource_id;
-    console.log(fundsource_id);
-    var BudgetId = @ViewBag.budget_id;
-    var fundsource_token = generate_token();
+    var fundsource_id = @Model.FundSourceId;
+    var BudgetId = @Model.Budget_allotmentBudgetAllotmentId;
+    var fundsource_token = $(".fundsource_token").val();
 
     let guid = () => {
     let s4 = () => {
@@ -117,11 +116,11 @@
         uacs_counter++;
     });
 
-    var fundsource_amount_edit = $.parseJSON($(".fundsource_amount_edit").val());
+    var fundsource_amount_uacs = $.parseJSON($(".fundsource_amount_uacs").val());
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
-    $.each(fundsource_amount_edit, function () {
+    $.each(fundsource_amount_uacs, function () {
         data[counter] = [get_account_title[this.UacsId], this.Amount,this.fundsource_amount_token, this.fundsource_token]
         counter++;
         obligation_amount += this.Amount;
@@ -187,7 +186,7 @@
         afterCreateRow: function (row, column) {
             CHECK_FIRST_ROW = true;
             console.log(generate_token());
-            hot.setDataAtCell(row, 3, generate_token());
+            hot.setDataAtCell(row, 2, generate_token());
         },
         afterChange: function (changes, source) {
 
