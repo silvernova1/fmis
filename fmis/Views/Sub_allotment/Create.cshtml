@@ -87,6 +87,9 @@
 
     $("#subs_input_token").val(suballotment_token);
 
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -103,14 +106,21 @@
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
+
     var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
+    var uacs_data_dropdown = []; //dara
+    var uacs_data_array = []; //dara
+    var get_account_title = []; //dara
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
+        uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
+        var json_data = new Object(); //dara
+        json_data.UacsId = this.UacsId; //dara
+        uacs_data_array[this.Account_title] = json_data; //dara
+        get_account_title[this.UacsId] = this.Account_title;
         uacs_counter++;
-    })
-    console.log(uacs_data);
+    });
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_create');
@@ -123,7 +133,7 @@
         columns: [
             {
                 type: 'dropdown',
-                source: uacs_data
+                source: uacs_data_dropdown
             },
             {
             },
@@ -169,11 +179,54 @@
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
+            CHECK_FIRST_ROW = true;
             console.log(generate_token());
             hot.setDataAtCell(row, 3, generate_token());
         },
         afterChange: function (changes, source) {
-            if (source === 'loadData') {
+               if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            BudgetId: BudgetId,
+                            UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            Amount: hot.getDataAtCell(row, col+2),
+                            suballotment_amount_token: hot.getDataAtCell(row, col + 3),
+                            suballotment_token: suballotment_token
+                        }
+                    );
+                    console.log(ajax_data);
+                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        BudgetId: BudgetId,
+                        UacsId: uacs_data_array[this[0]].UacsId,
+                        Amount: this[1],
+                        suballotment_amount_token: this[3],
+                        suballotment_token: suballotment_token
+                    });
+                });
+                console.log(ajax_data);
+                $(".obligation_amount").html(obligation_amount);
+                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+            }
+
+		},
+           @* if (source === 'loadData') {
                 return; //don't save this change
             }
             console.log(changes);
@@ -196,7 +249,7 @@
             console.log(ajax_data);
             $(".obligation_amount").html(obligation_amount);
             ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
-        },
+        },*@
         hiddenColumns: {
             columns: [2,3],
             indicators: true

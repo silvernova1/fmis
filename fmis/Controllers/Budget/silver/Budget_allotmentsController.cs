@@ -178,16 +178,16 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var sub_Allotment = _context.Sub_allotment.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
-            ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginningsub_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.utilization_amount = sub_Allotment.Sum(x => x.utilization_amount).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remainingsub_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             //START Query of the amounts
             var subquery = _context.Sub_allotment
                 .Select(x => new Suballotment_amount
                 {
                     Id = x.prexcId,
-                    Amount = _context.Suballotment_amount.Where(i => i.FundSourceId == x.SubId).Select(x => x.Amount).Sum()
+                    Amount = _context.Suballotment_amount.Where(i => i.SubAllotmentId == x.SubAllotmentId).Select(x => x.Amount).Sum()
                 });
 
             ViewBag.Query = subquery.ToList();

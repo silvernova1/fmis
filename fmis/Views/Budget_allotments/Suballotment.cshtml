@@ -139,17 +139,17 @@
                     @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-sm" onclick="getEditSub_allotment(@ViewBag.budget_id,@item.SubId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn btn-primary btn-sm" onclick="getEditSub_allotment(@ViewBag.budget_id,@item.SubAllotmentId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-                    <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+                    <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
 
                 </td>
                 <td>
-                    <a asp-controller="Sub_allotment_Realignment" asp-route-fundsource_id="@item.SubId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
+                    <a asp-controller="Sub_allotment_Realignment" asp-route-fundsource_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
                 </td>
                 <td>
                     <b class="green">
-                        <span>@item.Beginningsub_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
                     </b>
                 </td>
                 <td>
@@ -159,7 +159,7 @@
                 </td>
                 <td>
                     <b class="red">
-                        <span>@item.Remainingsub_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
                     </b>
                 </td>
 

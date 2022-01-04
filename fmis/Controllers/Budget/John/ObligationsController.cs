@@ -141,7 +141,7 @@ namespace fmis.Controllers
             ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
 
             var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source" })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
             return View("~/Views/Budget/John/Obligations/Index.cshtml");

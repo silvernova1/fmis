@@ -188,25 +188,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Suballotment_amount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Expenses = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceId = table.Column<int>(type: "int", nullable: false),
-                    BudgetId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Suballotment_amount", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Utilization",
                 columns: table => new
                 {
@@ -416,24 +397,22 @@ namespace fmis.Migrations
                 name: "Sub_allotment",
                 columns: table => new
                 {
-                    SubId = table.Column<int>(type: "int", nullable: false)
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suballotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
+                    prexcId = table.Column<int>(type: "int", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    prexcId = table.Column<int>(type: "int", nullable: false),
-                    Remainingsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Beginningsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sub_allotment", x => x.SubId);
+                    table.PrimaryKey("PK_Sub_allotment", x => x.SubAllotmentId);
                     table.ForeignKey(
                         name: "FK_Sub_allotment_Budget_allotment_Budget_allotmentBudgetAllotmentId",
                         column: x => x.Budget_allotmentBudgetAllotmentId,
@@ -481,6 +460,31 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Suballotment_amount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: true),
+                    BudgetId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Suballotment_amount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Suballotment_amount_Sub_allotment_SubAllotmentId",
+                        column: x => x.SubAllotmentId,
+                        principalTable: "Sub_allotment",
+                        principalColumn: "SubAllotmentId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Uacs",
                 columns: table => new
                 {
@@ -490,7 +494,8 @@ namespace fmis.Migrations
                     Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceAmountId = table.Column<int>(type: "int", nullable: true)
+                    FundSourceAmountId = table.Column<int>(type: "int", nullable: true),
+                    Suballotment_amountId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -499,6 +504,12 @@ namespace fmis.Migrations
                         name: "FK_Uacs_FundSourceAmount_FundSourceAmountId",
                         column: x => x.FundSourceAmountId,
                         principalTable: "FundSourceAmount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Uacs_Suballotment_amount_Suballotment_amountId",
+                        column: x => x.Suballotment_amountId,
+                        principalTable: "Suballotment_amount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -618,6 +629,11 @@ namespace fmis.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Suballotment_amount_SubAllotmentId",
+                table: "Suballotment_amount",
+                column: "SubAllotmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SubAllotment_Realignment_UacsId",
                 table: "SubAllotment_Realignment",
                 column: "UacsId");
@@ -631,6 +647,11 @@ namespace fmis.Migrations
                 name: "IX_Uacs_FundSourceAmountId",
                 table: "Uacs",
                 column: "FundSourceAmountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Uacs_Suballotment_amountId",
+                table: "Uacs",
+                column: "Suballotment_amountId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -663,12 +684,6 @@ namespace fmis.Migrations
                 name: "Section");
 
             migrationBuilder.DropTable(
-                name: "Sub_allotment");
-
-            migrationBuilder.DropTable(
-                name: "Suballotment_amount");
-
-            migrationBuilder.DropTable(
                 name: "SubAllotment_Realignment");
 
             migrationBuilder.DropTable(
@@ -693,7 +708,13 @@ namespace fmis.Migrations
                 name: "FundSourceAmount");
 
             migrationBuilder.DropTable(
+                name: "Suballotment_amount");
+
+            migrationBuilder.DropTable(
                 name: "FundSource");
+
+            migrationBuilder.DropTable(
+                name: "Sub_allotment");
 
             migrationBuilder.DropTable(
                 name: "Budget_allotment");
