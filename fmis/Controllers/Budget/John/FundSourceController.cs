@@ -250,20 +250,39 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (data.many_token.Count > 1)
             {
-                var data_holder = _MyDbContext.FundSourceAmount;
                 foreach (var many in data.many_token)
                 {
-                    data_holder.Where(s => s.fundsource_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.fundsource_amount_token == many.many_token).FirstOrDefault().fundsource_amount_token = many.many_token;
+                    var fund_source_amount = _MyDbContext.FundSourceAmount.FirstOrDefault(s => s.fundsource_amount_token == many.many_token);
+                    fund_source_amount.status = "deactivated";
+
+                    _MyDbContext.FundSourceAmount.Update(fund_source_amount);
+                    await _MyDbContext.SaveChangesAsync();
+
+                    var fundSource = await _context
+                                    .FundSource
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(m => m.token == fund_source_amount.fundsource_token);
+
+                    fundSource.Remaining_balance -= fund_source_amount.Amount;
+                    _context.Update(fundSource);
                     await _MyDbContext.SaveChangesAsync();
                 }
             }
             else
             {
-                var data_holder = _MyDbContext.FundSourceAmount;
-                data_holder.Where(s => s.fundsource_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.fundsource_amount_token == data.single_token).FirstOrDefault().fundsource_amount_token = data.single_token;
+                var fund_source_amount = _MyDbContext.FundSourceAmount.FirstOrDefault(s => s.fundsource_amount_token == data.single_token);
+                fund_source_amount.status = "deactivated";
 
+                _MyDbContext.FundSourceAmount.Update(fund_source_amount);
+                await _MyDbContext.SaveChangesAsync();
+
+                var fundSource = await _context
+                                    .FundSource
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(m => m.token == fund_source_amount.fundsource_token);
+
+                fundSource.Remaining_balance -= fund_source_amount.Amount;
+                _context.Update(fundSource);
                 await _MyDbContext.SaveChangesAsync();
             }
 
