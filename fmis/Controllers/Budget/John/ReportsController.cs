@@ -486,22 +486,22 @@ namespace fmis.Controllers.Budget.John
                     .ThenInclude(suballotment_amount => suballotment_amount.FundSourceAmounts)
                     .ThenInclude(uacs => uacs.Uacs);*/
 
-                    var saa = (from budgetallotment in _MyDbContext.Budget_allotments
+                   /* var saa = (from budgetallotment in _MyDbContext.Budget_allotments
                                join suballotment in _MyDbContext.Sub_allotment
                                on budgetallotment.BudgetAllotmentId equals suballotment.Budget_allotmentBudgetAllotmentId
                                join suballotment_amount in _MyDbContext.Suballotment_amount
-                               on suballotment.SubId equals suballotment_amount.FundSourceId
+                               on suballotment.SubAllotmentId equals suballotment_amount.SubAllotmentId
                                join prexc in _MyDbContext.Prexc
                                on suballotment.prexcId equals prexc.Id
                                join uacs in _MyDbContext.Uacs
-                               on suballotment_amount.Expenses equals uacs.Account_title
+                               on suballotment_amount.UacsId equals uacs.Account_title
                                select new SaobViewModel
                                {
                                    budget_allotment = budgetallotment,
                                    sub_allotment = suballotment,
                                    prexc = prexc,
                                    uacs = uacs
-                               }).ToList();
+                               }).ToList();*/
 
 
 
@@ -512,7 +512,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                    foreach (var suballotments in saa)
+                    /*foreach (var suballotments in saa)
                     {
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
@@ -540,7 +540,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 2).Value = suballotments.uacs.Expense_code;
                         ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                        /*ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                        *//*ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*/
 
@@ -638,7 +638,7 @@ namespace fmis.Controllers.Budget.John
                                                            {
                                                                budget_allotment = budgetallotment,
                                                                sub_allotment = suballotment
-                                                           }).ToList();*/
+                                                           }).ToList();*//*
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
@@ -655,7 +655,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Cell(currentRow, 1).Value = "GRANDTOTAL";
-                    }
+                    }*/
 
 
 
