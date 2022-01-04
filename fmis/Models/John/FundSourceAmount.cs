@@ -22,11 +22,5 @@ namespace fmis.Models.John
         [JsonIgnore]
         public FundSource FundSource { get; set; }
         public virtual ICollection<Uacs> Uacs { get; set; }
-        /*public Budget_allotment Budget_allotment { get; set; }*/
-
-        /*[ForeignKey("FundSource")]
-        public int FundSourceId { get; set; }
-        public FundSource FundSource { get; set; }*/
-
     }
 }

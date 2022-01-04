@@ -1,5 +1,7 @@
 ﻿@model fmis.Models.Obligation
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
+@using System.Globalization;
 
 @functions{
     public string GetAntiXsrfRequestToken()
@@ -13,6 +15,35 @@
         margin-bottom: 200px;
     }
 </style>
+
+<div class="col-xs-12 infobox-container" style=" margin-bottom: 10px">
+    <div class="infobox infobox-red">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-calculator"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+            </span>
+            <div class="infobox-content">
+                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+            </div>
+        </div>
+    </div>
+    <div class="infobox infobox-orange2">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-bar-chart-o"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
+                @Model.ObligationAmounts.Sum(x => x.Amount).ToString("C", new CultureInfo("en-PH"))
+            </span>
+            <div class="infobox-content">
+                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <form>
     <table class="table">
@@ -39,10 +70,20 @@
                 </td>
             </tr>
             <tr>
-                <td class="col-sm-1"><strong>Fund Source</strong></td>
+                <td class="col-sm-1">
+                    <strong>
+                        @if (Model.source_type == "fund_source")
+                            @Html.Raw("Fund Source")
+                        else if (Model.source_type == "sub_allotment")
+                            @Html.Raw("Sub Allotment")
+                    </strong>
+                </td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                   @* @Html.DisplayFor(model => model.s)*@
+                    @if (Model.source_type == "fund_source")
+                        @Html.DisplayFor(model => model.FundSource.FirstOrDefault().FundSourceTitle)
+                    else if (Model.source_type == "sub_allotment")
+                        @Html.DisplayFor(model => model.SubAllotment.FirstOrDefault().Suballotment_title)
                 </td>
             </tr>
             <tr>
@@ -51,30 +92,17 @@
                 <td class="col-sm-10">
                     @Html.DisplayFor(model => model.Pr_no)
                 </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Total Amount</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    <strong class="obligation_amount"></strong>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Dibursements</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10"><strong id="uacs_disbursment"></strong></td>
-            </tr>
+            </tr> 
         </tbody>
     </table>
 </form>
 
-<input type="hidden" class="obligation_amount_data" value="@ViewBag.obligation_amount">
-<input type="hidden" class="uacs" value="@ViewBag.uacs">
-<input type="hidden" id="obligation_token" value="@ViewBag.obligation_token" />
-<<<<<<< HEAD:fmis/Views/Budget/John/Obligations/ObligationAmount.cshtml
-=======
+<input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.ObligationAmounts)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" id="obligation_token" value="@Model.obligation_token" />
 <input type="hidden" id="obligation_id" value="@Html.DisplayFor(model => model.Id)" />
->>>>>>> 0c7b10025972ba4d7f371d29f761198dc56acf26:fmis/Views/Budget/John/Obligations/ObligationModal.cshtml
+<input type="hidden" id="remaining_balance" value="@Model.FundSource.FirstOrDefault().Remaining_balance" />
+<input type="hidden" id="obligated_amount" value="@Model.FundSource.FirstOrDefault().obligated_amount" />
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
 <div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
 <br />
@@ -84,10 +112,22 @@
 
 <script>
 
-    var exp_code = 0;
-    var default_token = "";
+    var EXPENSE_CODE = 0;
+    var AMOUNT = 0;
     var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+    @*var CHECK_FIRST_ROW1 = false;*@
+    var INSUFFICIENT_AMOUNT = false;
+    var INSUFFICIENT_AMOUNT1 = false;
+    @*var INSUFFICIENT_AMOUNT2 = false;*@
     var COUNT_AFTER_ROW = 0;
+    var OBLIGATION_TOKEN = $("#obligation_token").val();
+    var OBLIGATED_AMOUNT = $("#obligated_Aamount").val();
+    var REMAINING_BALANCE = 0;
+    var POST_AMOUNT = 0;
+    var TRAP_SAVE_AMOUNT = false;
+    var OLD_VALUE = 0;
+    var NEW_VALUE = 0;
 
     var obligation_id = $("#obligation_id").val();
     let generateObligationAmountToken = () => {
@@ -131,7 +171,6 @@
     var obligationamount = $.parseJSON($(".obligation_amount_data").val());
     const obligation_amount_handsontable = [];
     var counter = 0;
-    var obligation_amount = 0;
     $.each(obligationamount, function () {
         obligation_amount_handsontable[counter] = [
             get_account_title[this.UacsId],
@@ -145,10 +184,8 @@
             this.obligation_amount_token
         ]
         counter++;
-        obligation_amount += this.Amount;
     });
 
-    $(".obligation_amount").html(obligation_amount);
     @*console.log(obligation_amount_handsontable);*@
 
     const container = document.getElementById('obligation_handsontable');
@@ -240,33 +277,33 @@
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
-            CHECK_AFTER_ROW = true; //make true taga add sa row para dile ma save sa db
+            CHECK_AFTER_ROW = true; //make true taga add sa row para dile ma save sa db ang empty
             COUNT_AFTER_ROW = 2;
-            hot.setDataAtCell(row, 7, $("#obligation_token").val());
+            hot.setDataAtCell(row, 7, OBLIGATION_TOKEN);
             hot.setDataAtCell(row, 8, generateObligationAmountToken());
         },
         afterChange(changes, source) {
-            console.log(source);
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW || COUNT_AFTER_ROW > 0) {
                 CHECK_AFTER_ROW = false;
                 COUNT_AFTER_ROW--;
-                console.log("View Here!");
                 return;
             }
             changes.forEach(([row, col, oldValue, newValue]) => {
+                if (EXPENSE_CODE == newValue || AMOUNT == newValue) {
+                    console.log("first trap!")
+                    return;;
+                } // mao ni siya ang mo trap para dile mo load kaduha if mag set sa cell
                 if (col == 0) {
-                    var expense_code = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code;
+                    CHECK_FIRST_ROW = true; //need ra diay ne para dile ma doble load
+                    EXPENSE_CODE = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code;
 
-                    if (expense_code == newValue)
-                        return;
-
+                    hot.setDataAtCell(row, col + 1, EXPENSE_CODE);
                     var ajax_data = [];
-
                     ajax_data.push({
                         ObligationId: obligation_id,
                         UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                        Expense_code: expense_code,
-                        Amount: hot.getDataAtCell(row, col + 2),
+                        Expense_code: EXPENSE_CODE,
+                        Amount: hot.getDataAtCell(row, 2),
                         Total_disbursement: 0,
                         Total_net_amount: 0,
                         Total_tax_amount: 0,
@@ -274,39 +311,132 @@
                         obligation_token: hot.getDataAtCell(row, col + 7),
                         obligation_amount_token: hot.getDataAtCell(row, col + 8)
                     });
-                    @*console.log(ajax_data);*@
-                    $(".obligation_amount").html(obligation_amount);
-                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-
-                    hot.setDataAtCell(row, col + 1, expense_code);
-                    CHECK_FIRST_ROW = true;
-                }
-                else {
-                    var ajax_data = [];
-                    $.each(hot.getSourceData(), function () {
-                        ajax_data.push({
-                            ObligationId: obligation_id,
-                            UacsId: this[0] ? this[0] : "",
-                            Expense_code: this[1] ? this[1] : "",
-                            Amount: this[2] ? this[2] : "",
-                            Total_disbursement: this[3] ? this[3] : "",
-                            Total_net_amount: this[4] ? this[4] : "",
-                            Total_tax_amount: this[5] ? this[5] : "",
-                            Total_others: this[6] ? this[6] : "",
-                            obligation_token: this[7] ? this[7] : "",
-                            obligation_amount_token: this[8] ? this[8] : "",
-                        });
-                    });
-                    console.log(hot.getSourceData());
                     console.log(ajax_data);
-                    $(".obligation_amount").html(obligation_amount);
                     ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                    @*CHECK_FIRST_ROW1 = true; //need ra diay ne para dile ma doble load dapat duha*@
+                }
+                else if (col == 2) {
+                    OLD_VALUE = oldValue;
+                    NEW_VALUE = newValue;
+                    var calculcation_type = "";
+                    if (oldValue == newValue) {
+                        console.log("trap the logs!");
+                        return;
+                    }
+                    else if (INSUFFICIENT_AMOUNT1) {
+                        INSUFFICIENT_AMOUNT1 = false;
+                        console.log("insufficient amount")
+                        return;
+                    }
+                    else if (oldValue > newValue) {
+                        calculcation_type = "subtract";
+                        if (oldValue)
+                            AMOUNT = oldValue - newValue;
+                        else
+                            AMOUNT = newValue;
+                    }
+                    else {
+                        calculcation_type = "sum";
+                        if (oldValue)
+                            AMOUNT = newValue - oldValue;
+                        else
+                            AMOUNT = newValue;
+                    }
+
+                    //get the exact remaining balance from DB
+                    var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
+                    var post_calculation_data = {
+                        "obligation_id": obligation_id,
+                        "obligation_token": OBLIGATION_TOKEN
+                    };
+                    $.post(url, post_calculation_data, function (result) {
+                        var post_remaining_balance = result.remaining_balance;
+                        var post_obligated_amount = result.obligated_amount;
+
+                        console.log("SAVED THE AMOUNT FROM FIRST ROW!");
+                        $("#total_remaining_balance").html(result.remaining_balance);
+                        $("#total_obligated_amount").html(result.total_obligated_amount);
+
+                        if (calculcation_type == "sum") {
+                            post_remaining_balance -= AMOUNT;
+                            post_obligated_amount += AMOUNT;
+                        }
+                        else {
+                            post_remaining_balance += AMOUNT;
+                            post_obligated_amount -= AMOUNT;
+                        }
+
+                        console.log("AMOUNT : " + AMOUNT);
+                        console.log("REMAINING BALANCE : " + post_remaining_balance);
+
+                        if (AMOUNT > post_remaining_balance) {
+                            POST_AMOUNT = AMOUNT;
+                            REMAINING_BALANCE = post_remaining_balance;
+                            Lobibox.alert("error", {
+                                msg: "Insufficient  Balance!",
+                                sound: false,
+                            });
+                            INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
+                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+                            INSUFFICIENT_AMOUNT1 = true;
+                            @*INSUFFICIENT_AMOUNT2 = true;*@
+                            return;
+                        }
+
+                        //do the calculalation
+                        var calculated_amount_data = {
+                            "obligation_id": obligation_id,
+                            "obligation_token": OBLIGATION_TOKEN,
+                            "obligation_amount_token": hot.getDataAtCell(row, 8),
+                            "remaining_balance": post_remaining_balance,
+                            "obligated_amount": post_obligated_amount,
+                            "amount": AMOUNT
+                        };
+                        console.log(calculated_amount_data);
+                        var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")'
+                        $.post(url, calculated_amount_data, function (result) {
+                            console.log(calculated_amount_data);
+                            $("#total_remaining_balance").html(result.remaining_balance);
+                            $("#total_obligated_amount").html(result.obligated_amount);
+                        });
+
+                    });
+                    TRAP_SAVE_AMOUNT = true;
                 }
             });
 
             if (CHECK_FIRST_ROW) {
-                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
-            } else {
+                console.log("Check first row!");
+                CHECK_FIRST_ROW = false;
+            }
+            @*else if (CHECK_FIRST_ROW1) {
+                console.log("CHECK FIRST ROW1");
+                CHECK_FIRST_ROW1 = false;
+            }*@
+            else if (INSUFFICIENT_AMOUNT) {
+                console.log("INSUFFICIENT_AMOUNT");
+                INSUFFICIENT_AMOUNT = false;
+            }
+            @*else if (INSUFFICIENT_AMOUNT2) {
+                console.log("INSUFFICIENT_AMOUNT2");
+                INSUFFICIENT_AMOUNT = false;
+            }*@
+            else if (TRAP_SAVE_AMOUNT) {
+                TRAP_SAVE_AMOUNT = false;
+                console.log("TRAP SAVE AMOUNT");
+            }
+            else if (NEW_VALUE == OLD_VALUE) {
+                console.log("THE SAME VALUE!!!!");
+            }
+            else if (POST_AMOUNT > REMAINING_BALANCE) {
+                console.log("not enought remaining balance!");
+            }
+            else
+            {
+                console.log("POST AMOUNT " + POST_AMOUNT);
+                console.log("REMAINING BALANCE " + REMAINING_BALANCE);
+                console.log("else last");
+                OBLIGATED_AMOUNT = 0;
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
@@ -321,9 +451,9 @@
                         obligation_token: this[7] ? this[7] : "",
                         obligation_amount_token: this[8] ? this[8] : "",
                     });
+                    OBLIGATED_AMOUNT += this[2] ? this[2] : 0;
                 });
-                console.log(ajax_data);
-                $(".obligation_amount").html(obligation_amount);
+                $("#total_obligated_amount").html(OBLIGATED_AMOUNT);
                 ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
             }
 

@@ -113,29 +113,17 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int budget_id, int fund_source_id)
         {
-            var fundsource = _MyDbContext.FundSources.Find(fund_source_id);
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var json = JsonSerializer.Serialize(_MyDbContext.FundSourceAmount
-                                                .Where(f => f.status == "activated" && f.FundSourceId == fundsource.FundSourceId).ToList()
-                       );
-            ViewBag.temp = json;
+
+            var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
+                .Include(x => x.FundSourceAmounts.Where(x=>x.status == "activated"))
+                .FirstOrDefault();
 
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            ViewBag.budget_id = budget_id;
-            ViewBag.fundsource_id = fund_source_id;
-
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
-            var fundSource = await _context.FundSource.FindAsync(fund_source_id);
-            if (fundSource == null)
-            {
-                return NotFound();
-            }
-            PopulatePrexcsDropDownList(fundSource.PrexcId);
-            return View(fundSource);
+            PopulatePrexcsDropDownList(fundsource.PrexcId);
+            return View(fundsource);
         }
 
         [HttpPost]
@@ -214,23 +202,21 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Edit(FundSource fundSource)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
-            var fundsource_data = _MyDbContext.FundSources;
-
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId).ToList();
-
             var beginning_balance = funsource_amount.Sum(x => x.Amount);
             var remaining_balance = funsource_amount.Sum(x => x.Amount);
 
-            fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().FundSourceTitle = fundSource.FundSourceTitle;
-            fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().Description = fundSource.Description;
-            fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().FundSourceTitleCode = fundSource.FundSourceTitleCode;
-            fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().Respo = fundSource.Respo;
-            fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().Beginning_balance = beginning_balance;
-            fundsource_data.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault().Remaining_balance = remaining_balance;
-            await this._MyDbContext.SaveChangesAsync();
+            var fundsource_data = _MyDbContext.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).FirstOrDefault();
+            fundsource_data.PrexcId = fundSource.PrexcId;
+            fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
+            fundsource_data.Description = fundSource.Description;
+            fundsource_data.FundSourceTitleCode = fundSource.FundSourceTitleCode;
+            fundsource_data.Respo = fundSource.Respo;
+            fundsource_data.Beginning_balance = beginning_balance;
+            fundsource_data.Remaining_balance = remaining_balance;
 
-            ViewBag.budget_id = fundSource.Budget_allotmentBudgetAllotmentId;
+            _context.Update(fundsource_data);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Fundsource", "Budget_allotments", new { budget_id = fundSource.Budget_allotmentBudgetAllotmentId });
         }

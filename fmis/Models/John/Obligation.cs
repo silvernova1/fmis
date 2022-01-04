@@ -46,11 +46,12 @@ namespace fmis.Models
         public string status { get; set; }
         public string obligation_token { get; set; }
 
-        [ForeignKey("FundSource")]
-        public int? FundSourceId { get; set; }
-        public FundSource FundSource { get; set; }
+        public ICollection<ObligationAmount> ObligationAmounts { get; set; }
 
+        public ICollection<FundSource> FundSource { get; set; }
 
+        public ICollection<Sub_allotment> SubAllotment { get; set; }
+        public ICollection<Uacs> Uacs { get; set; }
     }
 }
 

@@ -83,7 +83,7 @@ namespace fmis.Data
             .WithMany(b => b.Suballotment_amount);*/
 
             modelBuilder.Entity<Sub_allotment>()
-           .HasKey(s => s.SubId);
+           .HasKey(s => s.SubAllotmentId);
 
 
             //arnell

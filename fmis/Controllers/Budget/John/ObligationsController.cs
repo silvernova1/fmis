@@ -38,6 +38,7 @@ namespace fmis.Controllers
         private readonly MyDbContext _MyDbContext;
 
         ORSReporting rpt_ors = new ORSReporting();
+        private Obligation obligation;
 
         public ObligationsController(ObligationContext context, ObligationAmountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
         {
@@ -76,6 +77,7 @@ namespace fmis.Controllers
             public int source_id { get; set; }
             public string source_title { get; set; }
             public string source_type { get; set; }
+            public decimal source_balance { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
@@ -131,17 +133,18 @@ namespace fmis.Controllers
                     Date_released = x.Date_released.ToShortDateString(),
                     Time_released = x.Time_released.ToString("HH:mm:ss"),
                     obligation_token = x.obligation_token,
-                    status = x.status 
-            });
-            var obligation_json = await obligations.AsNoTracking()
+                    status = x.status
+                });
+
+            var obligation_json = await obligations
+                                    .AsNoTracking()
                                     .ToListAsync();
             ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
 
             var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source" })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
-
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
@@ -163,27 +166,37 @@ namespace fmis.Controllers
             return View(obligation);
         }
 
-        [HttpGet]
-        [ValidateAntiForgeryToken]
+        /*[HttpGet]
+        [ValidateAntiForgeryToken]*/
         public async Task<IActionResult> openObligationAmount(int id,string obligation_token)
         {
-            var obligation_amount = _Ucontext.ObligationAmount;
             var uacs_data = JsonSerializer.Serialize(await _UacsContext.Uacs.AsNoTracking().ToListAsync());
             ViewBag.uacs = uacs_data;
-            ViewBag.obligation_token = obligation_token;
 
             if (id != 0)
             {
-                ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.ObligationId == id && s.status == "activated").AsNoTracking().ToListAsync());
-                var obligation = await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
-                /*return Json(obligation);*/
-                return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
+                obligation = await _context.Obligation
+                    .Include(x => x.ObligationAmounts)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
             }
             else 
             {
-                ViewBag.obligation_amount = JsonSerializer.Serialize(await obligation_amount.Where(s => s.obligation_token == obligation_token && s.status == "activated").AsNoTracking().ToListAsync());
-                return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(m => m.obligation_token == obligation_token));
+                obligation = await _context.Obligation
+                    .Include(x => x.ObligationAmounts)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.obligation_token == obligation_token);
+                obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
             }
+
+            if (obligation.source_type == "fund_source")
+                obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.source_id).ToListAsync();
+            else if (obligation.source_type == "sub_allotment")
+                obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.source_id).ToListAsync();
+
+            /*return Json(obligation);*/
+            return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
         }
 
         // GET: Obligations/Create
