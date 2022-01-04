@@ -72,7 +72,7 @@ namespace fmis.Controllers
                 obligation_amount.ObligationId = item.ObligationId;
                 obligation_amount.UacsId = item.UacsId;
                 obligation_amount.Expense_code = Convert.ToInt64(item.Expense_code);
-                obligation_amount.Amount = item.Amount;
+                obligation_amount.Amount =  item.Amount;
                 obligation_amount.Total_disbursement = item.Total_disbursement;
                 obligation_amount.Total_net_amount = item.Total_net_amount;
                 obligation_amount.Total_tax_amount = item.Total_tax_amount;

@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <h3>SAOB Reports</h3>
-            <form action="@Url.Action("DownloadSaob","Reports")" method="post">
+            <form action="@Url.Action("Export","Reports")" method="post">
                 @Html.AntiForgeryToken()
                 <table>
                     <tr>
@@ -35,9 +35,9 @@
             </form>
         </div>
     </div>
-    @using (Html.BeginForm("Export", "Reports", FormMethod.Post))
+ @*   @using (Html.BeginForm("Export", "Reports", FormMethod.Post))
     {
         <input type="submit" value="Export" />
-    }
+    }*@
 </div>
 

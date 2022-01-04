@@ -1,11 +1,14 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using fmis.Data;
 using fmis.DataHealpers;
 using fmis.Filters;
 using fmis.Models;
 using fmis.Models.John;
+using fmis.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Owin;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
@@ -13,6 +16,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace fmis.Controllers.Budget.John
@@ -34,9 +38,11 @@ namespace fmis.Controllers.Budget.John
 
         [HttpPost]
 
-        public IActionResult Export(string fn)
-
+        public IActionResult Export(string fn, string date_from, string date_to)
         {
+            DateTime date1 = Convert.ToDateTime(date_from);
+            DateTime date2 = Convert.ToDateTime(date_to);
+
 
             DataTable dt = new DataTable("Saob Report");
             /*dt.Columns.AddRange(new DataColumn[11] { new DataColumn("P/A/P / ALLOTMENT CLASS /"),
@@ -178,7 +184,7 @@ namespace fmis.Controllers.Budget.John
 
                 //ws.Range(ws.Cell(row, col++), ws.Cell(row, col++)).Merge();
 
-                ws.Worksheet.SheetView.FreezeColumns(2);
+                ws.Worksheet.SheetView.FreezeColumns(1);
                 ws.Worksheet.SheetView.FreezeRows(13);
 
 
@@ -191,11 +197,11 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell("A7").RichText.AddText("Department:");
                 ws.Cell("A8").RichText.AddText("Agency/OU:");
                 ws.Cell("A9").RichText.AddText("Fund");
-                ws.Cell("D7").RichText.AddText("HEALTH");
-                ws.Cell("D8").RichText.AddText("REGIONAL OFFICE VII");
-                ws.Range("A7:C7").Merge();
+                ws.Cell("B7").RichText.AddText("HEALTH");
+                ws.Cell("B8").RichText.AddText("REGIONAL OFFICE VII");
+                /*ws.Range("A7:C7").Merge();
                 ws.Range("A8:C8").Merge();
-                ws.Range("A9:C9").Merge();
+                ws.Range("A9:C9").Merge();*/
 
 
                 ws.Cell("F4").Style.Font.SetBold();
@@ -210,8 +216,10 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell("F5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
                 ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
-                ws.Cell("F5").RichText.AddText("DECEMBER 15, 2021");
+                /*ws.Columns(11, 1).AdjustToContents();*/
+                ws.Cell("F5").Style.DateFormat.Format = "MMMM dd, yyyy";
+                ws.Cell("F5").Value = date2;
+
 
                 ws.Cell("F6").Style.Font.FontSize = 10;
                 ws.Cell("F6").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
@@ -220,12 +228,9 @@ namespace fmis.Controllers.Budget.John
                 ws.Columns(11, 1).AdjustToContents();
                 ws.Cell("F6").RichText.AddText("(In Pesos)");
 
+
                 //FIRST ROW
                 ws.Cell(11, 1).Style.Font.SetBold();
-                ws.Cell(11, 1).Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
                 ws.Cell(11, 1).RichText.AddText("P/A/P /ALLOTMENT CLASS/");
                 //SECOND ROW
                 ws.Cell(12, 1).Style.Font.SetBold();
@@ -292,7 +297,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Columns(12, 7).AdjustToContents();
 
-                ws.Cell(12, 7).Value = DateTime.Now.ToString("MMMM");
+                ws.Cell(12, 7).Value = date2.ToString("MMMM");
                 //ws.Cell(12, 7).Value = DateTime.Now.ToString("MMMM yyyy");
 
 
@@ -303,7 +308,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell(12, 8).WorksheetColumn().AdjustToContents();
 
-                ws.Cell(12, 8).Value = "As of " + DateTime.Now.ToString("MMMM");
+                ws.Cell(12, 8).Value = "As of " + date2.ToString("MMMM");
 
 
                 //FIRST ROW
@@ -385,35 +390,13 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Value = budget_allotment.Allotment_title.ToUpper().ToString();
                     currentRow++;
 
-                    var fsh = _MyDbContext.FundSources.Where(p => p.Budget_allotmentBudgetAllotmentId == budget_allotment.BudgetAllotmentId).ToString();
-
-
-                    /*
-                                        var ballots = (from ba in _MyDbContext.Budget_allotments
-                                                       join fs in _MyDbContext.FundSources
-                                                       on ba.BudgetAllotmentId equals fs.Budget_allotmentBudgetAllotmentId
-                                                       join fsa in _MyDbContext.FundSourceAmount
-                                                       on fs.FundSourceId equals fsa.FundSourceId
-                                                       join U in _MyDbContext.Uacs
-                                                       on fsa.ac equals U.Account_title
-                                                       select new
-                                                       {
-                                                           BaTitle = ba.Allotment_title,
-                                                           BaCode = ba.Allotment_code,
-                                                           SelectedFs = fs.Prexc.pap_code1,
-                                                           fsTitle = fs.FundSourceTitle,
-                                                           fsaAccTitle = fsa.Account_title,
-                                                           fsaAmount = fsa.Amount,
-                                                           UaccCode = U.Expense_code
-                                                       }).ToList();*/
-
 
                     var query = (from fundsource in _MyDbContext.FundSources
                                  join prexc in _MyDbContext.Prexc
                                  on fundsource.PrexcId equals prexc.Id
                                  select new
                                  {
-                                     papcode1 = prexc.pap_code1
+                                     papcode1 = Convert.ToString(prexc.pap_code1)
                                  }).ToList();
 
 
@@ -423,8 +406,9 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 1).Value = papcode;
+                        ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                        ws.Cell(currentRow, 1).SetValue(papcode).SetDataType(XLDataType.Number);
+                        
                         currentRow++;
                         
 
@@ -453,16 +437,15 @@ namespace fmis.Controllers.Budget.John
 
                             currentRow++;
                             total = (double)fundsource_amount.Amount;
-
                         }
 
                         allotment_total += (double)fundSource.Remaining_balance;
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.Allotment_title.ToUpper();
+                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.Allotment_code.ToUpper();
 
 
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
@@ -479,10 +462,11 @@ namespace fmis.Controllers.Budget.John
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
+                        ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_title.ToUpper().ToString();
+                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
+
 
 
                     }
@@ -492,7 +476,206 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
+
+                    currentRow++;
+                    currentRow++;
+
+
+                    /*var saa = _MyDbContext.Budget_allotments
+                    .Include(sub_allotment => sub_allotment.Sub_allotments)
+                    .ThenInclude(suballotment_amount => suballotment_amount.FundSourceAmounts)
+                    .ThenInclude(uacs => uacs.Uacs);*/
+
+                    var saa = (from budgetallotment in _MyDbContext.Budget_allotments
+                               join suballotment in _MyDbContext.Sub_allotment
+                               on budgetallotment.BudgetAllotmentId equals suballotment.Budget_allotmentBudgetAllotmentId
+                               join suballotment_amount in _MyDbContext.Suballotment_amount
+                               on suballotment.SubId equals suballotment_amount.FundSourceId
+                               join prexc in _MyDbContext.Prexc
+                               on suballotment.prexcId equals prexc.Id
+                               join uacs in _MyDbContext.Uacs
+                               on suballotment_amount.Expenses equals uacs.Account_title
+                               select new SaobViewModel
+                               {
+                                   budget_allotment = budgetallotment,
+                                   sub_allotment = suballotment,
+                                   prexc = prexc,
+                                   uacs = uacs
+                               }).ToList();
+
+
+
+
+
+                    // SUB ALLOTMENT DISPLAY
+
+
+
+
+                    foreach (var suballotments in saa)
+                    {
+                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 1).Value = "SUB-ALLOTMENT" + "-" + suballotments.budget_allotment.Allotment_code.ToUpper().ToString();
+                        currentRow++;
+
+
+                        ws.Cell(currentRow, 1).Value = suballotments.prexc.pap_code1;
+                        ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
+                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Value = suballotments.sub_allotment.Suballotment_title.ToUpper().ToString();
+
+
+                        total = 0;
+
+                        ws.Cell(currentRow, 1).Value = suballotments.uacs.Account_title;
+                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+
+                        ws.Cell(currentRow, 2).Value = suballotments.uacs.Expense_code;
+                        ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+
+                        /*ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*/
+
+
+                        /* foreach (FundSource fundSource in budget_allotment.FundSources)
+                         {
+                             var papcode = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+
+
+                             ws.Cell(currentRow, 1).Value = papcode;
+                             ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
+                             ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+                             currentRow++;
+
+
+
+                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                             ws.Cell(currentRow, 1).Style.Font.SetBold();
+                             ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
+                             currentRow++;
+
+
+
+                             foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
+                             {
+                                 total = 0;
+
+                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
+                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+
+                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                                 ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+
+                                 ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                 ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                 currentRow++;
+                                 total = (double)fundsource_amount.Amount;
+                             }
+
+                             allotment_total += (double)fundSource.Remaining_balance;
+
+                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                             ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+                             ws.Cell(currentRow, 1).Style.Font.SetBold();
+                             ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.Allotment_code.ToUpper();
+
+
+                             ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                             ws.Cell(currentRow, 3).Style.Font.SetBold();
+                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                             ws.Cell(currentRow, 3).Value = fundSource.Remaining_balance;
+
+
+
+
+                             currentRow++;
+
+
+                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
+                             ws.Cell(currentRow, 1).Style.Font.SetBold();
+                             ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                             ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
+
+
+
+                         }*/
+                        /* ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                         ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                         ws.Cell(currentRow, 3).Style.Font.SetBold();
+                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                         ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
+
+                         currentRow++;*/
+
+
+
+                        /*var saa = _MyDbContext.Budget_allotments
+                        .Include(sub_allotment => sub_allotment.Sub_allotments)
+                        .ThenInclude(suballotment_amount => suballotment_amount.FundSourceAmounts)
+                        .ThenInclude(uacs => uacs.Uacs);*/
+                        /*
+                                                var saa = (from budgetallotment in _MyDbContext.Budget_allotments
+                                                           join suballotment in _MyDbContext.Sub_allotment
+                                                           on budgetallotment.BudgetAllotmentId equals suballotment.Budget_allotmentBudgetAllotmentId
+                                                           select new SaobViewModel
+                                                           {
+                                                               budget_allotment = budgetallotment,
+                                                               sub_allotment = suballotment
+                                                           }).ToList();*/
+
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
+                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToString();
+
+                        currentRow++;
+                        currentRow++;
+
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell(currentRow, 1).Value = "GRANDTOTAL";
+                    }
+
+
+
+                    ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                    ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
+                    ws.Cell(currentRow, 1).Style.Font.SetBold();
+                    ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                    ws.Cell(currentRow, 1).Value = "TOTAL" +" " + budget_allotment.Allotment_code.ToString();
+
+                    currentRow++;
+                    currentRow++;
+
+                    ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 1).Style.Font.SetBold();
+                    ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                    ws.Cell(currentRow, 1).Value = "GRANDTOTAL";
                 }
+                currentRow++;
 
 
 
@@ -975,8 +1158,27 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
-            var allotments = (from list in _MyDbContext.Yearly_reference where list.YearlyReference == "2021" select list).ToList();
-            return PartialView(allotments);
+            /*var allotments = (from list in _MyDbContext.Yearly_reference where list.YearlyReference == "2021" select list).ToList();
+            return PartialView(allotments);*/
+            return View();
         }
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DownloadSaob(FormCollection collection)
+        {
+            String date_from = collection.Get("date_from");
+            String date_to = collection.Get("date_to");
+            FileStreamResult fsResult = null;
+
+                var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                SaobExcel saobexcel = new SaobExcel();
+                //saobexcel.ExcelEPP();
+                saobexcel.CreateExcel(date_from, date_to);
+                var filesStream = new FileStream(System.Web.HttpContext.Current.Server.MapPath(), FileMode.Open);
+                fsResult = new FileStreamResult(filesStream, contentType);
+            return fsResult;
+
+        }*/
     }
 }
