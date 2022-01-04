@@ -23,7 +23,7 @@ namespace fmis.Models.John
         public Prexc Prexc { get; set; }
         public decimal Beginning_balance { get; set; }
         public decimal Remaining_balance { get; set; }
-        public decimal utilization_amount { get; set; }
+        public decimal obligated_amount { get; set; }
         public string token { get; set; }
         public Budget_allotment Budget_allotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }

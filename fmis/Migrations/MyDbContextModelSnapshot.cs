@@ -224,6 +224,9 @@ namespace fmis.Migrations
                     b.Property<string>("FundSourceTitleCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ObligationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PrexcId")
                         .HasColumnType("int");
 
@@ -233,15 +236,17 @@ namespace fmis.Migrations
                     b.Property<string>("Respo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("obligated_amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("utilization_amount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("FundSourceId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
+
+                    b.HasIndex("ObligationId");
 
                     b.HasIndex("PrexcId");
 
@@ -339,9 +344,6 @@ namespace fmis.Migrations
 
                     b.Property<string>("obligation_token")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("source_balance")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("source_id")
                         .HasColumnType("int");
@@ -619,6 +621,9 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ObligationId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Remaining_balance")
                         .HasColumnType("decimal(18,2)");
 
@@ -646,6 +651,8 @@ namespace fmis.Migrations
                     b.HasKey("SubId");
 
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
+
+                    b.HasIndex("ObligationId");
 
                     b.HasIndex("prexcId")
                         .IsUnique();
@@ -702,6 +709,9 @@ namespace fmis.Migrations
                     b.Property<int?>("FundSourceAmountId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ObligationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -711,6 +721,8 @@ namespace fmis.Migrations
                     b.HasKey("UacsId");
 
                     b.HasIndex("FundSourceAmountId");
+
+                    b.HasIndex("ObligationId");
 
                     b.ToTable("Uacs");
                 });
@@ -883,6 +895,10 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.Obligation", null)
+                        .WithMany("FundSource")
+                        .HasForeignKey("ObligationId");
+
                     b.HasOne("fmis.Models.Prexc", "Prexc")
                         .WithMany()
                         .HasForeignKey("PrexcId")
@@ -952,6 +968,10 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.Obligation", null)
+                        .WithMany("SubAllotment")
+                        .HasForeignKey("ObligationId");
+
                     b.HasOne("fmis.Models.Prexc", "prexc")
                         .WithOne("Sub_Allotment")
                         .HasForeignKey("fmis.Models.Sub_allotment", "prexcId")
@@ -968,6 +988,10 @@ namespace fmis.Migrations
                     b.HasOne("fmis.Models.John.FundSourceAmount", null)
                         .WithMany("Uacs")
                         .HasForeignKey("FundSourceAmountId");
+
+                    b.HasOne("fmis.Models.Obligation", null)
+                        .WithMany("Uacs")
+                        .HasForeignKey("ObligationId");
                 });
 
             modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
@@ -1000,7 +1024,13 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Obligation", b =>
                 {
+                    b.Navigation("FundSource");
+
                     b.Navigation("ObligationAmounts");
+
+                    b.Navigation("SubAllotment");
+
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.Prexc", b =>

@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20211231020927_MyDb.cs" />
-    <Compile Include="Migrations\20211231020927_MyDb.Designer.cs" />
+    <Compile Include="Migrations\20220102083809_MyDb.cs" />
+    <Compile Include="Migrations\20220102083809_MyDb.Designer.cs" />
     <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
   </ItemGroup>
 

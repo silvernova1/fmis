@@ -21,6 +21,5 @@ namespace fmis.Models
         public string status { get; set; }
         public string obligation_token { get; set; }
         public string obligation_amount_token { get; set; }
-        /*  public Uacs uacs { get; set; }*/
     }
 }

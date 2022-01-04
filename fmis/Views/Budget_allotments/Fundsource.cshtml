@@ -1,7 +1,9 @@
 ﻿@model fmis.Models.Budget_allotment
 @using System.Globalization;
-@{ ViewData["Title"] = "Fundsource";
-                Layout = "~/Views/Shared/_Layout.cshtml"; }
+@{ 
+    ViewData["Title"] = "Fundsource";
+    Layout = "~/Views/Shared/_Layout.cshtml";     
+}
 
 <h3 class="grey lighter smaller">
     Fund Source
@@ -152,7 +154,7 @@
             </td>
             <td>
                 <b class="orange">
-                    <span>@item.utilization_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                    <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                 </b>
             </td>
             <td>
