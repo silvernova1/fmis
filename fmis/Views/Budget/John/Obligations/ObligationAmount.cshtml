@@ -118,7 +118,7 @@
     var CHECK_FIRST_ROW = false;
     @*var CHECK_FIRST_ROW1 = false;*@
     var INSUFFICIENT_AMOUNT = false;
-    var INSUFFICIENT_AMOUNT1 = false;
+    @*var INSUFFICIENT_AMOUNT1 = false;*@
     @*var INSUFFICIENT_AMOUNT2 = false;*@
     var COUNT_AFTER_ROW = 0;
     var OBLIGATION_TOKEN = $("#obligation_token").val();
@@ -126,8 +126,8 @@
     var REMAINING_BALANCE = 0;
     var POST_AMOUNT = 0;
     var TRAP_SAVE_AMOUNT = false;
-    var OLD_VALUE = 0;
-    var NEW_VALUE = 0;
+    @*var OLD_VALUE = 0;
+    var NEW_VALUE = 0;*@
 
     var obligation_id = $("#obligation_id").val();
     let generateObligationAmountToken = () => {
@@ -316,33 +316,18 @@
                     @*CHECK_FIRST_ROW1 = true; //need ra diay ne para dile ma doble load dapat duha*@
                 }
                 else if (col == 2) {
-                    OLD_VALUE = oldValue;
-                    NEW_VALUE = newValue;
-                    var calculcation_type = "";
+                    @*OLD_VALUE = oldValue;
+                    NEW_VALUE = newValue;*@
                     if (oldValue == newValue) {
                         console.log("trap the logs!");
                         return;
                     }
-                    else if (INSUFFICIENT_AMOUNT1) {
+                    @*else if (INSUFFICIENT_AMOUNT1) {
                         INSUFFICIENT_AMOUNT1 = false;
                         console.log("insufficient amount")
                         return;
-                    }
-                    else if (oldValue > newValue) {
-                        calculcation_type = "subtract";
-                        if (oldValue)
-                            AMOUNT = oldValue - newValue;
-                        else
-                            AMOUNT = newValue;
-                    }
-                    else {
-                        calculcation_type = "sum";
-                        if (oldValue)
-                            AMOUNT = newValue - oldValue;
-                        else
-                            AMOUNT = newValue;
-                    }
-
+                    }*@
+                    
                     //get the exact remaining balance from DB
                     var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
                     var post_calculation_data = {
@@ -357,15 +342,29 @@
                         $("#total_remaining_balance").html(result.remaining_balance);
                         $("#total_obligated_amount").html(result.total_obligated_amount);
 
-                        if (calculcation_type == "sum") {
-                            post_remaining_balance -= AMOUNT;
-                            post_obligated_amount += AMOUNT;
+
+                        if (oldValue > newValue) {
+                            if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                                AMOUNT = oldValue - newValue; //9998
+                                post_remaining_balance = post_remaining_balance + AMOUNT; //19,997
+                            }
+                            else {
+                                AMOUNT = newValue;
+                            }
                         }
-                        else {
-                            post_remaining_balance += AMOUNT;
-                            post_obligated_amount -= AMOUNT;
+                        else { //new : 1, OLD :9999 , REMAINING : 1
+                            if (oldValue) {
+                                AMOUNT = oldValue - newValue;
+                                post_remaining_balance += AMOUNT;
+                            }
+                            else {
+                                AMOUNT = newValue;
+                                post_obligated_amount -= AMOUNT;
+                            }
                         }
 
+                        console.log("OLD VALUE : " + oldValue);
+                        console.log("NEW VALUE : " + newValue);
                         console.log("AMOUNT : " + AMOUNT);
                         console.log("REMAINING BALANCE : " + post_remaining_balance);
 
@@ -378,7 +377,7 @@
                             });
                             INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
                             hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
-                            INSUFFICIENT_AMOUNT1 = true;
+                            @*INSUFFICIENT_AMOUNT1 = true;*@
                             @*INSUFFICIENT_AMOUNT2 = true;*@
                             return;
                         }
@@ -425,9 +424,9 @@
                 TRAP_SAVE_AMOUNT = false;
                 console.log("TRAP SAVE AMOUNT");
             }
-            else if (NEW_VALUE == OLD_VALUE) {
+            @*else if (NEW_VALUE == OLD_VALUE) {
                 console.log("THE SAME VALUE!!!!");
-            }
+            }*@
             else if (POST_AMOUNT > REMAINING_BALANCE) {
                 console.log("not enought remaining balance!");
             }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.John;
 using fmis.Models;
+using System.Text.Json.Serialization;
 
 namespace fmis.Models
 {
@@ -18,22 +19,18 @@ namespace fmis.Models
         public string Allotment_code { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
-       /* public int substotal { get; set; }
-        public int fundstotal { get; set; }
-        public int subfundtotal { get; set; }*/
 
-
-        public List<FundSource> FundSources { get; set; }
-        /*public List<FundSourceAmount> FundSourceAmounts { get; set; }*/
-        public List<Sub_allotment> Sub_allotments { get; set; }
-       /* public List<Suballotment_amount> Suballotment_amounts { get; set; }*/
-
-        public List<Personal_Information> Personal_Information { get; set; }
+        [JsonIgnore]
+        public ICollection<FundSource> FundSources { get; set; }
+        [JsonIgnore]
+        public ICollection<Sub_allotment> Sub_allotments { get; set; }
+        [JsonIgnore]
+        public ICollection<Personal_Information> Personal_Information { get; set; }
 
         [ForeignKey("Yearly_reference")]
         public int YearlyReferenceId { get; set; }
+        [JsonIgnore]
         public Yearly_reference Yearly_reference { get; set; }
-        /*public IList<FundSource> FundSource { get; set; }*/
 
 
         //ADDITIONAL FIELDS BASED ON OLD BUDGET SYSTEM

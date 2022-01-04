@@ -1,132 +1,103 @@
-﻿@model List<fmis.Models.John.FundSource>
-
-
+﻿@model IEnumerable<fmis.Models.John.FundSource>
+@using System.Globalization;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Fundsource";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-<h3 style="color: #438eb9;">Fund Source List</h3>
+<h3 class="grey lighter smaller">
+    Fund Source
+</h3>
 <hr />
-<div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
+<div class="row  pull-left">
+    <div class="space-5"></div>
+
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Sum(x => x.Beginning_balance)
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-orange2">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Sum(x => x.obligated_amount)
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                    @Model.Sum(x => x.Remaining_balance)
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />
+<div class="modal" id="createModal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+            <div class="modal-body" id="fund_source_create">
+
             </div>
         </div>
     </div>
 </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-success btn-sm">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </a> | <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">Back to Budget Allotment</a>
-</p>
-<br />
-<br />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Fund Source Code
-            </th>
-            <th>
-                Fund Source Title
-            </th>
-            <th>
-                ORS Head
-            </th>
-            <th>
-                Actions
-            </th>
-            <th>Funds Realignment</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
-                @*  <td>
-                        @Html.DisplayFor(modelItem => item.BudgetAllotmentId)
-                    </td>*@
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                    <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+<div class="modal" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="fund_source_edit">
 
-                </td>
-                <td>
-                    <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*@model IEnumerable<fmis.Models.John.FundSource>
-
-    @{
-        ViewData["Title"] = "Index";
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
-
-    <h2>Fund Source List</h2>
-    <hr />
-
-    <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <p>
-        <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
-    </p>
+<div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+
+        </div>
+    </div>
+</div>
+
+<p>
+    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@ViewBag.budget_id)">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </button> |
+    <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
+        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
+    </a>
+</p>
+
+@if (Model.Count() > 0)
+{
     <table class="table">
         <thead>
             <tr>
@@ -142,39 +113,121 @@
                 <th>
                     Actions
                 </th>
-                <th>Funds Realignment</th>
+                <th>
+                    Funds Realignment
+                </th>
+                <th>
+                    Beginning Balance
+                </th>
+                <th>
+                    Utilization Balance
+                </th>
+                <th>
+                    Remaining Balance
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                    </td>
-                    <td>
-                        <select class="form-control" aria-label="Default select example">
-                            <option selected>Select ORS Head</option>
-                            <option value="1">Rusel</option>
-                            <option value="2">John</option>
-                            <option value="3">Carlo</option>
-                            <option value="3">Silver</option>
-                            <option value="3">Enerz</option>
-                        </select>
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FundSourceId" class="btn btn-info btn-sm">Edit<span class="glyphicon glyphicon-edit"></span></a>
-                        <a asp-action="Delete" asp-route-id="@item.FundSourceId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-                    </td>
-                    <td>
-                        <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-transfer"></span>Funds Realignment</a>
-                    </td>
-                </tr>
+                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+                </td>
+                <td>
+                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                </td>
+                <td>
+                    <b class="green">
+                        <span>0</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="green">
+                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="orange">
+                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="red">
+                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
-*@
+}
+else
+{
+    <div class="alert alert-block alert-danger">
+        <i class="ace-icon fa fa-warning red"></i>
+
+        No Records found
+    </div>
+}
+
+<script>
+
+     function createFundSource(budget_id) {
+         $("#createModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_create").html(loading);
+         var url = '@Url.Action("Create", "FundSource")';
+         url += "?budget_id=" + budget_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#fund_source_create").html(result);
+            }, 500);
+         });
+     }
+
+     function getEditFundSource(budget_id, fund_source_id) {
+         $("#editModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_edit").html(loading);
+         var url = '@Url.Action("Edit", "FundSource")';
+         url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#fund_source_edit").html(result);
+            }, 500);
+         });
+     }
+
+     function deleteFundSource(budget_id) {
+         $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
+         $("#fund_source_delete").html(loading);
+         var url = '@Url.Action("Delete", "FundSource")';
+         url += "?budget_id=" + budget_id
+         $.get(url, function (result) {
+            setTimeout(function () {
+                $("#fund_source_delete").html(result);
+            }, 500);
+         });
+     }
+
+    let generate_token = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function fundSourceToken() {
+        fundsource_token = generate_token();
+        $("#funds_input_token").val(fundsource_token);
+    }
+</script>
