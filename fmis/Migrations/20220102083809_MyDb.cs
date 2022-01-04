@@ -91,26 +91,33 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ObligationAmount",
+                name: "Obligation",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ObligationId = table.Column<int>(type: "int", nullable: false),
-                    UacsId = table.Column<int>(type: "int", nullable: false),
-                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Total_disbursement = table.Column<float>(type: "real", nullable: false),
-                    Total_net_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_tax_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_others = table.Column<float>(type: "real", nullable: false),
+                    source_id = table.Column<int>(type: "int", nullable: false),
+                    source_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Dv = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Pr_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Po_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Payee = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Particulars = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ors_no = table.Column<int>(type: "int", nullable: false),
+                    Gross = table.Column<float>(type: "real", nullable: false),
+                    Created_by = table.Column<int>(type: "int", nullable: false),
+                    Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    obligation_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ObligationAmount", x => x.Id);
+                    table.PrimaryKey("PK_Obligation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,23 +133,6 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ors_head", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Prexc",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    pap_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    pap_code1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    pap_code2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Prexc", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,25 +167,6 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Section", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Suballotment_amount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Expenses = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceId = table.Column<int>(type: "int", nullable: false),
-                    BudgetId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Suballotment_amount", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,6 +211,35 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Yearly_reference", x => x.YearlyReferenceId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ObligationAmount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ObligationId = table.Column<int>(type: "int", nullable: false),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Total_disbursement = table.Column<float>(type: "real", nullable: false),
+                    Total_net_amount = table.Column<float>(type: "real", nullable: false),
+                    Total_tax_amount = table.Column<float>(type: "real", nullable: false),
+                    Total_others = table.Column<float>(type: "real", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    obligation_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ObligationAmount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ObligationAmount_Obligation_ObligationId",
+                        column: x => x.ObligationId,
+                        principalTable: "Obligation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -300,6 +300,8 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.cs
+=======
                 name: "FundSource",
                 columns: table => new
                 {
@@ -313,8 +315,9 @@ namespace fmis.Migrations
                     PrexcId = table.Column<int>(type: "int", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ObligationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -326,6 +329,12 @@ namespace fmis.Migrations
                         principalColumn: "BudgetAllotmentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_FundSource_Obligation_ObligationId",
+                        column: x => x.ObligationId,
+                        principalTable: "Obligation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_FundSource_Prexc_PrexcId",
                         column: x => x.PrexcId,
                         principalTable: "Prexc",
@@ -334,6 +343,7 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+>>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.cs
                 name: "Personal_Information",
                 columns: table => new
                 {
@@ -376,71 +386,33 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sub_allotment",
+                name: "FundSource",
                 columns: table => new
                 {
-                    SubId = table.Column<int>(type: "int", nullable: false)
+                    FundSourceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Suballotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrexcId = table.Column<int>(type: "int", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    prexcId = table.Column<int>(type: "int", nullable: false),
-                    Remainingsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Beginningsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    UacsId = table.Column<int>(type: "int", nullable: true),
+                    SummaryReportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sub_allotment", x => x.SubId);
+                    table.PrimaryKey("PK_FundSource", x => x.FundSourceId);
                     table.ForeignKey(
-                        name: "FK_Sub_allotment_Budget_allotment_Budget_allotmentBudgetAllotmentId",
+                        name: "FK_FundSource_Budget_allotment_Budget_allotmentBudgetAllotmentId",
                         column: x => x.Budget_allotmentBudgetAllotmentId,
                         principalTable: "Budget_allotment",
                         principalColumn: "BudgetAllotmentId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Sub_allotment_Prexc_prexcId",
-                        column: x => x.prexcId,
-                        principalTable: "Prexc",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FundSourceAmount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UacsId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    fundsource_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BudgetId = table.Column<int>(type: "int", nullable: false),
-                    FundSourceId = table.Column<int>(type: "int", nullable: true),
-                    PrexcId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FundSourceAmount", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FundSourceAmount_FundSource_FundSourceId",
-                        column: x => x.FundSourceId,
-                        principalTable: "FundSource",
-                        principalColumn: "FundSourceId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSourceAmount_Prexc_PrexcId",
-                        column: x => x.PrexcId,
-                        principalTable: "Prexc",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -481,6 +453,118 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Sub_allotment",
+                columns: table => new
+                {
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Suballotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
+                    prexcId = table.Column<int>(type: "int", nullable: false),
+                    Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.cs
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+=======
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    prexcId = table.Column<int>(type: "int", nullable: false),
+                    Remainingsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Beginningsub_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ObligationId = table.Column<int>(type: "int", nullable: true)
+>>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.cs
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sub_allotment", x => x.SubAllotmentId);
+                    table.ForeignKey(
+                        name: "FK_Sub_allotment_Budget_allotment_Budget_allotmentBudgetAllotmentId",
+                        column: x => x.Budget_allotmentBudgetAllotmentId,
+                        principalTable: "Budget_allotment",
+                        principalColumn: "BudgetAllotmentId",
+                        onDelete: ReferentialAction.Cascade);
+<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.cs
+=======
+                    table.ForeignKey(
+                        name: "FK_Sub_allotment_Obligation_ObligationId",
+                        column: x => x.ObligationId,
+                        principalTable: "Obligation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Sub_allotment_Prexc_prexcId",
+                        column: x => x.prexcId,
+                        principalTable: "Prexc",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+>>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.cs
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FundSourceAmount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetId = table.Column<int>(type: "int", nullable: false),
+                    FundSourceId = table.Column<int>(type: "int", nullable: true),
+                    PrexcId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSourceAmount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FundSourceAmount_FundSource_FundSourceId",
+                        column: x => x.FundSourceId,
+                        principalTable: "FundSource",
+                        principalColumn: "FundSourceId",
+                        onDelete: ReferentialAction.Restrict);
+<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.cs
+=======
+                    table.ForeignKey(
+                        name: "FK_FundSourceAmount_Prexc_PrexcId",
+                        column: x => x.PrexcId,
+                        principalTable: "Prexc",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Suballotment_amount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: true),
+                    BudgetId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Suballotment_amount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Suballotment_amount_Sub_allotment_SubAllotmentId",
+                        column: x => x.SubAllotmentId,
+                        principalTable: "Sub_allotment",
+                        principalColumn: "SubAllotmentId",
+                        onDelete: ReferentialAction.Restrict);
+>>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.cs
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Uacs",
                 columns: table => new
                 {
@@ -490,7 +574,12 @@ namespace fmis.Migrations
                     Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceAmountId = table.Column<int>(type: "int", nullable: true)
+                    FundSourceAmountId = table.Column<int>(type: "int", nullable: true),
+<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.cs
+                    Suballotment_amountId = table.Column<int>(type: "int", nullable: true)
+=======
+                    ObligationId = table.Column<int>(type: "int", nullable: true)
+>>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.cs
                 },
                 constraints: table =>
                 {
@@ -499,6 +588,18 @@ namespace fmis.Migrations
                         name: "FK_Uacs_FundSourceAmount_FundSourceAmountId",
                         column: x => x.FundSourceAmountId,
                         principalTable: "FundSourceAmount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.cs
+                        name: "FK_Uacs_Suballotment_amount_Suballotment_amountId",
+                        column: x => x.Suballotment_amountId,
+                        principalTable: "Suballotment_amount",
+=======
+                        name: "FK_Uacs_Obligation_ObligationId",
+                        column: x => x.ObligationId,
+                        principalTable: "Obligation",
+>>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.cs
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -550,6 +651,37 @@ namespace fmis.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Prexc",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    pap_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    pap_code1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    pap_code2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UacsId = table.Column<int>(type: "int", nullable: true),
+                    SummaryReportId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prexc", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prexc_SummaryReport_SummaryReportId",
+                        column: x => x.SummaryReportId,
+                        principalTable: "SummaryReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Prexc_Uacs_UacsId",
+                        column: x => x.UacsId,
+                        principalTable: "Uacs",
+                        principalColumn: "UacsId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Budget_allotment_YearlyReferenceId",
                 table: "Budget_allotment",
@@ -572,9 +704,24 @@ namespace fmis.Migrations
                 column: "Budget_allotmentBudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FundSource_ObligationId",
+                table: "FundSource",
+                column: "ObligationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FundSource_PrexcId",
                 table: "FundSource",
                 column: "PrexcId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSource_SummaryReportId",
+                table: "FundSource",
+                column: "SummaryReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSource_UacsId",
+                table: "FundSource",
+                column: "UacsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FundSourceAmount_FundSourceId",
@@ -587,9 +734,9 @@ namespace fmis.Migrations
                 column: "PrexcId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Obligation_FundSourceId",
-                table: "Obligation",
-                column: "FundSourceId");
+                name: "IX_ObligationAmount_ObligationId",
+                table: "ObligationAmount",
+                column: "ObligationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Personal_Information_Budget_allotmentBudgetAllotmentId",
@@ -607,15 +754,35 @@ namespace fmis.Migrations
                 column: "Requesting_officeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prexc_SummaryReportId",
+                table: "Prexc",
+                column: "SummaryReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prexc_UacsId",
+                table: "Prexc",
+                column: "UacsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sub_allotment_Budget_allotmentBudgetAllotmentId",
                 table: "Sub_allotment",
                 column: "Budget_allotmentBudgetAllotmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sub_allotment_ObligationId",
+                table: "Sub_allotment",
+                column: "ObligationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sub_allotment_prexcId",
                 table: "Sub_allotment",
                 column: "prexcId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Suballotment_amount_SubAllotmentId",
+                table: "Suballotment_amount",
+                column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubAllotment_Realignment_UacsId",
@@ -631,10 +798,87 @@ namespace fmis.Migrations
                 name: "IX_Uacs_FundSourceAmountId",
                 table: "Uacs",
                 column: "FundSourceAmountId");
+
+<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.cs
+            migrationBuilder.AddForeignKey(
+                name: "FK_FundSource_Prexc_PrexcId",
+                table: "FundSource",
+                column: "PrexcId",
+                principalTable: "Prexc",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_FundSource_SummaryReport_SummaryReportId",
+                table: "FundSource",
+                column: "SummaryReportId",
+                principalTable: "SummaryReport",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_FundSource_Uacs_UacsId",
+                table: "FundSource",
+                column: "UacsId",
+                principalTable: "Uacs",
+                principalColumn: "UacsId",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Sub_allotment_Prexc_prexcId",
+                table: "Sub_allotment",
+                column: "prexcId",
+                principalTable: "Prexc",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_FundSourceAmount_Prexc_PrexcId",
+                table: "FundSourceAmount",
+                column: "PrexcId",
+                principalTable: "Prexc",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+=======
+            migrationBuilder.CreateIndex(
+<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.cs
+                name: "IX_Uacs_Suballotment_amountId",
+                table: "Uacs",
+                column: "Suballotment_amountId");
+=======
+                name: "IX_Uacs_ObligationId",
+                table: "Uacs",
+                column: "ObligationId");
+>>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.cs
+>>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.cs
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Budget_allotment_Yearly_reference_YearlyReferenceId",
+                table: "Budget_allotment");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSource_Budget_allotment_Budget_allotmentBudgetAllotmentId",
+                table: "FundSource");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSource_Prexc_PrexcId",
+                table: "FundSource");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSourceAmount_Prexc_PrexcId",
+                table: "FundSourceAmount");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSource_SummaryReport_SummaryReportId",
+                table: "FundSource");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSource_Uacs_UacsId",
+                table: "FundSource");
+
             migrationBuilder.DropTable(
                 name: "AllotmentClass");
 
@@ -654,9 +898,6 @@ namespace fmis.Migrations
                 name: "ManageUsers");
 
             migrationBuilder.DropTable(
-                name: "Obligation");
-
-            migrationBuilder.DropTable(
                 name: "ObligationAmount");
 
             migrationBuilder.DropTable(
@@ -666,16 +907,7 @@ namespace fmis.Migrations
                 name: "Section");
 
             migrationBuilder.DropTable(
-                name: "Sub_allotment");
-
-            migrationBuilder.DropTable(
-                name: "Suballotment_amount");
-
-            migrationBuilder.DropTable(
                 name: "SubAllotment_Realignment");
-
-            migrationBuilder.DropTable(
-                name: "SummaryReport");
 
             migrationBuilder.DropTable(
                 name: "Utilization");
@@ -687,22 +919,44 @@ namespace fmis.Migrations
                 name: "Requesting_office");
 
             migrationBuilder.DropTable(
+                name: "Yearly_reference");
+
+            migrationBuilder.DropTable(
+                name: "Budget_allotment");
+
+            migrationBuilder.DropTable(
+<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.cs
+                name: "Prexc");
+
+            migrationBuilder.DropTable(
+                name: "SummaryReport");
+
+            migrationBuilder.DropTable(
                 name: "Uacs");
+=======
+                name: "Suballotment_amount");
+
+            migrationBuilder.DropTable(
+                name: "FundSource");
+
+            migrationBuilder.DropTable(
+                name: "Sub_allotment");
+
+            migrationBuilder.DropTable(
+                name: "Budget_allotment");
+
+            migrationBuilder.DropTable(
+                name: "Obligation");
+
+            migrationBuilder.DropTable(
+                name: "Prexc");
+>>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.cs
 
             migrationBuilder.DropTable(
                 name: "FundSourceAmount");
 
             migrationBuilder.DropTable(
                 name: "FundSource");
-
-            migrationBuilder.DropTable(
-                name: "Budget_allotment");
-
-            migrationBuilder.DropTable(
-                name: "Prexc");
-
-            migrationBuilder.DropTable(
-                name: "Yearly_reference");
         }
     }
 }

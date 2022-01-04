@@ -43,7 +43,7 @@
 <div class="col-sm-3">
     <div class="widget-box">
         <div class="widget-header">
-            <h4 class="widget-title">OBLIGATED AND DISBURSED</h4>
+            <h5 class="widget-title">OBLIGATED & DISBURSED</h5>
         </div>
 
         <div class="widget-body">
@@ -53,13 +53,13 @@
                 <fieldset>
                     <div class="">
                         <center><label style="font-size: 18pt;">3,079,283,170.26</label></center>
-                        <center><h4>OBLIGATED</h4> </center>
+                        <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
                         <center><label style="font-size: 18pt;">2,494,685,315.10</label></center>
-                        <center><h4>DISBURSED</h4> </center>
+                        <center><h5>DISBURSED</h5> </center>
                     </div>
                 </fieldset>
 
@@ -72,7 +72,7 @@
 <div class="col-sm-3">
     <div class="widget-box">
         <div class="widget-header">
-            <h4 class="widget-title">BALANCE AND UNAPAID OBLIGATIONS</h4>
+            <h5 class="widget-title">BALANCE & UPOBLIGATIONS</h5>
         </div>
 
         <div class="widget-body">
@@ -82,27 +82,54 @@
                 <fieldset>
                     <div class="">
                         <center><label style="font-size: 18pt;">266,302,214.38</label></center>
-                        <center><h4>BALANCE</h4> </center>
+                        <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
                         <center><label style="font-size: 18pt;">584,697,855.16</label></center>
-                        <center><h4>UNPAID OBLIGATIONS</h4> </center>
+                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
+                    </div>
+                </fieldset>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<!--<div class="col-sm-3">
+    <div class="widget-box">
+        <div class="widget-header">
+            <h5 class="widget-title">BALANCE & UNAPAID OBLIGATIONS</h5>
+        </div>
+
+        <div class="widget-body">
+            <br>
+            <form>-->
+<!-- <legend>Form</legend> -->
+<!--<fieldset>
+                    <div class="">
+                        <center><label style="font-size: 18pt;">266,302,214.38</label></center>
+                        <center><h5>BALANCE</h5> </center>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="">
+                        <center><label style="font-size: 18pt;">584,697,855.16</label></center>
+                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
                     </div>
                 </fieldset>
 
             </form>
         </div>
     </div>
-</div>
+</div>-->
 
 <div class="vspace-12-sm"></div>
 <div class="col-sm-4" style="margin-top: 15px;">
     <div class="widget-box">
         <div class="widget-header widget-header-flat widget-header-small">
             <h5 class="widget-title">
-                <i class="ace-icon fa fa-signal"></i>
                 CUMULATIVE UTILIZATION
             </h5>
 
@@ -115,7 +142,7 @@
         </div>
         <div class="widget-body">
             <div class="widget-main">
-                <div id="piechart-placeholder" style=" margin-top: 20px;"></div>
+                <div id="cumulative-piechart-placeholder" style=" margin-top: 20px;"></div>
 
             </div><!-- /.widget-main -->
 
@@ -127,7 +154,6 @@
     <div class="widget-box">
         <div class="widget-header widget-header-flat widget-header-small">
             <h5 class="widget-title">
-                <i class="ace-icon fa fa-signal"></i>
                 OBLIGATED
             </h5>
 
@@ -140,7 +166,7 @@
 
         <div class="widget-body">
             <div class="widget-main">
-                <div id="piechart-placeholder"></div>
+                <div id="obligated-piechart-placeholder" style=" margin-top: 20px;"></div>
 
 
 
@@ -230,7 +256,7 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.col -->
-								</div><!-- /.row -->
+
 
 <div class="hr hr32 hr-dotted"></div>
 
@@ -270,14 +296,13 @@
         //but sometimes it brings up errors with normal resize event handlers
         $.resize.throttleWindow = false;
 
-        var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
+        var placeholder = $('#cumulative-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
-            { label: "social networks", data: 38.7, color: "#68BC31" },
-            { label: "search engines", data: 24.5, color: "#2091CF" },
-            { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
-            { label: "direct traffic", data: 18.6, color: "#DA5430" },
-            { label: "other", data: 10, color: "#FEE074" }
+            { label: "BALANCE", data: 80, color: "#68BC31" },
+            { label: "OBLIGATED", data: 20, color: "#2091CF" },
+            
         ]
+
         function drawPieChart(placeholder, data, position) {
             $.plot(placeholder, data, {
                 series: {
@@ -335,6 +360,53 @@
             }
 
         });
+
+        var placeholder_2 = $('#obligated-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
+        var data = [
+            { label: "UNPAID OBLIGATIONS", data: 10, color: "#FEE074" },
+            { label: "DISBURSED", data: 90, color: "#DA5430" }, 
+            @*{ label: "ad campaigns", data: 8.2, color: "#AF4E96" },
+            { label: "direct traffic", data: 18.6, color: "#DA5430" },
+            { label: "other", data: 10, color: "#FEE074" }*@
+        ]
+
+        function drawPieChart_2(placeholder_2, data, position) {
+            $.plot(placeholder_2, data, {
+                series: {
+                    pie: {
+                        show: true,
+                        tilt: 0.8,
+                        highlight: {
+                            opacity: 0.25
+                        },
+                        stroke: {
+                            color: '#fff',
+                            width: 2
+                        },
+                        startAngle: 2
+                    }
+                },
+                legend: {
+                    show: true,
+                    position: position || "ne",
+                    labelBoxBorderColor: null,
+                    margin: [-30, 15]
+                }
+                ,
+                grid: {
+                    hoverable: true,
+                    clickable: true
+                }
+            })
+        }
+        drawPieChart_2(placeholder_2, data);
+
+        /**
+        we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
+        so that's not needed actually.
+        */
+        placeholder_2.data('chart', data);
+        placeholder_2.data('draw', drawPieChart_2);
 
         /////////////////////////////////////
         $(document).one('ajaxloadstart.page', function (e) {

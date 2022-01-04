@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.Carlo;
+using fmis.Models.John;
 using fmis.Models.silver;
 
 namespace fmis.Models
@@ -17,5 +18,8 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
         public List<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
+        public List<Prexc> Prexc { get; set; }
+        public List<FundSource> FundSource { get; set; }
+        
     }
 }

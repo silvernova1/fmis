@@ -107,7 +107,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 <br />
                 <span class="grey">BB: </span>
                 @{
-                    var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance);
+                    var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance) + item.Sub_allotments.Sum(y => y.Beginning_balance);
                     total_beginning_balance += beginning_balance;
                 }
                 <b class="green">@beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
@@ -115,14 +115,14 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
                 <span class="grey">UB: </span>
                          @{
-                             var utilization_amount = item.FundSources.Sum(x => x.utilization_amount);
+                             var utilization_amount = item.FundSources.Sum(x => x.obligated_amount);
                              total_utilization_amount += utilization_amount;
                 }
                 <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
                 <br />
                 <span class="grey">RB: </span>
                 @{
-                    var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
+                    var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance) + item.Sub_allotments.Sum(y => y.Remaining_balance);
                     total_remaining_balance += remaining_balance;
                 }
                 <b class="red">@remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
@@ -136,7 +136,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 <br />
                 <span class="grey">BB: </span>
                 @{
-                    var beginningsub_balance = item.Sub_allotments.Sum(x => x.Beginningsub_balance);
+                    var beginningsub_balance = item.Sub_allotments.Sum(x => x.Beginning_balance);
                     total_beginningsub_balance += beginning_balance;
                 }
                 <b class="green">@beginningsub_balance.ToString("C", new CultureInfo("en-PH"))</b>   
@@ -151,7 +151,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 <br />
                 <span class="grey">RB: </span>
                 @{
-                    var remainingsub_balance = item.Sub_allotments.Sum(x => x.Remainingsub_balance);
+                    var remainingsub_balance = item.Sub_allotments.Sum(x => x.Remaining_balance);
                     total_remainingsub_balance += remaining_balance;
                 }
                 <b class="red">@remainingsub_balance.ToString("C", new CultureInfo("en-PH"))</b>

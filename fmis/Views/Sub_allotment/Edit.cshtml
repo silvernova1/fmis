@@ -1,6 +1,6 @@
 ﻿@model fmis.Models.Sub_allotment
-
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
 
 @functions{
     public string GetAntiXsrfRequestToken()
@@ -10,8 +10,11 @@
 }
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
-    <input type="hidden" asp-for="SubId" value="@ViewBag.sub_allotment_id" />
+    <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
+    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@Model.Budget_allotmentBudgetAllotmentId" />
+    <input type="hidden" class="suballotment_amount_uacs" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts)">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+    <input type="hidden" class="suballotment_token" value="@Model.token">
     <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
         <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Sub Alloment)</h7>
         <div class="pull-right">
@@ -55,7 +58,7 @@
         </div>
     </div>
     <input type="hidden" class="suballotment_amount_edit" value="@ViewBag.temp">
-    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+
     <br />
     <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
     <div id="suballotment_amount_edit" class="hot handsontable htColumnHeaders"></div>
@@ -73,8 +76,8 @@
 
 <script>
 
-    var sub_allotment_id= @ViewBag.sub_allotment_id;
-    var budget_id = @ViewBag.budget_id;
+    var sub_allotment_id= @Model.SubAllotmentId;
+    var BudgetId = @Model.Budget_allotmentBudgetAllotmentId;
     var suballotment_token = generate_token();
 
         let guid = () => {
@@ -100,25 +103,33 @@
         });
     }
 
-    var suballotment_amount_edit = $.parseJSON($(".suballotment_amount_edit").val());
+    $(".obligation_amount").html(obligation_amount);
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        var json_data = new Object();
+        json_data.UacsId = this.UacsId;
+        uacs_data_array[this.Account_title] = json_data;
+        get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
+    });
+
+
+    var suballotment_amount_uacs = $.parseJSON($(".suballotment_amount_uacs").val());
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
-    $.each(suballotment_amount_edit, function () {
-        data[counter] = [this.Expenses, this.Amount, this.Id, this.suballotment_token, this.suballotment_amount_token]
+    $.each(suballotment_amount_uacs, function () {
+        data[counter] = [get_account_title[this.UacsId], this.Amount, this.suballotment_amount_token, this.suballotment_token]
         counter++;
         obligation_amount += this.Amount;
     })
 
-    $(".obligation_amount").html(obligation_amount);
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
-    var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
-        uacs_counter++;
-    })
-    console.log(uacs_data);
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_edit');
@@ -131,7 +142,7 @@
         columns: [
             {
                 type: 'dropdown',
-                source: uacs_data
+                source: uacs_data_dropdown
             },
             {
             },
@@ -150,7 +161,32 @@
         contextMenu: ['row_above', 'row_below', 'remove_row'],
 
         beforeRemoveRow: function (index, column) {
-        var selection = this.getSelected();
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][2];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][2]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+                console.log(ajax_data);
+                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+            }
+        },
+       @* var selection = this.getSelected();
         var holder_data = this.getData();
         var single_token = holder_data[selection[0][0]][3];
         console.log(selection);
@@ -174,16 +210,58 @@
             console.log(ajax_data);
             ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
         }
-        },
+        },*@
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
-            console.log(row);
-            console.log(column);
-            hot.setDataAtCell(row, 3, guid());
+            CHECK_FIRST_ROW = true;
+            hot.setDataAtCell(row, 2, generate_token());
         },
         afterChange: function (changes, source) {
-            if (source === 'loadData') {
+                if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            SubAllotmentId: sub_allotment_id,
+                            BudgetId: BudgetId,
+                            UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            Amount: hot.getDataAtCell(row, col + 1),
+                            suballotment_amount_token: hot.getDataAtCell(row, col + 2),
+                            suballotment_token: suballotment_token
+                        }
+                    );
+                    @*console.log(hot.getSourceData());*@
+                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        SubAllotmentId: sub_allotment_id,
+                        BudgetId: BudgetId,
+                        UacsId: uacs_data_array[this[0]].UacsId,
+                        Amount: this[1],
+                        suballotment_amount_token: this[2],
+                        suballotment_token: suballotment_token
+                    });
+                });
+                @*console.log(ajax_data);*@
+                $(".obligation_amount").html(obligation_amount);
+                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+            }
+		},
+          @*  if (source === 'loadData') {
                 return; //don't save this change
             }
             console.log(hot.getSourceData());
@@ -208,7 +286,7 @@
             console.log(ajax_data);
             $(".obligation_amount").html(obligation_amount);
             ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
-        },
+        },*@
         hiddenColumns: {
             columns: [2,3],
             indicators: true
