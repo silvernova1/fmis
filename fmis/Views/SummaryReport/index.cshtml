@@ -1,9 +1,10 @@
-﻿@model IEnumerable<fmis.Models.Uacs>
+﻿@model IEnumerable<fmis.ViewModel.SummaryReportViewModel>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <h3 class="grey lighter smaller">
     Export Excel
@@ -15,44 +16,30 @@
     <thead>
         <tr>
             <th>UACS</th>
-            <th>ACCOUNT TITLE</th>
             <th>FUND SOURCE</th>
             <th>PROGRAM</th>
             <th> ALLOTMENTS</th>
             <th> REALIGNMENT</th>
             <th> OBLIGATIONS</th>
             <th>BALANCE</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>PREXC</th>
             <th>CODE</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
          {
+                
          <tr>
-            <td>@Html.DisplayFor(modelItem => item.Expense_code)</td>
-            <td>@Html.DisplayFor(modelItem => item.Account_title)</td>
-            <td></td>
-            <td></td>
+            <td>@item.uacs.Expense_code</td>
+            <td>@item.fund_source.FundSourceTitle</td>
+            <td>@item.prexc.pap_title</td>
+            <td>@item.fundsource_amount.Amount</td>
             <td>@ViewBag.sumfunds</td>
             <td></td>
             <td></td>
-            <td>@ViewBag.totalbudget</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>@item.prexc.pap_code1</td>
         </tr>
-         }
+        }
     </tbody>
 </table>
 

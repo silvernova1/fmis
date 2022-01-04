@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20211230030816_MyDb")]
+    [Migration("20211231090130_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,6 +235,12 @@ namespace fmis.Migrations
                     b.Property<string>("Respo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SummaryReportId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UacsId")
+                        .HasColumnType("int");
+
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
@@ -246,6 +252,10 @@ namespace fmis.Migrations
                     b.HasIndex("Budget_allotmentBudgetAllotmentId");
 
                     b.HasIndex("PrexcId");
+
+                    b.HasIndex("SummaryReportId");
+
+                    b.HasIndex("UacsId");
 
                     b.ToTable("FundSource");
                 });
@@ -492,6 +502,12 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("SummaryReportId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UacsId")
+                        .HasColumnType("int");
+
                     b.Property<string>("pap_code1")
                         .HasColumnType("nvarchar(max)");
 
@@ -508,6 +524,10 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SummaryReportId");
+
+                    b.HasIndex("UacsId");
 
                     b.ToTable("Prexc");
                 });
@@ -891,9 +911,19 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.silver.SummaryReport", null)
+                        .WithMany("FundSources")
+                        .HasForeignKey("SummaryReportId");
+
+                    b.HasOne("fmis.Models.Uacs", "Uacs")
+                        .WithMany("FundSource")
+                        .HasForeignKey("UacsId");
+
                     b.Navigation("Budget_allotment");
 
                     b.Navigation("Prexc");
+
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
@@ -937,6 +967,19 @@ namespace fmis.Migrations
                     b.Navigation("Ors_head");
 
                     b.Navigation("Requesting_office");
+                });
+
+            modelBuilder.Entity("fmis.Models.Prexc", b =>
+                {
+                    b.HasOne("fmis.Models.silver.SummaryReport", null)
+                        .WithMany("Prexc")
+                        .HasForeignKey("SummaryReportId");
+
+                    b.HasOne("fmis.Models.Uacs", "Uacs")
+                        .WithMany("Prexc")
+                        .HasForeignKey("UacsId");
+
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
@@ -1009,12 +1052,23 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
+                    b.Navigation("FundSource");
+
+                    b.Navigation("Prexc");
+
                     b.Navigation("SubAllotment_Realignment");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
                 {
                     b.Navigation("Budget_allotment");
+                });
+
+            modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>
+                {
+                    b.Navigation("FundSources");
+
+                    b.Navigation("Prexc");
                 });
 #pragma warning restore 612, 618
         }
