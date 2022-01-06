@@ -130,7 +130,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
             </td>
             <td>
-                <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-budget_id="@item.BudgetAllotmentId">
+                <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="Index" asp-route-budget_id="@item.BudgetAllotmentId">
                     <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                 </a>
                 <br />
