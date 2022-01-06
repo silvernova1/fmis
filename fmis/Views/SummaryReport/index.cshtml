@@ -27,18 +27,18 @@
     </thead>
     <tbody>
         @foreach (var item in Model)
-         {
-                
-         <tr>
-            <td>@item.uacs.Expense_code</td>
-            <td>@item.fund_source.FundSourceTitle</td>
-            <td>@item.prexc.pap_title</td>
-            <td>@item.fundsource_amount.Amount</td>
-            <td>@ViewBag.sumfunds</td>
-            <td></td>
-            <td></td>
-            <td>@item.prexc.pap_code1</td>
-        </tr>
+        {
+
+            <tr>
+                <td>@item.uacs.Expense_code</td>
+                <td>@item.fund_source.FundSourceTitle</td>
+                <td>@item.prexc.pap_title</td>
+                <td>@item.fundsource_amount.Amount</td>
+                <td>@ViewBag.sumfunds</td>
+                <td></td>
+                <td></td>
+                <td>@item.prexc.pap_code1</td>
+            </tr>
         }
     </tbody>
 </table>
@@ -68,7 +68,7 @@
     </tbody>
 </table>
 <br />
-<form  asp-action="ExportSummaryReports" asp-controller="SummaryReport" method="post">
+<form asp-action="ExportSummaryReports" asp-controller="SummaryReport" method="post">
     <button type="submit" class="btn btn-success btn-sm">  <span class="glyphicon glyphicon-download-alt"></span> Download</button>
 </form>
 

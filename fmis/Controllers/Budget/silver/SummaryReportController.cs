@@ -49,8 +49,6 @@ namespace fmis.Controllers.Budget.silver
                                        fundsource_amount = fundsource_amount
                                    }).ToList();
 
-
-
             ViewBag.filter = new FilterSidebar("master_data", "SummaryReports");
 
             var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
@@ -63,24 +61,30 @@ namespace fmis.Controllers.Budget.silver
 
         }
 
+        public ActionResult Filter(DateTime date_from, DateTime end)
+        {
+            using (MyDbContext db = new MyDbContext())
+            {
+
+                var filterTicker = db.SummaryReport
+            .Where(x => x.datefrom >= date_from && x.dateto <= end).ToList();
+
+
+                ViewBag.START = date_from;
+                ViewBag.END = end;
+                return View(filterTicker);
+            }
+
+        }
 
         [HttpPost]
         public IActionResult ExportSummaryReports()
         {
 
+            /*DateTime date1 = Convert.ToDateTime(date_from);
+            DateTime date2 = Convert.ToDateTime(date_to);*/
+
             DataTable dt = new DataTable("Summary Report");
-            /* dt.Columns.AddRange(new DataColumn[10]
-                                           { new DataColumn("UACS"),
-                                             new DataColumn("FUND SOURCE"),
-                                             new DataColumn("PREXC"),
-                                             new DataColumn("ALLOTMENTS"),
-                                             new DataColumn("REALIGNMENT"),
-                                             new DataColumn("OBLIGATIONS"),
-                                             new DataColumn("BALANCE"),
-                                             new DataColumn("ORS HEAD"),
-                                             new DataColumn("ALLOTMENT CLASS"),
-                                             new DataColumn("APPROPRIATION TYPE")});
-             // dt.Columns.Add("000055");*/
 
             var customers = from customer in _context.SummaryReport.ToList()
                             select customer;
@@ -90,8 +94,6 @@ namespace fmis.Controllers.Budget.silver
                 var ws = wb.Worksheets.Add(dt);
                 var currentRow = 3;
                 Double total = 0.00;
-                Double allotment_total = 0;
-
 
                 // ws.PageSetup.CenterHorizontally = 1;
 
@@ -101,87 +103,75 @@ namespace fmis.Controllers.Budget.silver
                 ws.Cell("F1").RichText.AddText("4");
                 ws.Cell("G1").RichText.AddText("5");
                 ws.Cell("H1").RichText.AddText("6");
-                ws.Cell("Q1").RichText.AddText("7");
+                ws.Cell("C1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                ws.Cell("D2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                ws.Cell("E2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                ws.Cell("F2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                ws.Cell("G2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                ws.Cell("H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("A2").Style.Font.SetBold();
                 ws.Cell("A2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("A2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("A2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("A2").RichText.AddText("UACS");
-
+                ws.Cell("A2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("B2").Style.Font.SetBold();
                 ws.Cell("B2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("B2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("B2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("B2").RichText.AddText("FUND SOURCE");
+                ws.Cell("B2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("C2").Style.Font.SetBold();
                 ws.Cell("C2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("C2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("C2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("C2").RichText.AddText("PROGRAM");
+                ws.Cell("C2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("D2").Style.Font.SetBold();
                 ws.Cell("D2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("D2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("D2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("D2").RichText.AddText("ALLOTMENTS");
+                ws.Cell("D2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("E2").Style.Font.SetBold();
                 ws.Cell("E2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("E2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("E2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("E2").RichText.AddText("REALIGNMENT");
+                ws.Cell("E2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("F2").Style.Font.SetBold();
                 ws.Cell("F2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("F2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("F2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("F2").RichText.AddText("OBLIGATIONS");
+                ws.Cell("F2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("G2").Style.Font.SetBold();
                 ws.Cell("G2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("G2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("G2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("G2").RichText.AddText("BALANCE");
+                ws.Cell("G2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("H2").Style.Font.SetBold();
                 ws.Cell("H2").Style.Font.FontSize = 12;
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
+                ws.Cell("H2").Style.Font.SetFontColor(XLColor.RichBlack);
+                ws.Cell("H2").Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell("H2").RichText.AddText("CODE");
+                ws.Cell("H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                /*var budget_allotments = _MyDbContext.Budget_allotments
-                     .Include(budget_allotment => budget_allotment.FundSources)
-                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                     .ThenInclude(uacs => uacs.Uacs);*/
 
-                /*var summary = _context.FundSources
-                    .Include(Uacs => Uacs.Uacs)
-                    .ThenInclude(FundSource => FundSource.FundSource)
-                    */
                 var budget_allotments = _context.Budget_allotments
                     .Include(budget_allotment => budget_allotment.FundSources)
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                    .ThenInclude(uacs => uacs.Uacs);
-
-                /*from fundsource in _context.FundSources
-                join prexc in _context.Prexc
-                on fundsource.PrexcId equals prexc.Id
-                join fundsource_amount in _context.FundSourceAmount
-                on fundsource.FundSourceId equals fundsource_amount.FundSourceId
-                join uacs in _context.Uacs
-                on fundsource_amount.UacsId equals uacs.UacsId;*/
-
+                    .ThenInclude(uacs => uacs.Uacs)
+                    .ThenInclude(uacs => uacs.FundSource);
 
                 foreach (Budget_allotment budget_allotment in budget_allotments)
                 {
@@ -194,28 +184,32 @@ namespace fmis.Controllers.Budget.silver
                       
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
                         {
-                           
+
                             ws.Cell(currentRow, 1).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
-                            ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                            ws.Cell(currentRow, 2).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
-                            ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 2).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.FundSourceTitle;
+                            ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                            ws.Cell(currentRow, 3).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
-                            ws.Cell(currentRow, 3).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
+                            ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                            ws.Cell(currentRow, 3).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
-                            ws.Cell(currentRow, 3).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 4).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.Beginning_balance;
+                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                            ws.Cell(currentRow, 8).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "00";
+                            ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             currentRow++;
                             total = (double)fundsource_amount.Amount;
 
                         }
 
-                     
                     }
                   
                 }
+                ws.Columns("A", "H").AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -227,10 +221,10 @@ namespace fmis.Controllers.Budget.silver
 
         public IActionResult DownloadSaob()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "SummaryReport");
 
-            var allotments = (from list in _context.Yearly_reference where list.YearlyReference == "2021" select list).ToList();
-            return PartialView(allotments);
+            var reports = (from list in _context.Yearly_reference where list.YearlyReference == "2021" select list).ToList();
+            return PartialView(reports);
         }
     }
 }
