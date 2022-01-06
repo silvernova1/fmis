@@ -10,15 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.Designer.cs
-    [Migration("20211231090130_MyDb")]
-=======
-<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.Designer.cs
-    [Migration("20220103083727_MyDb")]
-=======
-    [Migration("20220102083809_MyDb")]
->>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.Designer.cs
->>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.Designer.cs
+    [Migration("20220104051736_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -246,16 +238,14 @@ namespace fmis.Migrations
                     b.Property<string>("Respo")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD:fmis/Migrations/20211231090130_MyDb.Designer.cs
                     b.Property<int?>("SummaryReportId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UacsId")
                         .HasColumnType("int");
-=======
+
                     b.Property<decimal>("obligated_amount")
                         .HasColumnType("decimal(18,2)");
->>>>>>> 6b8c2d5c4389fe76392e035d6171baabcf51b6ad:fmis/Migrations/20220102083809_MyDb.Designer.cs
 
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
@@ -737,11 +727,10 @@ namespace fmis.Migrations
                     b.Property<int?>("FundSourceAmountId")
                         .HasColumnType("int");
 
-<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.Designer.cs
-                    b.Property<int?>("Suballotment_amountId")
-=======
                     b.Property<int?>("ObligationId")
->>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.Designer.cs
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Suballotment_amountId")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
@@ -754,11 +743,9 @@ namespace fmis.Migrations
 
                     b.HasIndex("FundSourceAmountId");
 
-<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.Designer.cs
-                    b.HasIndex("Suballotment_amountId");
-=======
                     b.HasIndex("ObligationId");
->>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.Designer.cs
+
+                    b.HasIndex("Suballotment_amountId");
 
                     b.ToTable("Uacs");
                 });
@@ -1057,15 +1044,13 @@ namespace fmis.Migrations
                         .WithMany("Uacs")
                         .HasForeignKey("FundSourceAmountId");
 
-<<<<<<< HEAD:fmis/Migrations/20220103083727_MyDb.Designer.cs
-                    b.HasOne("fmis.Models.Suballotment_amount", null)
-                        .WithMany("Uacs")
-                        .HasForeignKey("Suballotment_amountId");
-=======
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("Uacs")
                         .HasForeignKey("ObligationId");
->>>>>>> ccef4d0f8c7c63724b2e39fe7a8e2af9ab258ef4:fmis/Migrations/20220102083809_MyDb.Designer.cs
+
+                    b.HasOne("fmis.Models.Suballotment_amount", null)
+                        .WithMany("Uacs")
+                        .HasForeignKey("Suballotment_amountId");
                 });
 
             modelBuilder.Entity("fmis.Models.silver.SummaryReport", b =>

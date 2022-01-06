@@ -130,6 +130,7 @@ namespace fmis.Controllers.Budget.John
 
 
                 var ws = wb.Worksheets.Add(dt);
+                ws.Columns().AdjustToContents();
                 ws.Worksheet.SheetView.FreezeColumns(2);
                 ws.Worksheet.SheetView.FreezeRows(13);
 
@@ -139,6 +140,8 @@ namespace fmis.Controllers.Budget.John
                 var currentRow = 14;
                 Double total = 0.00;
                 Double allotment_total = 0;
+                Double suballotment_total = 0;
+                Double GrandTotal = 0;
 
                 var co = 2;
                 var ro = 1;
@@ -402,15 +405,14 @@ namespace fmis.Controllers.Budget.John
 
                     foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
-                        var papcode = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
 
 
-                        ws.Cell(currentRow, 1).Value = papcode;
+                        ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                        
+
                         currentRow++;
-                        
+
 
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -425,7 +427,7 @@ namespace fmis.Controllers.Budget.John
                         {
                             total = 0;
 
-                            ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x=>x.UacsId == fundsource_amount.UacsId)?.Account_title;
+                            ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
@@ -434,6 +436,16 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                            //TOTAL AFTER REALIGNMENT
+                            ws.Cell(currentRow, 6).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                            //UNOBLIGATED BALANCE OF ALLOTMENT
+                            ws.Cell(currentRow, 9).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             currentRow++;
                             total = (double)fundsource_amount.Amount;
@@ -452,7 +464,15 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = fundSource.Remaining_balance;
+                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
+
+
+                        //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
+                        ws.Cell(currentRow, 9).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 9).Style.Font.SetBold();
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance;
 
 
 
@@ -467,9 +487,8 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
 
-
-
                     }
+                    
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 3).Style.Font.SetBold();
@@ -477,205 +496,211 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
 
+                    //TOTAL - TOTAL AFTER REALIGNMENT
+                    ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 6).Style.Font.SetBold();
+                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    ws.Cell(currentRow, 6).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
+
+                    //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
+                    ws.Cell(currentRow, 9).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 9).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 9).Style.Font.SetBold();
+                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    ws.Cell(currentRow, 9).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
+
                     currentRow++;
-                    currentRow++;
 
 
-                    /*var saa = _MyDbContext.Budget_allotments
-                    .Include(sub_allotment => sub_allotment.Sub_allotments)
-                    .ThenInclude(suballotment_amount => suballotment_amount.FundSourceAmounts)
-                    .ThenInclude(uacs => uacs.Uacs);*/
-
-                   /* var saa = (from budgetallotment in _MyDbContext.Budget_allotments
-                               join suballotment in _MyDbContext.Sub_allotment
-                               on budgetallotment.BudgetAllotmentId equals suballotment.Budget_allotmentBudgetAllotmentId
-                               join suballotment_amount in _MyDbContext.Suballotment_amount
-                               on suballotment.SubAllotmentId equals suballotment_amount.SubAllotmentId
-                               join prexc in _MyDbContext.Prexc
-                               on suballotment.prexcId equals prexc.Id
-                               join uacs in _MyDbContext.Uacs
-                               on suballotment_amount.UacsId equals uacs.Account_title
-                               select new SaobViewModel
-                               {
-                                   budget_allotment = budgetallotment,
-                                   sub_allotment = suballotment,
-                                   prexc = prexc,
-                                   uacs = uacs
-                               }).ToList();*/
-
-
-
-
-
-                    // SUB ALLOTMENT DISPLAY
-
-
-
-
-                    /*foreach (var suballotments in saa)
+                    var saa = _MyDbContext.Budget_allotments
+                        .Include(sub_allotment => sub_allotment.Sub_allotments)
+                        .ThenInclude(suballotment_amount => suballotment_amount.SubAllotmentAmounts)
+                        .ThenInclude(uacs => uacs.Uacs);
+                    
+                        
+                    foreach (Budget_allotment b in saa)
                     {
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Value = "SUB-ALLOTMENT" + "-" + suballotments.budget_allotment.Allotment_code.ToUpper().ToString();
+                        foreach (Sub_allotment sa in b.Sub_allotments)
+                        {
+                            //Double suballotment_total = 0;
+
+                            currentRow++;
+                            ws.Cell(currentRow, 1).Style.Font.SetBold();
+                            ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
+                            ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                            ws.Cell(currentRow, 1).Value = "SUB-ALLOTMENT" + "-" + b.Allotment_code.ToUpper().ToString();
+                            currentRow++;
+
+
+                            ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == sa.prexcId)?.pap_code1;
+                            ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
+                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+                            currentRow++;
+                            ws.Cell(currentRow, 1).Style.Font.SetBold();
+                            ws.Cell(currentRow, 1).Value = sa.Suballotment_title.ToUpper().ToString();
+                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+                            currentRow++;
+                            ws.Cell(currentRow, 1).Style.Font.Italic = true;
+                            ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
+                            ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                            ws.Cell(currentRow, 1).Value = sa.Description.ToString();
+                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+                            currentRow++;
+
+                            foreach (Suballotment_amount suballotment_amount in sa.SubAllotmentAmounts)
+                            {
+                                ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == suballotment_amount.UacsId)?.Account_title.ToUpper().ToString();
+                                ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+
+                                ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == suballotment_amount.UacsId)?.Expense_code;
+                                ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+
+                                ws.Cell(currentRow, 3).Value = suballotment_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                //TOTAL AFTER REALIGNMENT
+                                ws.Cell(currentRow, 6).Value = suballotment_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                //UNOBLIGATED BALANCE OF ALLOTMENT
+                                ws.Cell(currentRow, 9).Value = suballotment_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+                            }
+
+                            suballotment_total += (double)sa.Remaining_balance;
+
+                            ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                            ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                            ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 1).Style.Font.SetBold();
+                            ws.Cell(currentRow, 1).Value = "SUBTOTAL " + sa.Suballotment_title.ToUpper() + " - " + sa.Suballotment_code.ToUpper();
+
+                            ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                            ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 3).Style.Font.SetBold();
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 3).Value = sa.Remaining_balance.ToString("N", new CultureInfo("en-US"));
+
+                            //SUBTOTAL - TOTAL AFTER REALIGNMENT
+                            ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
+                            ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 6).Style.Font.SetBold();
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 6).Value = sa.Remaining_balance.ToString("N", new CultureInfo("en-US"));
+
+                            currentRow++;
+
+                        }
+
                         currentRow++;
 
-
-                        ws.Cell(currentRow, 1).Value = suballotments.prexc.pap_code1;
-                        ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
-                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-
-
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = suballotments.sub_allotment.Suballotment_title.ToUpper().ToString();
-
-
-                        total = 0;
-
-                        ws.Cell(currentRow, 1).Value = suballotments.uacs.Account_title;
-                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-
-                        ws.Cell(currentRow, 2).Value = suballotments.uacs.Expense_code;
-                        ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
-
-                        *//*ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
-                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*/
-
-
-                        /* foreach (FundSource fundSource in budget_allotment.FundSources)
-                         {
-                             var papcode = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
-
-
-                             ws.Cell(currentRow, 1).Value = papcode;
-                             ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
-                             ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-
-                             currentRow++;
-
-
-
-                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                             ws.Cell(currentRow, 1).Style.Font.SetBold();
-                             ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
-                             currentRow++;
-
-
-
-                             foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
-                             {
-                                 total = 0;
-
-                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
-                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-
-                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
-                                 ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
-
-                                 ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
-                                 ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
-                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                                 currentRow++;
-                                 total = (double)fundsource_amount.Amount;
-                             }
-
-                             allotment_total += (double)fundSource.Remaining_balance;
-
-                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                             ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-                             ws.Cell(currentRow, 1).Style.Font.SetBold();
-                             ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.Allotment_code.ToUpper();
-
-
-                             ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
-                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
-                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                             ws.Cell(currentRow, 3).Value = fundSource.Remaining_balance;
-
-
-
-
-                             currentRow++;
-
-
-                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
-                             ws.Cell(currentRow, 1).Style.Font.SetBold();
-                             ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                             ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
-
-
-
-                         }*/
-                        /* ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
-                         ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
-                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                         ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
-
-                         currentRow++;*/
-
-
-
-                        /*var saa = _MyDbContext.Budget_allotments
-                        .Include(sub_allotment => sub_allotment.Sub_allotments)
-                        .ThenInclude(suballotment_amount => suballotment_amount.FundSourceAmounts)
-                        .ThenInclude(uacs => uacs.Uacs);*/
-                        /*
-                                                var saa = (from budgetallotment in _MyDbContext.Budget_allotments
-                                                           join suballotment in _MyDbContext.Sub_allotment
-                                                           on budgetallotment.BudgetAllotmentId equals suballotment.Budget_allotmentBudgetAllotmentId
-                                                           select new SaobViewModel
-                                                           {
-                                                               budget_allotment = budgetallotment,
-                                                               sub_allotment = suballotment
-                                                           }).ToList();*//*
-
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToString();
 
-                        currentRow++;
-                        currentRow++;
+                        ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 3).Style.Font.SetBold();
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
 
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                        ws.Cell(currentRow, 1).Value = "GRANDTOTAL";
-                    }*/
+                        //TOTAL FUNDSOURCE - TOTAL AFTER REALIGMENT
+                        ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 6).Style.Font.SetBold();
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 6).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
 
+                    }
 
+                    currentRow++;
 
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                    ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                     ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    ws.Cell(currentRow, 1).Value = "TOTAL" +" " + budget_allotment.Allotment_code.ToString();
+                    ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();
 
-                    currentRow++;
-                    currentRow++;
 
-                    ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 1).Style.Font.SetBold();
-                    ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    ws.Cell(currentRow, 1).Value = "GRANDTOTAL";
+                    ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 3).Style.Font.SetBold();
+                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    ws.Cell(currentRow, 3).Value = suballotment_total.ToString("N", new CultureInfo("en-US"));
+
+                    //TOTAL SAA - TOTAL AFTER REALIGNMENT
+                    ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 3).Style.Font.SetBold();
+                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    ws.Cell(currentRow, 3).Value = suballotment_total.ToString("N", new CultureInfo("en-US"));
+
+
+
+                    /*
+                                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                                        ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
+                                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToString();
+
+                                        currentRow++;
+                                        currentRow++;
+
+                                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                                        ws.Cell(currentRow, 1).Value = "GRANDTOTAL";*/
                 }
                 currentRow++;
+                currentRow++;
+
+                GrandTotal = allotment_total + suballotment_total;
+
+                ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                ws.Cell(currentRow, 1).Style.Font.SetBold();
+                ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                ws.Cell(currentRow, 1).Value = "GRANDTOTAL";
+
+
+                //currentRow++;
+                ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                ws.Cell(currentRow, 3).Style.Font.SetBold();
+                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                ws.Cell(currentRow, 3).Value = GrandTotal.ToString("N", new CultureInfo("en-US"));
+
+                //GRANDTOTAL - TOTAL AFTER REALIGNMENT
+                ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
+                ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
+                ws.Cell(currentRow, 6).Style.Font.SetBold();
+                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                ws.Cell(currentRow, 6).Value = GrandTotal.ToString("N", new CultureInfo("en-US"));
 
 
 

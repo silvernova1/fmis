@@ -14,5 +14,7 @@ namespace fmis.ViewModel
         public Prexc prexc { get; set; }
         public FundSourceAmount fundsource_amount { get; set; }
         public Uacs uacs { get; set; }
+        public Budget_allotment budget_allotment { get; set; }
+
     }
 }

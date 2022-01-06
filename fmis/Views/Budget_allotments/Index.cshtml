@@ -101,7 +101,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 @Html.DisplayFor(modelItem => item.Allotment_code)
             </td>
             <td>
-                <a class="btn btn-sm btn-default" asp-action="Fundsource" asp-route-budget_id="@item.BudgetAllotmentId">
+                <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-action="Index"  asp-route-budget_id="@item.BudgetAllotmentId">
                     <i class="ace-icon fa fa-arrow-right"></i>Fund Source
                 </a>
                 <br />
@@ -114,9 +114,9 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 <br />
 
                 <span class="grey">UB: </span>
-                         @{
-                             var utilization_amount = item.FundSources.Sum(x => x.obligated_amount);
-                             total_utilization_amount += utilization_amount;
+                @{
+                    var utilization_amount = item.FundSources.Sum(x => x.obligated_amount);
+                    total_utilization_amount += utilization_amount;
                 }
                 <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
                 <br />
@@ -130,7 +130,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
             </td>
             <td>
-                <a class="btn btn-sm btn-default" asp-action="Suballotment" asp-route-budget_id="@item.BudgetAllotmentId">
+                <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="Index" asp-route-budget_id="@item.BudgetAllotmentId">
                     <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                 </a>
                 <br />

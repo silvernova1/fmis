@@ -19,16 +19,14 @@ namespace fmis.Controllers
     public class Budget_allotmentsController : Controller
     {
         private readonly MyDbContext _context;
-        private readonly FundSourceContext _Context;
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
         private readonly Sub_allotmentContext _saContext;
 
-        public Budget_allotmentsController(MyDbContext context, FundSourceContext Context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
+        public Budget_allotmentsController(MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
         {
             _context = context;
-            _Context = Context;
             _osContext = osContext;
             _orssContext = orssContext;
             _pis_context = pis_context;
@@ -45,10 +43,10 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.Sub_allotments)
-
             .AsNoTracking()
             .ToListAsync();
 
+            /*return Json(budget_allotment);*/
             return View(budget_allotment);
         }
 
@@ -132,47 +130,6 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments/Details/5
-
-        public async Task<IActionResult> Fundsource(int budget_id, float FundsTotal)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-       
-            var fund_source = _context.FundSources.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
-            ViewBag.beginning_balance = fund_source.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.utilization_amount = fund_source.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.remaining_balance = fund_source.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
-
-            //START Query of the amounts
-            var query = _context.FundSources
-                .Select(x => new FundSourceAmount
-                {
-                    Id = x.PrexcId,
-                    Amount = _context.FundSourceAmount.Where(i => i.FundSourceId == x.FundSourceId).Select(x => x.Amount).Sum()
-                });
-
-            ViewBag.Query = query.ToList();
-
-            //END Sum of the amounts
-
-            List<Ors_head> oh = new List<Ors_head>();
-
-            oh = (from c in _orssContext.Ors_head select c).ToList();
-            oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
-
-            ViewBag.message = oh;
-            ViewBag.budget_id = budget_id;
-
-
-            var budget_allotment = await _context.Budget_allotments
-                .Include(s => s.FundSources)
-                .Include(s => s.Personal_Information)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.BudgetAllotmentId == budget_id);
-
-
-            return View(budget_allotment);
-        }
-
         public async Task<IActionResult> Suballotment(int budget_id, float SubsTotal)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");

@@ -25,18 +25,22 @@ namespace fmis.Controllers
     public class Sub_allotmentController : Controller
     {
         private readonly Sub_allotmentContext _context;
+        private readonly Suballotment_amountContext _subAllotmentAmountContext;
         private readonly UacsContext _uContext;
         private readonly Budget_allotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
+      
 
-        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext)
+        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
         {
             _context = context;
             _uContext = uContext;
             _bContext = bContext;
             _pContext = pContext;
             _MyDbContext = MyDbContext;
+            _subAllotmentAmountContext = subAllotmentAmountContext;
+
         }
 
         public class Suballotment_amountData
@@ -62,10 +66,19 @@ namespace fmis.Controllers
         }
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? budget_id)
         {
+            ViewBag.budget_id = budget_id;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            return View(await _context.Sub_allotment.ToListAsync());
+         /*   return View(await _context.Sub_allotment.ToListAsync());*/
+
+            var sub_allotment_data = await _MyDbContext.Sub_allotment
+                          .Include(x => x.SubAllotmentAmounts)
+                          .Where(x => x.Budget_allotmentBudgetAllotmentId == budget_id)
+                          .AsNoTracking()
+                          .ToListAsync();
+
+            return View(sub_allotment_data);
         }
 
         // GET:Sub_allotment/Details/5
@@ -237,52 +250,53 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteSuballotment_amount(DeleteData data)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (data.many_token.Count > 1)
             {
-                var data_holder = _MyDbContext.Suballotment_amount;
                 foreach (var many in data.many_token)
                 {
-                    data_holder.Where(s => s.suballotment_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.suballotment_amount_token == many.many_token).FirstOrDefault().suballotment_amount_token = many.many_token;
+                    var sub_allotment_amount = _MyDbContext.Suballotment_amount.FirstOrDefault(s => s.suballotment_amount_token == many.many_token);
+                    sub_allotment_amount.status = "deactivated";
+
+                    _MyDbContext.Suballotment_amount.Update(sub_allotment_amount);
                     await _MyDbContext.SaveChangesAsync();
+
+                    var sub_allotment_update = await _MyDbContext.Sub_allotment.AsNoTracking().FirstOrDefaultAsync(s => s.token == sub_allotment_amount.suballotment_token);
+                    sub_allotment_update.Remaining_balance -= sub_allotment_amount.Amount;
+
+                    //detach para ma calculate ang multiple delete
+                    var local = _MyDbContext.Set<Sub_allotment>()
+                            .Local
+                            .FirstOrDefault(entry => entry.token.Equals(sub_allotment_amount.suballotment_token));
+                    // check if local is not null 
+                    if (local != null)
+                    {
+                        // detach
+                        _MyDbContext.Entry(local).State = EntityState.Detached;
+                    }
+                    // set Modified flag in your entry
+                    _MyDbContext.Entry(sub_allotment_update).State = EntityState.Modified;
+                    //end detach
+
+                    _MyDbContext.Sub_allotment.Update(sub_allotment_update);
+                    _MyDbContext.SaveChanges();
                 }
             }
             else
             {
-                var data_holder = _MyDbContext.Suballotment_amount;
-                data_holder.Where(s => s.suballotment_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.suballotment_amount_token == data.single_token).FirstOrDefault().suballotment_amount_token = data.single_token;
+                var sub_amount = _MyDbContext.Suballotment_amount.FirstOrDefault(s => s.suballotment_amount_token == data.single_token);
+                sub_amount.status = "deactivated";
 
+                _MyDbContext.Suballotment_amount.Update(sub_amount);
                 await _MyDbContext.SaveChangesAsync();
+
+                var sub_update = await _MyDbContext.Sub_allotment.AsNoTracking().FirstOrDefaultAsync(s => s.token == sub_amount.suballotment_token);
+                sub_update.Remaining_balance -= sub_amount.Amount;
+                _MyDbContext.Sub_allotment.Update(sub_update);
+                _MyDbContext.SaveChanges();
             }
 
             return Json(data);
         }
-        /* {
-             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-             if (data.many_token.Count > 1)
-             {
-                 var data_holder = this._MyDbContext.Suballotment_amount;
-                 foreach (var many in data.many_token)
-                 {
-                     data_holder.Where(s => s.suballotment_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
-                     data_holder.Where(s => s.suballotment_amount_token == many.many_token).FirstOrDefault().suballotment_amount_token = many.many_token;
-                     await this. _context.SaveChangesAsync();
-                 }
-             }
-             else
-             {
-                 var data_holder =this. _MyDbContext.Suballotment_amount;
-                 data_holder.Where(s => s.suballotment_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
-                 data_holder.Where(s => s.suballotment_amount_token == data.single_token).FirstOrDefault().suballotment_amount_token = data.single_token;
-
-                 await this._context.SaveChangesAsync();
-             }
-
-             return Json(data);
-         }
- */
         // POST: Sub_allotment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

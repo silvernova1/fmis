@@ -159,7 +159,6 @@
             searchResultClass: 'search-result-custom'
         },
         contextMenu: ['row_above', 'row_below', 'remove_row'],
-
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
@@ -186,31 +185,6 @@
                 ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
             }
         },
-       @* var selection = this.getSelected();
-        var holder_data = this.getData();
-        var single_token = holder_data[selection[0][0]][3];
-        console.log(selection);
-        console.log(holder_data);
-        console.log(column);
-        var first_column = selection[0][0];
-        var last_column = selection[0][2];
-        console.log(first_column);
-        console.log(last_column);
-        var many_token = [];
-        for (var j = first_column; j <= last_column; j++) {
-            many_token.push({
-                many_token: holder_data[j][3]
-            })
-        }
-        if (single_token) {
-            var ajax_data = {
-                "single_token": single_token,
-                "many_token": many_token,
-            };
-            console.log(ajax_data);
-            ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
-        }
-        },*@
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
