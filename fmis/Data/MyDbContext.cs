@@ -21,7 +21,7 @@ namespace fmis.Data
         public DbSet<Division> Division { get; set; }
         public DbSet<Personal_Information> Personal_Information { get; set; }
         public DbSet<Budget_allotment> Budget_allotments { get; set; }
-        public DbSet<fmis.Models.John.FundSource> FundSources { get; set; }
+        public DbSet<FundSource> FundSources { get; set; }
         public DbSet<Obligation> Obligation { get; set; }
         public DbSet<Prexc> Prexc { get; set; }
         public DbSet<Requesting_office> Requesting_office { get; set; }
