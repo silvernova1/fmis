@@ -40,13 +40,20 @@ namespace fmis.Controllers.Budget.silver
                                    on fundsource.FundSourceId equals fundsource_amount.FundSourceId
                                    join uacs in _context.Uacs
                                    on fundsource_amount.UacsId equals uacs.UacsId
-                                  
-                                   select new SummaryReportViewModel
+                                   join budget_allotment in _context.Budget_allotments
+                                    on fundsource.Budget_allotmentBudgetAllotmentId equals budget_allotment.BudgetAllotmentId
+
+
+
+                                    select new SummaryReportViewModel
                                    {
                                        fund_source = fundsource,
                                        prexc = prexc,
                                        uacs = uacs,
-                                       fundsource_amount = fundsource_amount
+                                       fundsource_amount = fundsource_amount,
+                                       budget_allotment = budget_allotment
+                                       
+
                                    }).ToList();
 
 
@@ -108,6 +115,7 @@ namespace fmis.Controllers.Budget.silver
                 ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
                 ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Columns(11, 1).AdjustToContents();
+                ws.Rows(11, 1).AdjustToContents();
                 ws.Cell("A2").RichText.AddText("UACS");
 
 
@@ -160,6 +168,9 @@ namespace fmis.Controllers.Budget.silver
                 ws.Columns(11, 1).AdjustToContents();
                 ws.Cell("H2").RichText.AddText("CODE");
 
+
+       
+
                 /*var budget_allotments = _MyDbContext.Budget_allotments
                      .Include(budget_allotment => budget_allotment.FundSources)
                      .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
@@ -198,21 +209,35 @@ namespace fmis.Controllers.Budget.silver
                             ws.Cell(currentRow, 1).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
-                            ws.Cell(currentRow, 2).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
+                            ws.Cell(currentRow, 2).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.FundSourceTitle;
                             ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                            ws.Cell(currentRow, 3).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
+                            ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
                             ws.Cell(currentRow, 3).Style.Alignment.Indent = 3;
 
-                            ws.Cell(currentRow, 3).Value = _context.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title;
-                            ws.Cell(currentRow, 3).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 4).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.Beginning_balance;
+                            ws.Cell(currentRow, 4).Style.Alignment.Indent = 4;
+
+                            ws.Cell(currentRow, 8).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                            ws.Cell(currentRow, 8).Style.Alignment.Indent = 8;
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "00";
+
+                            // Adjust column width
+                            ws.Column(1).AdjustToContents();
+
+                            // Adjust row heights
+                            ws.Rows(3, 3).AdjustToContents();
+
+
+
+
+
 
                             currentRow++;
                             total = (double)fundsource_amount.Amount;
 
                         }
 
-                     
                     }
                   
                 }
