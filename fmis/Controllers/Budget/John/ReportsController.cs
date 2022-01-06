@@ -143,8 +143,8 @@ namespace fmis.Controllers.Budget.John
                 Double suballotment_total = 0;
                 Double GrandTotal = 0;
 
-                var co = 2;
-                var ro = 1;
+                //var co = 2;
+                //var ro = 1;
                 var wsFreeze = ws.Worksheet.Cell("Freeze View");
 
 

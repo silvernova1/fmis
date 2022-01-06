@@ -119,15 +119,8 @@ namespace fmis.Controllers.Budget.silver
 
                 ws.Cell("A2").Style.Font.SetBold();
                 ws.Cell("A2").Style.Font.FontSize = 12;
-<<<<<<< HEAD
                 ws.Cell("A2").Style.Font.SetFontColor(XLColor.RichBlack);
                 ws.Cell("A2").Style.Fill.BackgroundColor = XLColor.White;
-=======
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
-                ws.Rows(11, 1).AdjustToContents();
->>>>>>> 3002b0fd69dd4b391b1f9256260b948a6081002a
                 ws.Cell("A2").RichText.AddText("UACS");
                 ws.Cell("A2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
@@ -180,17 +173,6 @@ namespace fmis.Controllers.Budget.silver
                 ws.Cell("H2").RichText.AddText("CODE");
                 ws.Cell("H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-<<<<<<< HEAD
-=======
-
-       
-
-                /*var budget_allotments = _MyDbContext.Budget_allotments
-                     .Include(budget_allotment => budget_allotment.FundSources)
-                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                     .ThenInclude(uacs => uacs.Uacs);*/
->>>>>>> 3002b0fd69dd4b391b1f9256260b948a6081002a
-
                 var budget_allotments = _context.Budget_allotments
                     .Include(budget_allotment => budget_allotment.FundSources)
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
@@ -214,8 +196,6 @@ namespace fmis.Controllers.Budget.silver
 
                             ws.Cell(currentRow, 2).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.FundSourceTitle;
                             ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-<<<<<<< HEAD
                             ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
@@ -225,31 +205,6 @@ namespace fmis.Controllers.Budget.silver
                             ws.Cell(currentRow, 8).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                             ws.Cell(currentRow, 8).Style.NumberFormat.Format = "00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-=======
-                            ws.Cell(currentRow, 2).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.FundSourceTitle;
-                            ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
-
-                            ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
-                            ws.Cell(currentRow, 3).Style.Alignment.Indent = 3;
-
-                            ws.Cell(currentRow, 4).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.Beginning_balance;
-                            ws.Cell(currentRow, 4).Style.Alignment.Indent = 4;
-
-                            ws.Cell(currentRow, 8).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
-                            ws.Cell(currentRow, 8).Style.Alignment.Indent = 8;
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "00";
-
-                            // Adjust column width
-                            ws.Column(1).AdjustToContents();
-
-                            // Adjust row heights
-                            ws.Rows(3, 3).AdjustToContents();
-
-
-
-
-
->>>>>>> 3002b0fd69dd4b391b1f9256260b948a6081002a
 
                             currentRow++;
                             total = (double)fundsource_amount.Amount;
