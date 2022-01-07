@@ -1,5 +1,7 @@
-﻿using fmis.Filters;
+﻿using fmis.Data;
+using fmis.Filters;
 using fmis.Models;
+using fmis.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,10 +18,12 @@ namespace fmis.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly MyDbContext _MyDbCOntext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, MyDbContext context)
         {
             _logger = logger;
+            _MyDbCOntext = context;
         }
 
 
@@ -34,7 +38,26 @@ namespace fmis.Controllers
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home");
             ViewBag.layout = "_Layout";
-            return View("~/Views/Home/Index.cshtml");
+
+            var ObligationAmount = _MyDbCOntext.ObligationAmount;
+            var FundSource = _MyDbCOntext.FundSources;
+
+
+
+            var CustomerViewModel = new DashboardVM
+            {
+                ObligationAmounts = ObligationAmount,
+                FundSources = FundSource
+            };
+
+
+
+            var obligation = _MyDbCOntext.ObligationAmount.ToList();
+
+
+
+
+            return View("~/Views/Home/Index.cshtml", CustomerViewModel);
         }
 
         public IActionResult Privacy()

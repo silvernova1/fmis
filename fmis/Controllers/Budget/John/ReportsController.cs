@@ -384,6 +384,9 @@ namespace fmis.Controllers.Budget.John
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
                     .ThenInclude(uacs => uacs.Uacs);
 
+                var realignment_amount = 50;
+                
+
 
                 foreach (Budget_allotment budget_allotment in budget_allotments)
                 {
@@ -405,7 +408,7 @@ namespace fmis.Controllers.Budget.John
 
                     foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
-
+                        
 
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
@@ -426,6 +429,8 @@ namespace fmis.Controllers.Budget.John
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
                         {
                             total = 0;
+                            var afterrealignment_amount = fundsource_amount.Amount - realignment_amount;
+                            
 
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
@@ -437,8 +442,13 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+                            //REALIGNMENT AMOUNT
+                            ws.Cell(currentRow, 4).Value = "("+ realignment_amount.ToString("N", new CultureInfo("en-US"))+")";
+                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                             //TOTAL AFTER REALIGNMENT
-                            ws.Cell(currentRow, 6).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -451,7 +461,7 @@ namespace fmis.Controllers.Budget.John
                             total = (double)fundsource_amount.Amount;
                         }
 
-                        allotment_total += (double)fundSource.Remaining_balance;
+                        
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
@@ -474,7 +484,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance;
 
-
+                        allotment_total += (double)fundSource.Beginning_balance;
 
 
                         currentRow++;
@@ -488,6 +498,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
 
                     }
+
                     
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
@@ -1166,6 +1177,8 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(24, 3).Style.Fill.BackgroundColor = XLColor.Gray;
                 ws.Cell(25, 3).Style.Fill.BackgroundColor = XLColor.Gray;*/
 
+                
+                ws.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
