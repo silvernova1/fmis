@@ -232,7 +232,7 @@ namespace fmis.Controllers
                 {
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
-                obligation.Id = item.Id;
+
                 obligation.source_id = item.source_id;
                 obligation.source_type = item.source_type;
                 obligation.Date = ToDateTime(item.Date);

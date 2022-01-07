@@ -653,14 +653,14 @@ namespace fmis.Migrations
                     b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("obligated_amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("prexcId")
                         .HasColumnType("int");
 
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("utilization_amount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SubAllotmentId");
 

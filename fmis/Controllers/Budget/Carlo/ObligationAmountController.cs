@@ -147,6 +147,16 @@ namespace fmis.Controllers
             else if (obligation.source_type == "sub_allotment")
             {
                 //code ni amalio
+
+                var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == obligation.source_id).FirstOrDefaultAsync();
+                sub_allotment.Remaining_balance = calculation_data.remaining_balance;
+                sub_allotment.obligated_amount = calculation_data.obligated_amount;
+
+                remaining_balance = sub_allotment.Remaining_balance;
+                obligated_amount = sub_allotment.obligated_amount;
+
+                _MyDbContext.Sub_allotment.Update(sub_allotment);
+                _MyDbContext.SaveChanges();
             }
 
             var obligation_amount = await _context.ObligationAmount.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == calculation_data.obligation_amount_token);
@@ -187,6 +197,9 @@ namespace fmis.Controllers
             else if (obligation.source_type == "sub_allotment")
             {
                 //code ni amalio
+                var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == obligation.source_id).FirstOrDefaultAsync();
+                remaining_balance = sub_allotment.Remaining_balance;
+                obligated_amount = sub_allotment.obligated_amount;
             }
 
             GetObligatedAndRemaining get_obligated_remaining = new GetObligatedAndRemaining();

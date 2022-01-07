@@ -144,7 +144,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
                 <span class="grey">UB: </span>
                 @{
-                    var utilizationsub_amount = item.Sub_allotments.Sum(x => x.utilization_amount);
+                    var utilizationsub_amount = item.Sub_allotments.Sum(x => x.obligated_amount);
                     total_utilizationsub_amount += utilization_amount;
                 }
                 <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>

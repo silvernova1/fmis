@@ -86,7 +86,7 @@
 
                     <b class="arrow"></b>
                 </li>
-                @* <li class="@if(ViewBag.filter.sub == "budgetallotment")
+                 <li class="@if(ViewBag.filter.sub == "budgetallotment")
         @Html.Raw("active")">
             <a asp-controller="Budget_allotments" asp-action="Index">
                 <i class="menu-icon fa fa-caret-right"></i>
@@ -94,9 +94,9 @@
             </a>
 
             <b class="arrow"></b>
-        </li>*@
+        </li>
 
-                <li class="@if(ViewBag.filter.main == "master_data")
+               @* <li class="@if(ViewBag.filter.main == "master_data")
                 @Html.Raw("active open")">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text"> ALLOTMENTS </span>
@@ -124,7 +124,7 @@
 
                             <b class="arrow"></b>
                     </ul>
-                </li>
+                </li>*@
 
                 <li class="@if(ViewBag.filter.sub == "requestingoffice")
                 @Html.Raw("active")">
