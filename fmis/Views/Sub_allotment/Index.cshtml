@@ -20,7 +20,7 @@
 
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @ViewBag.beginning_balance
+                    @Model.Sum(x => x.Beginning_balance)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -33,7 +33,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @ViewBag.utilization_amount
+                    @Model.Sum(x => x.obligated_amount)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Utilization Balance </span>
@@ -46,7 +46,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @ViewBag.remaining_balance
+                    @Model.Sum(x => x.Remaining_balance)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -125,48 +125,53 @@
                 <th>
                     Remaining Balance
                 </th>
+                <th>
+                    Realignment Balance
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Suballotment_code)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Suballotment_title)
-                    </td>
-                    <td>
-                        @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="getEditSub_allotment(@ViewBag.budget_id,@item.SubAllotmentId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_title)
+                </td>
+                <td>
+                    @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@ViewBag.budget_id,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+                    <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>
 
-                        <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete<span class="glyphicon glyphicon-trash"></span></a>
-
-                    </td>
-                    <td>
-                        <a asp-controller="Sub_allotment_Realignment" asp-route-fundsource_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
-                    </td>
-                    <td>
-                        <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="orange">
-                            <span>@item.utilization_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="red">
-                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-
-
-                </tr>
+                </td>
+                <td>
+                    <a asp-controller="Sub_allotment_Realignment" asp-route-fundsource_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
+                </td>
+                <td>
+                    <b class="green">
+                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="orange">
+                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="red">
+                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="blue">
+                        <span>0.00</span>
+                    </b>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -215,8 +220,6 @@ else
             }, 500);
          });
     }
-
-
 
     let generate_token = () => {
         let s4 = () => {

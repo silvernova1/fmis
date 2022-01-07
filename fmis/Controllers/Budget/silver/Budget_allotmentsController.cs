@@ -136,7 +136,7 @@ namespace fmis.Controllers
 
             var sub_Allotment = _context.Sub_allotment.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
             ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.utilization_amount = sub_Allotment.Sum(x => x.utilization_amount).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.obligated_amount = sub_Allotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
             ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             //START Query of the amounts

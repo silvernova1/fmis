@@ -51,7 +51,6 @@
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
-
         filtersPlugin.removeConditions(colIndex);
         filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
         filtersPlugin.filter();
@@ -65,15 +64,11 @@
 
     // Build elements which will be displayed in header.
     const getInitializedElements = colIndex => {
-        const div = document.createElement('div');
-        const input = document.createElement('input');
-
+    const div = document.createElement('div');
+    const input = document.createElement('input');
         div.className = 'filterHeader';
-
         addEventListeners(input, colIndex);
-
         div.appendChild(input);
-
         return div;
     };
 
@@ -88,7 +83,6 @@
             TH.appendChild(getInitializedElements(col));
         }
     };
-
 
     function ajaxServer(ajax_data, url) {
         $.ajax({
@@ -159,9 +153,7 @@
                     "single_token": single_token,
                     "many_token": many_token
                 };
-
                 console.log(ajax_data);
-
                 ajaxServer(ajax_data,'@Url.Action("DeleteUacs", "Uacs")');
             }
         },
@@ -169,7 +161,6 @@
 
         },
         afterCreateRow: function (row, column) {
-
             console.log(row);
             console.log(column);
             hot.setDataAtCell(row, 3, guid());
@@ -178,9 +169,7 @@
             if (source === 'loadData') {
                 return;
             }
-
             console.log(changes);
-
             var ajax_data = [];
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
@@ -192,7 +181,6 @@
                     }
                 );
             });
-
             ajaxServer(ajax_data, '@Url.Action("SaveUacs", "Uacs")');
         },
         height: 'auto',
@@ -213,7 +201,6 @@
         licenseKey: 'non-commercial-and-evaluation',
     });
 
-
     const exportPlugin = hot.getPlugin('exportFile');
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
@@ -229,10 +216,8 @@
             rowHeaders: true
         });
     });
-
     var tableData = JSON.stringify(hot.getSourceData());
     @*console.log(hot.getSourceData());*@
-
 </script>
 
 

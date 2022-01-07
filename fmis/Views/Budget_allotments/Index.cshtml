@@ -107,7 +107,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 <br />
                 <span class="grey">BB: </span>
                 @{
-                    var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance) + item.Sub_allotments.Sum(y => y.Beginning_balance);
+                    var beginning_balance = item.FundSources.Sum(x => x.Beginning_balance);
                     total_beginning_balance += beginning_balance;
                 }
                 <b class="green">@beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
@@ -122,7 +122,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 <br />
                 <span class="grey">RB: </span>
                 @{
-                    var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance) + item.Sub_allotments.Sum(y => y.Remaining_balance);
+                    var remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
                     total_remaining_balance += remaining_balance;
                 }
                 <b class="red">@remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
@@ -144,7 +144,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
                 <span class="grey">UB: </span>
                 @{
-                    var utilizationsub_amount = item.Sub_allotments.Sum(x => x.utilization_amount);
+                    var utilizationsub_amount = item.Sub_allotments.Sum(x => x.obligated_amount);
                     total_utilizationsub_amount += utilization_amount;
                 }
                 <b class="orange">@utilization_amount.ToString("C", new CultureInfo("en-PH"))</b>
@@ -171,11 +171,12 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 </table>
 
 <script>
+  
     $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
     $("#total_utilization_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 
-     $("#total_beginningsub_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_beginningsub_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
     $("#total_utilizationsub_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remainingsub_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 </script>
