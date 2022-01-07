@@ -130,41 +130,40 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
-                <td>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
+                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                    <td>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    </td>
 
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
-                </td>
-                <td>
-                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                </td>
-            
-                <td>
-                    <b class="green">
-                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="orange">
-                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="red">
-                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-            </tr>
+                    <td>
+                        <b class="green">
+                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="orange">
+                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="red">
+                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

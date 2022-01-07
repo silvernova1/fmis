@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace fmis.Models.Carlo
+namespace fmis.Models
 {
     public class FundsRealignment
     {
@@ -14,8 +15,7 @@ namespace fmis.Models.Carlo
         public float Realignment_amount { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-        public int fundsource_id { get; set; }
-
+        public int? FundSourceId { get; set; }
     }
 
 }

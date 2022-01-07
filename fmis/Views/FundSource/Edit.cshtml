@@ -121,9 +121,9 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(fundsource_amount_uacs, function () {
-        data[counter] = [get_account_title[this.UacsId], this.Amount,this.fundsource_amount_token, this.fundsource_token]
+        data[counter] = [get_account_title[this.UacsId], this.beginning_balance,this.fundsource_amount_token, this.fundsource_token]
         counter++;
-        obligation_amount += this.Amount;
+        obligation_amount += this.beginning_balance;
     });
 
     const searchField = document.querySelector('#search_field2');

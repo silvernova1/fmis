@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
-using fmis.Models.Carlo;
 using fmis.Models.silver;
 
 namespace fmis.Models.John
@@ -26,8 +25,8 @@ namespace fmis.Models.John
         public decimal Remaining_balance { get; set; }
         public decimal obligated_amount { get; set; }
         public string token { get; set; }
-        public Budget_allotment Budget_allotment { get; set; }
-        public Uacs Uacs { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
+        public ICollection<FundsRealignment> FundsRealignment { get; set; }
+        public ICollection<Uacs> Uacs { get; set; }
     }
 }

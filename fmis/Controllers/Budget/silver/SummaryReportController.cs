@@ -14,7 +14,6 @@ using System.IO;
 using OfficeOpenXml;
 using DocumentFormat.OpenXml.Drawing.ChartDrawing;
 using fmis.DataHealpers;
-using fmis.Models.Carlo;
 using fmis.Models.John;
 using fmis.ViewModel;
 
@@ -58,10 +57,10 @@ namespace fmis.Controllers.Budget.silver
 
             ViewBag.filter = new FilterSidebar("master_data", "SummaryReports");
 
-            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.beginning_balance);
             ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
 
-            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
+            var totalbudget = _context.FundSourceAmount.Sum(x => x.beginning_balance);
             ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
 
             return View(generate_reports);
@@ -207,7 +206,7 @@ namespace fmis.Controllers.Budget.silver
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             currentRow++;
-                            total = (double)fundsource_amount.Amount;
+                            total = (double)fundsource_amount.beginning_balance;
 
                         }
 

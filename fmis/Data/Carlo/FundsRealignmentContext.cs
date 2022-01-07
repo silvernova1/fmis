@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fmis.Models.Carlo;
+using fmis.Models;
 
 namespace fmis.Data.Carlo
 {
@@ -14,7 +14,6 @@ namespace fmis.Data.Carlo
         {
         }
 
-        public DbSet<fmis.Models.Carlo.FundsRealignment> FundsRealignment { get; set; }
-        public object FundSourceAmount { get; internal set; }
+        public DbSet<FundsRealignment> FundsRealignment { get; set; }
     }
 }

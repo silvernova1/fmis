@@ -1,5 +1,6 @@
-﻿
-@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
+﻿@model fmis.Models.John.FundSource
+@using System.Text.Json;
+@using System.Globalization;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Index";
@@ -13,32 +14,72 @@
     }
 }
 
-<input type="hidden" class="fundsrealignment" value="@ViewBag.temp">
-<input type="hidden" class="uacs" value="@ViewBag.uacs">
+
+<input type="hidden" class="fundsrealignment" value="@JsonSerializer.Serialize(Model.FundsRealignment)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" id="fundsource_id" value="@Model.FundSourceId" />
 
 <h3 class="grey lighter smaller">
     Funds Realignment
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Fundsource" asp-route-id="@ViewBag.fundsource_id" asp-route-BudgetId="@ViewBag.BudgetId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
+<a class="btn btn-primary btn-sm " asp-controller="FundSource" asp-action="Index" asp-route-id="@Model.FundSourceId" asp-route-budget_id="@Model.Budget_allotmentBudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
 <br />
 <br />
-<div class="">
-    <div class="row">
-        <div class="col-sm-2 infobox-container">
-            <div class="infobox infobox-blue">
-                <div class="infobox-data">
-                   <span class="infobox-data-number ">@ViewBag.remaining_balance</span>
-                    <h6 class="infobox-content grey smaller">REMAINING BALANCE</h6>
+<div class="row  pull-left">
+    <div class="space-5"></div>
+
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
                 </div>
             </div>
         </div>
-    </div><!-- /.row -->
+        <div class="infobox infobox-orange2">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<br>
+<br>
+<br>
+<br>
 <br />
 <div id="example" class="hot"></div>
 <br />
 <script>
+    var fundsource_id = $("#fundsource_id").val();
 
     class KeyValueListEditor extends Handsontable.editors.HandsontableEditor {
         prepare(row, col, prop, td, value, cellProperties) {
@@ -250,15 +291,7 @@
             if (source === 'loadData')
                 return; //don't save this change
 
-            @*var url = "" + "?id=" +@ViewBag.fundsourcfundsource_id;
-            $.get(url, function (result) {
-                var remaining_balance = result;
-            });*@
-
-            var remaining_balance = @ViewBag.remaining_balance;
-
-           console.log(source);
-
+            var remaining_balance = 10000;
 
             var ajax_data = [];
             $(".fundsource_amount").html();
@@ -271,7 +304,7 @@
                         Realignment_from: this[0] ? this[0] : " ",
                         Realignment_to: this[1] ? this[1] : " ",
                         Realignment_amount: this[2] ? this[2] : " ",
-                        fundsource_id: @ViewBag.fundsource_id,
+                        fundsource_id: fundsource_id,
                         token: this[4]
                     }
                 );
@@ -312,9 +345,3 @@
 
 </script>
 
-<script>
-
-
-
-
-</script>
