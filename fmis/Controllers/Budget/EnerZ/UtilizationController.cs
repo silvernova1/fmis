@@ -72,7 +72,7 @@ namespace fmis.Controllers
         // GET: Utilization
         public IActionResult Index()
         {
-            ViewBag.filter = new FilterSidebar("ors", "utilization");
+            ViewBag.filter = new FilterSidebar("master_data", "utilization");
             ViewBag.layout = "_Layout";
             var utilization = _context.Utilization.Where(s => s.status == "activated")
                  .Select(x => new UtilizationData()
@@ -336,8 +336,8 @@ namespace fmis.Controllers
         public FileResult PrintBur(String id)
         {
 
-            Int32 Id = Convert.ToInt32(id);
-            var bur = _MyDbContext.Utilization.Where(p => p.Id == Id).FirstOrDefault();
+            Int32 ID = Convert.ToInt32(id);
+            var bur = _MyDbContext.Utilization.Where(p => p.Id == ID).FirstOrDefault();
 
 
             string ExportData = "This is pdf generated";

@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
+﻿@model IEnumerable<fmis.Models.Carlo.FundsRealignment>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Index";
@@ -131,7 +130,6 @@
         renderer: keyValueListRenderer,
     });
 
-
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -165,11 +163,9 @@
     })
     $(".fundsource_amount").html(fundsource_amount);
 
-
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data = []
     var uacs_counter = 0;
-
     $.each(uacs, function () {
         var json_data = new Object();
         json_data._id = this.UacsId;
@@ -203,7 +199,6 @@
             {
                 //HIDDEN TOKEN
             },
-
         ],
         undo: true,
         search: {
@@ -231,22 +226,18 @@
                     "single_token": single_token,
                     "many_token": many_token,
                 };
-
                 ajaxServer(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
             }
-
         },
         afterUndo: function (index, column) {
 
         },
         afterCreateRow: function (row, column) {
-
             console.log(row);
             console.log(column);
             hot.setDataAtCell(row, 4, guid());
         },
        afterChange: function (changes, source) {
-
             if (source === 'loadData')
                 return; //don't save this change
 
@@ -256,13 +247,12 @@
             });*@
 
             var remaining_balance = @ViewBag.remaining_balance;
-
            console.log(source);
-
 
             var ajax_data = [];
             $(".fundsource_amount").html();
             fundsource_amount = 0;
+
             var realignment_amount = 0;
             $.each(hot.getSourceData(), function () {
                 realignment_amount += parseInt(this[2]);
@@ -282,7 +272,6 @@
                     width: 350,
                     sound: false,
                 });
-
                 changes.forEach(([row, col, oldValue, newValue]) => {
                     if (oldValue == newValue)
                         return;
@@ -292,7 +281,6 @@
                     console.log(newValue);
                     hot.setDataAtCell(row, col, 0);
                 });
-
                 return ;
             }
             $(".fundsource_amount").html(fundsource_amount);
@@ -307,14 +295,6 @@
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
-
     var tableData = JSON.stringify(hot.getSourceData());
-
 </script>
 
-<script>
-
-
-
-
-</script>

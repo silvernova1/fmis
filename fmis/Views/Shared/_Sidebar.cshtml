@@ -72,7 +72,7 @@
                 @Html.Raw("active")">
                     <a asp-controller="Prexc" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                         PREXC Code
+                        PREXC Code
                     </a>
 
                     <b class="arrow"></b>
@@ -86,14 +86,44 @@
 
                     <b class="arrow"></b>
                 </li>
-                <li class="@if(ViewBag.filter.sub == "budgetallotment")
-                @Html.Raw("active")">
-                    <a asp-controller="Budget_allotments" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Budget Allotments
+                @* <li class="@if(ViewBag.filter.sub == "budgetallotment")
+        @Html.Raw("active")">
+            <a asp-controller="Budget_allotments" asp-action="Index">
+                <i class="menu-icon fa fa-caret-right"></i>
+                Budget Allotments
+            </a>
+
+            <b class="arrow"></b>
+        </li>*@
+
+                <li class="@if(ViewBag.filter.main == "master_data")
+                @Html.Raw("active open")">
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text"> ALLOTMENTS </span>
+                        <b class="arrow fa fa-angle-down"></b>
                     </a>
 
                     <b class="arrow"></b>
+
+                    <ul class="submenu">
+                         <li class="@if(ViewBag.filter.sub == "budgetallotment")
+                            @Html.Raw("active")">
+                                <a asp-controller="Budget_allotments" asp-action="Index">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Budget Allotments
+                                </a>
+                                <b class="arrow"></b>
+                         </li>
+
+                        <li class="@if(ViewBag.filter.sub == "utilization")
+                         @Html.Raw("active")">
+                            <a asp-controller="Utilization" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                Utilization Allotments
+                            </a>
+
+                            <b class="arrow"></b>
+                    </ul>
                 </li>
 
                 <li class="@if(ViewBag.filter.sub == "requestingoffice")
@@ -132,8 +162,6 @@
 
                     <b class="arrow"></b>
                 </li>
-
-
             </ul>
         </li>
 
@@ -167,7 +195,7 @@
                     </a>
 
                     <b class="arrow"></b>
-                </li>
+              @*  </li>
                 <li class="@if(ViewBag.filter.sub == "temp")
                 @Html.Raw("active")">
                     <a asp-controller="Temp" asp-action="Index">
@@ -176,9 +204,9 @@
                     </a>
 
                     <b class="arrow"></b>
-                </li>
+                </li>*@
             </ul>
-        </li>
+         </li>
 
         <li class="@if(ViewBag.filter.main == "upload_document")
                 @Html.Raw("active open")">

@@ -20,7 +20,7 @@
 
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @ViewBag.beginning_balance
+                    @Model.Sum(x => x.Beginning_balance)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -33,7 +33,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @ViewBag.utilization_amount
+                    @Model.Sum(x => x.utilization_amount)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Utilization Balance </span>
@@ -46,7 +46,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @ViewBag.remaining_balance
+                    @Model.Sum(x => x.Remaining_balance)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>

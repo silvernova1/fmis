@@ -1,4 +1,5 @@
-﻿@model IEnumerable<fmis.Models.Obligation>
+﻿
+@model IEnumerable<fmis.Models.Obligation>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
@@ -23,7 +24,7 @@
     }
 
     .wtHider {
-        margin-bottom: 200px;
+        margin-bottom: 100px;
     }
 
 </style>
@@ -133,7 +134,7 @@
 	var obligation = $.parseJSON($(".obligation").val());
 	@*console.log(obligation);*@
 
-	var fund_sub_data_dropdown = ["--Fund Source or Sub Allotment--"];
+	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
 	var get_fund_sub = [];
 	var fund_sub_counter = 0;
