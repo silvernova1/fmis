@@ -392,7 +392,7 @@ namespace fmis.Migrations
                     prexcId = table.Column<int>(type: "int", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    utilization_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ObligationId = table.Column<int>(type: "int", nullable: true)
                 },
