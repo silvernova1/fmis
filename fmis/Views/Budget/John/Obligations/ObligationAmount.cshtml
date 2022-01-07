@@ -36,7 +36,7 @@
         </div>
         <div class="infobox-data">
             <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
-                @Model.ObligationAmounts.Sum(x => x.Amount).ToString("C", new CultureInfo("en-PH"))
+                @Model.FundSource.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
             </span>
             <div class="infobox-content">
                 <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
