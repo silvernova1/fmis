@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace fmis.Models.Rusel
+namespace fmis.Models
 {
     public class Logs
     {

@@ -491,15 +491,15 @@
     <!-- Syncfusion Essential JS 2 ScriptManager -->
 
     <div class="modal" id="openNotification" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <div class="modal-body" id="notification_body">
 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
+                        Close <i class="ace-icon fa fa-close"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -511,10 +511,13 @@
     function openNotification(element) {
         $("#openNotification").modal({ backdrop: 'static', keyboard: false });
         $("#notification_body").html(loading);
-        setTimeout(function () {
-            $("#notification_body").html("hello world!");
-            element.parent().css("background-color","");
-        }, 500);
+        element.parent().css("background-color","");
+        var url = '@Url.Action("notificationBody", "Notification")';
+        $.get(url, function (result) {
+            setTimeout(function () {
+                $("#notification_body").html(result);
+            }, 500);
+        });
     }
 
     var loading = '<center><img src="/assets/images/loading.gif"/></center>';

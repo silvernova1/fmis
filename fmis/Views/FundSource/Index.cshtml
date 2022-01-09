@@ -182,7 +182,7 @@ else
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_create").html(loading);
          var url = '@Url.Action("Create", "FundSource")';
-         url += "?budget_id=" + budget_id
+         url += "?budget_id=" + budget_id;
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_create").html(result);
