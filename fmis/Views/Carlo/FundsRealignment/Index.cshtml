@@ -239,7 +239,7 @@
                         }
                     );
                     console.log(ajax_data);
-                    ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+                    ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
                     CHECK_FIRST_ROW = true;
                 }
             });
@@ -259,7 +259,7 @@
                 });
                 console.log(ajax_data);
 
-                ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+                ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
             }
 		},
            @* if (source === 'loadData')
