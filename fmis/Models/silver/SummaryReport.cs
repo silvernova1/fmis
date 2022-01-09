@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.John;
-using fmis.Models.Carlo;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.silver

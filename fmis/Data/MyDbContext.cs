@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using fmis.Models;
 using fmis.Models.John;
-using fmis.Models.Carlo;
 using fmis.Models.silver;
 using System;
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
-using fmis.Models.Carlo;
 using Microsoft.EntityFrameworkCore;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Migrations;

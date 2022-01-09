@@ -145,7 +145,8 @@ namespace fmis.Controllers.Budget.John
                 fundsource_amount.FundSourceId = item.FundSourceId == 0? null : item.FundSourceId;
                 fundsource_amount.BudgetId = item.BudgetId;
                 fundsource_amount.UacsId = item.UacsId;
-                fundsource_amount.Amount = item.Amount;
+                fundsource_amount.beginning_balance = item.Amount;
+                fundsource_amount.remaining_balance = item.Amount;
                 fundsource_amount.status = "activated";
                 fundsource_amount.fundsource_amount_token = item.fundsource_amount_token;
                 fundsource_amount.fundsource_token = item.fundsource_token;
@@ -168,8 +169,8 @@ namespace fmis.Controllers.Budget.John
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
-            fundSource.Beginning_balance = funsource_amount.Sum(x => x.Amount);
-            fundSource.Remaining_balance = funsource_amount.Sum(x => x.Amount);
+            fundSource.Beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
+            fundSource.Remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
 
             _FundSourceContext.Add(fundSource);
             await _FundSourceContext.SaveChangesAsync();
@@ -208,8 +209,8 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
-            var beginning_balance = funsource_amount.Sum(x => x.Amount);
-            var remaining_balance = funsource_amount.Sum(x => x.Amount);
+            var beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
+            var remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
 
             var fundsource_data = await _MyDbContext.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).AsNoTracking().FirstOrDefaultAsync();
             fundsource_data.PrexcId = fundSource.PrexcId;
@@ -263,7 +264,7 @@ namespace fmis.Controllers.Budget.John
                     await _MyDbContext.SaveChangesAsync();
 
                     var fund_source_update = await _FundSourceContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
-                    fund_source_update.Remaining_balance -= fund_source_amount.Amount;
+                    fund_source_update.Remaining_balance -= fund_source_amount.beginning_balance;
 
                     //detach para ma calculate ang multiple delete
                     var local = _FundSourceContext.Set<FundSource>()
@@ -292,7 +293,7 @@ namespace fmis.Controllers.Budget.John
                 await _MyDbContext.SaveChangesAsync();
 
                 var fund_source_update = await _FundSourceContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
-                fund_source_update.Remaining_balance -= fund_source_amount.Amount;
+                fund_source_update.Remaining_balance -= fund_source_amount.beginning_balance;
                 _FundSourceContext.FundSource.Update(fund_source_update);
                 _FundSourceContext.SaveChanges();
             }

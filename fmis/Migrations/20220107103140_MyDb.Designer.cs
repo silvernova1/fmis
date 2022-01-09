@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220107103140_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -671,14 +673,14 @@ namespace fmis.Migrations
                     b.Property<string>("Suballotment_title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("obligated_amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("prexcId")
                         .HasColumnType("int");
 
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("utilization_amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SubAllotmentId");
 

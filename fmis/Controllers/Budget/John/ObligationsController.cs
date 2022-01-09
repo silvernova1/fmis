@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
-using fmis.Models.Carlo;
 using fmis.Models.John;
 using fmis.Models.silver;
 using AutoMapper;
