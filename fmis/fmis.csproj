@@ -16,6 +16,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Include="Migrations\20220109004903_MyDb.cs" />
+	  <Compile Include="Migrations\20220109004903_MyDb.Designer.cs" />
+	  <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="10.1.1" />
 		<PackageReference Include="bootstrap" Version="5.0.2" />
 		<PackageReference Include="ClosedXML" Version="0.95.4" />
@@ -68,7 +74,6 @@
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Migrations\" />
 		<Folder Include="ViewBag\" />
 		<Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
 		<Folder Include="wwwroot\Rotativa\" />

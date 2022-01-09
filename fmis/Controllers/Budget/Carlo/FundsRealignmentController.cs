@@ -11,6 +11,7 @@ using fmis.Models.John;
 using fmis.Data;
 using fmis.Data.John;
 using fmis.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace fmis.Controllers.Budget.Carlo
 {
@@ -76,39 +77,60 @@ namespace fmis.Controllers.Budget.Carlo
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveFundsRealignment(List<FundsRealignmentData> data)
+        public async Task <IActionResult> SaveFundsRealignment(List<FundsRealignmentData> data)
         {
-            var data_holder = this._context.FundsRealignment;
+            var data_holder = _context.FundsRealignment;
+
             foreach (var item in data)
             {
-                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
-                {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_from = item.Realignment_from;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_to = item.Realignment_to;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                var funds_realignment = new FundsRealignment(); //CLEAR OBJECT
+                if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token) != null) //CHECK IF EXIST
+                    funds_realignment = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
 
-                    this._context.SaveChanges(); 
-                }
-                else /*if (item.Realignment_from != null || item.Realignment_to != null & item.Realignment_amount.ToString() != null) 
-                if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
-
-                {  
-                    var funds = new FundsRealignment(); //CLEAR OBJECT
-                    funds.fundsource_id = item.fundsource_id;
-                    funds.Realignment_from = item.Realignment_from;
-                    funds.Realignment_to = item.Realignment_to;
-                    funds.Realignment_amount = item.Realignment_amount;
-                    funds.status = "activated";
-                    funds.token = item.token;
-
-                    this._context.FundsRealignment.Update(funds);
-                    this._context.SaveChanges();
-                }
+                funds_realignment.fundsource_id = item.fundsource_id;
+                funds_realignment.Realignment_from = item.Realignment_from;
+                funds_realignment.Realignment_to = item.Realignment_to;
+                funds_realignment.Realignment_amount = item.Realignment_amount;
+                funds_realignment.status = "activated";
+                funds_realignment.token = item.token;
+              
+                _context.FundsRealignment.Update(funds_realignment);
+                await _context.SaveChangesAsync();
             }
-
             return Json(data);
         }
+        /* {
+             var data_holder = this._context.FundsRealignment;
+             foreach (var item in data)
+             {
+                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
+                 {
+                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_from = item.Realignment_from;
+                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_to = item.Realignment_to;
+                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
+                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+
+                     this._context.SaveChanges(); 
+                 }
+                 else *//*if (item.Realignment_from != null || item.Realignment_to != null & item.Realignment_amount.ToString() != null) 
+                 if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*//* //SAVE
+
+                 {  
+                     var funds = new FundsRealignment(); //CLEAR OBJECT
+                     funds.fundsource_id = item.fundsource_id;
+                     funds.Realignment_from = item.Realignment_from;
+                     funds.Realignment_to = item.Realignment_to;
+                     funds.Realignment_amount = item.Realignment_amount;
+                     funds.status = "activated";
+                     funds.token = item.token;
+
+                     this._context.FundsRealignment.Update(funds);
+                     this._context.SaveChanges();
+                 }
+             }
+
+             return Json(data);
+         }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
