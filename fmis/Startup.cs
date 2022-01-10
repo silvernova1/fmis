@@ -39,6 +39,7 @@ namespace fmis
                 
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddSession();
             /*services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -126,6 +127,7 @@ namespace fmis
             }
             app.UseStaticFiles();
 
+            app.UseSession();
 
             app.UseRouting();
 

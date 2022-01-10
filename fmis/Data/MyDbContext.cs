@@ -3,6 +3,7 @@ using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.silver;
 using System;
+using fmis.Models.Budget;
 
 namespace fmis.Data
 {
@@ -16,6 +17,8 @@ namespace fmis.Data
             : base(options)
         {
         }
+
+        public DbSet<Account> Account { get; set; }
         public DbSet<Section> Section { get; set; }
         public DbSet<Division> Division { get; set; }
         public DbSet<Personal_Information> Personal_Information { get; set; }
