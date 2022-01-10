@@ -18,6 +18,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
+using fmis.Models.silver;
 
 namespace fmis.Controllers
 
@@ -27,12 +28,12 @@ namespace fmis.Controllers
         private readonly Sub_allotmentContext _context;
         private readonly Suballotment_amountContext _subAllotmentAmountContext;
         private readonly UacsContext _uContext;
-        private readonly Budget_allotmentContext _bContext;
+        private readonly BudgetAllotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
       
 
-        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
+        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
         {
             _context = context;
             _uContext = uContext;
@@ -144,7 +145,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubId,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,prexcId,token")] Sub_allotment sub_Allotment, int? id, Suballotment_amount Subsamount, Budget_allotment budget, int budget_id)
+        public async Task<IActionResult> Create([Bind("SubId,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,prexcId,token")] Sub_allotment sub_Allotment, int? id, Suballotment_amount Subsamount, BudgetAllotment budget, int budget_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.budget_id = budget_id;

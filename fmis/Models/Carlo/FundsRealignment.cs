@@ -16,6 +16,13 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
         public int? FundSourceId { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public FundsRealignment()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 
 }

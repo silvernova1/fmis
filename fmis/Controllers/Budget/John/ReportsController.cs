@@ -5,6 +5,7 @@ using fmis.DataHealpers;
 using fmis.Filters;
 using fmis.Models;
 using fmis.Models.John;
+using fmis.Models.silver;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -388,7 +389,7 @@ namespace fmis.Controllers.Budget.John
                 
 
 
-                foreach (Budget_allotment budget_allotment in budget_allotments)
+                foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
@@ -531,7 +532,7 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(uacs => uacs.Uacs);
                     
                         
-                    foreach (Budget_allotment b in saa)
+                    foreach (BudgetAllotment b in saa)
                     {
                         foreach (Sub_allotment sa in b.Sub_allotments)
                         {

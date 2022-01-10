@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Budget_allotment>
+﻿@model IEnumerable<fmis.Models.silver.BudgetAllotment>
 @using System.Globalization;
 @{ ViewData["Title"] = "Index";
 Layout = "~/Views/Shared/_Layout.cshtml"; }
@@ -21,18 +21,29 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 </div>
             </div>
         </div>
+        <div class="infobox infobox-pink">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_obligate_amount" style="font-size:11pt; color:grey;"></span>
+                <div class="infobox-content">
+                    <span class="label label-pink arrowed-in arrowed-in-right"> Obligate Amount </span>
+                </div>
+            </div>
+        </div>
         <div class="infobox infobox-orange2">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_utilization_amount" style="font-size:11pt; color:grey;"></span>
+                <span class="infobox-data-number" id="total_realignment_amount" style="font-size:11pt; color:grey;"></span>
                 <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Utilization Balance </span>
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-green">
+        <div class="infobox infobox-red">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-money"></i>
             </div>
@@ -101,7 +112,7 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
                 @Html.DisplayFor(modelItem => item.Allotment_code)
             </td>
             <td>
-                <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-action="Index"  asp-route-budget_id="@item.BudgetAllotmentId">
+                <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-action="Index"  asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
                     <i class="ace-icon fa fa-arrow-right"></i>Fund Source
                 </a>
                 <br />
@@ -173,7 +184,8 @@ Layout = "~/Views/Shared/_Layout.cshtml"; }
 <script>
   
     $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
-    $("#total_utilization_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_obligate_amount").html("@total_utilization_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_realignment_amount").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 
     $("#total_beginningsub_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");

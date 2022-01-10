@@ -13,6 +13,14 @@ namespace fmis.Models
         public float Realignment_amount { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+        public int? SubAllotmentId { get; set; }
         public int fundsource_id { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public SubAllotment_Realignment()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 }

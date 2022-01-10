@@ -52,6 +52,13 @@ namespace fmis.Models
 
         public ICollection<Sub_allotment> SubAllotment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public Obligation()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 }
 

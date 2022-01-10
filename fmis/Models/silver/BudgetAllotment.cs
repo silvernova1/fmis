@@ -4,22 +4,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using fmis.Models.John;
-using fmis.Models;
 using System.Text.Json.Serialization;
+using fmis.Models.John;
 
-namespace fmis.Models
+namespace fmis.Models.silver
 {
-    public class Budget_allotment
+    public class BudgetAllotment
     {
         [Key]
         public int BudgetAllotmentId { get; set; }
         public string Allotment_series { get; set; }
         public string Allotment_title { get; set; }
         public string Allotment_code { get; set; }
-        public DateTime Created_at { get; set; }
+        public decimal beginning_balance { get; set; }
+        public decimal obiligate_amount { get; set; }
+        public decimal realignment_amount { get; set; }
+        public decimal remaining_balance { get; set; }
         public DateTime Updated_at { get; set; }
-
         [JsonIgnore]
         public ICollection<FundSource> FundSources { get; set; }
         [JsonIgnore]
@@ -31,15 +32,9 @@ namespace fmis.Models
         public int YearlyReferenceId { get; set; }
         [JsonIgnore]
         public Yearly_reference Yearly_reference { get; set; }
-
-
-        //ADDITIONAL FIELDS BASED ON OLD BUDGET SYSTEM
-
-        public String year { get; set; }
-        public Int32 active { get; set; }
-        public String Code2 { get; set; }
-
-
-
+        public BudgetAllotment()
+        {
+            this.Updated_at = DateTime.Now;
+        }
     }
 }

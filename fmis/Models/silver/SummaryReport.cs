@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using fmis.Models.John;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.silver
@@ -21,5 +20,13 @@ namespace fmis.Models.silver
         public Uacs Uacs { get; set; }
         public List<FundSource> FundSources { get; set; }
         public List<Prexc> Prexc { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public SummaryReport()
+        {
+            this.Updated_At = DateTime.Now;
+        }
+
     }
 }

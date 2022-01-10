@@ -22,7 +22,12 @@ namespace fmis.Models
         [JsonIgnore]
         public Sub_allotment SubAllotment { get; set; }
         public virtual ICollection<Uacs> Uacs { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
 
-
+        public Suballotment_amount()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 }

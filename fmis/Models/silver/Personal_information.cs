@@ -1,4 +1,5 @@
-﻿using System;
+﻿using fmis.Models.silver;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,10 +32,13 @@ namespace fmis.Models
         public DateTime updated_at { get; set; }
 
         public Requesting_office Requesting_office { get; set; }
-        public Budget_allotment Budget_allotment { get; set; }
+        public BudgetAllotment Budget_allotment { get; set; }
         public Ors_head Ors_head { get; set; }
 
-
+        public Personal_Information()
+        {
+            this.updated_at = DateTime.Now;
+        }
 
     }
 }
