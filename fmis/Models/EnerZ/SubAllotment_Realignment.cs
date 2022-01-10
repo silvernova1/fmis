@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace fmis.Models
@@ -14,6 +15,10 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
         public int? SubAllotmentId { get; set; }
+
+        [JsonIgnore]
+        public Sub_allotment SubAllotment { get; set; }
+
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
 

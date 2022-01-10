@@ -285,10 +285,6 @@ namespace fmis.Migrations
                     Allotment_series = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    obiligate_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
@@ -360,6 +356,7 @@ namespace fmis.Migrations
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -425,6 +422,7 @@ namespace fmis.Migrations
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -487,15 +485,14 @@ namespace fmis.Migrations
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Sub_allotmentSubAllotmentId = table.Column<int>(type: "int", nullable: true)
+                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SubAllotment_Realignment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubAllotment_Realignment_Sub_allotment_Sub_allotmentSubAllotmentId",
-                        column: x => x.Sub_allotmentSubAllotmentId,
+                        name: "FK_SubAllotment_Realignment_Sub_allotment_SubAllotmentId",
+                        column: x => x.SubAllotmentId,
                         principalTable: "Sub_allotment",
                         principalColumn: "SubAllotmentId",
                         onDelete: ReferentialAction.Restrict);
@@ -744,9 +741,9 @@ namespace fmis.Migrations
                 column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubAllotment_Realignment_Sub_allotmentSubAllotmentId",
+                name: "IX_SubAllotment_Realignment_SubAllotmentId",
                 table: "SubAllotment_Realignment",
-                column: "Sub_allotmentSubAllotmentId");
+                column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SummaryReport_UacsId",

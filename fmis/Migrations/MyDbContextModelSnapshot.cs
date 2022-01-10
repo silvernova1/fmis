@@ -232,6 +232,9 @@ namespace fmis.Migrations
                     b.Property<decimal>("obligated_amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("realignment_amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
@@ -624,9 +627,6 @@ namespace fmis.Migrations
                     b.Property<int?>("SubAllotmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Sub_allotmentSubAllotmentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
@@ -638,7 +638,7 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Sub_allotmentSubAllotmentId");
+                    b.HasIndex("SubAllotmentId");
 
                     b.ToTable("SubAllotment_Realignment");
                 });
@@ -685,6 +685,9 @@ namespace fmis.Migrations
 
                     b.Property<int>("prexcId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("realignment_amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
@@ -912,18 +915,6 @@ namespace fmis.Migrations
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("beginning_balance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("obiligate_amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("realignment_amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("remaining_balance")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("BudgetAllotmentId");
 
                     b.HasIndex("YearlyReferenceId")
@@ -1099,9 +1090,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
                 {
-                    b.HasOne("fmis.Models.Sub_allotment", null)
+                    b.HasOne("fmis.Models.Sub_allotment", "SubAllotment")
                         .WithMany("SubAllotmentRealignment")
-                        .HasForeignKey("Sub_allotmentSubAllotmentId");
+                        .HasForeignKey("SubAllotmentId");
+
+                    b.Navigation("SubAllotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
