@@ -13,10 +13,11 @@ using fmis.Filters;
 using fmis.Data.silver;
 using fmis.Models.John;
 using System.Globalization;
+using fmis.Models.silver;
 
 namespace fmis.Controllers
 {
-    public class Budget_allotmentsController : Controller
+    public class BudgetAllotmentController : Controller
     {
         private readonly MyDbContext _context;
         private readonly Yearly_referenceContext _osContext;
@@ -24,7 +25,7 @@ namespace fmis.Controllers
         private readonly PersonalInformationMysqlContext _pis_context;
         private readonly Sub_allotmentContext _saContext;
 
-        public Budget_allotmentsController(MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
+        public BudgetAllotmentController(MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
         {
             _context = context;
             _osContext = osContext;
@@ -36,7 +37,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments
         public async Task<IActionResult> Index(int? id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment");
             ViewBag.layout = "_Layout";
 
             var budget_allotment = await _context.Budget_allotments
@@ -46,7 +47,6 @@ namespace fmis.Controllers
             .AsNoTracking()
             .ToListAsync();
 
-            /*return Json(budget_allotment);*/
             return View(budget_allotment);
         }
 
@@ -108,7 +108,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId,Id")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId,Id")] BudgetAllotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             try
@@ -137,7 +137,7 @@ namespace fmis.Controllers
 
             var sub_Allotment = _context.Sub_allotment.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
             ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.utilization_amount = sub_Allotment.Sum(x => x.utilization_amount).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.obligated_amount = sub_Allotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
             ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             //START Query of the amounts
@@ -194,7 +194,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] Budget_allotment budget_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] BudgetAllotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id != budget_allotment.BudgetAllotmentId)

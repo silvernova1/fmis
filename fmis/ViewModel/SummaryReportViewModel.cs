@@ -1,5 +1,6 @@
 ﻿using fmis.Models;
 using fmis.Models.John;
+using fmis.Models.silver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace fmis.ViewModel
         public Prexc prexc { get; set; }
         public FundSourceAmount fundsource_amount { get; set; }
         public Uacs uacs { get; set; }
-        public Budget_allotment budget_allotment { get; set; }
+        public BudgetAllotment budget_allotment { get; set; }
 
         public ObligationAmount obligationamount { get; set; }
 

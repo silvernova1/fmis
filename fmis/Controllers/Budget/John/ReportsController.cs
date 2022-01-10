@@ -5,6 +5,7 @@ using fmis.DataHealpers;
 using fmis.Filters;
 using fmis.Models;
 using fmis.Models.John;
+using fmis.Models.silver;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -384,8 +385,11 @@ namespace fmis.Controllers.Budget.John
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
                     .ThenInclude(uacs => uacs.Uacs);
 
+                var realignment_amount = 50;
+                
 
-                foreach (Budget_allotment budget_allotment in budget_allotments)
+
+                foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
@@ -405,7 +409,7 @@ namespace fmis.Controllers.Budget.John
 
                     foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
-
+                        
 
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
@@ -426,32 +430,38 @@ namespace fmis.Controllers.Budget.John
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
                         {
                             total = 0;
-
+                            var afterrealignment_amount = fundsource_amount.beginning_balance - realignment_amount;
+                            
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
                             ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                            ws.Cell(currentRow, 3).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+                            //REALIGNMENT AMOUNT
+                            ws.Cell(currentRow, 4).Value = "("+ realignment_amount.ToString("N", new CultureInfo("en-US"))+")";
+                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                             //TOTAL AFTER REALIGNMENT
-                            ws.Cell(currentRow, 6).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //UNOBLIGATED BALANCE OF ALLOTMENT
-                            ws.Cell(currentRow, 9).Value = fundsource_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             currentRow++;
-                            total = (double)fundsource_amount.Amount;
+                            total = (double)fundsource_amount.beginning_balance;
                         }
 
-                        allotment_total += (double)fundSource.Remaining_balance;
+                        
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
@@ -474,7 +484,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance;
 
-
+                        allotment_total += (double)fundSource.Beginning_balance;
 
 
                         currentRow++;
@@ -488,6 +498,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
 
                     }
+
                     
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
@@ -521,7 +532,7 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(uacs => uacs.Uacs);
                     
                         
-                    foreach (Budget_allotment b in saa)
+                    foreach (BudgetAllotment b in saa)
                     {
                         foreach (Sub_allotment sa in b.Sub_allotments)
                         {
@@ -1166,6 +1177,8 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(24, 3).Style.Fill.BackgroundColor = XLColor.Gray;
                 ws.Cell(25, 3).Style.Fill.BackgroundColor = XLColor.Gray;*/
 
+                
+                ws.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {

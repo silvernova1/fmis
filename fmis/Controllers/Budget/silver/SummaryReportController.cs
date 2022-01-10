@@ -14,9 +14,9 @@ using System.IO;
 using OfficeOpenXml;
 using DocumentFormat.OpenXml.Drawing.ChartDrawing;
 using fmis.DataHealpers;
-using fmis.Models.Carlo;
 using fmis.Models.John;
 using fmis.ViewModel;
+using fmis.Models.silver;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -40,10 +40,8 @@ namespace fmis.Controllers.Budget.silver
                                    on fundsource.FundSourceId equals fundsource_amount.FundSourceId
                                    join uacs in _context.Uacs
                                    on fundsource_amount.UacsId equals uacs.UacsId
-                                   /*join obligation in _context.Obligation
-                                   on fundsource.FundSourceId equals obligation.source_id
-                                   join obligationamount in _context.ObligationAmount
-                                   on obligation.Id equals obligationamount.ObligationId*/
+                                   join budget_allotment in _context.Budget_allotments
+                                   on fundsource.BudgetAllotmentId equals budget_allotment.BudgetAllotmentId
 
                                     select new SummaryReportViewModel
                                    {
@@ -58,17 +56,17 @@ namespace fmis.Controllers.Budget.silver
 
             ViewBag.filter = new FilterSidebar("master_data", "SummaryReports");
 
-            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetId == id).Sum(x => x.Amount);
+            var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetAllotmentId == id).Sum(x => x.beginning_balance);
             ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
 
-            var totalbudget = _context.FundSourceAmount.Sum(x => x.Amount);
+            var totalbudget = _context.FundSourceAmount.Sum(x => x.beginning_balance);
             ViewBag.totalbudget = totalbudget.ToString("C", new CultureInfo("en-PH"));
 
             return View(generate_reports);
 
         }
 
-        public ActionResult Filter(DateTime date_from, DateTime date_to)
+        /*public ActionResult Filter(DateTime date_from, DateTime date_to)
         {
             using (MyDbContext db = new MyDbContext())
             {
@@ -78,7 +76,7 @@ namespace fmis.Controllers.Budget.silver
                 return View();
             }
 
-        }
+        }*/
 
         [HttpPost]
         public IActionResult ExportSummaryReports()
@@ -173,7 +171,7 @@ namespace fmis.Controllers.Budget.silver
                     .ThenInclude(uacs => uacs.Uacs)
                     .ThenInclude(uacs => uacs.FundSource);
 
-                foreach (Budget_allotment budget_allotment in budget_allotments)
+                foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
 
                     foreach (FundSource fundSource in budget_allotment.FundSources)
@@ -205,7 +203,7 @@ namespace fmis.Controllers.Budget.silver
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             currentRow++;
-                            total = (double)fundsource_amount.Amount;
+                            total = (double)fundsource_amount.beginning_balance;
 
                         }
 

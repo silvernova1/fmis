@@ -18,6 +18,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
+using fmis.Models.silver;
 
 namespace fmis.Controllers
 
@@ -27,12 +28,12 @@ namespace fmis.Controllers
         private readonly Sub_allotmentContext _context;
         private readonly Suballotment_amountContext _subAllotmentAmountContext;
         private readonly UacsContext _uContext;
-        private readonly Budget_allotmentContext _bContext;
+        private readonly BudgetAllotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
       
 
-        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, Budget_allotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
+        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
         {
             _context = context;
             _uContext = uContext;
@@ -144,7 +145,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubId,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,prexcId,token")] Sub_allotment sub_Allotment, int? id, Suballotment_amount Subsamount, Budget_allotment budget, int budget_id)
+        public async Task<IActionResult> Create([Bind("SubId,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,prexcId,token")] Sub_allotment sub_Allotment, int? id, Suballotment_amount Subsamount, BudgetAllotment budget, int budget_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.budget_id = budget_id;
@@ -160,7 +161,7 @@ namespace fmis.Controllers
             suballotment_amount.ForEach(a => a.SubAllotmentId = sub_Allotment.SubAllotmentId);
             await _MyDbContext.SaveChangesAsync();
 
-            return RedirectToAction("Suballotment", "Budget_allotments", new { budget_id = sub_Allotment.Budget_allotmentBudgetAllotmentId });
+            return RedirectToAction("Index", "Sub_allotment", new { budget_id = sub_Allotment.Budget_allotmentBudgetAllotmentId });
         }
         // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int budget_id, int sub_allotment_id)
@@ -205,7 +206,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Edit(Sub_allotment sub_allotment, Suballotment_amount Subsamount)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var suballotment_amount = _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == sub_allotment.SubAllotmentId).ToList();
+            var suballotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == sub_allotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = suballotment_amount.Sum(x => x.Amount);
             var remaining_balance = suballotment_amount.Sum(x => x.Amount);
 
@@ -220,7 +221,7 @@ namespace fmis.Controllers
             _context.Update(suballotment_data);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Suballotment", "Budget_allotments", new { budget_id = suballotment_data.Budget_allotmentBudgetAllotmentId });
+            return RedirectToAction("Index", "Sub_allotment", new { budget_id = suballotment_data.Budget_allotmentBudgetAllotmentId });
         }
        
         // GET: Sub_allotment/Delete/5

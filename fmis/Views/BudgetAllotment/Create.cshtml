@@ -1,21 +1,18 @@
-﻿@model fmis.Models.Budget_allotment
+﻿@model fmis.Models.silver.BudgetAllotment
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h3 class="grey lighter smaller">
-    Edit Budget Allotment
+    Create Budget Allotment
 </h3>
 <hr />
 <div class="row">
     <div class="col-xs-12">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div class="col-xs-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="BudgetAllotmentId" />
-                <input type="hidden" asp-for="Created_at" />
                 <div class="form-group">
                     <label>Yearly Reference:</label>
                     <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
@@ -40,13 +37,12 @@
             </div>
             <br />
             <div class="form-group" style="margin-left:13px;">
-                <input type="submit" value="Save" class="btn btn-success btn-sm" />|
+                <input type="submit" value="Create" class="btn btn-success btn-sm" />|
                 <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

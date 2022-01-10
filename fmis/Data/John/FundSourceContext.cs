@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.John;
 
 namespace fmis.Data.John
 {
     public class FundSourceContext : DbContext
     {
-        public DbSet<fmis.Models.John.FundSource> FundSource { get; set; }
-        public DbSet<fmis.Models.Uacs> Uacs { get; set; }
+        public DbSet<FundSource> FundSource { get; set; }
+        public DbSet<Uacs> Uacs { get; set; }
 
 
       /*  protected override void OnModelCreating(ModelBuilder modelBuilder)
