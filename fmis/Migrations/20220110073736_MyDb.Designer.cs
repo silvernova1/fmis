@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220110063830_MyDb")]
+    [Migration("20220110073736_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -629,14 +629,8 @@ namespace fmis.Migrations
                     b.Property<int?>("SubAllotmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Sub_allotmentSubAllotmentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("fundsource_id")
-                        .HasColumnType("int");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
@@ -646,7 +640,7 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Sub_allotmentSubAllotmentId");
+                    b.HasIndex("SubAllotmentId");
 
                     b.ToTable("SubAllotment_Realignment");
                 });
@@ -1098,9 +1092,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
                 {
-                    b.HasOne("fmis.Models.Sub_allotment", null)
+                    b.HasOne("fmis.Models.Sub_allotment", "SubAllotment")
                         .WithMany("SubAllotment_Realignments")
-                        .HasForeignKey("Sub_allotmentSubAllotmentId");
+                        .HasForeignKey("SubAllotmentId");
+
+                    b.Navigation("SubAllotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>

@@ -484,17 +484,15 @@ namespace fmis.Migrations
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    fundsource_id = table.Column<int>(type: "int", nullable: false),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Sub_allotmentSubAllotmentId = table.Column<int>(type: "int", nullable: true)
+                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SubAllotment_Realignment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubAllotment_Realignment_Sub_allotment_Sub_allotmentSubAllotmentId",
-                        column: x => x.Sub_allotmentSubAllotmentId,
+                        name: "FK_SubAllotment_Realignment_Sub_allotment_SubAllotmentId",
+                        column: x => x.SubAllotmentId,
                         principalTable: "Sub_allotment",
                         principalColumn: "SubAllotmentId",
                         onDelete: ReferentialAction.Restrict);
@@ -743,9 +741,9 @@ namespace fmis.Migrations
                 column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubAllotment_Realignment_Sub_allotmentSubAllotmentId",
+                name: "IX_SubAllotment_Realignment_SubAllotmentId",
                 table: "SubAllotment_Realignment",
-                column: "Sub_allotmentSubAllotmentId");
+                column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SummaryReport_UacsId",
