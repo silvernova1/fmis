@@ -64,12 +64,6 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var fund_source_data = await _FundSourceContext.FundSource
-                            .Include(x => x.FundSourceAmounts)
-                            .Include(x => x.BudgetAllotment)
-                            .Where(x => x.BudgetAllotmentId == BudgetAllotmentId)
-                            .AsNoTracking()
-                            .ToListAsync();
 
             var budget_allotment = await _bContext.BudgetAllotment
             .Include(x => x.FundSources)
@@ -77,7 +71,6 @@ namespace fmis.Controllers.Budget.John
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
-            //return Json(budget_allotment);
             return View(budget_allotment);
         }
 
