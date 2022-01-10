@@ -144,7 +144,7 @@
 
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
 
                     <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>

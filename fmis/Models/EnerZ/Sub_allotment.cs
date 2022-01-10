@@ -24,6 +24,7 @@ namespace fmis.Models
         public decimal Remaining_balance { get; set; }
         public decimal Beginning_balance { get; set; }
         public decimal obligated_amount { get; set; }
+        public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
