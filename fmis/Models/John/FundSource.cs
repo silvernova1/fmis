@@ -29,5 +29,12 @@ namespace fmis.Models.John
         public Budget_allotment Budget_allotment { get; set; }
         public Uacs Uacs { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public FundSource()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 }

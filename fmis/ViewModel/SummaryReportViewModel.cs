@@ -16,5 +16,9 @@ namespace fmis.ViewModel
         public Uacs uacs { get; set; }
         public Budget_allotment budget_allotment { get; set; }
 
+        public ObligationAmount obligationamount { get; set; }
+
+        public Obligation obligation { get; set; }
+
     }
 }

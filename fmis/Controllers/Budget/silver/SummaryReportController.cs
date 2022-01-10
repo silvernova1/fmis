@@ -40,21 +40,21 @@ namespace fmis.Controllers.Budget.silver
                                    on fundsource.FundSourceId equals fundsource_amount.FundSourceId
                                    join uacs in _context.Uacs
                                    on fundsource_amount.UacsId equals uacs.UacsId
-                                   join budget_allotment in _context.Budget_allotments
-                                    on fundsource.Budget_allotmentBudgetAllotmentId equals budget_allotment.BudgetAllotmentId
-
-
+                                   /*join obligation in _context.Obligation
+                                   on fundsource.FundSourceId equals obligation.source_id
+                                   join obligationamount in _context.ObligationAmount
+                                   on obligation.Id equals obligationamount.ObligationId*/
 
                                     select new SummaryReportViewModel
                                    {
                                        fund_source = fundsource,
                                        prexc = prexc,
                                        uacs = uacs,
-                                       fundsource_amount = fundsource_amount,
-                                       budget_allotment = budget_allotment
-                                       
+                                       fundsource_amount = fundsource_amount
+                                       //obligationamount = obligationamount
 
-                                   }).ToList();
+
+                                    }).ToList();
 
             ViewBag.filter = new FilterSidebar("master_data", "SummaryReports");
 
@@ -68,18 +68,14 @@ namespace fmis.Controllers.Budget.silver
 
         }
 
-        public ActionResult Filter(DateTime date_from, DateTime end)
+        public ActionResult Filter(DateTime date_from, DateTime date_to)
         {
             using (MyDbContext db = new MyDbContext())
             {
 
-                var filterTicker = db.SummaryReport
-            .Where(x => x.datefrom >= date_from && x.dateto <= end).ToList();
-
-
-                ViewBag.START = date_from;
-                ViewBag.END = end;
-                return View(filterTicker);
+                var filter = db.Budget_allotments
+            .Where(x => x.Created_at == date_from);
+                return View();
             }
 
         }
@@ -87,10 +83,7 @@ namespace fmis.Controllers.Budget.silver
         [HttpPost]
         public IActionResult ExportSummaryReports()
         {
-
-            /*DateTime date1 = Convert.ToDateTime(date_from);
-            DateTime date2 = Convert.ToDateTime(date_to);*/
-
+            
             DataTable dt = new DataTable("Summary Report");
 
             var customers = from customer in _context.SummaryReport.ToList()
@@ -173,6 +166,7 @@ namespace fmis.Controllers.Budget.silver
                 ws.Cell("H2").RichText.AddText("CODE");
                 ws.Cell("H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
+
                 var budget_allotments = _context.Budget_allotments
                     .Include(budget_allotment => budget_allotment.FundSources)
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
@@ -181,9 +175,6 @@ namespace fmis.Controllers.Budget.silver
 
                 foreach (Budget_allotment budget_allotment in budget_allotments)
                 {
-                    
-
-                   /* var fsh = _context.FundSources.Where(p => p.Budget_allotmentBudgetAllotmentId == budget_allotment.BudgetAllotmentId).ToString();*/
 
                     foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
@@ -196,11 +187,18 @@ namespace fmis.Controllers.Budget.silver
 
                             ws.Cell(currentRow, 2).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.FundSourceTitle;
                             ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
                             ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                            ws.Cell(currentRow, 4).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.Beginning_balance;
+                            ws.Cell(currentRow, 4).Value = _context.ObligationAmount.FirstOrDefault(x => x.ObligationId == fundSource.FundSourceId)?.Amount;
                             ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                            ws.Cell(currentRow, 6).Value = _context.ObligationAmount.FirstOrDefault(x => x.ObligationId == fundSource.FundSourceId )?.Amount;
+                            ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                            ws.Cell(currentRow, 7).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.Remaining_balance;
+                            ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             ws.Cell(currentRow, 8).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                             ws.Cell(currentRow, 8).Style.NumberFormat.Format = "00";

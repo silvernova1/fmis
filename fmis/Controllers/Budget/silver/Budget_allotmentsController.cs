@@ -115,6 +115,7 @@ namespace fmis.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    budget_allotment.Created_at = DateTime.Now;
                     List<Prexc> p = new List<Prexc>();
                     _context.Add(budget_allotment);
                     await _context.SaveChangesAsync();

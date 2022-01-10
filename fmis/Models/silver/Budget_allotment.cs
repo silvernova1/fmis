@@ -39,7 +39,10 @@ namespace fmis.Models
         public Int32 active { get; set; }
         public String Code2 { get; set; }
 
-
+        public Budget_allotment()
+        {
+            this.Updated_at = DateTime.Now;
+        }
 
     }
 }

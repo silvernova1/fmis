@@ -10,6 +10,7 @@
 }
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="FundSourceId" value="@Model.FundSourceId" />
+    <input type="hidden" asp-for="Created_At" />
     <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@Model.Budget_allotmentBudgetAllotmentId" />
     <input type="hidden" class="fundsource_amount_uacs" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">

@@ -20,6 +20,13 @@ namespace fmis.Models
         public List<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
         public List<Prexc> Prexc { get; set; }
         public List<FundSource> FundSource { get; set; }
-        
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public Uacs()
+        {
+            this.Updated_At = DateTime.Now;
+        }
+
     }
 }

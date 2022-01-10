@@ -34,7 +34,10 @@ namespace fmis.Models
         public Budget_allotment Budget_allotment { get; set; }
         public Ors_head Ors_head { get; set; }
 
-
+        public Personal_Information()
+        {
+            this.updated_at = DateTime.Now;
+        }
 
     }
 }

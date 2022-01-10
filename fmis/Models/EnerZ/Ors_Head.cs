@@ -14,5 +14,10 @@ namespace fmis.Models
         public string Personalinfo_userid { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+
+        public Ors_head()
+        {
+            this.Updated_at = DateTime.Now;
+        }
     }
 }

@@ -21,5 +21,12 @@ namespace fmis.Models
         public string status { get; set; }
         public string obligation_token { get; set; }
         public string obligation_amount_token { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public ObligationAmount()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 }

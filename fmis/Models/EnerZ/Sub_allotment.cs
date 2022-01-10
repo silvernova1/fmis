@@ -26,6 +26,13 @@ namespace fmis.Models
         public string token { get; set; }
         public Budget_allotment Budget_allotment { get; set; }
         public ICollection<Suballotment_amount> SubAllotmentAmounts { get; set; }
+        public DateTime Created_At { get; set; }
+        public DateTime Updated_At { get; set; }
+
+        public Sub_allotment()
+        {
+            this.Updated_At = DateTime.Now;
+        }
     }
 
 }
