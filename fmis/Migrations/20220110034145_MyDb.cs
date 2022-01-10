@@ -482,6 +482,7 @@ namespace fmis.Migrations
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceAmountId = table.Column<int>(type: "int", nullable: true),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
+                    Sub_allotmentSubAllotmentId = table.Column<int>(type: "int", nullable: true),
                     Suballotment_amountId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -498,6 +499,12 @@ namespace fmis.Migrations
                         column: x => x.ObligationId,
                         principalTable: "Obligation",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Uacs_Sub_allotment_Sub_allotmentSubAllotmentId",
+                        column: x => x.Sub_allotmentSubAllotmentId,
+                        principalTable: "Sub_allotment",
+                        principalColumn: "SubAllotmentId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Uacs_Suballotment_amount_Suballotment_amountId",
@@ -542,12 +549,19 @@ namespace fmis.Migrations
                     Realignment_amount = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    fundsource_id = table.Column<int>(type: "int", nullable: false),
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: true),
+                    Sub_allotmentSubAllotmentId = table.Column<int>(type: "int", nullable: true),
                     UacsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SubAllotment_Realignment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubAllotment_Realignment_Sub_allotment_Sub_allotmentSubAllotmentId",
+                        column: x => x.Sub_allotmentSubAllotmentId,
+                        principalTable: "Sub_allotment",
+                        principalColumn: "SubAllotmentId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SubAllotment_Realignment_Uacs_UacsId",
                         column: x => x.UacsId,
@@ -717,6 +731,11 @@ namespace fmis.Migrations
                 column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SubAllotment_Realignment_Sub_allotmentSubAllotmentId",
+                table: "SubAllotment_Realignment",
+                column: "Sub_allotmentSubAllotmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SubAllotment_Realignment_UacsId",
                 table: "SubAllotment_Realignment",
                 column: "UacsId");
@@ -735,6 +754,11 @@ namespace fmis.Migrations
                 name: "IX_Uacs_ObligationId",
                 table: "Uacs",
                 column: "ObligationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Uacs_Sub_allotmentSubAllotmentId",
+                table: "Uacs",
+                column: "Sub_allotmentSubAllotmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Uacs_Suballotment_amountId",

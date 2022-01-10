@@ -36,11 +36,11 @@ namespace fmis.Controllers.Budget.Carlo
         public class FundsRealignmentData
         {
             public int Realignment_from { get; set; }
-            public int Realignment_to { get; set; }                                         
+            public int Realignment_to { get; set; }
             public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
-            public int fundsource_id { get; set; }
+            public int FundSourceId { get; set; }
             public string token { get; set; }
         }
 
@@ -66,7 +66,7 @@ namespace fmis.Controllers.Budget.Carlo
                                     .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
             FundSource.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
 
-            return View("~/Views/Carlo/FundsRealignment/Index.cshtml",FundSource);
+            return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
 
             /*var json = JsonSerializer.Serialize(_context.FundsRealignment.Where(s => s.status == "activated")
                 .Where(x => x.FundSourceId == fundsource_id)
@@ -83,37 +83,27 @@ namespace fmis.Controllers.Budget.Carlo
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveFundsRealignment(List<FundsRealignmentData> data)
+        public async Task <IActionResult> SaveFundsRealignment(List<FundsRealignmentData> data)
         {
-            var data_holder = this._context.FundsRealignment;
+            var data_holder = _context.FundsRealignment;
+
             foreach (var item in data)
             {
-                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
-                {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_from = item.Realignment_from;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_to = item.Realignment_to;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
 
-                    this._context.SaveChanges(); 
-                }
-                else /*if (item.Realignment_from != null || item.Realignment_to != null & item.Realignment_amount.ToString() != null) 
-                if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null)*/ //SAVE
+                var funds_realignment = new FundsRealignment(); //CLEAR OBJECT
+                if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token) != null) //CHECK IF EXIST
+                    funds_realignment = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
 
-                {  
-                    var funds = new FundsRealignment(); //CLEAR OBJECT
-                    funds.FundSourceId = item.fundsource_id;
-                    funds.Realignment_from = item.Realignment_from;
-                    funds.Realignment_to = item.Realignment_to;
-                    funds.Realignment_amount = item.Realignment_amount;
-                    funds.status = "activated";
-                    funds.token = item.token;
+                funds_realignment.FundSourceId = item.FundSourceId;
+                funds_realignment.Realignment_from = item.Realignment_from;
+                funds_realignment.Realignment_to = item.Realignment_to;
+                funds_realignment.Realignment_amount = item.Realignment_amount;
+                funds_realignment.status = "activated";
+                funds_realignment.token = item.token;
 
-                    this._context.FundsRealignment.Update(funds);
-                    this._context.SaveChanges();
-                }
+                _context.FundsRealignment.Update(funds_realignment);
+                await _context.SaveChangesAsync();
             }
-
             return Json(data);
         }
 
@@ -142,6 +132,48 @@ namespace fmis.Controllers.Budget.Carlo
 
             return Json(data);
         }
+
+
+        // GET: FundsRealignment/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var funds_realignment = await _context.FundsRealignment
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (funds_realignment == null)
+            {
+                return NotFound();
+            }
+
+            return View(funds_realignment);
+        }
+
+        /* {
+             if (data.many_token.Count > 1)
+             {
+                 var data_holder = this._context.FundsRealignment;
+                 foreach (var many in data.many_token)
+                 {
+                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
+                     await _context.SaveChangesAsync();
+                 }
+             }
+             else
+             {
+                 var data_holder = this._context.FundsRealignment;
+                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+
+                 await _context.SaveChangesAsync();
+             }
+
+             return Json(data);
+         }*/
 
     }
 }

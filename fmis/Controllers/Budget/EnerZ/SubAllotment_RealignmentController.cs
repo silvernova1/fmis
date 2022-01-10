@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using fmis.Data;
 using System.Text.Json;
 using fmis.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace fmis.Controllers
 {
@@ -15,14 +16,19 @@ namespace fmis.Controllers
         private readonly SubAllotment_RealignmentContext _context;
         private readonly UacsContext _UacsContext;
         private readonly Suballotment_amountContext _SAContext;
+        private readonly MyDbContext _MyDbContext;
         private readonly Sub_allotmentContext _SContext;
+        private SubAllotment_Realignment SubAllotment_Realignment;
+        private Sub_allotment Sub_allotment;
 
-        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext, Suballotment_amountContext SAContext, Sub_allotmentContext SContext)
+
+        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext, Suballotment_amountContext SAContext, Sub_allotmentContext SContext, MyDbContext MyDbContext)
         {
             _context = context;
             _UacsContext = UacsContext;
             _SAContext = SAContext;
             _SContext = SContext;
+            _MyDbContext = MyDbContext;
         }
 
         public class SubAllotment_RealignmentData
@@ -32,7 +38,7 @@ namespace fmis.Controllers
             public float Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
-            public int fundsource_id { get; set; }
+            public int SubAllotmentId { get; set; }
             public string token { get; set; }
         }
 
@@ -47,62 +53,47 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int sub_allotment_id)
         {
-
-            int fundsource_id = id;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var json = JsonSerializer.Serialize(_context.SubAllotment_Realignment.Where(s => s.status == "activated")
-              .Where(x => x.fundsource_id == fundsource_id)
-                .ToList());
-            ViewBag.temp = json;
-            var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());
-            ViewBag.uacs = uacs_data;
-            ViewBag.fundsource_id = fundsource_id;
 
-            var suballotment_amount = JsonSerializer.Serialize(_SAContext.Suballotment_amount.ToList());
-            ViewBag.suballotment_amount = suballotment_amount;
+            Sub_allotment = await _SContext.Sub_allotment
+                                    .Include(x => x.SubAllotment_Realignments)
+                                    .Include(x => x.Uacs)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
+            Sub_allotment.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
 
-            var sub_allotment= JsonSerializer.Serialize(_SContext.Sub_allotment.ToList());
-            ViewBag.sub_allotment = sub_allotment;
+            return View("~/Views/SubAllotment_Realignment/Index.cshtml", Sub_allotment);
 
-            return View("~/Views/SubAllotment_Realignment/Index.cshtml");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveSubAllotment_Realignment(List<SubAllotment_RealignmentData> data)
+        public async Task <IActionResult> SaveSubAllotment_Realignment(List<SubAllotment_RealignmentData> data)
         {
-            var data_holder = this._context.SubAllotment_Realignment;
+            var data_holder = _context.SubAllotment_Realignment;
+
             foreach (var item in data)
             {
-                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //UPDATE
-                {
 
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_from = item.Realignment_from;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_to = item.Realignment_to;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Realignment_amount = item.Realignment_amount;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                var sub_allotment_realignment = new SubAllotment_Realignment(); //CLEAR OBJECT
+                if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token) != null) //CHECK IF EXIST
+                    sub_allotment_realignment = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
 
-                    this._context.SaveChanges();
-                }
-                else /*if (item.Realignment_from.ToString() != null || item.Realignment_to.ToString() != null || item.Realignment_amount.ToString() != null) //SAVE*/
-                {
-                    var Subs = new SubAllotment_Realignment(); //CLEAR OBJECT
-                    Subs.fundsource_id = item.fundsource_id;
-                    Subs.Realignment_from = item.Realignment_from;
-                    Subs.Realignment_to = item.Realignment_to;
-                    Subs.Realignment_amount = item.Realignment_amount;
-                    Subs.status = "activated";
-                    Subs.token = item.token;
+                sub_allotment_realignment.SubAllotmentId = item.SubAllotmentId;
+                sub_allotment_realignment.Realignment_from = item.Realignment_from;
+                sub_allotment_realignment.Realignment_to = item.Realignment_to;
+                sub_allotment_realignment.Realignment_amount = item.Realignment_amount;
+                sub_allotment_realignment.status = "activated";
+                sub_allotment_realignment.token = item.token;
 
-                    this._context.SubAllotment_Realignment.Update(Subs);
-                    this._context.SaveChanges();
-                }
+                _context.SubAllotment_Realignment.Update(sub_allotment_realignment);
+                await _context.SaveChangesAsync();
             }
             return Json(data);
         }
-
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteSubAllotment_Realignment(DeleteData data)

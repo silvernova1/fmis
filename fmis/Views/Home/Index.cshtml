@@ -304,7 +304,8 @@
             { label: "BALANCE", data: @Model.FundSources.FirstOrDefault().Remaining_balance.ToString(), color: "#68BC31" },
             { label: "OBLIGATED", data: @Model.ObligationAmounts.Sum(oa=>oa.Amount).ToString(), color: "#2091CF" },
 
-        ]
+        ]*@
+
 
         function drawPieChart(placeholder, data, position) {
             $.plot(placeholder, data, {
@@ -335,7 +336,7 @@
                 }
             })
         }
-        drawPieChart(placeholder, data);*@
+        drawPieChart(placeholder, data);
 
         /**
         we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
