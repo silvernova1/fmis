@@ -1,5 +1,7 @@
 ﻿
-@model IEnumerable<fmis.Models.SubAllotment_Realignment>
+@model fmis.Models.Sub_allotment
+@using System.Text.Json;
+@using System.Globalization;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Index";
@@ -13,31 +15,80 @@
     }
 }
 
-<input type="hidden" class="suballotment_realignment" value="@ViewBag.temp">
-<input type="hidden" class="uacs" value="@ViewBag.uacs">
+@*<input type="hidden" class="suballotment_realignment" value="@ViewBag.temp">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">*@
+
+<input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotment_Realignments)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
+
+
 <h3 class="grey lighter smaller">
     Sub Allotment Realignment
 </h3>
 <hr>
-    <a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
+<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
-<!--<br />
-<div class="">
-    <div class="row">
-        <div class="col-sm-2 infobox-container">
-            <div class="infobox infobox-blue">
-                <div class="infobox-data">
-                    <span class="infobox-data-number fundsource_amount"></span>
-                    <h5 class="infobox-content grey smaller">TOTAL AMOUNT</h5>
+<br />
+<div class="row  pull-left">
+    <div class="space-5"></div>
+
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
                 </div>
             </div>
         </div>
-    </div>--><!-- /.row -->
-<!--</div>-->
+        <div class="infobox infobox-orange2">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
 <br />
 <div id="example" class="hot"></div>
 <br />
 <script>
+
+    var sub_allotment_id = $("#sub_allotment_id").val();
+
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -47,7 +98,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function ajaxServer(ajax_data, url) {
+    function ajaxServerSubRealignment(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -61,33 +112,52 @@
         });
     }
 
+    //FUNDS REALIGNMENT FROM
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        var json_data = new Object();
+        json_data.UacsId = this.UacsId;
+        uacs_data_array[this.Account_title] = json_data;
+        get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
+    });
+
+    //FUNDS REALIGNEMNT TO
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown_2 = [];
+    var uacs_data_array_2 = [];
+    var get_account_title_2 = [];
+    var uacs_counter_2 = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown_2[uacs_counter_2] = this.Account_title;
+        var json_data_2 = new Object();
+        json_data_2.UacsId = this.UacsId;
+        uacs_data_array_2[this.Account_title] = json_data_2;
+        get_account_title_2[this.UacsId] = this.Account_title;
+        uacs_counter_2++;
+    });
+
     var suballotment_amount = 0;
-    var suballotment_realignment = $.parseJSON($(".suballotment_realignment").val());
+    var sub_allotment_realignment = $.parseJSON($(".sub_allotment_realignment").val());
     const data = [];
     var counter = 0;
-    $.each(suballotment_realignment, function () {
-        data[counter] = [this.Realignment_from, this.Realignment_to, this.Realignment_amount, this.Id, this.token]
+    $.each(sub_allotment_realignment, function () {
+        data[counter] = [
+            get_account_title[this.Realignment_from],
+            get_account_title_2[this.Realignment_to],
+            this.Realignment_amount,
+            this.SubAllotmentId,
+            this.token]
         counter++;
         suballotment_amount += this.Realignment_amount;
     })
     $(".suballotment_amount").html(suballotment_amount);
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data = [];
-    var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data[uacs_counter] = this.Account_title
-        uacs_counter++;
 
-        console.log(uacs_counter);
-    })
-
-    var uacs = $.parseJSON($(".uacs").val());
-    const uacs_data1 = [];
-    var uacs_counter1 = 0;
-    $.each(uacs, function () {
-        uacs_data1[uacs_counter1] = this.Account_title
-        uacs_counter1++;
-    })
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
@@ -98,15 +168,17 @@
         colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
+                //REALIGNMENT FROM
                 type: 'dropdown',
-                source: uacs_data
+                source: uacs_data_dropdown
             },
             {
+                //REALIGNMENT TO
                 type: 'dropdown',
-                source: uacs_data1
+                source: uacs_data_dropdown_2
             },
             {
-
+                type: 'text'
             },
             {
                 //HIDDEN ID
@@ -143,7 +215,7 @@
                     "many_token": many_token,
                 };
 
-                ajaxServer(ajax_data,'@Url.Action("DeleteSubAllotment_Realignment", "SubAllotment_Realignment")');
+                ajaxServerSubRealignment(ajax_data,'@Url.Action("DeleteSubAllotment_Realignment", "SubAllotment_Realignment")');
             }
 
         },
@@ -151,42 +223,55 @@
 
         },
         afterCreateRow: function (row, column) {
-
+            CHECK_FIRST_ROW = true;
             console.log(row);
             console.log(column);
             hot.setDataAtCell(row, 4, guid());
         },
         afterChange: function (changes, source) {
-            if (source === 'loadData') {
-                return; //don't save this change
+             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
             }
 
-            console.log(changes);
-
-            var bal = $('#SubRealignment_amount').val();
-
-            var ajax_data = [];
-            $(".suballotment_amount").html();
-            suballotment_amount = 0;
-            $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        Realignment_from: this[0] ? this[0] : " ",
-                        Realignment_to: this[1] ? this[1] : " ",
-                        Realignment_amount: this[2] ? this[2] : " ",
-                        fundsource_id: @ViewBag.fundsource_id,
-                        token: this[4]
-                    }
-                );
-                suballotment_amount += parseInt(this[2]);
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            Realignment_from: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, col)].UacsId,
+                            Realignment_amount: hot.getDataAtCell(row, col + 2),
+                            SubAllotmentId: sub_allotment_id,
+                            token: hot.getDataAtCell(row, col + 4)
+                        }
+                    );
+                    console.log(ajax_data);
+                    ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+                    CHECK_FIRST_ROW = true;
+                }
             });
-            $(".suballotment_amount").html(suballotment_amount);
 
-            ajaxServer(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
-            console.log(bal);
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        Realignment_from: uacs_data_array[this[0]].UacsId,
+                        Realignment_to: uacs_data_array_2[this[1]].UacsId,
+                        Realignment_amount: this[2],
+                        SubAllotmentId: sub_allotment_id,
+                        token: this[4]
+                    });
+                });
+                console.log(ajax_data);
 
-        },
-        height: 'auto',
+                ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+            }
+		},
+           
+        height: '250px',
         hiddenColumns: {
             columns: [3,4],
             indicators: true

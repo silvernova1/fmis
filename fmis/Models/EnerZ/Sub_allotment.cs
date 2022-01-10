@@ -26,6 +26,8 @@ namespace fmis.Models
         public string token { get; set; }
         public Budget_allotment Budget_allotment { get; set; }
         public ICollection<Suballotment_amount> SubAllotmentAmounts { get; set; }
+        public ICollection<SubAllotment_Realignment> SubAllotment_Realignments { get; set; }
+        public ICollection<Uacs> Uacs { get; set; }
     }
 
 }

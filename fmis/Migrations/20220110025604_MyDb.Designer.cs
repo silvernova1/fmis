@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220109065550_MyDb")]
+    [Migration("20220110025604_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -623,10 +623,13 @@ namespace fmis.Migrations
                     b.Property<string>("Realignment_to")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UacsId")
+                    b.Property<int?>("SubAllotmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("fundsource_id")
+                    b.Property<int?>("Sub_allotmentSubAllotmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UacsId")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
@@ -636,6 +639,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Sub_allotmentSubAllotmentId");
 
                     b.HasIndex("UacsId");
 
@@ -748,6 +753,9 @@ namespace fmis.Migrations
                     b.Property<int?>("ObligationId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Sub_allotmentSubAllotmentId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Suballotment_amountId")
                         .HasColumnType("int");
 
@@ -762,6 +770,8 @@ namespace fmis.Migrations
                     b.HasIndex("FundSourceAmountId");
 
                     b.HasIndex("ObligationId");
+
+                    b.HasIndex("Sub_allotmentSubAllotmentId");
 
                     b.HasIndex("Suballotment_amountId");
 
@@ -1033,6 +1043,10 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.SubAllotment_Realignment", b =>
                 {
+                    b.HasOne("fmis.Models.Sub_allotment", null)
+                        .WithMany("SubAllotment_Realignments")
+                        .HasForeignKey("Sub_allotmentSubAllotmentId");
+
                     b.HasOne("fmis.Models.Uacs", null)
                         .WithMany("SubAllotment_Realignment")
                         .HasForeignKey("UacsId");
@@ -1079,6 +1093,10 @@ namespace fmis.Migrations
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("Uacs")
                         .HasForeignKey("ObligationId");
+
+                    b.HasOne("fmis.Models.Sub_allotment", null)
+                        .WithMany("Uacs")
+                        .HasForeignKey("Sub_allotmentSubAllotmentId");
 
                     b.HasOne("fmis.Models.Suballotment_amount", null)
                         .WithMany("Uacs")
@@ -1135,7 +1153,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
+                    b.Navigation("SubAllotment_Realignments");
+
                     b.Navigation("SubAllotmentAmounts");
+
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>
