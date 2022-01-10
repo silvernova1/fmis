@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.silver;
 
 namespace fmis.Data
 {
-    public class Budget_allotmentContext : DbContext
+    public class BudgetAllotmentContext : DbContext
     {
 
-        public Budget_allotmentContext(DbContextOptions<Budget_allotmentContext> options)
+        public BudgetAllotmentContext(DbContextOptions<BudgetAllotmentContext> options)
             : base(options)
         {
         }
 
-        public DbSet<fmis.Models.Budget_allotment> Budget_allotment { get; set; }
+        public DbSet<BudgetAllotment> BudgetAllotment { get; set; }
     }
 }

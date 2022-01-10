@@ -17,7 +17,6 @@ namespace fmis.Models.John
         public string Description { get; set; }
         public string FundSourceTitleCode { get; set; }
         public string Respo { get; set; }
-        public int Budget_allotmentBudgetAllotmentId { get; set; }
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         public Prexc Prexc { get; set; }
@@ -25,6 +24,8 @@ namespace fmis.Models.John
         public decimal Remaining_balance { get; set; }
         public decimal obligated_amount { get; set; }
         public string token { get; set; }
+        public int? BudgetAllotmentId { get; set; }
+        public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }

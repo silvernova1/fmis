@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.John.FundSource>
+﻿@model fmis.Models.silver.BudgetAllotment
 @using System.Globalization;
 @{
     ViewData["Title"] = "Fundsource";
@@ -6,7 +6,10 @@
 }
 
 <h3 class="grey lighter smaller">
-    Fund Source
+    @Model.Allotment_title <small>
+                    <i class="ace-icon fa fa-angle-double-right"></i>
+                        Fund Source
+                    </small>
 </h3>
 <hr />
 <div class="row  pull-left">
@@ -19,7 +22,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Sum(x => x.Beginning_balance)
+                    @Model.FundSources.Sum(x => x.Beginning_balance)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -32,7 +35,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Sum(x => x.obligated_amount)
+                    @Model.FundSources.Sum(x => x.obligated_amount)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
@@ -45,7 +48,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.Sum(x => x.Remaining_balance)
+                    @Model.FundSources.Sum(x => x.Remaining_balance)
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -88,15 +91,15 @@
 </div>
 
 <p>
-    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@ViewBag.budget_id)">
+    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
         <i class="ace-icon fa fa-plus "></i>Create New
     </button> |
-    <a class=" btn btn-primary btn-sm" asp-controller="Budget_allotments" asp-action="Index">
+    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
 </p>
 
-@if (Model.Count() > 0)
+@if (Model.FundSources.Count() > 0)
 {
     <table class="table">
         <thead>
@@ -128,7 +131,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.FundSources)
             {
                 <tr>
                     <td>
@@ -140,12 +143,12 @@
                     <td>
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@ViewBag.budget_id,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
+                        <button class="btn btn-primary btn-sm" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)">Edit <span class="glyphicon glyphicon-edit"></span></button>
 
-                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
+                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@Model.BudgetAllotmentId" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModalCenter">Delete <span class="glyphicon glyphicon-trash"></span></a>
                     </td>
                     <td>
-                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@Model.BudgetAllotmentId" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                     </td>
 
                     <td>
@@ -178,11 +181,13 @@ else
 
 <script>
 
-     function createFundSource(budget_id) {
+    console.log(@Model.BudgetAllotmentId);
+
+     function createFundSource(BudgetAllotmentId) {
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_create").html(loading);
          var url = '@Url.Action("Create", "FundSource")';
-         url += "?budget_id=" + budget_id;
+         url += "?BudgetAllotmentId=" + BudgetAllotmentId;
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_create").html(result);
@@ -190,11 +195,11 @@ else
          });
      }
 
-     function getEditFundSource(budget_id, fund_source_id) {
+     function getEditFundSource(BudgetAllotmentId, fund_source_id) {
          $("#editModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_edit").html(loading);
          var url = '@Url.Action("Edit", "FundSource")';
-         url += "?budget_id=" + budget_id + "&fund_source_id=" + fund_source_id
+         url += "?budget_id=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_edit").html(result);
@@ -202,11 +207,11 @@ else
          });
      }
 
-     function deleteFundSource(budget_id) {
+     function deleteFundSource(BudgetAllotmentId) {
          $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_delete").html(loading);
          var url = '@Url.Action("Delete", "FundSource")';
-         url += "?budget_id=" + budget_id
+         url += "?budget_id=" + BudgetAllotmentId
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_delete").html(result);

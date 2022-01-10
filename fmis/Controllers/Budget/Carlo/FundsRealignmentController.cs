@@ -22,7 +22,6 @@ namespace fmis.Controllers.Budget.Carlo
         private readonly FundSourceAmountContext _FAContext;
         private readonly FundSourceContext _FContext;
         private readonly MyDbContext _allContext;
-        private FundsRealignment FundsRealignment;
         private FundSource FundSource;
 
         public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext, MyDbContext allContext)

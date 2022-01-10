@@ -1,4 +1,5 @@
 ﻿using fmis.Models;
+using fmis.Models.silver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace fmis.ViewModel
 {
     public class SaobViewModel
     {
-        public Budget_allotment budget_allotment { get; set; }
+        public BudgetAllotment budget_allotment { get; set; }
         public Sub_allotment sub_allotment { get; set; }
         public Suballotment_amount suballotment_amount { get; set; }
         public Uacs uacs { get; set; }

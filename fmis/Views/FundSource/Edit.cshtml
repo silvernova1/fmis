@@ -10,7 +10,7 @@
 }
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="FundSourceId" value="@Model.FundSourceId" />
-    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@Model.Budget_allotmentBudgetAllotmentId" />
+    <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
     <input type="hidden" class="fundsource_amount_uacs" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
     <input type="hidden" class="fundsource_token" value="@Model.token">
@@ -76,7 +76,7 @@
     var CHECK_FIRST_ROW = false;
 
     var fundsource_id = @Model.FundSourceId;
-    var BudgetId = @Model.Budget_allotmentBudgetAllotmentId;
+    var BudgetAllotmentId = @Model.BudgetAllotmentId;
     var fundsource_token = $(".fundsource_token").val();
 
     let guid = () => {
@@ -201,7 +201,7 @@
                     ajax_data.push(
                         {
                             FundSourceId: fundsource_id,
-                            BudgetId: BudgetId,
+                            BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
                             Amount: hot.getDataAtCell(row, col + 1),
                             fundsource_amount_token: hot.getDataAtCell(row, col+2),
@@ -221,7 +221,7 @@
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
                         FundSourceId: fundsource_id,
-                        BudgetId: BudgetId,
+                        BudgetAllotmentId: BudgetAllotmentId,
                         UacsId: uacs_data_array[this[0]].UacsId,
                         Amount: this[1],
                         fundsource_amount_token: this[2],

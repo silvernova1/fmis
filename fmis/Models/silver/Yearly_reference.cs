@@ -1,4 +1,5 @@
-﻿using System;
+﻿using fmis.Models.silver;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace fmis.Models
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
-        public Budget_allotment Budget_allotment { get; set; }
+        public BudgetAllotment Budget_allotment { get; set; }
 
 
     }

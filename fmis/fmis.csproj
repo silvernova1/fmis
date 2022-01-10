@@ -5,20 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Migrations\**" />
-	  <Content Remove="Migrations\**" />
-	  <EmbeddedResource Remove="Migrations\**" />
-	  <None Remove="Migrations\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Remove="wwwroot\assets\js\jquery.signalR-2.4.1.min.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="Migrations\20220107111353_MyDb.cs" />
-	  <Compile Include="Migrations\20220107111353_MyDb.Designer.cs" />
-	  <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

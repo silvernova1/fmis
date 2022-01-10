@@ -67,8 +67,8 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
             services.AddDbContext<FundSourceContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("FundSourceContext")));
-            services.AddDbContext<Budget_allotmentContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Budget_allotmentContext")));
+            services.AddDbContext<BudgetAllotmentContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentContext")));
             services.AddDbContext<Yearly_referenceContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
             services.AddDbContext<AppropriationContext>(options =>
@@ -115,7 +115,6 @@ namespace fmis
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
