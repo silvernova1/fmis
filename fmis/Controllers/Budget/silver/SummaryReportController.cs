@@ -168,8 +168,8 @@ namespace fmis.Controllers.Budget.silver
                 var budget_allotments = _context.Budget_allotments
                     .Include(budget_allotment => budget_allotment.FundSources)
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                    .ThenInclude(uacs => uacs.Uacs)
-                    .ThenInclude(uacs => uacs.FundSource);
+                    .ThenInclude(uacs => uacs.Uacs);
+                
 
                 foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
