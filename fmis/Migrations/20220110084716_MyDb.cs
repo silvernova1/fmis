@@ -417,13 +417,13 @@ namespace fmis.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
                     prexcId = table.Column<int>(type: "int", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ObligationId = table.Column<int>(type: "int", nullable: true)
@@ -432,11 +432,11 @@ namespace fmis.Migrations
                 {
                     table.PrimaryKey("PK_Sub_allotment", x => x.SubAllotmentId);
                     table.ForeignKey(
-                        name: "FK_Sub_allotment_BudgetAllotment_Budget_allotmentBudgetAllotmentId",
-                        column: x => x.Budget_allotmentBudgetAllotmentId,
+                        name: "FK_Sub_allotment_BudgetAllotment_BudgetAllotmentId",
+                        column: x => x.BudgetAllotmentId,
                         principalTable: "BudgetAllotment",
                         principalColumn: "BudgetAllotmentId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Sub_allotment_Obligation_ObligationId",
                         column: x => x.ObligationId,
@@ -720,9 +720,9 @@ namespace fmis.Migrations
                 column: "UacsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sub_allotment_Budget_allotmentBudgetAllotmentId",
+                name: "IX_Sub_allotment_BudgetAllotmentId",
                 table: "Sub_allotment",
-                column: "Budget_allotmentBudgetAllotmentId");
+                column: "BudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sub_allotment_ObligationId",
@@ -819,7 +819,7 @@ namespace fmis.Migrations
                 table: "FundSource");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Sub_allotment_BudgetAllotment_Budget_allotmentBudgetAllotmentId",
+                name: "FK_Sub_allotment_BudgetAllotment_BudgetAllotmentId",
                 table: "Sub_allotment");
 
             migrationBuilder.DropForeignKey(

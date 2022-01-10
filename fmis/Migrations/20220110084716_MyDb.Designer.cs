@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220110074506_MyDb")]
+    [Migration("20220110084716_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -655,7 +655,7 @@ namespace fmis.Migrations
                     b.Property<decimal>("Beginning_balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Budget_allotmentBudgetAllotmentId")
+                    b.Property<int?>("BudgetAllotmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created_At")
@@ -696,7 +696,7 @@ namespace fmis.Migrations
 
                     b.HasKey("SubAllotmentId");
 
-                    b.HasIndex("Budget_allotmentBudgetAllotmentId");
+                    b.HasIndex("BudgetAllotmentId");
 
                     b.HasIndex("ObligationId");
 
@@ -1103,9 +1103,7 @@ namespace fmis.Migrations
                 {
                     b.HasOne("fmis.Models.silver.BudgetAllotment", "Budget_allotment")
                         .WithMany("Sub_allotments")
-                        .HasForeignKey("Budget_allotmentBudgetAllotmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BudgetAllotmentId");
 
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("SubAllotment")

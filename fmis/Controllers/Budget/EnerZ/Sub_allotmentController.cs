@@ -75,7 +75,7 @@ namespace fmis.Controllers
 
             var sub_allotment_data = await _MyDbContext.Sub_allotment
                           .Include(x => x.SubAllotmentAmounts)
-                          .Where(x => x.Budget_allotmentBudgetAllotmentId == budget_id)
+                          .Where(x => x.BudgetAllotmentId == budget_id)
                           .AsNoTracking()
                           .ToListAsync();
 
@@ -161,7 +161,7 @@ namespace fmis.Controllers
             suballotment_amount.ForEach(a => a.SubAllotmentId = sub_Allotment.SubAllotmentId);
             await _MyDbContext.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Sub_allotment", new { budget_id = sub_Allotment.Budget_allotmentBudgetAllotmentId });
+            return RedirectToAction("Index", "Sub_allotment", new { budget_id = sub_Allotment.BudgetAllotmentId });
         }
         // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int budget_id, int sub_allotment_id)
@@ -221,7 +221,7 @@ namespace fmis.Controllers
             _context.Update(suballotment_data);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Sub_allotment", new { budget_id = suballotment_data.Budget_allotmentBudgetAllotmentId });
+            return RedirectToAction("Index", "Sub_allotment", new { budget_id = suballotment_data.BudgetAllotmentId });
         }
        
         // GET: Sub_allotment/Delete/5
@@ -307,7 +307,7 @@ namespace fmis.Controllers
             var sub_Allotment = await _context.Sub_allotment.FindAsync(id);
             _context.Sub_allotment.Remove(sub_Allotment);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Suballotment", "Budget_allotments", new { budget_id = sub_Allotment.Budget_allotmentBudgetAllotmentId });
+            return RedirectToAction("Suballotment", "Budget_allotments", new { budget_id = sub_Allotment.BudgetAllotmentId });
         }
         private bool Sub_allotmentExists(int id)
         {

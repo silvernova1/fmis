@@ -11,7 +11,7 @@
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
-    <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@Model.Budget_allotmentBudgetAllotmentId" />
+    <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
     <input type="hidden" class="suballotment_amount_uacs" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts)">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
     <input type="hidden" class="suballotment_token" value="@Model.token">
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.BudgetId" />
+            <input type="hidden" asp-for="BudgetAllotmentId" value="@ViewBag.BudgetId" />
             <div class="form-group">
                 <label asp-for="prexc" class="control-label"></label>
                 @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "prexc form-control" })
@@ -77,7 +77,7 @@
 <script>
 
     var sub_allotment_id= @Model.SubAllotmentId;
-    var BudgetId = @Model.Budget_allotmentBudgetAllotmentId;
+    var BudgetId = @Model.BudgetAllotmentId;
     var suballotment_token = generate_token();
 
         let guid = () => {
