@@ -91,6 +91,7 @@ namespace fmis.Controllers.Budget.silver
             {
                 if (ModelState.IsValid)
                 {
+                    ManageUsers.Created_At = DateTime.Now;
                     _Context.Add(ManageUsers);
                     ManageUsers.Username = ManageUsers.UserId;
                     ManageUsers.Password = "123";

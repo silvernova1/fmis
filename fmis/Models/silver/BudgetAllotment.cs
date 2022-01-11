@@ -16,9 +16,9 @@ namespace fmis.Models.silver
         public string Allotment_series { get; set; }
         public string Allotment_title { get; set; }
         public string Allotment_code { get; set; }
-
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+        public DateTime Created_at { get; set; }
         [JsonIgnore]
         public ICollection<FundSource> FundSources { get; set; }
         [JsonIgnore]
