@@ -44,6 +44,19 @@ namespace fmis.Controllers.Budget.Carlo
             public string token { get; set; }
         }
 
+        public class FundRealingmentCalculationSave
+        {
+            public int FundSourceId { get; set; }
+            public decimal remaining_balance { get; set; }
+            public decimal realignment_amount { get; set; }
+        }
+
+        public class FundRealingmentCalculationRemaining
+        {
+            public decimal remaining_balance { get; set; }
+            public decimal realignment_amount { get; set; }
+        }
+
         public class ManyId
         {
             public string many_token { get; set; }
@@ -72,19 +85,21 @@ namespace fmis.Controllers.Budget.Carlo
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
         }
 
-        public async Task<IActionResult> getRemainingBalance(string type,int source_id) {
-            decimal remaining_balance = 0;
-            if (type == "fund_source")
-            {
-                var fund_source = await _FContext.FundSource.Where(s => s.FundSourceId == source_id).FirstOrDefaultAsync();
-                remaining_balance = fund_source.Remaining_balance;
-            }
-            else if (type == "sub_allotment")
-            {
-                //code ni carlo
-            }
+        public async Task<IActionResult> realignmentRemaining(int fundsource_id) {
+            var fund_source = await _FContext.FundSource.Where(s => s.FundSourceId == fundsource_id).FirstOrDefaultAsync();
+            return Json(fund_source);
+        }
 
-            return Json(remaining_balance);
+        public async Task<IActionResult> realignmentSave(FundRealingmentCalculationSave calculation)
+        {
+            var fund_source = await _FContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.FundSourceId == calculation.FundSourceId);
+            fund_source.realignment_amount = calculation.realignment_amount;
+            fund_source.Beginning_balance = calculation.remaining_balance;
+
+            _FContext.FundSource.Update(fund_source);
+            await _FContext.SaveChangesAsync();
+
+            return Json("success");
         }
 
         [HttpPost]
@@ -109,12 +124,6 @@ namespace fmis.Controllers.Budget.Carlo
 
                 _context.FundsRealignment.Update(funds_realignment);
                 await _context.SaveChangesAsync();
-
-                var fund_source = await _FContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.FundSourceId == funds_realignment.FundSourceId);
-                fund_source.realignment_amount = item.Realignment_amount;
-
-                _FContext.FundSource.Update(fund_source);
-                await _FContext.SaveChangesAsync();
             }
             return Json(data);
         }
