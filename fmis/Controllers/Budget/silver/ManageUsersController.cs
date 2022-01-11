@@ -91,7 +91,10 @@ namespace fmis.Controllers.Budget.silver
             {
                 if (ModelState.IsValid)
                 {
+                    ManageUsers.Created_At = DateTime.Now;
                     _Context.Add(ManageUsers);
+                    ManageUsers.Username = ManageUsers.UserId;
+                    ManageUsers.Password = "123";
                     await _Context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -159,12 +162,12 @@ namespace fmis.Controllers.Budget.silver
         private void PopulatePsDropDownList()
         {
             ViewBag.UserId = new SelectList((from s in _pis_context.allPersonalInformation()
-                                                where !_Context.ManageUsers.Any(ro => ro.UserId == s.userid)
-                                                select new
-                                                {
-                                                    UserId = s.userid,
-                                                    ps = s.full_name
-                                                }),
+                                             where !_Context.ManageUsers.Any(ro => ro.UserId == s.userid)
+                                             select new
+                                             {
+                                                 UserId = s.userid,
+                                                 ps = s.full_name
+                                             }),
                                           "UserId",
                                           "ps",
                                            null);

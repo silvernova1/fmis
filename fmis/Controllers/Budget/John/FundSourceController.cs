@@ -62,7 +62,6 @@ namespace fmis.Controllers.Budget.John
 
         public async Task<IActionResult> Index(int BudgetAllotmentId)
         {
-            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             var budget_allotment = await _bContext.BudgetAllotment
@@ -78,6 +77,7 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Create
         public async Task<IActionResult> Create(int BudgetAllotmentId)
         {
+            
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;

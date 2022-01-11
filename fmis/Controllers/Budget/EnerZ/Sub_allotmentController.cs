@@ -186,6 +186,7 @@ namespace fmis.Controllers
 
         {
             subAllotment.Created_At = DateTime.Now;
+
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
