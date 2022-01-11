@@ -63,7 +63,7 @@ namespace fmis.Controllers.Budget.Carlo
                             .Include(x => x.FundSourceAmounts)
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
-                            .Include(x => x.FundsRealignment)
+                            .Include(x => x.FundsRealignment.Where(w => w.status == "activated"))
                             .Include(x => x.Uacs)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);

@@ -105,7 +105,6 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                console.log(output);
             }
         });
     }
@@ -227,16 +226,16 @@
             }
 
             changes.forEach(([row, col, oldValue, newValue]) => {
-                console.log(col);
-                if (col == 0) {
+                if (col == 2) {
+                    console.log("saving the amount");
                     var ajax_data = [];
                     ajax_data.push(
                         {
-                            Realignment_from: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                            Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, col)].UacsId,
-                            Realignment_amount: hot.getDataAtCell(row, col + 2),
+                            Realignment_from: uacs_data_array[hot.getDataAtCell(row, 0)].UacsId,
+                            Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, 1)].UacsId,
+                            Realignment_amount: hot.getDataAtCell(row, 2),
                             FundSourceId: fundsource_id,
-                            token: hot.getDataAtCell(row, col + 4)
+                            token: hot.getDataAtCell(row, 3)
                         }
                     );
                     console.log(ajax_data);
@@ -248,11 +247,12 @@
             if (CHECK_FIRST_ROW) {
                 CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
             } else {
+                console.log("else");
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
-                        Realignment_from: uacs_data_array[this[0]].UacsId,
-                        Realignment_to: uacs_data_array_2[this[1]].UacsId,
+                        Realignment_from: this[0] ? uacs_data_array[this[0]].UacsId : "",
+                        Realignment_to: this[1] ? uacs_data_array_2[this[1]].UacsId : "",
                         Realignment_amount: this[2],
                         FundSourceId: fundsource_id,
                         token: this[4]
