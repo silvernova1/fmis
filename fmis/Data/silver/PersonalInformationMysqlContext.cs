@@ -105,7 +105,8 @@ namespace fmis.Data.silver
                             userid = reader["userid"].ToString(),
                             division = reader["division"].ToString(),
                             section = reader["section"].ToString(),
-                            designation = reader["designation"].ToString()
+                            designation = reader["designation"].ToString(),
+                            username = reader["userid"].ToString()
                         });
                     }
                 }
