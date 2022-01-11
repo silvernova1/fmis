@@ -91,6 +91,7 @@ namespace fmis.Controllers.Budget.silver
             {
                 if (ModelState.IsValid)
                 {
+                    ManageUsers.Created_At = DateTime.Now;
                     _Context.Add(ManageUsers);
                     await _Context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));

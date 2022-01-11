@@ -21,6 +21,7 @@ namespace fmis.Models.silver
         public decimal realignment_amount { get; set; }
         public decimal remaining_balance { get; set; }
         public DateTime Updated_at { get; set; }
+        public DateTime Created_at { get; set; }
         [JsonIgnore]
         public ICollection<FundSource> FundSources { get; set; }
         [JsonIgnore]

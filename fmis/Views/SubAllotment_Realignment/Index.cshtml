@@ -21,13 +21,14 @@
 <input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotment_Realignments)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
+<input type="hidden" asp-for="Created_At"/>
 
 
 <h3 class="grey lighter smaller">
     Sub Allotment Realignment
 </h3>
 <hr>
-<a class="btn btn-primary btn-sm " asp-controller="Budget_allotments" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
+<a class="btn btn-primary btn-sm " asp-controller="BudgetAllotment" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
 <br />
 <br />
 <div class="row  pull-left">

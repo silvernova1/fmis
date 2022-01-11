@@ -102,6 +102,7 @@ namespace fmis.Controllers.Budget.silver
             {
                 if (ModelState.IsValid)
                 {
+                    requesting_office.Created_at = DateTime.Now;
                     _context.Add(requesting_office);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
