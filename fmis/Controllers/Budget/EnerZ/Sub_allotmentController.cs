@@ -147,6 +147,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SubId,Suballotment_code,Suballotment_title,Responsibility_number,Description,Budget_allotmentBudgetAllotmentId,prexcId,token")] Sub_allotment sub_Allotment, int? id, Suballotment_amount Subsamount, BudgetAllotment budget, int budget_id)
         {
+            sub_Allotment.Created_At = DateTime.Now;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.budget_id = budget_id;
 

@@ -214,6 +214,7 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
+                utilization.Created_At = DateTime.Now;
                 _context.Add(utilization);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

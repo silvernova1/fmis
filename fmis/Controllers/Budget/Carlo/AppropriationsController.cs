@@ -61,6 +61,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (ModelState.IsValid)
             {
+                appropriation.Created_at = DateTime.Now;
                 _context.Add(appropriation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
