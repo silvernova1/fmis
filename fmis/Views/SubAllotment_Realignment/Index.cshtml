@@ -16,6 +16,7 @@
 }
 
 
+<input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts)">
 <input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotmentRealignment)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
@@ -25,11 +26,8 @@
     Sub Allotment Realignment
 </h3>
 <hr>
-<<<<<<< HEAD
-<a class="btn btn-primary btn-sm " asp-controller="BudgetAllotment" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
-=======
+
 <a class="btn btn-primary btn-sm " asp-controller="BudgetAllotment" asp-action="Index" asp-route-id="@Model.SubAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
->>>>>>> 9b275565c5e3250eeea008e694cd696430e5e054
 <br />
 <br />
 <div class="row  pull-left">
@@ -108,24 +106,23 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-
                 console.log(output);
             }
         });
     }
 
     //FUNDS REALIGNMENT FROM
-    var uacs = $.parseJSON($(".uacs").val());
+    var uacs = $.parseJSON($(".uacs_from").val());
     var uacs_data_dropdown = [];
     var uacs_data_array = [];
     var get_account_title = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        uacs_data_dropdown[uacs_counter] = this.Uacs.Account_title;
         var json_data = new Object();
-        json_data.UacsId = this.UacsId;
-        uacs_data_array[this.Account_title] = json_data;
-        get_account_title[this.UacsId] = this.Account_title;
+        json_data.UacsId = this.Uacs.UacsId;
+        uacs_data_array[this.Uacs.Account_title] = json_data;
+        get_account_title[this.Uacs.UacsId] = this.Uacs.Account_title;
         uacs_counter++;
     });
 

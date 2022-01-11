@@ -23,7 +23,7 @@ namespace fmis.Models
         public int BudgetAllotmentId { get; set; }
         [JsonIgnore]
         public Sub_allotment SubAllotment { get; set; }
-        public virtual ICollection<Uacs> Uacs { get; set; }
+        public Uacs Uacs { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
 
