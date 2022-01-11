@@ -56,16 +56,31 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
-            SubAllotment = await _MyDbContext.Sub_allotment
-                                    .Include(x => x.SubAllotmentRealignment)
-                                    .Include(x => x.Uacs)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
+            SubAllotment = await _SContext.Sub_allotment
+                            .Include(x => x.SubAllotmentAmounts)
+                                .ThenInclude(x => x.Uacs)
+                            .Include(x => x.Budget_allotment)
+                            .Include(x => x.SubAllotmentRealignment)
+                            .Include(x => x.Uacs)
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
             SubAllotment.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
 
             return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
-
         }
+        /*  {
+              ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+
+              SubAllotment = await _MyDbContext.Sub_allotment
+                                      .Include(x => x.SubAllotmentRealignment)
+                                      .Include(x => x.Uacs)
+                                      .AsNoTracking()
+                                      .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
+              SubAllotment.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
+
+              return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
+
+          }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]

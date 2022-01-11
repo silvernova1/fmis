@@ -73,25 +73,7 @@ namespace fmis.Controllers.Budget.John
             return View(budget_allotment);
         }
 
-        // GET: FundSource/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var fundSource = await _FundSourceContext.FundSource
-                .FirstOrDefaultAsync(m => m.FundSourceId == id);
-            if (fundSource == null)
-            {
-                return NotFound();
-            }
-
-            return View(fundSource);
-        }
-
+      
         // GET: FundSource/Create
         public async Task<IActionResult> Create(int BudgetAllotmentId)
         {
@@ -107,7 +89,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Edit/5
-        public async Task<IActionResult> Edit(int budget_id, int fund_source_id)
+        public async Task<IActionResult> Edit(int fund_source_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
@@ -295,7 +277,7 @@ namespace fmis.Controllers.Budget.John
         // POST: FundSource/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             var fundSource = await _FundSourceContext.FundSource.FindAsync(id);

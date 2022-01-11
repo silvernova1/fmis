@@ -191,6 +191,28 @@
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
+			var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][4];
+			var first_column = selection[0][0];
+			var last_column = selection[0][2];
+			var many_token = [];
+			for (var j = first_column; j <= last_column; j++) {
+				many_token.push({
+                    many_token: holder_data[j][4]
+				})
+			}
+
+			var ajax_data = {
+				"single_token": single_token,
+				"many_token": many_token
+			};
+
+			console.log(ajax_data);
+
+            ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
+
+		},
+           @* var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][4];
             var first_column = selection[0][0];
@@ -209,7 +231,10 @@
 
 			console.log(ajax_data);
 			ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
-		},
+
+
+		},*@
+
         afterUndo: function (index, column) {
 
         },

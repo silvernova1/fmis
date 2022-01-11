@@ -1,5 +1,6 @@
 ﻿using fmis.Data;
 using fmis.Models.Budget;
+using fmis.Models.silver;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -20,22 +21,29 @@ namespace fmis.Controllers.Budget
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(Account user)
+        public IActionResult Login(ManageUsers user)
         {
             if (ModelState.IsValid)
             {
-                var userobj = _context.Account.Where(a => a.Username.Equals(user.Username) && a.Password.Equals(user.Password)).FirstOrDefault();
+                var userobj = _context.ManageUsers.Where(a => a.Username.Equals(user.Username) && a.Password.Equals(user.Password)).FirstOrDefault();
                 if (userobj !=null)
                 {
-                    return View("~/Views/Budget_allotments/Index.cshtml");
+                    /*return RedirectToAction("dashboard", "home");*/
+                    return RedirectToAction("SetYear", "Account");
                 }
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
-            return View("~/Views/Budget_allotments/Index.cshtml");
+            return View(user);
         }
 
         public IActionResult Dashboard()
         {
             return RedirectToAction("~/Views/Budget_allotments/Index.cshtml");
+        }
+
+        public IActionResult SetYear()
+        {
+            return View();
         }
 
 
