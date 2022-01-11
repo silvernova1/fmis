@@ -24,12 +24,13 @@ namespace fmis.Models
         public decimal Remaining_balance { get; set; }
         public decimal Beginning_balance { get; set; }
         public decimal obligated_amount { get; set; }
+        public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
         public BudgetAllotment Budget_allotment { get; set; }
         public ICollection<Suballotment_amount> SubAllotmentAmounts { get; set; }
-        public ICollection<SubAllotment_Realignment> SubAllotment_Realignments { get; set; }
+        public ICollection<SubAllotment_Realignment> SubAllotmentRealignment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
         public Sub_allotment()
         {

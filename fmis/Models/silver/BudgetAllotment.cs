@@ -16,10 +16,8 @@ namespace fmis.Models.silver
         public string Allotment_series { get; set; }
         public string Allotment_title { get; set; }
         public string Allotment_code { get; set; }
-        public decimal beginning_balance { get; set; }
-        public decimal obiligate_amount { get; set; }
-        public decimal realignment_amount { get; set; }
-        public decimal remaining_balance { get; set; }
+
+        public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
         public DateTime Created_at { get; set; }
         [JsonIgnore]

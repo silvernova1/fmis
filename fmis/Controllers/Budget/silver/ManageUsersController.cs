@@ -84,7 +84,7 @@ namespace fmis.Controllers.Budget.silver
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId")] ManageUsers ManageUsers)
+        public async Task<IActionResult> Create([Bind("Id,UserId,Username,Password")] ManageUsers ManageUsers)
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
             try

@@ -1,12 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using fmis.Areas.Identity.Data
-
-@inject SignInManager<fmisUser> SignInManager
-@inject UserManager<fmisUser> UserManager
-
-@model fmis.Models.Budget.Account
-
-
+﻿@model fmis.Models.Budget.Account
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,11 +45,11 @@
 
             <nav id="navbar" class="navbar">
                 <ul>
-                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto active" href="\">Home</a></li>
                     <li><a class="nav-link scrollto" href="#about">About</a></li>
                     <li><a class="nav-link scrollto" href="#services">Services</a></li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Sign In <i class="bi bi-box-arrow-in-right" style="width:20px;"></i></a></li>
+                    <li class="nav-item" href="#about"><a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Sign In <i class="bi bi-box-arrow-in-right" style="width:20px;"></i></a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
@@ -71,99 +63,71 @@
 
                 <ol id="hero-carousel-indicators" class="carousel-indicators"></ol>
 
-                <div class="carousel-inner" role="listbox">
-
                     <div class="carousel-item active" style=" background-image: url(/portfolio_bootstrap/img/hero-carousel/1.jpg)">
                         <div class="carousel-container">
-                            <div class="container">
-                                <h1 class="animate__animated animate__fadeInDown" style="color:white;">Financial Management Information System</h1>
-                                <p class="animate__animated animate__fadeInUp" style="font-size:20px">Department of Health Regional Office VII</p>
+                            <div class="container" style="margin-left:20%;">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="section-headline"> 
+                                        @*LOGIN WITHOUT IDENTITY*@
+                                        
+
+
+                                        <div class="card" id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
+                                            <br><br><br>
+                                                    <center>
+                                                        <h6>Sign in to start your session.</h6>
+                                                        <img src="~/portfolio_bootstrap/img/about/doh.png" alt="" height="100" width="100">
+                                                    </center>
+                                            <br>
+                                            <div class="card-body">
+                                                <section>
+                                                    @using (Html.BeginForm("Login", "Account", FormMethod.Post))  
+                                                    {
+                                                        <div class="form-group">
+                                                            <i class="bi bi-person-circle"></i> <label style="margin-right:83%;" for="@Html.LabelFor(a=>a.Username)"></label>
+                                                            <span class="text-danger" for="@Html.ValidationMessageFor(a=>a.Username)"></span>
+                                                            <input class="form-control" type="text" id="@Html.TextBoxFor(a=>a.Username)" />
+
+                                                        </div>
+                                                        <div class="form-group mt-3">
+                                                            <i class="bi bi-lock-fill"></i> <label style="margin-right:77%;" for="@Html.LabelFor(a=>a.Password)"></label>
+                                                            <span class="text-danger" for="@Html.ValidationMessageFor(a=>a.Password)"></span>
+                                                            <input class="form-control" type="password" id="@Html.PasswordFor(a=>a.Password)" />
+                                                        </div>
+                                                        @*<div class="form-group">
+                                                            <div class="checkbox">
+                                                                <label asp-for="Input.RememberMe" style="margin-right:60%;">
+                                                                    <input asp-for="Input.RememberMe" />
+                                                                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                                                </label>
+                                                            </div>
+                                                            <br />
+                                                                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                                                        </div>*@
+                                                        <br>
+                                                        <div class="form-group">
+                                                            <button type="submit" value="Login" class="btn btn-success btn-block btn-flat" style="margin-left:70%; font-size:13px;">SIGN IN <i class="bi bi-box-arrow-in-right"></i> </button>
+                                                        </div>
+                                                    } 
+                                                </section>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="carousel-item" style="background-image: url(/portfolio_bootstrap/img/hero-carousel/2.jpg)">
-                        <div class="carousel-container">
-                            <div class="container">
-                                <h1 class="animate__animated animate__fadeInDown" style="color:white;">Financial Management Information System</h1>
-                                <p class="animate__animated animate__fadeInUp" style="font-size:20px">Department of Health Regional Office VII</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="carousel-item" style="background-image: url(/portfolio_bootstrap/img/hero-carousel/3.jpg)">
-                        <div class="carousel-container">
-                            <div class="container">
-                                <h1 class="animate__animated animate__fadeInDown" style="color:white;">Financial Management Information System</h1>
-                                <p class="animate__animated animate__fadeInUp" style="font-size:20px">Department of Health Regional Office VII</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <a class="carousel-control-prev" href="#heroCarousel" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-                    </a>
-
-                    <a class="carousel-control-next" href="#heroCarousel" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-                    </a>
-
-                </div>
             </div>
         </div>
+
+
     </section><!-- End Hero Section -->
+   
 
     <main id="main">
-
-        <!-- ======= About Section ======= -->
-        <div id="about" class="about-area area-padding">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="section-headline text-center">
-                            <h2>About FMIS</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- single-well start-->
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <div class="well-left">
-                            <div class="single-well">
-                                <a href="#">
-                                    <img src="~/portfolio_bootstrap/img/about/10.jpg" alt="">
-
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- single-well end-->
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <div class="well-middle">
-                            <div class="single-well">
-                                <a href="#">
-                                    <h4 class="sec-head">
-                                       Financial Management Information System 
-                                    </h4>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <i class="bi bi-check"></i> 
-                                        A financial management information system (FMIS) accumulates and analyzes financial data used for
-                                        optimal financial planning and forecasting decisions and outcomes.
-                                        An FMIS is used in conjunction with a decision support system, and it helps
-                                        a firm attain its financial objectives.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End col-->
-                </div>
-            </div>
-        </div><!-- End About Section -->
         <!-- ======= Services Section ======= -->
         <div id="services" class="services-area area-padding">
             <div class="container">
@@ -237,7 +201,7 @@
                                     <a class="services-icon" href="#">
                                         <img src="~/portfolio_bootstrap/img/icon/planning.png" alt="" width="60" height="60">
                                     </a>
-                                    <h4>Planning </h4>
+                                    <h4>Planning</h4>
                                     <p>
                                         Planning is the process of thinking about the activities required to achieve a desired goal.It is the first and
                                         foremost activity to achieve desired results. It involves the creation and maintenance of a plan, such as psychological
@@ -248,63 +212,6 @@
                             <!-- end about-details -->
                         </div>
                     </div>
-
-
-
-
-                    <style>
-    a {
-        display: inline-block;
-    }
-</style>
-  
-@using (Html.BeginForm("Login", "Account", FormMethod.Post))  
-{
-
-<div class="card" id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
-    <br><br><br>
-            <center>
-                <h6>Sign in to start your session.</h6>
-                <img src="~/portfolio_bootstrap/img/about/doh.png" alt="" height="100" width="100">
-            </center>
-    <br>
-    <div class="card-body">
-        <section>
-            <form id="account" method="post">
-                <div class="form-group">
-                    <i class="bi bi-person-circle"></i> <label for="@Html.LabelFor(a => a.Username)" style="margin-right:83%;"></label>
-                    <span class="text-danger">@Html.ValidationMessageFor(a=>a.Username)</span>
-                    <input type="text" id="@Html.TextBoxFor(a => a.Username)" class="form-control" />
-
-                </div>
-                <div class="form-group mt-3">
-                    <i class="bi bi-person-circle"></i> <label for="@Html.LabelFor(a => a.Password)" style="margin-right:83%;"></label>
-                    <span class="text-danger">@Html.ValidationMessageFor(a=>a.Password)</span>
-                    <input type="password" id="@Html.PasswordFor(a => a.Password)" class="form-control" />
-                </div>
-                <br />
-                @*<div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe" style="margin-right:60%;">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                    <br />
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                </div>*@
-                <br>
-                <div class="form-group">
-                    <button type="submit" value="Login" class="btn btn-success btn-block btn-flat" style="margin-left:70%; font-size:13px;">SIGN IN <i class="bi bi-box-arrow-in-right"></i> </button>
-                </div>
-            </form>
-        </section>
-    </div>
-</div>
-}  
-
-
-
                     <!-- End Left services -->
                     <div class="col-md-4 col-sm-4 col-xs-12">
                         <!-- end col-md-4 -->
@@ -347,7 +254,6 @@
                 </div>
             </div>
         </div><!-- End Services Section -->
-
         <!-- ======= Contact Section ======= -->
         <div id="contact" class="contact-area">
             <div class="contact-inner area-padding">
@@ -399,7 +305,6 @@
                         </div>
                     </div>
                     <div class="row">
-
                         <!-- Start Google Map -->
                         <div class="col-md-6">
                             <!-- Start Map -->
@@ -407,12 +312,11 @@
                             <!-- End Map -->
                         </div>
                         <!-- End Google Map -->
-                        <!-- Start  contact -->
-                        <!-- End Left contact -->
                     </div>
                 </div>
             </div>
         </div><!-- End Contact Section -->
+
         <div class="footer-area-bottom">
             <div class="container">
                 <div class="row">
@@ -430,9 +334,8 @@
             </div>
         </div>
 
+
     </main><!-- End #main -->
-
-
 
 
 
@@ -452,5 +355,3 @@
 </body>
 
 </html>
-
-

@@ -15,20 +15,21 @@
     }
 }
 
-@*<input type="hidden" class="suballotment_realignment" value="@ViewBag.temp">
-    <input type="hidden" class="uacs" value="@ViewBag.uacs">*@
 
-<input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotment_Realignments)">
+<input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotmentRealignment)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
 <input type="hidden" asp-for="Created_At"/>
-
 
 <h3 class="grey lighter smaller">
     Sub Allotment Realignment
 </h3>
 <hr>
+<<<<<<< HEAD
 <a class="btn btn-primary btn-sm " asp-controller="BudgetAllotment" asp-action="Index"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
+=======
+<a class="btn btn-primary btn-sm " asp-controller="BudgetAllotment" asp-action="Index" asp-route-id="@Model.SubAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment </a>
+>>>>>>> 9b275565c5e3250eeea008e694cd696430e5e054
 <br />
 <br />
 <div class="row  pull-left">
@@ -143,7 +144,24 @@
         uacs_counter_2++;
     });
 
-    var suballotment_amount = 0;
+
+    var sub_allotment_amount = 0;
+    var sub_allotment_realignment = $.parseJSON($(".sub_allotment_realignment").val());
+    const data = [];
+    var counter = 0;
+    $.each(sub_allotment_realignment, function () {
+        data[counter] = [
+            get_account_title[this.Realignment_from],
+            get_account_title_2[this.Realignment_to],
+            this.Realignment_amount,
+            this.SubAllotmentId,
+            this.token]
+        counter++;
+        sub_allotment_amount += this.Realignment_amount;
+    })
+    $(".sub_allotment_amount").html(sub_allotment_amount);
+
+    @*var suballotment_amount = 0;
     var sub_allotment_realignment = $.parseJSON($(".sub_allotment_realignment").val());
     const data = [];
     var counter = 0;
@@ -157,7 +175,7 @@
         counter++;
         suballotment_amount += this.Realignment_amount;
     })
-    $(".suballotment_amount").html(suballotment_amount);
+    $(".suballotment_amount").html(suballotment_amount);*@
 
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
@@ -271,7 +289,48 @@
                 ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
             }
 		},
-           
+            @* if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            Realignment_from: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, col)].UacsId,
+                            Realignment_amount: hot.getDataAtCell(row, col + 2),
+                            SubAllotmentId: sub_allotment_id,
+                            token: hot.getDataAtCell(row, col + 4)
+                        }
+                    );
+                    console.log(ajax_data);
+                    ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        Realignment_from: uacs_data_array[this[0]].UacsId,
+                        Realignment_to: uacs_data_array_2[this[1]].UacsId,
+                        Realignment_amount: this[2],
+                        SubAllotmentId: sub_allotment_id,
+                        token: this[4]
+                    });
+                });
+                console.log(ajax_data);
+
+                ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+            }
+		},*@
+
         height: '250px',
         hiddenColumns: {
             columns: [3,4],
@@ -281,6 +340,6 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
-    console.log(hot.getSourceData());
+@*    console.log(hot.getSourceData());*@
 
 </script>

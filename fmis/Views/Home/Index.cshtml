@@ -297,14 +297,17 @@
 
         //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
         //but sometimes it brings up errors with normal resize event handlers
-        @*$.resize.throttleWindow = false;
+        $.resize.throttleWindow = false;
 
         var placeholder = $('#cumulative-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
-            { label: "BALANCE", data: @Model.FundSources.FirstOrDefault().Remaining_balance.ToString(), color: "#68BC31" },
-            { label: "OBLIGATED", data: @Model.ObligationAmounts.Sum(oa=>oa.Amount).ToString(), color: "#2091CF" },
 
-        ]*@
+            { label: "BALANCE", data: 70, color: "#68BC31" },
+            { label: "OBLIGATED", data: 30, color: "#2091CF" },
+
+
+        ];
+
 
 
         function drawPieChart(placeholder, data, position) {
@@ -342,12 +345,12 @@
         we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
         so that's not needed actually.
         */
-        @*placeholder.data('chart', data);
-        placeholder.data('draw', drawPieChart);*@
+        placeholder.data('chart', data);
+        placeholder.data('draw', drawPieChart);
 
 
         //pie chart tooltip example
-        @*var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
+        var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
         var previousPoint = null;
 
         placeholder.on('plothover', function (event, pos, item) {
@@ -373,15 +376,15 @@
         var data = [
             { label: "UNPAID OBLIGATIONS", data: 10, color: "#FEE074" },
                 { label: "DISBURSED", data: 10, color: "#DA5430" },
-            { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
+            @*{ label: "ad campaigns", data: 8.2, color: "#AF4E96" },
             { label: "direct traffic", data: 18.6, color: "#DA5430" },
-            { label: "other", data: 10, color: "#FEE074" }
-        ]*@
+            { label: "other", data: 10, color: "#FEE074" }*@
+        ]
 
 
 
 
-        @*function drawPieChart_2(placeholder_2, data, position) {
+        function drawPieChart_2(placeholder_2, data, position) {
             $.plot(placeholder_2, data, {
                 series: {
                     pie: {
@@ -410,14 +413,14 @@
                 }
             })
         }
-        drawPieChart_2(placeholder_2, data);*@
+        drawPieChart_2(placeholder_2, data);
 
         /**
         we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
         so that's not needed actually.
         */
-        @*placeholder_2.data('chart', data);
-        placeholder_2.data('draw', drawPieChart_2);*@
+        placeholder_2.data('chart', data);
+        placeholder_2.data('draw', drawPieChart_2);
 
         /////////////////////////////////////
         $(document).one('ajaxloadstart.page', function (e) {
@@ -425,12 +428,7 @@
         });
 
 
-        //pie chart tooltip example
-        var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
-        var previousPoint = null;
-
-
-        @*placeholder_2.on('plothover', function (event, pos, item) {
+        placeholder_2.on('plothover', function (event, pos, item) {
             if (item) {
                 if (previousPoint != item.seriesIndex) {
                     previousPoint = item.seriesIndex;
@@ -443,9 +441,11 @@
                 previousPoint = null;
             }
 
-        });*@
+        });
 
-        @*var d1 = [];
+
+
+        var d1 = [];
         for (var i = 0; i < Math.PI * 2; i += 0.5) {
             d1.push([i, Math.sin(i)]);
         }
@@ -507,69 +507,7 @@
 
         $('.dialogs,.comments').ace_scroll({
             size: 300
-        });*@@*var d1 = [];
-        for (var i = 0; i < Math.PI * 2; i += 0.5) {
-            d1.push([i, Math.sin(i)]);
-        }
-
-        var d2 = [];
-        for (var i = 0; i < Math.PI * 2; i += 0.5) {
-            d2.push([i, Math.cos(i)]);
-        }
-
-        var d3 = [];
-        for (var i = 0; i < Math.PI * 2; i += 0.2) {
-            d3.push([i, Math.tan(i)]);
-        }
-
-
-        var sales_charts = $('#sales-charts').css({ 'width': '100%', 'height': '220px' });
-        $.plot("#sales-charts", [
-            { label: "Domains", data: d1 },
-            { label: "Hosting", data: d2 },
-            { label: "Services", data: d3 }
-        ], {
-            hoverable: true,
-            shadowSize: 0,
-            series: {
-                lines: { show: true },
-                points: { show: true }
-            },
-            xaxis: {
-                tickLength: 0
-            },
-            yaxis: {
-                ticks: 10,
-                min: -2,
-                max: 2,
-                tickDecimals: 3
-            },
-            grid: {
-                backgroundColor: { colors: ["#fff", "#fff"] },
-                borderWidth: 1,
-                borderColor: '#555'
-            }
         });
-
-
-        $('#recent-box [data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
-        function tooltip_placement(context, source) {
-            var $source = $(source);
-            var $parent = $source.closest('.tab-content')
-            var off1 = $parent.offset();
-            var w1 = $parent.width();
-
-            var off2 = $source.offset();
-            //var w2 = $source.width();
-
-            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
-            return 'left';
-        }
-
-
-        $('.dialogs,.comments').ace_scroll({
-            size: 300
-        });*@
 
 
         //Android's default browser somehow is confused when tapping on label which will lead to dragging the task
