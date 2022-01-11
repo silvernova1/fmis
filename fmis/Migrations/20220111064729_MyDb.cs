@@ -452,12 +452,14 @@ namespace fmis.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UacsId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    BudgetId = table.Column<int>(type: "int", nullable: false),
+                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

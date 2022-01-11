@@ -55,7 +55,7 @@ namespace fmis.Controllers.Budget.Carlo
             public List<ManyId> many_token { get; set; }
         }
 
-        public async Task<IActionResult> Index(int fundsource_id, int budget_id)
+        public async Task<IActionResult> Index(int fundsource_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
@@ -113,21 +113,21 @@ namespace fmis.Controllers.Budget.Carlo
         {
             if (data.many_token.Count > 1)
             {
-                var data_holder = this._context.FundsRealignment;
+                var data_holder = this._allContext.FundsRealignment;
                 foreach (var many in data.many_token)
                 {
                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
-                    await _context.SaveChangesAsync();
+                    await _allContext.SaveChangesAsync();
                 }
             }
             else
             {
-                var data_holder = this._context.FundsRealignment;
+                var data_holder = this._allContext.FundsRealignment;
                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
-                await _context.SaveChangesAsync();
+                await _allContext.SaveChangesAsync();
             }
 
             return Json(data);
@@ -136,6 +136,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         // GET: FundsRealignment/Delete/5
         public async Task<IActionResult> Delete(int? id)
+
         {
             if (id == null)
             {
@@ -151,29 +152,23 @@ namespace fmis.Controllers.Budget.Carlo
 
             return View(funds_realignment);
         }
+        /*   {
+               if (id == null)
+               {
+                   return NotFound();
+               }
 
-        /* {
-             if (data.many_token.Count > 1)
-             {
-                 var data_holder = this._context.FundsRealignment;
-                 foreach (var many in data.many_token)
-                 {
-                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
-                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
-                     await _context.SaveChangesAsync();
-                 }
-             }
-             else
-             {
-                 var data_holder = this._context.FundsRealignment;
-                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
-                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+               var funds_realignment = await _context.FundsRealignment
+                   .FirstOrDefaultAsync(m => m.Id == id);
+               if (funds_realignment == null)
+               {
+                   return NotFound();
+               }
 
-                 await _context.SaveChangesAsync();
-             }
+               return View(funds_realignment);
+           }*/
 
-             return Json(data);
-         }*/
+
 
     }
 }

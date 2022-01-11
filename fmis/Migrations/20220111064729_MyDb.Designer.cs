@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220110084716_MyDb")]
+    [Migration("20220111064729_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -713,10 +713,7 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("BudgetId")
+                    b.Property<int>("BudgetAllotmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created_At")
@@ -730,6 +727,15 @@ namespace fmis.Migrations
 
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("beginning_balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("realignment_amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("remaining_balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");

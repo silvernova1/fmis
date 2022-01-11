@@ -148,7 +148,7 @@
                     <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="Index" asp-route-budget_id="@item.BudgetAllotmentId">
+                    <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
                         <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                     </a>
                     <br />
@@ -188,9 +188,9 @@
                         <i class="ace-icon fa fa-edit"></i>Edit
                     </a>
 
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
+                   @* <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.BudgetAllotmentId">
                         <i class="ace-icon fa fa-trash"></i>Delete
-                    </a>
+                    </a>*@
                 </td>
             </tr>
         }

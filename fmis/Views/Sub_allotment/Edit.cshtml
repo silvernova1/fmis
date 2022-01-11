@@ -28,37 +28,34 @@
     <div class="row">
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BudgetAllotmentId" value="@ViewBag.BudgetId" />
             <div class="form-group">
                 <label asp-for="prexc" class="control-label"></label>
                 @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "prexc form-control" })
             </div>
             <div class="form-group">
-                <label asp-for="Suballotment_code" class="control-label"></label>
+                <label >Sub Allotment Code:</label>
                 <input asp-for="Suballotment_code" class="form-control" />
                 <span asp-validation-for="Suballotment_code" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label>Description:</label>
                 <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="Suballotment_title" class="control-label"></label>
+                <label >Sub Allotment Title:</label>
                 <input asp-for="Suballotment_title" class="form-control" />
                 <span asp-validation-for="Suballotment_title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Responsibility_number" class="control-label"></label>
+                <label>Respo Number: </label>
                 <input asp-for="Responsibility_number" class="form-control" />
                 <span asp-validation-for="Responsibility_number" class="text-danger"></span>
             </div>
         </div>
     </div>
-    <input type="hidden" class="suballotment_amount_edit" value="@ViewBag.temp">
-
     <br />
     <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
     <div id="suballotment_amount_edit" class="hot handsontable htColumnHeaders"></div>
@@ -77,7 +74,7 @@
 <script>
 
     var sub_allotment_id= @Model.SubAllotmentId;
-    var BudgetId = @Model.BudgetAllotmentId;
+    var BudgetAllotmentId = @Model.BudgetAllotmentId;
     var suballotment_token = generate_token();
 
         let guid = () => {
@@ -124,9 +121,9 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(suballotment_amount_uacs, function () {
-        data[counter] = [get_account_title[this.UacsId], this.Amount, this.suballotment_amount_token, this.suballotment_token]
+        data[counter] = [get_account_title[this.UacsId], this.beginning_balance, this.suballotment_amount_token, this.suballotment_token]
         counter++;
-        obligation_amount += this.Amount;
+        obligation_amount += this.beginning_balance;
     })
 
 
@@ -203,7 +200,7 @@
                     ajax_data.push(
                         {
                             SubAllotmentId: sub_allotment_id,
-                            BudgetId: BudgetId,
+                            BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
                             Amount: hot.getDataAtCell(row, col + 1),
                             suballotment_amount_token: hot.getDataAtCell(row, col + 2),
@@ -223,7 +220,7 @@
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
                         SubAllotmentId: sub_allotment_id,
-                        BudgetId: BudgetId,
+                        BudgetAllotmentId: BudgetAllotmentId,
                         UacsId: uacs_data_array[this[0]].UacsId,
                         Amount: this[1],
                         suballotment_amount_token: this[2],

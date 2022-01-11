@@ -13,12 +13,14 @@ namespace fmis.Models
         [Key]
         public int Id { get; set; }
         public int UacsId { get; set; }
-        public decimal Amount { get; set; }
+        public decimal beginning_balance { get; set; }
+        public decimal remaining_balance { get; set; }
+        public decimal realignment_amount { get; set; }
         public string status { get; set; }
         public string suballotment_amount_token { get; set; }
         public string suballotment_token { get; set; }
         public int? SubAllotmentId { get; set; }
-        public int BudgetId { get; set; }
+        public int BudgetAllotmentId { get; set; }
         [JsonIgnore]
         public Sub_allotment SubAllotment { get; set; }
         public virtual ICollection<Uacs> Uacs { get; set; }

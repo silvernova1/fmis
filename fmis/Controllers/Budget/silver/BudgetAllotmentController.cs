@@ -145,7 +145,7 @@ namespace fmis.Controllers
                 .Select(x => new Suballotment_amount
                 {
                     Id = x.prexcId,
-                    Amount = _context.Suballotment_amount.Where(i => i.SubAllotmentId == x.SubAllotmentId).Select(x => x.Amount).Sum()
+                    beginning_balance = _context.Suballotment_amount.Where(i => i.SubAllotmentId == x.SubAllotmentId).Select(x => x.beginning_balance).Sum()
                 });
 
             ViewBag.Query = subquery.ToList();
@@ -226,16 +226,16 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            if (id == null)
+            if (BudgetAllotmentId == null)
             {
                 return NotFound();
             }
 
             var budget_allotment = await _context.Budget_allotments
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == BudgetAllotmentId);
             if (budget_allotment == null)
             {
                 return NotFound();
@@ -247,10 +247,10 @@ namespace fmis.Controllers
         // POST: Budget_allotments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var budget_allotment = await _context.Budget_allotments.FindAsync(id);
+            var budget_allotment = await _context.Budget_allotments.FindAsync(BudgetAllotmentId);
             _context.Budget_allotments.Remove(budget_allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
