@@ -14,12 +14,17 @@
     }
 }
 
+<input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
 <input type="hidden" class="fundsrealignment" value="@JsonSerializer.Serialize(Model.FundsRealignment)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
 <input type="hidden" id="fundsource_id" value="@Model.FundSourceId" />
 
 <h3 class="grey lighter smaller">
-    Funds Realignment
+    @Model.BudgetAllotment.Allotment_title
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.FundSourceTitle
+    </small>
 </h3>
 <hr />
 <a class="btn btn-primary btn-sm " asp-controller="FundSource" asp-action="Index" asp-route-id="@Model.FundSourceId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
@@ -48,10 +53,10 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                    @Model.realignment_amount.ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
                 </div>
             </div>
         </div>
@@ -106,17 +111,17 @@
     }
 
     //FUNDS REALIGNMENT FROM
-    var uacs = $.parseJSON($(".uacs").val());
+    var uacs = $.parseJSON($(".uacs_from").val());
     var uacs_data_dropdown = [];
     var uacs_data_array = [];
     var get_account_title = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        uacs_data_dropdown[uacs_counter] = this.Uacs.Account_title;
         var json_data = new Object();
-        json_data.UacsId = this.UacsId;
-        uacs_data_array[this.Account_title] = json_data;
-        get_account_title[this.UacsId] = this.Account_title;
+        json_data.UacsId = this.Uacs.UacsId;
+        uacs_data_array[this.Uacs.Account_title] = json_data;
+        get_account_title[this.Uacs.UacsId] = this.Uacs.Account_title;
         uacs_counter++;
     });
 
@@ -204,9 +209,7 @@
 			};
 
 			console.log(ajax_data);
-
 			ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
-
 		},
         afterUndo: function (index, column) {
 
@@ -218,12 +221,13 @@
             hot.setDataAtCell(row, 4, guid());
         },
         afterChange: function (changes, source) {
-             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 CHECK_AFTER_ROW = false;
                 return;
             }
 
             changes.forEach(([row, col, oldValue, newValue]) => {
+                console.log(col);
                 if (col == 0) {
                     var ajax_data = [];
                     ajax_data.push(
@@ -259,48 +263,6 @@
                 ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
             }
 		},
-           @* if (source === 'loadData')
-                return; //don't save this change
-
-            var remaining_balance = 10000;
-
-            var ajax_data = [];
-            $(".fundsource_amount").html();
-            fundsource_amount = 0;
-
-            var realignment_amount = 0;
-            $.each(hot.getSourceData(), function () {
-                realignment_amount += parseInt(this[2]);
-                ajax_data.push(
-                    {
-                        Realignment_from: this[0] ? this[0] : " ",
-                        Realignment_to: this[1] ? this[1] : " ",
-                        Realignment_amount: this[2] ? this[2] : " ",
-                        fundsource_id: fundsource_id,
-                        token: this[4]
-                    }
-                );
-            });
-            if (realignment_amount > remaining_balance) {
-                Lobibox.alert("warning", {
-                    msg: "Insufficient balance!",
-                    width: 350,
-                    sound: false,
-                });
-                changes.forEach(([row, col, oldValue, newValue]) => {
-                    if (oldValue == newValue)
-                        return;
-                    console.log(row);
-                    console.log(col);
-                    console.log(oldValue);
-                    console.log(newValue);
-                    hot.setDataAtCell(row, col, 0);
-                });
-                return ;
-            }
-            $(".fundsource_amount").html(fundsource_amount);
-             ajaxServer(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
-        },*@
         height: '250px',
         hiddenColumns: {
             columns: [3,4],

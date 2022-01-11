@@ -137,8 +137,8 @@ namespace fmis.Migrations
                     b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Realignment_amount")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Realignment_amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Realignment_from")
                         .HasColumnType("int");
@@ -299,6 +299,8 @@ namespace fmis.Migrations
                     b.HasIndex("FundSourceId");
 
                     b.HasIndex("PrexcId");
+
+                    b.HasIndex("UacsId");
 
                     b.ToTable("FundSourceAmount");
                 });
@@ -761,9 +763,6 @@ namespace fmis.Migrations
                     b.Property<string>("Expense_code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FundSourceAmountId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
 
@@ -786,8 +785,6 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UacsId");
-
-                    b.HasIndex("FundSourceAmountId");
 
                     b.HasIndex("FundSourceId");
 
@@ -1042,7 +1039,15 @@ namespace fmis.Migrations
                         .WithMany("FundSourceAmounts")
                         .HasForeignKey("PrexcId");
 
+                    b.HasOne("fmis.Models.Uacs", "Uacs")
+                        .WithMany()
+                        .HasForeignKey("UacsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("FundSource");
+
+                    b.Navigation("Uacs");
                 });
 
             modelBuilder.Entity("fmis.Models.ObligationAmount", b =>
@@ -1131,10 +1136,6 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Uacs", b =>
                 {
-                    b.HasOne("fmis.Models.John.FundSourceAmount", null)
-                        .WithMany("Uacs")
-                        .HasForeignKey("FundSourceAmountId");
-
                     b.HasOne("fmis.Models.John.FundSource", null)
                         .WithMany("Uacs")
                         .HasForeignKey("FundSourceId");
@@ -1178,11 +1179,6 @@ namespace fmis.Migrations
 
                     b.Navigation("FundsRealignment");
 
-                    b.Navigation("Uacs");
-                });
-
-            modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
-                {
                     b.Navigation("Uacs");
                 });
 
