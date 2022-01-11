@@ -300,33 +300,62 @@
 					callback: function (key, options) {
 						var selection = this.getSelected();
 						var holder_data = this.getData();
-                        if (!holder_data[0][0]) {
+						try {
+                            if (!selection) {
+                                Lobibox.alert("warning", {
+                                    msg: "Please Select Fundsource/Sub-allotment First!",
+                                    sound: false,
+                                });
+                                return;
+                            }
+                            if (!selection[0][0]) {
+                                Lobibox.alert("warning", {
+                                    msg: "Please Select Fundsource/Sub-allotment First!",
+                                    sound: false,
+                                });
+                                return;
+                            }
+                            if (!holder_data[0]) {
+                                Lobibox.alert("warning", {
+                                    msg: "Please Select Fundsource/Sub-allotment First!",
+                                    sound: false,
+                                });
+                                return;
+                            }
+                            if (!holder_data[0][0]) {
+                                Lobibox.alert("warning", {
+                                    msg: "Please Select Fundsource/Sub-allotment First!",
+                                    sound: false,
+                                });
+                                return;
+                            }
+                            if (!holder_data[selection[0][0]][0] || holder_data[selection[0][0]][0] == 'undefined') {
+                                Lobibox.alert("warning", {
+                                    msg: "Please Select Fundsource/Sub-allotment First!",
+                                    sound: false,
+                                });
+                                return;
+                            }
+						}
+						catch {
                             Lobibox.alert("warning", {
                                 msg: "Please Select Fundsource/Sub-allotment First!",
-                                width: 350,
                                 sound: false,
                             });
                             return;
-                        }
-						var holder_id = holder_data[selection[0][0]][15];
-                        var check_fund_sub_source = holder_data[selection[0][0]][0];
-                        var obligation_token = holder_data[selection[0][0]][16];
-                        if (!check_fund_sub_source) {
-                            Lobibox.alert("warning", {
-                                msg: "Please Select Fundsource/Sub-allotment First!",
-                                sound: false,
-                            });
-							return;
 						}
-                        $("#exampleModal").modal('show');
-                        $(".ObligationContent").html(loading);
+
+						var holder_id = holder_data[selection[0][0]][15];
+						var obligation_token = holder_data[selection[0][0]][16];
+						$("#exampleModal").modal('show');
+						$(".ObligationContent").html(loading);
 						$.ajax({
 							type: 'GET',
 							headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
 							url: '@Url.Action("openObligationAmount", "Obligations")',
 							data: {
 								id: holder_id,
-                                obligation_token: obligation_token
+								obligation_token: obligation_token
 							},
 							success: function (output) {
 								setTimeout(function () {
@@ -335,6 +364,7 @@
 							}
 						});
 						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
+
 					}
 				}, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
 			}
@@ -432,8 +462,8 @@
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push(
                         {
-                            source_id: fund_sub_data_array[this[0]].source_id,
-							source_type: fund_sub_data_array[this[0]].source_type,
+                            source_id: this[0] ? fund_sub_data_array[this[0]].source_id : 0,
+                            source_type: this[0] ? fund_sub_data_array[this[0]].source_type : 0,
                             Gross: this[1] ? this[1] : "",
                             Date: this[2] ? this[2] : "",
                             Dv: this[3] ? this[3] : "",

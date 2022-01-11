@@ -212,29 +212,6 @@
             ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
 
 		},
-           @* var selection = this.getSelected();
-            var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][4];
-            var first_column = selection[0][0];
-            var last_column = selection[0][2];
-			var many_token = [];
-            for (var j = first_column; j <= last_column; j++) {
-                many_token.push({
-                    many_token: holder_data[j][4]
-                })
-            }
-
-			var ajax_data = {
-				"single_token": single_token,
-				"many_token": many_token
-			};
-
-			console.log(ajax_data);
-			ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
-
-
-		},*@
-
         afterUndo: function (index, column) {
 
         },
@@ -260,7 +237,7 @@
                             Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, 1)].UacsId,
                             Realignment_amount: hot.getDataAtCell(row, 2),
                             FundSourceId: fundsource_id,
-                            token: hot.getDataAtCell(row, 3)
+                            token: hot.getDataAtCell(row, 4)
                         }
                     );
                     console.log(ajax_data);
