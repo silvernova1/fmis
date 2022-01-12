@@ -40,7 +40,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                    @Model.Beginning_balance.ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -52,7 +52,7 @@
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                <span class="infobox-data-number" id="total_realignment_amount" style="font-size:11pt; color:grey;">
                     @Model.realignment_amount.ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
@@ -65,7 +65,7 @@
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
                     @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
@@ -178,7 +178,11 @@
                 source: uacs_data_dropdown_2
             },
             {
-                type: 'text'
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
             },
             {
                 //HIDDEN ID
@@ -234,14 +238,10 @@
                 if (col == 2) {
                     console.log("saving the amount");
                     $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id, function (result) {
-                        var post_remaining_balance = result.Remaining_balance;
+                        console.log(result.remaining_balance);
+                        console.log(result.realignment_amount);
+                        var post_remaining_balance = result.remaining_balance;
                         var post_realignment_amount = result.realignment_amount;
-
-                        console.log("SAVED THE AMOUNT FROM FIRST ROW!");
-                        //DISPLAY TO UI
-                        $("#total_remaining_balance").html(post_remaining_balance);
-                        $("#total_obligated_amount").html(post_realignment_amount);
-                        //END DISPLAY TO UI
 
                         if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
                             post_remaining_balance = post_remaining_balance + oldValue; //2000
@@ -264,26 +264,33 @@
                             hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
                         }
                         else {
-                            var ajax_data = [];
-                            ajax_data.push(
-                                {
-                                    Realignment_from: uacs_data_array[hot.getDataAtCell(row, 0)].UacsId,
-                                    Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, 1)].UacsId,
-                                    Realignment_amount: hot.getDataAtCell(row, 2),
-                                    FundSourceId: fundsource_id,
-                                    token: hot.getDataAtCell(row, 4)
-                                }
-                            );
-                            ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
-                        
+                            //do the calculation
+                            post_remaining_balance = post_remaining_balance - AMOUNT;
+                            post_realignment_amount = post_realignment_amount + AMOUNT;
+                            var calculated_amount_data = {
+                                "fundsource_id": parseInt(fundsource_id),
+                                "remaining_balance": post_remaining_balance,
+                                "realignment_amount": post_realignment_amount,
+                                "realignment_token": hot.getDataAtCell(row, 4),
+                                "amount": AMOUNT
+                            };
+                            console.log(calculated_amount_data);
+                            var url = '@Url.Action("realignmentAmountSave", "FundsRealignment")'
+                            $.post(url, calculated_amount_data, function (calculation) {
+                                console.log(calculation);
+                                $("#total_remaining_balance").html(calculation.remaining_balance);
+                                $("#total_realignment_amount").html(calculation.realignment_amount);
+                            });
+
                         }
-                        CHECK_FIRST_ROW = true;
                     });
+                    CHECK_FIRST_ROW = true;
                 }
             });
 
             if (CHECK_FIRST_ROW) {
                 CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+                console.log("check first row!");
             }
             else if (INSUFFICIENT_AMOUNT) {
                 console.log("INSUFFICIENT_AMOUNT");

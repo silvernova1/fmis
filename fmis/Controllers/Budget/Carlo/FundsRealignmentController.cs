@@ -44,17 +44,13 @@ namespace fmis.Controllers.Budget.Carlo
             public string token { get; set; }
         }
 
-        public class FundRealingmentCalculationSave
+        public class FundRealingmentSaveAmount
         {
-            public int FundSourceId { get; set; }
+            public int fundsource_id { get; set; }
             public decimal remaining_balance { get; set; }
             public decimal realignment_amount { get; set; }
-        }
-
-        public class FundRealingmentCalculationRemaining
-        {
-            public decimal remaining_balance { get; set; }
-            public decimal realignment_amount { get; set; }
+            public decimal amount { get; set; }
+            public string realignment_token { get; set; }
         }
 
         public class ManyId
@@ -90,16 +86,22 @@ namespace fmis.Controllers.Budget.Carlo
             return Json(fund_source);
         }
 
-        public async Task<IActionResult> realignmentSave(FundRealingmentCalculationSave calculation)
+        public async Task<IActionResult> realignmentAmountSave(FundRealingmentSaveAmount calculation)
         {
-            var fund_source = await _FContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.FundSourceId == calculation.FundSourceId);
+            var fund_source = await _FContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.FundSourceId == calculation.fundsource_id);
             fund_source.realignment_amount = calculation.realignment_amount;
-            fund_source.Beginning_balance = calculation.remaining_balance;
+            fund_source.Remaining_balance = calculation.remaining_balance;
 
             _FContext.FundSource.Update(fund_source);
             await _FContext.SaveChangesAsync();
 
-            return Json("success");
+            var realignment_amount = await _context.FundsRealignment.AsNoTracking().FirstOrDefaultAsync(s => s.token == calculation.realignment_token);
+            realignment_amount.Realignment_amount = calculation.amount;
+
+            _context.FundsRealignment.Update(realignment_amount);
+            await _context.SaveChangesAsync();
+
+            return Json(fund_source);
         }
 
         [HttpPost]

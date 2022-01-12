@@ -60,13 +60,6 @@
 </div>
 
 <script>
-    @*$(document).ready(function () {
-        $("td").click(function () {
-            alert('Hello world');
-        });
-	});*@
-    @*$(document).on('click', 'td', function () { alert("hello"); });*@
-
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -301,20 +294,6 @@
 						var selection = this.getSelected();
 						var holder_data = this.getData();
 						try {
-                            if (!selection) {
-                                Lobibox.alert("warning", {
-                                    msg: "Please Select Fundsource/Sub-allotment First!",
-                                    sound: false,
-                                });
-                                return;
-                            }
-                            if (!selection[0][0]) {
-                                Lobibox.alert("warning", {
-                                    msg: "Please Select Fundsource/Sub-allotment First!",
-                                    sound: false,
-                                });
-                                return;
-                            }
                             if (!holder_data[0]) {
                                 Lobibox.alert("warning", {
                                     msg: "Please Select Fundsource/Sub-allotment First!",
@@ -392,15 +371,6 @@
 			ajaxServer(ajax_data,'@Url.Action("DeleteObligation", "Obligations")');
 
 		},
-		afterOnCellMouseUp: function (event, coords) {
-			@*console.log(event);*@
-            @*if (!hot.selection.isMultiple()) {
-                var meta = this.getCellMeta(coords.row, coords.col);
-                if (meta.editor === 'select') {
-                    this.getActiveEditor().beginEditing();
-                }
-            }*@
-        },
 		afterUndo: function (index, column) {
 
 		},
@@ -421,7 +391,6 @@
 					CHECK_FIRST_ROW1 = true;
 					console.log("if");
 					var ajax_data = [];
-					//hot.setDataAtCell(row, col + 1, fund_sub_data_array[hot.getDataAtCell(row, 0)].remaining_balance);
 					ajax_data.push(
 						{
 							source_id: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_id,
