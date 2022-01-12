@@ -51,6 +51,7 @@ namespace fmis.Controllers.Budget.Carlo
             public decimal realignment_amount { get; set; }
             public decimal amount { get; set; }
             public string realignment_token { get; set; }
+            public string fundsource_amount_token { get; set; }
         }
 
         public class ManyId
@@ -73,10 +74,14 @@ namespace fmis.Controllers.Budget.Carlo
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
                             .Include(x => x.FundsRealignment.Where(w => w.status == "activated"))
-                            .Include(x => x.Uacs)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
-            FundSource.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
+
+            var from_uacs = await _FAContext.FundSourceAmount
+                            .Where(x => x.FundSourceId == fundsource_id)
+                            .Select(x => x.UacsId)
+                            .ToArrayAsync();
+            FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
         }
@@ -88,20 +93,23 @@ namespace fmis.Controllers.Budget.Carlo
 
         public async Task<IActionResult> realignmentAmountSave(FundRealingmentSaveAmount calculation)
         {
-            var fund_source = await _FContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.FundSourceId == calculation.fundsource_id);
-            fund_source.realignment_amount = calculation.realignment_amount;
-            fund_source.Remaining_balance = calculation.remaining_balance;
+            FundSource = await _FContext.FundSource
+                            .Include(x => x.FundSourceAmounts)
+                            .Include(x => x.FundsRealignment.Where(s => s.token == calculation.realignment_token))
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.FundSourceId == calculation.fundsource_id);
+            //funsource saving
+            FundSource.realignment_amount = calculation.realignment_amount;
+            FundSource.Remaining_balance = calculation.remaining_balance;
+            //fund realignment saving
+            FundSource.FundsRealignment.FirstOrDefault().Realignment_amount = calculation.amount;
+            
+            //continue the code in fundsource amount here tomorrow 01/13/2022
 
-            _FContext.FundSource.Update(fund_source);
+            _FContext.Update(FundSource);
             await _FContext.SaveChangesAsync();
 
-            var realignment_amount = await _context.FundsRealignment.AsNoTracking().FirstOrDefaultAsync(s => s.token == calculation.realignment_token);
-            realignment_amount.Realignment_amount = calculation.amount;
-
-            _context.FundsRealignment.Update(realignment_amount);
-            await _context.SaveChangesAsync();
-
-            return Json(fund_source);
+            return Json(FundSource);
         }
 
         [HttpPost]
