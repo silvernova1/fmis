@@ -1,0 +1,495 @@
+﻿@model fmis.Models.Utilization
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
+@using System.Globalization;
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<style>
+    .wtHider {
+        margin-bottom: 200px;
+    }
+</style>
+
+<div class="col-xs-12 infobox-container" style=" margin-bottom: 10px">
+    <div class="infobox infobox-red">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-calculator"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                @if (Model.source_type == "fund_source")
+                    @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                    else if (Model.source_type == "sub_allotment")
+                        @Model.SubAllotment.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+
+            </span>
+            <div class="infobox-content">
+                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+            </div>
+        </div>
+    </div>
+    <div class="infobox infobox-orange2">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-bar-chart-o"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
+                @if (Model.source_type == "fund_source")
+                    @Model.FundSource.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                    else if (Model.source_type == "sub_allotment")
+                        @Model.SubAllotment.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
+            </span>
+            <div class="infobox-content">
+                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td class="col-sm-1"><strong>Particulars</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @if (Model.source_type == "fund_source")
+                        @Html.DisplayFor(model => model.Particulars)
+                        else if (Model.source_type == "sub_allotment")
+                            @Html.DisplayFor(model => model.Particulars)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Payee</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @if (Model.source_type == "fund_source")
+                        @Html.DisplayFor(model => model.Payee)
+                        else if (Model.source_type == "sub_allotment")
+                            @Html.DisplayFor(model => model.Payee)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>Address</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @if (Model.source_type == "fund_source")
+                        @Html.DisplayFor(model => model.Address)
+                        else if (Model.source_type == "sub_allotment")
+                            @Html.DisplayFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1">
+                    <strong>
+                        @if (Model.source_type == "fund_source")
+                            @Html.Raw("Fund Source")
+                            else if (Model.source_type == "sub_allotment")
+                                @Html.Raw("Sub Allotment")
+                    </strong>
+                </td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @if (Model.source_type == "fund_source")
+                        @Html.DisplayFor(model => model.FundSource.FirstOrDefault().FundSourceTitle)
+                        else if (Model.source_type == "sub_allotment")
+                            @Html.DisplayFor(model => model.SubAllotment.FirstOrDefault().Suballotment_title)
+                </td>
+            </tr>
+            <tr>
+                <td class="col-sm-1"><strong>PR #</strong></td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.Pr_no)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+
+<input type="hidden" class="utilization_amount_data" value="@JsonSerializer.Serialize(Model.UtilizationAmount)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" id="utilization_token" value="@Model.utilization_token" />
+<input type="hidden" id="utilization_id" value="@Html.DisplayFor(model => model.Id)" />
+<input type="hidden" id="remaining_balance" value="
+         @if (Model.source_type == "fund_source")
+             @Model.FundSource.FirstOrDefault().Remaining_balance
+          else if (Model.source_type == "sub_allotment")
+             @Model.SubAllotment.FirstOrDefault().Remaining_balance
+" />
+<input type="hidden" id="obligated_amount" value="
+        @if (Model.source_type == "fund_source")
+             @Model.FundSource.FirstOrDefault().obligated_amount
+        else if (Model.source_type == "sub_allotment")
+             @Model.SubAllotment.FirstOrDefault().obligated_amount
+" />
+
+
+<input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+<input type="hidden" asp-for="Created_At" />
+<div id="utilization_handsontable" class="hot handsontable htColumnHeaders"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
+</div>
+
+<script>
+
+    var EXPENSE_CODE = 0;
+    var AMOUNT = 0;
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+    var CHECK_FIRST_ROW1 = false;
+    var INSUFFICIENT_AMOUNT = false;
+    var INSUFFICIENT_AMOUNT1 = false;
+    @*var INSUFFICIENT_AMOUNT2 = false;*@
+    var COUNT_AFTER_ROW = 0;
+    var UTILIZATION_TOKEN = $("#utilization_token").val();
+    var UTILIZED_AMOUNT = $("#utilized_amount").val();
+    var REMAINING_BALANCE = 0;
+    @*var POST_AMOUNT = 0;*@
+    var TRAP_SAVE_AMOUNT = false;
+    @*var OLD_VALUE = 0;
+    var NEW_VALUE = 0;*@
+
+    var utilization_id = $("#utilization_id").val();
+    let generateUtilizationAmountToken = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function ajaxServerAmount(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                @*console.log(output);*@
+            }
+        });
+    }
+
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = []; //dara
+    var uacs_data_array = []; //dara
+    var get_account_title = []; //dara
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
+        var json_data = new Object(); //dara
+        json_data.UacsId = this.UacsId; //dara
+        json_data.Account_title = this.Account_title; //dara
+        json_data.Expense_code = this.Expense_code; //dara
+        uacs_data_array[this.Account_title] = json_data; //dara
+        get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
+    });
+
+    var utilization_amount = $.parseJSON($(".utilization_amount_data").val());
+    const utilization_amount_handsontable = [];
+    var counter = 0;
+    $.each(utilization_amount, function () {
+        utilization_amount_handsontable[counter] = [
+            get_account_title[this.UacsId],
+            this.Expense_code,
+            this.Amount,
+            this.Total_disbursement,
+            this.Total_net_amount,
+            this.Total_tax_amount,
+            this.Total_others,
+            this.utilization_token,
+            this.utilization_amount_token
+        ]
+        counter++;
+    });
+
+    @*console.log(obligation_amount_handsontable);*@
+
+    const container = document.getElementById('utilization_handsontable');
+    const hot = new Handsontable(container, {
+        data: utilization_amount_handsontable,
+        rowHeaders: true,
+        colWidths: [300, 150, 150, 150, 150, 150, 150],
+        colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'text',
+                readOnly: true,
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    @*pattern: '0,0.00',*@
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                },
+                readOnly: true
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: 'auto',
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][8];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][8]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+               @* console.log(ajax_data);*@
+                ajaxServerAmount(ajax_data,'@Url.Action("DeleteUtilizationAmount", "UtilizationAmount")');
+            }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            CHECK_AFTER_ROW = true; //make true taga add sa row para dile ma save sa db ang empty
+            COUNT_AFTER_ROW = 2;
+            hot.setDataAtCell(row, 7, UTILIZATION_TOKEN);
+            hot.setDataAtCell(row, 8, generateUtilizationAmountToken());
+        },
+        afterChange(changes, source) {
+            console.log(source);
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW || COUNT_AFTER_ROW > 0) {
+                CHECK_AFTER_ROW = false;
+                COUNT_AFTER_ROW--;
+                return;
+            }
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (EXPENSE_CODE == newValue) {
+                    console.log("first trap!")
+                    return;;
+                } // mao ni siya ang mo trap para dile mo load kaduha if mag set sa cell
+                else if (col == 0) {
+                    EXPENSE_CODE = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code;
+                    CHECK_FIRST_ROW = true; //need ni siya para dile ma doble ang pag save
+                    CHECK_FIRST_ROW1 = true; //need ni siya para dile ma doble ang pag save
+                    hot.setDataAtCell(row, col + 1, EXPENSE_CODE);
+                    var ajax_data = [];
+                    ajax_data.push({
+                        UtilizationId: utilization_id,
+                        UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                        Expense_code: EXPENSE_CODE,
+                        Amount: hot.getDataAtCell(row, 2),
+                        Total_disbursement: 0,
+                        Total_net_amount: 0,
+                        Total_tax_amount: 0,
+                        Total_others: 0,
+                        utilization_token: hot.getDataAtCell(row, col + 7),
+                        utilization_amount_token: hot.getDataAtCell(row, col + 8)
+                    });
+                    console.log(ajax_data);
+                    ajaxServerAmount(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
+                }
+                else if (col == 2) {
+                    @*OLD_VALUE = oldValue;
+                    NEW_VALUE = newValue;*@
+                    @*if (oldValue == newValue) {
+                        console.log("trap the logs!");
+                        return;
+                    }*@
+                    @*else if (INSUFFICIENT_AMOUNT1) {
+                        INSUFFICIENT_AMOUNT1 = false;
+                        console.log("insufficient amount")
+                        return;
+                    }*@
+
+                    //get the exact remaining balance from DB
+                    var url = '@Url.Action("getRemainigAndUtilized", "UtilizationAmount")';
+                    var post_calculation_data = {
+                        "utilization_id": utilization_id,
+                        "utilization_token": UTILIZATION_TOKEN
+                    };
+                    $.post(url, post_calculation_data, function (result) {
+                        var post_remaining_balance = result.remaining_balance;
+                        var post_utilized_amount = result.utilized_amount;
+
+                        console.log("SAVED THE AMOUNT FROM FIRST ROW!");
+                        //DISPLAY TO UI
+                        $("#total_remaining_balance").html(result.remaining_balance);
+                        $("#total_utilized_amount").html(result.total_utilized_amount);
+                        //END DISPLAY TO UI
+
+                        if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                            post_remaining_balance = post_remaining_balance + oldValue; //2000
+                            post_utilized_amount = post_utilized_amount - oldValue;
+                        }
+                        AMOUNT = newValue;
+
+                        console.log("OLD VALUE : " + oldValue);
+                        console.log("NEW VALUE : " + newValue);
+                        console.log("AMOUNT : " + AMOUNT);
+                        console.log("REMAINING BALANCE : " + post_remaining_balance);
+
+                        if (INSUFFICIENT_AMOUNT1) {
+                            INSUFFICIENT_AMOUNT1 = false;
+                            console.log("INSUFFICIENT_AMOUNT1");
+                            return;
+                        }
+                        else if (AMOUNT > post_remaining_balance) {
+                            @*POST_AMOUNT = AMOUNT;*@
+                            @*REMAINING_BALANCE = post_remaining_balance;*@
+                            Lobibox.alert("error", {
+                                msg: "Insufficient  Balance!",
+                                sound: false,
+                            });
+                            INSUFFICIENT_AMOUNT1 = true; //trap so that can't save in DB
+                            INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
+                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+                            @*INSUFFICIENT_AMOUNT1 = true;*@
+                            @*INSUFFICIENT_AMOUNT2 = true;*@
+                            @*return;*@
+                        }
+                        else {
+                            //do the calculalation
+                            post_remaining_balance = post_remaining_balance - AMOUNT;
+                            post_utilized_amount = post_utilized_amount + AMOUNT;
+                            var calculated_amount_data = {
+                                "utilization_id": utilization_id,
+                                "utilization_token": UTILIZATION_TOKEN,
+                                "utilization_amount_token": hot.getDataAtCell(row, 8),
+                                "remaining_balance": post_remaining_balance,
+                                "utilized_amount": post_utilized_amount,
+                                "amount": AMOUNT
+                            };
+                            console.log(calculated_amount_data);
+                            var url = '@Url.Action("calculateUtilizedAmount", "UtilizationAmount")'
+                            $.post(url, calculated_amount_data, function (result) {
+                                $("#total_remaining_balance").html(result.remaining_balance);
+                                $("#total_utilized_amount").html(result.utilized_amount);
+                            });
+                        }
+                    });
+                    TRAP_SAVE_AMOUNT = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                console.log("Check first row!");
+                CHECK_FIRST_ROW = false;
+            }
+            else if (CHECK_FIRST_ROW1) {
+                console.log("CHECK FIRST ROW1");
+                CHECK_FIRST_ROW1 = false;
+            }
+            else if (INSUFFICIENT_AMOUNT) {
+                console.log("INSUFFICIENT_AMOUNT");
+                INSUFFICIENT_AMOUNT = false;
+            }
+            @*else if (INSUFFICIENT_AMOUNT2) {
+                console.log("INSUFFICIENT_AMOUNT2");
+                INSUFFICIENT_AMOUNT = false;
+            }*@
+            else if (TRAP_SAVE_AMOUNT) {
+                TRAP_SAVE_AMOUNT = false;
+                console.log("TRAP SAVE AMOUNT");
+            }
+            @*else if (NEW_VALUE == OLD_VALUE) {
+                console.log("THE SAME VALUE!!!!");
+            }*@
+            @*else if (POST_AMOUNT > REMAINING_BALANCE) {
+                console.log("not enought remaining balance!");
+            }*@
+            else
+            {
+                @*console.log("POST AMOUNT " + POST_AMOUNT);
+                console.log("REMAINING BALANCE " + REMAINING_BALANCE);*@
+                console.log("else last");
+                UTILIZED_AMOUNT = 0;
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        UtilizationId: utilization_id,
+                        UacsId: uacs_data_array[this[0]].UacsId ? uacs_data_array[this[0]].UacsId : "",
+                        Expense_code: uacs_data_array[this[0]].Expense_code ? uacs_data_array[this[0]].Expense_code : "",
+                        Amount: this[2] ? this[2] : "",
+                        Total_disbursement: this[3] ? this[3] : "",
+                        Total_net_amount: this[4] ? this[4] : "",
+                        Total_tax_amount: this[5] ? this[5] : "",
+                        Total_others: this[6] ? this[6] : "",
+                        utilization_token: this[7] ? this[7] : "",
+                        utilization_amount_token: this[8] ? this[8] : "",
+                    });
+                    UTILIZED_AMOUNT += this[2] ? this[2] : 0;
+                });
+                $("#total_utilized_amount").html(UTILIZED_AMOUNT);
+                ajaxServerAmount(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
+            }
+
+        },
+        hiddenColumns: {
+            columns: [7,8],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    @*console.log(hot.getSourceData());*@
+
+
+</script>
