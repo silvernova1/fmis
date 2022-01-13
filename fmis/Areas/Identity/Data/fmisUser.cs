@@ -9,5 +9,6 @@ namespace fmis.Areas.Identity.Data
     // Add profile data for application users by adding properties to the fmisUser class
     public class fmisUser : IdentityUser
     {
+
     }
 }

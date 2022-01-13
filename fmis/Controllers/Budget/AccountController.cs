@@ -1,19 +1,42 @@
-﻿using fmis.Data;
+﻿using fmis.Areas.Identity.Data;
+using fmis.Data;
+using fmis.Models;
 using fmis.Models.Budget;
 using fmis.Models.silver;
+using fmis.ViewModel;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Owin.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+
     public class AccountController : Controller
     {
+        
         private readonly MyDbContext _context;
-        public AccountController(MyDbContext context)
+        private readonly UserManager<fmisUser> _userManager;
+        private readonly SignInManager<fmisUser> _signInManager;
+        
+        public AccountController(MyDbContext context, SignInManager<fmisUser> _signInManager)
         {
             _context = context;
+            this._signInManager = _signInManager;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("index", "home");
+        }
+
         public IActionResult Login()
         {
             return View("~/Views/Account/Login.cshtml");
@@ -21,19 +44,20 @@ namespace fmis.Controllers.Budget
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(ManageUsers user)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                var userobj = _context.ManageUsers.Where(a => a.Username.Equals(user.Username) && a.Password.Equals(user.Password)).FirstOrDefault();
-                if (userobj !=null)
+                var result = await _signInManager.PasswordSignInAsync(
+                    model.Username, model.Password, false, false);
+
+                if (result.Succeeded)
                 {
-                    /*return RedirectToAction("dashboard", "home");*/
-                    return RedirectToAction("SetYear", "Account");
+                    return RedirectToAction("Year", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
-            return View(user);
+            return View(model);
         }
 
         public IActionResult Dashboard()
@@ -41,11 +65,33 @@ namespace fmis.Controllers.Budget
             return RedirectToAction("~/Views/Budget_allotments/Index.cshtml");
         }
 
-        public IActionResult SetYear()
+        //GET
+        [Authorize]
+        public IActionResult Year()
         {
-            return View();
+            return View(new ManageUsers());
         }
 
+        //POST
+        [HttpPost]
+        public IActionResult Year(string year)
+        {         
+                //var blog = _context.Yearly_reference.Where(s => s.YearlyReference == year).FirstOrDefault().ToString();
+
+                if (year == "2021")
+                {  
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                else { 
+                    return RedirectToAction("SetYear", "Account");
+                }
+
+            
+
+
+
+            // return View(result);
+        }
 
         /*[Route("")]
         [Route("index")]

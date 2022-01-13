@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Budget.Account
+﻿@model fmis.ViewModel.LoginViewModel
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,11 +77,11 @@
                                             <br>
                                             <div class="card-body">
                                                 <section>
-                                                    <form id="account" method="post">
+                                                    <form action="Year" id="account" method="post">
                                                         <div class="form-group">
                                                             <center><label>Set current year</label></center>
                                                             <span asp-validation-for="Username" class="text-danger"></span>
-                                                            <input type="number" class="form-control" />
+                                                            <input type="text" name="year" class="form-control" />
                                                         </div>
                                                         <br />
                                                         <br>

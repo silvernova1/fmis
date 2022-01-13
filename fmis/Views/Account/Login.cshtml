@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Budget.Account
+﻿@model fmis.ViewModel.LoginViewModel
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,6 +79,7 @@
                                             <div class="card-body">
                                                 <section>
                                                     <form id="account" method="post">
+                                                        <div asp-validation-summary="All" class="text-danger"></div>
                                                         <div class="form-group">
                                                             <i class="bi bi-person-circle"></i> <label asp-for="Username" style="margin-right:83%;"></label>
                                                             <span asp-validation-for="Username" class="text-danger"></span>

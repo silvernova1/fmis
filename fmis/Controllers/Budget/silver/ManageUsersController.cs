@@ -11,6 +11,7 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Models.silver;
+using fmis.ViewModel;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -91,7 +92,7 @@ namespace fmis.Controllers.Budget.silver
             {
                 if (ModelState.IsValid)
                 {
-                    ManageUsers.Created_At = DateTime.Now;
+                    //ManageUsers.Created_At = DateTime.Now;
                     _Context.Add(ManageUsers);
                     ManageUsers.Username = ManageUsers.UserId;
                     ManageUsers.Password = "123";
