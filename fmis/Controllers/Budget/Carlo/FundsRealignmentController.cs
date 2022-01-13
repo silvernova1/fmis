@@ -44,6 +44,16 @@ namespace fmis.Controllers.Budget.Carlo
             public string token { get; set; }
         }
 
+        public class FundRealingmentSaveAmount
+        {
+            public int fundsource_id { get; set; }
+            public decimal remaining_balance { get; set; }
+            public decimal realignment_amount { get; set; }
+            public decimal amount { get; set; }
+            public string realignment_token { get; set; }
+            public string fundsource_amount_token { get; set; }
+        }
+
         public class ManyId
         {
             public string many_token { get; set; }
@@ -55,7 +65,7 @@ namespace fmis.Controllers.Budget.Carlo
             public List<ManyId> many_token { get; set; }
         }
 
-        public async Task<IActionResult> Index(int fundsource_id, int budget_id)
+        public async Task<IActionResult> Index(int fundsource_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
@@ -63,28 +73,43 @@ namespace fmis.Controllers.Budget.Carlo
                             .Include(x => x.FundSourceAmounts)
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
-                            .Include(x => x.FundsRealignment)
-                            .Include(x => x.Uacs)
+                            .Include(x => x.FundsRealignment.Where(w => w.status == "activated"))
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
-            FundSource.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
+
+            var from_uacs = await _FAContext.FundSourceAmount
+                            .Where(x => x.FundSourceId == fundsource_id)
+                            .Select(x => x.UacsId)
+                            .ToArrayAsync();
+            FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
         }
 
-        public async Task<IActionResult> getRemainingBalance(string type,int source_id) {
-            decimal remaining_balance = 0;
-            if (type == "fund_source")
-            {
-                var fund_source = await _FContext.FundSource.Where(s => s.FundSourceId == source_id).FirstOrDefaultAsync();
-                remaining_balance = fund_source.Remaining_balance;
-            }
-            else if (type == "sub_allotment")
-            {
-                //code ni carlo
-            }
+        public async Task<IActionResult> realignmentRemaining(int fundsource_id) {
+            var fund_source = await _FContext.FundSource.Where(s => s.FundSourceId == fundsource_id).FirstOrDefaultAsync();
+            return Json(fund_source);
+        }
 
-            return Json(remaining_balance);
+        public async Task<IActionResult> realignmentAmountSave(FundRealingmentSaveAmount calculation)
+        {
+            FundSource = await _FContext.FundSource
+                            .Include(x => x.FundSourceAmounts)
+                            .Include(x => x.FundsRealignment.Where(s => s.token == calculation.realignment_token))
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.FundSourceId == calculation.fundsource_id);
+            //funsource saving
+            FundSource.realignment_amount = calculation.realignment_amount;
+            FundSource.Remaining_balance = calculation.remaining_balance;
+            //fund realignment saving
+            FundSource.FundsRealignment.FirstOrDefault().Realignment_amount = calculation.amount;
+            
+            //continue the code in fundsource amount here tomorrow 01/13/2022
+
+            _FContext.Update(FundSource);
+            await _FContext.SaveChangesAsync();
+
+            return Json(FundSource);
         }
 
         [HttpPost]
@@ -109,12 +134,6 @@ namespace fmis.Controllers.Budget.Carlo
 
                 _context.FundsRealignment.Update(funds_realignment);
                 await _context.SaveChangesAsync();
-
-                var fund_source = await _FContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.FundSourceId == funds_realignment.FundSourceId);
-                fund_source.realignment_amount = item.Realignment_amount;
-
-                _FContext.FundSource.Update(fund_source);
-                await _FContext.SaveChangesAsync();
             }
             return Json(data);
         }
@@ -125,21 +144,21 @@ namespace fmis.Controllers.Budget.Carlo
         {
             if (data.many_token.Count > 1)
             {
-                var data_holder = this._context.FundsRealignment;
+                var data_holder = this._allContext.FundsRealignment;
                 foreach (var many in data.many_token)
                 {
                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
-                    await _context.SaveChangesAsync();
+                    await _allContext.SaveChangesAsync();
                 }
             }
             else
             {
-                var data_holder = this._context.FundsRealignment;
+                var data_holder = this._allContext.FundsRealignment;
                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
 
-                await _context.SaveChangesAsync();
+                await _allContext.SaveChangesAsync();
             }
 
             return Json(data);
@@ -148,6 +167,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         // GET: FundsRealignment/Delete/5
         public async Task<IActionResult> Delete(int? id)
+
         {
             if (id == null)
             {
@@ -163,29 +183,23 @@ namespace fmis.Controllers.Budget.Carlo
 
             return View(funds_realignment);
         }
+        /*   {
+               if (id == null)
+               {
+                   return NotFound();
+               }
 
-        /* {
-             if (data.many_token.Count > 1)
-             {
-                 var data_holder = this._context.FundsRealignment;
-                 foreach (var many in data.many_token)
-                 {
-                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
-                     data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
-                     await _context.SaveChangesAsync();
-                 }
-             }
-             else
-             {
-                 var data_holder = this._context.FundsRealignment;
-                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
-                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+               var funds_realignment = await _context.FundsRealignment
+                   .FirstOrDefaultAsync(m => m.Id == id);
+               if (funds_realignment == null)
+               {
+                   return NotFound();
+               }
 
-                 await _context.SaveChangesAsync();
-             }
+               return View(funds_realignment);
+           }*/
 
-             return Json(data);
-         }*/
+
 
     }
 }

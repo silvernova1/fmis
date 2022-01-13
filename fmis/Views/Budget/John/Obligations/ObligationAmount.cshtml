@@ -392,7 +392,7 @@
                         }
                         else if (AMOUNT > post_remaining_balance) {
                             @*POST_AMOUNT = AMOUNT;*@
-                            REMAINING_BALANCE = post_remaining_balance;
+                            @*REMAINING_BALANCE = post_remaining_balance;*@
                             Lobibox.alert("error", {
                                 msg: "Insufficient  Balance!",
                                 sound: false,

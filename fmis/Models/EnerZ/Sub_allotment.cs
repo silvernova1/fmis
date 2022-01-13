@@ -17,7 +17,6 @@ namespace fmis.Models
         public string Description { get; set; }
         public string Suballotment_code { get; set; }
         public string Responsibility_number { get; set; }
-        public int Budget_allotmentBudgetAllotmentId { get; set; }
         [ForeignKey("Prexc")]
         public int prexcId { get; set; }
         public Prexc prexc { get; set; }
@@ -26,6 +25,7 @@ namespace fmis.Models
         public decimal obligated_amount { get; set; }
         public decimal realignment_amount { get; set; }
         public string token { get; set; }
+        public int? BudgetAllotmentId { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
         public BudgetAllotment Budget_allotment { get; set; }

@@ -115,7 +115,6 @@ namespace fmis.Controllers
         public async Task<IActionResult> calculateObligatedAmount(ObligationCalculationData calculation_data) {
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
-            obligation.Created_At = DateTime.Now;
 
             if (calculation_data.obligation_id != 0)
             {
