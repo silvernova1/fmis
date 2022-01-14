@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using fmis.Data.Enerz;
 using fmis.Models;
-using fmis.Models.EnerZ;
-using fmis.Data.EnerZ;
-using fmis.Data.Carlo;
 using fmis.Data;
+using fmis.Models.EnerZ;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using Rotativa.AspNetCore;
 
-namespace fmis.Controllers.Budget.EnerZ
+namespace fmis.Controllers
 {
     public class UtilizationAmountController : Controller
     {
@@ -49,7 +48,7 @@ namespace fmis.Controllers.Budget.EnerZ
             public int utilization_id { get; set; }
             public string utilization_token { get; set; }
             public decimal remaining_balance { get; set; }
-            public decimal obligated_amount { get; set; }
+            public decimal utilized_amount { get; set; }
         }
 
         public class GetUtilizedAndRemaining
@@ -87,7 +86,7 @@ namespace fmis.Controllers.Budget.EnerZ
         [HttpPost]
         public async Task<IActionResult> SaveUtilizationAmount(List<UtilizationAmountData> data)
         {
-            var data_holder = _context.UtilizationAmount;
+            var data_holder = _MyDbContext.UtilizationAmount;
             decimal utilized_amount = 0;
 
             foreach (var item in data)
@@ -109,7 +108,7 @@ namespace fmis.Controllers.Budget.EnerZ
                 utilization_amount.utilization_amount_token = item.utilization_amount_token;
                 utilized_amount += item.Amount;
 
-                _context.UtilizationAmount.Update(utilization_amount);
+                _MyDbContext.UtilizationAmount.Update(utilization_amount);
                 await _context.SaveChangesAsync();
             }
             return Json(data);
@@ -176,7 +175,7 @@ namespace fmis.Controllers.Budget.EnerZ
         }
 
         [HttpPost]
-        public async Task<IActionResult> getRemainigAndUtilized(PostUtilizationCalculationData post_calculation_data)
+        public async Task<IActionResult> getRemainingAndUtilized(PostUtilizationCalculationData post_calculation_data)
         {
             decimal remaining_balance = 0;
             decimal utilized_amount = 0;

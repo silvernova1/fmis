@@ -39,14 +39,14 @@
             <i class="ace-icon fa fa-bar-chart-o"></i>
         </div>
         <div class="infobox-data">
-            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
+            <span class="infobox-data-number" id="total_utilized_amount" style="font-size:11pt; color:grey;">
                 @if (Model.source_type == "fund_source")
                     @Model.FundSource.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
                     else if (Model.source_type == "sub_allotment")
                         @Model.SubAllotment.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
             </span>
             <div class="infobox-content">
-                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+                <span class="label label-warning arrowed-in arrowed-in-right"> Utilized Amount </span>
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@
           else if (Model.source_type == "sub_allotment")
              @Model.SubAllotment.FirstOrDefault().Remaining_balance
 " />
-<input type="hidden" id="obligated_amount" value="
+<input type="hidden" id="utilized_amount" value="
         @if (Model.source_type == "fund_source")
              @Model.FundSource.FirstOrDefault().obligated_amount
         else if (Model.source_type == "sub_allotment")
@@ -133,7 +133,6 @@
 
 
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-<input type="hidden" asp-for="Created_At" />
 <div id="utilization_handsontable" class="hot handsontable htColumnHeaders"></div>
 <br />
 <div class="controls" hidden>
@@ -202,7 +201,7 @@
     const utilization_amount_handsontable = [];
     var counter = 0;
     $.each(utilization_amount, function () {
-        utilization_amount_handsontable[counter] = [
+        obligation_amount_handsontable[counter] = [
             get_account_title[this.UacsId],
             this.Expense_code,
             this.Amount,
@@ -359,7 +358,7 @@
                     }*@
 
                     //get the exact remaining balance from DB
-                    var url = '@Url.Action("getRemainigAndUtilized", "UtilizationAmount")';
+                    var url = '@Url.Action("getRemainingAndUtilized", "UtilizationAmount")';
                     var post_calculation_data = {
                         "utilization_id": utilization_id,
                         "utilization_token": UTILIZATION_TOKEN

@@ -374,6 +374,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> PrintOrs(String id)
         {
             Int32 ID = Convert.ToInt32(id);
+
             var ors = await _context.Obligation
                 .Include(f=>f.FundSource)
                 .ThenInclude(p=>p.Prexc)
