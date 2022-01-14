@@ -124,6 +124,59 @@ namespace fmis.Migrations
                     b.ToTable("Division");
                 });
 
+            modelBuilder.Entity("fmis.Models.EnerZ.UtilizationAmount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("Expense_code")
+                        .HasColumnType("bigint");
+
+                    b.Property<float>("Total_disbursement")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_net_amount")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_others")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total_tax_amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("UacsId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UtilizationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("utilization_amount_token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("utilization_token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UtilizationId");
+
+                    b.ToTable("UtilizationAmount");
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.Property<int>("Id")
@@ -229,6 +282,9 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UtilizationId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("obligated_amount")
                         .HasColumnType("decimal(18,2)");
 
@@ -247,6 +303,8 @@ namespace fmis.Migrations
                     b.HasIndex("PrexcId");
 
                     b.HasIndex("SummaryReportId");
+
+                    b.HasIndex("UtilizationId");
 
                     b.ToTable("FundSource");
                 });
@@ -617,14 +675,14 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_At")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Realignment_amount")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Realignment_amount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Realignment_from")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Realignment_from")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Realignment_to")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Realignment_to")
+                        .HasColumnType("int");
 
                     b.Property<int?>("SubAllotmentId")
                         .HasColumnType("int");
@@ -682,6 +740,9 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UtilizationId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("obligated_amount")
                         .HasColumnType("decimal(18,2)");
 
@@ -699,6 +760,8 @@ namespace fmis.Migrations
                     b.HasIndex("BudgetAllotmentId");
 
                     b.HasIndex("ObligationId");
+
+                    b.HasIndex("UtilizationId");
 
                     b.HasIndex("prexcId")
                         .IsUnique();
@@ -783,6 +846,9 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UtilizationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
@@ -796,6 +862,8 @@ namespace fmis.Migrations
                     b.HasIndex("ObligationId");
 
                     b.HasIndex("Sub_allotmentSubAllotmentId");
+
+                    b.HasIndex("UtilizationId");
 
                     b.ToTable("Uacs");
                 });
@@ -840,7 +908,7 @@ namespace fmis.Migrations
                     b.Property<string>("Particulars")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Payer")
+                    b.Property<string>("Payee")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Po_no")
@@ -858,10 +926,16 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("source_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("source_type")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("token")
+                    b.Property<string>("utilization_token")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1005,6 +1079,15 @@ namespace fmis.Migrations
                     b.Navigation("Requesting_office");
                 });
 
+            modelBuilder.Entity("fmis.Models.EnerZ.UtilizationAmount", b =>
+                {
+                    b.HasOne("fmis.Models.Utilization", null)
+                        .WithMany("UtilizationAmount")
+                        .HasForeignKey("UtilizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.HasOne("fmis.Models.John.FundSource", null)
@@ -1031,6 +1114,10 @@ namespace fmis.Migrations
                     b.HasOne("fmis.Models.silver.SummaryReport", null)
                         .WithMany("FundSources")
                         .HasForeignKey("SummaryReportId");
+
+                    b.HasOne("fmis.Models.Utilization", null)
+                        .WithMany("FundSource")
+                        .HasForeignKey("UtilizationId");
 
                     b.Navigation("BudgetAllotment");
 
@@ -1120,6 +1207,10 @@ namespace fmis.Migrations
                         .WithMany("SubAllotment")
                         .HasForeignKey("ObligationId");
 
+                    b.HasOne("fmis.Models.Utilization", null)
+                        .WithMany("SubAllotment")
+                        .HasForeignKey("UtilizationId");
+
                     b.HasOne("fmis.Models.Prexc", "prexc")
                         .WithOne("Sub_Allotment")
                         .HasForeignKey("fmis.Models.Sub_allotment", "prexcId")
@@ -1161,6 +1252,10 @@ namespace fmis.Migrations
                     b.HasOne("fmis.Models.Sub_allotment", null)
                         .WithMany("Uacs")
                         .HasForeignKey("Sub_allotmentSubAllotmentId");
+
+                    b.HasOne("fmis.Models.Utilization", null)
+                        .WithMany("Uacs")
+                        .HasForeignKey("UtilizationId");
                 });
 
             modelBuilder.Entity("fmis.Models.silver.BudgetAllotment", b =>
@@ -1217,6 +1312,17 @@ namespace fmis.Migrations
                     b.Navigation("SubAllotmentRealignment");
 
                     b.Navigation("Uacs");
+                });
+
+            modelBuilder.Entity("fmis.Models.Utilization", b =>
+                {
+                    b.Navigation("FundSource");
+
+                    b.Navigation("SubAllotment");
+
+                    b.Navigation("Uacs");
+
+                    b.Navigation("UtilizationAmount");
                 });
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>

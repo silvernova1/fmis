@@ -150,7 +150,8 @@
     $.each(fundsrealignment, function () {
         data[counter] = [
             get_account_title[this.Realignment_from],
-            get_account_title_2[this.Realignment_to] ,
+            this.remaining_balance,
+            get_account_title_2[this.Realignment_to],
             this.Realignment_amount,
             this.FundSourceId,
             this.token]
@@ -164,14 +165,22 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [350, 350, 350],
+        colWidths: [220, 220, 220, 220],
         rowHeaders: true,
-        colHeaders: ['REALIGNMENT FROM', 'REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
+        colHeaders: ['REALIGNMENT FROM','REMAINING BALANCE','REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
                 //REALIGNMENT FROM
                 type: 'dropdown',
                 source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                readOnly: true
             },
             {
                 //REALIGNMENT TO
@@ -236,7 +245,7 @@
             }
 
             changes.forEach(([row, col, oldValue, newValue]) => {
-                if (col == 2) {
+                if (col == 3) {
                     console.log("saving the amount");
                     $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id, function (result) {
                         console.log(result.remaining_balance);
@@ -259,7 +268,7 @@
                             trapTheLoad(row, col, oldValue, "Insufficient  Balance!");
                         else if (!hot.getDataAtCell(row, 0)) //trap if the uacs_from already selected
                             trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT FROM'!");
-                        else if (!hot.getDataAtCell(row, 1)) //trap if the uacs_to already selected
+                        else if (!hot.getDataAtCell(row, 2)) //trap if the uacs_to already selected
                             trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
                         else {
                             //do the calculation
@@ -269,7 +278,7 @@
                                 "fundsource_id": parseInt(fundsource_id),
                                 "remaining_balance": post_remaining_balance,
                                 "realignment_amount": post_realignment_amount,
-                                "realignment_token": hot.getDataAtCell(row, 4),
+                                "realignment_token": hot.getDataAtCell(row, 5),
                                 "amount": AMOUNT,
                                 "fundsource_amount_token": uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token
                             };
@@ -301,10 +310,10 @@
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
                         Realignment_from: this[0] ? uacs_data_array[this[0]].UacsId : "",
-                        Realignment_to: this[1] ? uacs_data_array_2[this[1]].UacsId : "",
-                        Realignment_amount: this[2],
+                        Realignment_to: this[2] ? uacs_data_array_2[this[2]].UacsId : "",
+                        Realignment_amount: this[3],
                         FundSourceId: fundsource_id,
-                        token: this[4]
+                        token: this[5]
                     });
                 });
                 console.log(ajax_data);
@@ -314,7 +323,7 @@
 		},
         height: '250px',
         hiddenColumns: {
-            columns: [3,4],
+            columns: [4,5],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only

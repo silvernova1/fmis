@@ -1,5 +1,4 @@
-﻿
-@model fmis.Models.Sub_allotment
+﻿@model fmis.Models.Sub_allotment
 @using System.Text.Json;
 @using System.Globalization;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
@@ -20,10 +19,13 @@
 <input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotmentRealignment)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
-<input type="hidden" asp-for="Created_At"/>
 
 <h3 class="grey lighter smaller">
-    Sub Allotment Realignment
+    @Model.Budget_allotment.Allotment_title
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.Suballotment_title
+    </small>
 </h3>
 <hr>
 
@@ -40,7 +42,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                    @Model.Beginning_balance.ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -53,7 +55,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                    @Model.realignment_amount.ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
@@ -88,6 +90,9 @@
 
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
+    var TRAP_THE_LOAD = false;
+    var TRAP_THE_LOAD1 = false;
+    var AMOUNT = 0;
 
     let guid = () => {
         let s4 = () => {
@@ -158,21 +163,6 @@
     })
     $(".sub_allotment_amount").html(sub_allotment_amount);
 
-    @*var suballotment_amount = 0;
-    var sub_allotment_realignment = $.parseJSON($(".sub_allotment_realignment").val());
-    const data = [];
-    var counter = 0;
-    $.each(sub_allotment_realignment, function () {
-        data[counter] = [
-            get_account_title[this.Realignment_from],
-            get_account_title_2[this.Realignment_to],
-            this.Realignment_amount,
-            this.SubAllotmentId,
-            this.token]
-        counter++;
-        suballotment_amount += this.Realignment_amount;
-    })
-    $(".suballotment_amount").html(suballotment_amount);*@
 
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
@@ -245,48 +235,7 @@
             hot.setDataAtCell(row, 4, guid());
         },
         afterChange: function (changes, source) {
-             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
-                CHECK_AFTER_ROW = false;
-                return;
-            }
-
-            changes.forEach(([row, col, oldValue, newValue]) => {
-                if (col == 0) {
-                    var ajax_data = [];
-                    ajax_data.push(
-                        {
-                            Realignment_from: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                            Realignment_to: uacs_data_array_2[hot.getDataAtCell(row, col)].UacsId,
-                            Realignment_amount: hot.getDataAtCell(row, col + 2),
-                            SubAllotmentId: sub_allotment_id,
-                            token: hot.getDataAtCell(row, col + 4)
-                        }
-                    );
-                    console.log(ajax_data);
-                    ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
-                    CHECK_FIRST_ROW = true;
-                }
-            });
-
-            if (CHECK_FIRST_ROW) {
-                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
-            } else {
-                var ajax_data = [];
-                $.each(hot.getSourceData(), function () {
-                    ajax_data.push({
-                        Realignment_from: uacs_data_array[this[0]].UacsId,
-                        Realignment_to: uacs_data_array_2[this[1]].UacsId,
-                        Realignment_amount: this[2],
-                        SubAllotmentId: sub_allotment_id,
-                        token: this[4]
-                    });
-                });
-                console.log(ajax_data);
-
-                ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
-            }
-		},
-            @* if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+             @*if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 CHECK_AFTER_ROW = false;
                 return;
             }
@@ -328,6 +277,88 @@
             }
 		},*@
 
+              if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 2) {
+                    console.log("saving the amount");
+                    $.get('@Url.Action("realignmentRemaining", "SubAllotment_Realignment")' + "?sub_allotment_id=" + sub_allotment_id, function (result) {
+                        console.log(result.remaining_balance);
+                        console.log(result.realignment_amount);
+                        var post_remaining_balance = result.remaining_balance;
+                        var post_realignment_amount = result.realignment_amount;
+
+                        if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                            post_remaining_balance = post_remaining_balance + oldValue; //2000
+                            post_realignment_amount = post_realignment_amount - oldValue;
+                        }
+                        AMOUNT = newValue;
+
+                        if (TRAP_THE_LOAD1) {
+                            TRAP_THE_LOAD1 = false;
+                            console.log("TRAP_THE_LOAD1");
+                            return;
+                        }
+                        else if (AMOUNT > post_remaining_balance)
+                            trapTheLoad(row, col, oldValue, "Insufficient  Balance!");
+                        else if (!hot.getDataAtCell(row, 0)) //trap if the uacs_from already selected
+                            trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT FROM'!");
+                        else if (!hot.getDataAtCell(row, 1)) //trap if the uacs_to already selected
+                            trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
+                        else {
+                            //do the calculation
+                            post_remaining_balance = post_remaining_balance - AMOUNT;
+                            post_realignment_amount = post_realignment_amount + AMOUNT;
+                            var calculated_amount_data = {
+                                "sub_allotment_id": parseInt(sub_allotment_id),
+                                "remaining_balance": post_remaining_balance,
+                                "realignment_amount": post_realignment_amount,
+                                "realignment_token": hot.getDataAtCell(row, 4),
+                                "amount": AMOUNT,
+                                "sub_allotment_amount_token": uacs_data_array[hot.getDataAtCell(row, 0)].sub_allotment_amount_token
+                            };
+                            console.log(calculated_amount_data);
+                            var url = '@Url.Action("realignmentAmountSave", "SubAllotment_Realignment")'
+                            $.post(url, calculated_amount_data, function (calculation) {
+                                console.log(calculation);
+                                $("#total_remaining_balance").html(calculation.remaining_balance);
+                                $("#total_realignment_amount").html(calculation.realignment_amount);
+                            });
+
+                        }
+                    });
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+                console.log("check first row!");
+            }
+            else if (TRAP_THE_LOAD) {
+                console.log("TRAP_THE_LOAD");
+                INSUFFICIENT_AMOUNT = false;
+            }
+            else {
+                console.log("else");
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        Realignment_from: this[0] ? uacs_data_array[this[0]].UacsId : "",
+                        Realignment_to: this[1] ? uacs_data_array_2[this[1]].UacsId : "",
+                        Realignment_amount: this[2],
+                        SubAllotmentId: sub_allotment_id,
+                        token: this[4]
+                    });
+                });
+                console.log(ajax_data);
+
+                ajaxServerSubRealignment(ajax_data, '@Url.Action("SaveSubAllotment_Realignment", "SubAllotment_Realignment")');
+            }
+		},
         height: '250px',
         hiddenColumns: {
             columns: [3,4],
@@ -338,5 +369,16 @@
 
     var tableData = JSON.stringify(hot.getSourceData());
 @*    console.log(hot.getSourceData());*@
+
+    function trapTheLoad(row, col, oldValue, trap_message) {
+        Lobibox.alert("error", {
+            msg: trap_message,
+            sound: false,
+        });
+        TRAP_THE_LOAD1 = true; //trap so that can't save in DB
+        TRAP_THE_LOAD = true; //trap so that can't save in DB
+        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+        return;
+    }
 
 </script>

@@ -147,23 +147,7 @@ namespace fmis.Controllers
             return View("~/Views/Budget/John/Obligations/Index.cshtml");
         }
 
-        // GET: Obligations/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var obligation = await _context.Obligation
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (obligation == null)
-            {
-                return NotFound();
-            }
-
-            return View(obligation);
-        }
+      
 
         /*[HttpGet]
         [ValidateAntiForgeryToken]*/
@@ -390,6 +374,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> PrintOrs(String id)
         {
             Int32 ID = Convert.ToInt32(id);
+
             var ors = await _context.Obligation
                 .Include(f=>f.FundSource)
                 .ThenInclude(p=>p.Prexc)

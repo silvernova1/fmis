@@ -4,6 +4,7 @@ using fmis.Models.John;
 using fmis.Models.silver;
 using System;
 using fmis.Models.Budget;
+using fmis.Models.EnerZ;
 
 namespace fmis.Data
 {
@@ -42,6 +43,7 @@ namespace fmis.Data
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
+        public DbSet<UtilizationAmount> UtilizationAmount { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
