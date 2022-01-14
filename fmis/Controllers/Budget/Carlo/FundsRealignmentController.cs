@@ -183,23 +183,5 @@ namespace fmis.Controllers.Budget.Carlo
 
             return View(funds_realignment);
         }
-        /*   {
-               if (id == null)
-               {
-                   return NotFound();
-               }
-
-               var funds_realignment = await _context.FundsRealignment
-                   .FirstOrDefaultAsync(m => m.Id == id);
-               if (funds_realignment == null)
-               {
-                   return NotFound();
-               }
-
-               return View(funds_realignment);
-           }*/
-
-
-
     }
 }
