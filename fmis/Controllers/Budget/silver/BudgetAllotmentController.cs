@@ -50,13 +50,6 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
-      /*  [HttpPost]
-        public ActionResult Addition(Budget_allotment model)
-        {
-            model.Result = model.A + model.B;
-            return View(model);
-        }*/
-
         // GET: Budget_allotments/Create
         public IActionResult Create()
         {
