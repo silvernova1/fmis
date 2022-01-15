@@ -11,7 +11,7 @@ namespace fmis.Models
     public class Suballotment_amount
     {
         [Key]
-        public int Id { get; set; }
+        public int SubAllotmentAmountId { get; set; }
         public int UacsId { get; set; }
         public decimal beginning_balance { get; set; }
         public decimal remaining_balance { get; set; }

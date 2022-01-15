@@ -9,6 +9,7 @@ namespace fmis.Models
 {
     public class ObligationAmount
     {
+       
         public int Id { get; set; }
         public int ObligationId { get; set; }
         public int UacsId { get; set; }

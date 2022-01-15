@@ -137,7 +137,7 @@ namespace fmis.Controllers
             var subquery = _context.Sub_allotment
                 .Select(x => new Suballotment_amount
                 {
-                    Id = x.prexcId,
+                    SubAllotmentAmountId = x.prexcId,
                     beginning_balance = _context.Suballotment_amount.Where(i => i.SubAllotmentId == x.SubAllotmentId).Select(x => x.beginning_balance).Sum()
                 });
 

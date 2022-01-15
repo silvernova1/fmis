@@ -51,7 +51,6 @@ namespace fmis.Controllers
             public string sub_allotment_amount_token { get; set; }
         }
 
-
         public class ManyId
         {
             public string many_token { get; set; }
@@ -72,18 +71,20 @@ namespace fmis.Controllers
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.Budget_allotment)
                             .Include(x => x.SubAllotmentRealignment.Where(w => w.status == "activated"))
+                                .ThenInclude(x => x.SubAllotmentAmount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
-
             var from_uacs = await _MyDbContext.Suballotment_amount
                             .Where(x => x.SubAllotmentId == sub_allotment_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
             SubAllotment.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
+            //return Json(FundSource);
             return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
         }
 
+       
         public async Task<IActionResult> realignmentRemaining(int sub_allotment_id)
         {
             var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == sub_allotment_id).FirstOrDefaultAsync();
@@ -108,7 +109,7 @@ namespace fmis.Controllers
             _MyDbContext.Update(SubAllotment);
             await _MyDbContext.SaveChangesAsync();
 
-            return Json(_MyDbContext);
+            return Json(SubAllotment);
         }
 
         [HttpPost]
@@ -125,7 +126,7 @@ namespace fmis.Controllers
                     sub_realignment = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
 
                 sub_realignment.SubAllotmentId = item.SubAllotmentId;
-                sub_realignment.Realignment_from = item.Realignment_from;
+                sub_realignment.SubAllotmentAmountId = item.Realignment_from;
                 sub_realignment.Realignment_to = item.Realignment_to;
                 sub_realignment.Realignment_amount = item.Realignment_amount;
                 sub_realignment.status = "activated";
