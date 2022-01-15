@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220114143408_MyDb")]
+    [Migration("20220115025209_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,14 +189,14 @@ namespace fmis.Migrations
                     b.Property<DateTime>("Created_At")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("FundSourceAmountId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("FundSourceId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Realignment_amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Realignment_from")
-                        .HasColumnType("int");
 
                     b.Property<int>("Realignment_to")
                         .HasColumnType("int");
@@ -211,6 +211,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FundSourceAmountId");
 
                     b.HasIndex("FundSourceId");
 
@@ -313,7 +315,7 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.John.FundSourceAmount", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FundSourceAmountId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -354,7 +356,7 @@ namespace fmis.Migrations
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("FundSourceAmountId");
 
                     b.HasIndex("FundSourceId");
 
@@ -1092,9 +1094,15 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
+                    b.HasOne("fmis.Models.John.FundSourceAmount", "FundSourceAmount")
+                        .WithMany()
+                        .HasForeignKey("FundSourceAmountId");
+
                     b.HasOne("fmis.Models.John.FundSource", null)
                         .WithMany("FundsRealignment")
                         .HasForeignKey("FundSourceId");
+
+                    b.Navigation("FundSourceAmount");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>

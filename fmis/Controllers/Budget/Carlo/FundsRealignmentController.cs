@@ -74,15 +74,16 @@ namespace fmis.Controllers.Budget.Carlo
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
                             .Include(x => x.FundsRealignment.Where(w => w.status == "activated"))
+                                .ThenInclude(x => x.FundSourceAmount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
-
             var from_uacs = await _FAContext.FundSourceAmount
                             .Where(x => x.FundSourceId == fundsource_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
             FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
+            //return Json(FundSource);
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
         }
 
@@ -126,7 +127,7 @@ namespace fmis.Controllers.Budget.Carlo
                     funds_realignment = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
 
                 funds_realignment.FundSourceId = item.FundSourceId;
-                funds_realignment.Realignment_from = item.Realignment_from;
+                funds_realignment.FundSourceAmountId = item.Realignment_from;
                 funds_realignment.Realignment_to = item.Realignment_to;
                 funds_realignment.Realignment_amount = item.Realignment_amount;
                 funds_realignment.status = "activated";

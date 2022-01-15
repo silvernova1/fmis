@@ -121,10 +121,10 @@
     $.each(uacs, function () {
         uacs_data_dropdown[uacs_counter] = this.Uacs.Account_title;
         var json_data = new Object();
-        json_data.UacsId = this.Uacs.UacsId;
+        json_data.FundSourceAmountId = this.FundSourceAmountId;
         json_data.fundsource_amount_token = this.fundsource_amount_token;
         uacs_data_array[this.Uacs.Account_title] = json_data;
-        get_account_title[this.Uacs.UacsId] = this.Uacs.Account_title;
+        get_account_title[this.FundSourceAmountId] = this.Uacs.Account_title;
         uacs_counter++;
     });
 
@@ -148,9 +148,10 @@
     const data = [];
     var counter = 0;
     $.each(fundsrealignment, function () {
+        console.log(this);
         data[counter] = [
-            get_account_title[this.Realignment_from],
-            this.remaining_balance,
+            get_account_title[this.FundSourceAmountId],
+            this.FundSourceAmount.remaining_balance,
             get_account_title_2[this.Realignment_to],
             this.Realignment_amount,
             this.FundSourceId,
@@ -248,8 +249,7 @@
                 if (col == 3) {
                     console.log("saving the amount");
                     $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id, function (result) {
-                        console.log(result.remaining_balance);
-                        console.log(result.realignment_amount);
+                        displayTotalCalculation(result);
                         var post_remaining_balance = result.remaining_balance;
                         var post_realignment_amount = result.realignment_amount;
 
@@ -286,8 +286,7 @@
                             var url = '@Url.Action("realignmentAmountSave", "FundsRealignment")'
                             $.post(url, calculated_amount_data, function (calculation) {
                                 console.log(calculation);
-                                $("#total_remaining_balance").html(calculation.remaining_balance);
-                                $("#total_realignment_amount").html(calculation.realignment_amount);
+                                displayTotalCalculation(calculation);
                             });
                         }
                     });
@@ -308,7 +307,7 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
-                        Realignment_from: this[0] ? uacs_data_array[this[0]].UacsId : "",
+                        Realignment_from: this[0] ? uacs_data_array[this[0]].FundSourceAmountId : "",
                         Realignment_to: this[2] ? uacs_data_array_2[this[2]].UacsId : "",
                         Realignment_amount: this[3],
                         FundSourceId: fundsource_id,
@@ -338,6 +337,11 @@
         //TRAP_THE_LOAD = true; //trap so that can't save in DB
         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
         return;
+    }
+
+    function displayTotalCalculation(calculation) {
+        $("#total_remaining_balance").html(calculation.remaining_balance);
+        $("#total_realignment_amount").html(calculation.realignment_amount);
     }
 </script>
 
