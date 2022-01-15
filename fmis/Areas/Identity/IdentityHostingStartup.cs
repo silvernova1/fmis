@@ -20,7 +20,14 @@ namespace fmis.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("UserContextConnection")));
 
-                services.AddDefaultIdentity<fmisUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                services.AddDefaultIdentity<fmisUser>(options => { options.SignIn.RequireConfirmedAccount = false;
+                    options.User.AllowedUserNameCharacters = " abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+                    options.Password.RequiredLength = 3;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                })
                     .AddRoles<IdentityRole>()
                     .AddDefaultTokenProviders()
                     .AddEntityFrameworkStores<UserContext>();

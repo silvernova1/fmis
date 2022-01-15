@@ -81,13 +81,10 @@
     <thead>
         <tr>
             <th>
-                User Id
-            </th>
-            <th>
                 Full Name
             </th>
             <th>
-                User Logins
+                Username
             </th>
             <th>
                 Actions
@@ -101,9 +98,6 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.userid)
-                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.full_name)
                 </td>

@@ -11,6 +11,9 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Models.silver;
+using Microsoft.AspNetCore.Identity;
+using fmis.Areas.Identity.Data;
+using fmis.ViewModel;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -18,11 +21,15 @@ namespace fmis.Controllers.Budget.silver
     {
         private readonly ManageUsersContext _Context;
         private readonly PersonalInformationMysqlContext _pis_context;
+        private UserManager<fmisUser> userManager;
+        private SignInManager<fmisUser> signinManager;
 
-        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context)
+        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context, UserManager<fmisUser> usrMgr, SignInManager<fmisUser> signManager)
         {
             _Context = Context;
             _pis_context = pis_context;
+            userManager = usrMgr;
+            signinManager = signManager;
         }
         public IActionResult Index(int? id)
         {
@@ -84,24 +91,65 @@ namespace fmis.Controllers.Budget.silver
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Username,Password")] ManageUsers ManageUsers)
+        public async Task<IActionResult> Create(ManageUsers model)
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                // Copy data from RegisterViewModel to IdentityUser
+                var user = new fmisUser
                 {
-                    _Context.Add(ManageUsers);
-                    await _Context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    UserName = model.Email,
+                    Email = model.Email
+                };
+
+                // Store user data in AspNetUsers database table
+                var result = await userManager.CreateAsync(user, model.Password);
+                _Context.Add(model);
+                model.Username = user.UserName;
+                model.Password = "123";
+                await _Context.SaveChangesAsync();
+
+
+                // If user is successfully created, sign-in the user using
+                // SignInManager and redirect to index action of HomeController
+                if (result.Succeeded)
+                {
+                    await signinManager.SignInAsync(user, isPersistent: false);
+
+                    return RedirectToAction("Index", "ManageUsers");
+                }
+
+                // If there are any errors, add them to the ModelState object
+                // which will be displayed by the validation summary tag helper
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulatePsDropDownList();
-            return View(ManageUsers);
+
+            return View(model);
+            /* try
+             {
+                 if (ModelState.IsValid)
+                 {
+                     //ManageUsers.Created_At = DateTime.Now;
+                     _Context.Add(ManageUsers);
+                     ManageUsers.Username = ManageUsers.UserId;
+                     ManageUsers.Password = "123";
+                     await _Context.SaveChangesAsync();
+                     return RedirectToAction(nameof(Index));
+
+
+
+                 }
+             }
+             catch (RetryLimitExceededException *//* dex *//*)
+             {
+                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+             }
+             PopulatePsDropDownList();
+             return View(ManageUsers);*/
         }
 
         // GET: manageusers/Edit/5
@@ -159,12 +207,12 @@ namespace fmis.Controllers.Budget.silver
         private void PopulatePsDropDownList()
         {
             ViewBag.UserId = new SelectList((from s in _pis_context.allPersonalInformation()
-                                                where !_Context.ManageUsers.Any(ro => ro.UserId == s.userid)
-                                                select new
-                                                {
-                                                    UserId = s.userid,
-                                                    ps = s.full_name
-                                                }),
+                                             where !_Context.ManageUsers.Any(ro => ro.UserId == s.userid)
+                                             select new
+                                             {
+                                                 UserId = s.userid,
+                                                 ps = s.full_name
+                                             }),
                                           "UserId",
                                           "ps",
                                            null);

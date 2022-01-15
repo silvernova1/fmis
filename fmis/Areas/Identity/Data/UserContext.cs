@@ -19,9 +19,23 @@ namespace fmis.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+            this.SeedUsers(builder);
+        }
+
+        private void SeedUsers(ModelBuilder builder)
+        {
+            fmisUser user = new fmisUser()
+            {
+                UserName = "Budget",
+                Email = "Budget@gmail.com",
+                LockoutEnabled = false,
+                PhoneNumber = "09208658303",
+            };
+
+            PasswordHasher<fmisUser> passwordHasher = new PasswordHasher<fmisUser>();
+            user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
+
+            builder.Entity<fmisUser>().HasData(user);
         }
     }
 }

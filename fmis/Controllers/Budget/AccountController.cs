@@ -1,41 +1,82 @@
-﻿using fmis.Data;
+﻿using fmis.Areas.Identity.Data;
+using fmis.Data;
 using fmis.Models.Budget;
+using fmis.Models.silver;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace fmis.Controllers.Budget
 {
     public class AccountController : Controller
     {
         private readonly MyDbContext _context;
-        public AccountController(MyDbContext context)
+        private readonly SignInManager<fmisUser> signInManager;
+
+        public AccountController(MyDbContext context, SignInManager<fmisUser> signInManager)
         {
             _context = context;
-        }
-        public IActionResult Login()
-        {
-            return View("~/Views/Account/Login.cshtml");
+            this.signInManager = signInManager;
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(Account user)
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("dashboard", "home");
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(ManageUsers model)
         {
             if (ModelState.IsValid)
             {
-                var userobj = _context.Account.Where(a => a.Username.Equals(user.Username) && a.Password.Equals(user.Password)).FirstOrDefault();
+                var result = await signInManager.PasswordSignInAsync(
+                    model.Username, model.Password, false, false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("SetYear", "Account");
+                }
+
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+            }
+
+            return View(model);
+        }
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(ManageUsers user)
+        {
+            if (ModelState.IsValid)
+            {
+                var userobj = _context.ManageUsers.Where(a => a.Username.Equals(user.Username) && a.Password.Equals(user.Password)).FirstOrDefault();
                 if (userobj !=null)
                 {
-                    return View("~/Views/Budget_allotments/Index.cshtml");
+                    *//*return RedirectToAction("dashboard", "home");*//*
+                    return RedirectToAction("SetYear", "Account");
                 }
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
-            return View("~/Views/Budget_allotments/Index.cshtml");
-        }
+            return View(user);
+        }*/
 
         public IActionResult Dashboard()
         {
             return RedirectToAction("~/Views/Budget_allotments/Index.cshtml");
+        }
+
+        public IActionResult SetYear()
+        {
+            return View();
         }
 
 
