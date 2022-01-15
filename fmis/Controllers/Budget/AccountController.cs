@@ -1,17 +1,23 @@
 ﻿using fmis.Areas.Identity.Data;
 using fmis.Data;
+using fmis.Models;
 using fmis.Models.Budget;
 using fmis.Models.silver;
+using fmis.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace fmis.Controllers.Budget
 {
+
     public class AccountController : Controller
     {
+        
         private readonly MyDbContext _context;
         private readonly SignInManager<fmisUser> signInManager;
 
@@ -73,12 +79,31 @@ namespace fmis.Controllers.Budget
         {
             return RedirectToAction("~/Views/Budget_allotments/Index.cshtml");
         }
-
         public IActionResult SetYear()
         {
             return View();
         }
 
+        //POST
+        [HttpPost]
+        public IActionResult Year(string year)
+        {         
+                //var blog = _context.Yearly_reference.Where(s => s.YearlyReference == year).FirstOrDefault().ToString();
+
+                if (year == "2021")
+                {  
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                else { 
+                    return RedirectToAction("SetYear", "Account");
+                }
+
+            
+
+
+
+            // return View(result);
+        }
 
         /*[Route("")]
         [Route("index")]

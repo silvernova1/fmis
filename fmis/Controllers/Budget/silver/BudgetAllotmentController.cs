@@ -50,13 +50,6 @@ namespace fmis.Controllers
             return View(budget_allotment);
         }
 
-      /*  [HttpPost]
-        public ActionResult Addition(Budget_allotment model)
-        {
-            model.Result = model.A + model.B;
-            return View(model);
-        }*/
-
         // GET: Budget_allotments/Create
         public IActionResult Create()
         {
@@ -135,7 +128,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
-            var sub_Allotment = _context.Sub_allotment.Where(s => s.Budget_allotmentBudgetAllotmentId == budget_id);
+            var sub_Allotment = _context.Sub_allotment.Where(s => s.BudgetAllotmentId == budget_id);
             ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.obligated_amount = sub_Allotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
             ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
@@ -145,7 +138,7 @@ namespace fmis.Controllers
                 .Select(x => new Suballotment_amount
                 {
                     Id = x.prexcId,
-                    Amount = _context.Suballotment_amount.Where(i => i.SubAllotmentId == x.SubAllotmentId).Select(x => x.Amount).Sum()
+                    beginning_balance = _context.Suballotment_amount.Where(i => i.SubAllotmentId == x.SubAllotmentId).Select(x => x.beginning_balance).Sum()
                 });
 
             ViewBag.Query = subquery.ToList();
@@ -226,16 +219,16 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            if (id == null)
+            if (BudgetAllotmentId == null)
             {
                 return NotFound();
             }
 
             var budget_allotment = await _context.Budget_allotments
-                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == id);
+                .FirstOrDefaultAsync(m => m.BudgetAllotmentId == BudgetAllotmentId);
             if (budget_allotment == null)
             {
                 return NotFound();
@@ -247,10 +240,10 @@ namespace fmis.Controllers
         // POST: Budget_allotments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var budget_allotment = await _context.Budget_allotments.FindAsync(id);
+            var budget_allotment = await _context.Budget_allotments.FindAsync(BudgetAllotmentId);
             _context.Budget_allotments.Remove(budget_allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

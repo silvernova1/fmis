@@ -32,14 +32,25 @@ namespace fmis.Controllers
 
         public class SubAllotment_RealignmentData
         {
-            public string Realignment_from { get; set; }
-            public string Realignment_to { get; set; }
-            public float Realignment_amount { get; set; }
+            public int Realignment_from { get; set; }
+            public int Realignment_to { get; set; }
+            public decimal Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
             public int SubAllotmentId { get; set; }
             public string token { get; set; }
         }
+
+        public class SubAllotment_RealignmentSaveAmount
+        {
+            public int sub_allotment_id { get; set; }
+            public decimal remaining_balance { get; set; }
+            public decimal realignment_amount { get; set; }
+            public decimal amount { get; set; }
+            public string realignment_token { get; set; }
+            public string sub_allotment_amount_token { get; set; }
+        }
+
 
         public class ManyId
         {
@@ -57,14 +68,47 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
 
             SubAllotment = await _MyDbContext.Sub_allotment
-                                    .Include(x => x.SubAllotmentRealignment)
-                                    .Include(x => x.Uacs)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
-            SubAllotment.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
+                            .Include(x => x.SubAllotmentAmounts)
+                                .ThenInclude(x => x.Uacs)
+                            .Include(x => x.Budget_allotment)
+                            .Include(x => x.SubAllotmentRealignment.Where(w => w.status == "activated"))
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
+
+            var from_uacs = await _MyDbContext.Suballotment_amount
+                            .Where(x => x.SubAllotmentId == sub_allotment_id)
+                            .Select(x => x.UacsId)
+                            .ToArrayAsync();
+            SubAllotment.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
             return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
+        }
 
+        public async Task<IActionResult> realignmentRemaining(int sub_allotment_id)
+        {
+            var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == sub_allotment_id).FirstOrDefaultAsync();
+            return Json(sub_allotment);
+        }
+
+        public async Task<IActionResult> realignmentAmountSave(SubAllotment_RealignmentSaveAmount calculation)
+        {
+            SubAllotment = await _MyDbContext.Sub_allotment
+                            .Include(x => x.SubAllotmentAmounts)
+                            .Include(x => x.SubAllotmentRealignment.Where(s => s.token == calculation.realignment_token))
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.SubAllotmentId == calculation.sub_allotment_id);
+            //funsource saving
+            SubAllotment.realignment_amount = calculation.realignment_amount;
+            SubAllotment.Remaining_balance = calculation.remaining_balance;
+            //fund realignment saving
+            SubAllotment.SubAllotmentRealignment.FirstOrDefault().Realignment_amount = calculation.amount;
+
+            //continue the code in fundsource amount here tomorrow 01/13/2022
+
+            _MyDbContext.Update(SubAllotment);
+            await _MyDbContext.SaveChangesAsync();
+
+            return Json(_MyDbContext);
         }
 
         [HttpPost]

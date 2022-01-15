@@ -18,7 +18,7 @@
 <form asp-action="Create">
     <input hidden type="text" id="subs_input_token" name="token" value="" />
     <div>
-        <input type="hidden" asp-for="Budget_allotmentBudgetAllotmentId" value="@ViewBag.budget_id" />
+        <input type="hidden" asp-for="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Sub Allotment)</h7>
             <div class="pull-right">
@@ -37,7 +37,7 @@
                     @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
                 </div>
                 <div class="form-group">
-                    <label>Suballotment_title:</label>
+                    <label>Sub-Allotment Title:</label>
                     <input asp-for="Suballotment_title" class="form-control" required>
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
@@ -49,12 +49,12 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Suballotment_code:</label>
+                    <label>Suballotment Code:</label>
                     <input asp-for="Suballotment_code" class="form-control" required />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Responsibility_number:</label>
+                    <label>Respo Number:</label>
                     <input asp-for="Responsibility_number" class="form-control" required />
                     <span asp-validation-for="Responsibility_number" class="text-danger"></span>
                 </div>
@@ -81,7 +81,7 @@
 
 <script>
 
-    var BudgetId = @ViewBag.budget_id;
+    var BudgetAllotmentId = @ViewBag.BudgetAllotmentId;
 
     var suballotment_token = generate_token();
 
@@ -194,7 +194,7 @@
                     var ajax_data = [];
                     ajax_data.push(
                         {
-                            BudgetId: BudgetId,
+                            BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
                             Amount: hot.getDataAtCell(row, col+2),
                             suballotment_amount_token: hot.getDataAtCell(row, col + 3),
@@ -213,7 +213,7 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
-                        BudgetId: BudgetId,
+                        BudgetAllotmentId: BudgetAllotmentId,
                         UacsId: uacs_data_array[this[0]].UacsId,
                         Amount: this[1],
                         suballotment_amount_token: this[3],
@@ -226,30 +226,6 @@
             }
 
 		},
-           @* if (source === 'loadData') {
-                return; //don't save this change
-            }
-            console.log(changes);
-            var ajax_data = [];
-            $(".obligation_amount").html();
-            obligation_amount = 0;
-            $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        BudgetId: BudgetId,
-                        Expenses: this[0],
-                        Amount: this[1],
-                        Id: this[2],
-                        suballotment_amount_token: this[3],
-                        suballotment_token: suballotment_token
-                    }
-                );
-                obligation_amount += parseInt(this[1]);
-            });
-            console.log(ajax_data);
-            $(".obligation_amount").html(obligation_amount);
-            ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
-        },*@
         hiddenColumns: {
             columns: [2,3],
             indicators: true

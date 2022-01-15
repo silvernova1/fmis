@@ -8,5 +8,6 @@ namespace fmis.ViewModel
     {
         public IEnumerable<Personal_Information> Personal_Information { get; set; }
         public IEnumerable<ManageUsers> ManageUsers { get; set; }
+        public IEnumerable<Yearly_reference> Yearly_reference { get; set; }
     }
 }

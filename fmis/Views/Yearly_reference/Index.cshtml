@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Yearly_reference>
+﻿ @model IEnumerable<fmis.Models.Yearly_reference>
 
 @{
     ViewData["Title"] = "Index";
@@ -31,7 +31,7 @@
             <tr>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.YearlyReference)
+                    @Html.DisplayFor(modelItem => item.YearlyReference) Budget
                 </td>
                 <td>
                     <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.YearlyReferenceId">

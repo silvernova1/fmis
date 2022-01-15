@@ -27,7 +27,8 @@ namespace fmis.Controllers
     public class UtilizationController : Controller
     {
         ORSReporting rpt_ors = new ORSReporting();
-        MyDbContext db = new MyDbContext(); 
+        MyDbContext db = new MyDbContext();
+        private Utilization utilization;
 
         private readonly UtilizationContext _context;
         private readonly MyDbContext _MyDbContext;
@@ -40,11 +41,13 @@ namespace fmis.Controllers
         public class UtilizationData
         {
             public int Id { get; set; }
+            public int source_id { get; set; }
+            public string source_type { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
             public string Pr_no { get; set; }
             public string Po_no { get; set; }
-            public string Payer { get; set; }
+            public string Payee { get; set; }
             public string Address { get; set; }
             public string Particulars { get; set; }
             public int Ors_no { get; set; }
@@ -55,7 +58,7 @@ namespace fmis.Controllers
             public string Time_recieved { get; set; }
             public string Date_released { get; set; }
             public string Time_released { get; set; }
-            public string token { get; set; }
+            public string utilization_token { get; set; }
             public string status { get; set; }
         }
         public class ManyId
@@ -70,7 +73,7 @@ namespace fmis.Controllers
         }
 
         // GET: Utilization
-        public IActionResult Index()
+        public async Task <IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "utilization");
             ViewBag.layout = "_Layout";
@@ -78,11 +81,13 @@ namespace fmis.Controllers
                  .Select(x => new UtilizationData()
                  {
                      Id = x.Id,
+                     source_id = x.source_id,
+                     source_type = x.source_type,
                      Date = x.Date.ToShortDateString(),
                      Dv = x.Dv,
                      Pr_no = x.Pr_no,
                      Po_no = x.Po_no,
-                     Payer = x.Payer,
+                     Payee = x.Payee,
                      Address = x.Address,
                      Particulars = x.Particulars,
                      Ors_no = x.Ors_no,
@@ -93,30 +98,54 @@ namespace fmis.Controllers
                      Time_recieved = x.Time_recieved.ToString("HH:mm:ss"),
                      Date_released = x.Date_released.ToShortDateString(),
                      Time_released = x.Time_released.ToString("HH:mm:ss"),
-                     token = x.token,
+                     utilization_token = x.utilization_token,
                      status = x.status
                  });
-            var json = JsonSerializer.Serialize(utilization.ToList());
-            ViewBag.temp = json;
+
+            var utilization_json = await utilization
+                                   .AsNoTracking()
+                                   .ToListAsync();
+            ViewBag.utilization_json = JsonSerializer.Serialize(utilization_json);
+
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source" })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
+
+            ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
+
+            /* var json = JsonSerializer.Serialize(utilization.ToList());
+             ViewBag.temp = json;*/
             return View("~/Views/Utilization/Index.cshtml");
         }
 
-        // GET: Utilization/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> openUtilizationAmount(int id, string utilization_token)
         {
-            if (id == null)
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.AsNoTracking().ToListAsync());
+            ViewBag.uacs = uacs_data;
+
+            if (id != 0)
             {
-                return NotFound();
+                utilization = await _MyDbContext.Utilization
+                    .Include(x => x.UtilizationAmount)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                utilization = await _MyDbContext.Utilization
+                    .Include(x => x.UtilizationAmount)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.utilization_token == utilization_token);
+                utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
             }
 
-            var utilization = await _context.Utilization
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (utilization == null)
-            {
-                return NotFound();
-            }
+            if (utilization.source_type == "fund_source")
+                utilization.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == utilization.source_id).ToListAsync();
+            else if (utilization.source_type == "sub_allotment")
+                utilization.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == utilization.source_id).ToListAsync();
 
-            return View(utilization);
+            /*return Json(obligation);*/
+            return View("~/Views/Utilization/UtilizationAmount.cshtml", utilization);
         }
 
         // GET: Utilization/Create
@@ -143,68 +172,42 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveUtilization(List<UtilizationData> data)
+        public async Task <IActionResult> SaveUtilization(List<UtilizationData> data)
         {
-
             var data_holder = this._context.Utilization;
-
             foreach (var item in data)
             {
-                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                var utilization = new Utilization(); //CLEAR OBJECT
+                if (await data_holder.Where(s => s.utilization_token == item.utilization_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
                 {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date = ToDateTime(item.Date);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Dv = item.Dv;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Pr_no = item.Pr_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Po_no = item.Po_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Payer = item.Payer;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Address = item.Address;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Particulars = item.Particulars;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Ors_no = item.Ors_no;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Fund_source = item.Fund_source;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Gross = item.Gross;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Created_by = item.Created_by;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_recieved = ToDateTime(item.Date_recieved);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_recieved = ToDateTime(item.Time_recieved);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Date_released = ToDateTime(item.Date_released);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Time_released = ToDateTime(item.Time_released);
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-
-                    this._context.SaveChanges();
+                    utilization = await data_holder.Where(s => s.utilization_token == item.utilization_token).FirstOrDefaultAsync();
                 }
-                else /*if ((item.Date.ToString() != null || item.Dv != null) && (item.Pr_no != null || item.Po_no != null) && (item.Payer != null ||
-                         item.Address != null) && (item.Particulars != null || item.Ors_no.ToString() != null) && (item.Fund_source != null ||
-                         item.Gross.ToString() != null) && (item.Created_by.ToString() != null || item.Date_recieved.ToString() != null) &&
-                         (item.Time_recieved.ToString() != null || item.Date_released.ToString() != null) && (item.Time_released.ToString() != null))*/ //save
-                {
 
-                    //UPDATE
-                    var utilization = new Utilization(); //CLEAR OBJECT
-                    utilization.Id = item.Id;
-                    utilization.Date = ToDateTime(item.Date);
-                    utilization.Dv = item.Dv;
-                    utilization.Pr_no = item.Pr_no;
-                    utilization.Po_no = item.Po_no;
-                    utilization.Payer = item.Payer;
-                    utilization.Address = item.Address;
-                    utilization.Particulars = item.Particulars;
-                    utilization.Ors_no = item.Ors_no;
-                    utilization.Fund_source = item.Fund_source;
-                    utilization.Gross = item.Gross;
-                    utilization.Created_by = item.Created_by;
-                    utilization.Date_recieved = ToDateTime(item.Date_recieved);
-                    utilization.Time_recieved = ToDateTime(item.Time_recieved);
-                    utilization.Date_released = ToDateTime(item.Date_released);
-                    utilization.Time_released = ToDateTime(item.Time_released);
-                    utilization.status = "activated";
-                    utilization.token = item.token;
+                utilization.source_id = item.source_id;
+                utilization.source_type = item.source_type;
+                utilization.Date = ToDateTime(item.Date);
+                utilization.Dv = item.Dv;
+                utilization.Pr_no = item.Pr_no;
+                utilization.Po_no = item.Po_no;
+                utilization.Payee = item.Payee;
+                utilization.Address = item.Address;
+                utilization.Particulars = item.Particulars;
+                utilization.Ors_no = item.Ors_no;
+                utilization.Gross = item.Gross;
+                utilization.Created_by = item.Created_by;
+                utilization.Date_recieved = ToDateTime(item.Date_recieved);
+                utilization.Time_recieved = ToDateTime(item.Time_recieved);
+                utilization.Date_released = ToDateTime(item.Date_released);
+                utilization.Time_released = ToDateTime(item.Time_released);
+                utilization.status = "activated";
+                utilization.utilization_token = item.utilization_token;
 
-                    this._context.Utilization.Update(utilization);
-                    this._context.SaveChanges();
-                }
+                _context.Update(utilization);
+                await _context.SaveChangesAsync();
             }
             return Json(data);
         }
-
+       
         // POST: Utilization/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -214,6 +217,7 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
+                utilization.Created_At = DateTime.Now;
                 _context.Add(utilization);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -309,16 +313,16 @@ namespace fmis.Controllers
                 var data_holder = this._context.Utilization;
                 foreach (var many in data.many_token)
                 {
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
+                    data_holder.Where(s => s.utilization_token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.utilization_token == many.many_token).FirstOrDefault().utilization_token = many.many_token;
                     await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 var data_holder = this._context.Utilization;
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+                data_holder.Where(s => s.utilization_token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.utilization_token == data.single_token).FirstOrDefault().utilization_token = data.single_token;
 
                 await _context.SaveChangesAsync();
             }
@@ -429,7 +433,7 @@ namespace fmis.Controllers
                 table_row_2.WidthPercentage = 100f;
                 table_row_2.SetWidths(tbt_row2_width);
                 table_row_2.AddCell(new PdfPCell(new Paragraph("Payee", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_2.AddCell(new PdfPCell(new Paragraph(bur.Payer, arial_font_10)));
+                table_row_2.AddCell(new PdfPCell(new Paragraph(bur.Payee, arial_font_10)));
                 table_row_2.AddCell(new PdfPCell(new Paragraph("", arial_font_10)));
 
                 PdfFile.Add(table_row_2);

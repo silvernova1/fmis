@@ -112,7 +112,8 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> calculateObligatedAmount(ObligationCalculationData calculation_data) {
+        public async Task<IActionResult> calculateObligatedAmount(ObligationCalculationData calculation_data) 
+        {
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
 
@@ -171,7 +172,8 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> getRemainigAndObligated(PostObligationCalculationData post_calculation_data) {
+        public async Task<IActionResult> getRemainigAndObligated(PostObligationCalculationData post_calculation_data)
+        {
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
             if (post_calculation_data.obligation_id != 0)

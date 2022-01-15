@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

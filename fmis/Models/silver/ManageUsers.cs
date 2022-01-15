@@ -11,11 +11,22 @@ namespace fmis.Models.silver
     {
         public int Id { get; set; }
         public string UserId { get; set; }
+
         public string Email { get; set; }
+
+
+        [Required(ErrorMessage = "You must enter your username")]
+        [Display(Name = "Email")]
         public string Username { get; set; }
+
+        [Required(ErrorMessage = "You must enter your password")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
         public string Password { get; set; }
         public string ReturnUrl { get; set; }
+
         [Display(Name = "Remember me")]
+
         public bool RememberMe { get; set; }
         public string UserRole { get; set; }
         public DateTime Created_At { get; set; }
@@ -27,5 +38,9 @@ namespace fmis.Models.silver
             this.Updated_At = DateTime.Now;
 
         }
+
+        
+
+        
     }
 }

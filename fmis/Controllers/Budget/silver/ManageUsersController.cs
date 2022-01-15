@@ -11,9 +11,9 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Models.silver;
-using Microsoft.AspNetCore.Identity;
-using fmis.Areas.Identity.Data;
 using fmis.ViewModel;
+using fmis.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -118,13 +118,6 @@ namespace fmis.Controllers.Budget.silver
                     await signinManager.SignInAsync(user, isPersistent: false);
 
                     return RedirectToAction("Index", "ManageUsers");
-                }
-
-                // If there are any errors, add them to the ModelState object
-                // which will be displayed by the validation summary tag helper
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 

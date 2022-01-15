@@ -11,7 +11,7 @@ namespace fmis.Models.John
     public class FundSourceAmount
     {
         [Key]
-        public int Id { get; set; }
+        public int FundSourceAmountId { get; set; }
         public int UacsId { get; set; }
         public decimal beginning_balance { get; set; }
         public decimal remaining_balance { get; set; }
@@ -23,7 +23,7 @@ namespace fmis.Models.John
         public int? FundSourceId { get; set; }
         [JsonIgnore]
         public FundSource FundSource { get; set; }
-        public ICollection<Uacs> Uacs { get; set; }
+        public Uacs Uacs { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
 

@@ -572,17 +572,17 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == suballotment_amount.UacsId)?.Expense_code;
                                 ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = suballotment_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //TOTAL AFTER REALIGNMENT
-                                ws.Cell(currentRow, 6).Value = suballotment_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //UNOBLIGATED BALANCE OF ALLOTMENT
-                                ws.Cell(currentRow, 9).Value = suballotment_amount.Amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 currentRow++;

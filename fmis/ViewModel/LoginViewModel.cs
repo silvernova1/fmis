@@ -14,6 +14,11 @@ namespace fmis.ViewModel
 
         [Required]
         public string Password { get; set; }
+        [Required(ErrorMessage = "You must enter your username")]
+        [Display(Name = "Email")]
+        public string Username { get; set; }
 
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
     }
 }

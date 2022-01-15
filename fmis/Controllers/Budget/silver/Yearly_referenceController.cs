@@ -68,6 +68,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             if (ModelState.IsValid)
             {
+                yearly_reference.Created_at = DateTime.Now;
                 _context.Add(yearly_reference);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
