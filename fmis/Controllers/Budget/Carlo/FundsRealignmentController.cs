@@ -49,6 +49,7 @@ namespace fmis.Controllers.Budget.Carlo
             public int fundsource_id { get; set; }
             public decimal remaining_balance { get; set; }
             public decimal realignment_amount { get; set; }
+            public decimal fundsource_amount_remaining_balance { get; set; }
             public decimal amount { get; set; }
             public string realignment_token { get; set; }
             public string fundsource_amount_token { get; set; }
@@ -87,26 +88,29 @@ namespace fmis.Controllers.Budget.Carlo
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
         }
 
-        public async Task<IActionResult> realignmentRemaining(int fundsource_id) {
-            var fund_source = await _FContext.FundSource.Where(s => s.FundSourceId == fundsource_id).FirstOrDefaultAsync();
+        public async Task<IActionResult> realignmentRemaining(int fundsource_id,string fundsource_amount_token) {
+            var fund_source = await _FContext.FundSource
+                                .Include(x => x.FundSourceAmounts.Where(x => x.fundsource_amount_token == fundsource_amount_token))
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(s => s.FundSourceId == fundsource_id);
             return Json(fund_source);
         }
 
         public async Task<IActionResult> realignmentAmountSave(FundRealingmentSaveAmount calculation)
         {
             FundSource = await _FContext.FundSource
-                            .Include(x => x.FundSourceAmounts)
+                            .Include(x => x.FundSourceAmounts.Where(s => s.fundsource_amount_token == calculation.fundsource_amount_token))
                             .Include(x => x.FundsRealignment.Where(s => s.token == calculation.realignment_token))
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == calculation.fundsource_id);
-            //funsource saving
+            //funsource calculation
             FundSource.realignment_amount = calculation.realignment_amount;
             FundSource.Remaining_balance = calculation.remaining_balance;
-            //fund realignment saving
+            //fund realignment calculation
             FundSource.FundsRealignment.FirstOrDefault().Realignment_amount = calculation.amount;
-            
-            //continue the code in fundsource amount here tomorrow 01/13/2022
-
+            //fundsource amount calculation
+            FundSource.FundSourceAmounts.FirstOrDefault().remaining_balance = calculation.fundsource_amount_remaining_balance;
+                
             _FContext.Update(FundSource);
             await _FContext.SaveChangesAsync();
 
