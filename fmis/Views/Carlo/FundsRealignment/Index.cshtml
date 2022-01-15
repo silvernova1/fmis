@@ -236,7 +236,7 @@
             CHECK_FIRST_ROW = true;
             console.log(row);
             console.log(column);
-            hot.setDataAtCell(row, 4, guid());
+            hot.setDataAtCell(row, 5, guid());
         },
         afterChange: function (changes, source) {
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
@@ -289,7 +289,6 @@
                                 $("#total_remaining_balance").html(calculation.remaining_balance);
                                 $("#total_realignment_amount").html(calculation.realignment_amount);
                             });
-
                         }
                     });
                     CHECK_FIRST_ROW = true;
