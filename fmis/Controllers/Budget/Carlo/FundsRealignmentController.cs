@@ -96,6 +96,12 @@ namespace fmis.Controllers.Budget.Carlo
             return Json(fund_source);
         }
 
+        public async Task<IActionResult> fundSourceAmountRemainingBalance(string fundsource_amount_token)
+        {
+            var fundsource_amount_remaining_balance = await _FAContext.FundSourceAmount.AsNoTracking().FirstOrDefaultAsync(x => x.fundsource_amount_token == fundsource_amount_token);
+            return Json(fundsource_amount_remaining_balance.remaining_balance);
+        }
+
         public async Task<IActionResult> realignmentAmountSave(FundRealingmentSaveAmount calculation)
         {
             FundSource = await _FContext.FundSource
