@@ -123,6 +123,7 @@
         var json_data = new Object();
         json_data.FundSourceAmountId = this.FundSourceAmountId;
         json_data.fundsource_amount_token = this.fundsource_amount_token;
+        json_data.fundsource_amount_remaining_balance = this.remaining_balance;
         uacs_data_array[this.Uacs.Account_title] = json_data;
         get_account_title[this.FundSourceAmountId] = this.Uacs.Account_title;
         uacs_counter++;
@@ -209,13 +210,13 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
 			var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][4];
+            var single_token = holder_data[selection[0][0]][5];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-                    many_token: holder_data[j][4]
+                    many_token: holder_data[j][5]
 				})
 			}
 
@@ -225,9 +226,7 @@
 			};
 
 			console.log(ajax_data);
-
             ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
-
 		},
         afterUndo: function (index, column) {
 
@@ -244,22 +243,26 @@
                 return;
             }
             changes.forEach(([row, col, oldValue, newValue]) => {
-                if (col == 3) {
-                    console.log("saving the amount");
-                    if (TRAP_THE_LOAD1) {
+                if(col == 0) {
+                    trapTheCell(row, 1, uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_remaining_balance);
+                }
+                else if (col == 3) {
+                    CHECK_FIRST_ROW = true;
+                    if (TRAP_THE_LOAD) {
                         TRAP_THE_LOAD1 = false;
-                        console.log("TRAP_THE_LOAD1");
+                        console.log("trap_the_load1");
                         return;
                     }
                     else if (!hot.getDataAtCell(row, 0)) //trap if the uacs_from already selected
                         trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT FROM'!");
-                    else if (!hot.getDataAtCell(row, 2)) //trap if the uacs_to already selected
-                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
+                    else if (!hot.getDataAtCell(row, 2)) { //trap if the uacs_to already selected
+                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!"); 
+                    }
                     else {
                         var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
                         $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id + "&fundsource_amount_token=" + fundsource_amount_token, function (result) {
                             displayTotalCalculation(result);
-                            console.log(result);
+                            //console.log(result);
                             var post_remaining_balance = result.remaining_balance;
                             var post_realignment_amount = result.realignment_amount;
                             var post_fundsource_amount_remaining = result.fundSourceAmounts[0].remaining_balance;
@@ -271,12 +274,15 @@
                             }
                             AMOUNT = newValue;
 
-                            if (AMOUNT > post_fundsource_amount_remaining)
-                                trapTheLoad(row, col, oldValue, "Insufficient FundSourceAmount Remaining Balance");
+                            if (AMOUNT > post_fundsource_amount_remaining) {
+                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance"); //bugs this code in post fund source amount remaining balance
+                                trapTheCell(row, col, oldValue);
+                            }
                             else if (AMOUNT > post_remaining_balance)
                                 trapTheLoad(row, col, oldValue, "Insufficient FundSource Remaning Balance Balance!");
                             else {
                                 //do the calculation
+                                console.log("do the calculation!");
                                 post_remaining_balance = post_remaining_balance - AMOUNT;
                                 post_fundsource_amount_remaining = post_fundsource_amount_remaining - AMOUNT;
                                 post_realignment_amount = post_realignment_amount + AMOUNT;
@@ -289,16 +295,16 @@
                                     "amount": AMOUNT,
                                     "fundsource_amount_token": fundsource_amount_token
                                 };
-                                console.log(calculated_amount_data);
+                                //console.log(calculated_amount_data);
                                 var url = '@Url.Action("realignmentAmountSave", "FundsRealignment")'
                                 $.post(url, calculated_amount_data, function (calculation) {
+                                    trapTheCell(row, 1, post_fundsource_amount_remaining); //bugs this code in post fund source amount remaining balance
                                     console.log(calculation);
                                     displayTotalCalculation(calculation);
                                 });
                             }
                         });
                     }
-                    CHECK_FIRST_ROW = true;
                 }
             });
 
@@ -336,14 +342,18 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
 
+    function trapTheCell(row, col, oldValue) {
+        TRAP_THE_LOAD1 = true; //trap so that can't save in DB
+        TRAP_THE_LOAD = true; //trap so that can't save in DB
+        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+    }
+
     function trapTheLoad(row, col, oldValue, trap_message) {
         Lobibox.alert("error", {
             msg: trap_message,
             sound: false,
         });
-        TRAP_THE_LOAD1 = true; //trap so that can't save in DB
-        TRAP_THE_LOAD = true; //trap so that can't save in DB
-        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+        trapTheCell(row, col, oldValue)
         return;
     }
 

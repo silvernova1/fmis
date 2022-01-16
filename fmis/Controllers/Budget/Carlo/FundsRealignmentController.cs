@@ -168,25 +168,5 @@ namespace fmis.Controllers.Budget.Carlo
 
             return Json(data);
         }
-
-
-        // GET: FundsRealignment/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var funds_realignment = await _context.FundsRealignment
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (funds_realignment == null)
-            {
-                return NotFound();
-            }
-
-            return View(funds_realignment);
-        }
     }
 }
