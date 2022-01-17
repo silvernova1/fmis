@@ -6,6 +6,7 @@
 @{
     decimal total_beginning_balance = 0;
     decimal total_obligated_amount = 0;
+    decimal total_utilized_amount = 0;
     decimal total_realignment_amount = 0;
     decimal total_remaining_balance = 0;
 
@@ -29,14 +30,14 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-pink">
+        <div class="infobox infobox-red">
             <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
+                <i class="ace-icon fa fa-calculator"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;"></span>
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;"> </span>
                 <div class="infobox-content">
-                    <span class="label label-pink arrowed-in arrowed-in-right"> Obligate Amount </span>
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
                 </div>
             </div>
         </div>
@@ -51,14 +52,25 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-red">
+        <div class="infobox infobox-pink">
             <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
+                <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;"> </span>
+                <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;"></span>
                 <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                    <span class="label label-pink arrowed-in arrowed-in-right"> Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-blue">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_utilized_amount" style="font-size:11pt; color: grey;"> </span>
+                <div class="infobox-content">
+                    <span class="label label-primary arrowed-in arrowed-in-right"> Utilized Amount </span>
                 </div>
             </div>
         </div>
@@ -123,15 +135,13 @@
                     }
                     <b class="green">@fund_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-
-                    <span class="grey"> OA: </span>
+                    <span class="grey">RB: </span>
                     @{
-                        var fund_obligated_amount = item.FundSources.Sum(x => x.obligated_amount);
-                        total_obligated_amount += fund_obligated_amount;
+                        var fund_remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
+                        total_remaining_balance += fund_remaining_balance;
                     }
-                    <b class="orange">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                    <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-
                     <span class="grey"> RA: </span>
                     @{
                         var fund_realignment_amount = item.FundSources.Sum(x => x.realignment_amount);
@@ -139,13 +149,19 @@
                     }
                     <b class="orange">@fund_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-
-                    <span class="grey">RB: </span>
+                    <span class="grey"> OA: </span>
                     @{
-                        var fund_remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
-                        total_remaining_balance += fund_remaining_balance;
+                        var fund_obligated_amount = item.FundSources.Sum(x => x.obligated_amount);
+                        total_obligated_amount += fund_obligated_amount;
                     }
-                    <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                    <b class="pink">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                    <br />
+                    <span class="grey">UA: </span>
+                    @{
+                        var fund_utilized_amount = item.FundSources.Sum(x => x.utilized_amount);
+                        total_utilized_amount += fund_utilized_amount;
+                    }
+                    <b class="blue">@fund_utilized_amount.ToString("C", new CultureInfo("en-PH"))</b>
                 </td>
                 <td>
                     <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
@@ -160,14 +176,13 @@
                     <b class="green">@sub_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
 
-                    <span class="grey">OA: </span>
+                    <span class="grey">RB: </span>
                     @{
-                        var sub_obligated_amount = item.Sub_allotments.Sum(x => x.obligated_amount);
-                        total_obligated_amount += sub_obligated_amount;
+                        var sub_remaining_balance = item.Sub_allotments.Sum(x => x.Remaining_balance);
+                        total_remaining_balance += sub_beginning_balance;
                     }
-                    <b class="orange">@total_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                    <b class="red">@sub_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-
                     <span class="grey">RA: </span>
                     @{
                         var sub_realignment_amount = item.Sub_allotments.Sum(x => x.realignment_amount);
@@ -175,13 +190,20 @@
                     }
                     <b class="orange">@sub_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-
-                    <span class="grey">RB: </span>
+                    <span class="grey">OA: </span>
                     @{
-                        var sub_remaining_balance = item.Sub_allotments.Sum(x => x.Remaining_balance);
-                        total_remaining_balance += sub_beginning_balance;
+                        var sub_obligated_amount = item.Sub_allotments.Sum(x => x.obligated_amount);
+                        total_obligated_amount += sub_obligated_amount;
                     }
-                    <b class="red">@sub_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                    <b class="pink">@sub_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+
+                    <br />
+                    <span class="grey">UA: </span>
+                    @{
+                        var sub_utilized_amount = item.Sub_allotments.Sum(x => x.utilized_amount);
+                        total_utilized_amount += sub_utilized_amount;
+                    }
+                    <b class="blue">@sub_utilized_amount.ToString("C", new CultureInfo("en-PH"))</b>
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
@@ -203,6 +225,7 @@
     $("#total_obligated_amount").html("@total_obligated_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_realignment_amount").html("@total_realignment_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_utilized_amount").html("@total_utilized_amount.ToString("C", new CultureInfo("en-PH"))");
 
 </script>
 

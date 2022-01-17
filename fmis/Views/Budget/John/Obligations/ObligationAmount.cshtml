@@ -444,7 +444,6 @@
                 $("#total_obligated_amount").html(OBLIGATED_AMOUNT);
                 ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
             }
-
         },
         hiddenColumns: {
             columns: [7,8],
@@ -455,6 +454,5 @@
 
     var tableData = JSON.stringify(hot.getSourceData());
     @*console.log(hot.getSourceData());*@
-
 
 </script>
