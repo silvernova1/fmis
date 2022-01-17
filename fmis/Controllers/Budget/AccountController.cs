@@ -7,6 +7,7 @@ using fmis.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,30 +80,27 @@ namespace fmis.Controllers.Budget
         {
             return RedirectToAction("~/Views/Budget_allotments/Index.cshtml");
         }
-        public IActionResult SetYear()
+        public IActionResult Year()
         {
             return View();
         }
 
         //POST
         [HttpPost]
-        public IActionResult Year(string year)
-        {         
-                //var blog = _context.Yearly_reference.Where(s => s.YearlyReference == year).FirstOrDefault().ToString();
-
-                if (year == "2021")
-                {  
-                    return RedirectToAction("Dashboard", "Home");
-                }
-                else { 
-                    return RedirectToAction("SetYear", "Account");
-                }
+        public IActionResult Year([Bind("YearlyReferenceId,YearlyReference,Created_at,Created_At,Updated_at")] Yearly_reference year)
+        {
 
             
-
-
-
-            // return View(result);
+            if (ModelState.IsValid)
+            {
+                var data = _context.Yearly_reference.FirstOrDefault(s=>s.YearlyReference == year.YearlyReference).YearlyReference;
+                if (data == year.YearlyReference)
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                ModelState.AddModelError(string.Empty, "Please input year");
+            }
+            return View(year);
         }
 
         /*[Route("")]

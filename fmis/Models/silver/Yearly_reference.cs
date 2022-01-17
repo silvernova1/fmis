@@ -11,6 +11,7 @@ namespace fmis.Models
     {
         [Key]
         public int YearlyReferenceId { get; set; }
+        [Required]
         public string YearlyReference { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }

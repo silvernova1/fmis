@@ -1,4 +1,4 @@
-﻿@model fmis.ViewModel.LoginViewModel
+﻿@model fmis.Models.Yearly_reference
 <!DOCTYPE html>
 <html lang="en">
 
@@ -78,10 +78,14 @@
                                             <div class="card-body">
                                                 <section>
                                                     <form action="Year" id="account" method="post">
+                                                        
                                                         <div class="form-group">
                                                             <center><label>Set current year</label></center>
-                                                            <span asp-validation-for="Username" class="text-danger"></span>
-                                                            <input type="text" name="year" class="form-control" />
+
+                                                            <input asp-for="YearlyReference" />
+                                                            <br />
+                                                            <br />
+                                                            <span asp-validation-for="YearlyReference" class="text-danger"></span>
                                                         </div>
                                                         <br />
                                                         <br>

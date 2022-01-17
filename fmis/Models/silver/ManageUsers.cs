@@ -13,10 +13,9 @@ namespace fmis.Models.silver
         public string UserId { get; set; }
 
         public string Email { get; set; }
-
-
         [Required(ErrorMessage = "You must enter your username")]
         [Display(Name = "Email")]
+
         public string Username { get; set; }
 
         [Required(ErrorMessage = "You must enter your password")]
