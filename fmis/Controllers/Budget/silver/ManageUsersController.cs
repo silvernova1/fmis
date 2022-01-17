@@ -94,8 +94,9 @@ namespace fmis.Controllers.Budget.silver
         public async Task<IActionResult> Create(ManageUsers model)
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
-            if (ModelState.IsValid)
-            {
+
+                if (ModelState.IsValid)
+                {
                 // Copy data from RegisterViewModel to IdentityUser
                 var user = new fmisUser
                 {
@@ -120,29 +121,8 @@ namespace fmis.Controllers.Budget.silver
                     return RedirectToAction("Index", "ManageUsers");
                 }
             }
-
+            PopulatePsDropDownList();
             return View(model);
-            /* try
-             {
-                 if (ModelState.IsValid)
-                 {
-                     //ManageUsers.Created_At = DateTime.Now;
-                     _Context.Add(ManageUsers);
-                     ManageUsers.Username = ManageUsers.UserId;
-                     ManageUsers.Password = "123";
-                     await _Context.SaveChangesAsync();
-                     return RedirectToAction(nameof(Index));
-
-
-
-                 }
-             }
-             catch (RetryLimitExceededException *//* dex *//*)
-             {
-                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-             }
-             PopulatePsDropDownList();
-             return View(ManageUsers);*/
         }
 
         // GET: manageusers/Edit/5
