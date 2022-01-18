@@ -23,7 +23,7 @@
     @Model.Budget_allotment.Allotment_title
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
-        @Model.Suballotment_title
+        <b>@Model.Suballotment_title</b>
     </small>
 </h3>
 <hr>
@@ -215,7 +215,7 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][4];
+            var single_token = holder_data[selection[0][0]][5];
 
             var first_column = selection[0][0];
             var last_column = selection[0][2];

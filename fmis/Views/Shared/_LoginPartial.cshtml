@@ -249,61 +249,7 @@
                         </div>
                     </div>
 
-
-
-
-                    <style>
-    a {
-        display: inline-block;
-    }
-</style>
-  
-@using (Html.BeginForm("Login", "Account", FormMethod.Post))  
-{
-
-<div class="card" id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
-    <br><br><br>
-            <center>
-                <h6>Sign in to start your session.</h6>
-                <img src="~/portfolio_bootstrap/img/about/doh.png" alt="" height="100" width="100">
-            </center>
-    <br>
-    <div class="card-body">
-        <section>
-            <form id="account" method="post">
-                <div class="form-group">
-                    <i class="bi bi-person-circle"></i> <label for="@Html.LabelFor(a => a.Username)" style="margin-right:83%;"></label>
-                    <span class="text-danger">@Html.ValidationMessageFor(a=>a.Username)</span>
-                    <input type="text" id="@Html.TextBoxFor(a => a.Username)" class="form-control" />
-
-                </div>
-                <div class="form-group mt-3">
-                    <i class="bi bi-person-circle"></i> <label for="@Html.LabelFor(a => a.Password)" style="margin-right:83%;"></label>
-                    <span class="text-danger">@Html.ValidationMessageFor(a=>a.Password)</span>
-                    <input type="password" id="@Html.PasswordFor(a => a.Password)" class="form-control" />
-                </div>
-                <br />
-                @*<div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe" style="margin-right:60%;">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                    <br />
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                </div>*@
-                <br>
-                <div class="form-group">
-                    <button type="submit" value="Login" class="btn btn-success btn-block btn-flat" style="margin-left:70%; font-size:13px;">SIGN IN <i class="bi bi-box-arrow-in-right"></i> </button>
-                </div>
-            </form>
-        </section>
-    </div>
-</div>
-}  
-
-
+                    <!-- JOHN LOGIN CODE HERE !!!!-->
 
                     <!-- End Left services -->
                     <div class="col-md-4 col-sm-4 col-xs-12">

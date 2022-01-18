@@ -111,47 +111,28 @@ namespace fmis.Controllers
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation");
-            var obligations = _context.Obligation.Where(s => s.status == "activated")
-                .Select(x => new ObligationData()
-                {
-                    Id = x.Id,
-                    source_id = x.source_id,
-                    source_type = x.source_type,
-                    Date = x.Date.ToShortDateString(),
-                    Dv = x.Dv,
-                    Pr_no = x.Pr_no,
-                    Po_no = x.Po_no,
-                    Payee = x.Payee,
-                    Address = x.Address,
-                    Particulars = x.Particulars,
-                    Ors_no = x.Ors_no,
-                    Gross = x.Gross,
-                    Created_by = x.Created_by,
-                    Date_recieved = x.Date_recieved.ToShortDateString(),
-                    Time_recieved = x.Time_recieved.ToString("HH:mm:ss"),
-                    Date_released = x.Date_released.ToShortDateString(),
-                    Time_released = x.Time_released.ToString("HH:mm:ss"),
-                    obligation_token = x.obligation_token,
-                    status = x.status
-                });
 
-            var obligation_json = await obligations
+            var obligation = await _context
+                                    .Obligation
+                                    .Where(x => x.status == "activated")
                                     .AsNoTracking()
                                     .ToListAsync();
-            ViewBag.obligation_json = JsonSerializer.Serialize(obligation_json);
 
-            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source" })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
+            //return Json(obligation_json);
+            ViewBag.obligation_json = JsonSerializer.Serialize(obligation);
 
-            ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
-            return View("~/Views/Budget/John/Obligations/Index.cshtml");
+            var fund_sub_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
+            ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data);
+
+            return View("~/Views/Budget/John/Obligations/Index.cshtml",obligation);
         }
 
-      
 
-        /*[HttpGet]
-        [ValidateAntiForgeryToken]*/
-        public async Task<IActionResult> openObligationAmount(int id,string obligation_token)
+
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> openObligationAmount(int id, string obligation_token)
         {
             var uacs_data = JsonSerializer.Serialize(await _UacsContext.Uacs.AsNoTracking().ToListAsync());
             ViewBag.uacs = uacs_data;
@@ -159,15 +140,15 @@ namespace fmis.Controllers
             if (id != 0)
             {
                 obligation = await _context.Obligation
-                    .Include(x => x.ObligationAmounts)
+                    .Include(x => x.ObligationAmounts.Where(x => x.status == "activated"))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == id);
                 obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
             }
-            else 
+            else
             {
                 obligation = await _context.Obligation
-                    .Include(x => x.ObligationAmounts)
+                    .Include(x => x.ObligationAmounts.Where(x => x.status == "activated"))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.obligation_token == obligation_token);
                 obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
@@ -185,7 +166,7 @@ namespace fmis.Controllers
         // GET: Obligations/Create
         public IActionResult Create()
         {
-            
+
             return View();
         }
 
@@ -208,7 +189,7 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
-            var data_holder = this._context.Obligation;
+            var data_holder = _context.Obligation;
             foreach (var item in data)
             {
                 var obligation = new Obligation(); //CLEAR OBJECT
@@ -340,28 +321,27 @@ namespace fmis.Controllers
         // POST: Obligations/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteObligation(DeleteData data)
+        public IActionResult DeleteObligation(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {
-                var data_holder = this._context.Obligation;
                 foreach (var many in data.many_token)
-                {
-                    data_holder.Where(s => s.obligation_token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.obligation_token == many.many_token).FirstOrDefault().obligation_token = many.many_token;
-                    await _context.SaveChangesAsync();
-                }
+                    setUpDeleteData(many.many_token);
             }
             else
-            {
-                var data_holder = this._context.Obligation;
-                data_holder.Where(s => s.obligation_token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.obligation_token == data.single_token).FirstOrDefault().obligation_token = data.single_token;
-
-                await _context.SaveChangesAsync();
-            }
+                setUpDeleteData(data.single_token);
 
             return Json(data);
+        }
+
+        public void setUpDeleteData(string obligation_token)
+        {
+            var obligation = new Obligation(); //CLEAR OBJECT
+            obligation = _context.Obligation.Where(s => s.obligation_token == obligation_token).FirstOrDefault();
+            obligation.status = "deactivated";
+
+            _context.Update(obligation);
+            _context.SaveChanges();
         }
 
         private bool ObligationExists(int id)
@@ -370,8 +350,7 @@ namespace fmis.Controllers
         }
 
         //EXPORTING PDF FILE
-
-        public async Task<IActionResult> PrintOrs(String id)
+        public async Task<IActionResult> PrintOrs(int id)
         {
             Int32 ID = Convert.ToInt32(id);
 
@@ -379,8 +358,6 @@ namespace fmis.Controllers
                 .Include(f=>f.FundSource)
                 .ThenInclude(p=>p.Prexc)
                 .FirstOrDefaultAsync(m=>m.Id == ID);
-
-
 
 
             string ExportData = "This is pdf generated";

@@ -1,5 +1,4 @@
 ﻿using fmis.Models.John;
-using fmis.Models.EnerZ;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +22,6 @@ namespace fmis.Models
         public string Address { get; set; }
         public string Particulars { get; set; }
         public int Ors_no { get; set; }
-        public string Fund_source { get; set; }
         public float Gross { get; set; }
         public int Created_by { get; set; }
         [DataType(DataType.Date)]

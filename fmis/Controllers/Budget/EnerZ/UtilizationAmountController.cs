@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using fmis.Data.Enerz;
-using fmis.Models;
 using fmis.Data;
-using fmis.Models.EnerZ;
+using fmis.Models;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using Rotativa.AspNetCore;
 
-namespace fmis.Controllers
+namespace fmis.Controllers.Budget
 {
     public class UtilizationAmountController : Controller
     {
@@ -86,7 +84,7 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveUtilizationAmount(List<UtilizationAmountData> data)
         {
-            var data_holder = _MyDbContext.UtilizationAmount;
+            var data_holder = _context.UtilizationAmount;
             decimal utilized_amount = 0;
 
             foreach (var item in data)
@@ -108,7 +106,7 @@ namespace fmis.Controllers
                 utilization_amount.utilization_amount_token = item.utilization_amount_token;
                 utilized_amount += item.Amount;
 
-                _MyDbContext.UtilizationAmount.Update(utilization_amount);
+                _context.UtilizationAmount.Update(utilization_amount);
                 await _context.SaveChangesAsync();
             }
             return Json(data);
@@ -140,10 +138,10 @@ namespace fmis.Controllers
             {
                 var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.source_id).FirstOrDefaultAsync();
                 fund_source.Remaining_balance = calculation_data.remaining_balance;
-                fund_source.obligated_amount = calculation_data.utilized_amount;
+                fund_source.utilized_amount = calculation_data.utilized_amount;
 
                 remaining_balance = fund_source.Remaining_balance;
-                utilized_amount = fund_source.obligated_amount;
+                utilized_amount = fund_source.utilized_amount;
 
                 _MyDbContext.FundSources.Update(fund_source);
                 _MyDbContext.SaveChanges();
@@ -154,10 +152,10 @@ namespace fmis.Controllers
 
                 var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == utilization.source_id).FirstOrDefaultAsync();
                 sub_allotment.Remaining_balance = calculation_data.remaining_balance;
-                sub_allotment.obligated_amount = calculation_data.utilized_amount;
+                sub_allotment.utilized_amount = calculation_data.utilized_amount;
 
                 remaining_balance = sub_allotment.Remaining_balance;
-                utilized_amount = sub_allotment.obligated_amount;
+                utilized_amount = sub_allotment.utilized_amount;
 
                 _MyDbContext.Sub_allotment.Update(sub_allotment);
                 _MyDbContext.SaveChanges();
@@ -197,14 +195,14 @@ namespace fmis.Controllers
             {
                 var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.source_id).FirstOrDefaultAsync();
                 remaining_balance = fund_source.Remaining_balance;
-                utilized_amount = fund_source.obligated_amount;
+                utilized_amount = fund_source.utilized_amount;
             }
             else if (utilization.source_type == "sub_allotment")
             {
                 //code ni amalio
                 var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == utilization.source_id).FirstOrDefaultAsync();
                 remaining_balance = sub_allotment.Remaining_balance;
-                utilized_amount = sub_allotment.obligated_amount;
+                utilized_amount = sub_allotment.utilized_amount;
             }
 
             GetUtilizedAndRemaining get_utilized_remaining = new GetUtilizedAndRemaining();

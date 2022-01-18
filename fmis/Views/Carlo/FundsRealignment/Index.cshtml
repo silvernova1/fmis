@@ -23,7 +23,7 @@
     @Model.BudgetAllotment.Allotment_title
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
-        @Model.FundSourceTitle
+        <b>@Model.FundSourceTitle</b>
     </small>
 </h3>
 <hr />
@@ -107,7 +107,7 @@
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
             data: { data: ajax_data },
             success: function (output) {
-                $('#loading_modal').modal('hide');
+                console.log(output);
             }
         });
     }
@@ -223,8 +223,7 @@
 				"single_token": single_token,
 				"many_token": many_token
 			};
-
-			console.log(ajax_data);
+			//console.log(ajax_data);
             ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
 		},
         afterUndo: function (index, column) {
@@ -247,10 +246,11 @@
                     var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
                     $.get('@Url.Action("fundSourceAmountRemainingBalance", "FundsRealignment")' + "?fundsource_amount_token=" + fundsource_amount_token,function(fundsource_amount_remaining_balance) {
                         hot.setDataAtCell(row, 1, fundsource_amount_remaining_balance);
+                        TRAP_THE_LOAD = true; //prevent to load 2 times
                     });
                 }
                 else if (col == 2) {
-                    console.log("check the col 0");
+                    console.log("check the col 2");
                     TRAP_THE_LOAD = false; //allow to save the col 2 in else
                 }   
                 else if (col == 3) { //when inputting the realigmnent amount
@@ -269,7 +269,6 @@
                         var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
                         $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id + "&fundsource_amount_token=" + fundsource_amount_token, function (result) {
                             displayTotalCalculation(result);
-                            //console.log(result);
                             var post_remaining_balance = result.remaining_balance;
                             var post_realignment_amount = result.realignment_amount;
                             var post_fundsource_amount_remaining = result.fundSourceAmounts[0].remaining_balance;
@@ -305,7 +304,8 @@
                                 //console.log(calculated_amount_data);
                                 var url = '@Url.Action("realignmentAmountSave", "FundsRealignment")'
                                 $.post(url, calculated_amount_data, function (calculation) {
-                                    trapTheCell(row, 1, post_fundsource_amount_remaining); //bugs this code in post fund source amount remaining balance
+                                    hot.setDataAtCell(row, 1, post_fundsource_amount_remaining);
+                                    TRAP_THE_LOAD = true; //prevent to load 2 times
                                     console.log(calculation);
                                     displayTotalCalculation(calculation);
                                 });
@@ -336,7 +336,6 @@
                     });
                 });
                 console.log(ajax_data);
-
                 ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
             }
 		},
