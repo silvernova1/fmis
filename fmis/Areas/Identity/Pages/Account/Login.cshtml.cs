@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using fmis.Data;
+using fmis.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace fmis.Areas.Identity.Pages.Account
 {
@@ -21,14 +25,16 @@ namespace fmis.Areas.Identity.Pages.Account
         private readonly UserManager<fmisUser> _userManager;
         private readonly SignInManager<fmisUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly MyDbContext _MyDbCOntext;
 
-        public LoginModel(SignInManager<fmisUser> signInManager, 
+        public LoginModel(MyDbContext context, SignInManager<fmisUser> signInManager, 
             ILogger<LoginModel> logger,
             UserManager<fmisUser> userManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _MyDbCOntext = context;
         }
 
         [BindProperty]
@@ -44,12 +50,15 @@ namespace fmis.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            public string Username { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
+
+            [Required]
+            [Display(Name = "Year")]
+            public string Year { get; set; }
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
@@ -57,6 +66,7 @@ namespace fmis.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            ViewData["Year"] = _MyDbCOntext.Yearly_reference.ToList();
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -72,9 +82,9 @@ namespace fmis.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null, string Year = null)
         {
-            returnUrl ??= Url.Content("~/Account/Year");
+            returnUrl ??= Url.Content("~/Home/Dashboard");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         
@@ -82,7 +92,7 @@ namespace fmis.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -107,6 +117,24 @@ namespace fmis.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
+/*        private void PopulateYearDropDownList()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var departmentsQuery = from d in _MyDbCOntext.Yearly_reference
+                                   orderby d.YearlyReference
+                                   select d;
+            ViewBag.Year = new SelectList((from s in _MyDbCOntext.Yearly_reference.ToList()
+                                           select new
+                                           {
+                                               Id = s.YearlyReferenceId,
+                                               year = s.YearlyReferenceId
+                                           }),
+                                       "Id",
+                                       "year",
+                                       null);
+
+        }*/
 
     }
 }

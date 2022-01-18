@@ -62,7 +62,6 @@
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Migrations\" />
 		<Folder Include="ViewBag\" />
 		<Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
 		<Folder Include="wwwroot\Rotativa\" />

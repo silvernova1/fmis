@@ -13,44 +13,12 @@ using System.Threading.Tasks;
 namespace fmis.Controllers.Budget.John
 {
     /*[Authorize(Roles = "Admin")]*/
-
-
-
-    public class RoleController : Controller
-    {
-        RoleManager<IdentityRole> roleManager;
-
-        public RoleController(RoleManager<IdentityRole> roleManager)
-        {
-            this.roleManager = roleManager;
-        }
-
-        public IActionResult Index()
-        {
-            var roles = roleManager.Roles.ToList();
-            return View(roles);
-        }
-
-        public IActionResult Create()
-        {
-            return View(new IdentityRole());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(IdentityRole role)
-        {
-            await roleManager.CreateAsync(role);
-            return RedirectToAction("Index");
-        }
-    }
-
-
-    /*public class RoleController : Controller
+    public class RolesController : Controller
     {
         private RoleManager<IdentityRole> roleManager;
         private UserManager<fmisUser> userManager;
 
-        public RoleController(RoleManager<IdentityRole> roleMgr, UserManager<fmisUser> userMrg)
+        public RolesController(RoleManager<IdentityRole> roleMgr, UserManager<fmisUser> userMrg)
         {
             roleManager = roleMgr;
             userManager = userMrg;
@@ -148,5 +116,5 @@ namespace fmis.Controllers.Budget.John
             foreach (IdentityError error in result.Errors)
                 ModelState.AddModelError("", error.Description);
         }
-    }*/
+    }
 }

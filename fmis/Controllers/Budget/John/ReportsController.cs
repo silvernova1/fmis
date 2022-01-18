@@ -385,7 +385,7 @@ namespace fmis.Controllers.Budget.John
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
                     .ThenInclude(uacs => uacs.Uacs);
 
-                var realignment_amount = 50;
+               // var realignment_amount = 50;
                 
 
 
@@ -430,7 +430,7 @@ namespace fmis.Controllers.Budget.John
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
                         {
                             total = 0;
-                            var afterrealignment_amount = fundsource_amount.beginning_balance - realignment_amount;
+                            var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
                             
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
@@ -443,12 +443,12 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //REALIGNMENT AMOUNT
-                            ws.Cell(currentRow, 4).Value = "("+ realignment_amount.ToString("N", new CultureInfo("en-US"))+")";
+                            ws.Cell(currentRow, 4).Value = "("+ fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"))+")";
                             ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //TOTAL AFTER REALIGNMENT
-                            ws.Cell(currentRow, 6).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -566,6 +566,8 @@ namespace fmis.Controllers.Budget.John
 
                             foreach (Suballotment_amount suballotment_amount in sa.SubAllotmentAmounts)
                             {
+                                var afterrealignment_suballotmentamount = suballotment_amount.beginning_balance - suballotment_amount.realignment_amount;
+
                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == suballotment_amount.UacsId)?.Account_title.ToUpper().ToString();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
@@ -576,8 +578,13 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+                                //REALIGNMENT AMOUNT
+                                ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                                 //TOTAL AFTER REALIGNMENT
-                                ws.Cell(currentRow, 6).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = afterrealignment_suballotmentamount.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 

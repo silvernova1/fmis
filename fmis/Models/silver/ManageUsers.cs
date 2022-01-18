@@ -27,6 +27,9 @@ namespace fmis.Models.silver
         [Display(Name = "Remember me")]
 
         public bool RememberMe { get; set; }
+
+        [Required]
+        [Display(Name = "User Role")]
         public string UserRole { get; set; }
         public DateTime Created_At { get; set; }
 
