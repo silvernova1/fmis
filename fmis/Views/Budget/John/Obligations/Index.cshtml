@@ -141,7 +141,7 @@
 		fund_sub_counter++;
 	});
 
-	console.log(fund_sub_data_dropdown);
+	console.log("fund source dropdown: "+fund_sub_data_dropdown);
 
 	const data = [];
 	var counter = 0;
@@ -186,6 +186,7 @@
 		},
         colWidths: [250, 100, 100, 100, 100, 100, 250, 250, 250, 100, 100, 100, 100, 100, 100, 100],
 		height: 'auto',
+
         colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'GROSS','DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
 		columns: [
             {
@@ -281,11 +282,7 @@
 				"make_bold": {
 					name: 'Print ORS',
 					callback: function (key, options) {
-						var selection = this.getSelected();
-						var holder_data = this.getData();
-						var holder_id = holder_data[selection[0][0]][15];
-						var url = '@Url.Action("PrintOrs", "Obligations")' + "?id=" + holder_id;
-						window.open(url);
+						printOrs();
 					}
 				},
 				"": {
@@ -462,6 +459,32 @@
 		licenseKey: 'non-commercial-and-evaluation',
 
 	});
+
+	function printOrs() {
+        var selected = hot.getSelected() || [];
+		var holder_data = hot.getData();
+
+		var first_column = selected[0][0];
+		var last_column = selected[0][2];
+		var many_token = [];
+				
+		for (let j = first_column; j <= last_column; j++) {
+            many_token.push(holder_data[j][15]);
+		}
+
+		var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
+		for (i = 0; i < many_token.length; i++) {
+			if ((i + 1) != many_token.length)
+				url = url + "id=" + many_token[i] + "&";
+			else
+				url = url + "id=" + many_token[i];
+        }
+
+		window.open(url);
+		//console.log(url);
+
+    }
+
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@

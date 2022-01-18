@@ -5,7 +5,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Migrations\**" />
+	  <Content Remove="Migrations\**" />
+	  <EmbeddedResource Remove="Migrations\**" />
+	  <None Remove="Migrations\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Remove="wwwroot\assets\js\jquery.signalR-2.4.1.min.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Migrations\20220117014832_MyDb.cs" />
+	  <Compile Include="Migrations\20220117014832_MyDb.Designer.cs" />
+	  <Compile Include="Migrations\20220117065314_arnel.cs" />
+	  <Compile Include="Migrations\20220117065314_arnel.Designer.cs" />
+	  <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -62,7 +77,6 @@
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Migrations\" />
 		<Folder Include="ViewBag\" />
 		<Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
 		<Folder Include="wwwroot\Rotativa\" />

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using fmis.Models.John;
 
 namespace fmis.Models
 {
@@ -24,6 +25,8 @@ namespace fmis.Models
         public string obligation_amount_token { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
+        public FundSource fundSource { get; set; }
+       
 
         public ObligationAmount()
         {
