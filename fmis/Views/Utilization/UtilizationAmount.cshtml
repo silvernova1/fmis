@@ -41,9 +41,9 @@
         <div class="infobox-data">
             <span class="infobox-data-number" id="total_utilized_amount" style="font-size:11pt; color:grey;">
                 @if (Model.source_type == "fund_source")
-                    @Model.FundSource.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSource.FirstOrDefault().utilized_amount.ToString("C", new CultureInfo("en-PH"))
                     else if (Model.source_type == "sub_allotment")
-                        @Model.SubAllotment.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                        @Model.SubAllotment.FirstOrDefault().utilized_amount.ToString("C", new CultureInfo("en-PH"))
             </span>
             <div class="infobox-content">
                 <span class="label label-warning arrowed-in arrowed-in-right"> Utilized Amount </span>
@@ -148,15 +148,11 @@
     var CHECK_FIRST_ROW1 = false;
     var INSUFFICIENT_AMOUNT = false;
     var INSUFFICIENT_AMOUNT1 = false;
-    @*var INSUFFICIENT_AMOUNT2 = false;*@
     var COUNT_AFTER_ROW = 0;
     var UTILIZATION_TOKEN = $("#utilization_token").val();
-    var UTILIZED_AMOUNT = $("#utilized_amount").val();
+    var UTILIZED_AMOUNT = $("#utilized_Aamount").val();
     var REMAINING_BALANCE = 0;
-    @*var POST_AMOUNT = 0;*@
     var TRAP_SAVE_AMOUNT = false;
-    @*var OLD_VALUE = 0;
-    var NEW_VALUE = 0;*@
 
     var utilization_id = $("#utilization_id").val();
     let generateUtilizationAmountToken = () => {
@@ -201,7 +197,7 @@
     const utilization_amount_handsontable = [];
     var counter = 0;
     $.each(utilization_amount, function () {
-        obligation_amount_handsontable[counter] = [
+        utilization_amount_handsontable[counter] = [
             get_account_title[this.UacsId],
             this.Expense_code,
             this.Amount,
@@ -345,18 +341,7 @@
                     ajaxServerAmount(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
                 }
                 else if (col == 2) {
-                    @*OLD_VALUE = oldValue;
-                    NEW_VALUE = newValue;*@
-                    @*if (oldValue == newValue) {
-                        console.log("trap the logs!");
-                        return;
-                    }*@
-                    @*else if (INSUFFICIENT_AMOUNT1) {
-                        INSUFFICIENT_AMOUNT1 = false;
-                        console.log("insufficient amount")
-                        return;
-                    }*@
-
+                   
                     //get the exact remaining balance from DB
                     var url = '@Url.Action("getRemainingAndUtilized", "UtilizationAmount")';
                     var post_calculation_data = {

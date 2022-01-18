@@ -128,11 +128,12 @@ namespace fmis.Controllers.Budget.Carlo
         public async Task <IActionResult> SaveFundsRealignment(List<FundsRealignmentData> data)
         {
             var data_holder = _context.FundsRealignment;
+            var funds_realignment = new FundsRealignment(); //CLEAR OBJECT
 
             foreach (var item in data)
             {
 
-                var funds_realignment = new FundsRealignment(); //CLEAR OBJECT
+                funds_realignment = new FundsRealignment(); //CLEAR OBJECT
                 if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token) != null) //CHECK IF EXIST
                     funds_realignment = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
 
@@ -146,7 +147,7 @@ namespace fmis.Controllers.Budget.Carlo
                 _context.FundsRealignment.Update(funds_realignment);
                 await _context.SaveChangesAsync();
             }
-            return Json(data);
+            return Json(funds_realignment);
         }
 
         [HttpPost]

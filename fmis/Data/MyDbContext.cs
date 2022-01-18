@@ -4,7 +4,6 @@ using fmis.Models.John;
 using fmis.Models.silver;
 using System;
 using fmis.Models.Budget;
-using fmis.Models.EnerZ;
 
 namespace fmis.Data
 {

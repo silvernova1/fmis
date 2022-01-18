@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220118074853_MyDb")]
+    partial class MyDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,62 +126,6 @@ namespace fmis.Migrations
                     b.ToTable("Division");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("fmis.Models.EnerZ.UtilizationAmount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Created_At")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("Expense_code")
-                        .HasColumnType("bigint");
-
-                    b.Property<float>("Total_disbursement")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Total_net_amount")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Total_others")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Total_tax_amount")
-                        .HasColumnType("real");
-
-                    b.Property<int>("UacsId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Updated_At")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UtilizationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("utilization_amount_token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("utilization_token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UtilizationId");
-
-                    b.ToTable("UtilizationAmount");
-                });
-
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.Property<int>("Id")
@@ -299,12 +245,9 @@ namespace fmis.Migrations
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-=======
                     b.Property<decimal>("utilized_amount")
                         .HasColumnType("decimal(18,2)");
 
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                     b.HasKey("FundSourceId");
 
                     b.HasIndex("BudgetAllotmentId");
@@ -462,12 +405,6 @@ namespace fmis.Migrations
                     b.Property<long>("Expense_code")
                         .HasColumnType("bigint");
 
-<<<<<<< HEAD
-                    b.Property<int?>("FundSourceId")
-                        .HasColumnType("int");
-
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
 
@@ -500,11 +437,6 @@ namespace fmis.Migrations
 
                     b.HasKey("Id");
 
-<<<<<<< HEAD
-                    b.HasIndex("FundSourceId");
-
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                     b.HasIndex("ObligationId");
 
                     b.ToTable("ObligationAmount");
@@ -779,12 +711,9 @@ namespace fmis.Migrations
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-=======
                     b.Property<decimal>("utilized_amount")
                         .HasColumnType("decimal(18,2)");
 
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                     b.HasKey("SubAllotmentId");
 
                     b.HasIndex("BudgetAllotmentId");
@@ -926,12 +855,6 @@ namespace fmis.Migrations
                     b.Property<string>("Dv")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-                    b.Property<string>("Fund_source")
-                        .HasColumnType("nvarchar(max)");
-
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                     b.Property<float>("Gross")
                         .HasColumnType("real");
 
@@ -976,8 +899,6 @@ namespace fmis.Migrations
                     b.ToTable("Utilization");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("fmis.Models.UtilizationAmount", b =>
                 {
                     b.Property<int>("Id")
@@ -1031,7 +952,6 @@ namespace fmis.Migrations
                     b.ToTable("UtilizationAmount");
                 });
 
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
                 {
                     b.Property<int>("YearlyReferenceId")
@@ -1175,18 +1095,6 @@ namespace fmis.Migrations
                     b.Navigation("Requesting_office");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("fmis.Models.EnerZ.UtilizationAmount", b =>
-                {
-                    b.HasOne("fmis.Models.Utilization", null)
-                        .WithMany("UtilizationAmount")
-                        .HasForeignKey("UtilizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.HasOne("fmis.Models.John.FundSourceAmount", "FundSourceAmount")
@@ -1252,23 +1160,11 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.ObligationAmount", b =>
                 {
-<<<<<<< HEAD
-                    b.HasOne("fmis.Models.John.FundSource", "fundSource")
-                        .WithMany()
-                        .HasForeignKey("FundSourceId");
-
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("ObligationAmounts")
                         .HasForeignKey("ObligationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-<<<<<<< HEAD
-
-                    b.Navigation("fundSource");
-=======
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
@@ -1381,8 +1277,6 @@ namespace fmis.Migrations
                         .HasForeignKey("UtilizationId");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("fmis.Models.UtilizationAmount", b =>
                 {
                     b.HasOne("fmis.Models.Utilization", null)
@@ -1392,7 +1286,6 @@ namespace fmis.Migrations
                         .IsRequired();
                 });
 
->>>>>>> f3c4f4c2d9a66a56e13045d47167854a58f1f228
             modelBuilder.Entity("fmis.Models.silver.BudgetAllotment", b =>
                 {
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")

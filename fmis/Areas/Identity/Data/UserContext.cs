@@ -11,6 +11,10 @@ namespace fmis.Data
 {
     public class UserContext : IdentityDbContext<fmisUser>
     {
+        public UserContext()
+        {
+        }
+
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
@@ -36,6 +40,11 @@ namespace fmis.Data
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
 
             builder.Entity<fmisUser>().HasData(user);
+        }
+
+        public static UserContext Create()
+        {
+            return new UserContext();
         }
     }
 }

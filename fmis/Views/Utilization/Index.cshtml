@@ -21,11 +21,15 @@
     input {
         width: 750px;
     }
+
+    .wtHider {
+        margin-bottom: 100px;
+    }
 </style>
 
 <input type="hidden" class="utilization" value="@ViewBag.utilization_json">
 <h3 class="grey lighter smaller">
-    UTILIZATION
+   (BURS) Budget Utilization Request and Status
 </h3>
 <hr>
 @*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
@@ -171,7 +175,6 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        width: '100%',
         height: 'auto',
         className: 'as-you-type-demo',
         filters: true,
@@ -278,20 +281,6 @@
             searchResultClass: 'search-result-custom'
         },
         contextMenu: {
-           @* items: {
-                "make_bold": {
-                    name: 'Print BUR',
-                    callback: function (key, options) {
-                        var selection = this.getSelected();
-                        var holder_data = this.getData();
-                        var holder_id = holder_data[selection[0][0]][15];
-                        var url = '@Url.Action("PrintBur", "Utilization")' + "?id=" + holder_id;
-                        window.open(url);
-
-                    }
-                }, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-            }
-        },*@
                 items: {
 				"make_bold": {
 					name: 'Print BUR',
@@ -472,7 +461,6 @@
 				console.log(ajax_data);
 			}
 		},
-        height: '350px',
         hiddenColumns: {
             columns: [15,16],
             indicators: true

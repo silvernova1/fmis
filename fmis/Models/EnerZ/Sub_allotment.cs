@@ -23,6 +23,7 @@ namespace fmis.Models
         public decimal Remaining_balance { get; set; }
         public decimal Beginning_balance { get; set; }
         public decimal obligated_amount { get; set; }
+        public decimal utilized_amount { get; set; }
         public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public int? BudgetAllotmentId { get; set; }

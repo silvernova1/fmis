@@ -50,7 +50,7 @@ namespace fmis.Controllers.Budget
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("SetYear", "Account");
+                    return RedirectToAction("Year", "Account");
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");

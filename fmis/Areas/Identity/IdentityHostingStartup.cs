@@ -20,6 +20,9 @@ namespace fmis.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("UserContextConnection")));
 
+                services.AddScoped<IUserClaimsPrincipalFactory<fmisUser>,
+                ApplicationUserClaimsPrincipalFactory>();
+
                 services.AddDefaultIdentity<fmisUser>(options => { options.SignIn.RequireConfirmedAccount = false;
                     options.User.AllowedUserNameCharacters = " abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                     options.Password.RequiredLength = 3;

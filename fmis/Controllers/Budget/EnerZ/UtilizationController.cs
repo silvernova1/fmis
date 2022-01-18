@@ -75,7 +75,7 @@ namespace fmis.Controllers
         // GET: Utilization
         public async Task <IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "utilization");
+            ViewBag.filter = new FilterSidebar("ors", "utilization");
             ViewBag.layout = "_Layout";
             var utilization = _context.Utilization.Where(s => s.status == "activated")
                  .Select(x => new UtilizationData()
@@ -91,7 +91,6 @@ namespace fmis.Controllers
                      Address = x.Address,
                      Particulars = x.Particulars,
                      Ors_no = x.Ors_no,
-                     Fund_source = x.Fund_source,
                      Gross = x.Gross,
                      Created_by = x.Created_by,
                      Date_recieved = x.Date_recieved.ToShortDateString(),

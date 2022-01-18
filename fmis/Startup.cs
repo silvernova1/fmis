@@ -37,7 +37,7 @@ namespace fmis
         {
            
             services.AddControllers();
-                
+
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddSession();
@@ -106,17 +106,25 @@ namespace fmis
             services.AddDbContext<SaobContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("SaobContext")));
 
+            services.AddDbContext<UtilizationAmountContext>(options =>
+           options.UseSqlServer(Configuration.GetConnectionString("UtilizationAmountContext")));
+
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             //amalio
             services.Add(new ServiceDescriptor(typeof(Personal_InfoMysqlContext), new Personal_InfoMysqlContext(Configuration.GetConnectionString("Personal_InfoMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            
+
+
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+            CreateRoles(serviceProvider).Wait();
 
 
             if (env.IsDevelopment())
@@ -151,7 +159,7 @@ namespace fmis
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<fmisUser>>();
-            string[] roleNames = { "Admin", "Manager", "Member" };
+            string[] roleNames = { "Super Admin", "Admin", "Budget User" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
@@ -168,12 +176,12 @@ namespace fmis
             var poweruser = new fmisUser
             {
 
-                UserName = Configuration["AppSettings:UserName"],
-                Email = Configuration["AppSettings:UserEmail"],
+                UserName = "doh7budget",
+                Email = "doh7budget@gmail.com",
             };
             //Ensure you have these values in your appsettings.json file
-            string userPWD = Configuration["AppSettings:UserPassword"];
-            var _user = await UserManager.FindByEmailAsync(Configuration["AppSettings:AdminUserEmail"]);
+            string userPWD = "doh7budget";
+            var _user = await UserManager.FindByEmailAsync("doh7budget");
 
             if (_user == null)
             {
