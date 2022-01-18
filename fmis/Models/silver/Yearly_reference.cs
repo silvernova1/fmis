@@ -16,7 +16,9 @@ namespace fmis.Models
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
-        public BudgetAllotment Budget_allotment { get; set; }
+        public List<BudgetAllotment> BudgetAllotments { get; set; }
+
+       // public BudgetAllotment Budget_allotment { get; set; }
 
         public Yearly_reference()
         {

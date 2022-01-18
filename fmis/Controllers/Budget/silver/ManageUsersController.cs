@@ -23,13 +23,18 @@ namespace fmis.Controllers.Budget.silver
         private readonly PersonalInformationMysqlContext _pis_context;
         private UserManager<fmisUser> userManager;
         private SignInManager<fmisUser> signinManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+ 
 
-        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context, UserManager<fmisUser> usrMgr, SignInManager<fmisUser> signManager)
+        UserContext context = new UserContext();
+
+        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context, UserManager<fmisUser> usrMgr, SignInManager<fmisUser> signManager, RoleManager<IdentityRole> roleMgr)
         {
             _Context = Context;
             _pis_context = pis_context;
             userManager = usrMgr;
             signinManager = signManager;
+            roleManager = roleMgr;
         }
         public IActionResult Index(int? id)
         {
@@ -38,6 +43,8 @@ namespace fmis.Controllers.Budget.silver
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
 
             var ManageUsers = _Context.ManageUsers.ToList();
+
+            
 
             string concat_UserId = "(";
             int count = 0;
@@ -82,6 +89,8 @@ namespace fmis.Controllers.Budget.silver
         public IActionResult Create()
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewData["roles"] = roleManager.Roles.ToList();
             PopulatePsDropDownList();
             return View();
         }
@@ -91,24 +100,25 @@ namespace fmis.Controllers.Budget.silver
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ManageUsers model)
+        public async Task<IActionResult> Create(ManageUsers model, string returnUrl = null, string UserRole = null)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            var role = roleManager.FindByIdAsync(UserRole).Result;
 
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
                 {
                 // Copy data from RegisterViewModel to IdentityUser
                 var user = new fmisUser
                 {
-                    UserName = model.Email,
-                    Email = model.Email
+                    UserName = model.Username
                 };
 
                 // Store user data in AspNetUsers database table
-                var result = await userManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password = "123");
+                await userManager.AddToRoleAsync(user, role.Name);
+                //
                 _Context.Add(model);
-                model.Username = user.UserName;
-                model.Password = "123";
+                user.UserName = model.UserId;
+                model.Password = model.Password;
                 await _Context.SaveChangesAsync();
 
 
@@ -116,9 +126,13 @@ namespace fmis.Controllers.Budget.silver
                 // SignInManager and redirect to index action of HomeController
                 if (result.Succeeded)
                 {
+                    if (signinManager.IsSignedIn(User) && User.IsInRole("Super Admin"))
+                    {
+                        return RedirectToAction("Index", "ManageUsers");
+                    }
                     await signinManager.SignInAsync(user, isPersistent: false);
 
-                    return RedirectToAction("Index", "ManageUsers");
+                    return RedirectToAction("Dashboard", "Home");
                 }
             }
             PopulatePsDropDownList();

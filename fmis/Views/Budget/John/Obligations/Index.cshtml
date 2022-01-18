@@ -1,6 +1,6 @@
-﻿
-@model IEnumerable<fmis.Models.Obligation>
+﻿@model IEnumerable<fmis.Models.Obligation>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
 
 @{
     ViewData["Title"] = "Index";
@@ -26,17 +26,16 @@
     .wtHider {
         margin-bottom: 100px;
     }
-
 </style>
 
-<input type="hidden" class="obligation" value="@ViewBag.obligation_json">
+<input type="hidden" class="obligation" value="@JsonSerializer.Serialize(Model)">
 <h3 class="grey lighter smaller">
     (ORS) Obligation Request and Status
 </h3>
 <hr>
 
 <br />
-<div id="example" class="hot" ></div>
+<div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
@@ -54,7 +53,7 @@
                     Close <i class="ace-icon fa fa-close"></i>
                 </button>
             </div>
-            <input type="hidden" class="fund_sub" value="@ViewBag.fundsource">
+            <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
         </div>
     </div>
 </div>
@@ -130,6 +129,7 @@
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
 	var get_fund_sub = [];
+	var get_obligated_amount = [];
 	var fund_sub_counter = 0;
 	$.each($.parseJSON($(".fund_sub").val()), function () {
 		fund_sub_data_dropdown[fund_sub_counter] = this.source_title;
@@ -138,18 +138,19 @@
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
 		get_fund_sub[this.source_id + this.source_type] = this.source_title;
+		get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
 		fund_sub_counter++;
 	});
 
-	console.log(fund_sub_data_dropdown);
+    console.log(get_obligated_amount);
 
 	const data = [];
 	var counter = 0;
 	$.each(obligation, function () {
 		data[counter] = [
 			get_fund_sub[this.source_id + this.source_type], //1
-            this.Gross, //2
-			this.Date, //3
+			get_obligated_amount[this.source_id + this.source_type], //2
+			moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //3
 			this.Dv, //4
 			this.Pr_no, //5
 			this.Po_no, //7
@@ -158,13 +159,13 @@
 			this.Particulars, //9
 			this.Ors_no, //10
 			this.Created_by, //11
-			this.Date_recieved, //12
-			this.Time_recieved, //13
-			this.Date_released, //14
-			this.Time_released, //15
+			moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
+			moment(this.Time_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //13
+			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
+			moment(this.Time_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //15
 			this.Id, //16
 			this.obligation_token //17
-		]
+		];
 		counter++;
 	});
 
@@ -360,6 +361,8 @@
 					many_token: holder_data[j][16]
 				})
 			}
+			console.log("execute here!");
+			console.log(selection);
 
 			var ajax_data = {
 				"single_token": single_token,

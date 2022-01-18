@@ -1,13 +1,13 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using fmis.Areas.Identity.Data
+@model fmis.ViewModel.DashboardVM
+@inject SignInManager<fmisUser> SignInManager
+@inject UserManager<fmisUser> UserManager
+
+    @{
     ViewData["Title"] = "Home Page";
 }
 
-@using Microsoft.AspNetCore.Identity
-@using fmis.Areas.Identity.Data
-@model fmis.ViewModel.DashboardVM
-
-@inject SignInManager<fmisUser> SignInManager
-@inject UserManager<fmisUser> UserManager
 
 <div class="page-header">
     <h1>
@@ -31,7 +31,8 @@
                     <!-- <legend>Form</legend> -->
                     <fieldset>
                         <div class="alert alert-block alert-warning">
-                            <center><label style="font-size: 25pt;">3,344,529,529.45</label></center>
+                            <center><label style="font-size: 25pt;">@Model.FundSources.FirstOrDefault().Beginning_balance</label></center>
+                            @*@Model.BudgetAllotments.FirstOrDefault().Allotment_code*@
                         </div>
                     </fieldset>
                     <center><h4>ALLOTMENT</h4> </center>
@@ -53,13 +54,13 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">3,079,283,170.26</label></center>
+                        <center><label style="font-size: 18pt;">@Model.ObligationAmounts.FirstOrDefault().Amount</label></center>
                         <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">2,494,685,315.10</label></center>
+                        <center><label style="font-size: 18pt;">0</label></center>
                         <center><h5>DISBURSED</h5> </center>
                     </div>
                 </fieldset>
@@ -73,7 +74,7 @@
 <div class="col-sm-3">
     <div class="widget-box">
         <div class="widget-header">
-            <h5 class="widget-title">BALANCE & UPOBLIGATIONS</h5>
+            <h5 class="widget-title">BALANCE & UPAID OBLIGATIONS</h5>
         </div>
 
         <div class="widget-body">
@@ -82,13 +83,13 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">266,302,214.38</label></center>
+                        <center><label style="font-size: 18pt;">0</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">584,697,855.16</label></center>
+                        <center><label style="font-size: 18pt;">0</label></center>
                         <center><h5>UNPAID OBLIGATIONS</h5> </center>
                     </div>
                 </fieldset>
@@ -302,8 +303,8 @@
         var placeholder = $('#cumulative-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
 
-            { label: "BALANCE", data: 70, color: "#68BC31" },
-            { label: "OBLIGATED", data: 30, color: "#2091CF" },
+            { label: "BALANCE", data: @Model.FundSources.FirstOrDefault().Remaining_balance, color: "#68BC31" },
+            { label: "OBLIGATED", data: @Model.FundSources.FirstOrDefault().obligated_amount, color: "#2091CF" },
 
 
         ];

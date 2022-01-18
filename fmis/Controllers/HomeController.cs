@@ -4,6 +4,7 @@ using fmis.Models;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-   /* [Authorize]*/
+    [Authorize(Roles = "Super Admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -63,6 +64,24 @@ namespace fmis.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        private void PopulateYearDropDownList()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            var departmentsQuery = from d in _MyDbCOntext.Yearly_reference
+                                   orderby d.YearlyReference
+                                   select d;
+            ViewBag.Year = new SelectList((from s in _MyDbCOntext.Yearly_reference.ToList()
+                                              select new
+                                              {
+                                                  Id = s.YearlyReferenceId,
+                                                  year = s.YearlyReferenceId
+                                              }),
+                                       "Id",
+                                       "year",
+                                       null);
+
         }
 
         public IActionResult Gallery() 
