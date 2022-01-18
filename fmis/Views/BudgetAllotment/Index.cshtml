@@ -128,35 +128,35 @@
                         <i class="ace-icon fa fa-arrow-right"></i>Fund Source
                     </a>
                     <br />
-                    <span class="grey">BB: </span>
+                    <span class="grey">(BB): </span>
                     @{
                         var fund_beginning_balance = item.FundSources.Sum(x => x.Beginning_balance);
                         total_beginning_balance += fund_beginning_balance;
                     }
                     <b class="green">@fund_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-                    <span class="grey">RB: </span>
+                    <span class="grey">(RB): </span>
                     @{
                         var fund_remaining_balance = item.FundSources.Sum(x => x.Remaining_balance);
                         total_remaining_balance += fund_remaining_balance;
                     }
                     <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-                    <span class="grey"> RA: </span>
+                    <span class="grey">(RA): </span>
                     @{
                         var fund_realignment_amount = item.FundSources.Sum(x => x.realignment_amount);
                         total_realignment_amount += fund_realignment_amount;
                     }
                     <b class="orange">@fund_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-                    <span class="grey"> OA: </span>
+                    <span class="grey">(OA): </span>
                     @{
                         var fund_obligated_amount = item.FundSources.Sum(x => x.obligated_amount);
                         total_obligated_amount += fund_obligated_amount;
                     }
                     <b class="pink">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-                    <span class="grey">UA: </span>
+                    <span class="grey">(UA): </span>
                     @{
                         var fund_utilized_amount = item.FundSources.Sum(x => x.utilized_amount);
                         total_utilized_amount += fund_utilized_amount;
@@ -168,7 +168,7 @@
                         <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                     </a>
                     <br />
-                    <span class="grey">BB: </span>
+                    <span class="grey">(BB): </span>
                     @{
                         var sub_beginning_balance = item.Sub_allotments.Sum(x => x.Beginning_balance);
                         total_beginning_balance += sub_beginning_balance;
@@ -176,21 +176,21 @@
                     <b class="green">@sub_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
 
-                    <span class="grey">RB: </span>
+                    <span class="grey">(RB): </span>
                     @{
                         var sub_remaining_balance = item.Sub_allotments.Sum(x => x.Remaining_balance);
                         total_remaining_balance += sub_beginning_balance;
                     }
                     <b class="red">@sub_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-                    <span class="grey">RA: </span>
+                    <span class="grey">(RA): </span>
                     @{
                         var sub_realignment_amount = item.Sub_allotments.Sum(x => x.realignment_amount);
                         total_realignment_amount += sub_realignment_amount;
                     }
                     <b class="orange">@sub_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>
                     <br />
-                    <span class="grey">OA: </span>
+                    <span class="grey">(OA): </span>
                     @{
                         var sub_obligated_amount = item.Sub_allotments.Sum(x => x.obligated_amount);
                         total_obligated_amount += sub_obligated_amount;
@@ -198,7 +198,7 @@
                     <b class="pink">@sub_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
 
                     <br />
-                    <span class="grey">UA: </span>
+                    <span class="grey">(UA): </span>
                     @{
                         var sub_utilized_amount = item.Sub_allotments.Sum(x => x.utilized_amount);
                         total_utilized_amount += sub_utilized_amount;

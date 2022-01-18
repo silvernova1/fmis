@@ -149,7 +149,7 @@
     var INSUFFICIENT_AMOUNT = false;
     var INSUFFICIENT_AMOUNT1 = false;
     var COUNT_AFTER_ROW = 0;
-    var UTILIZATION_TOKEN = $("utilization_token").val();
+    var UTILIZATION_TOKEN = $("#utilization_token").val();
     var UTILIZED_AMOUNT = $("#utilized_Aamount").val();
     var REMAINING_BALANCE = 0;
     var TRAP_SAVE_AMOUNT = false;
@@ -341,18 +341,7 @@
                     ajaxServerAmount(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
                 }
                 else if (col == 2) {
-                    @*OLD_VALUE = oldValue;
-                    NEW_VALUE = newValue;*@
-                    @*if (oldValue == newValue) {
-                        console.log("trap the logs!");
-                        return;
-                    }*@
-                    @*else if (INSUFFICIENT_AMOUNT1) {
-                        INSUFFICIENT_AMOUNT1 = false;
-                        console.log("insufficient amount")
-                        return;
-                    }*@
-
+                   
                     //get the exact remaining balance from DB
                     var url = '@Url.Action("getRemainingAndUtilized", "UtilizationAmount")';
                     var post_calculation_data = {
