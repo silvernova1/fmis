@@ -282,7 +282,7 @@
 
                             if (AMOUNT > post_fundsource_amount_remaining) {
                                 trapTheCell(row, col, oldValue); //reset the realignment amount from the OLDVALUE,then dapat kani ang una mo display para makuha ang exact amount
-                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance"); //bugs this code in post fund source amount remaining balance
+                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance"); 
                             }
                             else if (AMOUNT > post_remaining_balance)
                                 trapTheLoad(row, col, oldValue, "Insufficient FundSource Remaning Balance Balance!");
@@ -359,6 +359,8 @@
             msg: trap_message,
             sound: false,
         });
+        TRAP_THE_LOAD1 = true; //trap so that can't save in DB
+        TRAP_THE_LOAD = true; //trap so that can't save in DB
         trapTheCell(row, col, oldValue)
         return;
     }
