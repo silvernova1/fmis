@@ -30,16 +30,16 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-pink">
+        <div class="infobox infobox-red">
             <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
+                <i class="ace-icon fa fa-calculator"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Sub_allotments.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                    @Model.Sub_allotments.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-pink arrowed-in arrowed-in-right"> Obligated Amount </span>
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
                 </div>
             </div>
         </div>
@@ -56,19 +56,34 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-red">
+        <div class="infobox infobox-pink">
             <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
+                <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.Sub_allotments.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Sub_allotments.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                    <span class="label label-pink arrowed-in arrowed-in-right"> Obligated Amount </span>
                 </div>
             </div>
         </div>
+        <div class="infobox infobox-blue">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Sub_allotments.Sum(x => x.utilized_amount).ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-primary arrowed-in arrowed-in-right"> Utilized Amount </span>
+                </div>
+            </div>
+        </div>
+
+
     </div><!-- /.widget-body -->
     </div>
     <br />
@@ -136,58 +151,66 @@
                         Beginning Balance
                     </th>
                     <th>
-                        Utilization Balance
-                    </th>
-                    <th>
                         Remaining Balance
                     </th>
                     <th>
-                        Realignment Balance
+                        Realignment Amount
+                    </th>
+                    <th>
+                        Obligated Amount
+                    </th>
+                    <th>
+                        Utilized Amount
                     </th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Sub_allotments)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Suballotment_code)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Suballotment_title)
-                        </td>
-                        <td>
-                            @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
-                        </td>
-                        <td>
-                            <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-                            <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Suballotment_code)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Suballotment_title)
+                    </td>
+                    <td>
+                        @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+                        <a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>
 
-                        </td>
-                        <td>
-                            <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
-                        </td>
-                        <td>
-                            <b class="green">
-                                <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                            </b>
-                        </td>
-                        <td>
-                            <b class="orange">
-                                <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                            </b>
-                        </td>
-                        <td>
-                            <b class="red">
-                                <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                            </b>
-                        </td>
-                        <td>
-                            <b class="blue">
-                                <span>0.00</span>
-                            </b>
-                        </td>
-                    </tr>
+                    </td>
+                    <td>
+                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Sub Realignment</a>
+                    </td>
+                    <td>
+                        <b class="green">
+                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="red">
+                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="orange">
+                            <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="pink">
+                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="blue">
+                            <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

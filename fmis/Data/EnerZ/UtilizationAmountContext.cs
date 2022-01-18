@@ -3,12 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fmis.Models.EnerZ;
-using fmis.Data;
-using fmis.Data.Enerz;
+using fmis.Models;
 
 
-namespace fmis.Data.Enerz
+namespace fmis.Data
 {
     public class UtilizationAmountContext : DbContext
     {
@@ -18,7 +16,7 @@ namespace fmis.Data.Enerz
         {
         }
 
-        public DbSet<fmis.Models.EnerZ.UtilizationAmount> UtilizationAmount { get; set; }
+        public DbSet<fmis.Models.UtilizationAmount> UtilizationAmount { get; set; }
 
     }
 }
