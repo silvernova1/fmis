@@ -158,9 +158,9 @@
 			this.Ors_no, //10
 			this.Created_by, //11
 			moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
-			moment(this.Time_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //13
+			moment(this.Time_recieved).format('HH:mm:ss'), //13
 			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
-			moment(this.Time_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //15
+			moment(this.Time_released).format('HH:mm:ss'), //15
 			this.Id, //16
 			this.obligation_token //17
 		];

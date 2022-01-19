@@ -303,9 +303,8 @@
         },
         afterCreateRow: function (row, column) {
             CHECK_AFTER_ROW = true; //make true taga add sa row para dile ma save sa db ang empty
-            COUNT_AFTER_ROW = 2;
-            hot.setDataAtCell(row, 7, UTILIZATION_TOKEN);
-            hot.setDataAtCell(row, 8, generateUtilizationAmountToken());
+            fillTheCell(row, 7, UTILIZATION_TOKEN);
+            fillTheCell(row, 8, generateUtilizationAmountToken());
         },
         afterChange(changes, source) {
             console.log(source);
@@ -321,9 +320,7 @@
                 } // mao ni siya ang mo trap para dile mo load kaduha if mag set sa cell
                 else if (col == 0) {
                     EXPENSE_CODE = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code;
-                    CHECK_FIRST_ROW = true; //need ni siya para dile ma doble ang pag save
-                    CHECK_FIRST_ROW1 = true; //need ni siya para dile ma doble ang pag save
-                    hot.setDataAtCell(row, col + 1, EXPENSE_CODE);
+                    fillTheCell(row, 1, EXPENSE_CODE);
                     var ajax_data = [];
                     ajax_data.push({
                         UtilizationId: utilization_id,
@@ -364,29 +361,13 @@
                         }
                         AMOUNT = newValue;
 
-                        console.log("OLD VALUE : " + oldValue);
-                        console.log("NEW VALUE : " + newValue);
-                        console.log("AMOUNT : " + AMOUNT);
-                        console.log("REMAINING BALANCE : " + post_remaining_balance);
-
                         if (INSUFFICIENT_AMOUNT1) {
                             INSUFFICIENT_AMOUNT1 = false;
                             console.log("INSUFFICIENT_AMOUNT1");
                             return;
                         }
                         else if (AMOUNT > post_remaining_balance) {
-                            @*POST_AMOUNT = AMOUNT;*@
-                            @*REMAINING_BALANCE = post_remaining_balance;*@
-                            Lobibox.alert("error", {
-                                msg: "Insufficient  Balance!",
-                                sound: false,
-                            });
-                            INSUFFICIENT_AMOUNT1 = true; //trap so that can't save in DB
-                            INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
-                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
-                            @*INSUFFICIENT_AMOUNT1 = true;*@
-                            @*INSUFFICIENT_AMOUNT2 = true;*@
-                            @*return;*@
+                             trapTheInsuficientAmount(row, col, oldValue); //trap the insuficient amount
                         }
                         else {
                             //do the calculalation
@@ -405,6 +386,7 @@
                             $.post(url, calculated_amount_data, function (result) {
                                 $("#total_remaining_balance").html(result.remaining_balance);
                                 $("#total_utilized_amount").html(result.utilized_amount);
+                                 displayTheCalculation(result);
                             });
                         }
                     });
@@ -412,36 +394,24 @@
                 }
             });
 
-            if (CHECK_FIRST_ROW) {
-                console.log("Check first row!");
-                CHECK_FIRST_ROW = false;
+           if (TRAP_THE_LOAD) {
+                console.log("TRAP THE LOAD");
+                TRAP_THE_LOAD = false;
             }
-            else if (CHECK_FIRST_ROW1) {
-                console.log("CHECK FIRST ROW1");
-                CHECK_FIRST_ROW1 = false;
+            else if (TRAP_THE_LOAD1) {
+                console.log("TRAP THE LOAD1");
+                TRAP_THE_LOAD1 = false;
             }
             else if (INSUFFICIENT_AMOUNT) {
                 console.log("INSUFFICIENT_AMOUNT");
                 INSUFFICIENT_AMOUNT = false;
             }
-            @*else if (INSUFFICIENT_AMOUNT2) {
-                console.log("INSUFFICIENT_AMOUNT2");
-                INSUFFICIENT_AMOUNT = false;
-            }*@
             else if (TRAP_SAVE_AMOUNT) {
                 TRAP_SAVE_AMOUNT = false;
                 console.log("TRAP SAVE AMOUNT");
             }
-            @*else if (NEW_VALUE == OLD_VALUE) {
-                console.log("THE SAME VALUE!!!!");
-            }*@
-            @*else if (POST_AMOUNT > REMAINING_BALANCE) {
-                console.log("not enought remaining balance!");
-            }*@
             else
             {
-                @*console.log("POST AMOUNT " + POST_AMOUNT);
-                console.log("REMAINING BALANCE " + REMAINING_BALANCE);*@
                 console.log("else last");
                 UTILIZED_AMOUNT = 0;
                 var ajax_data = [];
@@ -473,7 +443,27 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
-    @*console.log(hot.getSourceData());*@
+   
+     function displayTheCalculation(result) {
+        $("#total_remaining_balance").html(result.remaining_balance);
+        $("#total_obligated_amount").html(result.obligated_amount);
+    }
+
+    function fillTheCell(row, col, fill_message) {
+        TRAP_THE_LOAD = true; //need ni siya para dile ma doble ang pag save
+        TRAP_THE_LOAD1 = true; //need ni siya para dile ma doble ang pag save
+        hot.setDataAtCell(row, col, fill_message);
+    }
+
+    function trapTheInsuficientAmount(row, col, oldValue) {
+        Lobibox.alert("error", {
+            msg: "Insufficient  Balance!",
+            sound: false,
+        });
+        INSUFFICIENT_AMOUNT1 = true; //trap so that can't save in DB
+        INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
+        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+    }
 
 
 </script>

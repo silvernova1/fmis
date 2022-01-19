@@ -154,7 +154,7 @@ namespace fmis
             });
         }
 
-        private async Task CreateRoles(IServiceProvider serviceProvider)
+        /*private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -193,6 +193,6 @@ namespace fmis
 
                 }
             }
-        }
+        }*/
     }
 }
