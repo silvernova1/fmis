@@ -172,7 +172,7 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
-                @*console.log(output);*@
+                console.log(output);
             }
         });
     }
@@ -211,7 +211,6 @@
         counter++;
     });
 
-    @*console.log(obligation_amount_handsontable);*@
 
     const container = document.getElementById('utilization_handsontable');
     const hot = new Handsontable(container, {
@@ -384,8 +383,6 @@
                             console.log(calculated_amount_data);
                             var url = '@Url.Action("calculateUtilizedAmount", "UtilizationAmount")'
                             $.post(url, calculated_amount_data, function (result) {
-                                $("#total_remaining_balance").html(result.remaining_balance);
-                                $("#total_utilized_amount").html(result.utilized_amount);
                                  displayTheCalculation(result);
                             });
                         }
