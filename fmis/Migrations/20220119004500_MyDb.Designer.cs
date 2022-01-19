@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220118074853_MyDb")]
+    [Migration("20220119004500_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -405,6 +405,9 @@ namespace fmis.Migrations
                     b.Property<long>("Expense_code")
                         .HasColumnType("bigint");
 
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
 
@@ -436,6 +439,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FundSourceId");
 
                     b.HasIndex("ObligationId");
 
@@ -1001,8 +1006,7 @@ namespace fmis.Migrations
 
                     b.HasKey("BudgetAllotmentId");
 
-                    b.HasIndex("YearlyReferenceId")
-                        .IsUnique();
+                    b.HasIndex("YearlyReferenceId");
 
                     b.ToTable("BudgetAllotment");
                 });
@@ -1037,6 +1041,7 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserRole")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -1160,11 +1165,17 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.ObligationAmount", b =>
                 {
+                    b.HasOne("fmis.Models.John.FundSource", "fundSource")
+                        .WithMany()
+                        .HasForeignKey("FundSourceId");
+
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("ObligationAmounts")
                         .HasForeignKey("ObligationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("fundSource");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
@@ -1289,8 +1300,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.silver.BudgetAllotment", b =>
                 {
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
-                        .WithOne("Budget_allotment")
-                        .HasForeignKey("fmis.Models.silver.BudgetAllotment", "YearlyReferenceId")
+                        .WithMany("BudgetAllotments")
+                        .HasForeignKey("YearlyReferenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1355,7 +1366,7 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Yearly_reference", b =>
                 {
-                    b.Navigation("Budget_allotment");
+                    b.Navigation("BudgetAllotments");
                 });
 
             modelBuilder.Entity("fmis.Models.silver.BudgetAllotment", b =>
