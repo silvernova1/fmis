@@ -51,7 +51,6 @@ namespace fmis.Controllers.Budget.silver
                                        fundsource_amount = fundsource_amount
                                        //obligationamount = obligationamount
 
-
                                     }).ToList();
 
             ViewBag.filter = new FilterSidebar("master_data", "SummaryReports");
@@ -169,6 +168,7 @@ namespace fmis.Controllers.Budget.silver
                     .Include(budget_allotment => budget_allotment.FundSources)
                     .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
                     .ThenInclude(uacs => uacs.Uacs);
+/*                    .Include(ObligationAmount => ObligationAmount);*/
 
                 foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
@@ -188,10 +188,13 @@ namespace fmis.Controllers.Budget.silver
                             ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                            ws.Cell(currentRow, 4).Value = _context.ObligationAmount.FirstOrDefault(x => x.ObligationId == fundSource.FundSourceId)?.Amount;
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            /*ws.Cell(currentRow, 3).Value = _context.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_title;
+                            ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
 
-                            ws.Cell(currentRow, 6).Value = _context.ObligationAmount.FirstOrDefault(x => x.ObligationId == fundSource.FundSourceId )?.Amount;
+                            ws.Cell(currentRow, 5).Value = _context.FundsRealignment.FirstOrDefault(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId)?.Realignment_amount;
+                            ws.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                            ws.Cell(currentRow, 6).Value = _context.ObligationAmount.FirstOrDefault(x => x.ObligationId == fundSource.FundSourceId)?.Amount;
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             ws.Cell(currentRow, 7).Value = _context.FundSources.FirstOrDefault(x => x.FundSourceId == fundSource.FundSourceId)?.Remaining_balance;

@@ -15,7 +15,9 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-    [Authorize(Roles = "Super Admin")]
+
+ /*   [Authorize(Roles = "Super Admin")]*/
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -30,7 +32,7 @@ namespace fmis.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.layout = null;   
+            ViewBag.layout = null;
             return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
@@ -83,8 +85,9 @@ namespace fmis.Controllers
                                        null);
 
         }
-
+/*
         public IActionResult Gallery() 
+
         {
             ViewBag.filter_sidebar = "gallery";
             ViewBag.layout = "_Layout";
@@ -95,7 +98,7 @@ namespace fmis.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }*/
 
     }
 }

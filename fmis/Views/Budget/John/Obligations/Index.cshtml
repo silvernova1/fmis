@@ -142,8 +142,6 @@
 		fund_sub_counter++;
 	});
 
-    console.log(get_obligated_amount);
-
 	const data = [];
 	var counter = 0;
 	$.each(obligation, function () {
@@ -160,9 +158,9 @@
 			this.Ors_no, //10
 			this.Created_by, //11
 			moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
-			moment(this.Time_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //13
+			moment(this.Time_recieved).format('HH:mm:ss'), //13
 			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
-			moment(this.Time_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //15
+			moment(this.Time_released).format('HH:mm:ss'), //15
 			this.Id, //16
 			this.obligation_token //17
 		];
@@ -187,6 +185,7 @@
 		},
         colWidths: [250, 100, 100, 100, 100, 100, 250, 250, 250, 100, 100, 100, 100, 100, 100, 100],
 		height: 'auto',
+
         colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'GROSS','DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
 		columns: [
             {
@@ -282,11 +281,7 @@
 				"make_bold": {
 					name: 'Print ORS',
 					callback: function (key, options) {
-						var selection = this.getSelected();
-						var holder_data = this.getData();
-						var holder_id = holder_data[selection[0][0]][15];
-						var url = '@Url.Action("PrintOrs", "Obligations")' + "?id=" + holder_id;
-						window.open(url);
+						printOrs();
 					}
 				},
 				"": {
@@ -465,6 +460,32 @@
 		licenseKey: 'non-commercial-and-evaluation',
 
 	});
+
+	function printOrs() {
+        var selected = hot.getSelected() || [];
+		var holder_data = hot.getData();
+
+		var first_column = selected[0][0];
+		var last_column = selected[0][2];
+		var many_token = [];
+				
+		for (let j = first_column; j <= last_column; j++) {
+            many_token.push(holder_data[j][15]);
+		}
+
+		var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
+		for (i = 0; i < many_token.length; i++) {
+			if ((i + 1) != many_token.length)
+				url = url + "id=" + many_token[i] + "&";
+			else
+				url = url + "id=" + many_token[i];
+        }
+
+		window.open(url);
+		//console.log(url);
+
+    }
+
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
