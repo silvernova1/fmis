@@ -16,8 +16,7 @@ using System.Threading.Tasks;
 namespace fmis.Controllers
 {
 
- /*   [Authorize(Roles = "Super Admin")]*/
-
+    [Authorize(Roles = "Super Admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -46,21 +45,21 @@ namespace fmis.Controllers
             var FundSource = _MyDbCOntext.FundSources;
 
 
-
-            var CustomerViewModel = new DashboardVM
-            {
-                ObligationAmounts = ObligationAmount,
-                FundSources = FundSource
-            };
-
-
+            var dashboard_report = (from fundsource in _MyDbCOntext.FundSources
+                                   join budget_allotment in _MyDbCOntext.Budget_allotments
+                                   on fundsource.BudgetAllotmentId equals budget_allotment.BudgetAllotmentId
+                                   select new DashboardVM
+                                   {
+                                       Fundsource = fundsource,
+                                       Budgetallotments = budget_allotment
+                                   }).ToList();
 
             var obligation = _MyDbCOntext.ObligationAmount.ToList();
 
 
 
 
-            return View("~/Views/Home/Index.cshtml", CustomerViewModel);
+            return View("~/Views/Home/Index.cshtml", dashboard_report);
         }
 
         public IActionResult Privacy()

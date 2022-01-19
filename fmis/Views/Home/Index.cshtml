@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using fmis.Areas.Identity.Data
-@model fmis.ViewModel.DashboardVM
+@model IEnumerable<fmis.ViewModel.DashboardVM> 
 @inject SignInManager<fmisUser> SignInManager
 @inject UserManager<fmisUser> UserManager
 
@@ -24,23 +24,23 @@
         <div class="widget-header">
             <h4 class="widget-title">BUDGET UTILIZATION REPORT</h4>
         </div>
-
         <div class="widget-body">
             <div class="widget-main no-padding">
                 <form>
                     <!-- <legend>Form</legend> -->
                     <fieldset>
                         <div class="alert alert-block alert-warning">
-                            <center><label style="font-size: 25pt;">@Model.FundSources.FirstOrDefault().Beginning_balance</label></center>
-                            @Model.BudgetAllotments.FirstOrDefault().Allotment_code
+                            <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>
                         </div>
                     </fieldset>
                     <center><h4>ALLOTMENT</h4> </center>
                 </form>
             </div>
         </div>
+        
     </div>
 </div>
+
 
 <div class="col-sm-3">
     <div class="widget-box">
@@ -54,7 +54,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@*@Model.ObligationAmounts.FirstOrDefault().Amount*@</label></center>
+                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.obligated_amount)</label></center>
                         <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
@@ -71,6 +71,9 @@
     </div>
 </div>
 
+
+
+
 <div class="col-sm-3">
     <div class="widget-box">
         <div class="widget-header">
@@ -83,7 +86,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">0</label></center>
+                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.Remaining_balance)</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
@@ -281,6 +284,9 @@
             });
         })
 
+        @*var dashboard_report = @Html.Raw(Json.Serialize(Model))
+        console.log(dashboard_report);*@
+
         $('.sparkline').each(function () {
             var $box = $(this).closest('.infobox');
             var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
@@ -303,7 +309,7 @@
         var placeholder = $('#cumulative-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
 
-            { label: "BALANCE", data: 200, color: "#68BC31" },
+            { label: "BALANCE", data: 10, color: "#68BC31" },
             { label: "OBLIGATED", data: 50, color: "#2091CF" },
 
 
