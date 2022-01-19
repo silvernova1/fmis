@@ -15,7 +15,8 @@ using Microsoft.Extensions.Logging;
 using fmis.Data;
 using fmis.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
+using Microsoft.Owin;
+using fmis.Models;
 
 namespace fmis.Areas.Identity.Pages.Account
 {
@@ -56,7 +57,6 @@ namespace fmis.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Required]
             [Display(Name = "Year")]
             public string Year { get; set; }
 
@@ -67,6 +67,7 @@ namespace fmis.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ViewData["Year"] = _MyDbCOntext.Yearly_reference.ToList();
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -82,7 +83,7 @@ namespace fmis.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null, string Year = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/Home/Dashboard");
 

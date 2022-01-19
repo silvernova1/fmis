@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Models.John;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
@@ -214,30 +215,31 @@ namespace fmis.Controllers
 
         // POST: Uacs/Delete/5
         [HttpPost]
-        public async Task<IActionResult> DeleteObligationAmount(DeleteData data)
+        public IActionResult DeleteObligationAmount(DeleteData data)
         {
-            if (data.many_token.Count > 1)
+            if(data.many_token.Count > 1)
             {
-                var data_holder = this._context.ObligationAmount;
                 foreach (var many in data.many_token)
-                {
-                    data_holder.Where(s => s.obligation_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.obligation_amount_token == many.many_token).FirstOrDefault().obligation_amount_token = many.many_token;
-                    await _context.SaveChangesAsync();
-                }
+                    SetUpDeleteData(many.many_token);
             }
             else
-            {
-                var data_holder = this._context.ObligationAmount;
-                data_holder.Where(s => s.obligation_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.obligation_amount_token == data.single_token).FirstOrDefault().obligation_amount_token = data.single_token;
-
-                await _context.SaveChangesAsync();
-            }
+                SetUpDeleteData(data.single_token);
 
             return Json(data);
         }
 
- 
+        public void SetUpDeleteData(string obligation_amount_token)
+        {
+            var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
+            obligation_amount = _context.ObligationAmount.Where(s => s.obligation_amount_token == obligation_amount_token).FirstOrDefault();
+            obligation_amount.status = "deactivated";
+            _context.Update(obligation_amount);
+            _context.SaveChanges();
+
+            /*var fundsource = new FundSource();
+            fundsource = _MyDbContext.FundSources.Where(s => s.token == obligation_amount_token).FirstOrDefault();*/
+        }
+
+
     }
 }

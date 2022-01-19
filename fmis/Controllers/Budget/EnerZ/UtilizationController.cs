@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Models.John;
+using fmis.Models.silver;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
@@ -21,6 +23,7 @@ using Font = iTextSharp.text.Font;
 using System.Globalization;
 using iTextSharp.tool.xml;
 using fmis.DataHealpers;
+
 
 namespace fmis.Controllers
 {
@@ -51,7 +54,6 @@ namespace fmis.Controllers
             public string Address { get; set; }
             public string Particulars { get; set; }
             public int Ors_no { get; set; }
-            public string Fund_source { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
             public string Date_recieved { get; set; }
@@ -73,49 +75,29 @@ namespace fmis.Controllers
         }
 
         // GET: Utilization
-        public async Task <IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("ors", "utilization");
             ViewBag.layout = "_Layout";
-            var utilization = _context.Utilization.Where(s => s.status == "activated")
-                 .Select(x => new UtilizationData()
-                 {
-                     Id = x.Id,
-                     source_id = x.source_id,
-                     source_type = x.source_type,
-                     Date = x.Date.ToShortDateString(),
-                     Dv = x.Dv,
-                     Pr_no = x.Pr_no,
-                     Po_no = x.Po_no,
-                     Payee = x.Payee,
-                     Address = x.Address,
-                     Particulars = x.Particulars,
-                     Ors_no = x.Ors_no,
-                     Gross = x.Gross,
-                     Created_by = x.Created_by,
-                     Date_recieved = x.Date_recieved.ToShortDateString(),
-                     Time_recieved = x.Time_recieved.ToString("HH:mm:ss"),
-                     Date_released = x.Date_released.ToShortDateString(),
-                     Time_released = x.Time_released.ToString("HH:mm:ss"),
-                     utilization_token = x.utilization_token,
-                     status = x.status
-                 });
 
-            var utilization_json = await utilization
+            var utilization = await _context
+                                   .Utilization
+                                   .Where(x => x.status == "activated")
                                    .AsNoTracking()
                                    .ToListAsync();
-            ViewBag.utilization_json = JsonSerializer.Serialize(utilization_json);
 
-            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source" })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment" });
+   
+            ViewBag.utilization_json = JsonSerializer.Serialize(utilization);
+
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.utilized_amount })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.utilized_amount });
+
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
 
-            /* var json = JsonSerializer.Serialize(utilization.ToList());
-             ViewBag.temp = json;*/
+           
             return View("~/Views/Utilization/Index.cshtml");
         }
-
         public async Task<IActionResult> openUtilizationAmount(int id, string utilization_token)
         {
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.AsNoTracking().ToListAsync());
