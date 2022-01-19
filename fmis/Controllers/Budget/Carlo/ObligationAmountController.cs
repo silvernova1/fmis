@@ -23,13 +23,14 @@ namespace fmis.Controllers
         private readonly UacsContext _Ucontext;
         private readonly MyDbContext _MyDbContext;
         private Obligation obligation;
+        private decimal REMAINING_BALANCE = 0;
+        private decimal OBLIGATED_AMOUNT = 0;
 
         public ObligationAmountController(ObligationAmountContext context, UacsContext ucontext, MyDbContext myDbContext)
         {
             _context = context;
             _Ucontext = ucontext;
             _MyDbContext = myDbContext;
-
         }
 
         public class ObligationCalculationData 
@@ -77,8 +78,15 @@ namespace fmis.Controllers
 
         public class DeleteData
         {
+            public int source_id { get; set; }
+            public string source_type { get; set; }
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
+        }
+
+        public class SourceRemainingAndObligated { 
+            public decimal remaining_balance { get; set; }
+            public decimal obligated_amount { get; set; }
         }
 
         [HttpPost]
@@ -220,24 +228,40 @@ namespace fmis.Controllers
             if(data.many_token.Count > 1)
             {
                 foreach (var many in data.many_token)
-                    SetUpDeleteData(many.many_token);
+                    SetUpDeleteDataCalculation(many.many_token,data.source_id,data.source_type);
             }
             else
-                SetUpDeleteData(data.single_token);
+                SetUpDeleteDataCalculation(data.single_token,data.source_id,data.source_type);
 
-            return Json(data);
+
+            SourceRemainingAndObligated sourceRemainingObligated = new SourceRemainingAndObligated();
+            sourceRemainingObligated.remaining_balance = REMAINING_BALANCE;
+            sourceRemainingObligated.obligated_amount = OBLIGATED_AMOUNT;
+            return Json(sourceRemainingObligated);
         }
 
-        public void SetUpDeleteData(string obligation_amount_token)
+        public void SetUpDeleteDataCalculation(string obligation_amount_token,int source_id,string source_type)
         {
             var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
-            obligation_amount = _context.ObligationAmount.Where(s => s.obligation_amount_token == obligation_amount_token).FirstOrDefault();
+            obligation_amount = _context.ObligationAmount
+                                .Include(x => x.fundSource)
+                                .FirstOrDefault(x => x.obligation_amount_token == obligation_amount_token);
             obligation_amount.status = "deactivated";
+            if (source_type == "fund_source")
+            {
+                obligation_amount.fundSource = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceId == source_id);
+                obligation_amount.fundSource.Remaining_balance += obligation_amount.Amount;
+                obligation_amount.fundSource.obligated_amount -= obligation_amount.Amount;
+            }
+            else if (source_type == "sub_allotment") 
+            {
+                //carlo code here
+            }
             _context.Update(obligation_amount);
             _context.SaveChanges();
 
-            /*var fundsource = new FundSource();
-            fundsource = _MyDbContext.FundSources.Where(s => s.token == obligation_amount_token).FirstOrDefault();*/
+            REMAINING_BALANCE = obligation_amount.fundSource.Remaining_balance;
+            OBLIGATED_AMOUNT = obligation_amount.fundSource.obligated_amount;
         }
 
 

@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220119092739_MyDb")]
+    [Migration("20220119132209_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -411,6 +411,9 @@ namespace fmis.Migrations
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubAllotmentId")
+                        .HasColumnType("int");
+
                     b.Property<float>("Total_disbursement")
                         .HasColumnType("real");
 
@@ -443,6 +446,8 @@ namespace fmis.Migrations
                     b.HasIndex("FundSourceId");
 
                     b.HasIndex("ObligationId");
+
+                    b.HasIndex("SubAllotmentId");
 
                     b.ToTable("ObligationAmount");
                 });
@@ -1175,7 +1180,13 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.Sub_allotment", "SubAllotment")
+                        .WithMany()
+                        .HasForeignKey("SubAllotmentId");
+
                     b.Navigation("fundSource");
+
+                    b.Navigation("SubAllotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>

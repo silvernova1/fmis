@@ -409,6 +409,9 @@ namespace fmis.Migrations
                     b.Property<int>("ObligationId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubAllotmentId")
+                        .HasColumnType("int");
+
                     b.Property<float>("Total_disbursement")
                         .HasColumnType("real");
 
@@ -441,6 +444,8 @@ namespace fmis.Migrations
                     b.HasIndex("FundSourceId");
 
                     b.HasIndex("ObligationId");
+
+                    b.HasIndex("SubAllotmentId");
 
                     b.ToTable("ObligationAmount");
                 });
@@ -1173,7 +1178,13 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.Sub_allotment", "SubAllotment")
+                        .WithMany()
+                        .HasForeignKey("SubAllotmentId");
+
                     b.Navigation("fundSource");
+
+                    b.Navigation("SubAllotment");
                 });
 
             modelBuilder.Entity("fmis.Models.Personal_Information", b =>
