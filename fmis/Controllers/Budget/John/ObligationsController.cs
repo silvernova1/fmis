@@ -128,9 +128,6 @@ namespace fmis.Controllers
             return View("~/Views/Budget/John/Obligations/Index.cshtml",obligation);
         }
 
-
-
-
         [HttpGet]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> openObligationAmount(int id, string obligation_token)

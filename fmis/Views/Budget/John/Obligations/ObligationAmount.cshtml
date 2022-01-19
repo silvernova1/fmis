@@ -16,103 +16,61 @@
     }
 </style>
 
-<div class="col-xs-12 infobox-container" style=" margin-bottom: 10px">
-    <div class="infobox infobox-red">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-calculator"></i>
-        </div>
-        <div class="infobox-data">
-            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+<table class="table">
+    <tbody>
+        <tr>
+            <td class="col-sm-1"><strong>Particulars</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Model.Particulars
+            </td>
+        </tr>
+        <tr>
+            <td class="col-sm-1"><strong>Payee</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Model.Payee
+            </td>
+        </tr>
+        <tr>
+            <td class="col-sm-1"><strong>Address</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Model.Address
+            </td>
+        </tr>
+        <tr>
+            <td class="col-sm-1">
                 @if (Model.source_type == "fund_source")
-                    @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                {
+                    <strong>Fund Source</strong>
+                }
                 else if (Model.source_type == "sub_allotment")
-                    @Model.SubAllotment.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-
-            </span>
-            <div class="infobox-content">
-                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
-            </div>
-        </div>
-    </div>
-    <div class="infobox infobox-orange2">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-bar-chart-o"></i>
-        </div>
-        <div class="infobox-data">
-            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
+                {
+                    <strong>Sub Allotment</strong>
+                }
+            </td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
                 @if (Model.source_type == "fund_source")
-                    @Model.FundSource.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
+                {
+                    <p>@Model.FundSource.FirstOrDefault().FundSourceTitle</p>
+                }
                 else if (Model.source_type == "sub_allotment")
-                    @Model.SubAllotment.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
-            </span>
-            <div class="infobox-content">
-                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<form>
-    <table class="table">
-        <tbody>
-            <tr>
-                <td class="col-sm-1"><strong>Particulars</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                         @Html.DisplayFor(model => model.Particulars)
-                    else if (Model.source_type == "sub_allotment")
-                        @Html.DisplayFor(model => model.Particulars)
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Payee</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.Payee)
-                    else if (Model.source_type == "sub_allotment")
-                        @Html.DisplayFor(model => model.Payee)
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>Address</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.Address)
-                    else if (Model.source_type == "sub_allotment")
-                        @Html.DisplayFor(model => model.Address)
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1">
-                    <strong>
-                        @if (Model.source_type == "fund_source")
-                            @Html.Raw("Fund Source")
-                        else if (Model.source_type == "sub_allotment")
-                            @Html.Raw("Sub Allotment")
-                    </strong>
-                </td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.FundSource.FirstOrDefault().FundSourceTitle)
-                    else if (Model.source_type == "sub_allotment")
-                        @Html.DisplayFor(model => model.SubAllotment.FirstOrDefault().Suballotment_title)
-                </td>
-            </tr>
-            <tr>
-                <td class="col-sm-1"><strong>PR #</strong></td>
-                <td class="col-sm-1"><strong>:</strong></td>
-                <td class="col-sm-10">
-                    @Html.DisplayFor(model => model.Pr_no)
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</form>
-
+                {
+                    <p>@Model.SubAllotment.FirstOrDefault().Suballotment_title</p>
+                }                    
+            </td>
+        </tr>
+        <tr>
+            <td class="col-sm-1"><strong>PR #</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Html.DisplayFor(model => model.Pr_no)
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.ObligationAmounts)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
@@ -121,7 +79,7 @@
 <input type="hidden" id="remaining_balance" value="
          @if (Model.source_type == "fund_source")
              @Model.FundSource.FirstOrDefault().Remaining_balance
-          else if (Model.source_type == "sub_allotment")
+         else if (Model.source_type == "sub_allotment")
              @Model.SubAllotment.FirstOrDefault().Remaining_balance
 "/>
 <input type="hidden" id="obligated_amount" value="
@@ -130,7 +88,6 @@
         else if (Model.source_type == "sub_allotment")
              @Model.SubAllotment.FirstOrDefault().obligated_amount
 "/>
-
 
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
 <input type="hidden" asp-for="Created_At" />
@@ -458,5 +415,4 @@
         INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
     }
-
 </script>
