@@ -22,6 +22,8 @@ namespace fmis.Controllers
         private readonly Sub_allotmentContext _SContext;
         private readonly MyDbContext _MyDbContext;
         private Sub_allotment SubAllotment;
+        private decimal REMAINING_BALANCE = 0;
+        private decimal REALIGN_AMOUNT = 0;
 
 
         public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext, Suballotment_amountContext SAContext, Sub_allotmentContext SContext, MyDbContext MyDbContext)
@@ -62,8 +64,15 @@ namespace fmis.Controllers
 
         public class DeleteData
         {
+            public int sub_allotment_id { get; set; }
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
+        }
+
+        public class GetRemainingAndRealignment
+        {
+            public decimal remaining_balance { get; set; }
+            public decimal realignment_amount { get; set; }
         }
 
         public async Task<IActionResult> Index(int sub_allotment_id)
@@ -151,7 +160,7 @@ namespace fmis.Controllers
             return Json(suballotment_realignment);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteSubAllotmentRealignment(DeleteData data)
         {
@@ -175,6 +184,42 @@ namespace fmis.Controllers
             }
 
             return Json(data);
+        }*/
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteSubAllotmentRealignment(DeleteData data)
+        {
+            if (data.many_token.Count > 1)
+            {
+                foreach (var many in data.many_token)
+                    SetUpDeleteDataCalculation(many.many_token, data.sub_allotment_id);
+            }
+            else
+                SetUpDeleteDataCalculation(data.single_token, data.sub_allotment_id);
+
+            GetRemainingAndRealignment getRemainingAndRealignment = new();
+            getRemainingAndRealignment.remaining_balance = REMAINING_BALANCE;
+            getRemainingAndRealignment.realignment_amount = REALIGN_AMOUNT;
+            return Json(getRemainingAndRealignment);
+        }
+
+        public void SetUpDeleteDataCalculation(string sub_allotment_realignment_token, int sub_allotment_id)
+        {
+            var sub_allotment_realignment = new SubAllotment_Realignment(); //CLEAR OBJECT
+            sub_allotment_realignment = _context.SubAllotment_Realignment
+                                .Include(x => x.SubAllotment)
+                                .FirstOrDefault(x => x.token == sub_allotment_realignment_token);
+            sub_allotment_realignment.status = "deactivated";
+            //funds_realignment.FundSource = _FContext.FundSource.FirstOrDefault(x => x.FundSourceId == fundsource_id);
+            sub_allotment_realignment.SubAllotment.Remaining_balance += sub_allotment_realignment.Realignment_amount;
+            sub_allotment_realignment.SubAllotment.realignment_amount -= sub_allotment_realignment.Realignment_amount;
+
+            _context.Update(sub_allotment_realignment);
+            _context.SaveChanges();
+
+            REMAINING_BALANCE = sub_allotment_realignment.SubAllotment.Remaining_balance;
+            REALIGN_AMOUNT = sub_allotment_realignment.SubAllotment.realignment_amount;
         }
     }
 }
