@@ -16,6 +16,8 @@ namespace fmis.Models
         public string status { get; set; }
         public string token { get; set; }
         public int? FundSourceId { get; set; }
+        [JsonIgnore]
+        public FundSource FundSource { get; set; }
         public FundSourceAmount FundSourceAmount { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }

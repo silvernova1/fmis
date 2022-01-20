@@ -219,12 +219,21 @@
 				});
 			}
 
-			var ajax_data = {
+            var ajax_data = {
+                "sub_allotment_id": sub_allotment_id,
 				"single_token": single_token,
 				"many_token": many_token
-			};
-			//console.log(ajax_data);
-            ajaxServerRealignment(ajax_data,'@Url.Action("DeleteSubAllotmentRealignment", "SubAllotment_Realignment")');
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteSubAllotmentRealignment", "SubAllotment_Realignment")',
+                headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                data: { data: ajax_data },
+                success: function (result) {
+                    displayTotalCalculation(result);
+                }
+            });
 		},
         afterUndo: function (index, column) {
 

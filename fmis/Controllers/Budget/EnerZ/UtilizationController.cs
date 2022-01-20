@@ -89,8 +89,8 @@ namespace fmis.Controllers
    
             ViewBag.utilization_json = JsonSerializer.Serialize(utilization);
 
-            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.utilized_amount })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.utilized_amount });
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", utilized_amount = x.utilized_amount })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", utilized_amount = y.utilized_amount });
 
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
@@ -106,7 +106,7 @@ namespace fmis.Controllers
             if (id != 0)
             {
                 utilization = await _MyDbContext.Utilization
-                    .Include(x => x.UtilizationAmount)
+                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == id);
                 utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
@@ -114,7 +114,7 @@ namespace fmis.Controllers
             else
             {
                 utilization = await _MyDbContext.Utilization
-                    .Include(x => x.UtilizationAmount)
+                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.utilization_token == utilization_token);
                 utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();

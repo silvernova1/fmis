@@ -22,7 +22,8 @@ namespace fmis.Controllers.Budget.Carlo
         private readonly FundSourceContext _FContext;
         private readonly MyDbContext _allContext;
         private FundSource FundSource;
-
+        private decimal REMAINING_BALANCE = 0;
+        private decimal REALIGN_AMOUNT = 0;
 
         public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext, MyDbContext allContext)
         {
@@ -62,8 +63,15 @@ namespace fmis.Controllers.Budget.Carlo
 
         public class DeleteData
         {
+            public int fundsource_id { get; set; }
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
+        }
+
+        public class GetRemainingAndRealignment
+        {
+            public decimal remaining_balance { get; set; }
+            public decimal realignment_amount { get; set; }
         }
 
         public async Task<IActionResult> Index(int fundsource_id)
@@ -152,28 +160,39 @@ namespace fmis.Controllers.Budget.Carlo
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteFundsRealignment(DeleteData data)
+        public IActionResult DeleteFundsRealignment(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {
-                var data_holder = this._allContext.FundsRealignment;
                 foreach (var many in data.many_token)
-                {
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
-                    await _allContext.SaveChangesAsync();
-                }
+                    SetUpDeleteDataCalculation(many.many_token, data.fundsource_id);
             }
             else
-            {
-                var data_holder = this._allContext.FundsRealignment;
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+                SetUpDeleteDataCalculation(data.single_token, data.fundsource_id);
 
-                await _allContext.SaveChangesAsync();
-            }
-
-            return Json(data);
+            GetRemainingAndRealignment getRemainingAndRealignment = new();
+            getRemainingAndRealignment.remaining_balance = REMAINING_BALANCE;
+            getRemainingAndRealignment.realignment_amount = REALIGN_AMOUNT;
+            return Json(getRemainingAndRealignment);
         }
+
+        public void SetUpDeleteDataCalculation(string funds_realignment_token, int fundsource_id)
+        {
+            var funds_realignment = new FundsRealignment(); //CLEAR OBJECT
+            funds_realignment = _context.FundsRealignment
+                                .Include(x => x.FundSource)
+                                .FirstOrDefault(x => x.token == funds_realignment_token);
+            funds_realignment.status = "deactivated";
+            //funds_realignment.FundSource = _FContext.FundSource.FirstOrDefault(x => x.FundSourceId == fundsource_id);
+            funds_realignment.FundSource.Remaining_balance += funds_realignment.Realignment_amount;
+            funds_realignment.FundSource.realignment_amount -= funds_realignment.Realignment_amount;
+
+            _context.Update(funds_realignment);
+            _context.SaveChanges();
+
+            REMAINING_BALANCE = funds_realignment.FundSource.Remaining_balance;
+            REALIGN_AMOUNT = funds_realignment.FundSource.realignment_amount;
+        }
+
     }
 }
