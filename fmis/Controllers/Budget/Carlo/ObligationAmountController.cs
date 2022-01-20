@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
+using fmis.Models.John;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
@@ -22,13 +23,14 @@ namespace fmis.Controllers
         private readonly UacsContext _Ucontext;
         private readonly MyDbContext _MyDbContext;
         private Obligation obligation;
+        private decimal REMAINING_BALANCE = 0;
+        private decimal OBLIGATED_AMOUNT = 0;
 
         public ObligationAmountController(ObligationAmountContext context, UacsContext ucontext, MyDbContext myDbContext)
         {
             _context = context;
             _Ucontext = ucontext;
             _MyDbContext = myDbContext;
-
         }
 
         public class ObligationCalculationData 
@@ -76,8 +78,15 @@ namespace fmis.Controllers
 
         public class DeleteData
         {
+            public int source_id { get; set; }
+            public string source_type { get; set; }
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
+        }
+
+        public class SourceRemainingAndObligated { 
+            public decimal remaining_balance { get; set; }
+            public decimal obligated_amount { get; set; }
         }
 
         [HttpPost]
@@ -214,30 +223,47 @@ namespace fmis.Controllers
 
         // POST: Uacs/Delete/5
         [HttpPost]
-        public async Task<IActionResult> DeleteObligationAmount(DeleteData data)
+        public IActionResult DeleteObligationAmount(DeleteData data)
         {
-            if (data.many_token.Count > 1)
+            if(data.many_token.Count > 1)
             {
-                var data_holder = this._context.ObligationAmount;
                 foreach (var many in data.many_token)
-                {
-                    data_holder.Where(s => s.obligation_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.obligation_amount_token == many.many_token).FirstOrDefault().obligation_amount_token = many.many_token;
-                    await _context.SaveChangesAsync();
-                }
+                    SetUpDeleteDataCalculation(many.many_token,data.source_id,data.source_type);
             }
             else
-            {
-                var data_holder = this._context.ObligationAmount;
-                data_holder.Where(s => s.obligation_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.obligation_amount_token == data.single_token).FirstOrDefault().obligation_amount_token = data.single_token;
+                SetUpDeleteDataCalculation(data.single_token,data.source_id,data.source_type);
 
-                await _context.SaveChangesAsync();
-            }
 
-            return Json(data);
+            SourceRemainingAndObligated sourceRemainingObligated = new SourceRemainingAndObligated();
+            sourceRemainingObligated.remaining_balance = REMAINING_BALANCE;
+            sourceRemainingObligated.obligated_amount = OBLIGATED_AMOUNT;
+            return Json(sourceRemainingObligated);
         }
 
- 
+        public void SetUpDeleteDataCalculation(string obligation_amount_token,int source_id,string source_type)
+        {
+            var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
+            obligation_amount = _context.ObligationAmount
+                                .Include(x => x.fundSource)
+                                .FirstOrDefault(x => x.obligation_amount_token == obligation_amount_token);
+            obligation_amount.status = "deactivated";
+            if (source_type == "fund_source")
+            {
+                obligation_amount.fundSource = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceId == source_id);
+                obligation_amount.fundSource.Remaining_balance += obligation_amount.Amount;
+                obligation_amount.fundSource.obligated_amount -= obligation_amount.Amount;
+            }
+            else if (source_type == "sub_allotment") 
+            {
+                //carlo code here
+            }
+            _context.Update(obligation_amount);
+            _context.SaveChanges();
+
+            REMAINING_BALANCE = obligation_amount.fundSource.Remaining_balance;
+            OBLIGATED_AMOUNT = obligation_amount.fundSource.obligated_amount;
+        }
+
+
     }
 }

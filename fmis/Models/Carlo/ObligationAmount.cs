@@ -25,6 +25,7 @@ namespace fmis.Models
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
         public FundSource fundSource { get; set; }
+        public Sub_allotment SubAllotment { get; set; }
        
 
         public ObligationAmount()

@@ -212,32 +212,31 @@ namespace fmis.Controllers.Budget
             return Json(get_utilized_remaining); //get the remaining_balance
         }
 
-
-        // POST: Uacs/Delete/5
         [HttpPost]
-        public async Task<IActionResult> DeleteUtilizationAmount(DeleteData data)
+        public IActionResult DeleteUtilizationAmount(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {
-                var data_holder = this._context.UtilizationAmount;
                 foreach (var many in data.many_token)
-                {
-                    data_holder.Where(s => s.utilization_amount_token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.utilization_amount_token == many.many_token).FirstOrDefault().utilization_amount_token = many.many_token;
-                    await _context.SaveChangesAsync();
-                }
+                    SetUpDeleteData(many.many_token);
             }
             else
-            {
-                var data_holder = this._context.UtilizationAmount;
-                data_holder.Where(s => s.utilization_amount_token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.utilization_amount_token == data.single_token).FirstOrDefault().utilization_amount_token = data.single_token;
-
-                await _context.SaveChangesAsync();
-            }
+                SetUpDeleteData(data.single_token);
 
             return Json(data);
         }
+
+
+        public void SetUpDeleteData(string utilization_amount_token)
+        {
+            var utilization_amount = new UtilizationAmount(); //CLEAR OBJECT
+            utilization_amount = _context.UtilizationAmount.Where(s => s.utilization_amount_token == utilization_amount_token).FirstOrDefault();
+            utilization_amount.status = "deactivated";
+            _MyDbContext.Update(utilization_amount);
+            _MyDbContext.SaveChanges();
+
+        }
+
 
 
     }

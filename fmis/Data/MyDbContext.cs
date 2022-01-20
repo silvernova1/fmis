@@ -43,7 +43,7 @@ namespace fmis.Data
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
         public DbSet<UtilizationAmount> UtilizationAmount { get; set; }
-
+        public DbSet<Logs> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
