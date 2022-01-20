@@ -923,6 +923,12 @@ namespace fmis.Migrations
                     b.Property<long>("Expense_code")
                         .HasColumnType("bigint");
 
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubAllotmentId")
+                        .HasColumnType("int");
+
                     b.Property<float>("Total_disbursement")
                         .HasColumnType("real");
 
@@ -954,6 +960,10 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FundSourceId");
+
+                    b.HasIndex("SubAllotmentId");
 
                     b.HasIndex("UtilizationId");
 
@@ -1299,11 +1309,23 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.UtilizationAmount", b =>
                 {
+                    b.HasOne("fmis.Models.John.FundSource", "fundSource")
+                        .WithMany()
+                        .HasForeignKey("FundSourceId");
+
+                    b.HasOne("fmis.Models.Sub_allotment", "SubAllotment")
+                        .WithMany()
+                        .HasForeignKey("SubAllotmentId");
+
                     b.HasOne("fmis.Models.Utilization", null)
                         .WithMany("UtilizationAmount")
                         .HasForeignKey("UtilizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("fundSource");
+
+                    b.Navigation("SubAllotment");
                 });
 
             modelBuilder.Entity("fmis.Models.silver.BudgetAllotment", b =>

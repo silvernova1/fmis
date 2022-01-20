@@ -22,6 +22,8 @@ namespace fmis.Controllers.Budget
         private readonly UacsContext _Ucontext;
         private readonly MyDbContext _MyDbContext;
         private Utilization utilization;
+        private decimal REMAINING_BALANCE = 0;
+        private decimal UTILIZED_AMOUNT = 0;
 
         public UtilizationAmountController(UtilizationAmountContext context, UacsContext ucontext, MyDbContext myDbContext)
         {
@@ -77,8 +79,16 @@ namespace fmis.Controllers.Budget
 
         public class DeleteData
         {
+            public int source_id { get; set; }
+            public string source_type { get; set; }
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
+        }
+
+        public class SourceRemainingAndUtilized
+        {
+            public decimal remaining_balance { get; set; }
+            public decimal utilized_amount { get; set; }
         }
 
         [HttpPost]
@@ -218,23 +228,42 @@ namespace fmis.Controllers.Budget
             if (data.many_token.Count > 1)
             {
                 foreach (var many in data.many_token)
-                    SetUpDeleteData(many.many_token);
+                    SetUpDeleteDataCalculation(many.many_token, data.source_id, data.source_type);
             }
             else
-                SetUpDeleteData(data.single_token);
+                SetUpDeleteDataCalculation(data.single_token, data.source_id, data.source_type);
 
-            return Json(data);
+
+            SourceRemainingAndUtilized sourceRemainingUtilized = new SourceRemainingAndUtilized();
+            sourceRemainingUtilized.remaining_balance = REMAINING_BALANCE;
+            sourceRemainingUtilized.utilized_amount = UTILIZED_AMOUNT;
+            return Json(sourceRemainingUtilized);
         }
 
-
-        public void SetUpDeleteData(string utilization_amount_token)
+        public void SetUpDeleteDataCalculation(string utilization_amount_token, int source_id, string source_type)
         {
             var utilization_amount = new UtilizationAmount(); //CLEAR OBJECT
-            utilization_amount = _context.UtilizationAmount.Where(s => s.utilization_amount_token == utilization_amount_token).FirstOrDefault();
+            utilization_amount = _context.UtilizationAmount
+                                .Include(x => x.fundSource)
+                                .FirstOrDefault(x => x.utilization_amount_token == utilization_amount_token);
             utilization_amount.status = "deactivated";
-            _MyDbContext.Update(utilization_amount);
-            _MyDbContext.SaveChanges();
+            if (source_type == "fund_source")
+            {
+                utilization_amount.fundSource = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceId == source_id);
+                utilization_amount.fundSource.Remaining_balance += utilization_amount.Amount;
+                utilization_amount.fundSource.utilized_amount -= utilization_amount.Amount;
+            }
+            else if (source_type == "sub_allotment")
+            {
+                utilization_amount.SubAllotment = _MyDbContext.Sub_allotment.FirstOrDefault(x => x.SubAllotmentId == source_id);
+                utilization_amount.SubAllotment.Remaining_balance += utilization_amount.Amount;
+                utilization_amount.SubAllotment.utilized_amount -= utilization_amount.Amount;
+            }
+            _context.Update(utilization_amount);
+            _context.SaveChanges();
 
+            REMAINING_BALANCE = utilization_amount.fundSource.Remaining_balance;
+            UTILIZED_AMOUNT = utilization_amount.fundSource.utilized_amount;
         }
 
 

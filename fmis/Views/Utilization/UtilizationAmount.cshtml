@@ -22,13 +22,18 @@
             <i class="ace-icon fa fa-calculator"></i>
         </div>
         <div class="infobox-data">
-            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                @if (Model.source_type == "fund_source")
+            @if (Model.source_type == "fund_source")
+            {
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
                     @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-                    else if (Model.source_type == "sub_allotment")
-                        @Model.SubAllotment.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-
-            </span>
+                </span>
+            }
+            else if (Model.source_type == "sub_allotment")
+            {
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                    @Model.SubAllotment.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+            }
             <div class="infobox-content">
                 <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
             </div>
@@ -39,12 +44,18 @@
             <i class="ace-icon fa fa-bar-chart-o"></i>
         </div>
         <div class="infobox-data">
-            <span class="infobox-data-number" id="total_utilized_amount" style="font-size:11pt; color:grey;">
-                @if (Model.source_type == "fund_source")
+            @if (Model.source_type == "fund_source")
+            {
+                <span class="infobox-data-number" id="total_utilized_amount" style="font-size:11pt; color:grey;">
                     @Model.FundSource.FirstOrDefault().utilized_amount.ToString("C", new CultureInfo("en-PH"))
-                    else if (Model.source_type == "sub_allotment")
-                        @Model.SubAllotment.FirstOrDefault().utilized_amount.ToString("C", new CultureInfo("en-PH"))
-            </span>
+                </span>
+            }
+            else if (Model.source_type == "sub_allotment")
+            {
+                <span class="infobox-data-number" id="total_utilized_amount" style="font-size:11pt; color:grey;">
+                    @Model.SubAllotment.FirstOrDefault().utilized_amount.ToString("C", new CultureInfo("en-PH"))
+                </span>
+            }
             <div class="infobox-content">
                 <span class="label label-warning arrowed-in arrowed-in-right"> Utilized Amount </span>
             </div>
@@ -59,47 +70,44 @@
                 <td class="col-sm-1"><strong>Particulars</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.Particulars)
-                        else if (Model.source_type == "sub_allotment")
-                            @Html.DisplayFor(model => model.Particulars)
+                    @Model.Particulars
                 </td>
             </tr>
             <tr>
                 <td class="col-sm-1"><strong>Payee</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.Payee)
-                        else if (Model.source_type == "sub_allotment")
-                            @Html.DisplayFor(model => model.Payee)
+                    @Model.Payee
                 </td>
             </tr>
             <tr>
                 <td class="col-sm-1"><strong>Address</strong></td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
-                    @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.Address)
-                        else if (Model.source_type == "sub_allotment")
-                            @Html.DisplayFor(model => model.Address)
+                    @Model.Address
                 </td>
             </tr>
             <tr>
                 <td class="col-sm-1">
-                    <strong>
-                        @if (Model.source_type == "fund_source")
-                            @Html.Raw("Fund Source")
-                            else if (Model.source_type == "sub_allotment")
-                                @Html.Raw("Sub Allotment")
-                    </strong>
+                    @if (Model.source_type == "fund_source")
+                    {
+                        <strong>Fund Source</strong>
+                    }
+                    else if (Model.source_type == "sub_allotment")
+                    {
+                        <strong>Sub Allotment</strong>
+                    }
                 </td>
                 <td class="col-sm-1"><strong>:</strong></td>
                 <td class="col-sm-10">
                     @if (Model.source_type == "fund_source")
-                        @Html.DisplayFor(model => model.FundSource.FirstOrDefault().FundSourceTitle)
-                        else if (Model.source_type == "sub_allotment")
-                            @Html.DisplayFor(model => model.SubAllotment.FirstOrDefault().Suballotment_title)
+                    {
+                        <p>@Model.FundSource.FirstOrDefault().FundSourceTitle</p>
+                    }
+                    else if (Model.source_type == "sub_allotment")
+                    {
+                        <p>@Model.SubAllotment.FirstOrDefault().Suballotment_title</p>
+                    }
                 </td>
             </tr>
             <tr>
@@ -126,9 +134,9 @@
 " />
 <input type="hidden" id="utilized_amount" value="
         @if (Model.source_type == "fund_source")
-             @Model.FundSource.FirstOrDefault().obligated_amount
+             @Model.FundSource.FirstOrDefault().utilized_amount
         else if (Model.source_type == "sub_allotment")
-             @Model.SubAllotment.FirstOrDefault().obligated_amount
+             @Model.SubAllotment.FirstOrDefault().utilized_amount
 " />
 
 
@@ -153,6 +161,8 @@
     var UTILIZED_AMOUNT = $("#utilized_Aamount").val();
     var REMAINING_BALANCE = 0;
     var TRAP_SAVE_AMOUNT = false;
+    var SOURCE_TYPE = "@Model.source_type";
+    var SOURCE_ID = @Model.source_id;
 
     var utilization_id = $("#utilization_id").val();
     let generateUtilizationAmountToken = () => {
@@ -273,7 +283,7 @@
         height: 'auto',
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
+           var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][8];
             console.log(selection);
@@ -291,11 +301,21 @@
             }
             if (single_token) {
                 var ajax_data = {
+                    "source_id" : SOURCE_ID,
+                    "source_type" : SOURCE_TYPE,
                     "single_token": single_token,
                     "many_token": many_token,
                 };
-               @* console.log(ajax_data);*@
-                ajaxServerAmount(ajax_data,'@Url.Action("DeleteUtilizationAmount", "UtilizationAmount")');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeleteUtilizationAmount", "UtilizationAmount")',
+                    headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                    data: { data: ajax_data },
+                    success: function (result) {
+                        displayTheCalculation(result);
+                    }
+                });
             }
         },
         afterUndo: function (index, column) {
@@ -337,7 +357,7 @@
                     ajaxServerAmount(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
                 }
                 else if (col == 2) {
-                   
+
                     //get the exact remaining balance from DB
                     var url = '@Url.Action("getRemainingAndUtilized", "UtilizationAmount")';
                     var post_calculation_data = {
@@ -440,10 +460,10 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
-   
+
      function displayTheCalculation(result) {
         $("#total_remaining_balance").html(result.remaining_balance);
-        $("#total_obligated_amount").html(result.obligated_amount);
+        $("#total_utilized_amount").html(result.utilized_amount);
     }
 
     function fillTheCell(row, col, fill_message) {

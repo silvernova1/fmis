@@ -10,6 +10,7 @@
     }
 }
 
+
 <style>
     .wtHider {
         margin-bottom: 200px;
@@ -22,6 +23,7 @@
             <i class="ace-icon fa fa-calculator"></i>
         </div>
         <div class="infobox-data">
+
             @if (Model.source_type == "fund_source")
             {
                 <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
@@ -471,4 +473,7 @@
         INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
     }
+
+
+
 </script>

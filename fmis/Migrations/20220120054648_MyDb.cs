@@ -250,37 +250,6 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UtilizationAmount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UtilizationId = table.Column<int>(type: "int", nullable: false),
-                    UacsId = table.Column<int>(type: "int", nullable: false),
-                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Total_disbursement = table.Column<float>(type: "real", nullable: false),
-                    Total_net_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_tax_amount = table.Column<float>(type: "real", nullable: false),
-                    Total_others = table.Column<float>(type: "real", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    utilization_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    utilization_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UtilizationAmount", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UtilizationAmount_Utilization_UtilizationId",
-                        column: x => x.UtilizationId,
-                        principalTable: "Utilization",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BudgetAllotment",
                 columns: table => new
                 {
@@ -528,6 +497,51 @@ namespace fmis.Migrations
                         principalTable: "Utilization",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UtilizationAmount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UtilizationId = table.Column<int>(type: "int", nullable: false),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    Expense_code = table.Column<long>(type: "bigint", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Total_disbursement = table.Column<float>(type: "real", nullable: false),
+                    Total_net_amount = table.Column<float>(type: "real", nullable: false),
+                    Total_tax_amount = table.Column<float>(type: "real", nullable: false),
+                    Total_others = table.Column<float>(type: "real", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    utilization_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    utilization_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FundSourceId = table.Column<int>(type: "int", nullable: true),
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UtilizationAmount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UtilizationAmount_FundSource_FundSourceId",
+                        column: x => x.FundSourceId,
+                        principalTable: "FundSource",
+                        principalColumn: "FundSourceId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UtilizationAmount_Sub_allotment_SubAllotmentId",
+                        column: x => x.SubAllotmentId,
+                        principalTable: "Sub_allotment",
+                        principalColumn: "SubAllotmentId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UtilizationAmount_Utilization_UtilizationId",
+                        column: x => x.UtilizationId,
+                        principalTable: "Utilization",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -898,6 +912,16 @@ namespace fmis.Migrations
                 name: "IX_Uacs_UtilizationId",
                 table: "Uacs",
                 column: "UtilizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UtilizationAmount_FundSourceId",
+                table: "UtilizationAmount",
+                column: "FundSourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UtilizationAmount_SubAllotmentId",
+                table: "UtilizationAmount",
+                column: "SubAllotmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UtilizationAmount_UtilizationId",

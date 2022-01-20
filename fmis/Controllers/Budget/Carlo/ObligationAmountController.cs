@@ -255,7 +255,9 @@ namespace fmis.Controllers
             }
             else if (source_type == "sub_allotment") 
             {
-                //carlo code here
+                obligation_amount.SubAllotment = _MyDbContext.Sub_allotment.FirstOrDefault(x => x.SubAllotmentId == source_id);
+                obligation_amount.SubAllotment.Remaining_balance += obligation_amount.Amount;
+                obligation_amount.SubAllotment.obligated_amount -= obligation_amount.Amount;
             }
             _context.Update(obligation_amount);
             _context.SaveChanges();

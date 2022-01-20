@@ -106,7 +106,7 @@ namespace fmis.Controllers
             if (id != 0)
             {
                 utilization = await _MyDbContext.Utilization
-                    .Include(x => x.UtilizationAmount)
+                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == id);
                 utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
@@ -114,7 +114,7 @@ namespace fmis.Controllers
             else
             {
                 utilization = await _MyDbContext.Utilization
-                    .Include(x => x.UtilizationAmount)
+                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.utilization_token == utilization_token);
                 utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
