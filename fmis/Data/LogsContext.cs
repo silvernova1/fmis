@@ -14,6 +14,6 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<Logs> Requesting_office { get; set; }
+        public DbSet<Logs> Logs { get; set; }
     }
 }
