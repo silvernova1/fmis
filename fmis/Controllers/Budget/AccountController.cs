@@ -7,6 +7,7 @@ using fmis.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,39 +19,45 @@ namespace fmis.Controllers.Budget
 
     public class AccountController : Controller
     {
-        
-        private readonly MyDbContext _context;
         private readonly SignInManager<fmisUser> signInManager;
+        private readonly MyDbContext context;
 
-        public AccountController(MyDbContext context, SignInManager<fmisUser> signInManager)
+        public AccountController(SignInManager<fmisUser> signInManager, MyDbContext context)
         {
-            _context = context;
             this.signInManager = signInManager;
+            this.context = context;
         }
 
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return RedirectToAction("dashboard", "home");
+            return RedirectToAction("index", "home");
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
+            /*var model = new LoginViewModel();
+            ViewBag.AlbumList = context.Yearly_reference.ToList();*/
+            ViewData["Year"] = context.Yearly_reference.ToList();
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(ManageUsers model)
+        public async Task<IActionResult> Login(LoginViewModel model, IFormCollection collection)
         {
+            var value = collection["year"];
+
+
             if (ModelState.IsValid)
             {
                 var result = await signInManager.PasswordSignInAsync(
-                    model.Username, model.Password, false, false);
+                    model.Username, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Year", "Account");
+                    return RedirectToAction("Dashboard", "Home");
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
@@ -58,84 +65,5 @@ namespace fmis.Controllers.Budget
 
             return View(model);
         }
-
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(ManageUsers user)
-        {
-            if (ModelState.IsValid)
-            {
-                var userobj = _context.ManageUsers.Where(a => a.Username.Equals(user.Username) && a.Password.Equals(user.Password)).FirstOrDefault();
-                if (userobj !=null)
-                {
-                    *//*return RedirectToAction("dashboard", "home");*//*
-                    return RedirectToAction("SetYear", "Account");
-                }
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
-            }
-            return View(user);
-        }*/
-
-        public IActionResult Dashboard()
-        {
-            return RedirectToAction("~/Views/Budget_allotments/Index.cshtml");
-        }
-        public IActionResult Year()
-        {
-            return View();
-        }
-
-        //POST
-        [HttpPost]
-        public IActionResult Year([Bind("YearlyReferenceId,YearlyReference,Created_at,Created_At,Updated_at")] Yearly_reference year)
-        {
-
-            
-            if (ModelState.IsValid)
-            {
-                var data = _context.Yearly_reference.FirstOrDefault(s=>s.YearlyReference == year.YearlyReference).YearlyReference;
-                if (data == year.YearlyReference)
-                {
-                    return RedirectToAction("Dashboard", "Home");
-                }
-                ModelState.AddModelError(string.Empty, "Please input year");
-            }
-            return View(year);
-        }
-
-        /*[Route("")]
-        [Route("index")]
-        [Route("~/")]*//*
-        public IActionResult Index()
-        {
-            return View("~/Views/Budget/Account/Index.cshtml");
-        }
-
-        [Route("login")]
-        [HttpPost]
-        public IActionResult Login(string username, string password)
-        {
-            var uname = "123";
-            var pass = "123";
-
-            if (username != null && password != null && username.Equals(uname) && password.Equals(pass))
-            {
-                HttpContext.Session.SetString("username", uname);
-                return View("~/Views/Budget/Account/Success.cshtml");
-            }
-            else
-            {
-                ViewBag.error = "Invalid Account";
-                return View("~/Views/Budget/Account/Index.cshtml");
-            }
-        }
-
-        [Route("logout")]
-        [HttpGet]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Remove("username");
-            return RedirectToAction("~/Views/Budget/Account/Index.cshtml");
-        }*/
     }
 }

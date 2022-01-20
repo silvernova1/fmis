@@ -35,7 +35,7 @@ namespace fmis.Controllers
             return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
-        public IActionResult Dashboard()
+        public IActionResult Dashboard( string year)
         {
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home");
