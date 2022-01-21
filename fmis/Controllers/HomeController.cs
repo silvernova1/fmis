@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 namespace fmis.Controllers
 {
     [Authorize(Roles = "Budget")]
-
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -35,7 +34,7 @@ namespace fmis.Controllers
             return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
-        public IActionResult Dashboard( string year)
+        public IActionResult Dashboard()
         {
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home");

@@ -89,8 +89,8 @@ namespace fmis.Controllers
    
             ViewBag.utilization_json = JsonSerializer.Serialize(utilization);
 
-            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", utilized_amount = x.utilized_amount })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", utilized_amount = y.utilized_amount });
+            var fundsource_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.utilized_amount })
+                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.utilized_amount });
 
 
             ViewBag.fundsource = JsonSerializer.Serialize(fundsource_data);
@@ -106,7 +106,7 @@ namespace fmis.Controllers
             if (id != 0)
             {
                 utilization = await _MyDbContext.Utilization
-                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
+                    .Include(x => x.UtilizationAmount)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == id);
                 utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
@@ -114,7 +114,7 @@ namespace fmis.Controllers
             else
             {
                 utilization = await _MyDbContext.Utilization
-                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
+                    .Include(x => x.UtilizationAmount)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.utilization_token == utilization_token);
                 utilization.Uacs = await _MyDbContext.Uacs.AsNoTracking().ToListAsync();
@@ -332,16 +332,18 @@ namespace fmis.Controllers
                 foreach (var b in id)
                 {
                     
-                    Int32 ID = Convert.ToInt32(id);
+                    Int32 ID = Convert.ToInt32(b);
                     var uti = await _context.Utilization
                         .Include(f => f.FundSource)
                         .ThenInclude(p => p.Prexc)
                         .FirstOrDefaultAsync(m => m.Id == ID);
 
+                    PdfFile.NewPage();
+
                     var bur = _MyDbContext.Utilization.Where(p => p.Id == ID).FirstOrDefault();
                     var titleFont = FontFactory.GetFont("Arial", 16, iTextSharp.text.Font.BOLD);
 
-
+                    
                     PdfPTable table = null;
                     table = new PdfPTable(1);
                     table.TotalWidth = 800f;
@@ -351,10 +353,6 @@ namespace fmis.Controllers
                     table.HorizontalAlignment = Element.ALIGN_LEFT;
 
                     PdfFile.Add(table);
-
-                    PdfFile.Add(table);
-
-                    PdfFile.Open();
 
                     Paragraph header_text = new Paragraph("BUDGET UTILIZATION REQUEST AND STATUS");
 
@@ -503,6 +501,40 @@ namespace fmis.Controllers
                     }*/
 
                     //
+
+                    /* var fundsources = (from fundsource in _MyDbContext.FundSources
+                                       join obligation in _MyDbContext.Obligation
+                                       on fundsource.FundSourceId equals obligation.source_id
+                                       join prexc in _MyDbContext.Prexc
+                                       on fundsource.PrexcId equals prexc.Id
+                                       where obligation.Id == ID
+
+                                       select new
+                                       {
+                                           pap = prexc.pap_code1,
+                                           obligation_id = obligation.source_id,
+                                           fundsource_id = fundsource.FundSourceId,
+                                           fundsource_code = fundsource.FundSourceTitleCode,
+                                           respo = fundsource.Respo,
+                                           particulars = obligation.Particulars
+                                       }).ToList();
+
+                    var uacses = (from obligation in _MyDbContext.Obligation
+                                  join obligation_amount in _MyDbContext.ObligationAmount
+                                  on obligation.Id equals obligation_amount.ObligationId
+                                  where obligation.Id == ID
+                                  select new
+                                  {
+                                      expense_code = obligation_amount.Expense_code,
+                                      amount = (double)Convert.ToDecimal(obligation_amount.Amount)
+                                  }).ToList();
+
+                    foreach (var u in uacses)
+                    {
+                        uacs += u.expense_code + "\n";
+                        str_amt += u.amount.ToString("C", new CultureInfo("en-PH")) + "\n";
+                        total_amt += u.amount;
+                    }*/
 
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "Kabaso Data" + "\n\n" + "Kabaso Data", table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + bur.Particulars, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
