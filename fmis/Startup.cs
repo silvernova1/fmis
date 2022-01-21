@@ -41,7 +41,6 @@ namespace fmis
            
             services.AddControllers();
 
-
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddSession();
             /*services.AddControllersWithViews()
@@ -124,7 +123,7 @@ namespace fmis
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            CreateRoles(serviceProvider).Wait();
+            //CreateRoles(serviceProvider).Wait();
 
             if (env.IsDevelopment())
             {

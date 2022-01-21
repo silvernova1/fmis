@@ -45,6 +45,7 @@ namespace fmis.Controllers
             _Ucontext = Ucontext;
             _UacsContext = UacsContext;
             _MyDbContext = MyDbContext;
+            ViewBag.Notification = "Notification";
         }
 
         public IActionResult PrintPdf()
