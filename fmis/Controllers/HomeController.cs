@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-    /*[Authorize(Roles = "Super Admin")]*/
+    [Authorize(Roles = "Super Admin")]
 
     public class HomeController : Controller
     {

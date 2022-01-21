@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
 using fmis.Data.silver;
 using fmis.Areas.Identity.Data;
+using Microsoft.Owin;
+
+[assembly: OwinStartup(typeof(fmis.Startup))]
 
 namespace fmis
 {
@@ -37,7 +40,6 @@ namespace fmis
         {
            
             services.AddControllers();
-
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddSession();
@@ -105,9 +107,10 @@ namespace fmis
              options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));
             services.AddDbContext<SaobContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("SaobContext")));
-
             services.AddDbContext<UtilizationAmountContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("UtilizationAmountContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("UtilizationAmountContext")));
+            services.AddDbContext<LogsContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -115,18 +118,12 @@ namespace fmis
             //amalio
             services.Add(new ServiceDescriptor(typeof(Personal_InfoMysqlContext), new Personal_InfoMysqlContext(Configuration.GetConnectionString("Personal_InfoMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-            
-
-
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            /*CreateRoles(serviceProvider).Wait();*/
-
-
+            //CreateRoles(serviceProvider).Wait();
 
             if (env.IsDevelopment())
             {
@@ -155,7 +152,7 @@ namespace fmis
             });
         }
 
-        /*private async Task CreateRoles(IServiceProvider serviceProvider)
+        private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -194,6 +191,6 @@ namespace fmis
 
                 }
             }
-        }*/
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace fmis.Controllers
             _Ucontext = Ucontext;
             _UacsContext = UacsContext;
             _MyDbContext = MyDbContext;
+            ViewBag.Notification = "Notification";
         }
 
         public IActionResult PrintPdf(ManyId many)
@@ -127,9 +128,6 @@ namespace fmis.Controllers
 
             return View("~/Views/Budget/John/Obligations/Index.cshtml",obligation);
         }
-
-
-
 
         [HttpGet]
         [ValidateAntiForgeryToken]

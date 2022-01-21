@@ -30,7 +30,12 @@
                     <!-- <legend>Form</legend> -->
                     <fieldset>
                         <div class="alert alert-block alert-warning">
+<<<<<<< HEAD
+                            <center><label style="font-size: 25pt;">@*@Model.FundSources.FirstOrDefault().Beginning_balance*@</label></center>
+                           @* @Model.BudgetAllotments.FirstOrDefault().Allotment_code*@
+=======
                             <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>
+>>>>>>> 014b8c6b185795212330fe109f2cbbe747c981a0
                         </div>
                     </fieldset>
                     <center><h4>ALLOTMENT</h4> </center>

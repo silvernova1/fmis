@@ -14,6 +14,7 @@
     }
 }
 
+ 
 <input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
 <input type="hidden" class="fundsrealignment" value="@JsonSerializer.Serialize(Model.FundsRealignment)">
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
@@ -219,12 +220,21 @@
 				});
 			}
 
-			var ajax_data = {
+            var ajax_data = {
+                "fundsource_id": fundsource_id,
 				"single_token": single_token,
 				"many_token": many_token
-			};
-			//console.log(ajax_data);
-            ajaxServerFundsRealignment(ajax_data,'@Url.Action("DeleteFundsRealignment", "FundsRealignment")');
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteFundsRealignment", "FundsRealignment")',
+                headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                data: { data: ajax_data },
+                success: function (result) {
+                    displayTotalCalculation(result);
+                }
+            });
 		},
         afterUndo: function (index, column) {
 
@@ -252,7 +262,7 @@
                 else if (col == 2) {
                     console.log("check the col 2");
                     TRAP_THE_LOAD = false; //allow to save the col 2 in else
-                }   
+                }
                 else if (col == 3) { //when inputting the realigmnent amount
                     CHECK_FIRST_ROW = true;
                     if (TRAP_THE_LOAD1) {
@@ -263,7 +273,7 @@
                     else if (!hot.getDataAtCell(row, 0)) //trap if the uacs_from already selected
                         trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT FROM'!");
                     else if (!hot.getDataAtCell(row, 2)) { //trap if the uacs_to already selected
-                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!"); 
+                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
                     }
                     else {
                         var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
@@ -282,7 +292,7 @@
 
                             if (AMOUNT > post_fundsource_amount_remaining) {
                                 trapTheCell(row, col, oldValue); //reset the realignment amount from the OLDVALUE,then dapat kani ang una mo display para makuha ang exact amount
-                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance"); 
+                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance");
                             }
                             else if (AMOUNT > post_remaining_balance)
                                 trapTheLoad(row, col, oldValue, "Insufficient FundSource Remaning Balance Balance!");
@@ -339,7 +349,7 @@
                 ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
             }
 		},
-        height: '250',
+        height: '250px',
         hiddenColumns: {
             columns: [4,5],
             indicators: true
@@ -366,8 +376,8 @@
     }
 
     function displayTotalCalculation(calculation) {
-        $("#total_remaining_balance").html(calculation.remaining_balance);
-        $("#total_realignment_amount").html(calculation.realignment_amount);
+        $("#total_remaining_balance").html(parseFloat(calculation.remaining_balance).toFixed(2));
+        $("#total_realignment_amount").html(parseFloat(calculation.realignment_amount).toFixed(2));
     }
 </script>
 
