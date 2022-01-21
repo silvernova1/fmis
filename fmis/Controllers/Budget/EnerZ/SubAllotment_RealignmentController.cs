@@ -160,32 +160,6 @@ namespace fmis.Controllers
             return Json(suballotment_realignment);
         }
 
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteSubAllotmentRealignment(DeleteData data)
-        {
-            if (data.many_token.Count > 1)
-            {
-                var data_holder = this._context.SubAllotment_Realignment;
-                foreach (var many in data.many_token)
-                {
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
-                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
-                    await _context.SaveChangesAsync();
-                }
-            }
-            else
-            {
-                var data_holder = this._context.SubAllotment_Realignment;
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
-                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
-
-                await _context.SaveChangesAsync();
-            }
-
-            return Json(data);
-        }*/
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteSubAllotmentRealignment(DeleteData data)

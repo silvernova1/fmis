@@ -461,9 +461,9 @@
 
     var tableData = JSON.stringify(hot.getSourceData());
 
-     function displayTheCalculation(result) {
-        $("#total_remaining_balance").html(result.remaining_balance);
-        $("#total_utilized_amount").html(result.utilized_amount);
+    function displayTheCalculation(result) {
+        $("#total_remaining_balance").html(parseFloat(result.remaining_balance).toFixed(2));
+        $("#total_utilized_amount").html(parseFloat(result.utilized_amount).toFixed(2));
     }
 
     function fillTheCell(row, col, fill_message) {

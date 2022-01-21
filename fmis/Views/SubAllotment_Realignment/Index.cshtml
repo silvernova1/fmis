@@ -375,8 +375,8 @@
     }
 
     function displayTotalCalculation(calculation) {
-        $("#total_remaining_balance").html(calculation.remaining_balance);
-        $("#total_realignment_amount").html(calculation.realignment_amount);
+        $("#total_remaining_balance").html(parseFloat(calculation.remaining_balance).toFixed(2));
+        $("#total_realignment_amount").html(parseFloat(calculation.realignment_amount).toFixed(2));
     }
 </script>
 
