@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using fmis.Areas.Identity.Data
+@inject SignInManager<fmisUser> SignInManager
+@inject UserManager<fmisUser> UserManager
+<li class="light-blue dropdown-modal">
+    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+        <img class="nav-user-photo" src="~/assets/images/doh.png" alt="Amal's Photo" />
+        <span class="user-info">
+            <small>Welcome,</small>
+            @UserManager.GetUserName(User)
+        </span>
+
+        <i class="ace-icon fa fa-caret-down"></i>
+    </a>
+    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+        <li>
+            <a href="#">
+                <i class="ace-icon fa fa-cog"></i>
+                Settings
+            </a>
+        </li>
+
+        <li>
+            <a href="profile.html">
+                <i class="ace-icon fa fa-user"></i>
+                Profile
+            </a>
+        </li>
+        <li class="divider"></li>
+        <form method="post" asp-controller="account" asp-action="logout">
+        <button type="submit" style="width:auto"
+                class="nav-link btn btn-link py-0">
+            Logout @User.Identity.Name
+        </button>
+    </form>
+    </ul>
+</li>

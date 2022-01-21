@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
 using fmis.Data.silver;
 using fmis.Areas.Identity.Data;
+using Microsoft.Owin;
+
+[assembly: OwinStartup(typeof(fmis.Startup))]
 
 namespace fmis
 {
@@ -37,7 +40,6 @@ namespace fmis
         {
            
             services.AddControllers();
-
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddSession();
@@ -121,9 +123,7 @@ namespace fmis
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            /*CreateRoles(serviceProvider).Wait();*/
-
-
+            //CreateRoles(serviceProvider).Wait();
 
             if (env.IsDevelopment())
             {
@@ -152,7 +152,7 @@ namespace fmis
             });
         }
 
-        /*private async Task CreateRoles(IServiceProvider serviceProvider)
+        private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -191,6 +191,6 @@ namespace fmis
 
                 }
             }
-        }*/
+        }
     }
 }

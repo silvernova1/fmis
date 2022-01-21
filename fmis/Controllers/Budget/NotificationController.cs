@@ -1,30 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using fmis.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace fmis.Controllers.Budget
 {
     public class NotificationController : Controller
     {
+        private readonly LogsContext _LogsContext;
+        public NotificationController(LogsContext logsContext) { 
+            _LogsContext = logsContext;
+        }
+
         // GET: NotificationController
         public ActionResult notificationBody()
         {
             return View("~/Views/Budget/Notification/NotificationBody.cshtml");
         }
 
-        // GET: NotificationController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> obligationNotification()
         {
-            return View();
-        }
-
-        // GET: NotificationController/Create
-        public ActionResult Create()
-        {
-            return View();
+            var obligation_notification = await _LogsContext.Logs.AsNoTracking().ToListAsync();
+            return View("~/Views/Budget/Notification/ObligationNotification.cshtml",obligation_notification);
         }
 
         // POST: NotificationController/Create

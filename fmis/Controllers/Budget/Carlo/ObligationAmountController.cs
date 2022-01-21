@@ -20,16 +20,16 @@ namespace fmis.Controllers
     public class ObligationAmountController : Controller
     {
         private readonly ObligationAmountContext _context;
-        private readonly UacsContext _Ucontext;
+        private readonly LogsContext _LContext;
         private readonly MyDbContext _MyDbContext;
         private Obligation obligation;
         private decimal REMAINING_BALANCE = 0;
         private decimal OBLIGATED_AMOUNT = 0;
 
-        public ObligationAmountController(ObligationAmountContext context, UacsContext ucontext, MyDbContext myDbContext)
+        public ObligationAmountController(ObligationAmountContext context, LogsContext LContext, MyDbContext myDbContext)
         {
             _context = context;
-            _Ucontext = ucontext;
+            _LContext = LContext;
             _MyDbContext = myDbContext;
         }
 
@@ -117,6 +117,7 @@ namespace fmis.Controllers
                 _context.ObligationAmount.Update(obligation_amount);
                 await _context.SaveChangesAsync();
             }
+
             return Json(data);
         }
 
@@ -125,6 +126,8 @@ namespace fmis.Controllers
         {
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
+            int fundsource_id = 0;
+            int suballotment_id = 0;
 
             if (calculation_data.obligation_id != 0)
             {
@@ -150,6 +153,7 @@ namespace fmis.Controllers
 
                 remaining_balance = fund_source.Remaining_balance;
                 obligated_amount = fund_source.obligated_amount;
+                fundsource_id = obligation.source_id;
 
                 _MyDbContext.FundSources.Update(fund_source);
                 _MyDbContext.SaveChanges();
@@ -164,10 +168,13 @@ namespace fmis.Controllers
 
                 remaining_balance = sub_allotment.Remaining_balance;
                 obligated_amount = sub_allotment.obligated_amount;
+                suballotment_id = obligation.source_id;
 
                 _MyDbContext.Sub_allotment.Update(sub_allotment);
                 _MyDbContext.SaveChanges();
             }
+
+            NotificationLogs(fundsource_id,suballotment_id,obligation.source_type,calculation_data.amount);
 
             var obligation_amount = await _context.ObligationAmount.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == calculation_data.obligation_amount_token);
             obligation_amount.Amount = calculation_data.amount;
@@ -178,6 +185,21 @@ namespace fmis.Controllers
             get_obligated_remaining.remaining_balance = remaining_balance;
             get_obligated_remaining.obligated_amount = obligated_amount;
             return Json(get_obligated_remaining); //get the remaining_balance
+        }
+
+        public void NotificationLogs(int fundsource_id,int suballotment_id,string source_type,decimal amount) {
+            Logs logs = new();
+            logs.created_id = 1;
+            logs.created_name = "Rusel T. Tayong";
+            logs.created_designation = "Information System Analyst II";
+            logs.created_division = "RD/ARD";
+            logs.created_section = "ICTU";
+            logs.FundSourceId = fundsource_id;
+            logs.SubAllotmentId = suballotment_id;
+            logs.type = source_type;
+            logs.amount = amount;
+            _LContext.Logs.Update(logs);
+            _LContext.SaveChanges();
         }
 
         [HttpPost]
@@ -213,7 +235,7 @@ namespace fmis.Controllers
                 obligated_amount = sub_allotment.obligated_amount;
             }
 
-            GetObligatedAndRemaining get_obligated_remaining = new GetObligatedAndRemaining();
+            GetObligatedAndRemaining get_obligated_remaining = new();
             get_obligated_remaining.remaining_balance = remaining_balance;
             get_obligated_remaining.obligated_amount = obligated_amount;
 
@@ -265,7 +287,5 @@ namespace fmis.Controllers
             REMAINING_BALANCE = obligation_amount.fundSource.Remaining_balance;
             OBLIGATED_AMOUNT = obligation_amount.fundSource.obligated_amount;
         }
-
-
     }
 }
