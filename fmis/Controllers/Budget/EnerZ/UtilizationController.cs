@@ -332,16 +332,18 @@ namespace fmis.Controllers
                 foreach (var b in id)
                 {
                     
-                    Int32 ID = Convert.ToInt32(id);
+                    Int32 ID = Convert.ToInt32(b);
                     var uti = await _context.Utilization
                         .Include(f => f.FundSource)
                         .ThenInclude(p => p.Prexc)
                         .FirstOrDefaultAsync(m => m.Id == ID);
 
+                    PdfFile.NewPage();
+
                     var bur = _MyDbContext.Utilization.Where(p => p.Id == ID).FirstOrDefault();
                     var titleFont = FontFactory.GetFont("Arial", 16, iTextSharp.text.Font.BOLD);
 
-
+                    
                     PdfPTable table = null;
                     table = new PdfPTable(1);
                     table.TotalWidth = 800f;
@@ -351,10 +353,6 @@ namespace fmis.Controllers
                     table.HorizontalAlignment = Element.ALIGN_LEFT;
 
                     PdfFile.Add(table);
-
-                    PdfFile.Add(table);
-
-                    PdfFile.Open();
 
                     Paragraph header_text = new Paragraph("BUDGET UTILIZATION REQUEST AND STATUS");
 

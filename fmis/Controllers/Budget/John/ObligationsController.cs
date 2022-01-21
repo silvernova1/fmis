@@ -47,7 +47,7 @@ namespace fmis.Controllers
             _MyDbContext = MyDbContext;
         }
 
-        public IActionResult PrintPdf()
+        public IActionResult PrintPdf(ManyId many)
         {
 
             return new ViewAsPdf("PrintPdf")
@@ -364,7 +364,7 @@ namespace fmis.Controllers
 
                 doc.Open();
 
-                foreach (var i in id)
+                foreach(var i in id)
                 {
                     Int32 ID = Convert.ToInt32(i);
                     var ors = await _context.Obligation
@@ -372,11 +372,8 @@ namespace fmis.Controllers
                         .ThenInclude(p => p.Prexc)
                         .FirstOrDefaultAsync(m => m.Id == ID);
 
-
                     doc.NewPage();
                     var budget_allotments = _MyDbContext.Budget_allotments.Include(f => f.FundSources).FirstOrDefault();
-
-                    
 
                     Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
 
@@ -569,10 +566,6 @@ namespace fmis.Controllers
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
                     doc.Add(table_row_6);
 
-
-
-
-
                     var table_row_7 = new PdfPTable(5);
                     float[] tbt_row7_width = { 5, 10, 5, 5, 5 };
 
@@ -705,8 +698,8 @@ namespace fmis.Controllers
                     table_row_10.AddCell(new PdfPCell(new Paragraph("Reference", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_10.AddCell(new PdfPCell(new Paragraph("Amount", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
-                doc.Add(table_row_10);
-              
+                    doc.Add(table_row_10);
+
                     PdfPTable table_row_11 = new PdfPTable(7);
                     table_row_11.WidthPercentage = 100f;
                     table_row_11.SetWidths(new float[] { 12, 20, 28, 15, 15, 10, 20 });
@@ -765,12 +758,12 @@ namespace fmis.Controllers
                     table_row_14.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
                     doc.Add(table_row_14);
-                    
                 }
+
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, reader);
                 doc.Close(); return File(stream.ToArray(), "application/pdf");
             }
         }
-        
+
     }
 }

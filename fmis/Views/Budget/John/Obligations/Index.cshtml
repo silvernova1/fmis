@@ -282,6 +282,37 @@
 					name: 'Print ORS',
 					callback: function (key, options) {
 						printOrs();
+                        @*var selection = this.getSelected();
+                        var holder_data = this.getData();
+                        var single_token = holder_data[selection[0][0]][15];
+                        var first_column = selection[0][0];
+                        var last_column = selection[0][2];
+                        var many_token = [];
+                        for (var j = first_column; j <= last_column; j++) {
+							many_token.push({
+								many_token: holder_data[j][15]
+							});
+						}
+
+						$data = {
+							"single_token": single_token,
+							"many_token": many_token
+						};
+
+						console.log("many token length: " + many_token.length);
+						console.log(selection);
+
+                        $.ajax({
+                            url: '@Url.Action("PrintOrs", "Obligations")',
+                            data: $data,
+                            type: "post",
+                            success: function (result) {
+								window.open(result);
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                console.log("error")
+                            }
+                        });*@
 					}
 				},
 				"": {
@@ -468,7 +499,7 @@
 		var first_column = selected[0][0];
 		var last_column = selected[0][2];
 		var many_token = [];
-				
+
 		for (let j = first_column; j <= last_column; j++) {
             many_token.push(holder_data[j][15]);
 		}
@@ -485,7 +516,6 @@
 		//console.log(url);
 
     }
-
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@

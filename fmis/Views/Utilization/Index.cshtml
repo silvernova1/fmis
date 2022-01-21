@@ -263,11 +263,26 @@
 				"make_bold": {
 					name: 'Print BUR',
                     callback: function (key, options) {
-                        var selection = this.getSelected();
-                        var holder_data = this.getData();
-                        var holder_id = holder_data[selection[0][0]][15];
-                        var url = '@Url.Action("PrintBur", "Utilization")' + "?id=" + holder_id;
-                        window.open(url);
+                        var selected = hot.getSelected() || [];
+		                var holder_data = hot.getData();
+
+		                var first_column = selected[0][0];
+		                var last_column = selected[0][2];
+		                var many_token = [];
+
+		                for (let j = first_column; j <= last_column; j++) {
+                            many_token.push(holder_data[j][15]);
+		                }
+
+		                var url = '@Url.Action("PrintBur", "Utilization")' + "?";
+		                for (i = 0; i < many_token.length; i++) {
+			                if ((i + 1) != many_token.length)
+				                url = url + "id=" + many_token[i] + "&";
+			                else
+				                url = url + "id=" + many_token[i];
+                        }
+
+		                window.open(url);
                     }
 				},
 				"": {
