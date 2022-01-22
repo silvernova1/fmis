@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Logs : BaseEntityTimeStramp
+    public class Logs : BaseEntityTimeStamp
     {
         [Key]
         public int LogsId { get; set; }
