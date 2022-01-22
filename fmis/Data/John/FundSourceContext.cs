@@ -33,7 +33,7 @@ namespace fmis.Data.John
         private void AddTimestamps()
         {
             var entities = ChangeTracker.Entries()
-                .Where(x => x.Entity is BaseEntityTimeStamp && (x.State == EntityState.Added || x.State == EntityState.Modified));
+                .Where(x => x.Entity is BaseEntityTimeStramp && (x.State == EntityState.Added || x.State == EntityState.Modified));
 
             foreach (var entity in entities) 
             {
@@ -42,9 +42,9 @@ namespace fmis.Data.John
 
                 if (entity.State == EntityState.Added)
                 {
-                    ((BaseEntityTimeStamp)entity.Entity).CreatedAt = now;
+                    ((BaseEntityTimeStramp)entity.Entity).CreatedAt = now;
                 }
-                ((BaseEntityTimeStamp)entity.Entity).UpdatedAt = now;
+                ((BaseEntityTimeStramp)entity.Entity).UpdatedAt = now;
             }
         }
 

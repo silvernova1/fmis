@@ -9,7 +9,7 @@ using fmis.Models.silver;
 
 namespace fmis.Models.John
 {
-    public class FundSource : BaseEntityTimeStamp
+    public class FundSource : BaseEntityTimeStramp
     {
         [Key]
         public int FundSourceId { get; set; }
