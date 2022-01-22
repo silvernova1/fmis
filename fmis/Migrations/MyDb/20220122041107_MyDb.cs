@@ -83,8 +83,11 @@ namespace fmis.Migrations.MyDb
                     created_section = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FundSourceId = table.Column<int>(type: "int", nullable: false),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    source_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    logs_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -354,11 +357,11 @@ namespace fmis.Migrations.MyDb
                     realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
                     SummaryReportId = table.Column<int>(type: "int", nullable: true),
-                    UtilizationId = table.Column<int>(type: "int", nullable: true)
+                    UtilizationId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

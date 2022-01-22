@@ -23,10 +23,10 @@ namespace fmis.Controllers.Budget
             return View("~/Views/Budget/Notification/NotificationBody.cshtml");
         }
 
-        public async Task<IActionResult> obligationNotification()
+        public async Task<IActionResult> NotificationList(string logs_type)
         {
-            var obligation_notification = await _LogsContext.Logs.AsNoTracking().ToListAsync();
-            return View("~/Views/Budget/Notification/ObligationNotification.cshtml",obligation_notification);
+            var obligation_notification = await _LogsContext.Logs.Where(x => x.logs_type.Equals(logs_type)).AsNoTracking().ToListAsync();
+            return View("~/Views/Budget/Notification/NotificationList.cshtml",obligation_notification);
         }
 
         // POST: NotificationController/Create

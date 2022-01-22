@@ -201,7 +201,7 @@ namespace fmis.Migrations.MyDb
                     b.Property<int?>("BudgetAllotmentId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Created_At")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -228,7 +228,7 @@ namespace fmis.Migrations.MyDb
                     b.Property<int?>("SummaryReportId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Updated_At")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UtilizationId")
@@ -322,11 +322,17 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("FundSourceId")
                         .HasColumnType("int");
 
                     b.Property<int>("SubAllotmentId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("amount")
                         .HasColumnType("decimal(18,2)");
@@ -346,7 +352,10 @@ namespace fmis.Migrations.MyDb
                     b.Property<string>("created_section")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("type")
+                    b.Property<string>("logs_type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("source_type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LogsId");

@@ -186,8 +186,8 @@
         });
     }
 
-    function obligationNotificationList() {
-        var url = '@Url.Action("obligationNotification", "Notification")';
+    function notificationList(logs_type) {
+        var url = '@Url.Action("NotificationList", "Notification")'+"?logs_type="+logs_type;
         $.get(url, function (result) {
             $("#obligation_notification_list").html(result);
         });
