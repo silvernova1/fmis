@@ -36,7 +36,7 @@ namespace fmis.Data
 
             foreach (var entity in entities)
             {
-                var now = DateTime.UtcNow; // current datetime
+                var now = DateTime.Now; // current datetime
 
                 if (entity.State == EntityState.Added)
                 {

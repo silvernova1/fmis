@@ -1,21 +1,180 @@
 ﻿@model IEnumerable<Logs>
 @using System.Globalization;
 
-@foreach (var item in Model)
+@functions{
+    public struct DateTimeSpan
+    {
+        public int Years { get; }
+        public int Months { get; }
+        public int Days { get; }
+        public int Hours { get; }
+        public int Minutes { get; }
+        public int Seconds { get; }
+        public int Milliseconds { get; }
+
+        public DateTimeSpan(int years, int months, int days, int hours, int minutes, int seconds, int milliseconds)
+        {
+            Years = years;
+            Months = months;
+            Days = days;
+            Hours = hours;
+            Minutes = minutes;
+            Seconds = seconds;
+            Milliseconds = milliseconds;
+        }
+
+        enum Phase { Years, Months, Days, Done }
+
+        public static DateTimeSpan CompareDates(DateTime date1, DateTime date2)
+        {
+            if (date2 < date1)
+            {
+                var sub = date1;
+                date1 = date2;
+                date2 = sub;
+            }
+
+            DateTime current = date1;
+            int years = 0;
+            int months = 0;
+            int days = 0;
+
+            Phase phase = Phase.Years;
+            DateTimeSpan span = new DateTimeSpan();
+            int officialDay = current.Day;
+
+            while (phase != Phase.Done)
+            {
+                switch (phase)
+                {
+                    case Phase.Years:
+                        if (current.AddYears(years + 1) > date2)
+                        {
+                            phase = Phase.Months;
+                            current = current.AddYears(years);
+                        }
+                        else
+                        {
+                            years++;
+                        }
+                        break;
+                    case Phase.Months:
+                        if (current.AddMonths(months + 1) > date2)
+                        {
+                            phase = Phase.Days;
+                            current = current.AddMonths(months);
+                            if (current.Day < officialDay && officialDay <= DateTime.DaysInMonth(current.Year, current.Month))
+                                current = current.AddDays(officialDay - current.Day);
+                        }
+                        else
+                        {
+                            months++;
+                        }
+                        break;
+                    case Phase.Days:
+                        if (current.AddDays(days + 1) > date2)
+                        {
+                            current = current.AddDays(days);
+                            var timespan = date2 - current;
+                            span = new DateTimeSpan(years, months, days, timespan.Hours, timespan.Minutes, timespan.Seconds, timespan.Milliseconds);
+                            phase = Phase.Done;
+                        }
+                        else
+                        {
+                            days++;
+                        }
+                        break;
+                }
+            }
+
+            return span;
+        }
+    }
+
+    public string calculateTwoDays(DateTime logs_date,string diff_type)
+    {
+        var today = DateTime.Now;
+        var dateSpan = DateTimeSpan.CompareDates(logs_date, today);
+
+        string test_date = " Years="+dateSpan.Years + 
+                " Months=" +dateSpan.Months+ 
+                " Days=" +dateSpan.Days+ 
+                " Hours=" +dateSpan.Hours+ 
+                " Minutes=" +dateSpan.Minutes+
+                " Miliseconds=" +dateSpan.Milliseconds;
+
+        string result = "";
+        if (dateSpan.Years > 0)
+        {
+            if (dateSpan.Years == 1)
+                result = dateSpan.Years + " year ago";
+            else
+                result = dateSpan.Years + " years ago";
+        }
+        else if (dateSpan.Months > 0)
+        {
+            if (dateSpan.Months == 1)
+                result = dateSpan.Months + " month ago";
+            else
+                result = dateSpan.Months + " months ago";
+        }
+        else if (dateSpan.Days > 0)
+        {
+            if (dateSpan.Days == 1)
+                result = dateSpan.Days + " day ago";
+            else
+                result = dateSpan.Days + " days ago";
+        }
+        else if (dateSpan.Hours > 0)
+        {
+            if (dateSpan.Hours == 1)
+                result = dateSpan.Hours + " hour ago";
+            else
+                result = dateSpan.Hours + " hours ago";
+        }
+        else if (dateSpan.Minutes > 10)
+            result = dateSpan.Minutes + " minutes ago";
+        else
+            result = "a moment ago";
+
+        return result;
+    }
+}
+
+@if (Model.Count() > 0)
 {
-    <li style="background-color: lightcyan;">
-        <a href="#" onclick="openNotification($(this))" class="clearfix">
-            <img src="~/assets/images/doh.png" class="msg-photo" alt="Alex's Avatar" />
-            <span class="msg-body">
-                <span class="msg-title">
-                    <span class="blue">@item.created_name:</span>
-                    from <span class="green">@item.created_section</span> <span class="red">@item.logs_type</span> the amount of <b>@item.amount.ToString("C", new CultureInfo("en-PH"))</b> from <span class="orange">@item.source_type</span>
+    foreach (var item in Model)
+    {
+        <li style="background-color: lightcyan;">
+            <a href="#" onclick="openNotification($(this))" class="clearfix">
+                <img src="~/assets/images/doh.png" class="msg-photo" alt="Alex's Avatar" />
+                <span class="msg-body">
+                    <span class="msg-title">
+                        <span class="blue">@item.created_name:</span>
+                        from <span class="green">@item.created_section</span> <span class="red">@item.logs_type</span> the amount of <b>@item.amount.ToString("C", new CultureInfo("en-PH"))</b> from 
+                        @if (item.source_type.Equals("fund_source"))
+                        {
+                            <span class="orange">Fund Source</span>
+                        }
+                        else if (item.source_type.Equals("sub_allotment"))
+                        {
+                            <span class="orange">Sub Allotment</span>
+                        }
+                    </span>
+                    <span class="msg-time">
+                        <i class="ace-icon fa fa-clock-o"></i>
+                        <span>@calculateTwoDays(item.CreatedAt??DateTime.Now,"minutes")</span>
+                    </span>
                 </span>
-                <span class="msg-time">
-                    <i class="ace-icon fa fa-clock-o"></i>
-                    <span>a moment ago</span>
-                </span>
-            </span>
-        </a>
-    </li>    
+            </a>
+        </li>
+    }   
+}
+else
+{
+    <center>
+        <strong class="red">
+            No Logs
+        </strong>
+    </center>
 }
