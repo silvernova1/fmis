@@ -231,7 +231,6 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
-                obligation.Created_At = DateTime.Now;
                 _context.Add(obligation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

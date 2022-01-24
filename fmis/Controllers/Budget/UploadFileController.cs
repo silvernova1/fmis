@@ -120,7 +120,7 @@ namespace fmis.Controllers
                             personal_information.Pid = checkExcelInt(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 2)
                             personal_information.userid = checkExcel(worksheet.Cells[row, col].Text as string);
-                        else if (col == 3)
+                        else if (col == 3) ;
                            /* personal_information.picture = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 4)
                             personal_information.signature = checkExcel(worksheet.Cells[row, col].Text as string);
@@ -247,9 +247,9 @@ namespace fmis.Controllers
                         else if (col == 71)
                             personal_information.Rsitio = checkExcel(worksheet.Cells[row, col].Text as string);
                         else if (col == 67)*/
-                            personal_information.created_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
+                            /*personal_information.created_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
                         else if (col == 68)
-                            personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);
+                            personal_information.updated_at = checkExcelDate(worksheet.Cells[row, col].Text as string, worksheet, row, col);*/
 
                     }
 

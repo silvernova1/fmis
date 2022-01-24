@@ -30,19 +30,6 @@ namespace fmis.Models.silver
 
         [Required]
         [Display(Name = "User Role")]
-        public string UserRole { get; set; }
-        public DateTime Created_At { get; set; }
-
-        public DateTime Updated_At { get; set; }
-
-        public ManageUsers()
-        {
-            this.Updated_At = DateTime.Now;
-
-        }
-
-        
-
-        
+        public string UserRole { get; set; } 
     }
 }

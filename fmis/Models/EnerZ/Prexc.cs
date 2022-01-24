@@ -21,12 +21,5 @@ namespace fmis.Models
         public Sub_allotment Sub_Allotment { get; set; }
         public Uacs Uacs { get; set; }
         public virtual ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
-
-        public Prexc()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
 }

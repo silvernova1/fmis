@@ -198,7 +198,6 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
-                utilization.Created_At = DateTime.Now;
                 _context.Add(utilization);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -535,7 +534,6 @@ namespace fmis.Controllers
                         str_amt += u.amount.ToString("C", new CultureInfo("en-PH")) + "\n";
                         total_amt += u.amount;
                     }
-
 
                     //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "Kabaso Data" + "\n\n" + "Kabaso Data", table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + bur.Particulars, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });

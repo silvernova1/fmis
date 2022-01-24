@@ -85,7 +85,8 @@ namespace fmis.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/Home/Dashboard");
+            //returnUrl ??= Url.Content("~/Home/Dashboard");
+            returnUrl ??= Url.Action("Dashboard", "Home", new { id = Input.Year });
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         

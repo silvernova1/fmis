@@ -13,12 +13,5 @@ namespace fmis.Models
         public DateTime datefrom { get; set; }
         [DataType(DataType.Date)]
         public DateTime dateto { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
-
-        public Saob()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
 }

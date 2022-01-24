@@ -26,19 +26,8 @@ namespace fmis.Models
         public string designation { get; set; }
         public string password { get; set; }
         public string username { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime created_at { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime updated_at { get; set; }
-
         public Requesting_office Requesting_office { get; set; }
         public BudgetAllotment Budget_allotment { get; set; }
         public Ors_head Ors_head { get; set; }
-
-        public Personal_Information()
-        {
-            this.updated_at = DateTime.Now;
-        }
-
     }
 }
