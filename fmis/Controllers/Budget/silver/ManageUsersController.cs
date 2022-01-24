@@ -126,7 +126,7 @@ namespace fmis.Controllers.Budget.silver
                 // SignInManager and redirect to index action of HomeController
                 if (result.Succeeded)
                 {
-                    if (signinManager.IsSignedIn(User) && User.IsInRole("Super Admin"))
+                    if (signinManager.IsSignedIn(User) && User.IsInRole("Budget"))
                     {
                         return RedirectToAction("Index", "ManageUsers");
                     }

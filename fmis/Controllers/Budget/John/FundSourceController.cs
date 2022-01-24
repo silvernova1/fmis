@@ -137,7 +137,7 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId)
         {
-            fundSource.Created_At = DateTime.Now;
+            /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 

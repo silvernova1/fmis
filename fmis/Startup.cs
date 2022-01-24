@@ -151,13 +151,12 @@ namespace fmis
                 endpoints.MapRazorPages();
             });
         }
-
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<fmisUser>>();
-            string[] roleNames = { "Super Admin", "Admin", "Budget User" };
+            string[] roleNames = { "Admin", "Budget" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
@@ -187,7 +186,7 @@ namespace fmis
                 if (createPowerUser.Succeeded)
                 {
                     //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(poweruser, "Admin");
+                    await UserManager.AddToRoleAsync(poweruser, "Budget");
 
                 }
             }

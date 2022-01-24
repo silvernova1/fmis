@@ -9,7 +9,7 @@ using fmis.Models.silver;
 
 namespace fmis.Models.John
 {
-    public class FundSource
+    public class FundSource : BaseEntityTimeStramp
     {
         [Key]
         public int FundSourceId { get; set; }
@@ -27,16 +27,9 @@ namespace fmis.Models.John
         public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public int? BudgetAllotmentId { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
         public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
-
-        public FundSource()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
 }

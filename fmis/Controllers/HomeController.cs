@@ -15,7 +15,8 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-    /*[Authorize(Roles = "Super Admin")]*/
+
+    [Authorize(Roles = "Budget")]
 
     public class HomeController : Controller
     {
@@ -48,11 +49,15 @@ namespace fmis.Controllers
             var dashboard_report = (from fundsource in _MyDbCOntext.FundSources
                                    join budget_allotment in _MyDbCOntext.Budget_allotments
                                    on fundsource.BudgetAllotmentId equals budget_allotment.BudgetAllotmentId
+                                   join yearly in _MyDbCOntext.Yearly_reference
+                                   on budget_allotment.YearlyReferenceId equals 1
                                    select new DashboardVM
                                    {
                                        Fundsource = fundsource,
                                        Budgetallotments = budget_allotment
                                    }).ToList();
+
+           // return Json(dashboard_report);
 
             var obligation = _MyDbCOntext.ObligationAmount.ToList();
 

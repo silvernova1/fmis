@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Areas.Identity.Data;
+using fmis.Models.Budget;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -23,24 +24,9 @@ namespace fmis.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            this.SeedUsers(builder);
+            //builder.Entity<fmisUser>(b => { b.HasMany(p => p.BudgetYears); });
         }
-
-        private void SeedUsers(ModelBuilder builder)
-        {
-            fmisUser user = new fmisUser()
-            {
-                UserName = "Budget",
-                Email = "Budget@gmail.com",
-                LockoutEnabled = false,
-                PhoneNumber = "09208658303",
-            };
-
-            PasswordHasher<fmisUser> passwordHasher = new PasswordHasher<fmisUser>();
-            user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
-
-            builder.Entity<fmisUser>().HasData(user);
-        }
+        //public DbSet<BudgetYear> BudgetYears { get; set; }
 
         public static UserContext Create()
         {

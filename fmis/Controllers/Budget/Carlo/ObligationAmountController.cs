@@ -174,7 +174,7 @@ namespace fmis.Controllers
                 _MyDbContext.SaveChanges();
             }
 
-            NotificationLogs(fundsource_id,suballotment_id,obligation.source_type,calculation_data.amount);
+            NotificationLogs(fundsource_id,suballotment_id,obligation.source_type,"obligated",calculation_data.amount);
 
             var obligation_amount = await _context.ObligationAmount.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == calculation_data.obligation_amount_token);
             obligation_amount.Amount = calculation_data.amount;
@@ -187,7 +187,7 @@ namespace fmis.Controllers
             return Json(get_obligated_remaining); //get the remaining_balance
         }
 
-        public void NotificationLogs(int fundsource_id,int suballotment_id,string source_type,decimal amount) {
+        public void NotificationLogs(int fundsource_id,int suballotment_id,string source_type,string logs_type,decimal amount) {
             Logs logs = new();
             logs.created_id = 1;
             logs.created_name = "Rusel T. Tayong";
@@ -196,7 +196,8 @@ namespace fmis.Controllers
             logs.created_section = "ICTU";
             logs.FundSourceId = fundsource_id;
             logs.SubAllotmentId = suballotment_id;
-            logs.type = source_type;
+            logs.source_type = source_type;
+            logs.logs_type = logs_type;
             logs.amount = amount;
             _LContext.Logs.Update(logs);
             _LContext.SaveChanges();
