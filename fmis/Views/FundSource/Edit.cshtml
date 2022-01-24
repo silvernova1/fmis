@@ -14,7 +14,7 @@
     <input type="hidden" class="fundsource_amount_uacs" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
     <input type="hidden" class="fundsource_token" value="@Model.token">
-    <input type="hidden" asp-for="Created_At"/>
+    @*<input type="hidden" asp-for="Created_At"/>*@
     <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
         <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Fund Source)</h7>
         <div class="pull-right">
