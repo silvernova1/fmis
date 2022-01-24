@@ -1,12 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using fmis.Areas.Identity.Data
-@model IEnumerable<fmis.ViewModel.DashboardVM> 
+@using fmis.Models.John
+@model fmis.ViewModel.DashboardVM 
 @inject SignInManager<fmisUser> SignInManager
 @inject UserManager<fmisUser> UserManager
-
-    @{
-    ViewData["Title"] = "Home Page";
-}
 
 
 <div class="page-header">
@@ -19,7 +16,7 @@
     </h1>
 </div><!-- /.page-header -->
 
-
+@foreach (var fundsource in Model.FundSources){
 <div class="col-sm-6">
     <div class="widget-box" style="height: 215px;">
         <div class="widget-header">
@@ -30,11 +27,8 @@
                 <form>
                     <!-- <legend>Form</legend> -->
                     <fieldset>
-                        <div class="alert alert-block alert-warning">
-                            <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>
-
-                           @* <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>*@
-
+                        <div class="alert alert-block alert-warning">        
+                            <center><label style="font-size: 25pt;"> @fundsource.Beginning_balance</label></center>           
                         </div>
                     </fieldset>
                     <center><h4>ALLOTMENT</h4> </center>
@@ -44,9 +38,6 @@
         
     </div>
 </div>
-
-
-
 <div class="col-sm-3">
     <div class="widget-box">
         <div class="widget-header">
@@ -60,7 +51,7 @@
                 <fieldset>
                     <div class="">
 
-                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.obligated_amount)</label></center>
+                        <center><label style="font-size: 18pt;">@fundsource.obligated_amount</label></center>
                         <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
@@ -76,10 +67,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 <div class="col-sm-3">
     <div class="widget-box">
         <div class="widget-header">
@@ -92,7 +79,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.Remaining_balance)</label></center>
+                        <center><label style="font-size: 18pt;">@fundsource.Remaining_balance</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
@@ -102,40 +89,11 @@
                         <center><h5>UNPAID OBLIGATIONS</h5> </center>
                     </div>
                 </fieldset>
-
             </form>
-
         </div>
     </div>
 </div>
-<!--<div class="col-sm-3">
-    <div class="widget-box">
-        <div class="widget-header">
-            <h5 class="widget-title">BALANCE & UNAPAID OBLIGATIONS</h5>
-        </div>
-
-        <div class="widget-body">
-            <br>
-            <form>-->
-<!-- <legend>Form</legend> -->
-<!--<fieldset>
-                    <div class="">
-                        <center><label style="font-size: 18pt;">266,302,214.38</label></center>
-                        <center><h5>BALANCE</h5> </center>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div class="">
-                        <center><label style="font-size: 18pt;">584,697,855.16</label></center>
-                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
-                    </div>
-                </fieldset>
-
-            </form>
-        </div>
-    </div>
-</div>-->
-
+}
 <div class="vspace-12-sm"></div>
 <div class="col-sm-4" style="margin-top: 15px;">
     <div class="widget-box">
@@ -146,17 +104,13 @@
 
             <div class="widget-toolbar no-border">
                 <div class="inline dropdown-hover">
-
                 </div>
             </div>
-
         </div>
         <div class="widget-body">
             <div class="widget-main">
                 <div id="cumulative-piechart-placeholder" style=" margin-top: 20px;"></div>
-
             </div><!-- /.widget-main -->
-
         </div><!-- /.widget-body -->
     </div>
 </div><!-- /.col -->
@@ -167,26 +121,18 @@
             <h5 class="widget-title">
                 OBLIGATED
             </h5>
-
             <div class="widget-toolbar no-border">
                 <div class="inline dropdown-hover">
-
                 </div>
             </div>
         </div>
-
         <div class="widget-body">
             <div class="widget-main">
                 <div id="obligated-piechart-placeholder" style=" margin-top: 20px;"></div>
-
-
-
             </div><!-- /.widget-main -->
         </div><!-- /.widget-body -->
     </div><!-- /.widget-box -->
 </div><!-- /.col -->
-
-
 <div class="col-sm-4">
     <h3 class="header smaller  black">DIVISION</h3>
 
