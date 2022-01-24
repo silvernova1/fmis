@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220124062234_MyDb")]
+    [Migration("20220124065716_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -841,6 +841,9 @@ namespace fmis.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account_code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Account_title")
                         .HasColumnType("nvarchar(max)");
