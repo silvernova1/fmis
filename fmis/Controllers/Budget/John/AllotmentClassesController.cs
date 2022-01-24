@@ -63,7 +63,6 @@ namespace fmis.Controllers.Budget.John
         {
             if (ModelState.IsValid)
             {
-                allotmentClass.Created_At = DateTime.Now;
                 _context.Add(allotmentClass);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

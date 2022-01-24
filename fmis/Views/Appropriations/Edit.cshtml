@@ -8,7 +8,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="Created_at" />
+            @*<input type="hidden" asp-for="Created_at" />*@
             <div class="form-group">
                 <h5>Description: </h5>
                 <input asp-for="Description" class="form-control" />

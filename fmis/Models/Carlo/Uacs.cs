@@ -16,13 +16,5 @@ namespace fmis.Models
         public string Expense_code { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
-
-        public Uacs()
-        {
-            this.Updated_At = DateTime.Now;
-        }
-
     }
 }

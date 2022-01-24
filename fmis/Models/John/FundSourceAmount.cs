@@ -24,12 +24,5 @@ namespace fmis.Models.John
         [JsonIgnore]
         public FundSource FundSource { get; set; }
         public Uacs Uacs { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
-
-        public FundSourceAmount()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
 }

@@ -9,7 +9,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" name="id" value="@Html.DisplayFor(model => model.Id)" />
-            <input type="hidden" asp-for="Created_at"/>
             <div class="form-group">
                 <label class="control-label"> FullName </label>
                 <select class="form-control select2" asp-for="Personalinfo_userid" asp-items="ViewBag.pi_userid">

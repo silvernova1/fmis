@@ -18,11 +18,5 @@ namespace fmis.Models
         public Suballotment_amount SubAllotmentAmount { get; set; }
         [JsonIgnore]
         public Sub_allotment SubAllotment { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
-        public SubAllotment_Realignment()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
 }

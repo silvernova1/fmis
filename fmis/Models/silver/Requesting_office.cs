@@ -13,13 +13,5 @@ namespace fmis.Models
         public int Id { get; set; }
 
         public string pi_userid { get; set; }
-
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
-
-        public Requesting_office()
-        {
-            this.Updated_at = DateTime.Now;
-        }
     }
 }

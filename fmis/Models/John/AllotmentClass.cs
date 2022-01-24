@@ -11,16 +11,7 @@ namespace fmis.Models.John
         public int Id { get; set; }
         public string Allotment_Class { get; set; }
         public string Account_Code { get; set; }
-        [DataType(DataType.Date)]
         /*[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd-HH:mm}")]*/
-        public DateTime Created_At { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime Updated_At { get; set; }
-
-        public AllotmentClass()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
     
 }

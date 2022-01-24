@@ -19,12 +19,7 @@ namespace fmis.Models
         [JsonIgnore]
         public FundSource FundSource { get; set; }
         public FundSourceAmount FundSourceAmount { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
-        public FundsRealignment()
-        {
-            this.Updated_At = DateTime.Now;
-        }
+ 
     }
 
 }

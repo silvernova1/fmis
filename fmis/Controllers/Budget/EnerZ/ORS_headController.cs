@@ -101,7 +101,6 @@ namespace fmis.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    ors_head.Created_at = DateTime.Now;
                     _context.Add(ors_head);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));

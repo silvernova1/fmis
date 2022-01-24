@@ -111,7 +111,6 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
-                uacs.Created_At = DateTime.Now;
                 _context.Add(uacs);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

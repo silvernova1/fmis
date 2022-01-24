@@ -12,12 +12,5 @@ namespace fmis.Models
         [Key]
         public int Id { get; set; }
         public string Personalinfo_userid { get; set; }
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
-
-        public Ors_head()
-        {
-            this.Updated_at = DateTime.Now;
-        }
     }
 }

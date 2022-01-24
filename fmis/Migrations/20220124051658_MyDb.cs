@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     public partial class MyDb : Migration
     {
@@ -28,9 +28,7 @@ namespace fmis.Migrations.MyDb
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Allotment_Class = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Account_Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Account_Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,9 +42,7 @@ namespace fmis.Migrations.MyDb
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Code = table.Column<int>(type: "int", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,9 +102,7 @@ namespace fmis.Migrations.MyDb
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReturnUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RememberMe = table.Column<bool>(type: "bit", nullable: false),
-                    UserRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UserRole = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,9 +132,7 @@ namespace fmis.Migrations.MyDb
                     Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -153,9 +145,7 @@ namespace fmis.Migrations.MyDb
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Personalinfo_userid = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Personalinfo_userid = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -168,9 +158,7 @@ namespace fmis.Migrations.MyDb
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    pi_userid = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    pi_userid = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,9 +222,7 @@ namespace fmis.Migrations.MyDb
                 {
                     YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    YearlyReference = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    YearlyReference = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,8 +268,6 @@ namespace fmis.Migrations.MyDb
                     Allotment_series = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -310,8 +294,6 @@ namespace fmis.Migrations.MyDb
                     designation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Requesting_officeId = table.Column<int>(type: "int", nullable: true),
                     Budget_allotmentBudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
                     Ors_headId = table.Column<int>(type: "int", nullable: true)
@@ -404,8 +386,6 @@ namespace fmis.Migrations.MyDb
                     realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
                     UtilizationId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -449,8 +429,6 @@ namespace fmis.Migrations.MyDb
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     obligation_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FundSourceId = table.Column<int>(type: "int", nullable: true),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -487,8 +465,6 @@ namespace fmis.Migrations.MyDb
                     Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FundSourceId = table.Column<int>(type: "int", nullable: true),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
                     Sub_allotmentSubAllotmentId = table.Column<int>(type: "int", nullable: true),
@@ -540,8 +516,6 @@ namespace fmis.Migrations.MyDb
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     utilization_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     utilization_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FundSourceId = table.Column<int>(type: "int", nullable: true),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -582,9 +556,7 @@ namespace fmis.Migrations.MyDb
                     suballotment_amount_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     suballotment_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -612,9 +584,7 @@ namespace fmis.Migrations.MyDb
                     SummaryReports = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     datefrom = table.Column<DateTime>(type: "datetime2", nullable: false),
                     dateto = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UacsId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UacsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -638,9 +608,7 @@ namespace fmis.Migrations.MyDb
                     Realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SubAllotmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -671,8 +639,6 @@ namespace fmis.Migrations.MyDb
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UacsId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SummaryReportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -707,8 +673,6 @@ namespace fmis.Migrations.MyDb
                     fundsource_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: false),
                     FundSourceId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PrexcId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -745,9 +709,7 @@ namespace fmis.Migrations.MyDb
                     Realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceId = table.Column<int>(type: "int", nullable: true),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FundSourceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

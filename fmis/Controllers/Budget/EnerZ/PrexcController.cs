@@ -131,7 +131,6 @@ namespace fmis.Controllers
         {
             if (ModelState.IsValid)
             {
-                prexc.Created_At = DateTime.Now;
                 _context.Add(prexc);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
