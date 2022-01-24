@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models.John
 {
-    public class AllotmentClass
+    public class AllotmentClass : BaseEntityTimeStramp 
     {
         public int Id { get; set; }
         public string Allotment_Class { get; set; }

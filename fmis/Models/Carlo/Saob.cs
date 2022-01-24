@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Saob
+    public class Saob : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         [DataType(DataType.Date)]

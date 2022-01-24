@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace fmis.Models
 {
 
-    public class Personal_Information
+    public class Personal_Information : BaseEntityTimeStramp
     {
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

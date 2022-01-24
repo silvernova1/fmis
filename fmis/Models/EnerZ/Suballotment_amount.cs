@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Suballotment_amount
+    public class Suballotment_amount : BaseEntityTimeStramp
     {
         [Key]
         public int SubAllotmentAmountId { get; set; }

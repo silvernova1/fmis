@@ -9,7 +9,7 @@ using fmis.Models.silver;
 
 namespace fmis.Models
 {
-    public class Uacs
+    public class Uacs : BaseEntityTimeStramp
     {
         public int UacsId { get; set; }
         public string Account_title { get; set; }

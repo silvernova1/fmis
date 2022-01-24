@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class FundsRealignment
+    public class FundsRealignment : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         public int? FundSourceAmountId { get; set; } //realignment from

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.silver
 {
-    public class SummaryReport
+    public class SummaryReport : BaseEntityTimeStramp
     {
         [Key]
         public int Id { get; set; }

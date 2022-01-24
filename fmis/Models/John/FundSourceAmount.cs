@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models.John
 {
-    public class FundSourceAmount
+    public class FundSourceAmount : BaseEntityTimeStramp
     {
         [Key]
         public int FundSourceAmountId { get; set; }
