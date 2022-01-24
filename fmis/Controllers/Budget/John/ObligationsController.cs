@@ -129,8 +129,6 @@ namespace fmis.Controllers
         }
 
 
-
-
         [HttpGet]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> openObligationAmount(int id, string obligation_token)
