@@ -34,7 +34,7 @@ namespace fmis.Controllers
             return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
-        public IActionResult Dashboard()
+        public IActionResult Dashboard(int id)
         {
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home");
@@ -44,25 +44,34 @@ namespace fmis.Controllers
             var FundSource = _MyDbCOntext.FundSources;
 
 
-            var dashboard_report = (from fundsource in _MyDbCOntext.FundSources
-                                   join budget_allotment in _MyDbCOntext.Budget_allotments
-                                   on fundsource.BudgetAllotmentId equals budget_allotment.BudgetAllotmentId
-                                   join yearly in _MyDbCOntext.Yearly_reference
-                                   on budget_allotment.YearlyReferenceId equals 1
-                                   select new DashboardVM
-                                   {
-                                       Fundsource = fundsource,
-                                       Budgetallotments = budget_allotment
-                                   }).ToList();
-
-           // return Json(dashboard_report);
-
-            var obligation = _MyDbCOntext.ObligationAmount.ToList();
+            DashboardVM dashboard = new DashboardVM();
+            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == id).ToList();
+            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
 
 
 
+            /*    var dashboard_report = *//*(from fundsource in _MyDbCOntext.FundSources
+                                       join budget_allotment in _MyDbCOntext.Budget_allotments
+                                       on fundsource.BudgetAllotmentId equals budget_allotment.BudgetAllotmentId
+                                       join yearly in _MyDbCOntext.Yearly_reference
+                                       on budget_allotment.YearlyReferenceId equals id*//*
+                                       (from budget_allotment in _MyDbCOntext.Budget_allotments
+                                        join yearly in _MyDbCOntext.Yearly_reference
+                                        on budget_allotment.BudgetAllotmentId equals id
+                                        select new DashboardVM
+                                       {
+                                          // Fundsource = fundsource,
+                                           Budgetallotments = budget_allotment
+                                       }).ToList();
+    */
+            // return Json(new { id = id, dash = dashboard_report } );
+            /*
+                        var obligation = _MyDbCOntext.ObligationAmount.ToList();*/
 
-            return View("~/Views/Home/Index.cshtml", dashboard_report);
+
+
+
+            return View("~/Views/Home/Index.cshtml", dashboard);
         }
 
         public IActionResult Privacy()

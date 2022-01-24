@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.MyDb
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220121055529_MyDb")]
+    [Migration("20220124003853_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
