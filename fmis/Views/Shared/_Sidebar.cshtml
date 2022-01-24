@@ -58,6 +58,15 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "allotmentclass")
+                @Html.Raw("active")">
+                    <a asp-controller="AllotmentClasses" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Allotment Class
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
                 <li class="@if(ViewBag.filter.sub == "uacs")
                 @Html.Raw("active")">
                     <a asp-controller="Uacs" asp-action="Index">
@@ -86,16 +95,15 @@
 
                     <b class="arrow"></b>
                 </li>
-                 <li class="@if(ViewBag.filter.sub == "BudgetAllotment")
+                <li class="@if(ViewBag.filter.sub == "BudgetAllotment")
                      @Html.Raw("active")">
-                     <a asp-controller="BudgetAllotment" asp-action="Index">
+                    <a asp-controller="BudgetAllotment" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Budget Allotments
-                     </a>
+                    </a>
 
-                     <b class="arrow"></b>
-                 </li>
-
+                    <b class="arrow"></b>
+                </li>
                 <li class="@if(ViewBag.filter.sub == "requestingoffice")
                 @Html.Raw("active")">
                     <a asp-controller="Requesting_office" asp-action="Index">
@@ -105,24 +113,16 @@
 
                     <b class="arrow"></b>
                 </li>
-                <li class="@if(ViewBag.filter.sub == "allotmentclass")
-                @Html.Raw("active")">
-                    <a asp-controller="AllotmentClasses" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Allotment Class
-                    </a>
 
-                    <b class="arrow"></b>
-                </li>
-              @*  <li class="@if(ViewBag.filter.sub == "Appropriations")
-                @Html.Raw("active")">
-                    <a asp-controller="Appropriations" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Appropriations
-                    </a>
+                @*  <li class="@if(ViewBag.filter.sub == "Appropriations")
+        @Html.Raw("active")">
+            <a asp-controller="Appropriations" asp-action="Index">
+                <i class="menu-icon fa fa-caret-right"></i>
+                Appropriations
+            </a>
 
-                    <b class="arrow"></b>
-                </li>*@
+            <b class="arrow"></b>
+        </li>*@
                 <li class="@if(ViewBag.filter.sub == "ManageUsers")
                 @Html.Raw("active")">
                     <a asp-controller="ManageUsers" asp-action="Index">

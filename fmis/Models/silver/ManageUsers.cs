@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models.silver
 {
-    public class ManageUsers
+    public class ManageUsers : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         public string UserId { get; set; }

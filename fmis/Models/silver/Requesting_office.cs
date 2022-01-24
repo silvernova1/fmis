@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Requesting_office
+    public class Requesting_office : BaseEntityTimeStramp
     {
         [Key]
         public int Id { get; set; }

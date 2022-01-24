@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Appropriation
+    public class Appropriation : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         public string Description { get; set; }

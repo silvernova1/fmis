@@ -8,7 +8,7 @@ using fmis.Models.John;
 
 namespace fmis.Models
 {
-    public class Obligation
+    public class Obligation : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         public int source_id { get; set; }
