@@ -502,31 +502,31 @@ namespace fmis.Controllers
 
                     //
 
-                    /* var fundsources = (from fundsource in _MyDbContext.FundSources
-                                       join obligation in _MyDbContext.Obligation
-                                       on fundsource.FundSourceId equals obligation.source_id
+                    var fundsources = (from fundsource in _MyDbContext.FundSources
+                                       join utilization in _MyDbContext.Utilization
+                                       on fundsource.FundSourceId equals utilization.source_id
                                        join prexc in _MyDbContext.Prexc
                                        on fundsource.PrexcId equals prexc.Id
-                                       where obligation.Id == ID
+                                       where utilization.Id == ID
 
                                        select new
                                        {
                                            pap = prexc.pap_code1,
-                                           obligation_id = obligation.source_id,
+                                           utilization_id = utilization.source_id,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitleCode,
                                            respo = fundsource.Respo,
-                                           particulars = obligation.Particulars
+                                           particulars = utilization.Particulars
                                        }).ToList();
 
-                    var uacses = (from obligation in _MyDbContext.Obligation
-                                  join obligation_amount in _MyDbContext.ObligationAmount
-                                  on obligation.Id equals obligation_amount.ObligationId
-                                  where obligation.Id == ID
+                    var uacses = (from utilization in _MyDbContext.Utilization
+                                  join utilization_amount in _MyDbContext.UtilizationAmount
+                                  on utilization.Id equals utilization_amount.UtilizationId
+                                  where utilization.Id == ID
                                   select new
                                   {
-                                      expense_code = obligation_amount.Expense_code,
-                                      amount = (double)Convert.ToDecimal(obligation_amount.Amount)
+                                      expense_code = utilization_amount.Expense_code,
+                                      amount = (double)Convert.ToDecimal(utilization_amount.Amount)
                                   }).ToList();
 
                     foreach (var u in uacses)
@@ -534,9 +534,10 @@ namespace fmis.Controllers
                         uacs += u.expense_code + "\n";
                         str_amt += u.amount.ToString("C", new CultureInfo("en-PH")) + "\n";
                         total_amt += u.amount;
-                    }*/
+                    }
 
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "Kabaso Data" + "\n\n" + "Kabaso Data", table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+
+                    //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "Kabaso Data" + "\n\n" + "Kabaso Data", table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + bur.Particulars, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "Kabaso Data", table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
