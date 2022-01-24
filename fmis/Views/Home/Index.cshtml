@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using fmis.Areas.Identity.Data
+@using System.Globalization; 
 @model IEnumerable<fmis.ViewModel.DashboardVM> 
 @inject SignInManager<fmisUser> SignInManager
 @inject UserManager<fmisUser> UserManager
@@ -30,14 +31,15 @@
                 <form>
                     <!-- <legend>Form</legend> -->
                     <fieldset>
-                        <div class="alert alert-block alert-warning">
-                            <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>
+                        <div class="alert alert-block alert-info">
+                            <center><label style="font-size: 25pt;">@Model.Sum(x => x.Fundsource.Beginning_balance).ToString("C", new CultureInfo("en-PH"))</label></center>
 
-                           @* <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>*@
+                            @* <center><label style="font-size: 25pt;">@Model.Sum(x=>x.Fundsource.Beginning_balance)</label></center>*@
 
                         </div>
+                        <center><h4>(ALLOTMENT)</h4> </center>
                     </fieldset>
-                    <center><h4>ALLOTMENT</h4> </center>
+                    
                 </form>
             </div>
         </div>
@@ -58,17 +60,17 @@
             <form>
                 <!-- <legend>Form</legend> -->
                 <fieldset>
-                    <div class="">
-
-                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.obligated_amount)</label></center>
-                        <center><h5>OBLIGATED</h5> </center>
+                    <div>
+                        <center><label style="font-size: 18pt;">@Model.Sum(x => x.Fundsource.obligated_amount).ToString("C", new CultureInfo("en-PH"))</label></center>
+                        <center><h5>(OBLIGATED)</h5> </center>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <div class="">
-                        <center><label style="font-size: 18pt;">0</label></center>
-                        <center><h5>DISBURSED</h5> </center>
+                    <div>
+                        <center><label style="font-size: 18pt;">₱0.00</label></center>
+                        <center><h5>(DISBURSED)</h5> </center>
                     </div>
+                    
                 </fieldset>
 
             </form>
@@ -92,14 +94,14 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.Remaining_balance)</label></center>
-                        <center><h5>BALANCE</h5> </center>
+                        <center><label style="font-size: 18pt;">@Model.Sum(x=>x.Fundsource.Remaining_balance).ToString("C", new CultureInfo("en-PH"))</label></center>
+                        <center><h5>(BALANCE)</h5> </center>
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">0</label></center>
-                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
+                        <center><label style="font-size: 18pt;">₱0.00</label></center>
+                        <center><h5>(UNPAID OBLIGATIONS)</h5> </center>
                     </div>
                 </fieldset>
 
@@ -108,34 +110,6 @@
         </div>
     </div>
 </div>
-<!--<div class="col-sm-3">
-    <div class="widget-box">
-        <div class="widget-header">
-            <h5 class="widget-title">BALANCE & UNAPAID OBLIGATIONS</h5>
-        </div>
-
-        <div class="widget-body">
-            <br>
-            <form>-->
-<!-- <legend>Form</legend> -->
-<!--<fieldset>
-                    <div class="">
-                        <center><label style="font-size: 18pt;">266,302,214.38</label></center>
-                        <center><h5>BALANCE</h5> </center>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div class="">
-                        <center><label style="font-size: 18pt;">584,697,855.16</label></center>
-                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
-                    </div>
-                </fieldset>
-
-            </form>
-        </div>
-    </div>
-</div>-->
-
 <div class="vspace-12-sm"></div>
 <div class="col-sm-4" style="margin-top: 15px;">
     <div class="widget-box">
