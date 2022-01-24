@@ -485,6 +485,7 @@ namespace fmis.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Account_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),

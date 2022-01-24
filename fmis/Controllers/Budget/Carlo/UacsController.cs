@@ -21,16 +21,19 @@ namespace fmis.Controllers
     public class UacsController : Controller
     {
         private readonly UacsContext _context;
+        private readonly MyDbContext _MyDbContext;
 
-        public UacsController(UacsContext context)
+        public UacsController(UacsContext context, MyDbContext MyDbContext)
         {
             _context = context;
+            _MyDbContext = MyDbContext;
         }
 
         public class UacsData
         {
             public string Account_title { get; set; }
             public string Expense_code { get; set; }
+            public string Account_Code { get; set; }
             public int UacsId { get; set; }
             public string token { get; set; }
         }
@@ -51,9 +54,16 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data","uacs");
             ViewBag.layout = "_Layout";
+
             var json = JsonSerializer.Serialize(_context.Uacs.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;
+
+       /*     var allotment_class = JsonSerializer.Serialize(_MyDbContext.AllotmentClass.Where(s => s.Account_Code == ).ToList());
+            ViewBag.AllotmentClass = allotment_class;
+*/
             return View("~/Views/Carlo/Uacs/Index.cshtml");
+
+           
         }
 
      

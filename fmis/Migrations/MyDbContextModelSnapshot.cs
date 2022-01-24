@@ -840,6 +840,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Account_code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Account_title")
                         .HasColumnType("nvarchar(max)");
 

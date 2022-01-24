@@ -110,7 +110,7 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [700, 600],
+        colWidths: [600, 300, 300],
         colHeaders: ['ACCOUNT TITLE', 'UACS EXPENSE CODE', 'ID', 'TOKEN'],
         columns: [
             {
@@ -120,11 +120,11 @@
 
             },
             {
-
+                //HIDDEN ID
             },
             {
-
-            },
+               //HIDDEN TOKEN
+            }
 
         ],
         rowHeaders: true,
@@ -201,21 +201,7 @@
         licenseKey: 'non-commercial-and-evaluation',
     });
 
-    const exportPlugin = hot.getPlugin('exportFile');
-    button.addEventListener('click', () => {
-        exportPlugin.downloadFile('csv', {
-            bom: false,
-            columnDelimiter: ',',
-            columnHeaders: true,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
-            fileExtension: 'csv',
-            filename: 'UACS',
-            mimeType: 'text/csv',
-            rowDelimiter: '\r\n',
-            rowHeaders: true
-        });
-    });
+  
     var tableData = JSON.stringify(hot.getSourceData());
     @*console.log(hot.getSourceData());*@
 </script>

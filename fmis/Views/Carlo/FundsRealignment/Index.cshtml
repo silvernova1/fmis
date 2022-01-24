@@ -14,6 +14,12 @@
     }
 }
 
+<style>
+    .wtHider {
+        margin-bottom: 150px;
+    }
+</style>
+
  
 <input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
 <input type="hidden" class="fundsrealignment" value="@JsonSerializer.Serialize(Model.FundsRealignment)">
@@ -166,7 +172,7 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [220, 220, 220, 220],
+        colWidths: [300, 150, 300, 150],
         rowHeaders: true,
         colHeaders: ['REALIGNMENT FROM','REMAINING BALANCE','REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
@@ -349,7 +355,7 @@
                 ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
             }
 		},
-        height: '250px',
+        height: 'auto',
         hiddenColumns: {
             columns: [4,5],
             indicators: true
