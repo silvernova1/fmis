@@ -47,8 +47,8 @@ namespace fmis.Controllers
 
 
             DashboardVM dashboard = new DashboardVM();
-            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == id).ToList();
-            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
+            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == 1).ToList();
+            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == 1).ToList();
 
 
 
