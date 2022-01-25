@@ -840,6 +840,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Account_code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Account_title")
                         .HasColumnType("nvarchar(max)");
 
@@ -896,9 +899,6 @@ namespace fmis.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Created_At")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Created_by")
                         .HasColumnType("int");
 
@@ -939,9 +939,6 @@ namespace fmis.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Updated_At")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("source_id")

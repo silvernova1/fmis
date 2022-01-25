@@ -63,7 +63,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,YearlyReference,Created_at,Updated_at")] Yearly_reference yearly_reference)
+        public async Task<IActionResult> Create([Bind("Id,YearlyReference")] Yearly_reference yearly_reference)
         {
             ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
             if (ModelState.IsValid)
@@ -101,7 +101,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,YearlyReference,Created_at,Updated_at")] Yearly_reference yearly_reference)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,YearlyReference")] Yearly_reference yearly_reference)
         {
             ViewBag.filter = new FilterSidebar("master_data", "yearlyreference");
 

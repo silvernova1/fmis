@@ -56,7 +56,7 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
+        public async Task<IActionResult> Create([Bind("Id,Description,Code")] Appropriation appropriation)
         {
             ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (ModelState.IsValid)
@@ -87,7 +87,7 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Code,Created_at,Updated_at")] Appropriation appropriation)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Code")] Appropriation appropriation)
         {
             ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
             if (id != appropriation.Id)

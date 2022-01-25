@@ -59,7 +59,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Allotment_Class,Account_Code,Created_At,Updated_At")] AllotmentClass allotmentClass)
+        public async Task<IActionResult> Create([Bind("Id,Allotment_Class,Account_Code")] AllotmentClass allotmentClass)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Allotment_Class,Account_Code,Created_At,Updated_At")] AllotmentClass allotmentClass)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Allotment_Class,Account_Code")] AllotmentClass allotmentClass)
         {
             if (id != allotmentClass.Id)
             {
