@@ -22,7 +22,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         public IActionResult Index()
         {
-            ViewBag.filter = new FilterSidebar("ors", "temp");
+            ViewBag.filter = new FilterSidebar("ors", "temp", "");
             ViewBag.layout = "_Layout";
 
             var uacs_data = JsonSerializer.Serialize(_UacsContext.Uacs.ToList());

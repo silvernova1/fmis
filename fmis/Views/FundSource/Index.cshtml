@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-pink">
+        <div class="infobox infobox-blue">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
@@ -65,13 +65,12 @@
                     @Model.FundSources.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-pink arrowed-in arrowed-in-right"> Obligated Amount </span>
+                    <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
                 </div>
             </div>
         </div>
 
-
-        <div class="infobox infobox-blue">
+        @*<div class="infobox infobox-blue">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
@@ -83,7 +82,7 @@
                     <span class="label label-primary arrowed-in arrowed-in-right"> Utilized Amount </span>
                 </div>
             </div>
-        </div>
+        </div>*@
     </div>
 </div>
 <br />
@@ -160,10 +159,9 @@
                 <th>
                     Obligated Amount
                 </th>
-
-                <th>
+               @* <th>
                     Utilized Amount
-                </th>
+                </th>*@
             </tr>
         </thead>
         <tbody>
@@ -202,16 +200,16 @@
                     </b>
                 </td>
                 <td>
-                    <b class="pink">
+                    <b class="blue">
                         <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                     </b>
                 </td>
 
-                <td>
+               @* <td>
                     <b class="blue">
                         <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
                     </b>
-                </td>
+                </td>*@
             </tr>
             }
         </tbody>

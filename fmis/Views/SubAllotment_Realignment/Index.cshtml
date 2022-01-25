@@ -288,11 +288,13 @@
                             var post_remaining_balance = result.remaining_balance;
                             var post_realignment_amount = result.realignment_amount;
                             var post_suballotment_amount_remaining = result.subAllotmentAmounts[0].remaining_balance;
+                            var post_suballotment_amount_realignment = result.subAllotmentAmounts[0].realignment_amount;
 
                             if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
                                 post_remaining_balance = post_remaining_balance + oldValue; //2000
                                 post_realignment_amount = post_realignment_amount - oldValue;
                                 post_suballotment_amount_remaining = post_suballotment_amount_remaining + oldValue;
+                                post_suballotment_amount_realignment = post_suballotment_amount_realignment - oldValue;
                             }
                             AMOUNT = newValue;
 
@@ -306,13 +308,17 @@
                                 //do the calculation
                                 console.log("do the calculation!");
                                 post_remaining_balance = post_remaining_balance - AMOUNT;
-                                post_suballotment_amount_remaining = post_suballotment_amount_remaining - AMOUNT;
                                 post_realignment_amount = post_realignment_amount + AMOUNT;
+                                post_suballotment_amount_remaining = post_suballotment_amount_remaining - AMOUNT;
+                                post_suballotment_amount_realignment = post_suballotment_amount_realignment + AMOUNT;
+                               
+
                                 var calculated_amount_data = {
                                     "sub_allotment_id": parseInt(sub_allotment_id),
                                     "remaining_balance": post_remaining_balance,
                                     "realignment_amount": post_realignment_amount,
                                     "suballotment_amount_remaining_balance": post_suballotment_amount_remaining,
+                                    "suballotment_amount_realignment": post_suballotment_amount_realignment,
                                     "realignment_token": hot.getDataAtCell(row, 5),
                                     "amount": AMOUNT,
                                     "suballotment_amount_token": suballotment_amount_token

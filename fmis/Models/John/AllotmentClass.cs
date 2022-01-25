@@ -6,22 +6,11 @@ using System.Threading.Tasks;
 
 namespace fmis.Models.John
 {
-    public class AllotmentClass
+    public class AllotmentClass : BaseEntityTimeStramp 
     {
         public int Id { get; set; }
         public string Allotment_Class { get; set; }
         public string Account_Code { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime Created_At { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime Updated_At { get; set; }
-
-        public AllotmentClass()
-        {
-            this.Updated_At = DateTime.Now;
-        }
-
     }
     
 }

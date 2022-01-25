@@ -51,6 +51,7 @@ namespace fmis.Controllers.Budget.Carlo
             public decimal remaining_balance { get; set; }
             public decimal realignment_amount { get; set; }
             public decimal fundsource_amount_remaining_balance { get; set; }
+            public decimal fundsource_amount_realignment { get; set; }
             public decimal amount { get; set; }
             public string realignment_token { get; set; }
             public string fundsource_amount_token { get; set; }
@@ -76,7 +77,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         public async Task<IActionResult> Index(int fundsource_id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             FundSource = await _FContext.FundSource
                             .Include(x => x.FundSourceAmounts)
@@ -124,6 +125,7 @@ namespace fmis.Controllers.Budget.Carlo
             FundSource.FundsRealignment.FirstOrDefault().Realignment_amount = calculation.amount;
             //fundsource amount calculation
             FundSource.FundSourceAmounts.FirstOrDefault().remaining_balance = calculation.fundsource_amount_remaining_balance;
+            FundSource.FundSourceAmounts.FirstOrDefault().realignment_amount = calculation.fundsource_amount_realignment;
                 
             _FContext.Update(FundSource);
             await _FContext.SaveChangesAsync();

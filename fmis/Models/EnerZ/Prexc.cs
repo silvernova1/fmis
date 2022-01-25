@@ -10,7 +10,7 @@ using fmis.Models.silver;
 
 namespace fmis.Models
 {
-    public class Prexc
+    public class Prexc : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         public string pap_title { get; set; }

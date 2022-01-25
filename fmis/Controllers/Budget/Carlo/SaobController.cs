@@ -24,7 +24,7 @@ namespace fmis.Controllers.Budget.Carlo
         public IActionResult Index()
         {
             ViewBag.Layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("budget_report", "saob");
+            ViewBag.filter = new FilterSidebar("budget_report", "saob" , "");
             return View("~/Views/Carlo/Saob/Index.cshtml");
         }
 

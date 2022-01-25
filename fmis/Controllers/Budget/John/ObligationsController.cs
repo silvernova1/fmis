@@ -110,7 +110,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("ors", "obligation");
+            ViewBag.filter = new FilterSidebar("ors", "obligation","");
 
             var obligation = await _context
                                     .Obligation

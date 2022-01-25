@@ -52,6 +52,7 @@ namespace fmis.Controllers
             public decimal remaining_balance { get; set; }
             public decimal realignment_amount { get; set; }
             public decimal suballotment_amount_remaining_balance { get; set; }
+            public decimal suballotment_amount_realignment { get; set; }
             public decimal amount { get; set; }
             public string realignment_token { get; set; }
             public string suballotment_amount_token { get; set; }
@@ -77,7 +78,7 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> Index(int sub_allotment_id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             SubAllotment = await _SContext.Sub_allotment
                             .Include(x => x.SubAllotmentAmounts)
@@ -126,6 +127,7 @@ namespace fmis.Controllers
             SubAllotment.SubAllotmentRealignment.FirstOrDefault().Realignment_amount = calculation.amount;
             //fundsource amount calculation
             SubAllotment.SubAllotmentAmounts.FirstOrDefault().remaining_balance = calculation.suballotment_amount_remaining_balance;
+            SubAllotment.SubAllotmentAmounts.FirstOrDefault().realignment_amount = calculation.suballotment_amount_realignment;
 
             _SContext.Update(SubAllotment);
             await _SContext.SaveChangesAsync();

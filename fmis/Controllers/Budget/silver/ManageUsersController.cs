@@ -40,7 +40,7 @@ namespace fmis.Controllers.Budget.silver
         {
             ViewBag.PsId = id;
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
 
             var ManageUsers = _Context.ManageUsers.ToList();
 
@@ -70,7 +70,7 @@ namespace fmis.Controllers.Budget.silver
         public IActionResult Details(string UserId)
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
             if (UserId == "")
             {
                 return NotFound();
@@ -88,8 +88,8 @@ namespace fmis.Controllers.Budget.silver
         // GET: manageuser/Create
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
             ViewData["roles"] = roleManager.Roles.ToList();
             PopulatePsDropDownList();
             return View();
@@ -142,7 +142,7 @@ namespace fmis.Controllers.Budget.silver
         // GET: manageusers/Edit/5
         public async Task<IActionResult> Edit(string UserId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
             var ManageUsers = await _Context.ManageUsers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.UserId == UserId);
@@ -164,7 +164,7 @@ namespace fmis.Controllers.Budget.silver
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,UserId")] ManageUsers ManageUsers)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
 
             if (ModelState.IsValid)
             {
@@ -208,7 +208,7 @@ namespace fmis.Controllers.Budget.silver
 
         public async Task<IActionResult> Delete(string UserId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers");
+            ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
 
 
             ViewBag.UserId_existing = _pis_context.findPersonalInformation("'" + UserId + "'");

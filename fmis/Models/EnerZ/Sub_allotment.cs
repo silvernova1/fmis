@@ -9,7 +9,7 @@ using fmis.Models.silver;
 
 namespace fmis.Models
 {
-    public class Sub_allotment  
+    public class Sub_allotment  : BaseEntityTimeStramp
     {
         [Key]
         public int SubAllotmentId { get; set; }

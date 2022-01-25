@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Yearly_reference
+    public class Yearly_reference : BaseEntityTimeStramp
     {
         [Key]
         public int YearlyReferenceId { get; set; }

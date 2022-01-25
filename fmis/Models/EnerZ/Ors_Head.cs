@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class Ors_head
+    public class Ors_head : BaseEntityTimeStramp
     {
         [Key]
         public int Id { get; set; }

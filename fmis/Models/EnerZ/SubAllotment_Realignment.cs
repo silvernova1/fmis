@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Models
 {
-    public class SubAllotment_Realignment
+    public class SubAllotment_Realignment : BaseEntityTimeStramp
     {
         public int Id { get; set; }
         public int? SubAllotmentAmountId { get; set; } //realignment from
