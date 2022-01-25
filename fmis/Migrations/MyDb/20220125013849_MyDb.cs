@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations
+namespace fmis.Migrations.MyDb
 {
     public partial class MyDb : Migration
     {
@@ -236,7 +236,7 @@ namespace fmis.Migrations
                 {
                     YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    YearlyReference = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    YearlyReference = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
