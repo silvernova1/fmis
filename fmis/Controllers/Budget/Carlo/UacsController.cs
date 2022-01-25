@@ -215,7 +215,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Account_title,Created_At,Expense_code")] Uacs uacs)
+        public async Task<IActionResult> Create([Bind("Id,Account_title,Expense_code")] Uacs uacs)
         {
             if (ModelState.IsValid)
             {

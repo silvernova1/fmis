@@ -139,7 +139,6 @@ namespace fmis.Controllers.Budget.John
         {
             /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 

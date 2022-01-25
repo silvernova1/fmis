@@ -42,13 +42,7 @@ namespace fmis.Models
         public ICollection<FundSource> FundSource { get; set; }
         public ICollection<Sub_allotment> SubAllotment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
-        public DateTime Created_At { get; set; }
-        public DateTime Updated_At { get; set; }
 
-        public Utilization()
-        {
-            this.Updated_At = DateTime.Now;
-        }
     }
 }
 

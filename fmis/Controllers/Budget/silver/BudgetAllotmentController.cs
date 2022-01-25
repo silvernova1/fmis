@@ -101,7 +101,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at,YearlyReferenceId,Id")] BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,YearlyReferenceId,Id")] BudgetAllotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             try
@@ -187,7 +187,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,Created_at,Updated_at")] BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code")] BudgetAllotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             if (id != budget_allotment.BudgetAllotmentId)
