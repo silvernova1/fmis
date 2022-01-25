@@ -70,7 +70,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Index(int BudgetAllotmentId)
         {
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
             var budget_allotment = await _bContext.BudgetAllotment
             .Include(x => x.Sub_allotments)
@@ -99,7 +99,7 @@ namespace fmis.Controllers
         // GET: Sub_allotment/Create
         public async Task <IActionResult> Create(int BudgetAllotmentId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
@@ -125,7 +125,7 @@ namespace fmis.Controllers
         // GET: Sub_allotment/Edit/5
         public async Task<IActionResult> Edit(int sub_allotment_id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var sub_allotment = _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == sub_allotment_id)
                 .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -185,7 +185,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Create(Sub_allotment subAllotment, int BudgetAllotmentId)
 
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var sub_allotment_amount = _MyDbContext.Suballotment_amount.Where(f => f.suballotment_token == subAllotment.token).ToList();
@@ -225,7 +225,7 @@ namespace fmis.Controllers
 
         private void PopulatePrexcDropDownList(object selectedDepartment = null)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
@@ -247,7 +247,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Sub_allotment subAllotment)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var sub_allotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == subAllotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
             var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
@@ -292,7 +292,7 @@ namespace fmis.Controllers
             ViewBag.BudgetId = BudgetId;
             ViewBag.budget_id = budget_id;
 
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             if (id == null)
             {
                 return NotFound();
@@ -384,7 +384,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var sub_Allotment = await _context.Sub_allotment.FindAsync(id);
             _context.Sub_allotment.Remove(sub_Allotment);
             await _context.SaveChangesAsync();
@@ -392,7 +392,7 @@ namespace fmis.Controllers
         }
         private bool Sub_allotmentExists(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _context.Sub_allotment.Any(e => e.SubAllotmentId == id);
         }
     }

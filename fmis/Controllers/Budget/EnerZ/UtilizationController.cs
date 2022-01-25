@@ -77,7 +77,7 @@ namespace fmis.Controllers
         // GET: Utilization
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("ors", "utilization");
+            ViewBag.filter = new FilterSidebar("ors", "utilization", "");
             ViewBag.layout = "_Layout";
 
             var utilization = await _context

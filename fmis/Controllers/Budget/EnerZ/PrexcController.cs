@@ -50,7 +50,7 @@ namespace fmis.Controllers
         // GET: Prexc
         public IActionResult Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "prexc");
+            ViewBag.filter = new FilterSidebar("master_data", "prexc","");
             ViewBag.layout = "_Layout";
             var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated").ToList());
             ViewBag.temp = json;

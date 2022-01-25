@@ -77,7 +77,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         public async Task<IActionResult> Index(int fundsource_id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             FundSource = await _FContext.FundSource
                             .Include(x => x.FundSourceAmounts)

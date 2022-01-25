@@ -53,7 +53,7 @@ namespace fmis.Controllers.Budget.silver
 
                                     }).ToList();
 
-            ViewBag.filter = new FilterSidebar("master_data", "SummaryReports");
+            ViewBag.filter = new FilterSidebar("master_data", "SummaryReports", "");
 
             var sumfunds = _context.FundSourceAmount.Where(s => s.BudgetAllotmentId == id).Sum(x => x.beginning_balance);
             ViewBag.sumfunds = sumfunds.ToString("C", new CultureInfo("en-PH"));
@@ -224,7 +224,7 @@ namespace fmis.Controllers.Budget.silver
 
         public IActionResult DownloadSaob()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "SummaryReport");
+            ViewBag.filter = new FilterSidebar("master_data", "SummaryReport", "");
 
             var reports = (from list in _context.Yearly_reference where list.YearlyReference == "2021" select list).ToList();
             return PartialView(reports);

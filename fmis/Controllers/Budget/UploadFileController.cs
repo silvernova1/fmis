@@ -38,7 +38,7 @@ namespace fmis.Controllers
         public IActionResult UploadFile()
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("upload_document", "orsupload");
+            ViewBag.filter = new FilterSidebar("upload_document", "orsupload", "");
             return View("~/Views/Budget/UploadFile.cshtml");
         }
 

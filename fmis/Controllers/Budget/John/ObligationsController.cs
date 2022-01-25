@@ -110,7 +110,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("ors", "obligation");
+            ViewBag.filter = new FilterSidebar("ors", "obligation","");
 
             var obligation = await _context
                                     .Obligation
@@ -227,7 +227,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Created_At,Fund_source,Gross,Created_by,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
         {
             if (ModelState.IsValid)
             {

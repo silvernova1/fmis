@@ -68,20 +68,49 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="@if(ViewBag.filter.sub == "uacs")
-                @Html.Raw("active")">
-                    <a asp-controller="Uacs" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        UACS Expense Code@* @Html.Raw(ViewBag.filter.sub)*@
-                    </a>
+                @Html.Raw("active open")">
+                    @*<a asp-controller="Uacs" asp-action="Index">
+            UACS Expense Code
+        </a>
+        <b class="arrow fa fa-angle-down"></b>*@
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text"> (UACS) Code </span>
 
-                    <b class="arrow"></b>
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li class="@if(ViewBag.filter.sub2 == "ps")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="PS">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                PS
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "mooe")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="MOOE">
+                                <i class="menu-icon fa fa-arrow-right blue"></i>
+                                MOOE
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "co")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="CO">
+                                <i class="menu-icon fa fa-arrow-right orange"></i>
+                                CO
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="@if(ViewBag.filter.sub == "prexc")
                 @Html.Raw("active")">
                     <a asp-controller="Prexc" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        PREXC Code
+                        (PREXC) Code
                     </a>
 
                     <b class="arrow"></b>
@@ -157,7 +186,7 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="@if(ViewBag.filter.sub == "utilization")
+                @*<li class="@if(ViewBag.filter.sub == "utilization")
                 @Html.Raw("active")">
                     <a asp-controller="Utilization" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -165,7 +194,7 @@
                     </a>
 
                     <b class="arrow"></b>
-              @*  </li>
+                </li>
                 <li class="@if(ViewBag.filter.sub == "temp")
                 @Html.Raw("active")">
                     <a asp-controller="Temp" asp-action="Index">

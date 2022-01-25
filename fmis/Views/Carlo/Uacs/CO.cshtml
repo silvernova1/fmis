@@ -1,0 +1,208 @@
+﻿@model IEnumerable<fmis.Models.Uacs>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+
+@{
+    ViewData["Title"] = "PS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<style>
+    .filterHeader {
+        color: black;
+    }
+
+    input {
+        width: 750px;
+    }
+</style>
+
+<input type="hidden" class="uacs" value="@ViewBag.temp">
+<h3 class="grey lighter smaller">
+    (CO) Account Title & Expense Code
+</h3>
+<hr>
+<br />
+<div id="example" class="hot"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
+</div>
+
+
+<script>
+
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+        const filtersPlugin = hot.getPlugin('filters');
+        filtersPlugin.removeConditions(colIndex);
+        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+        filtersPlugin.filter();
+    }, 100);
+
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFn(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+    const div = document.createElement('div');
+    const input = document.createElement('input');
+        div.className = 'filterHeader';
+        addEventListeners(input, colIndex);
+        div.appendChild(input);
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+    var uacs = $.parseJSON($(".uacs").val());
+    const data = [];
+    var counter = 0;
+    $.each(uacs, function () {
+        data[counter] = [this.Account_title, this.Expense_code, this.Id, this.token]
+        counter++;
+    });
+
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        colWidths: [600, 500],
+        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE', 'ID', 'TOKEN'],
+        columns: [
+            {
+
+            },
+            {
+
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+               //HIDDEN TOKEN
+            }
+
+        ],
+        rowHeaders: true,
+        undo: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][3];
+
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][3]
+                })
+            }
+
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token
+                };
+                console.log(ajax_data);
+                ajaxServer(ajax_data,'@Url.Action("DeleteUacs", "Uacs")');
+            }
+        },
+        afterUndo: function (index, column) {
+
+        },
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 3, guid());
+        },
+        afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return;
+            }
+            console.log(changes);
+            var ajax_data = [];
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        Account_title: this[0] ? this[0] : " ",
+                        Expense_code: this[1] ? this[1] : " ",
+                        Id: this[2] ? this[2] : " ",
+                        token: this[3]
+                    }
+                );
+            });
+            ajaxServer(ajax_data, '@Url.Action("SaveUacsCO", "Uacs")');
+        },
+        height: 'auto',
+        className: 'as-you-type-demo',
+        filters: true,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation',
+    });
+
+
+    var tableData = JSON.stringify(hot.getSourceData());
+    @*console.log(hot.getSourceData());*@
+</script>
+
+

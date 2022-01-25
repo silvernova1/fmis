@@ -33,7 +33,7 @@ namespace fmis.Controllers.Budget.John
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "allotmentclass");
+            ViewBag.filter = new FilterSidebar("master_data", "allotmentclass","");
             return View(await _MyDbContext.FundSources.ToListAsync());
         }
 
@@ -1205,7 +1205,7 @@ namespace fmis.Controllers.Budget.John
 
         public IActionResult DownloadSaob()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
             /*var allotments = (from list in _MyDbContext.Yearly_reference where list.YearlyReference == "2021" select list).ToList();
             return PartialView(allotments);*/

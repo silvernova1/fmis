@@ -11,6 +11,7 @@ namespace fmis.Models.John
         public int Id { get; set; }
         public string Allotment_Class { get; set; }
         public string Account_Code { get; set; }
+
     }
     
 }
