@@ -8,7 +8,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            @*<input type="hidden" asp-for="Created_At"/>*@
             <div class="form-group">
                 <h5>Allotment Class: </h5>
                 <input asp-for="Allotment_Class" class="form-control" />
@@ -25,36 +24,6 @@
         </form>
     </div>
 </div>
-
-
-<!-- <center>
-    <h2>Edit</h2>
-    <h4>AllotmentClass</h4>
-</center>
-<hr />
-<div class="container">
-    <center>
-        <div class="col-md-6">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Id" />
-                <div class="form-group">
-                    <label asp-for="Allotment_Class" class="control-label">Allotment Class</label>
-                    <input asp-for="Allotment_Class" class="form-control" />
-                    <span asp-validation-for="Allotment_Class" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Account_Code" class="control-label">Account Code</label>
-                    <input asp-for="Account_Code" class="form-control" />
-                    <span asp-validation-for="Account_Code" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-success btn-lg" /> | <a asp-action="Index">Back to List</a>
-                </div>
-            </form>
-        </div>
-    </center>
-</div> -->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
