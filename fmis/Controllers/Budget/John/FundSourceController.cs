@@ -136,10 +136,14 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId)
+        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId)
         {
+
+            return Json(PrexcId);
             /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+            var result = _MyDbContext.Prexc.Where(x=>x.Id == PrexcId).First();
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 

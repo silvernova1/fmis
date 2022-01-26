@@ -57,8 +57,9 @@ namespace fmis.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
+            [Required]
             [Display(Name = "Year")]
-            public string Year { get; set; }
+            public string? Year { get; set; }
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
@@ -70,7 +71,7 @@ namespace fmis.Areas.Identity.Pages.Account
 
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
-                ModelState.AddModelError(string.Empty, ErrorMessage);
+                ModelState.AddModelError(string.Empty, "Invalid Credentials!");
             }
 
             returnUrl ??= Url.Content("~/");
@@ -119,24 +120,6 @@ namespace fmis.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
-
-/*        private void PopulateYearDropDownList()
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            var departmentsQuery = from d in _MyDbCOntext.Yearly_reference
-                                   orderby d.YearlyReference
-                                   select d;
-            ViewBag.Year = new SelectList((from s in _MyDbCOntext.Yearly_reference.ToList()
-                                           select new
-                                           {
-                                               Id = s.YearlyReferenceId,
-                                               year = s.YearlyReferenceId
-                                           }),
-                                       "Id",
-                                       "year",
-                                       null);
-
-        }*/
 
     }
 }

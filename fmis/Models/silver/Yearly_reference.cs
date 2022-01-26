@@ -11,8 +11,8 @@ namespace fmis.Models
     {
         [Key]
         public int YearlyReferenceId { get; set; }
-        [Required]
-        public string YearlyReference { get; set; }
+
+        public string? YearlyReference { get; set; }
 
         public List<BudgetAllotment> BudgetAllotments { get; set; }
 

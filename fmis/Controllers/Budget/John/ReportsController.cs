@@ -431,7 +431,7 @@ namespace fmis.Controllers.Budget.John
                         {
                             total = 0;
                             var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
-                            
+
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
@@ -458,10 +458,8 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             currentRow++;
-                            total = (double)fundsource_amount.beginning_balance;
+                            total = (double)fundsource_amount.beginning_balance;                    
                         }
-
-                        
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
@@ -475,6 +473,12 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
+
+                        ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 6).Style.Font.SetBold();
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 6).Value = fundSource.realignment_amount;
 
 
                         //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
