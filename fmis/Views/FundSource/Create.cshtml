@@ -54,9 +54,8 @@
                     <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Respo Number:</label>
-                    <input asp-for="Respo" class="form-control" required />
-                    <span asp-validation-for="Respo" class="text-danger"></span>
+                    <label>Respo:</label>
+                      <select class="form-control" asp-items="ViewBag.RespoId"></select>
                 </div>
             </div>
         </div>

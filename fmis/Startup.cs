@@ -111,6 +111,8 @@ namespace fmis
              options.UseSqlServer(Configuration.GetConnectionString("UtilizationAmountContext")));
             services.AddDbContext<LogsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
+            services.AddDbContext<RespoCenterContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("RespoCenterContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

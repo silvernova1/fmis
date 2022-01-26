@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using fmis.Models.John;
+using fmis.Models;
 
 namespace fmis.Models.silver
 {
@@ -27,5 +28,6 @@ namespace fmis.Models.silver
         public int YearlyReferenceId { get; set; }
         [JsonIgnore]
         public Yearly_reference Yearly_reference { get; set; }
+ 
     }
 }

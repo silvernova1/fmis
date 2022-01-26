@@ -55,6 +55,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             PopulateYrDropDownList();
+            PopulateAllotmentClassDropDownList();
             return View();
         }
 
@@ -95,7 +96,28 @@ namespace fmis.Controllers
             oh.Insert(0, new Yearly_reference { YearlyReferenceId = 0, YearlyReference = "--Select Year--" });
 
             ViewBag.message = oh;
+          
         }
+
+
+        private void PopulateAllotmentClassDropDownList()
+        {
+            ViewBag.AllotmentClass = new SelectList((from s in _context.AllotmentClass.ToList()
+                                                     select new
+                                                     {
+                                                         AllotmentClassId = s.Id,
+                                                         AllotmentClass = s.Allotment_Class,
+                                                         AccountCode = s.Account_Code
+                                                     }),
+                                     "AllotmentClassId",
+                                     "AllotmentClass",
+                                     "AccountCode",
+                                     null);
+
+        }
+
+
+
         // POST: Budget_allotments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

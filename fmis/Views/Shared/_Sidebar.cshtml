@@ -67,12 +67,18 @@
 
                     <b class="arrow"></b>
                 </li>
+                <li class="@if(ViewBag.filter.sub == "respo")
+                @Html.Raw("active")">
+                    <a asp-controller="RespoCenter" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Respo Center
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
                 <li class="@if(ViewBag.filter.sub == "uacs")
                 @Html.Raw("active open")">
-                    @*<a asp-controller="Uacs" asp-action="Index">
-            UACS Expense Code
-        </a>
-        <b class="arrow fa fa-angle-down"></b>*@
+
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text"> (UACS) Code </span>
 

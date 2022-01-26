@@ -83,6 +83,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcsDropDownList();
+            PopulateRespoDropDownList();
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
@@ -173,6 +174,22 @@ namespace fmis.Controllers.Budget.John
                                        null);
 
         }
+
+        private void PopulateRespoDropDownList()
+        {
+            ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
+                                              select new
+                                              {
+                                                  RespoId = s.RespoId,
+                                                  respo = s.Respo
+                                              }),
+                                     "RespoId",
+                                     "respo",
+                                     null);
+
+        }
+
+
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

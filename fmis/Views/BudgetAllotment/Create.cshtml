@@ -29,10 +29,9 @@
                     <input asp-for="Allotment_title" class="form-control" />
                     <span asp-validation-for="Allotment_title" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label>Allotment Appropriation Code:</label>
-                    <input asp-for="Allotment_code" class="form-control" />
-                    <span asp-validation-for="Allotment_code" class="text-danger"></span>
+                 <div class="form-group">
+                    <label>Allotment Class: </label>
+                     <select class="form-control"  asp-items="ViewBag.AllotmentClass"></select>
                 </div>
             </div>
             <br />
