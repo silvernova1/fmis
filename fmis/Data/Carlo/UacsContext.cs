@@ -17,8 +17,8 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<fmis.Models.Uacs> Uacs { get; set; }
-
+        public DbSet<Uacs> Uacs { get; set; }
+     
         public override int SaveChanges()
         {
             AddTimestamps();

@@ -187,8 +187,18 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code")] BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Edit( BudgetAllotment budget_allotment)
         {
+            var Budget = await _context.Budget_allotments.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
+            Budget.Allotment_series = budget_allotment.Allotment_series;
+            Budget.Allotment_title = budget_allotment.Allotment_title;
+            Budget.Allotment_code = budget_allotment.Allotment_code;
+
+            _context.Update(Budget);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        /*{
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
             if (id != budget_allotment.BudgetAllotmentId)
             {
@@ -216,7 +226,7 @@ namespace fmis.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(budget_allotment);
-        }
+        }*/
 
         // GET: Budget_allotments/Delete/5
         public async Task<IActionResult> Delete(int? BudgetAllotmentId)

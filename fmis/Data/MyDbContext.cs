@@ -4,6 +4,7 @@ using fmis.Models.John;
 using fmis.Models.silver;
 using System;
 using fmis.Models.Budget;
+using System.Collections.Generic;
 
 namespace fmis.Data
 {
@@ -44,6 +45,7 @@ namespace fmis.Data
         public DbSet<SummaryReport> SummaryReport { get; set; }
         public DbSet<UtilizationAmount> UtilizationAmount { get; set; }
         public DbSet<Logs> Logs { get; set; }
+        public IEnumerable<object> BudgetAllotment { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

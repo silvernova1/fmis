@@ -130,7 +130,6 @@ namespace fmis.Controllers
 
         [HttpPost]
         public ActionResult AddUacs(IEnumerable<Uacs> UacsInput)
-
         {
 
             var p = UacsInput;
@@ -139,8 +138,19 @@ namespace fmis.Controllers
         }
 
         // GET: Uacs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Uacs uacs)
         {
+            var uac = await _context.Uacs.Where(x => x.UacsId == uacs.UacsId).AsNoTracking().FirstOrDefaultAsync();
+            uac.Account_title = uacs.Account_title;
+            uac.Expense_code = uacs.Expense_code;
+            uac.Account_code = uacs.Account_code;
+            uac.status = uacs.status;
+
+            _context.Update(uac); // mao ni hinnugdan, ahak nalibat ko, instead allotment_class ang i sud, ang allotmentClass na sud
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        /*{
             if (id == null)
             {
                 return NotFound();
@@ -152,10 +162,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
             return View(uacs);
-        }
-
-      
-    
+        }*/
 
         // POST: Uacs/Delete/5
         [HttpPost]

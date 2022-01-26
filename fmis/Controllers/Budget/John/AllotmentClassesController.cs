@@ -91,38 +91,17 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Allotment_Class,Account_Code")] AllotmentClass allotmentClass)
+        public async Task<IActionResult> Edit(AllotmentClass allotmentClass)
         {
-            if (id != allotmentClass.Id)
-            {
-                return NotFound();
-            }
+            var allotment_class = await _context.AllotmentClass.Where(x => x.Id == allotmentClass.Id).AsNoTracking().FirstOrDefaultAsync();
+            allotment_class.Allotment_Class = allotmentClass.Allotment_Class;
+            allotment_class.Account_Code = allotmentClass.Account_Code;
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-
-                    _context.Update(allotmentClass);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AllotmentClassExists(allotmentClass.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(allotmentClass);
+            _context.Update(allotment_class); // mao ni hinnugdan, ahak nalibat ko, instead allotment_class ang i sud, ang allotmentClass na sud
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
-        
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);

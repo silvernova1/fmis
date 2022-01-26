@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
 using System.Threading;
+using fmis.Models.John;
 
 namespace fmis.Data
 {
@@ -16,7 +17,7 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<fmis.Models.John.AllotmentClass> AllotmentClass { get; set; }
+        public DbSet<AllotmentClass> AllotmentClass { get; set; }
 
         public override int SaveChanges()
         {
@@ -37,7 +38,6 @@ namespace fmis.Data
 
             foreach (var entity in entities)
             {
-                //var now = DateTime.UtcNow; // current datetime
                 var now = DateTime.Now;
 
                 if (entity.State == EntityState.Added)

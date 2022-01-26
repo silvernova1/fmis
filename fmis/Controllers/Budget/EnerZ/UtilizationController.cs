@@ -215,8 +215,31 @@ namespace fmis.Controllers
         }
 
         // GET: Utilization/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Utilization utilization)
         {
+            var utilizations = await _context.Utilization.Where(x => x.Id == utilization.Id).AsNoTracking().FirstOrDefaultAsync();
+            utilizations.source_id = utilization.source_id;
+            utilizations.source_type = utilization.source_type;
+            utilizations.Date = utilization.Date;
+            utilizations.Dv = utilization.Dv;
+            utilizations.Pr_no = utilization.Pr_no;
+            utilizations.Po_no = utilization.Po_no;
+            utilizations.Payee = utilization.Payee;
+            utilizations.Address = utilization.Address;
+            utilizations.Particulars = utilization.Particulars;
+            utilizations.Ors_no = utilization.Ors_no;
+            utilizations.Gross = utilization.Gross;
+            utilizations.Created_by = utilization.Created_by;
+            utilizations.Date_recieved = utilization.Date_recieved;
+            utilizations.Time_recieved = utilization.Time_recieved;
+            utilizations.Date_released = utilization.Date_released;
+            utilizations.Time_released = utilization.Time_released;
+
+            _context.Update(utilizations); 
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        /*{
             if (id == null)
             {
                 return NotFound();
@@ -228,7 +251,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
             return View(utilization);
-        }
+        }*/
 
         // POST: Utilization/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

@@ -87,35 +87,15 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Code")] Appropriation appropriation)
+        public async Task<IActionResult> Edit( Appropriation appropriation)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "Appropriations");
-            if (id != appropriation.Id)
-            {
-                return NotFound();
-            }
+            var appro = await _context.Appropriation.Where(x => x.Id == appropriation.Id).AsNoTracking().FirstOrDefaultAsync();
+            appro.Description = appropriation.Description;
+            appro.Code = appropriation.Code;
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(appropriation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AppropriationExists(appropriation.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(appropriation);
+            _context.Update(appro);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: Appropriations/Delete/5

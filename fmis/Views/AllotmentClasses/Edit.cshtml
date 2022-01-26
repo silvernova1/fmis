@@ -1,11 +1,11 @@
 ﻿@model fmis.Models.John.AllotmentClass
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3>Edit new allotment class</h3></center>
+<center><h3>Edit new allotment classS</h3></center>
 <hr />
 <div class="container">
     <div class="col-md-6">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
