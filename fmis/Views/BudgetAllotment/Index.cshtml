@@ -100,7 +100,7 @@
                 Allotment Title
             </th>
             <th>
-                Allotment Code
+                Allotment Class
             </th>
             <th>For Fund Source</th>
             <th>For Sub-Allotment</th>
@@ -121,7 +121,7 @@
                     @Html.DisplayFor(modelItem => item.Allotment_title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Allotment_code)
+                    @Html.DisplayFor(modelItem => item.AllotmentClass.Allotment_Class)
                 </td>
                 <td>
                     <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">

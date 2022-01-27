@@ -112,6 +112,7 @@ namespace fmis.Data
             modelBuilder.Entity<FundsRealignment>().ToTable("FundsRealignment");
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
+            modelBuilder.Entity<AllotmentClass>().ToTable("AllotmentClass");
 
         }
 

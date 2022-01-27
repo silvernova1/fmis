@@ -17,7 +17,9 @@ namespace fmis.Models.John
         public string FundSourceTitle { get; set; }
         public string Description { get; set; }
         public string FundSourceTitleCode { get; set; }
-        public string Respo { get; set; }
+        [ForeignKey("RespoCenter")]
+        public int RespoId { get; set; }
+        public RespoCenter RespoCenter { get; set; }
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         public Prexc Prexc { get; set; }
