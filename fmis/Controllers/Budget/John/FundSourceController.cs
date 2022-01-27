@@ -62,7 +62,7 @@ namespace fmis.Controllers.Budget.John
 
         public async Task<IActionResult> Index(int BudgetAllotmentId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
             var budget_allotment = await _bContext.BudgetAllotment
             .Include(x => x.FundSources)
@@ -78,11 +78,12 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Create(int BudgetAllotmentId)
         {
             
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcsDropDownList();
+            PopulateRespoDropDownList();
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
@@ -91,7 +92,7 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int fund_source_id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
                 .Include(x => x.FundSourceAmounts.Where(x=>x.status == "activated"))
@@ -135,10 +136,14 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId)
+        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+
+            return Json(PrexcId);
+            /*fundSource.Created_At = DateTime.Now;*/
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+            var result = _MyDbContext.Prexc.Where(x=>x.Id == PrexcId).First();
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
@@ -158,7 +163,7 @@ namespace fmis.Controllers.Budget.John
 
         private void PopulatePrexcsDropDownList(object selectedDepartment = null)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
@@ -173,6 +178,22 @@ namespace fmis.Controllers.Budget.John
                                        null);
 
         }
+
+        private void PopulateRespoDropDownList()
+        {
+            ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
+                                              select new
+                                              {
+                                                  RespoId = s.RespoId,
+                                                  respo = s.Respo
+                                              }),
+                                     "RespoId",
+                                     "respo",
+                                     null);
+
+        }
+
+
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -180,7 +201,7 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(FundSource fundSource)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
             var remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
@@ -206,7 +227,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.BudgetId = BudgetId;
             ViewBag.budget_id = budget_id;
 
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             if (id == null)
             {
                 return NotFound();
@@ -278,7 +299,7 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var fundSource = await _FundSourceContext.FundSource.FindAsync(id);
             _FundSourceContext.FundSource.Remove(fundSource);
             await _FundSourceContext.SaveChangesAsync();
@@ -287,7 +308,7 @@ namespace fmis.Controllers.Budget.John
 
         private bool FundSourceExists(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _FundSourceContext.FundSource.Any(e => e.FundSourceId == id);
         }
 

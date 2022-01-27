@@ -30,7 +30,7 @@ namespace fmis.Controllers
         {
             ViewBag.PsId = id;
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice", "");
 
             var ors_head = _context.Ors_head.ToList();
 
@@ -66,7 +66,7 @@ namespace fmis.Controllers
         public IActionResult Details(string pi_userid)
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice","");
             if (pi_userid == "")
             {
                 return NotFound();
@@ -84,7 +84,7 @@ namespace fmis.Controllers
         // GET:  Ors_head/Create
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice", "");
             PopulatePsDropDownList();
             return View();
         }
@@ -96,7 +96,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Personalinfo_userid")] Ors_head ors_head)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice","");
             try
             {
                 if (ModelState.IsValid)
@@ -118,7 +118,7 @@ namespace fmis.Controllers
         // GET:  Ors_head/Edit/5
         public async Task<IActionResult> Edit(string pi_userid)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice","");
             var Ors_head = await _context.Ors_head
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Personalinfo_userid == pi_userid);
@@ -142,7 +142,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,Personalinfo_userid")] Ors_head ors_head)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice", "");
 
             if (ModelState.IsValid)
             {
@@ -186,7 +186,7 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> Delete(string pi_userid)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice");
+            ViewBag.filter = new FilterSidebar("master_data", "requestingoffice", "");
 
 
             ViewBag.pi_userid_existing = _pis_context.findPersonalInformation("'" + pi_userid + "'");

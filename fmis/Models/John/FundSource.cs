@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using fmis.Models;
 using fmis.Models.silver;
@@ -31,5 +32,6 @@ namespace fmis.Models.John
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
+
     }
 }

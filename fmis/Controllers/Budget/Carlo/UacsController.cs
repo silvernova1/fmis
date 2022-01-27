@@ -16,7 +16,7 @@ using Rotativa.AspNetCore;
 using fmis.Filters;
 
 namespace fmis.Controllers
-{ 
+{
 
     public class UacsController : Controller
     {
@@ -33,7 +33,9 @@ namespace fmis.Controllers
         {
             public string Account_title { get; set; }
             public string Expense_code { get; set; }
-            public string Account_Code { get; set; }
+            public string Description_first { get; set; }
+            public string Description_second { get; set; }
+            public string uacs_type { get; set; }
             public int UacsId { get; set; }
             public string token { get; set; }
         }
@@ -49,24 +51,42 @@ namespace fmis.Controllers
             public List<Many> many_token { get; set; }
         }
 
-        // GET: Uacs
-        public IActionResult Index()
+        public async Task <IActionResult> PS()
         {
-            ViewBag.filter = new FilterSidebar("master_data","uacs");
+            ViewBag.filter = new FilterSidebar("master_data", "uacs", "ps");
             ViewBag.layout = "_Layout";
-
-            var json = JsonSerializer.Serialize(_context.Uacs.Where(s => s.status == "activated").ToList());
+            var json = JsonSerializer.Serialize( await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == "PS").ToListAsync());
             ViewBag.temp = json;
 
-       /*     var allotment_class = JsonSerializer.Serialize(_MyDbContext.AllotmentClass.Where(s => s.Account_Code == ).ToList());
-            ViewBag.AllotmentClass = allotment_class;
-*/
-            return View("~/Views/Carlo/Uacs/Index.cshtml");
+            return View("~/Views/Carlo/Uacs/PS.cshtml");
 
-           
         }
 
-     
+        public async Task <IActionResult> MOOE()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "uacs", "mooe");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == "MOOE").ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Carlo/Uacs/MOOE.cshtml");
+
+        }
+
+        public async Task <IActionResult> CO()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "uacs", "co");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == "CO").ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Carlo/Uacs/CO.cshtml");
+
+        }
+
+
+
+
         // GET: Obligations/Create
         public IActionResult Create()
         {
@@ -81,7 +101,7 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveUacs(List<UacsData> data)
+        public IActionResult SaveUacsPS(List<UacsData> data)
         {
             var data_holder = this._context.Uacs;
 
@@ -92,21 +112,99 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "PS";
+             
                     this._context.SaveChanges();
                 }
                 else if(item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs = new Uacs(); //clear object
                     uacs.Account_title = item.Account_title;
-                    uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
                     uacs.status = "activated";
+                    uacs.uacs_type = "PS";
                     uacs.token = item.token;
 
                     this._context.Uacs.Update(uacs);
                     this._context.SaveChanges();
                 }    
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SaveUacsMOOE(List<UacsData> data)
+        {
+            var data_holder = this._context.Uacs;
+
+            foreach (var item in data)
+            {
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Description_first = item.Description_first;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Description_second = item.Description_second;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "MOOE";
+          
+
+                    this._context.SaveChanges();
+                }
+                else if (item.Account_title != null || item.Expense_code != null) //save
+                {
+                    var uacs = new Uacs(); //clear object
+                    uacs.Account_title = item.Account_title;
+                    uacs.Expense_code = item.Expense_code;
+                    uacs.Description_first = item.Description_first;
+                    uacs.Description_second = item.Description_second;
+                    uacs.status = "activated";
+                    uacs.uacs_type = "MOOE";
+                    uacs.token = item.token;
+
+                    this._context.Uacs.Update(uacs);
+                    this._context.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SaveUacsCO(List<UacsData> data)
+        {
+            var data_holder = this._context.Uacs;
+
+            foreach (var item in data)
+            {
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Description_first = item.Description_first;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Description_second = item.Description_second;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "CO";
+
+
+                    this._context.SaveChanges();
+                }
+                else if (item.Account_title != null || item.Expense_code != null)  //save
+                {
+                    var uacs = new Uacs(); //clear object
+                    uacs.Account_title = item.Account_title;
+                    uacs.Expense_code = item.Expense_code;
+                    uacs.status = "activated";
+                    uacs.uacs_type = "CO";
+                    uacs.token = item.token;
+
+                    this._context.Uacs.Update(uacs);
+                    this._context.SaveChanges();
+                }
             }
 
             return Json(data);
@@ -143,10 +241,12 @@ namespace fmis.Controllers
             var uac = await _context.Uacs.Where(x => x.UacsId == uacs.UacsId).AsNoTracking().FirstOrDefaultAsync();
             uac.Account_title = uacs.Account_title;
             uac.Expense_code = uacs.Expense_code;
-            uac.Account_code = uacs.Account_code;
+            uac.Description_first = uacs.Description_first;
+            uac.Description_second = uacs.Description_second;
+            uac.uacs_type = uacs.uacs_type;
             uac.status = uacs.status;
 
-            _context.Update(uac); // mao ni hinnugdan, ahak nalibat ko, instead allotment_class ang i sud, ang allotmentClass na sud
+            _context.Update(uac); 
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

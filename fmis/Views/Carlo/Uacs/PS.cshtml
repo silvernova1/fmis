@@ -15,19 +15,18 @@
 }
 
 <style>
-    .filterHeader
-    {
-        color:black;
+    .filterHeader {
+        color: black;
     }
+
     input {
-        width:750px;
-       
+        width: 750px;
     }
 </style>
 
 <input type="hidden" class="uacs" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-    UACS Account Title & Expense Code
+    (PS) Account Title & Expense Code
 </h3>
 <hr>
 <br />
@@ -39,7 +38,6 @@
 
 
 <script>
-
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -48,20 +46,17 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
         filtersPlugin.removeConditions(colIndex);
         filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
         filtersPlugin.filter();
     }, 100);
-
     const addEventListeners = (input, colIndex) => {
         input.addEventListener('keydown', event => {
             debounceFn(colIndex, event);
         });
     };
-
     // Build elements which will be displayed in header.
     const getInitializedElements = colIndex => {
     const div = document.createElement('div');
@@ -71,19 +66,16 @@
         div.appendChild(input);
         return div;
     };
-
     // Add elements to header on `afterGetColHeader` hook.
     const addInput = (col, TH) => {
         // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
         if (typeof col !== 'number') {
             return col;
         }
-
         if (col >= 0 && TH.childElementCount < 2) {
             TH.appendChild(getInitializedElements(col));
         }
     };
-
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -96,7 +88,6 @@
             }
         });
     }
-
     var uacs = $.parseJSON($(".uacs").val());
     const data = [];
     var counter = 0;
@@ -104,20 +95,17 @@
         data[counter] = [this.Account_title, this.Expense_code, this.Id, this.token]
         counter++;
     });
-
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
         colWidths: [600, 300, 300],
-        colHeaders: ['ACCOUNT TITLE', 'UACS EXPENSE CODE', 'ID', 'TOKEN'],
+        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE', 'ID', 'TOKEN'],
         columns: [
             {
-
             },
             {
-
             },
             {
                 //HIDDEN ID
@@ -125,7 +113,6 @@
             {
                //HIDDEN TOKEN
             }
-
         ],
         rowHeaders: true,
         undo: true,
@@ -137,17 +124,14 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][3];
-
             var first_column = selection[0][0];
             var last_column = selection[0][2];
-
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
                     many_token: holder_data[j][3]
                 })
             }
-
             if (single_token) {
                 var ajax_data = {
                     "single_token": single_token,
@@ -158,7 +142,6 @@
             }
         },
         afterUndo: function (index, column) {
-
         },
         afterCreateRow: function (row, column) {
             console.log(row);
@@ -181,7 +164,7 @@
                     }
                 );
             });
-            ajaxServer(ajax_data, '@Url.Action("SaveUacs", "Uacs")');
+            ajaxServer(ajax_data, '@Url.Action("SaveUacsPS", "Uacs")');
         },
         height: 'auto',
         className: 'as-you-type-demo',
@@ -201,9 +184,6 @@
         licenseKey: 'non-commercial-and-evaluation',
     });
 
-  
     var tableData = JSON.stringify(hot.getSourceData());
     @*console.log(hot.getSourceData());*@
 </script>
-
-

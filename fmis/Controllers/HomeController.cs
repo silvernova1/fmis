@@ -39,7 +39,7 @@ namespace fmis.Controllers
         public IActionResult Dashboard(int id)
         {
             ViewBag.filter_sidebar = "dashboard";
-            ViewBag.filter = new FilterSidebar("dashboard", "home");
+            ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
 
             var ObligationAmount = _MyDbCOntext.ObligationAmount;
@@ -47,8 +47,8 @@ namespace fmis.Controllers
 
 
             DashboardVM dashboard = new DashboardVM();
-            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == id).ToList();
-            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
+            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == 1).ToList();
+            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == 1).ToList();
 
 
 
@@ -83,7 +83,7 @@ namespace fmis.Controllers
 
         private void PopulateYearDropDownList()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var departmentsQuery = from d in _MyDbCOntext.Yearly_reference
                                    orderby d.YearlyReference
                                    select d;

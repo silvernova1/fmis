@@ -111,6 +111,8 @@ namespace fmis
              options.UseSqlServer(Configuration.GetConnectionString("UtilizationAmountContext")));
             services.AddDbContext<LogsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
+            services.AddDbContext<RespoCenterContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("RespoCenterContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -123,7 +125,7 @@ namespace fmis
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            //CreateRoles(serviceProvider).Wait();
+            CreateRoles(serviceProvider).Wait();
 
             if (env.IsDevelopment())
             {

@@ -8,7 +8,6 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
-
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
     <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
