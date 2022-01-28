@@ -99,7 +99,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Edit/5
-        public async Task<IActionResult> Edit(int fund_source_id, int respo_id)
+        public async Task<IActionResult> Edit(int fund_source_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
@@ -217,7 +217,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
-            var remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
+            var remaining_balance = funsource_amount.Sum(x => x.remaining_balance);
 
             var fundsource_data = await _MyDbContext.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).AsNoTracking().FirstOrDefaultAsync();
             fundsource_data.PrexcId = fundSource.PrexcId;

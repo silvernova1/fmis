@@ -5,6 +5,9 @@ using fmis.Models.silver;
 using System;
 using fmis.Models.Budget;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 namespace fmis.Data
 {
@@ -49,17 +52,24 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*modelBuilder.Entity<BudgetAllotment>()
+                .Property(b => b.CreatedAt)
+                .HasDefaultValueSql("getdate()");*/
+        
+            /* modelBuilder.Entity<BudgetAllotment>()
+                 .Property(b => b.CreatedAt)
+                 .HasDefaultValueSql("getdate()");*/
 
             //1:M relationship to budget allotments and fundsources
-           /* modelBuilder.Entity<FundSource>()
-            .HasOne(p => p.Budget_allotment)
-            .WithMany(b => b.FundSources);*/
+            /* modelBuilder.Entity<FundSource>()
+             .HasOne(p => p.Budget_allotment)
+             .WithMany(b => b.FundSources);*/
 
 
             //1:M relationship to budget allotments and fundsourceamounts
-           /* modelBuilder.Entity<FundSourceAmount>()
-            .HasOne(p => p.FundSource)
-            .WithMany(b => b.FundSourceAmounts);*/
+            /* modelBuilder.Entity<FundSourceAmount>()
+             .HasOne(p => p.FundSource)
+             .WithMany(b => b.FundSourceAmounts);*/
 
             //1:M relationship to budget allotments and fundsourceamounts
             /*modelBuilder.Entity<FundSourceAmount>()
@@ -77,10 +87,10 @@ namespace fmis.Data
             /*modelBuilder.Entity<FundSource>()
            .HasKey(s => s.FundSourceId);*/
 
-          /*  //1:M relationship
-            modelBuilder.Entity<Suballotment_amount>()
-            .HasOne(p => p.Sub_allotment)
-            .WithMany(b => b.Suballotment_amount);*/
+            /*  //1:M relationship
+              modelBuilder.Entity<Suballotment_amount>()
+              .HasOne(p => p.Sub_allotment)
+              .WithMany(b => b.Suballotment_amount);*/
 
             /*modelBuilder.Entity<Sub_allotment>()
            .HasKey(s => s.SubAllotmentId);*/
@@ -98,12 +108,12 @@ namespace fmis.Data
            .HasKey(s => s.Id);*/
 
             //Yearylyref
-           /* modelBuilder.Entity<Yearly_reference>()
-           .HasKey(s => s.YearlyReferenceId);
+            /* modelBuilder.Entity<Yearly_reference>()
+            .HasKey(s => s.YearlyReferenceId);
 
-            modelBuilder.Entity<BudgetAllotment>()
-           .HasOne<Yearly_reference>(d => d.Yearly_reference)
-           .WithOne(s => s.Budget_allotment);*/
+             modelBuilder.Entity<BudgetAllotment>()
+            .HasOne<Yearly_reference>(d => d.Yearly_reference)
+            .WithOne(s => s.Budget_allotment);*/
 
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");

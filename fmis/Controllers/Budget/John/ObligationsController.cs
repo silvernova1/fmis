@@ -207,12 +207,12 @@ namespace fmis.Controllers
                 obligation.Address = item.Address;
                 obligation.Particulars = item.Particulars;
                 obligation.Ors_no = item.Ors_no;
-                obligation.Gross = item.Gross;
                 obligation.Created_by = item.Created_by;
-                obligation.Date_recieved = ToDateTime(item.Date_recieved);
+                obligation.Gross = item.Gross;
+            /*  obligation.Date_recieved = ToDateTime(item.Date_recieved);
                 obligation.Time_recieved = ToDateTime(item.Time_recieved);
                 obligation.Date_released = ToDateTime(item.Date_released);
-                obligation.Time_released = ToDateTime(item.Time_released);
+                obligation.Time_released = ToDateTime(item.Time_released);*/
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
 

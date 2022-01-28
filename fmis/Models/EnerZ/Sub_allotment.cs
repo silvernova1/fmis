@@ -16,7 +16,9 @@ namespace fmis.Models
         public string Suballotment_title { get; set; }
         public string Description { get; set; }
         public string Suballotment_code { get; set; }
-        public string Responsibility_number { get; set; }
+        [ForeignKey("RespoCenter")]
+        public int RespoId { get; set; }
+        public RespoCenter RespoCenter { get; set; }
         [ForeignKey("Prexc")]
         public int prexcId { get; set; }
         public Prexc prexc { get; set; }

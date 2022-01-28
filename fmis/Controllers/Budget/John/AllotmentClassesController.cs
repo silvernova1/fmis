@@ -97,7 +97,7 @@ namespace fmis.Controllers.Budget.John
             allotment_class.Allotment_Class = allotmentClass.Allotment_Class;
             allotment_class.Account_Code = allotmentClass.Account_Code;
 
-            _context.Update(allotment_class); // mao ni hinnugdan, ahak nalibat ko, instead allotment_class ang i sud, ang allotmentClass na sud
+            _context.Update(allotment_class); 
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

@@ -24,6 +24,7 @@ namespace fmis.Models
         public string Particulars { get; set; }
         public int Ors_no { get; set; }
         public float Gross { get; set; }
+        public decimal remaining_balance { get; set; }
         public int Created_by { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
