@@ -187,7 +187,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(/*int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code")]*/ BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Edit( BudgetAllotment budget_allotment)
         {
             var Budget = await _context.Budget_allotments.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             Budget.Allotment_series = budget_allotment.Allotment_series;
