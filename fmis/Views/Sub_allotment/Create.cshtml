@@ -34,7 +34,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label>Prexc:</label>
-                    @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
+                    @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
                 <div class="form-group">
                     <label>Sub-Allotment Title:</label>
@@ -50,7 +50,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Suballotment Code:</label>
-                    <input asp-for="Suballotment_code" class="form-control" required />
+                    <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly/>
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -76,6 +76,22 @@
     $(document).ready(function () {
         $('.js-example-basic-single').select2();
     });
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "Sub_allotment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#pap_code1').val(data[0].pap_code1);
+                }
+                else {
+                    $('#pap_code1').val('');
+                }
+            }
+        });
+    }
 </script>
 
 <script>

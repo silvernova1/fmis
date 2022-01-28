@@ -91,6 +91,13 @@ namespace fmis.Controllers.Budget.John
             return View(); //open create
         }
 
+        //POST
+        public IActionResult selectAT(int id)
+        {
+            var branches = _MyDbContext.Prexc.ToList();
+            return Json(branches.Where(x => x.Id == id).ToList());
+        }
+
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int fund_source_id, int respo_id)
         {
@@ -177,7 +184,7 @@ namespace fmis.Controllers.Budget.John
                                               select new
                                               {
                                                   PrexcId = s.Id,
-                                                  prexc = s.pap_title + " ( " + s.pap_code1 + ")" 
+                                                  prexc = s.pap_title
                                               }),
                                        "PrexcId",
                                        "prexc",

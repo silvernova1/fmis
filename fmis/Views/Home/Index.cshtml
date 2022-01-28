@@ -16,8 +16,6 @@
         </small>
     </h1>
 </div><!-- /.page-header -->
-
-@foreach (var fundsource in Model.FundSources){
 <div class="col-sm-6">
     <div class="widget-box" style="height: 215px;">
         <div class="widget-header">
@@ -28,19 +26,14 @@
                 <form>
                     <!-- <legend>Form</legend> -->
                     <fieldset>
-
-
                         <div class="alert alert-block alert-warning">        
-                            <center><label style="font-size: 25pt;"> @fundsource.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</label></center>           
-
+                            <center><label style="font-size: 25pt;">@Model.FundSources.Sum(x=>x.Beginning_balance)</label></center>           
                         </div>
                         <center><h4>(ALLOTMENT)</h4> </center>
-                    </fieldset>
-                    
+                    </fieldset>             
                 </form>
             </div>
-        </div>
-        
+        </div>       
     </div>
 </div>
 <div class="col-sm-3">
@@ -54,10 +47,8 @@
             <form>
                 <!-- <legend>Form</legend> -->
                 <fieldset>
-
                     <div class="">
-
-                        <center><label style="font-size: 18pt;">@fundsource.obligated_amount.ToString("C", new CultureInfo("en-PH"))</label></center>
+                        <center><label style="font-size: 18pt;">0</label></center>
                         <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
@@ -65,12 +56,9 @@
                     <div>
                         <center><label style="font-size: 18pt;">₱0.00</label></center>
                         <center><h5>(DISBURSED)</h5> </center>
-                    </div>
-                    
+                    </div>                    
                 </fieldset>
-
             </form>
-
         </div>
     </div>
 </div>
@@ -79,15 +67,13 @@
         <div class="widget-header">
             <h5 class="widget-title">BALANCE & UPAID OBLIGATIONS</h5>
         </div>
-
         <div class="widget-body">
             <br>
             <form>
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-
-                        <center><label style="font-size: 18pt;">@fundsource.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</label></center>
+                        <center><label style="font-size: 18pt;">@*@fundsource.Remaining_balance.ToString("C", new CultureInfo("en-PH"))*@</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
@@ -101,8 +87,6 @@
         </div>
     </div>
 </div>
-
-}
 <div class="vspace-12-sm"></div>
 <div class="col-sm-4" style="margin-top: 15px;">
     <div class="widget-box">
@@ -110,7 +94,6 @@
             <h5 class="widget-title">
                 CUMULATIVE UTILIZATION
             </h5>
-
             <div class="widget-toolbar no-border">
                 <div class="inline dropdown-hover">
                 </div>
@@ -149,7 +132,7 @@
         <div class="col-xs-9">
             <h5>RD/ARD</h5>
             <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: 25%;"></div>
+                <div class="progress-bar progress-bar-success" style="width: 99%;"></div>
             </div>
             <h5>LHSD</h5>
             <div class="progress progress-mini">

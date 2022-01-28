@@ -95,7 +95,14 @@ namespace fmis.Controllers
 
             return View(); //open create
         }
-       
+
+        //POST
+        public IActionResult selectAT(int id)
+        {
+            var branches = _MyDbContext.Prexc.ToList();
+            return Json(branches.Where(x => x.Id == id).ToList());
+        }
+
 
 
         // GET: Sub_allotment/Edit/5
