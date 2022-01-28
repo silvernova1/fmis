@@ -132,6 +132,7 @@ namespace fmis.Migrations
                     Particulars = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ors_no = table.Column<int>(type: "int", nullable: false),
                     Gross = table.Column<float>(type: "real", nullable: false),
+                    remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Created_by = table.Column<int>(type: "int", nullable: false),
                     Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -422,7 +423,7 @@ namespace fmis.Migrations
                     Suballotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suballotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Responsibility_number = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespoId = table.Column<int>(type: "int", nullable: false),
                     prexcId = table.Column<int>(type: "int", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -451,6 +452,12 @@ namespace fmis.Migrations
                         principalTable: "Obligation",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Sub_allotment_RespoCenter_RespoId",
+                        column: x => x.RespoId,
+                        principalTable: "RespoCenter",
+                        principalColumn: "RespoId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Sub_allotment_Utilization_UtilizationId",
                         column: x => x.UtilizationId,
@@ -928,6 +935,11 @@ namespace fmis.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sub_allotment_RespoId",
+                table: "Sub_allotment",
+                column: "RespoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sub_allotment_UtilizationId",
                 table: "Sub_allotment",
                 column: "UtilizationId");
@@ -1058,6 +1070,10 @@ namespace fmis.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_RespoCenter_RespoId",
                 table: "FundSource");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Sub_allotment_RespoCenter_RespoId",
+                table: "Sub_allotment");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_SummaryReport_SummaryReportId",

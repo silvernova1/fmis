@@ -59,6 +59,7 @@
 </div>
 
 <script>
+	//SET TOKEN
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -66,7 +67,25 @@
                 .substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
+	}
+
+	//SET AUTO DATE
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    var yyyy = today.getFullYear();
+	today = mm + '/' + dd + '/' + yyyy;
+
+	//SET AUTO ADDRESS
+	var Address = "CEBU CITY"
+
+	//SET ORS NUMBER
+
+
+
+
+
+
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
@@ -138,7 +157,7 @@
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
 		get_fund_sub[this.source_id + this.source_type] = this.source_title;
-		get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
+		get_obligated_amount[this.Gross] = this.obligated_amount;
 		fund_sub_counter++;
 	});
 
@@ -147,22 +166,24 @@
 	$.each(obligation, function () {
 		data[counter] = [
 			get_fund_sub[this.source_id + this.source_type], //1
-			get_obligated_amount[this.source_id + this.source_type], //2
-			moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //3
-			this.Dv, //4
-			this.Pr_no, //5
-			this.Po_no, //7
-			this.Payee, //7
-			this.Address, //8
-			this.Particulars, //9
-			this.Ors_no, //10
-			this.Created_by, //11
-			moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
+		@*	get_obligated_amount[this.source_id + this.source_type], //2*@
+            moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //2
+			this.Dv, //3
+			this.Pr_no, //4
+			this.Po_no, //5
+			this.Payee, //6
+			this.Address, //7
+			this.Particulars, //8
+			this.Ors_no, //9
+			this.Created_by, //10
+            this.Gross, //11
+            this.Id, //12
+            this.obligation_token //13
+		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
 			moment(this.Time_recieved).format('HH:mm:ss'), //13
 			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
-			moment(this.Time_released).format('HH:mm:ss'), //15
-			this.Id, //16
-			this.obligation_token //17
+			moment(this.Time_released).format('HH:mm:ss'), //15*@
+			
 		];
 		counter++;
 	});
@@ -183,21 +204,16 @@
 				this.deselectCell();
 			}
 		},
-        colWidths: [250, 100, 100, 100, 100, 100, 250, 250, 250, 100, 100, 100, 100, 100, 100, 100],
+        colWidths: [150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 80],
 		height: 'auto',
 
-        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'GROSS','DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'DATE RECEIVED', 'TIME RECEIVED', 'DATE RELEASED', 'TIME RELEASED', 'ID', 'TOKEN'],
+        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'GROSS/AMOUNT', 'ID', 'TOKEN'],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
 				type: 'dropdown',
                 source: fund_sub_data_dropdown
-			},
-            {
-                //GROSS
-                type: 'text',
-                readOnly: true
-            },
+			}, 
 			{
 				//DATE
 				type: 'date',
@@ -222,8 +238,11 @@
                 type: 'text'
 			},
 			{
+				
                 //ADDRESS
-                type: 'text'
+				type: 'text',
+				StaticRange: 'CEBU CITY'
+
             },
             {
                 //PARTICULARS
@@ -240,6 +259,14 @@
 				readOnly: true,
 			},
 			{
+				//GORSS
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00', 
+                },
+
+            },
+			@*{
 				//DATE RECEIVED
 				type: 'date',
 				dateFormat: 'MM/DD/YYYY',
@@ -265,12 +292,12 @@
 				type: 'time',
 				timeFormat: 'HH:mm:ss',
 				correctFormat: true
+			},*@
+			{
+				//HIDDEN ID
 			},
 			{
-
-			},
-			{
-
+				//HIDDEN TOKEN
 			},
 		],
 		search: {
@@ -315,7 +342,10 @@
                         });*@
 					}
 				},
-				"": {
+
+				"row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+
+				@*"": {
 					name: 'UACS Amount Entry / Disbmt.',
 					callback: function (key, options) {
 						var selection = this.getSelected();
@@ -372,19 +402,21 @@
 						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
 
 					}
-				}, "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+				},
+*@
+				
 			}
 		},
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
 			var holder_data = this.getData();
-			var single_token = holder_data[selection[0][0]][16];
+			var single_token = holder_data[selection[0][0]][12];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-					many_token: holder_data[j][16]
+					many_token: holder_data[j][12]
 				})
 			}
 			console.log("execute here!");
@@ -405,7 +437,12 @@
 		},
 		afterCreateRow: function (row, column) {
 			CHECK_AFTER_ROW = true;
-			hot.setDataAtCell(row, 16, guid());
+			hot.setDataAtCell(row, 12, guid());
+			hot.setDataAtCell(row, 1, today);
+            hot.setDataAtCell(row, 6, Address);
+            hot.setDataAtCell(row, 8, orsNumber);
+			//DIRI
+
 		},
 		afterChange: function (changes, source) {
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW)
@@ -424,21 +461,22 @@
 						{
 							source_id: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_id,
 							source_type: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_type,
-							Gross: hot.getDataAtCell(row, 1),
-							Date: hot.getDataAtCell(row, 2),
-							Dv: hot.getDataAtCell(row, 3),
-							Pr_no: hot.getDataAtCell(row, 4),
-							Po_no: hot.getDataAtCell(row, 5),
-							Payee: hot.getDataAtCell(row, 6),
-							Address: hot.getDataAtCell(row, 7),
-							Particulars: hot.getDataAtCell(row, 8),
-							Ors_no: hot.getDataAtCell(row, 9),
-							Created_by: hot.getDataAtCell(row, 10),
-							Date_recieved: hot.getDataAtCell(row, 11),
+							Date: hot.getDataAtCell(row, 1),
+							Dv: hot.getDataAtCell(row, 2),
+							Pr_no: hot.getDataAtCell(row, 3),
+							Po_no: hot.getDataAtCell(row, 4),
+							Payee: hot.getDataAtCell(row, 5),
+							Address: hot.getDataAtCell(row, 6),
+							Particulars: hot.getDataAtCell(row, 7),
+							Ors_no: hot.getDataAtCell(row, 8),
+							Created_by: hot.getDataAtCell(row, 9),
+							Gross: hot.getDataAtCell(row, 10),
+                            obligation_token: hot.getDataAtCell(row, 12)
+							@*Date_recieved: hot.getDataAtCell(row, 11),
 							Time_recieved: hot.getDataAtCell(row, 12),
 							Date_released: hot.getDataAtCell(row, 13),
-							Time_released: hot.getDataAtCell(row, 14),
-							obligation_token: hot.getDataAtCell(row, 16)
+							Time_released: hot.getDataAtCell(row, 14),*@
+					
 						}
 					);
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
@@ -462,21 +500,22 @@
                         {
                             source_id: this[0] ? fund_sub_data_array[this[0]].source_id : 0,
                             source_type: this[0] ? fund_sub_data_array[this[0]].source_type : 0,
-                            Gross: this[1] ? this[1] : "",
-                            Date: this[2] ? this[2] : "",
-                            Dv: this[3] ? this[3] : "",
-                            Pr_no: this[4] ? this[4] : "",
-                            Po_no: this[5] ? this[5] : "",
-                            Payee: this[6] ? this[6] : "",
-                            Address: this[7] ? this[7] : "",
-                            Particulars: this[8] ? this[8] : "",
-                            Ors_no: this[9] ? this[9] : "",
-                            Created_by: this[10] ? this[10] : "",
-                            Date_recieved: this[11] ? this[11] : "",
+                            Date: this[1] ? this[1] : "",
+                            Dv: this[2] ? this[2] : "",
+                            Pr_no: this[3] ? this[3] : "",
+                            Po_no: this[4] ? this[4] : "",
+                            Payee: this[5] ? this[5] : "",
+                            Address: this[6] ? this[6] : "",
+                            Particulars: this[7] ? this[7] : "",
+                            Ors_no: this[8] ? this[8] : "",
+							Created_by: this[9] ? this[9] : "",
+                            Gross: this[10] ? this[10] : "",
+                            obligation_token: this[12]
+                           @* Date_recieved: this[11] ? this[11] : "",
                             Time_recieved: this[12] ? this[12] : "",
                             Date_released: this[13] ? this[13] : "",
-                            Time_released: this[14] ? this[14] : "",
-                            obligation_token: this[16]
+                            Time_released: this[14] ? this[14] : "",*@
+                        
                         }
                     );
 				});
@@ -485,7 +524,7 @@
 			}
 		},
 		hiddenColumns: {
-			columns: [15,16],
+			columns: [11,12],
 			indicators: true
 		},
 		licenseKey: 'non-commercial-and-evaluation',

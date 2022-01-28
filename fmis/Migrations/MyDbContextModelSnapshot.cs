@@ -423,6 +423,9 @@ namespace fmis.Migrations
                     b.Property<string>("obligation_token")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("remaining_balance")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("source_id")
                         .HasColumnType("int");
 
@@ -760,8 +763,8 @@ namespace fmis.Migrations
                     b.Property<decimal>("Remaining_balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Responsibility_number")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RespoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Suballotment_code")
                         .HasColumnType("nvarchar(max)");
@@ -795,6 +798,8 @@ namespace fmis.Migrations
                     b.HasIndex("BudgetAllotmentId");
 
                     b.HasIndex("ObligationId");
+
+                    b.HasIndex("RespoId");
 
                     b.HasIndex("UtilizationId");
 
@@ -1347,6 +1352,12 @@ namespace fmis.Migrations
                         .WithMany("SubAllotment")
                         .HasForeignKey("ObligationId");
 
+                    b.HasOne("fmis.Models.RespoCenter", "RespoCenter")
+                        .WithMany()
+                        .HasForeignKey("RespoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fmis.Models.Utilization", null)
                         .WithMany("SubAllotment")
                         .HasForeignKey("UtilizationId");
@@ -1360,6 +1371,8 @@ namespace fmis.Migrations
                     b.Navigation("Budget_allotment");
 
                     b.Navigation("prexc");
+
+                    b.Navigation("RespoCenter");
                 });
 
             modelBuilder.Entity("fmis.Models.Suballotment_amount", b =>

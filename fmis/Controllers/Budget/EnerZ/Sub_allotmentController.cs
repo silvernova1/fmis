@@ -166,7 +166,7 @@ namespace fmis.Controllers
             sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("index", "Sub_allotment", new { BudgetAllotmentId = subAllotment.BudgetAllotmentId });
+            return RedirectToAction("Index", "Sub_allotment", new { BudgetAllotmentId = subAllotment.BudgetAllotmentId });
         }
 
     
@@ -214,14 +214,14 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var sub_allotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == subAllotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
-            var remaining_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
+            var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
 
             var sub_allotment_data = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             sub_allotment_data.prexcId = sub_allotment_data.prexcId;
             sub_allotment_data.Suballotment_title = sub_allotment_data.Suballotment_title;
             sub_allotment_data.Description = sub_allotment_data.Description;
             sub_allotment_data.Suballotment_code = sub_allotment_data.Suballotment_code;
-            sub_allotment_data.Responsibility_number = sub_allotment_data.Responsibility_number;
+            sub_allotment_data.RespoId = sub_allotment_data.RespoId;
             sub_allotment_data.Beginning_balance = beginning_balance;
             sub_allotment_data.Remaining_balance = remaining_balance;
 
