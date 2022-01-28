@@ -95,18 +95,7 @@ namespace fmis.Controllers
 
             return View(); //open create
         }
-        /* {
-             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-
-             var uacs_data = JsonSerializer.Serialize(_MyDbContext.Uacs.ToList());
-             ViewBag.uacs = uacs_data;
-
-             PopulatePrexcDropDownList();
-
-             ViewBag.budget_id = budget_id;
-
-             return View();
-         }*/
+       
 
 
         // GET: Sub_allotment/Edit/5
@@ -114,15 +103,18 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            var sub_allotment = _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == sub_allotment_id)
+            var suballotment = _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == sub_allotment_id)
                 .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated"))
                 .FirstOrDefault();
+
 
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            PopulatePrexcDropDownList(sub_allotment.prexcId);
-            return View(sub_allotment);
+            PopulatePrexcDropDownList(suballotment.prexcId);
+            PopulateRespoDropDownList();
+
+            return View(suballotment);
         }
 
 
@@ -161,7 +153,7 @@ namespace fmis.Controllers
 
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+        
 
             var sub_allotment_amount = _MyDbContext.Suballotment_amount.Where(f => f.suballotment_token == subAllotment.token).ToList();
 
@@ -222,7 +214,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var sub_allotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == subAllotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
-            var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
+            var remaining_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
 
             var sub_allotment_data = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             sub_allotment_data.prexcId = sub_allotment_data.prexcId;
@@ -238,7 +230,7 @@ namespace fmis.Controllers
 
             return RedirectToAction("Index", "Sub_allotment", new { BudgetAllotmentId = subAllotment.BudgetAllotmentId });
         }
-       
+
 
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
@@ -261,25 +253,7 @@ namespace fmis.Controllers
 
             return View(subAllotment);
         }
-        /*   {
-               ViewBag.BudgetId = BudgetId;
-               ViewBag.budget_id = budget_id;
-
-               ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-               if (id == null)
-               {
-                   return NotFound();
-               }
-
-               var sub_Allotment = await _context.Sub_allotment
-                   .FirstOrDefaultAsync(m => m.SubAllotmentId == id);
-               if (sub_Allotment == null)
-               {
-                   return NotFound();
-               }
-
-               return View(sub_Allotment);
-           }*/
+        
 
         // POST: Sub_allotment/Delete/5
         [HttpPost]

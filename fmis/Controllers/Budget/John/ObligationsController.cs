@@ -525,7 +525,7 @@ namespace fmis.Controllers
                                            obligation_id = obligation.source_id,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitleCode,
-                                           respo = fundsource.Respo,
+                                           respo = fundsource.RespoCenter,
                                            particulars = obligation.Particulars
                                        }).ToList();
 

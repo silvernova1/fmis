@@ -19,12 +19,7 @@ namespace fmis.Models
 
             CreateHostBuilder(args).Build().Run();
 
-            /*            using (var context = new MyDbContext())
-                        {
-                            var blogs = context.Blogs
-                                .Include(blog => blog.Posts)
-                                .ToList();
-                        }*/
+                
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

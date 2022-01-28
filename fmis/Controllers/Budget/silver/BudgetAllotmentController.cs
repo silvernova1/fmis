@@ -42,6 +42,7 @@ namespace fmis.Controllers
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
+            .Include(c => c.AllotmentClass)
             .Include(x => x.FundSources)
             .Include(x => x.Sub_allotments)
             .AsNoTracking()
@@ -55,6 +56,8 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             PopulateYrDropDownList();
+            PopulateAllotmentClassDropDownList();
+
             return View();
         }
 
@@ -75,7 +78,7 @@ namespace fmis.Controllers
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+          
             var prexsQuery = from d in _context.Yearly_reference
                              orderby d.YearlyReference
                              select d;
@@ -95,13 +98,31 @@ namespace fmis.Controllers
             oh.Insert(0, new Yearly_reference { YearlyReferenceId = 0, YearlyReference = "--Select Year--" });
 
             ViewBag.message = oh;
+
+
         }
+
+        private void PopulateAllotmentClassDropDownList()
+        {
+            ViewBag.AllotmentClassId = new SelectList((from s in _context.AllotmentClass.ToList()
+                                              select new
+                                              {
+                                                  AllotmentClassId = s.Id,
+                                                  AllotmentClass = s.Allotment_Class
+                                              }),
+                                    "AllotmentClassId",
+                                    "AllotmentClass",
+                                    null);
+        }
+
+
+
         // POST: Budget_allotments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,YearlyReferenceId,Id")] BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,YearlyReferenceId,Id, AllotmentClassId")] BudgetAllotment budget_allotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             try
@@ -120,6 +141,11 @@ namespace fmis.Controllers
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
             PopulateYrDropDownList(budget_allotment.YearlyReferenceId);
+            PopulateAllotmentClassDropDownList();
+
+
+
+
             return View(budget_allotment);
         }
 

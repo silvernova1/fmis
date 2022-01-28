@@ -537,7 +537,7 @@ namespace fmis.Controllers
                                            utilization_id = utilization.source_id,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitleCode,
-                                           respo = fundsource.Respo,
+                                           respo = fundsource.RespoCenter,
                                            particulars = utilization.Particulars
                                        }).ToList();
 

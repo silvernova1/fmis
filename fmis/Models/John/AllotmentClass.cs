@@ -1,4 +1,5 @@
-﻿using System;
+﻿using fmis.Models.silver;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace fmis.Models.John
         public int Id { get; set; }
         public string Allotment_Class { get; set; }
         public string Account_Code { get; set; }
+        public List<BudgetAllotment> BudgetAllotments { get; set; }
 
     }
     

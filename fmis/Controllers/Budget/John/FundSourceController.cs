@@ -27,15 +27,17 @@ namespace fmis.Controllers.Budget.John
         private readonly UacsContext _uContext;
         private readonly BudgetAllotmentContext _bContext;
         private readonly PrexcContext _pContext;
+        private readonly RespoCenterContext _rContext;
         private readonly MyDbContext _MyDbContext;
 
-        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext,BudgetAllotmentContext BudgetAllotmentContext)
+        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext,BudgetAllotmentContext BudgetAllotmentContext, RespoCenterContext rContext)
         {
             _FundSourceContext = FundSourceContext;
             _uContext = uContext;
             _bContext = bContext;
             _pContext = pContext;
             _MyDbContext = MyDbContext;
+            _rContext = rContext;
         }
 
         public class FundsourceamountData
@@ -90,7 +92,7 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Edit/5
-        public async Task<IActionResult> Edit(int fund_source_id)
+        public async Task<IActionResult> Edit(int fund_source_id, int respo_id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
@@ -98,10 +100,13 @@ namespace fmis.Controllers.Budget.John
                 .Include(x => x.FundSourceAmounts.Where(x=>x.status == "activated"))
                 .FirstOrDefault();
 
+
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcsDropDownList(fundsource.PrexcId);
+            PopulateRespoDropDownList();
+
             return View(fundsource);
         }
 
@@ -136,14 +141,15 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId)
+        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId, int RespoId)
         {
 
-            return Json(PrexcId);
+ 
             /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var result = _MyDbContext.Prexc.Where(x=>x.Id == PrexcId).First();
+       
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
@@ -211,7 +217,7 @@ namespace fmis.Controllers.Budget.John
             fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
             fundsource_data.Description = fundSource.Description;
             fundsource_data.FundSourceTitleCode = fundSource.FundSourceTitleCode;
-            fundsource_data.Respo = fundSource.Respo;
+            fundsource_data.RespoId = fundSource.RespoId;
             fundsource_data.Beginning_balance = beginning_balance;
             fundsource_data.Remaining_balance = remaining_balance;
 

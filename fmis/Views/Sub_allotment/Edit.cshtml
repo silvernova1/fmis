@@ -32,9 +32,9 @@
                 @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "prexc form-control" })
             </div>
             <div class="form-group">
-                <label >Sub Allotment Code:</label>
-                <input asp-for="Suballotment_code" class="form-control" />
-                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+                <label asp-for="Suballotment_title" class="control-label"></label>
+                <input asp-for="Suballotment_title" class="form-control" />
+                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Description:</label>
@@ -44,9 +44,9 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label >Sub Allotment Title:</label>
-                <input asp-for="Suballotment_title" class="form-control" />
-                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+                <label asp-for="Suballotment_code" class="control-label"></label>
+                <input asp-for="Suballotment_code" class="form-control" />
+                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Respo Number: </label>
@@ -231,32 +231,7 @@
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
             }
 		},
-          @*  if (source === 'loadData') {
-                return; //don't save this change
-            }
-            console.log(hot.getSourceData());
-            console.log(changes);
-            var ajax_data = [];
-            $(".obligation_amount").html();
-            obligation_amount = 0;
-            $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        FundSourceId: sub_allotment_id,
-                        budget_id: budget_id,
-                        Expenses: this[0],
-                        Amount: this[1],
-                        Id: this[2],
-                        suballotment_amount_token: this[3],
-                        suballotment_token: suballotment_token
-                    }
-                );
-                obligation_amount += parseInt(this[1]);
-            });
-            console.log(ajax_data);
-            $(".obligation_amount").html(obligation_amount);
-            ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
-        },*@
+
         hiddenColumns: {
             columns: [2,3],
             indicators: true
