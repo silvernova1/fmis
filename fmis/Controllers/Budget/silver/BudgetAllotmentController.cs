@@ -20,13 +20,15 @@ namespace fmis.Controllers
     public class BudgetAllotmentController : Controller
     {
         private readonly MyDbContext _context;
+        private readonly BudgetAllotmentContext _BudgetAllotmentContext;
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
         private readonly Sub_allotmentContext _saContext;
 
-        public BudgetAllotmentController(MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
+        public BudgetAllotmentController(BudgetAllotmentContext BudgetAllotmentContext, MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
         {
+            _BudgetAllotmentContext = BudgetAllotmentContext;
             _context = context;
             _osContext = osContext;
             _orssContext = orssContext;
@@ -122,31 +124,11 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code,YearlyReferenceId,Id, AllotmentClassId")] BudgetAllotment budget_allotment)
+        public IActionResult Create(BudgetAllotment budget_allotment)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                  
-                    List<Prexc> p = new List<Prexc>();
-                    _context.Add(budget_allotment);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            catch (RetryLimitExceededException)
-            {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
-            PopulateYrDropDownList(budget_allotment.YearlyReferenceId);
-            PopulateAllotmentClassDropDownList();
-
-
-
-
-            return View(budget_allotment);
+            _BudgetAllotmentContext.Add(budget_allotment);
+            _BudgetAllotmentContext.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Budget_allotments/Details/5
@@ -213,47 +195,17 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(/*int id, [Bind("YearlyReferenceId,BudgetAllotmentId,Allotment_series,Allotment_title,Allotment_code")]*/ BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Edit( BudgetAllotment budget_allotment)
         {
-            var Budget = await _context.Budget_allotments.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
+            var Budget = await _BudgetAllotmentContext.BudgetAllotment.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             Budget.Allotment_series = budget_allotment.Allotment_series;
             Budget.Allotment_title = budget_allotment.Allotment_title;
             Budget.Allotment_code = budget_allotment.Allotment_code;
 
-            _context.Update(Budget); 
-            await _context.SaveChangesAsync();
+            _BudgetAllotmentContext.Update(Budget); 
+            await _BudgetAllotmentContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
-        /*{
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment");
-            if (id != budget_allotment.BudgetAllotmentId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(budget_allotment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!Budget_allotmentExists(budget_allotment.BudgetAllotmentId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(budget_allotment);
-        }*/
 
         // GET: Budget_allotments/Delete/5
         public async Task<IActionResult> Delete(int? BudgetAllotmentId)
