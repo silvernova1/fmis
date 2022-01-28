@@ -15,7 +15,6 @@
             <div class="col-xs-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="BudgetAllotmentId" />
-                @*<input type="hidden" asp-for="Created_at" />*@
                 <div class="form-group">
                     <label>Yearly Reference:</label>
                     <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
@@ -33,9 +32,10 @@
                     <span asp-validation-for="Allotment_title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Allotment Code:</label>
-                    <input asp-for="Allotment_code" class="form-control" />
-                    <span asp-validation-for="Allotment_code" class="text-danger"></span>
+                    <label>Allotment Class:</label>
+                    @*<input asp-for="AllotmentClass" class="form-control" />*@
+                    <select class="form-control" asp-for="AllotmentClass" asp-items="ViewBag.AllotmentClass"></select>
+                    @*<span asp-validation-for="AllotmentClass" class="text-danger"></span>*@
                 </div>
             </div>
             <br />

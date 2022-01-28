@@ -48,5 +48,6 @@ namespace fmis.Data
                 ((BaseEntityTimeStramp)entity.Entity).UpdatedAt = now;
             }
         }
+
     }
 }
