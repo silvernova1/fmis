@@ -72,7 +72,7 @@
 	//SET AUTO DATE
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
 	today = mm + '/' + dd + '/' + yyyy;
 
@@ -80,8 +80,6 @@
 	var Address = "CEBU CITY"
 
 	//SET ORS NUMBER
-
-
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
@@ -139,7 +137,6 @@
 	}
 
 	var obligation = $.parseJSON($(".obligation").val());
-	@*console.log(obligation);*@
 
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
@@ -179,7 +176,7 @@
 			moment(this.Time_recieved).format('HH:mm:ss'), //13
 			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
 			moment(this.Time_released).format('HH:mm:ss'), //15*@
-			
+
 		];
 		counter++;
 	});
@@ -209,7 +206,7 @@
 				//FUNDSOURCE&SUBALLOTMENT
 				type: 'dropdown',
                 source: fund_sub_data_dropdown
-			}, 
+			},
 			{
 				//DATE
 				type: 'date',
@@ -234,7 +231,7 @@
                 type: 'text'
 			},
 			{
-				
+
                 //ADDRESS
 				type: 'text',
 				StaticRange: 'CEBU CITY'
@@ -258,7 +255,7 @@
 				//GORSS
                 type: 'numeric',
                 numericFormat: {
-                    pattern: '0,0.00', 
+                    pattern: '0,0.00',
                 },
 
             },
@@ -304,38 +301,28 @@
 				"make_bold": {
 					name: 'Print ORS',
 					callback: function (key, options) {
-						printOrs();
-                        @*var selection = this.getSelected();
-                        var holder_data = this.getData();
-                        var single_token = holder_data[selection[0][0]][15];
-                        var first_column = selection[0][0];
-                        var last_column = selection[0][2];
-                        var many_token = [];
-                        for (var j = first_column; j <= last_column; j++) {
-							many_token.push({
-								many_token: holder_data[j][15]
-							});
-						}
 
-						$data = {
-							"single_token": single_token,
-							"many_token": many_token
-						};
+						var selected = hot.getSelected() || [];
+		                var holder_data = hot.getData();
 
-						console.log("many token length: " + many_token.length);
-						console.log(selection);
+		                var first_column = selected[0][0];
+		                var last_column = selected[0][2];
+		                var many_token = [];
 
-                        $.ajax({
-                            url: '@Url.Action("PrintOrs", "Obligations")',
-                            data: $data,
-                            type: "post",
-                            success: function (result) {
-								window.open(result);
-                            },
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                console.log("error")
-                            }
-                        });*@
+		                for (let j = first_column; j <= last_column; j++) {
+                            many_token.push(holder_data[j][11]);
+                            console.log("hello " + holder_data[j]);
+		                }
+
+		                var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
+		                for (i = 0; i < many_token.length; i++) {
+			                if ((i + 1) != many_token.length)
+				                url = url + "id=" + many_token[i] + "&";
+			                else
+				                url = url + "id=" + many_token[i];
+                        }
+
+		                window.open(url);
 					}
 				},
 
@@ -400,7 +387,7 @@
 					}
 				},
 *@
-				
+
 			}
 		},
 		beforeRemoveRow: function (index, column) {
@@ -436,7 +423,7 @@
 			hot.setDataAtCell(row, 12, guid());
 			hot.setDataAtCell(row, 1, today);
             hot.setDataAtCell(row, 6, Address);
-            hot.setDataAtCell(row, 8, orsNumber);
+           @* hot.setDataAtCell(row, 8, Ors_no);*@
 			//DIRI
 
 		},
@@ -444,7 +431,6 @@
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW)
 			{
                 CHECK_AFTER_ROW = false;
-				console.log("haha");
 				return;
 			}
 
@@ -472,7 +458,7 @@
 							Time_recieved: hot.getDataAtCell(row, 12),
 							Date_released: hot.getDataAtCell(row, 13),
 							Time_released: hot.getDataAtCell(row, 14),*@
-					
+
 						}
 					);
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
@@ -511,7 +497,7 @@
                             Time_recieved: this[12] ? this[12] : "",
                             Date_released: this[13] ? this[13] : "",
                             Time_released: this[14] ? this[14] : "",*@
-                        
+
                         }
                     );
 				});
@@ -527,30 +513,6 @@
 
 	});
 
-	function printOrs() {
-        var selected = hot.getSelected() || [];
-		var holder_data = hot.getData();
-
-		var first_column = selected[0][0];
-		var last_column = selected[0][2];
-		var many_token = [];
-
-		for (let j = first_column; j <= last_column; j++) {
-            many_token.push(holder_data[j][15]);
-		}
-
-		var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
-		for (i = 0; i < many_token.length; i++) {
-			if ((i + 1) != many_token.length)
-				url = url + "id=" + many_token[i] + "&";
-			else
-				url = url + "id=" + many_token[i];
-        }
-
-		window.open(url);
-		//console.log(url);
-
-    }
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
