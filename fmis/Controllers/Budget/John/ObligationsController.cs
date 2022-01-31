@@ -128,7 +128,6 @@ namespace fmis.Controllers
             return View("~/Views/Budget/John/Obligations/Index.cshtml",obligation);
         }
 
-
         [HttpGet]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> openObligationAmount(int id, string obligation_token)
@@ -268,9 +267,28 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Created_by,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Edit( Obligation obligation)
         {
-            if (id != obligation.Id)
+            var obli = await _context.Obligation.Where(x => x.Id == obligation.Id).AsNoTracking().FirstOrDefaultAsync();
+            obli.source_id = obligation.source_id;
+            obli.source_type = obligation.source_type;
+            obli.Date = obligation.Date;
+            obli.Dv = obligation.Dv;
+            obli.Pr_no = obligation.Pr_no;
+            obli.Po_no = obligation.Po_no;
+            obli.Payee = obligation.Payee;
+            obli.Address = obligation.Address;
+            obli.Particulars = obligation.Particulars;
+            obli.Ors_no = obligation.Ors_no;
+            obli.Gross = obligation.Gross;
+            obli.remaining_balance = obligation.remaining_balance;
+            obli.Created_by = obligation.Created_by;
+
+            _context.Update(obli);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+
+            /*if (id != obligation.Id)
             {
                 return NotFound();
             }
@@ -295,7 +313,7 @@ namespace fmis.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(obligation);
+            return View(obligation);*/
         }
 
         // GET: Obligations/Delete/5

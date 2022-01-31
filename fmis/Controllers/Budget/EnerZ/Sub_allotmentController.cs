@@ -146,6 +146,7 @@ namespace fmis.Controllers
                 suballotment_amount.suballotment_token = item.suballotment_token;
                 _MyDbContext.Suballotment_amount.Update(suballotment_amount);
                 this._MyDbContext.SaveChanges();
+
             }
 
             return Json(data);
@@ -224,11 +225,11 @@ namespace fmis.Controllers
             var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
 
             var sub_allotment_data = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
-            sub_allotment_data.prexcId = sub_allotment_data.prexcId;
-            sub_allotment_data.Suballotment_title = sub_allotment_data.Suballotment_title;
-            sub_allotment_data.Description = sub_allotment_data.Description;
-            sub_allotment_data.Suballotment_code = sub_allotment_data.Suballotment_code;
-            sub_allotment_data.RespoId = sub_allotment_data.RespoId;
+            sub_allotment_data.prexcId = subAllotment.prexcId;
+            sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
+            sub_allotment_data.Description = subAllotment.Description;
+            sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
+            sub_allotment_data.RespoId = subAllotment.RespoId;
             sub_allotment_data.Beginning_balance = beginning_balance;
             sub_allotment_data.Remaining_balance = remaining_balance;
 
@@ -237,7 +238,6 @@ namespace fmis.Controllers
 
             return RedirectToAction("Index", "Sub_allotment", new { BudgetAllotmentId = subAllotment.BudgetAllotmentId });
         }
-
 
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
@@ -261,7 +261,6 @@ namespace fmis.Controllers
             return View(subAllotment);
         }
         
-
         // POST: Sub_allotment/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
