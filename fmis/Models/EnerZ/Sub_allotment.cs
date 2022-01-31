@@ -22,6 +22,9 @@ namespace fmis.Models
         [ForeignKey("Prexc")]
         public int prexcId { get; set; }
         public Prexc prexc { get; set; }
+        [ForeignKey("Appropriation")]
+        public int AppropriationId { get; set; }
+        public Appropriation Appropriation { get; set; }
         public decimal Remaining_balance { get; set; }
         public decimal Beginning_balance { get; set; }
         public decimal obligated_amount { get; set; }

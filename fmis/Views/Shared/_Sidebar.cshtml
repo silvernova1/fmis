@@ -58,6 +58,18 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
+
+
+                <li class="@if(ViewBag.filter.sub == "Appropriations")
+                    @Html.Raw("active")">
+                    <a asp-controller="Appropriations" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Appropriations
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
                 <li class="@if(ViewBag.filter.sub == "allotmentclass")
                 @Html.Raw("active")">
                     <a asp-controller="AllotmentClasses" asp-action="Index">
@@ -149,15 +161,6 @@
                     <b class="arrow"></b>
                 </li>
 
-                @*  <li class="@if(ViewBag.filter.sub == "Appropriations")
-        @Html.Raw("active")">
-            <a asp-controller="Appropriations" asp-action="Index">
-                <i class="menu-icon fa fa-caret-right"></i>
-                Appropriations
-            </a>
-
-            <b class="arrow"></b>
-        </li>*@
                 <li class="@if(ViewBag.filter.sub == "ManageUsers")
                 @Html.Raw("active")">
                     <a asp-controller="ManageUsers" asp-action="Index">

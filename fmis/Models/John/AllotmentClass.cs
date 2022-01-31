@@ -15,6 +15,7 @@ namespace fmis.Models.John
         public string Account_Code { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
 
+
     }
     
 }

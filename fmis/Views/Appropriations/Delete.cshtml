@@ -11,21 +11,19 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Description </th>
-                    <th scope="col">Appropriation Code</th>
+                    <th scope="col">Appropriation Source </th> 
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>@Html.DisplayFor(model => model.Description)</td>
-                    <td>@Html.DisplayFor(model => model.Code)</td>
+                    <td>@Html.DisplayFor(model => model.AppropriationSource)</td>
                 </tr>
             </tbody>
         </table>
 
         <center>
             <form asp-action="Delete">
-                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="AppropriationId" />
                 <input type="submit" value="Delete" class="btn btn-danger btn-sm" /> |
                 <a data-dismiss="modal" class="btn btn-default btn-sm" >Back to List</a>
                 <hr />

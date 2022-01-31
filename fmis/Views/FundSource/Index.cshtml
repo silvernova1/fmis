@@ -139,6 +139,12 @@
                     Fund Source Title
                 </th>
                 <th>
+                    Appropriation (Source)
+                </th>
+                <th>
+                    Allotment (Class)
+                </th>
+                <th>
                     ORS Head
                 </th>
                 <th>
@@ -159,9 +165,9 @@
                 <th>
                     Obligated Amount
                 </th>
-               @* <th>
-                    Utilized Amount
-                </th>*@
+                @* <th>
+            Utilized Amount
+        </th>*@
             </tr>
         </thead>
         <tbody>
@@ -174,6 +180,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FundSourceTitle)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppropriationId)
+                </td>
+
+                <td>
+                </td>
+                   
                 <td>
                 </td>
                 <td>
@@ -205,11 +218,11 @@
                     </b>
                 </td>
 
-               @* <td>
-                    <b class="blue">
-                        <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>*@
+                @* <td>
+            <b class="blue">
+                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
+            </b>
+        </td>*@
             </tr>
             }
         </tbody>

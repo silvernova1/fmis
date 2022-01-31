@@ -91,6 +91,7 @@ namespace fmis.Controllers
 
             PopulatePrexcDropDownList();
             PopulateRespoDropDownList();
+            PopulateAppropriationDropDownList();
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
@@ -120,6 +121,7 @@ namespace fmis.Controllers
 
             PopulatePrexcDropDownList(suballotment.prexcId);
             PopulateRespoDropDownList();
+            PopulateAppropriationDropDownList();
 
             return View(suballotment);
         }
@@ -207,6 +209,20 @@ namespace fmis.Controllers
                                               }),
                                      "RespoId",
                                      "respo",
+                                     null);
+
+        }
+
+        private void PopulateAppropriationDropDownList()
+        {
+            ViewBag.AppropriationId = new SelectList((from s in _MyDbContext.Appropriation.ToList()
+                                                      select new
+                                                      {
+                                                          AppropriationId = s.AppropriationId,
+                                                          AppropriationSource = s.AppropriationSource
+                                                      }),
+                                     "AppropriationId",
+                                     "AppropriationSource",
                                      null);
 
         }

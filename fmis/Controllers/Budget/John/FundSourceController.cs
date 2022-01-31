@@ -66,9 +66,10 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
 
-            var budget_allotment = await _bContext.BudgetAllotment
+            var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources)
                 .ThenInclude(x => x.FundSourceAmounts)
+                .Include(x => x.AllotmentClass)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
@@ -86,6 +87,7 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
+            PopulateAppropriationDropDownList();
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
@@ -113,6 +115,7 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList(fundsource.PrexcId);
             PopulateRespoDropDownList();
+            PopulateAppropriationDropDownList();
 
             return View(fundsource);
         }
@@ -163,8 +166,8 @@ namespace fmis.Controllers.Budget.John
             fundSource.Beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
             fundSource.Remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
 
-            _FundSourceContext.Add(fundSource);
-            await _FundSourceContext.SaveChangesAsync();
+            _MyDbContext.Add(fundSource);
+            await _MyDbContext.SaveChangesAsync();
 
             funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
             this._MyDbContext.SaveChanges();
@@ -206,6 +209,19 @@ namespace fmis.Controllers.Budget.John
 
         }
 
+        private void PopulateAppropriationDropDownList()
+        {
+            ViewBag.AppropriationId = new SelectList((from s in _MyDbContext.Appropriation.ToList()
+                                              select new
+                                              {
+                                                  AppropriationId = s.AppropriationId,
+                                                  AppropriationSource = s.AppropriationSource
+                                              }),
+                                     "AppropriationId",
+                                     "AppropriationSource",
+                                     null);
+
+        }
 
         // POST: FundSource/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

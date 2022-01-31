@@ -26,24 +26,7 @@ namespace fmis.Controllers
             return View(await _context.Appropriation.ToListAsync());
         }
 
-        // GET: Appropriations/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var appropriation = await _context.Appropriation
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (appropriation == null)
-            {
-                return NotFound();
-            }
-
-            return View(appropriation);
-        }
-
+  
         // GET: Appropriations/Create
         public IActionResult Create()
         {
@@ -53,7 +36,7 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,Code")] Appropriation appropriation)
+        public async Task<IActionResult> Create([Bind("AppropriationId,AppropriationSource")] Appropriation appropriation)
         {
             ViewBag.filter = new FilterSidebar("master_data", "Appropriations", "");
             if (ModelState.IsValid)
@@ -87,9 +70,9 @@ namespace fmis.Controllers
         public async Task<IActionResult> Edit( Appropriation appropriation)
         {
 
-            var appro = await _context.Appropriation.Where(x => x.Id == appropriation.Id).AsNoTracking().FirstOrDefaultAsync();
-            appro.Description = appropriation.Description;
-            appro.Code = appropriation.Code;
+            var appro = await _context.Appropriation.Where(x => x.AppropriationId == appropriation.AppropriationId).AsNoTracking().FirstOrDefaultAsync();
+            appro.AppropriationSource = appropriation.AppropriationSource;
+         
 
             _context.Update(appro);
             await _context.SaveChangesAsync();
@@ -106,7 +89,7 @@ namespace fmis.Controllers
             }
 
             var appropriation = await _context.Appropriation
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.AppropriationId == id);
             if (appropriation == null)
             {
                 return NotFound();
@@ -129,7 +112,7 @@ namespace fmis.Controllers
 
         private bool AppropriationExists(int id)
         {
-            return _context.Appropriation.Any(e => e.Id == id);
+            return _context.Appropriation.Any(e => e.AppropriationId == id);
         }
     }
 }

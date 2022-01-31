@@ -139,6 +139,12 @@
                         Sub Allotment Title
                     </th>
                     <th>
+                        Appropriation (Source)
+                    </th>
+                    <th>
+                        Allotment (Class)
+                    </th>
+                    <th>
                         ORS Head
                     </th>
                     <th>
@@ -160,8 +166,8 @@
                         Obligated Amount
                     </th>
                     @*<th>
-                        Utilized Amount
-                    </th>*@
+            Utilized Amount
+        </th>*@
                 </tr>
             </thead>
             <tbody>
@@ -173,6 +179,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
+                    </td>
+                    <td>
+                      
+                    </td>
+                    <td>
+                       
                     </td>
                     <td>
                         @*   @Html.DropDownList("pi_userid", null, htmlAttributes: new { @class = "prexc form-control" })*@
@@ -205,11 +217,11 @@
                             <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
-                   @* <td>
-                        <b class="blue">
-                            <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>*@
+                    @* <td>
+            <b class="blue">
+                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
+            </b>
+        </td>*@
                 </tr>
                 }
             </tbody>

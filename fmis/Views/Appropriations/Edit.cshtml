@@ -7,17 +7,12 @@
     <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="AppropriationId" />
             @*<input type="hidden" asp-for="Created_at" />*@
             <div class="form-group">
-                <h5>Description: </h5>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <h5>Appropriation Code: </h5>
-                <input asp-for="Code" class="form-control" />
-                <span asp-validation-for="Code" class="text-danger"></span>
+                <h5>Appropriation Source: </h5>
+                <input asp-for="AppropriationSource" class="form-control" />
+                <span asp-validation-for="AppropriationSource" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
                 <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class="btn btn-default btn-sm" data-dismiss="modal">Back to List</a>

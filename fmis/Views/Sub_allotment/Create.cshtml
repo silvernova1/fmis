@@ -38,24 +38,28 @@
                 </div>
                 <div class="form-group">
                     <label>Sub-Allotment Title:</label>
-                    <input asp-for="Suballotment_title" class="form-control" >
+                    <input asp-for="Suballotment_title" class="form-control">
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Description:</label>
-                    <textarea asp-for="Description" class="form-control" ></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <label>Respo:</label>
+                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Suballotment Code:</label>
-                    <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly/>
+                    <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Respo:</label>
-                      <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+                    <label>Appropriation Source:</label>
+                    <select class="form-control" asp-for="AppropriationId" asp-items="ViewBag.AppropriationId"></select>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
         </div>

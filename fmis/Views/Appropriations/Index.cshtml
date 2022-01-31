@@ -44,14 +44,11 @@
     </a>
 </p>
 <br />
-<table class="table">
+<table class="table table-striped" style="width: 900px">
     <thead>
         <tr>
             <th>
-                Description
-            </th>
-            <th>
-                Appropriation Code
+                Appropriation Source
             </th>
             <th>
                 Actions
@@ -63,15 +60,12 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
+                    @Html.DisplayFor(modelItem => item.AppropriationSource)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Code)
-                </td>
-                <td>
-                    <a asp-action="Edit" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.Id">
+                    <a asp-action="Edit" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.AppropriationId">
                         <i class="ace-icon fa fa-edit"></i>Edit</a> |
-                    <a asp-action="Delete" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#DeleteModal" asp-route-id="@item.Id">
+                    <a asp-action="Delete" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#DeleteModal" asp-route-id="@item.AppropriationId">
                         <i class="ace-icon fa fa-trash"></i>Delete
                         </a>
                 </td>
