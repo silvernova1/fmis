@@ -27,7 +27,7 @@
                     <!-- <legend>Form</legend> -->
                     <fieldset>
                         <div class="alert alert-block alert-warning">        
-                            <center><label style="font-size: 25pt;">@Model.FundSources.Sum(x=>x.Beginning_balance)</label></center>           
+                            <center><label style="font-size: 25pt;">@ViewBag.Allotment</label></center>           
                         </div>
                         <center><h4>(ALLOTMENT)</h4> </center>
                     </fieldset>             
@@ -48,7 +48,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">0</label></center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Obligated</label></center>
                         <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
@@ -73,7 +73,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@*@fundsource.Remaining_balance.ToString("C", new CultureInfo("en-PH"))*@</label></center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Balance</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>

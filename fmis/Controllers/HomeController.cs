@@ -49,6 +49,18 @@ namespace fmis.Controllers
             DashboardVM dashboard = new DashboardVM();
             dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == id).ToList();
             dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
+            dashboard.Obligations = _MyDbCOntext.Obligation.Where(x => x.source_id == id).ToList();
+            dashboard.Sub_allotments = _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).ToList();
+
+            var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            ViewBag.Balance = balance;
+
+            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
+            ViewBag.Allotment = allotment;
+
+            var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
+            ViewBag.Obligated = obligated;
+
 
             /*    var dashboard_report = *//*(from fundsource in _MyDbCOntext.FundSources
                                        join budget_allotment in _MyDbCOntext.Budget_allotments

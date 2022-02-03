@@ -158,20 +158,20 @@
 	var counter = 0;
 	$.each(obligation, function () {
 		data[counter] = [
-			get_fund_sub[this.source_id + this.source_type], //1
+			get_fund_sub[this.source_id + this.source_type], //0
 		@*	get_obligated_amount[this.source_id + this.source_type], //2*@
-            moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //2
-			this.Dv, //3
-			this.Pr_no, //4
-			this.Po_no, //5
-			this.Payee, //6
-			this.Address, //7
-			this.Particulars, //8
-			this.Ors_no, //9
-			this.Created_by, //10
-            this.Gross, //11
-            this.Id, //12
-            this.obligation_token //13
+            moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
+			this.Dv, //2
+			this.Pr_no, //3
+			this.Po_no, //4
+			this.Payee, //5
+			this.Address, //6
+			this.Particulars, //7
+			this.Ors_no, //7
+			this.Created_by, //8
+            this.Gross, //9
+            this.Id, //10
+            this.obligation_token //11
 		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
 			moment(this.Time_recieved).format('HH:mm:ss'), //13
 			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
@@ -180,6 +180,8 @@
 		];
 		counter++;
 	});
+
+	console.log(data);
 
 	const container = document.getElementById('example');
 	const hot = new Handsontable(container, {
@@ -328,7 +330,7 @@
 
 				"row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
 
-				@*"": {
+				"": {
 					name: 'UACS Amount Entry / Disbmt.',
 					callback: function (key, options) {
 						var selection = this.getSelected();
@@ -364,8 +366,8 @@
                             return;
 						}
 
-						var holder_id = holder_data[selection[0][0]][15];
-						var obligation_token = holder_data[selection[0][0]][16];
+						var holder_id = holder_data[selection[0][0]][11];
+						var obligation_token = holder_data[selection[0][0]][12];
 						$("#exampleModal").modal('show');
 						$(".ObligationContent").html(loading);
 						$.ajax({
@@ -386,7 +388,6 @@
 
 					}
 				},
-*@
 
 			}
 		},

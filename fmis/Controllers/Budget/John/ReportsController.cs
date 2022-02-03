@@ -465,7 +465,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.Allotment_code.ToUpper();
+                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " /*+ budget_allotment.Allotment_code.ToUpper()*/;
 
 
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
@@ -499,7 +499,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToUpper().ToString();
+                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " /*+ budget_allotment.Allotment_code.ToUpper().ToString()*/;
 
                     }
 
@@ -633,7 +633,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToString();
+                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " /*+ budget_allotment.Allotment_code.ToString()*/;
 
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 3).Style.Font.FontSize = 10;

@@ -10,6 +10,8 @@ namespace fmis.ViewModel
 {
     public class DashboardVM
     {
+        public IEnumerable<Sub_allotment> Sub_allotments { get; set; }
+        public IEnumerable<Obligation> Obligations { get; set; }
         public IEnumerable<ObligationAmount> ObligationAmounts { get; set; }
         public IEnumerable<FundSource> FundSources { get; set; }
         public IEnumerable<BudgetAllotment> BudgetAllotments { get; set; }
