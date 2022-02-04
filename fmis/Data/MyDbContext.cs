@@ -49,6 +49,7 @@ namespace fmis.Data
         public DbSet<UtilizationAmount> UtilizationAmount { get; set; }
         public DbSet<Logs> Logs { get; set; }
         public DbSet<RespoCenter> RespoCenter { get; set; }
+        public DbSet<Dts> Dts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

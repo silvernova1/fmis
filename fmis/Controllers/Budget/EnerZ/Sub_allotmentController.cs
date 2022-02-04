@@ -90,7 +90,7 @@ namespace fmis.Controllers
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcDropDownList();
-            PopulateRespoDropDownList();
+        /*    PopulateRespoDropDownList();*/
             PopulateAppropriationDropDownList();
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
@@ -120,7 +120,7 @@ namespace fmis.Controllers
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcDropDownList(suballotment.prexcId);
-            PopulateRespoDropDownList();
+           /* PopulateRespoDropDownList();*/
             PopulateAppropriationDropDownList();
 
             return View(suballotment);
@@ -200,7 +200,7 @@ namespace fmis.Controllers
         }
 
 
-        private void PopulateRespoDropDownList()
+       /* private void PopulateRespoDropDownList()
         {
             ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
                                               select new
@@ -212,7 +212,7 @@ namespace fmis.Controllers
                                      "respo",
                                      null);
 
-        }
+        }*/
 
         private void PopulateAppropriationDropDownList()
         {
