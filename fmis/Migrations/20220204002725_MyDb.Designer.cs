@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220202004610_MyDb")]
+    [Migration("20220204002725_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

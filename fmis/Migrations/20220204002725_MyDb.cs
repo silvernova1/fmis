@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     public partial class MyDb : Migration
     {
