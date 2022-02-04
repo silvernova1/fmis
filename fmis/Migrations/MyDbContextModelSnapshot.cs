@@ -3,23 +3,36 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220202004610_MyDb")]
-    partial class MyDb
+    partial class MyDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AppropriationBudgetAllotment", b =>
+                {
+                    b.Property<int>("AppropriationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BudgetAllotmentsBudgetAllotmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppropriationId", "BudgetAllotmentsBudgetAllotmentId");
+
+                    b.HasIndex("BudgetAllotmentsBudgetAllotmentId");
+
+                    b.ToTable("AppropriationBudgetAllotment");
+                });
 
             modelBuilder.Entity("fmis.Models.Appropriation", b =>
                 {
@@ -123,6 +136,27 @@ namespace fmis.Migrations.MyDb
                     b.ToTable("Division");
                 });
 
+            modelBuilder.Entity("fmis.Models.Dts", b =>
+                {
+                    b.Property<int>("DtsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("DtsId");
+
+                    b.ToTable("Dts");
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.Property<int>("Id")
@@ -194,6 +228,9 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AllotmentClassId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AppropriationId")
                         .HasColumnType("int");
 
@@ -249,6 +286,8 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("FundSourceId");
+
+                    b.HasIndex("AllotmentClassId");
 
                     b.HasIndex("AppropriationId");
 
@@ -1193,6 +1232,21 @@ namespace fmis.Migrations.MyDb
                     b.ToTable("SummaryReport");
                 });
 
+            modelBuilder.Entity("AppropriationBudgetAllotment", b =>
+                {
+                    b.HasOne("fmis.Models.Appropriation", null)
+                        .WithMany()
+                        .HasForeignKey("AppropriationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.silver.BudgetAllotment", null)
+                        .WithMany()
+                        .HasForeignKey("BudgetAllotmentsBudgetAllotmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
                     b.HasOne("fmis.Models.Ors_head", "Ors_head")
@@ -1225,6 +1279,10 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
+                    b.HasOne("fmis.Models.John.AllotmentClass", "AllotmentClass")
+                        .WithMany("FundSource")
+                        .HasForeignKey("AllotmentClassId");
+
                     b.HasOne("fmis.Models.Appropriation", "Appropriation")
                         .WithMany("FundSources")
                         .HasForeignKey("AppropriationId")
@@ -1258,6 +1316,8 @@ namespace fmis.Migrations.MyDb
                     b.HasOne("fmis.Models.Utilization", null)
                         .WithMany("FundSource")
                         .HasForeignKey("UtilizationId");
+
+                    b.Navigation("AllotmentClass");
 
                     b.Navigation("Appropriation");
 
@@ -1493,6 +1553,8 @@ namespace fmis.Migrations.MyDb
             modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>
                 {
                     b.Navigation("BudgetAllotments");
+
+                    b.Navigation("FundSource");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>

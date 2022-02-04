@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     public partial class MyDb : Migration
     {
@@ -67,6 +67,21 @@ namespace fmis.Migrations.MyDb
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Division", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dts",
+                columns: table => new
+                {
+                    DtsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dts", x => x.DtsId);
                 });
 
             migrationBuilder.CreateTable(
@@ -319,6 +334,30 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppropriationBudgetAllotment",
+                columns: table => new
+                {
+                    AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    BudgetAllotmentsBudgetAllotmentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppropriationBudgetAllotment", x => new { x.AppropriationId, x.BudgetAllotmentsBudgetAllotmentId });
+                    table.ForeignKey(
+                        name: "FK_AppropriationBudgetAllotment_Appropriation_AppropriationId",
+                        column: x => x.AppropriationId,
+                        principalTable: "Appropriation",
+                        principalColumn: "AppropriationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppropriationBudgetAllotment_BudgetAllotment_BudgetAllotmentsBudgetAllotmentId",
+                        column: x => x.BudgetAllotmentsBudgetAllotmentId,
+                        principalTable: "BudgetAllotment",
+                        principalColumn: "BudgetAllotmentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Personal_Information",
                 columns: table => new
                 {
@@ -372,6 +411,7 @@ namespace fmis.Migrations.MyDb
                     RespoId = table.Column<int>(type: "int", nullable: false),
                     PrexcId = table.Column<int>(type: "int", nullable: false),
                     AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: true),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -388,6 +428,12 @@ namespace fmis.Migrations.MyDb
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FundSource", x => x.FundSourceId);
+                    table.ForeignKey(
+                        name: "FK_FundSource_AllotmentClass_AllotmentClassId",
+                        column: x => x.AllotmentClassId,
+                        principalTable: "AllotmentClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FundSource_Appropriation_AppropriationId",
                         column: x => x.AppropriationId,
@@ -817,6 +863,11 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppropriationBudgetAllotment_BudgetAllotmentsBudgetAllotmentId",
+                table: "AppropriationBudgetAllotment",
+                column: "BudgetAllotmentsBudgetAllotmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BudgetAllotment_AllotmentClassId",
                 table: "BudgetAllotment",
                 column: "AllotmentClassId");
@@ -835,6 +886,11 @@ namespace fmis.Migrations.MyDb
                 name: "IX_Designation_Requesting_officeId",
                 table: "Designation",
                 column: "Requesting_officeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSource_AllotmentClassId",
+                table: "FundSource",
+                column: "AllotmentClassId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FundSource_AppropriationId",
@@ -1055,14 +1111,6 @@ namespace fmis.Migrations.MyDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_BudgetAllotment_AllotmentClass_AllotmentClassId",
-                table: "BudgetAllotment");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_BudgetAllotment_Yearly_reference_YearlyReferenceId",
-                table: "BudgetAllotment");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_Appropriation_AppropriationId",
                 table: "FundSource");
 
@@ -1077,6 +1125,10 @@ namespace fmis.Migrations.MyDb
             migrationBuilder.DropForeignKey(
                 name: "FK_Sub_allotment_BudgetAllotment_BudgetAllotmentId",
                 table: "Sub_allotment");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSource_AllotmentClass_AllotmentClassId",
+                table: "FundSource");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_Obligation_ObligationId",
@@ -1114,10 +1166,16 @@ namespace fmis.Migrations.MyDb
                 name: "Account");
 
             migrationBuilder.DropTable(
+                name: "AppropriationBudgetAllotment");
+
+            migrationBuilder.DropTable(
                 name: "Designation");
 
             migrationBuilder.DropTable(
                 name: "Division");
+
+            migrationBuilder.DropTable(
+                name: "Dts");
 
             migrationBuilder.DropTable(
                 name: "FundsRealignment");
@@ -1156,16 +1214,16 @@ namespace fmis.Migrations.MyDb
                 name: "Suballotment_amount");
 
             migrationBuilder.DropTable(
-                name: "AllotmentClass");
+                name: "Appropriation");
+
+            migrationBuilder.DropTable(
+                name: "BudgetAllotment");
 
             migrationBuilder.DropTable(
                 name: "Yearly_reference");
 
             migrationBuilder.DropTable(
-                name: "Appropriation");
-
-            migrationBuilder.DropTable(
-                name: "BudgetAllotment");
+                name: "AllotmentClass");
 
             migrationBuilder.DropTable(
                 name: "Obligation");
