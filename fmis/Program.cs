@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Data;
 using fmis.Models;
+using fmis.Hubs;
 
 namespace fmis.Models
 {

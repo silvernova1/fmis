@@ -1,6 +1,7 @@
 ﻿using fmis.Data;
 using fmis.Filters;
 using fmis.Models;
+using fmis.Models.John;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,9 +52,13 @@ namespace fmis.Controllers
             dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
             dashboard.Obligations = _MyDbCOntext.Obligation.Where(x => x.source_id == id).ToList();
             dashboard.Sub_allotments = _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).ToList();
+            dashboard.AllotmentClasses = _MyDbCOntext.AllotmentClass.Where(x => x.Id == id).ToList();
 
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             ViewBag.Balance = balance;
+
+            var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            ViewBag.AllotmentBalance = allotmentbalance / 400 * 100;
 
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
             ViewBag.Allotment = allotment;
@@ -61,6 +66,9 @@ namespace fmis.Controllers
             var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
             ViewBag.Obligated = obligated;
 
+            List<AllotmentClass> allotmentClasses = (from allotmentclass in _MyDbCOntext.AllotmentClass
+                                                     select allotmentclass).ToList();
+            ViewBag.progress = 0.36 * 100;
 
             /*    var dashboard_report = *//*(from fundsource in _MyDbCOntext.FundSources
                                        join budget_allotment in _MyDbCOntext.Budget_allotments

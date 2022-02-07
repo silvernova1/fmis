@@ -16,6 +16,7 @@ namespace fmis.ViewModel
         public IEnumerable<FundSource> FundSources { get; set; }
         public IEnumerable<BudgetAllotment> BudgetAllotments { get; set; }
         public IEnumerable<Yearly_reference> Yearly_references { get; set; }
+        public IEnumerable<AllotmentClass> AllotmentClasses { get; set; }
 
 
         /*public ObligationAmount Obligation_amount { get; set; }
