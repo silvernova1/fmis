@@ -20,12 +20,15 @@ namespace fmis.Models.John
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
         public RespoCenter RespoCenter { get; set; }
+
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         public Prexc Prexc { get; set; }
         [ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }
         public Appropriation Appropriation { get; set; }
+
+
         public decimal Beginning_balance { get; set; }
         public decimal Remaining_balance { get; set; }
         public decimal obligated_amount { get; set; }
@@ -36,6 +39,7 @@ namespace fmis.Models.John
         public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
+
 
         public ICollection<Uacs> Uacs { get; set; }
 

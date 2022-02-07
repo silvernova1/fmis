@@ -113,7 +113,8 @@ namespace fmis
             services.AddDbContext<LogsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
             services.AddDbContext<RespoCenterContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("RespoCenterContext")));
+             options.UseSqlServer(Configuration.GetConnectionString("RespoCenterContext")));
+          
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -121,12 +122,15 @@ namespace fmis
             //amalio
             services.Add(new ServiceDescriptor(typeof(Personal_InfoMysqlContext), new Personal_InfoMysqlContext(Configuration.GetConnectionString("Personal_InfoMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.Add(new ServiceDescriptor(typeof(DtsMySqlContext), new DtsMySqlContext(Configuration.GetConnectionString("DtsMySqlContext"))));
+            services.AddDatabaseDeveloperPageExceptionFilter();
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            CreateRoles(serviceProvider).Wait();
+            /*CreateRoles(serviceProvider).Wait();*/
 
             if (env.IsDevelopment())
             {

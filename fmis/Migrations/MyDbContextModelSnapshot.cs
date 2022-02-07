@@ -3,23 +3,36 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fmis.Data;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220202004610_MyDb")]
-    partial class MyDb
+    partial class MyDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AppropriationBudgetAllotment", b =>
+                {
+                    b.Property<int>("AppropriationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BudgetAllotmentsBudgetAllotmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppropriationId", "BudgetAllotmentsBudgetAllotmentId");
+
+                    b.HasIndex("BudgetAllotmentsBudgetAllotmentId");
+
+                    b.ToTable("AppropriationBudgetAllotment");
+                });
 
             modelBuilder.Entity("fmis.Models.Appropriation", b =>
                 {
@@ -123,6 +136,27 @@ namespace fmis.Migrations.MyDb
                     b.ToTable("Division");
                 });
 
+            modelBuilder.Entity("fmis.Models.Dts", b =>
+                {
+                    b.Property<int>("DtsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("DtsId");
+
+                    b.ToTable("Dts");
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.Property<int>("Id")
@@ -194,6 +228,9 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AllotmentClassId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AppropriationId")
                         .HasColumnType("int");
 
@@ -249,6 +286,8 @@ namespace fmis.Migrations.MyDb
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("FundSourceId");
+
+                    b.HasIndex("AllotmentClassId");
 
                     b.HasIndex("AppropriationId");
 
@@ -388,12 +427,6 @@ namespace fmis.Migrations.MyDb
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Date_recieved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Date_released")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Dv")
                         .HasColumnType("nvarchar(max)");
 
@@ -415,14 +448,80 @@ namespace fmis.Migrations.MyDb
                     b.Property<string>("Pr_no")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Time_recieved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Time_released")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<float>("amount_1")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_10")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_11")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_12")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_2")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_3")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_4")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_5")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_6")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_7")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_8")
+                        .HasColumnType("real");
+
+                    b.Property<float>("amount_9")
+                        .HasColumnType("real");
+
+                    b.Property<string>("exp_code1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code10")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code11")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code12")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code5")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code6")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code7")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code8")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("exp_code9")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("obligation_token")
                         .HasColumnType("nvarchar(max)");
@@ -1193,6 +1292,21 @@ namespace fmis.Migrations.MyDb
                     b.ToTable("SummaryReport");
                 });
 
+            modelBuilder.Entity("AppropriationBudgetAllotment", b =>
+                {
+                    b.HasOne("fmis.Models.Appropriation", null)
+                        .WithMany()
+                        .HasForeignKey("AppropriationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.silver.BudgetAllotment", null)
+                        .WithMany()
+                        .HasForeignKey("BudgetAllotmentsBudgetAllotmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
                     b.HasOne("fmis.Models.Ors_head", "Ors_head")
@@ -1225,6 +1339,10 @@ namespace fmis.Migrations.MyDb
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
                 {
+                    b.HasOne("fmis.Models.John.AllotmentClass", null)
+                        .WithMany("FundSource")
+                        .HasForeignKey("AllotmentClassId");
+
                     b.HasOne("fmis.Models.Appropriation", "Appropriation")
                         .WithMany("FundSources")
                         .HasForeignKey("AppropriationId")
@@ -1493,6 +1611,8 @@ namespace fmis.Migrations.MyDb
             modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>
                 {
                     b.Navigation("BudgetAllotments");
+
+                    b.Navigation("FundSource");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>

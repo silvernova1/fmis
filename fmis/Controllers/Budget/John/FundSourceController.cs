@@ -31,7 +31,7 @@ namespace fmis.Controllers.Budget.John
         private readonly RespoCenterContext _rContext;
         private readonly MyDbContext _MyDbContext;
 
-        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext,BudgetAllotmentContext BudgetAllotmentContext, RespoCenterContext rContext)
+        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, BudgetAllotmentContext BudgetAllotmentContext, RespoCenterContext rContext)
         {
             _FundSourceContext = FundSourceContext;
             _uContext = uContext;
@@ -65,7 +65,7 @@ namespace fmis.Controllers.Budget.John
 
         public async Task<IActionResult> Index(int BudgetAllotmentId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources)
@@ -97,12 +97,13 @@ namespace fmis.Controllers.Budget.John
             return View(budget_allotment);
         }
 
-      
+
         // GET: FundSource/Create
         public async Task<IActionResult> Create(int BudgetAllotmentId, int AllotmentClassId)
         {
-            
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
@@ -124,10 +125,10 @@ namespace fmis.Controllers.Budget.John
         // GET: FundSource/Edit/5
         public async Task<IActionResult> Edit(int fund_source_id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
-                .Include(x => x.FundSourceAmounts.Where(x=>x.status == "activated"))
+                .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
                 .FirstOrDefault();
 
 
@@ -152,7 +153,7 @@ namespace fmis.Controllers.Budget.John
                 if (data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault() != null) //CHECK IF EXIST
                     fundsource_amount = data_holder.Where(s => s.fundsource_amount_token == item.fundsource_amount_token).FirstOrDefault();
 
-                fundsource_amount.FundSourceId = item.FundSourceId == 0? null : item.FundSourceId;
+                fundsource_amount.FundSourceId = item.FundSourceId == 0 ? null : item.FundSourceId;
                 fundsource_amount.BudgetAllotmentId = item.BudgetAllotmentId;
                 fundsource_amount.UacsId = item.UacsId;
                 fundsource_amount.beginning_balance = item.Amount;
@@ -174,12 +175,11 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId, int RespoId)
         {
- 
             /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            var result = _MyDbContext.Prexc.Where(x=>x.Id == PrexcId).First();
-       
+            var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
+
 
             var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
@@ -232,11 +232,11 @@ namespace fmis.Controllers.Budget.John
         private void PopulateAppropriationDropDownList()
         {
             ViewBag.AppropriationId = new SelectList((from s in _MyDbContext.Appropriation.ToList()
-                                              select new
-                                              {
-                                                  AppropriationId = s.AppropriationId,
-                                                  AppropriationSource = s.AppropriationSource
-                                              }),
+                                                      select new
+                                                      {
+                                                          AppropriationId = s.AppropriationId,
+                                                          AppropriationSource = s.AppropriationSource
+                                                      }),
                                      "AppropriationId",
                                      "AppropriationSource",
                                      null);
@@ -524,7 +524,6 @@ namespace fmis.Controllers.Budget.John
                                     tax_amt = uacs_list.TaxAmount,
                                     others = uacs_list.Others
                                 }).ToList();
-
                 var FundSourceDetails = (from details in db.ors
                                          join allotment in db.allotments on details.allotment equals allotment.ID
                                          join ors_fundsource in db.fsh on allotment.ID.ToString() equals ors_fundsource.allotment
@@ -535,7 +534,6 @@ namespace fmis.Controllers.Budget.John
                                              PrexcCode = ors_fundsource.prexc,
                                              ResponsibilityNumber = ors_fundsource.Responsibility_Number
                                          }).FirstOrDefault();
-
                 foreach (var u in ors_uacs)
                 {
                     uacs += u.uacs + "\n";

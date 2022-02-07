@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace fmis.Migrations.MyDb
+namespace fmis.Migrations
 {
     public partial class MyDb : Migration
     {
@@ -70,6 +70,21 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dts",
+                columns: table => new
+                {
+                    DtsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dts", x => x.DtsId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Logs",
                 columns: table => new
                 {
@@ -131,12 +146,32 @@ namespace fmis.Migrations.MyDb
                     Particulars = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ors_no = table.Column<int>(type: "int", nullable: false),
                     Gross = table.Column<float>(type: "real", nullable: false),
+                    exp_code1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_1 = table.Column<float>(type: "real", nullable: false),
+                    exp_code2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_2 = table.Column<float>(type: "real", nullable: false),
+                    exp_code3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_3 = table.Column<float>(type: "real", nullable: false),
+                    exp_code4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_4 = table.Column<float>(type: "real", nullable: false),
+                    exp_code5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_5 = table.Column<float>(type: "real", nullable: false),
+                    exp_code6 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_6 = table.Column<float>(type: "real", nullable: false),
+                    exp_code7 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_7 = table.Column<float>(type: "real", nullable: false),
+                    exp_code8 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_8 = table.Column<float>(type: "real", nullable: false),
+                    exp_code9 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_9 = table.Column<float>(type: "real", nullable: false),
+                    exp_code10 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_10 = table.Column<float>(type: "real", nullable: false),
+                    exp_code11 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_11 = table.Column<float>(type: "real", nullable: false),
+                    exp_code12 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    amount_12 = table.Column<float>(type: "real", nullable: false),
                     remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Created_by = table.Column<int>(type: "int", nullable: false),
-                    Date_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Time_recieved = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Date_released = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Time_released = table.Column<DateTime>(type: "datetime2", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     obligation_token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -319,6 +354,30 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppropriationBudgetAllotment",
+                columns: table => new
+                {
+                    AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    BudgetAllotmentsBudgetAllotmentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppropriationBudgetAllotment", x => new { x.AppropriationId, x.BudgetAllotmentsBudgetAllotmentId });
+                    table.ForeignKey(
+                        name: "FK_AppropriationBudgetAllotment_Appropriation_AppropriationId",
+                        column: x => x.AppropriationId,
+                        principalTable: "Appropriation",
+                        principalColumn: "AppropriationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppropriationBudgetAllotment_BudgetAllotment_BudgetAllotmentsBudgetAllotmentId",
+                        column: x => x.BudgetAllotmentsBudgetAllotmentId,
+                        principalTable: "BudgetAllotment",
+                        principalColumn: "BudgetAllotmentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Personal_Information",
                 columns: table => new
                 {
@@ -379,6 +438,7 @@ namespace fmis.Migrations.MyDb
                     realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: true),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
                     SummaryReportId = table.Column<int>(type: "int", nullable: true),
                     UtilizationId = table.Column<int>(type: "int", nullable: true),
@@ -388,6 +448,12 @@ namespace fmis.Migrations.MyDb
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FundSource", x => x.FundSourceId);
+                    table.ForeignKey(
+                        name: "FK_FundSource_AllotmentClass_AllotmentClassId",
+                        column: x => x.AllotmentClassId,
+                        principalTable: "AllotmentClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FundSource_Appropriation_AppropriationId",
                         column: x => x.AppropriationId,
@@ -817,6 +883,11 @@ namespace fmis.Migrations.MyDb
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppropriationBudgetAllotment_BudgetAllotmentsBudgetAllotmentId",
+                table: "AppropriationBudgetAllotment",
+                column: "BudgetAllotmentsBudgetAllotmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BudgetAllotment_AllotmentClassId",
                 table: "BudgetAllotment",
                 column: "AllotmentClassId");
@@ -835,6 +906,11 @@ namespace fmis.Migrations.MyDb
                 name: "IX_Designation_Requesting_officeId",
                 table: "Designation",
                 column: "Requesting_officeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSource_AllotmentClassId",
+                table: "FundSource",
+                column: "AllotmentClassId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FundSource_AppropriationId",
@@ -1055,14 +1131,6 @@ namespace fmis.Migrations.MyDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_BudgetAllotment_AllotmentClass_AllotmentClassId",
-                table: "BudgetAllotment");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_BudgetAllotment_Yearly_reference_YearlyReferenceId",
-                table: "BudgetAllotment");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_Appropriation_AppropriationId",
                 table: "FundSource");
 
@@ -1077,6 +1145,10 @@ namespace fmis.Migrations.MyDb
             migrationBuilder.DropForeignKey(
                 name: "FK_Sub_allotment_BudgetAllotment_BudgetAllotmentId",
                 table: "Sub_allotment");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_FundSource_AllotmentClass_AllotmentClassId",
+                table: "FundSource");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_Obligation_ObligationId",
@@ -1114,10 +1186,16 @@ namespace fmis.Migrations.MyDb
                 name: "Account");
 
             migrationBuilder.DropTable(
+                name: "AppropriationBudgetAllotment");
+
+            migrationBuilder.DropTable(
                 name: "Designation");
 
             migrationBuilder.DropTable(
                 name: "Division");
+
+            migrationBuilder.DropTable(
+                name: "Dts");
 
             migrationBuilder.DropTable(
                 name: "FundsRealignment");
@@ -1156,16 +1234,16 @@ namespace fmis.Migrations.MyDb
                 name: "Suballotment_amount");
 
             migrationBuilder.DropTable(
-                name: "AllotmentClass");
+                name: "Appropriation");
+
+            migrationBuilder.DropTable(
+                name: "BudgetAllotment");
 
             migrationBuilder.DropTable(
                 name: "Yearly_reference");
 
             migrationBuilder.DropTable(
-                name: "Appropriation");
-
-            migrationBuilder.DropTable(
-                name: "BudgetAllotment");
+                name: "AllotmentClass");
 
             migrationBuilder.DropTable(
                 name: "Obligation");

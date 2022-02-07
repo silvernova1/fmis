@@ -19,7 +19,7 @@ namespace fmis.Controllers.Budget
         }
 
 
-        public async Task <IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "respo", "");
             return View(await _context.RespoCenter.ToListAsync());

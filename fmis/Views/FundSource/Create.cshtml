@@ -37,9 +37,9 @@
                     @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
                 @*<div class="form-group">
-            <label>Prexc:</label>
-            <select class="form-control" asp-for="PrexcId" asp-items="ViewBag.PrexcId"></select>
-        </div>*@
+                        <label>Prexc:</label>
+                        <select class="form-control" asp-for="PrexcId" asp-items="ViewBag.PrexcId"></select>
+                    </div>*@
                 <div class="form-group">
                     <label>FundSource Title:</label>
                     <input asp-for="FundSourceTitle" class="form-control" required />
@@ -105,16 +105,12 @@
 
 
 <script>
-
     var BudgetAllotmentId = @ViewBag.BudgetAllotmentId;
     console.log(BudgetAllotmentId);
     var fundsource_token = generate_token();
-
     $("#funds_input_token").val(fundsource_token);
-
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
-
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -127,11 +123,9 @@
             }
         });
     }
-
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
-
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown = []; //dara
     var uacs_data_array = []; //dara
@@ -145,8 +139,6 @@
         get_account_title[this.UacsId] = this.Account_title;
         uacs_counter++;
     });
-
-
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount_create');
@@ -162,7 +154,6 @@
                 source: uacs_data_dropdown
             },
             {
-
             },
             {
                 //HIDDEN FUNDSOURCE TOKEN
@@ -177,7 +168,6 @@
             searchResultClass: 'search-result-custom'
         },
         contextMenu: ['row_above', 'row_below', 'remove_row'],
-
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
@@ -212,12 +202,10 @@
             hot.setDataAtCell(row, 3, generate_token());
         },
         afterChange: function (changes, source) {
-
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 CHECK_AFTER_ROW = false;
                 return;
             }
-
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if (col == 0) {
                     var ajax_data = [];
@@ -235,7 +223,6 @@
                     CHECK_FIRST_ROW = true;
                 }
             });
-
             if (CHECK_FIRST_ROW) {
                 CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
             } else {
@@ -262,6 +249,4 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
-
-
 </script>
