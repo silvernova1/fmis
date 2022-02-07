@@ -159,20 +159,17 @@
     <h3 class="header smaller  black">ALLOTMENT CLASS</h3>
 
     <div class="row">
+        @foreach (var allotmentClass in Model.AllotmentClasses)
+        {  
         <div class="col-xs-9">
-            <h5>MOOE</h5>
+            <h5>@allotmentClass.Allotment_Class</h5>
             <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-success" style="width: 25%;"></div>
-            </div>
-            <h5>CO</h5>
-            <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-info" style="width: 35%;"></div>
-            </div>
-            <h5>PS</h5>
-            <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-warning" style="width: 45%;"></div>
+                <div class="progress-bar progress-bar-danger" style="width: 1%;" data-toggle="tooltip" title="DISBURSED"></div>
+                <div class="progress-bar progress-bar-warning" style="width: 1%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                <div class="progress-bar" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.AllotmentBalance"></div>
             </div>
         </div><!-- /.col -->
+        }
     </div><!-- /.row -->
 </div><!-- /.col -->
 
@@ -211,6 +208,9 @@
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
+
+    $('[data-toggle="tooltip"]').tooltip();
+
     jQuery(function ($) {
         $('.easy-pie-chart.percentage').each(function () {
             var $box = $(this).closest('.infobox');
@@ -253,8 +253,8 @@
         var placeholder = $('#cumulative-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
 
-            { label: "BALANCE", data: 10, color: "#68BC31" },
-            { label: "OBLIGATED", data: 50, color: "#2091CF" },
+            { label: "BALANCE", data: @ViewBag.Balance, color: "#68BC31" },
+            { label: "OBLIGATED", data: @ViewBag.Obligated, color: "#2091CF" },
 
 
         ];

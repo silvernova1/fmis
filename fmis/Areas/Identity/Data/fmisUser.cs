@@ -11,6 +11,5 @@ namespace fmis.Areas.Identity.Data
     public class fmisUser : IdentityUser
     {
         /*public ICollection<BudgetYear> BudgetYears { get; set; }*/
-
     }
 }
