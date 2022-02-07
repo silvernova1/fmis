@@ -1,4 +1,6 @@
-﻿using fmis.Models.John;
+﻿using fmis.Models;
+using fmis.Models.John;
+using fmis.Models.silver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +12,8 @@ namespace fmis.ViewModel
     {
         public FundSource fundsource { get; set; }
         public FundSourceAmount fundsourceamounts { get; set; }
+        public Appropriation appropriations { get; set; }
+        public BudgetAllotment budgetallotments { get; set; }
+
     }
 }

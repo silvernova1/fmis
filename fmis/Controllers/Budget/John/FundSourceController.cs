@@ -18,6 +18,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
+using fmis.Models.silver;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -73,12 +74,32 @@ namespace fmis.Controllers.Budget.John
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
+
+            List<FundSource> fundsources = _MyDbContext.FundSources.ToList();
+            List<Appropriation> appropriations = _MyDbContext.Appropriation.ToList();
+            List<BudgetAllotment> budgetallotments = _MyDbContext.Budget_allotments.ToList();
+
+            var fundsrecord = from f in fundsources
+                              join a in appropriations on f.BudgetAllotmentId equals a.AppropriationId into table1
+                              from a in table1.ToList()
+                              join b in budgetallotments on f.BudgetAllotmentId equals b.BudgetAllotmentId into table2
+                              from b in table2.ToList()
+                              select new FundsViewModel
+                              {
+                                  fundsource = f,
+                                  appropriations = a,
+                                  budgetallotments = b
+
+                              };
+
+
+
             return View(budget_allotment);
         }
 
       
         // GET: FundSource/Create
-        public async Task<IActionResult> Create(int BudgetAllotmentId)
+        public async Task<IActionResult> Create(int BudgetAllotmentId, int AllotmentClassId)
         {
             
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
@@ -153,7 +174,6 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId, int RespoId)
         {
-
  
             /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");

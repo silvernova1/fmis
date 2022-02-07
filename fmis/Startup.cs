@@ -17,6 +17,7 @@ using fmis.Data.Carlo;
 using fmis.Data.silver;
 using fmis.Areas.Identity.Data;
 using Microsoft.Owin;
+using fmis.Hubs;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -135,6 +136,7 @@ namespace fmis
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             app.UseStaticFiles();
 
             app.UseSession();
