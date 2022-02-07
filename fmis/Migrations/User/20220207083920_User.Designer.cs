@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations.User
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20220207073445_User")]
+    [Migration("20220207083920_User")]
     partial class User
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
