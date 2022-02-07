@@ -54,6 +54,7 @@
                 </button>
             </div>
             <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
+            <input type="hidden" class="uacs" value="@ViewBag.uacs">
         </div>
     </div>
 </div>
@@ -80,6 +81,8 @@
 	var Address = "CEBU CITY"
 
 	//SET ORS NUMBER
+
+
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
@@ -136,6 +139,23 @@
 		});
 	}
 
+
+    var counter = 0;
+    var obligation_amount = 0;
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = []; //dara
+    var uacs_data_array = []; //dara
+    var get_account_title = []; //dara
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Expense_code; //dara
+        var json_data = new Object(); //dara
+        json_data.UacsId = this.UacsId; //dara
+        uacs_data_array[this.Expense_code] = json_data; //dara
+        get_account_title[this.UacsId] = this.Expense_code;
+        uacs_counter++;
+    });
+
 	var obligation = $.parseJSON($(".obligation").val());
 
 	var fund_sub_data_dropdown = [];
@@ -169,9 +189,35 @@
 			this.Particulars, //7
 			this.Ors_no, //7
 			this.Created_by, //8
-            this.Gross, //9
-            this.Id, //10
-            this.obligation_token //11
+			this.Gross, //9
+
+			this.exp_code1, //10
+            this.amount_1, //11
+            this.exp_code2, //12
+            this.amount_2, //13
+            this.exp_code3, //14
+            this.amount_3, //15
+            this.exp_code4, //16
+            this.amount_4, //17
+            this.exp_code5, //18
+            this.amount_5, //19
+            this.exp_code6, //20
+            this.amount_6, //21
+            this.exp_code7, //22
+            this.amount_7, //23
+            this.exp_code8, //24
+            this.amount_8, //25
+            this.exp_code9, //26
+            this.amount_9, //27
+            this.exp_code10, //28
+            this.amount_10, //29
+            this.exp_code11, //30
+            this.amount_11, //31
+            this.exp_code12, //32
+            this.amount_12, //33
+
+            this.Id, //34
+            this.obligation_token //35
 		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
 			moment(this.Time_recieved).format('HH:mm:ss'), //13
 			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
@@ -196,13 +242,17 @@
 			// Deselect the column after clicking on input.
 			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
 				event.stopImmediatePropagation();
+
+
 				this.deselectCell();
 			}
 		},
-        colWidths: [150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 80],
+		colWidths: [200, 100, 100, 100, 100, 100, 100, 200, 100, 100, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150],
 		height: 'auto',
-
-        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'GROSS/AMOUNT', 'ID', 'TOKEN'],
+		colHeaders: ['FUND SOURCE/SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'EXP CODE 1', 'AMOUNT 1',
+					 'EXP CODE 2', 'AMOUNT 2', 'EXP CODE 3', 'AMOUNT 3', 'EXP CODE 4', 'AMOUNT 4', 'EXP CODE 5', 'AMOUNT 5', 'EXP CODE 6', 'AMOUNT 6', 'EXP CODE 7', 'AMOUNT 7', 'EXP CODE 8',
+					 'AMOUNT 8', 'EXP CODE 9', 'AMOUNT 9', 'EXP CODE 10', 'AMOUNT 10', 'EXP CODE 11', 'AMOUNT 11', 'EXP CODE 12', 'AMOUNT 12', 'ID', 'TOKEN'
+		],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
@@ -254,13 +304,166 @@
 				readOnly: true,
 			},
 			{
-				//GORSS
-                type: 'numeric',
+				//GROSS
+				type: 'numeric',
+                readOnly: true,
                 numericFormat: {
                     pattern: '0,0.00',
                 },
 
+			},
+			{
+				//EXP_CODE1
+				type: 'dropdown',
+				source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 1
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+				//EXP_CODE2
+				type: 'dropdown',
+				source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 2
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE3
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 3
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE4
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 4
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE5
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 5
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE5
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 6
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE7
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 7
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE8
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 8
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE9
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 9
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE10
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 10
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE11
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 11
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //EXP_CODE12
+                type: 'dropdown',
+                source: uacs_data_dropdown
+			},
+            {
+                //AMOUNT 12
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+			},
+            {
+                //HIDDEN ID
             },
+            {
+                //HIDDEN TOKEN
+			},
+
+
 			@*{
 				//DATE RECEIVED
 				type: 'date',
@@ -288,12 +491,7 @@
 				timeFormat: 'HH:mm:ss',
 				correctFormat: true
 			},*@
-			{
-				//HIDDEN ID
-			},
-			{
-				//HIDDEN TOKEN
-			},
+
 		],
 		search: {
 			searchResultClass: 'search-result-custom'
@@ -366,8 +564,8 @@
                             return;
 						}
 
-						var holder_id = holder_data[selection[0][0]][11];
-						var obligation_token = holder_data[selection[0][0]][12];
+						var holder_id = holder_data[selection[0][0]][35];
+						var obligation_token = holder_data[selection[0][0]][36];
 						$("#exampleModal").modal('show');
 						$(".ObligationContent").html(loading);
 						$.ajax({
@@ -394,13 +592,13 @@
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
 			var holder_data = this.getData();
-			var single_token = holder_data[selection[0][0]][12];
+			var single_token = holder_data[selection[0][0]][36];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-					many_token: holder_data[j][12]
+					many_token: holder_data[j][36]
 				})
 			}
 			console.log("execute here!");
@@ -421,9 +619,9 @@
 		},
 		afterCreateRow: function (row, column) {
 			CHECK_AFTER_ROW = true;
-			hot.setDataAtCell(row, 12, guid());
+			hot.setDataAtCell(row, 36, guid());
 			hot.setDataAtCell(row, 1, today);
-            hot.setDataAtCell(row, 6, Address);
+			hot.setDataAtCell(row, 6, Address);
            @* hot.setDataAtCell(row, 8, Ors_no);*@
 			//DIRI
 
@@ -454,7 +652,35 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-                            obligation_token: hot.getDataAtCell(row, 12)
+
+							exp_code1: hot.getDataAtCell(row, 11),
+							amount_1: hot.getDataAtCell(row, 12),
+							exp_code2: hot.getDataAtCell(row, 13),
+							amount_2: hot.getDataAtCell(row, 14),
+                            exp_code3: hot.getDataAtCell(row, 15),
+                            amount_3: hot.getDataAtCell(row, 16),
+                            exp_code4: hot.getDataAtCell(row, 17),
+							amount_4: hot.getDataAtCell(row, 18),
+                            exp_code5: hot.getDataAtCell(row, 19),
+							amount_5: hot.getDataAtCell(row, 20),
+                            exp_code6: hot.getDataAtCell(row, 21),
+							amount_6: hot.getDataAtCell(row, 22),
+                            exp_code7: hot.getDataAtCell(row, 23),
+							amount_7: hot.getDataAtCell(row, 24),
+                            exp_code8: hot.getDataAtCell(row, 25),
+							amount_8: hot.getDataAtCell(row, 26),
+                            exp_code9: hot.getDataAtCell(row, 27),
+							amount_9: hot.getDataAtCell(row, 28),
+                            exp_code10: hot.getDataAtCell(row, 29),
+							amount_10: hot.getDataAtCell(row, 30),
+                            exp_code11: hot.getDataAtCell(row, 31),
+							amount_11: hot.getDataAtCell(row, 32),
+                            exp_code12: hot.getDataAtCell(row, 33),
+							amount_12: hot.getDataAtCell(row, 34),
+
+							obligation_token: hot.getDataAtCell(row, 36)
+
+
 							@*Date_recieved: hot.getDataAtCell(row, 11),
 							Time_recieved: hot.getDataAtCell(row, 12),
 							Date_released: hot.getDataAtCell(row, 13),
@@ -492,8 +718,35 @@
                             Particulars: this[7] ? this[7] : "",
                             Ors_no: this[8] ? this[8] : "",
 							Created_by: this[9] ? this[9] : "",
-                            Gross: this[10] ? this[10] : "",
-                            obligation_token: this[12]
+							Gross: this[10] ? this[10] : "",
+
+							exp_code1: this[11] ? this[11] : "",
+							amount_1: this[12] ? this[12] : "",
+							exp_code2: this[13] ? this[13] : "",
+                            amount_2: this[14] ? this[14] : "",
+							exp_code3: this[15] ? this[15] : "",
+                            amount_3: this[16] ? this[16] : "",
+							exp_code4: this[17] ? this[17] : "",
+                            amount_4: this[18] ? this[18] : "",
+							exp_code5: this[19] ? this[19] : "",
+                            amount_5: this[20] ? this[20] : "",
+							exp_code6: this[21] ? this[21] : "",
+                            amount_6: this[22] ? this[22] : "",
+							exp_code7: this[23] ? this[23] : "",
+                            amount_7: this[24] ? this[24] : "",
+							exp_code8: this[25] ? this[25] : "",
+                            amount_8: this[26] ? this[26] : "",
+							exp_code9: this[27] ? this[27] : "",
+                            amount_9: this[28] ? this[28] : "",
+							exp_code10: this[29] ? this[29] : "",
+                            amount_10: this[30] ? this[30] : "",
+							exp_code11: this[31] ? this[31] : "",
+                            amount_11: this[32] ? this[32] : "",
+							exp_code12: this[33] ? this[33] : "",
+                            amount_12: this[34] ? this[34] : "",
+
+							obligation_token: this[36]
+
                            @* Date_recieved: this[11] ? this[11] : "",
                             Time_recieved: this[12] ? this[12] : "",
                             Date_released: this[13] ? this[13] : "",
@@ -506,8 +759,9 @@
 				console.log(ajax_data);
 			}
 		},
+        fixedColumnsLeft: 11,
 		hiddenColumns: {
-			columns: [11,12],
+			columns: [35,36],
 			indicators: true
 		},
 		licenseKey: 'non-commercial-and-evaluation',

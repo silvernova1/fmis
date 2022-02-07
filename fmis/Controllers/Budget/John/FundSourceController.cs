@@ -82,6 +82,7 @@ namespace fmis.Controllers.Budget.John
         {
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
