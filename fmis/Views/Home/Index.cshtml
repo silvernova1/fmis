@@ -48,7 +48,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@ViewBag.Obligated</label></center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label></center>
                         <center><h5>OBLIGATED</h5> </center>
                     </div>
                 </fieldset>
@@ -73,7 +73,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@ViewBag.Balance</label></center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Balance.</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
@@ -164,8 +164,8 @@
         <div class="col-xs-9">
             <h5>@allotmentClass.Allotment_Class</h5>
             <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-danger" style="width: 1%;" data-toggle="tooltip" title="DISBURSED"></div>
-                <div class="progress-bar progress-bar-warning" style="width: 1%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                <div class="progress-bar progress-bar-danger" style="width: 20%;" data-toggle="tooltip" title="DISBURSED"></div>
+                <div class="progress-bar progress-bar-warning" style="width: 20%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
                 <div class="progress-bar" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.AllotmentBalance"></div>
             </div>
         </div><!-- /.col -->
@@ -325,8 +325,8 @@
 
         var placeholder_2 = $('#obligated-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
-            { label: "UNPAID OBLIGATIONS", data: 10, color: "#FEE074" },
-                { label: "DISBURSED", data: 10, color: "#DA5430" },
+            { label: "UNPAID OBLIGATIONS", data: 1, color: "#FEE074" },
+                { label: "DISBURSED", data: 1, color: "#DA5430" },
             @*{ label: "ad campaigns", data: 8.2, color: "#AF4E96" },
             { label: "direct traffic", data: 18.6, color: "#DA5430" },
             { label: "other", data: 10, color: "#FEE074" }*@
