@@ -69,29 +69,10 @@ namespace fmis.Controllers.Budget.John
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources)
-                .ThenInclude(x => x.FundSourceAmounts)
-                .Include(x => x.AllotmentClass)
+                .ThenInclude(x => x.Appropriation)
+            .Include(x => x.AllotmentClass)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
-
-
-            List<FundSource> fundsources = _MyDbContext.FundSources.ToList();
-            List<Appropriation> appropriations = _MyDbContext.Appropriation.ToList();
-            List<BudgetAllotment> budgetallotments = _MyDbContext.Budget_allotments.ToList();
-
-            var fundsrecord = from f in fundsources
-                              join a in appropriations on f.BudgetAllotmentId equals a.AppropriationId into table1
-                              from a in table1.ToList()
-                              join b in budgetallotments on f.BudgetAllotmentId equals b.BudgetAllotmentId into table2
-                              from b in table2.ToList()
-                              select new FundsViewModel
-                              {
-                                  fundsource = f,
-                                  appropriations = a,
-                                  budgetallotments = b
-
-                              };
-
 
 
             return View(budget_allotment);

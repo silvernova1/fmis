@@ -64,10 +64,10 @@ namespace fmis
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddSession();
-            /*services.AddControllersWithViews()
+            services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );*/
+            );
             services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>

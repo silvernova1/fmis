@@ -66,9 +66,9 @@ namespace fmis.Data
                  .HasDefaultValueSql("getdate()");*/
 
             //1:M relationship to budget allotments and fundsources
-            /* modelBuilder.Entity<FundSource>()
-             .HasOne(p => p.Budget_allotment)
-             .WithMany(b => b.FundSources);*/
+            modelBuilder.Entity<FundSource>()
+            .HasOne(p => p.BudgetAllotment)
+            .WithMany(b => b.FundSources);
 
 
             //1:M relationship to budget allotments and fundsourceamounts
