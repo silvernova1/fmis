@@ -8,10 +8,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using fmis.Areas.Identity.Data;
 
 namespace fmis.Data
 {
-    public class MyDbContext : DbContext
+    public class MyDbContext : IdentityDbContext<fmisUser>
     {
         public MyDbContext()
         {
@@ -21,6 +23,7 @@ namespace fmis.Data
             : base(options)
         {
         }
+
 
         public DbSet<Account> Account { get; set; }
         public DbSet<Section> Section { get; set; }
@@ -53,10 +56,11 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             /*modelBuilder.Entity<BudgetAllotment>()
                 .Property(b => b.CreatedAt)
                 .HasDefaultValueSql("getdate()");*/
-        
+
             /* modelBuilder.Entity<BudgetAllotment>()
                  .Property(b => b.CreatedAt)
                  .HasDefaultValueSql("getdate()");*/
@@ -125,6 +129,11 @@ namespace fmis.Data
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
             modelBuilder.Entity<AllotmentClass>().ToTable("AllotmentClass");
 
+        }
+
+        public static MyDbContext Create()
+        {
+            return new MyDbContext();
         }
 
         internal static object Where(Func<object, bool> p)

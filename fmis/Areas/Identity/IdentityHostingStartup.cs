@@ -16,7 +16,7 @@ namespace fmis.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                services.AddDbContext<UserContext>(options =>
+                services.AddDbContext<MyDbContext>(options =>
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("UserContextConnection")));
 
@@ -33,7 +33,7 @@ namespace fmis.Areas.Identity
                 })
                     .AddRoles<IdentityRole>()
                     .AddDefaultTokenProviders()
-                    .AddEntityFrameworkStores<UserContext>();
+                    .AddEntityFrameworkStores<MyDbContext>();
             });
         }
     }
