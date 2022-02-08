@@ -87,33 +87,6 @@ namespace fmis.Controllers
             public int Ors_no { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-
-            public string exp_code1 { get; set; }
-            public float amount_1 { get; set; }
-            public string exp_code2 { get; set; }
-            public float amount_2 { get; set; }
-            public string exp_code3 { get; set; }
-            public float amount_3 { get; set; }
-            public string exp_code4 { get; set; }
-            public float amount_4 { get; set; }
-            public string exp_code5 { get; set; }
-            public float amount_5 { get; set; }
-            public string exp_code6 { get; set; }
-            public float amount_6 { get; set; }
-            public string exp_code7 { get; set; }
-            public float amount_7 { get; set; }
-            public string exp_code8 { get; set; }
-            public float amount_8 { get; set; }
-            public string exp_code9 { get; set; }
-            public float amount_9 { get; set; }
-            public string exp_code10 { get; set; }
-            public float amount_10 { get; set; }
-            public string exp_code11 { get; set; }
-            public float amount_11 { get; set; }
-            public string exp_code12 { get; set; }
-            public float amount_12 { get; set; }
-
-
             public string Date_recieved { get; set; }
             public string Time_recieved { get; set; }
             public string Date_released { get; set; }
@@ -121,6 +94,22 @@ namespace fmis.Controllers
             public string obligation_token { get; set; }
             public string status { get; set; }
         }
+
+        public class ObligationAmountData
+        {
+            public int ObligationId { get; set; }
+            public int UacsId { get; set; }
+            public string Expense_code { get; set; }
+            public decimal Amount { get; set; }
+            public float Total_disbursement { get; set; }
+            public float Total_net_amount { get; set; }
+            public float Total_tax_amount { get; set; }
+            public float Total_others { get; set; }
+            public string obligation_token { get; set; }
+            public string obligation_amount_token { get; set; }
+            public string status { get; set; }
+        }
+
 
         public class ManyId
         {
@@ -142,6 +131,7 @@ namespace fmis.Controllers
             var obligation = await _context
                                     .Obligation
                                     .Where(x => x.status == "activated")
+                                    .Include(x => x.ObligationAmounts)
                                     .AsNoTracking()
                                     .ToListAsync();
 
@@ -215,12 +205,15 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
+        public async Task<IActionResult> SaveObligation(List<ObligationData> data, List<ObligationAmountData> data2 )
         {
+       
             var data_holder = _context.Obligation;
             foreach (var item in data)
             {
+               
                 var obligation = new Obligation(); //CLEAR OBJECT
+    
                 if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
                 {
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
@@ -238,43 +231,37 @@ namespace fmis.Controllers
                 obligation.Ors_no = item.Ors_no;
                 obligation.Created_by = item.Created_by;
                 obligation.Gross = item.Gross;
-
-                obligation.exp_code1 = item.exp_code1;
-                obligation.amount_1 = item.amount_1;
-                obligation.exp_code2 = item.exp_code2;
-                obligation.amount_2 = item.amount_2;
-                obligation.exp_code3 = item.exp_code3;
-                obligation.amount_3 = item.amount_3;
-                obligation.exp_code4 = item.exp_code4;
-                obligation.amount_4 = item.amount_4;
-                obligation.exp_code5 = item.exp_code5;
-                obligation.amount_5 = item.amount_5;
-                obligation.exp_code6 = item.exp_code6;
-                obligation.amount_6 = item.amount_6;
-                obligation.exp_code7 = item.exp_code7;
-                obligation.amount_7 = item.amount_7;
-                obligation.exp_code8 = item.exp_code8;
-                obligation.amount_8 = item.amount_8;
-                obligation.exp_code9 = item.exp_code9;
-                obligation.amount_9 = item.amount_9;
-                obligation.exp_code10 = item.exp_code10;
-                obligation.amount_10 = item.amount_10;
-                obligation.exp_code11 = item.exp_code11;
-                obligation.amount_11 = item.amount_11;
-                obligation.exp_code12 = item.exp_code12;
-                obligation.amount_12 = item.amount_12;
-
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-
-                /* obligation.Date_recieved = ToDateTime(item.Date_recieved);
-                   obligation.Time_recieved = ToDateTime(item.Time_recieved);
-                   obligation.Date_released = ToDateTime(item.Date_released);
-                   obligation.Time_released = ToDateTime(item.Time_released);*/
-
+            /* obligation.Date_recieved = ToDateTime(item.Date_recieved);
+                obligation.Time_recieved = ToDateTime(item.Time_recieved);
+                obligation.Date_released = ToDateTime(item.Date_released);
+                obligation.Time_released = ToDateTime(item.Time_released);*/
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
+
             }
+
+            var data_holder_2 = _Ucontext.ObligationAmount;
+
+            foreach(var item2 in data2 )
+            {
+                var obligation_amount = new ObligationAmount();
+                if (await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token) != null) //CHECK IF EXIST
+                { 
+                    obligation_amount = await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token);
+                }
+
+                obligation_amount.ObligationId = item2.ObligationId;
+                obligation_amount.UacsId = item2.UacsId;
+                obligation_amount.Expense_code = Convert.ToInt64(item2.Expense_code);
+                obligation_amount.Amount = item2.Amount;
+                obligation_amount.obligation_amount_token = item2.obligation_amount_token;
+
+                _Ucontext.ObligationAmount.Update(obligation_amount);
+                await _context.SaveChangesAsync();
+            }
+
             return Json(data);
         }
 
@@ -338,32 +325,6 @@ namespace fmis.Controllers
             obli.Particulars = obligation.Particulars;
             obli.Ors_no = obligation.Ors_no;
             obli.Gross = obligation.Gross;
-
-            obli.exp_code1 = obligation.exp_code1;
-            obli.amount_1 = obligation.amount_1;
-            obli.exp_code2 = obligation.exp_code2;
-            obli.amount_2 = obligation.amount_2;
-            obli.exp_code3 = obligation.exp_code3;
-            obli.amount_3 = obligation.amount_3;
-            obli.exp_code4 = obligation.exp_code4;
-            obli.amount_4 = obligation.amount_4;
-            obli.exp_code5 = obligation.exp_code5;
-            obli.amount_5 = obligation.amount_5;
-            obli.exp_code6 = obligation.exp_code6;
-            obli.amount_6 = obligation.amount_6;
-            obli.exp_code7 = obligation.exp_code7;
-            obli.amount_7 = obligation.amount_7;
-            obli.exp_code8 = obligation.exp_code8;
-            obli.amount_8 = obligation.amount_8;
-            obli.exp_code9 = obligation.exp_code9;
-            obli.amount_9 = obligation.amount_9;
-            obli.exp_code10 = obligation.exp_code10;
-            obli.amount_10 = obligation.amount_10;
-            obli.exp_code11 = obligation.exp_code11;
-            obli.amount_11 = obligation.amount_11;
-            obli.exp_code12 = obligation.exp_code12;
-            obli.amount_12 = obligation.amount_12;
-
             obli.remaining_balance = obligation.remaining_balance;
             obli.Created_by = obligation.Created_by;
 

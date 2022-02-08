@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220208004754_MyDb")]
+    [Migration("20220208020915_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -652,78 +652,6 @@ namespace fmis.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<float>("amount_1")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_10")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_11")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_12")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_2")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_3")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_4")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_5")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_6")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_7")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_8")
-                        .HasColumnType("real");
-
-                    b.Property<float>("amount_9")
-                        .HasColumnType("real");
-
-                    b.Property<string>("exp_code1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code10")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code11")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code12")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code4")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code5")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code6")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code7")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code8")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("exp_code9")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("obligation_token")
                         .HasColumnType("nvarchar(max)");
