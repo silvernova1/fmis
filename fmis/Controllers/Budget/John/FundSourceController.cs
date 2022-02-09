@@ -88,6 +88,9 @@ namespace fmis.Controllers.Budget.John
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
+            /*   var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Include(x => x.All);
+               ViewBag.uacs = uacs_data;*/
+
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
             PopulateAppropriationDropDownList();

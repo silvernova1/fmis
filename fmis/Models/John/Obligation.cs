@@ -24,33 +24,6 @@ namespace fmis.Models
         public string Particulars { get; set; }
         public int Ors_no { get; set; }
         public float Gross { get; set; }
-
-        public string exp_code1 { get; set; }
-        public float amount_1 { get; set; }
-        public string exp_code2 { get; set; }
-        public float amount_2 { get; set; }
-        public string exp_code3 { get; set; }
-        public float amount_3 { get; set; }
-        public string exp_code4 { get; set; }
-        public float amount_4 { get; set; }
-        public string exp_code5 { get; set; }
-        public float amount_5 { get; set; }
-        public string exp_code6 { get; set; }
-        public float amount_6 { get; set; }
-        public string exp_code7 { get; set; }
-        public float amount_7 { get; set; }
-        public string exp_code8 { get; set; }
-        public float amount_8 { get; set; }
-        public string exp_code9 { get; set; }
-        public float amount_9 { get; set; }
-        public string exp_code10 { get; set; }
-        public float amount_10 { get; set; }
-        public string exp_code11 { get; set; }
-        public float amount_11 { get; set; }
-        public string exp_code12 { get; set; }
-        public float amount_12 { get; set; }
-
-
         public decimal remaining_balance { get; set; }
         public int Created_by { get; set; }
         public string status { get; set; }
