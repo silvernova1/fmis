@@ -73,7 +73,7 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@ViewBag.Balance.</label></center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label></center>
                         <center><h5>BALANCE</h5> </center>
                     </div>
                 </fieldset>
@@ -166,7 +166,7 @@
             <div class="progress progress-striped active">
                 <div class="progress-bar progress-bar-danger" style="width: 20%;" data-toggle="tooltip" title="DISBURSED"></div>
                 <div class="progress-bar progress-bar-warning" style="width: 20%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                <div class="progress-bar" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.AllotmentBalance"></div>
+                <div class="progress-bar bg-info" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.AllotmentBalance"></div>
             </div>
         </div><!-- /.col -->
         }
@@ -208,6 +208,36 @@
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
+
+    $(".progress-bar-danger").animate({
+                width: "25%",
+          
+            }, 2500);
+           var interval = setInterval(function () {
+        $('.progress-bar-danger').html("25%");
+        
+    }, 5000);
+
+    $(".progress-bar-warning").animate({
+                width: "25%",
+          
+            }, 2500);
+           var interval = setInterval(function () {
+        $('.progress-bar-warning').html("25%");
+        
+    }, 5000);
+
+    $(".bg-info").animate({
+                width: "@ViewBag.AllotmentBalance%",
+          
+            }, 2500);
+           var interval = setInterval(function () {
+        $('.bg-info').html("@ViewBag.AllotmentBalance%");
+        
+    }, 5000);
+
+
+
 
     $('[data-toggle="tooltip"]').tooltip();
 
