@@ -29,7 +29,6 @@
 </style>
 
 <input type="hidden" class="obligation" value="@JsonSerializer.Serialize(Model)">
-<input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.First().ObligationAmounts)">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <h3 class="grey lighter smaller">
     (ORS) Obligation Request and Status
@@ -157,17 +156,7 @@
 	});
 
 
-    var obligationamount = $.parseJSON($(".obligation_amount_data").val());
-    const obligation_amount_handsontable = [];
-    var counter = 0;
-    $.each(obligationamount, function () {
-        obligation_amount_handsontable[counter] = [
-            get_account_title[this.UacsId],
-            this.Expense_code,
-            this.Amount,
-        ]
-        counter++;
-    });
+
 
 
 	const data = [];

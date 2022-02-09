@@ -80,6 +80,9 @@
     $(document).ready(function () {
         $('.js-example-basic-single').select2();
     });
+
+    get_sbu();
+
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
         $.ajax({

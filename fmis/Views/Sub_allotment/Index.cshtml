@@ -7,6 +7,10 @@
 
 <h3 class="grey lighter smaller">
     @Model.Allotment_title
+     <small>
+         <i class="ace-icon fa fa-angle-double-right"></i>
+         <b >@Model.AllotmentClass.Allotment_Class</b> 
+    </small>
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
         <b>Sub Allotment</b>
@@ -181,7 +185,7 @@
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
                     <td>
-                      
+                       @item.Appropriation.AppropriationSource
                     </td>
                     <td>
                        

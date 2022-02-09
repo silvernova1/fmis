@@ -7,14 +7,15 @@
 
 <h3 class="grey lighter smaller">
     @Model.Allotment_title
+     <small>
+         <i class="ace-icon fa fa-angle-double-right"></i>
+         <b >@Model.AllotmentClass.Allotment_Class</b> 
+    </small>
     <small>
          <i class="ace-icon fa fa-angle-double-right"></i>
          <b >Fund Source</b> 
     </small>
-    <small>
-         <i class="ace-icon fa fa-angle-double-right"></i>
-         <b >@Model.AllotmentClass.Allotment_Class</b> 
-    </small>
+   
 </h3>
 <hr />
 <div class="row  pull-left">
@@ -185,6 +186,9 @@
                 <td>
                    @item.Appropriation.AppropriationSource
                 </td>
+               <td>
+
+                </td>
                  <td>
                    @*@Html.DisplayFor(modelItem => item.RespoCenter.Respo)*@
                 </td>
@@ -195,7 +199,7 @@
                 <td>
                     <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                 </td>
-
+           
                 <td>
                     <b class="green">
                         <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
