@@ -13,17 +13,42 @@ namespace fmis.Controllers.Budget
     public class RespoCenterController : Controller
     {
         private readonly RespoCenterContext _context;
-        public RespoCenterController(RespoCenterContext context)
+        private readonly MyDbContext _MyDbcontext;
+        public RespoCenterController(RespoCenterContext context, MyDbContext MyDbcontext)
         {
             _context = context;
+            _MyDbcontext = MyDbcontext;
         }
+
+        
 
 
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "respo", "");
+            PopulateResposDropDownList();
             return View(await _context.RespoCenter.ToListAsync());
         }
+
+        private void PopulateResposDropDownList(object selectedDepartment = null)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            var departmentsQuery = from d in _MyDbcontext.Personal_Information
+                                   orderby d.full_name
+                                   select d;
+            ViewBag.Pi = new SelectList((from s in _MyDbcontext.Personal_Information.ToList()
+                                         select new
+                                         {
+                                             Pid = s.Pid,
+                                             full_name = s.full_name
+                                         }),
+                                       "Pid",
+                                       "full_name",
+                                       null);
+
+
+        }
+
 
         // GET: Appropriations/Create
         public IActionResult Create()

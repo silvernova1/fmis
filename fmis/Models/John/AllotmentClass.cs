@@ -13,6 +13,8 @@ namespace fmis.Models.John
         public int Id { get; set; }
         public string Allotment_Class { get; set; }
         public string Account_Code { get; set; }
+        public string Fund_Code { get; set; }
+        public string Desc { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
         public List<FundSource> FundSource { get; set; }
 
