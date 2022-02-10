@@ -35,7 +35,14 @@ namespace fmis.Controllers
             _pis_context = pis_context;
             _saContext = sa_Context;
         }
-        
+
+        //POST
+        public IActionResult selectAT(int id)
+        {
+            var branches = _context.AllotmentClass.ToList();
+            return Json(branches.Where(x => x.Id == id).ToList());
+        }
+
         // GET: Budget_allotments
         public async Task<IActionResult> Index(int? id)
         {
@@ -57,10 +64,30 @@ namespace fmis.Controllers
         public IActionResult Create()
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            PopulatePrexcsDropDownList();
             PopulateYrDropDownList();
+            PopulateAllotDropDownList();
             PopulateAllotmentClassDropDownList();
 
             return View();
+        }
+
+        private void PopulatePrexcsDropDownList(object selectedDepartment = null)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            var departmentsQuery = from d in _context.AllotmentClass
+                                   orderby d.Allotment_Class
+                                   select d;
+            ViewBag.PrexcId = new SelectList((from s in _context.AllotmentClass.ToList()
+                                              select new
+                                              {
+                                                  PrexcId = s.Id,
+                                                  prexc = s.Allotment_Class
+                                              }),
+                                       "PrexcId",
+                                       "prexc",
+                                       null);
+
         }
 
         private void PopulatePsDropDownList()
@@ -101,6 +128,24 @@ namespace fmis.Controllers
 
             ViewBag.message = oh;
 
+
+        }
+
+        private void PopulateAllotDropDownList(object selectedDepartment = null)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            var departmentsQuery = from d in _context.AllotmentClass
+                                   orderby d.Allotment_Class
+                                   select d;
+            ViewBag.Allotment = new SelectList((from s in _context.AllotmentClass.ToList()
+                                              select new
+                                              {
+                                                  Id = s.Id,
+                                                  Allotment_Class = s.Allotment_Class
+                                              }),
+                                       "Id",
+                                       "Allotment_Class",
+                                       null);
 
         }
 
