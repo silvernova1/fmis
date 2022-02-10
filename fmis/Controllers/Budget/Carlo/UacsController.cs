@@ -85,8 +85,6 @@ namespace fmis.Controllers
         }
 
 
-
-
         // GET: Obligations/Create
         public IActionResult Create()
         {
@@ -182,7 +180,6 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "CO";
-
 
                     this._context.SaveChanges();
                 }

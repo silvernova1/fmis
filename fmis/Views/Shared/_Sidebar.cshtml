@@ -124,15 +124,53 @@
                     </ul>
                 </li>
 
-                <li class="@if(ViewBag.filter.sub == "prexc")
-                @Html.Raw("active")">
-                    <a asp-controller="Prexc" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        PAP Code
-                    </a>
+                @*    <li class="@if(ViewBag.filter.sub == "prexc")
+        @Html.Raw("active")">
+            <a asp-controller="Prexc" asp-action="Index">
+                <i class="menu-icon fa fa-caret-right"></i>
+                PAP Code
+            </a>
 
-                    <b class="arrow"></b>
+            <b class="arrow"></b>
+        </li>*@
+
+                <li class="@if(ViewBag.filter.sub == "prexc")
+                @Html.Raw("active open")">
+
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text"> PAP Code </span>
+
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li class="@if(ViewBag.filter.sub2 == "gas")
+                     @Html.Raw("active")">
+                            <a asp-controller="Prexc" asp-action="GAS">
+                                <i class="menu-icon fa fa-arrow-right blue"></i>
+                                GAS
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "sto")
+                     @Html.Raw("active")">
+                            <a asp-controller="Prexc" asp-action="STO">
+                                <i class="menu-icon fa fa-arrow-right blue"></i>
+                                STO
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "operation")
+                     @Html.Raw("active")">
+                            <a asp-controller="Prexc" asp-action="OPERATION">
+                                <i class="menu-icon fa fa-arrow-right blue"></i>
+                                OPERATION
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
                 </li>
+
+
                 <li class="@if(ViewBag.filter.sub == "yearlyreference")
                 @Html.Raw("active")">
                     <a asp-controller="Yearly_reference" asp-action="Index">
