@@ -69,11 +69,13 @@ namespace fmis.Controllers
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             ViewBag.Balance = balance;
 
-            var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            ViewBag.AllotmentBalance = allotmentbalance / 1000 * 100;
-
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
+
+            var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            ViewBag.AllotmentBalance = allotmentbalance / allotment * 100;
+
+            ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("0.00");
 
             var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
             ViewBag.Obligated = obligated;
@@ -104,6 +106,7 @@ namespace fmis.Controllers
 
 
             return View("~/Views/Home/Index.cshtml", dashboard);
+
         }
 
         public IActionResult Privacy()

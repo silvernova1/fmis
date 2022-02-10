@@ -164,9 +164,9 @@
         <div class="col-xs-9">
             <h5>@allotmentClass.Allotment_Class</h5>
             <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-danger" style="width: 20%;" data-toggle="tooltip" title="DISBURSED"></div>
-                <div class="progress-bar progress-bar-warning" style="width: 20%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                <div class="progress-bar bg-info" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.AllotmentBalance"></div>
+                <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                <div class="progress-bar bg-info" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.DashboardAllotment"></div>
             </div>
         </div><!-- /.col -->
         }
@@ -209,7 +209,7 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
 
-    $(".progress-bar-danger").animate({
+@*    $(".progress-bar-danger").animate({
                 width: "25%",
           
             }, 2500);
@@ -234,7 +234,7 @@
            var interval = setInterval(function () {
         $('.bg-info').html("@ViewBag.AllotmentBalance%");
         
-    }, 5000);
+    }, 5000);*@
 
 
 
