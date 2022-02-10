@@ -73,9 +73,9 @@ namespace fmis.Controllers
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            ViewBag.AllotmentBalance = allotmentbalance / allotment * 100;
+            //ViewBag.AllotmentBalance = allotmentbalance / allotment * 100;
 
-            ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("0.00");
+            //ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("0.00");
 
             var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
             ViewBag.Obligated = obligated;

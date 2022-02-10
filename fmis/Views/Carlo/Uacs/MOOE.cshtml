@@ -100,7 +100,7 @@
     const data = [];
     var counter = 0;
     $.each(uacs, function () {
-        data[counter] = [this.Account_title, this.Expense_code, this.Description_first, this.Description_second , this.Id, this.token]
+        data[counter] = [this.Account_title, this.Expense_code, this.Id, this.token]
         counter++;
     });
 
@@ -109,15 +109,9 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [500, 200, 200, 200],
-        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE', 'DESCRIPTION 1','DESCRIPTION 2', 'ID', 'TOKEN'],
+        colWidths: [600, 500],
+        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE','ID', 'TOKEN'],
         columns: [
-            {
-
-            },
-            {
-
-            },
             {
 
             },
@@ -141,7 +135,7 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][5];
+            var single_token = holder_data[selection[0][0]][3];
 
             var first_column = selection[0][0];
             var last_column = selection[0][2];
@@ -149,7 +143,7 @@
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
-                    many_token: holder_data[j][5]
+                    many_token: holder_data[j][3]
                 })
             }
 
@@ -168,7 +162,7 @@
         afterCreateRow: function (row, column) {
             console.log(row);
             console.log(column);
-            hot.setDataAtCell(row, 5, guid());
+            hot.setDataAtCell(row, 3, guid());
         },
         afterChange: function (changes, source) {
             if (source === 'loadData') {
@@ -181,10 +175,8 @@
                     {
                         Account_title: this[0] ? this[0] : " ",
                         Expense_code: this[1] ? this[1] : " ",
-                        Description_first: this[2] ? this[2] : " ",
-                        Description_second: this[3] ? this[3] : " ",
-                        Id: this[4] ? this[4] : " ",
-                        token: this[5]
+                        Id: this[2] ? this[2] : " ",
+                        token: this[3]
                     }
                 );
             });
@@ -202,7 +194,7 @@
             }
         },
         hiddenColumns: {
-            columns: [4,5],
+            columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation',
