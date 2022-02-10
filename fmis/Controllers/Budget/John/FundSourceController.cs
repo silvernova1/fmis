@@ -70,6 +70,8 @@ namespace fmis.Controllers.Budget.John
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources)
                 .ThenInclude(x => x.Appropriation)
+            .Include(x => x.FundSources)
+                .ThenInclude(x => x.RespoCenter)
             .Include(x => x.AllotmentClass)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);

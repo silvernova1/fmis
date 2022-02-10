@@ -183,9 +183,8 @@
                 <td>
                    @item.Appropriation.AppropriationSource
                 </td>
-       
                  <td>
-                   @*@Html.DisplayFor(modelItem => item.RespoCenter.Respo)*@
+                   @item.RespoCenter.Respo
                 </td>
                 <td>
                     <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
