@@ -96,6 +96,7 @@ namespace fmis.Controllers.Budget.John
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
             PopulateAppropriationDropDownList();
+            PopulatePapTypeDropDownList();
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
@@ -124,6 +125,7 @@ namespace fmis.Controllers.Budget.John
             PopulatePrexcsDropDownList(fundsource.PrexcId);
             PopulateRespoDropDownList();
             PopulateAppropriationDropDownList();
+            PopulatePapTypeDropDownList();
 
             return View(fundsource);
         }
@@ -226,6 +228,23 @@ namespace fmis.Controllers.Budget.John
                                      "AppropriationId",
                                      "AppropriationSource",
                                      null);
+
+        }
+
+
+        //POPULATE PAP TYPE
+        private void PopulatePapTypeDropDownList(object selectedDepartment = null)
+        {
+       
+            ViewBag.PapTypeId = new SelectList((from s in _pContext.Prexc.ToList()
+                                              select new
+                                              {
+                                                  PrexcId = s.Id,
+                                                  prexc = s.pap_type
+                                              }),
+                                       "PrexcId",
+                                       "prexc",
+                                       null);
 
         }
 

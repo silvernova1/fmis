@@ -37,7 +37,5 @@ namespace fmis.Models.silver
         public AllotmentClass AllotmentClass { get; set; }
 
 
-
-
     }
 }

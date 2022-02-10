@@ -24,7 +24,7 @@
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-    Fund Source | PREXC
+    (GAS) PAP Code
 </h3>
 <hr>
 @*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
@@ -117,7 +117,7 @@
     const data = [];
     var counter = 0;
     $.each(prexc, function () {
-        data[counter] = [this.pap_title, this.pap_code1, this.pap_code2, this.Id, this.token]
+        data[counter] = [this.pap_title, this.pap_code1, this.Id, this.token]
         counter++;
     })
     const searchField = document.querySelector('#search_field2');
@@ -125,12 +125,9 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [400, 300, 300],
-        colHeaders: ['ACCOUNT TITLE', 'CODE 1', 'CODE 2', 'ID', 'TOKEN'],
+        colWidths: [600, 500],
+        colHeaders: ['ACCOUNT TITLE', 'CODE 1', 'ID', 'TOKEN'],
         columns: [
-            {
-
-            },
             {
 
             },
@@ -154,13 +151,13 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][4];
+            var single_token = holder_data[selection[0][0]][3];
             var first_column = selection[0][0];
             var last_column = selection[0][2];
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
-                    many_token: holder_data[j][4]
+                    many_token: holder_data[j][3]
                 })
             }
 
@@ -182,7 +179,7 @@
 
             console.log(row);
             console.log(column);
-            hot.setDataAtCell(row, 4, guid());
+            hot.setDataAtCell(row, 3, guid());
         },
         afterChange: function (changes, source) {
             if (source === 'loadData') {
@@ -197,14 +194,13 @@
                     {
                         pap_title: this[0] ? this[0] : " ",
                         pap_code1: this[1] ? this[1] : " ",
-                        pap_code2: this[2] ? this[2] : " ",
-                        Id: this[3] ? this[3] : " ",
-                        token: this[4]
+                        Id: this[2] ? this[2] : " ",
+                        token: this[3]
                     }
                 );
             });
 
-            ajaxServer(ajax_data, '@Url.Action("SavePrexc", "Prexc")');
+            ajaxServer(ajax_data, '@Url.Action("SavePrexcGAS", "Prexc")');
         },
         height: 'auto',
         className: 'as-you-type-demo',
@@ -218,7 +214,7 @@
             }
         },
         hiddenColumns: {
-            columns: [3,4],
+            columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only

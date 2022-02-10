@@ -31,7 +31,7 @@ namespace fmis.Controllers
             public int Id { get; set; }
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
-            public string pap_code2 { get; set; }
+            public string pap_type { get; set; }
             public string status { get; set; }
             public string token { get; set; }
         }
@@ -47,15 +47,37 @@ namespace fmis.Controllers
             public List<Many> many_token { get; set; }
         }
 
-        // GET: Prexc
-        public IActionResult Index()
+        // GET: GAS
+        public IActionResult GAS()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "prexc","");
+            ViewBag.filter = new FilterSidebar("master_data", "prexc","gas");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated").ToList());
+            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated" && s.pap_type == "GAS").ToList());
             ViewBag.temp = json;
-            return View("~/Views/Prexc/Index.cshtml");
+            return View("~/Views/Prexc/GAS.cshtml");
         }
+
+        // GET: STO
+        public IActionResult STO()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "prexc", "sto");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated" && s.pap_type == "STO").ToList());
+            ViewBag.temp = json;
+            return View("~/Views/Prexc/STO.cshtml");
+        }
+
+        // GET: OPERATION
+        public IActionResult OPERATION()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "prexc", "operation");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated" && s.pap_type == "OPERATION").ToList());
+            ViewBag.temp = json;
+            return View("~/Views/Prexc/OPERATION.cshtml");
+        }
+
+
 
         // GET: Prexc/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -89,7 +111,7 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SavePrexc(List<PrexcData> data)
+        public IActionResult SavePrexcGAS(List<PrexcData> data)
         {
             var data_holder = this._context.Prexc;
 
@@ -99,18 +121,18 @@ namespace fmis.Controllers
                 {
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code2 = item.pap_code2;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_type = "GAS";
 
                     this._context.SaveChanges();
                 }
-                else if (item.pap_title != null || item.pap_code1 != null || item.pap_code2 != null) //save
+                else if (item.pap_title != null || item.pap_code1 != null || item.pap_type != null) //save
                 {
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
-                    prexc.pap_code2 = item.pap_code2;
+                    prexc.pap_type = "GAS";
                     prexc.status = "activated";
                     prexc.token = item.token;
 
@@ -121,6 +143,80 @@ namespace fmis.Controllers
 
             return Json(data);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SavePrexcSTO(List<PrexcData> data)
+        {
+            var data_holder = this._context.Prexc;
+
+            foreach (var item in data)
+            {
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_type = "STO";
+
+                    this._context.SaveChanges();
+                }
+                else if (item.pap_title != null || item.pap_code1 != null || item.pap_type != null) //save
+                {
+                    var prexc = new Prexc(); //clear object
+                    prexc.Id = item.Id;
+                    prexc.pap_title = item.pap_title;
+                    prexc.pap_code1 = item.pap_code1;
+                    prexc.pap_type = "STO";
+                    prexc.status = "activated";
+                    prexc.token = item.token;
+
+                    this._context.Prexc.Update(prexc);
+                    this._context.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SavePrexcOPERATION(List<PrexcData> data)
+        {
+            var data_holder = this._context.Prexc;
+
+            foreach (var item in data)
+            {
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_type = "OPERATION";
+
+                    this._context.SaveChanges();
+                }
+                else if (item.pap_title != null || item.pap_code1 != null || item.pap_type != null) //save
+                {
+                    var prexc = new Prexc(); //clear object
+                    prexc.Id = item.Id;
+                    prexc.pap_title = item.pap_title;
+                    prexc.pap_code1 = item.pap_code1;
+                    prexc.pap_type = "OPERATION";
+                    prexc.status = "activated";
+                    prexc.token = item.token;
+
+                    this._context.Prexc.Update(prexc);
+                    this._context.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
+
+
 
         // POST: Prexc/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -173,41 +269,14 @@ namespace fmis.Controllers
             var prex = await _context.Prexc.Where(x => x.Id == prexc.Id).AsNoTracking().FirstOrDefaultAsync();
             prex.pap_title = prexc.pap_title;
             prex.pap_code1 = prexc.pap_code1;
-            prex.pap_code2 = prexc.pap_code2;
+            prex.pap_type = prexc.pap_type;
             prex.status = prexc.status;
 
             _context.Update(prex); 
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-        /* {
-             if (id != prexc.Id)
-             {
-                 return NotFound();
-             }
-
-             if (ModelState.IsValid)
-             {
-                 try
-                 {
-                     _context.Update(prexc);
-                     await _context.SaveChangesAsync();
-                 }
-                 catch (DbUpdateConcurrencyException)
-                 {
-                     if (!PrexcExists(prexc.Id))
-                     {
-                         return NotFound();
-                     }
-                     else
-                     {
-                         throw;
-                     }
-                 }
-                 return RedirectToAction(nameof(Index));
-             }
-             return View(prexc);
-         }*/
+   
 
         // GET:  Prexc/Delete/5
         public async Task<IActionResult> Delete(int? id)

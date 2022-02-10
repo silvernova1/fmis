@@ -1,9 +1,8 @@
-﻿@model IEnumerable<fmis.Models.Uacs>
+﻿@model IEnumerable<fmis.Models.Prexc>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
-
 @{
-    ViewData["Title"] = "MOOE";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,7 +12,6 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
-
 <style>
     .filterHeader {
         color: black;
@@ -24,18 +22,18 @@
     }
 </style>
 
-<input type="hidden" class="uacs" value="@ViewBag.temp">
+<input type="hidden" class="prexc" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-    (MOOE) Account Title & Expense Code
+    (OPERATION) PAP Code
 </h3>
 <hr>
+@*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
 <br />
 <div id="example" class="hot"></div>
 <br />
 <div class="controls" hidden>
     <button id="export-file">Download CSV</button>
 </div>
-
 
 <script>
 
@@ -50,6 +48,7 @@
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
+
         filtersPlugin.removeConditions(colIndex);
         filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
         filtersPlugin.filter();
@@ -63,11 +62,15 @@
 
     // Build elements which will be displayed in header.
     const getInitializedElements = colIndex => {
-    const div = document.createElement('div');
-    const input = document.createElement('input');
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
         div.className = 'filterHeader';
+
         addEventListeners(input, colIndex);
+
         div.appendChild(input);
+
         return div;
     };
 
@@ -91,26 +94,39 @@
             data: { data: ajax_data },
             success: function (output) {
                 $('#loading_modal').modal('hide');
+
                 console.log(output);
             }
         });
     }
 
-    var uacs = $.parseJSON($(".uacs").val());
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+    var prexc = $.parseJSON($(".prexc").val());
     const data = [];
     var counter = 0;
-    $.each(uacs, function () {
-        data[counter] = [this.Account_title, this.Expense_code, this.Id, this.token]
+    $.each(prexc, function () {
+        data[counter] = [this.pap_title, this.pap_code1, this.Id, this.token]
         counter++;
-    });
-
+    })
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
         colWidths: [600, 500],
-        colHeaders: ['ACCOUNT TITLE', 'EXPENSE CODE','ID', 'TOKEN'],
+        colHeaders: ['ACCOUNT TITLE', 'CODE 1', 'ID', 'TOKEN'],
         columns: [
             {
 
@@ -119,11 +135,11 @@
 
             },
             {
-                //HIDDEN ID
+                // 2nd cell ID column had been hidden
             },
             {
-               //HIDDEN TOKEN
-            }
+                // 3nd cell ID column had been hidden
+            },
 
         ],
         rowHeaders: true,
@@ -136,10 +152,8 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][3];
-
             var first_column = selection[0][0];
             var last_column = selection[0][2];
-
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
@@ -152,14 +166,17 @@
                     "single_token": single_token,
                     "many_token": many_token
                 };
+
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteUacs", "Uacs")');
+
+                ajaxServer(ajax_data,'@Url.Action("DeletePrexc", "Prexc")');
             }
         },
         afterUndo: function (index, column) {
 
         },
         afterCreateRow: function (row, column) {
+
             console.log(row);
             console.log(column);
             hot.setDataAtCell(row, 3, guid());
@@ -168,19 +185,22 @@
             if (source === 'loadData') {
                 return;
             }
+
             console.log(changes);
+
             var ajax_data = [];
             $.each(hot.getSourceData(), function () {
                 ajax_data.push(
                     {
-                        Account_title: this[0] ? this[0] : " ",
-                        Expense_code: this[1] ? this[1] : " ",
+                        pap_title: this[0] ? this[0] : " ",
+                        pap_code1: this[1] ? this[1] : " ",
                         Id: this[2] ? this[2] : " ",
                         token: this[3]
                     }
                 );
             });
-            ajaxServer(ajax_data, '@Url.Action("SaveUacsMOOE", "Uacs")');
+
+            ajaxServer(ajax_data, '@Url.Action("SavePrexcOPERATION", "Prexc")');
         },
         height: 'auto',
         className: 'as-you-type-demo',
@@ -197,12 +217,34 @@
             columns: [2,3],
             indicators: true
         },
-        licenseKey: 'non-commercial-and-evaluation',
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     });
 
+    @*Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        const search = hot.getPlugin('search');
+        const queryResult = search.query(this.value);
+
+        console.log(queryResult);
+        hot.render();
+    });*@
+
+    const exportPlugin = hot.getPlugin('exportFile');
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'UACS',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
 
     var tableData = JSON.stringify(hot.getSourceData());
-    @*console.log(hot.getSourceData());*@
+    console.log(hot.getSourceData());
+
 </script>
-
-
