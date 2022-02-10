@@ -546,7 +546,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                            ws.Cell(currentRow, 1).Value = "SUB-ALLOTMENT" + "-" + b.Allotment_code.ToUpper().ToString();
+                            ws.Cell(currentRow, 1).Value = "SUB-ALLOTMENT" + "-" /*+ b.Allotment_code.ToUpper().ToString()*/;
                             currentRow++;
 
 
@@ -563,8 +563,8 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.Italic = true;
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                            ws.Cell(currentRow, 1).Value = sa.Description.ToString();
-                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+/*                            ws.Cell(currentRow, 1).Value = sa.Description.ToString();
+*/                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
 
                             currentRow++;
 
@@ -659,8 +659,8 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();
-
+/*                    ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();
+*/
 
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 3).Style.Font.FontSize = 10;

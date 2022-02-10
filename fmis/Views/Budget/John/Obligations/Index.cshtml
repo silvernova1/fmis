@@ -109,6 +109,8 @@
 	var CHECK_AFTER_ROW = false;
 	var CHECK_FIRST_ROW = true;
 	var CHECK_FIRST_ROW1 = false;
+	var TRAP_LOAD = false;
+	var TRAP_LOAD1 = false;
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -155,10 +157,6 @@
         uacs_counter++;
 	});
 
-
-
-
-
 	const data = [];
 	var counter = 0;
 	$.each(obligation, function () {
@@ -175,8 +173,6 @@
 			this.Ors_no, //7
 			this.Created_by, //8
 			this.Gross, //9
-			this.Expense_code,
-			this.Amount,
             this.Id, //10
             this.obligation_token //11
 		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
@@ -205,7 +201,7 @@
 		},
         colWidths: [180, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 80],
 		height: 'auto',
-        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'EXP CODE 1','AMOUNT 1', 'ID', 'TOKEN'],
+        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'TOKEN'],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
@@ -261,18 +257,6 @@
                     pattern: '0,0.00',
                 },
 			},
-            {
-                //GROSS TOTAL AMOUNT
-				type: 'dropdown',
-				source: uacs_data_dropdown
-			},
-            {
-                //AMOUNT1
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0,0.00',
-                },
-            },
 			@*{
 				//DATE RECEIVED
 				type: 'date',
@@ -329,7 +313,7 @@
 				                url = url + "id=" + many_token[i] + "&";
 			                else
 				                url = url + "id=" + many_token[i];
-                        }
+						}
 		                window.open(url);
 					}
 				},
@@ -395,13 +379,13 @@
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
 			var holder_data = this.getData();
-			var single_token = holder_data[selection[0][0]][14];
+			var single_token = holder_data[selection[0][0]][12];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-					many_token: holder_data[j][14]
+					many_token: holder_data[j][12]
 				})
 			}
 			console.log("execute here!");
@@ -417,16 +401,17 @@
 		},
 		afterCreateRow: function (row, column) {
 			CHECK_AFTER_ROW = true;
-			hot.setDataAtCell(row, 14, guid());
+            TRAP_LOAD = true;
+            TRAP_LOAD1 = true;
+			hot.setDataAtCell(row, 12, guid());
 			hot.setDataAtCell(row, 1, today);
             hot.setDataAtCell(row, 6, Address);
            @* hot.setDataAtCell(row, 8, Ors_no);*@
 			//DIRI
 		},
 		afterChange: function (changes, source) {
-            if (!changes || source === 'loadData' || CHECK_AFTER_ROW)
-			{
-                CHECK_AFTER_ROW = false;
+			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+				CHECK_AFTER_ROW = false;
 				return;
 			}
 			changes.forEach(([row, col, oldValue, newValue]) => {
@@ -448,9 +433,7 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-							Expense_code: hot.getDataAtCell(row, 11),
-							Amount: hot.getDataAtCell(row, 12),
-                            obligation_token: hot.getDataAtCell(row, 14)
+                            obligation_token: hot.getDataAtCell(row, 12)
 							@*Date_recieved: hot.getDataAtCell(row, 11),
 							Time_recieved: hot.getDataAtCell(row, 12),
 							Date_released: hot.getDataAtCell(row, 13),
@@ -469,6 +452,16 @@
                 CHECK_FIRST_ROW1 = false;
 				console.log("wew");
 			}
+            else if (TRAP_LOAD) {
+                TRAP_LOAD = false;
+                console.log("TREAP LOAD");
+                return;
+			}
+            else if (TRAP_LOAD1) {
+                TRAP_LOAD1 = false;
+                console.log("TRAP LOAD1");
+                return;
+            }
 			else if (CHECK_FIRST_ROW) {
                 console.log("else");
                 var ajax_data = [];
@@ -487,9 +480,7 @@
                             Ors_no: this[8] ? this[8] : "",
 							Created_by: this[9] ? this[9] : "",
 							Gross: this[10] ? this[10] : "",
-							Expense_code: this[11] ? this[11] : "",
-							Amount: this[12] ? this[12] : "",
-                            obligation_token: this[14]
+                            obligation_token: this[12]
                            @* Date_recieved: this[11] ? this[11] : "",
                             Time_recieved: this[12] ? this[12] : "",
                             Date_released: this[13] ? this[13] : "",
@@ -502,7 +493,7 @@
 			}
 		},
 		hiddenColumns: {
-			columns: [13,14],
+			columns: [11,12],
 			indicators: true
 		},
 		licenseKey: 'non-commercial-and-evaluation',

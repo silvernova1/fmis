@@ -413,7 +413,6 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> PrintOrs(int[] id)
         {
-
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 string ExportData = "This is pdf generated";
@@ -551,30 +550,6 @@ namespace fmis.Controllers
                     String uacs = "";
                     Double disbursements = 0.00;
 
-                    /* var ors_uacs = (from uacs_list in db.ors_expense_codes
-                                     join expensecodes in db.uacs on uacs_list.uacs equals expensecodes.Title
-                                     where uacs_list.ors_obligation == ors.ID
-                                     select new
-                                     {
-                                         uacs = expensecodes.Code,
-                                         amount = uacs_list.amount,
-                                         net_amt = uacs_list.NetAmount,
-                                         tax_amt = uacs_list.TaxAmount,
-                                         others = uacs_list.Others
-                                     }).ToList();
-
-                     var FundSourceDetails = (from details in db.ors
-                                              join allotment in db.allotments on details.allotment equals allotment.ID
-                                              join ors_fundsource in db.fsh on allotment.ID.ToString() equals ors_fundsource.allotment
-                                              where details.ID == ID &&
-                                              ors_fundsource.Code == ors.FundSource
-                                              select new
-                                              {
-                                                  PrexcCode = ors_fundsource.prexc,
-                                                  ResponsibilityNumber = ors_fundsource.Responsibility_Number
-                                              }).FirstOrDefault();
-                    */
-
                     var fundsources = (from fundsource in _MyDbContext.FundSources
                                        join obligation in _MyDbContext.Obligation
                                        on fundsource.FundSourceId equals obligation.source_id
@@ -587,7 +562,7 @@ namespace fmis.Controllers
                                            pap = prexc.pap_code1,
                                            obligation_id = obligation.source_id,
                                            fundsource_id = fundsource.FundSourceId,
-                                           fundsource_code = fundsource.FundSourceTitleCode,
+                                           fundsource_code = fundsource.FundSourceTitle,
                                            respo = fundsource.RespoCenter,
                                            particulars = obligation.Particulars
                                        }).ToList();
@@ -681,21 +656,6 @@ namespace fmis.Controllers
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Signature :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { Border = 14 });
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { Border = 14 });
-
-
-                    //var ors_requesting_head = db.ors_head_request.Where(p => p.Name == ors.head_requesting_office).FirstOrDefault();
-
-                    /* var ors_fsh = (from list in db.ors
-                                    join allotment in db.allotments on list.allotment equals allotment.ID
-                                    join fsh in db.fsh on allotment.ID.ToString() equals fsh.allotment
-                                    where fsh.Code == ors.FundSource && fsh.allotment == allotment.ID.ToString()
-                                    && list.ID.ToString() == id
-                                    select new
-                                    {
-                                        ors_head = fsh.ors_head
-                                    }).FirstOrDefault();
-
-                     var ors_head = db.ors_head_request.Where(p => p.ID.ToString() == ors_fsh.ors_head.ToString()).FirstOrDefault();*/
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
@@ -809,7 +769,7 @@ namespace fmis.Controllers
 
                     PdfPTable table_row_12 = new PdfPTable(8);
                     table_row_12.WidthPercentage = 100f;
-                    table_row_12.SetWidths(new float[] { 15, 20, 20, 15, 15, 15, 15,15 });
+                    table_row_12.SetWidths(new float[] { 15, 20, 20, 15, 15, 15, 15, 15 });
 
                     table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                     table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
@@ -828,5 +788,6 @@ namespace fmis.Controllers
             }
 
         }
+
     }
 }

@@ -30,7 +30,7 @@ namespace fmis.Controllers.Budget.silver
         }
 
         // GET: AllotmentClasses
-        public async Task<IActionResult> Index(int? id)
+        public  IActionResult Index(int? id)
         {
 
             var generate_reports = (from fundsource in _context.FundSources
