@@ -54,6 +54,9 @@
                 Respo Code
             </th>
             <th>
+                Resquestinf Office
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -67,6 +70,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.RespoCode)
+                </td>
+                <td>
+                    @Html.DropDownList("ViewBag.Pi", null, htmlAttributes: new { @class = "form-control"})
                 </td>
                 <td>
                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.RespoId">

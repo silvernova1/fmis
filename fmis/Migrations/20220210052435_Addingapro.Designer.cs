@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220210011734_MyDb")]
-    partial class MyDb
+    [Migration("20220210052435_Addingapro")]
+    partial class Addingapro
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -414,6 +414,12 @@ namespace fmis.Migrations
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Desc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fund_Code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

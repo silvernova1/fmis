@@ -63,9 +63,36 @@ namespace fmis.Controllers.Budget.John
         {
             if (ModelState.IsValid)
             {
-                _context.Add(allotmentClass);
+                if (allotmentClass.Allotment_Class == "PS")
+                {
+                    allotmentClass.Allotment_Class = "PS";
+                    allotmentClass.Account_Code = "100";
+                    allotmentClass.Fund_Code = "01";
+                    allotmentClass.Desc = "Personnel Services";
+                    _context.Add(allotmentClass);       
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+                }
+                else if (allotmentClass.Allotment_Class == "MOOE")
+                {
+                    allotmentClass.Allotment_Class = "MOOE";
+                    allotmentClass.Account_Code = "200";
+                    allotmentClass.Fund_Code = "02";
+                    allotmentClass.Desc = "Maintenance and Other Operating Expenses";
+                    _context.Add(allotmentClass);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else if (allotmentClass.Allotment_Class == "CO")
+                {
+                    allotmentClass.Allotment_Class = "CO";
+                    allotmentClass.Account_Code = "300";
+                    allotmentClass.Fund_Code = "06";
+                    allotmentClass.Desc = "Capital Outlay";
+                    _context.Add(allotmentClass);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(allotmentClass);
         }

@@ -659,7 +659,7 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();
+                    ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " /*+ budget_allotment.Allotment_code.ToString()*/;
 
 
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
