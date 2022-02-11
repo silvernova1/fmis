@@ -138,35 +138,6 @@ namespace fmis.Controllers.Budget.John
             return RedirectToAction("Index");
         }
 
-        /*// GET: AllotmentClasses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var allotmentClass = await _context.AllotmentClass
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (allotmentClass == null)
-            {
-                return NotFound();
-            }
-
-            return View(allotmentClass);
-        }
-
-        // POST: AllotmentClasses/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var allotmentClass = await _context.AllotmentClass.FindAsync(id);
-            _context.AllotmentClass.Remove(allotmentClass);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }*/
-
         private bool AllotmentClassExists(int id)
         {
             return _context.AllotmentClass.Any(e => e.Id == id);

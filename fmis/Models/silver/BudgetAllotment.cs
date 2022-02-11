@@ -24,8 +24,6 @@ namespace fmis.Models.silver
         [JsonIgnore]
         public ICollection<Personal_Information> Personal_Information { get; set; }
 
-        [JsonIgnore]
-        public ICollection<Appropriation> Appropriation { get; set; }
 
         [ForeignKey("Yearly_reference")]
         public int YearlyReferenceId { get; set; }
@@ -35,6 +33,8 @@ namespace fmis.Models.silver
         [ForeignKey("AllotmentClass")]
         public int AllotmentClassId { get; set; }
         public AllotmentClass AllotmentClass { get; set; }
+
+
 
 
     }

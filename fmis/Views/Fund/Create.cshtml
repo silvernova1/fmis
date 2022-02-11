@@ -1,0 +1,42 @@
+﻿@model fmis.Models.Fund
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3 class="grey lighter smaller">Create FundSource</h3></center>
+<hr />
+<div class="container">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <h5>Fund Source Description: </h5>
+                <input asp-for="Fund_description" class="form-control" />
+                <span asp-validation-for="Fund_description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <h5>Fund Code (Current): </h5>
+                <input asp-for="Fund_code_current" class="form-control" />
+                <span asp-validation-for="Fund_code_current" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <h5>Fund Code (Conap): </h5>
+                <input asp-for="Fund_code_conap" class="form-control" />
+                <span asp-validation-for="Fund_code_conap" class="text-danger"></span>
+            </div>
+            <div class="form-group pull-right">
+                <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

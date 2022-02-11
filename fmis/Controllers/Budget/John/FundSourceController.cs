@@ -69,8 +69,6 @@ namespace fmis.Controllers.Budget.John
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources)
-                .ThenInclude(x => x.Appropriation)
-            .Include(x => x.FundSources)
                 .ThenInclude(x => x.RespoCenter)
             .Include(x => x.AllotmentClass)
             .AsNoTracking()
@@ -95,8 +93,9 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
-            PopulateAppropriationDropDownList();
             PopulatePapTypeDropDownList();
+            PopulateFundDropDownList();
+
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
@@ -124,8 +123,8 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList(fundsource.PrexcId);
             PopulateRespoDropDownList();
-            PopulateAppropriationDropDownList();
             PopulatePapTypeDropDownList();
+            PopulateFundDropDownList();
 
             return View(fundsource);
         }
@@ -217,19 +216,6 @@ namespace fmis.Controllers.Budget.John
 
         }
 
-        private void PopulateAppropriationDropDownList()
-        {
-            ViewBag.AppropriationId = new SelectList((from s in _MyDbContext.Appropriation.ToList()
-                                                      select new
-                                                      {
-                                                          AppropriationId = s.AppropriationId,
-                                                          AppropriationSource = s.AppropriationSource
-                                                      }),
-                                     "AppropriationId",
-                                     "AppropriationSource",
-                                     null);
-
-        }
 
 
         //POPULATE PAP TYPE
@@ -244,6 +230,22 @@ namespace fmis.Controllers.Budget.John
                                               }),
                                        "PrexcId",
                                        "prexc",
+                                       null);
+
+        }
+
+        //POPULATE PAP TYPE
+        private void PopulateFundDropDownList()
+        {
+
+            ViewBag.FundId = new SelectList((from s in _MyDbContext.Fund.ToList()
+                                                select new
+                                                {
+                                                    FundId = s.FundId,
+                                                    FundDescription = s.Fund_description
+                                                }),
+                                       "FundId",
+                                       "FundDescription",
                                        null);
 
         }

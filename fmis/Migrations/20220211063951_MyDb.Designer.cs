@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220210071507_MyDb")]
+    [Migration("20220211063951_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,21 +20,6 @@ namespace fmis.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("AppropriationBudgetAllotment", b =>
-                {
-                    b.Property<int>("AppropriationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BudgetAllotmentsBudgetAllotmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AppropriationId", "BudgetAllotmentsBudgetAllotmentId");
-
-                    b.HasIndex("BudgetAllotmentsBudgetAllotmentId");
-
-                    b.ToTable("AppropriationBudgetAllotment");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -359,6 +344,27 @@ namespace fmis.Migrations
                     b.ToTable("Dts");
                 });
 
+            modelBuilder.Entity("fmis.Models.Fund", b =>
+                {
+                    b.Property<int>("FundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Fund_code_conap")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fund_code_current")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fund_description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FundId");
+
+                    b.ToTable("Fund");
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.Property<int>("Id")
@@ -454,6 +460,9 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FundId")
+                        .HasColumnType("int");
+
                     b.Property<string>("FundSourceTitle")
                         .HasColumnType("nvarchar(max)");
 
@@ -500,6 +509,8 @@ namespace fmis.Migrations
                     b.HasIndex("AppropriationId");
 
                     b.HasIndex("BudgetAllotmentId");
+
+                    b.HasIndex("FundId");
 
                     b.HasIndex("ObligationId");
 
@@ -999,6 +1010,9 @@ namespace fmis.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FundId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ObligationId")
                         .HasColumnType("int");
 
@@ -1040,6 +1054,8 @@ namespace fmis.Migrations
                     b.HasIndex("AppropriationId");
 
                     b.HasIndex("BudgetAllotmentId");
+
+                    b.HasIndex("FundId");
 
                     b.HasIndex("ObligationId");
 
@@ -1330,8 +1346,14 @@ namespace fmis.Migrations
                     b.Property<string>("Allotment_title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("AppropriationId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("FundId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -1342,6 +1364,10 @@ namespace fmis.Migrations
                     b.HasKey("BudgetAllotmentId");
 
                     b.HasIndex("AllotmentClassId");
+
+                    b.HasIndex("AppropriationId");
+
+                    b.HasIndex("FundId");
 
                     b.HasIndex("YearlyReferenceId");
 
@@ -1420,21 +1446,6 @@ namespace fmis.Migrations
                     b.HasIndex("UacsId");
 
                     b.ToTable("SummaryReport");
-                });
-
-            modelBuilder.Entity("AppropriationBudgetAllotment", b =>
-                {
-                    b.HasOne("fmis.Models.Appropriation", null)
-                        .WithMany()
-                        .HasForeignKey("AppropriationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("fmis.Models.silver.BudgetAllotment", null)
-                        .WithMany()
-                        .HasForeignKey("BudgetAllotmentsBudgetAllotmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1534,6 +1545,12 @@ namespace fmis.Migrations
                         .WithMany("FundSources")
                         .HasForeignKey("BudgetAllotmentId");
 
+                    b.HasOne("fmis.Models.Fund", "Fund")
+                        .WithMany("FundSources")
+                        .HasForeignKey("FundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("FundSource")
                         .HasForeignKey("ObligationId");
@@ -1561,6 +1578,8 @@ namespace fmis.Migrations
                     b.Navigation("Appropriation");
 
                     b.Navigation("BudgetAllotment");
+
+                    b.Navigation("Fund");
 
                     b.Navigation("Prexc");
 
@@ -1670,6 +1689,12 @@ namespace fmis.Migrations
                         .WithMany("Sub_allotments")
                         .HasForeignKey("BudgetAllotmentId");
 
+                    b.HasOne("fmis.Models.Fund", "Fund")
+                        .WithMany("Sub_Allotments")
+                        .HasForeignKey("FundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fmis.Models.Obligation", null)
                         .WithMany("SubAllotment")
                         .HasForeignKey("ObligationId");
@@ -1693,6 +1718,8 @@ namespace fmis.Migrations
                     b.Navigation("Appropriation");
 
                     b.Navigation("Budget_allotment");
+
+                    b.Navigation("Fund");
 
                     b.Navigation("prexc");
 
@@ -1764,6 +1791,14 @@ namespace fmis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fmis.Models.Appropriation", null)
+                        .WithMany("BudgetAllotments")
+                        .HasForeignKey("AppropriationId");
+
+                    b.HasOne("fmis.Models.Fund", null)
+                        .WithMany("BudgetAllotments")
+                        .HasForeignKey("FundId");
+
                     b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
                         .WithMany("BudgetAllotments")
                         .HasForeignKey("YearlyReferenceId")
@@ -1786,7 +1821,18 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Appropriation", b =>
                 {
+                    b.Navigation("BudgetAllotments");
+
                     b.Navigation("FundSources");
+                });
+
+            modelBuilder.Entity("fmis.Models.Fund", b =>
+                {
+                    b.Navigation("BudgetAllotments");
+
+                    b.Navigation("FundSources");
+
+                    b.Navigation("Sub_Allotments");
                 });
 
             modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>

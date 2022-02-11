@@ -15,14 +15,16 @@
     </a>
 </p>
 <br />
-<table class="table">
+<table class="table table-striped" style="width: 900px">
     <thead>
         <tr>
 
             <th>
                 Year Reference
             </th>
-            <th></th>
+            <th>
+                Action
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +36,7 @@
                     @Html.DisplayFor(modelItem => item.YearlyReference) Budget
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.YearlyReferenceId">
+                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Yearly_reference",new { id = @item.YearlyReferenceId })" onclick="return confirm('Do you want to delete this Yearly Reference?');">
                         <i class="ace-icon fa fa-trash"></i>Delete
                     </a>
                 </td>

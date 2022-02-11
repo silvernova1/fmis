@@ -136,42 +136,15 @@ namespace fmis.Controllers
             return View(yearly_reference);
         }
 
-        // GET: Yearly_reference/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<ActionResult> Delete(String id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference", "");
-
-            if (id == null)
-            {
-                ViewBag.layout = "_Layout";
-                return NotFound();
-            }
-
-            var yearly_reference = await _context.Yearly_reference
-                .FirstOrDefaultAsync(m => m.YearlyReferenceId == id);
-            if (yearly_reference == null)
-            {
-                ViewBag.layout = "_Layout";
-                return NotFound();
-            }
-
-            ViewBag.layout = "_Layout";
-            return View(yearly_reference);
-        }
-
-        // POST: Yearly_reference/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-
-            ViewBag.filter = new FilterSidebar("master_data", "yearlyreference", "");
-
-            var yearly_reference = await _context.Yearly_reference.FindAsync(id);
-            _context.Yearly_reference.Remove(yearly_reference);
+            Int32 ID = Convert.ToInt32(id);
+            var yearlyReference = await _context.Yearly_reference.Where(p => p.YearlyReferenceId == ID).FirstOrDefaultAsync();
+            _context.Yearly_reference.Remove(yearlyReference);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
+
 
         private bool Yearly_referenceExists(int id)
         {

@@ -33,47 +33,63 @@
             <div class="col-md-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
+                    <label>Fund Source: </label>
+                    <select class="form-control"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>PAP Type: </label>
+                    <select class="form-control"></select>
+                </div>
+
+                <div class="form-group">
                     <label>Prexc:</label>
                     @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Responsibility Center:</label>
+                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+                </div>
+
                 <div class="form-group">
                     <label>Sub-Allotment Title:</label>
                     <input asp-for="Suballotment_title" class="form-control">
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label>Respo:</label>
-                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
-                </div>
-            </div>
-            <div class="col-md-6">
+
+
                 <div class="form-group">
                     <label>Suballotment Code:</label>
                     <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
                 </div>
+
+              
+            </div>
+            <div class="col-md-3">
                 <div class="form-group">
-                    <label>Appropriation Source:</label>
-                    <select class="form-control" asp-for="AppropriationId" asp-items="ViewBag.AppropriationId"></select>
-                </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <label>Date:</label>
+                    <input type="date" class="form-control">
+                    <span class="text-danger"></span>
                 </div>
             </div>
+
+
+            </div>
+            <input type="hidden" id="SubId" />
+            <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+            <input type="hidden" class="uacs" value="@ViewBag.uacs">
+            <br />
+            <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+            <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
+            <br />
+            <div class="controls" hidden>
+                <button id="export-file">Download CSV</button>
+            </div>
         </div>
-        <input type="hidden" id="SubId" />
-        <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
-        <input type="hidden" class="uacs" value="@ViewBag.uacs">
-        <br />
-        <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-        <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
-        <br />
-        <div class="controls" hidden>
-            <button id="export-file">Download CSV</button>
-        </div>
-    </div>
 </form>
 
 <script>

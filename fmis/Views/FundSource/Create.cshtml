@@ -33,39 +33,45 @@
             <div class="col-md-6">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
+                    <label>Fund Source: </label>
+                    <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+                </div>
+                <div class="form-group">
                     <label>PAP Type: </label>
-                    <select class="form-control" asp-for="PrexcId" asp-items="ViewBag.PapTypeId"></select>
+                    <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@>
+                        <option value="GAS">GAS</option>
+                        <option value="STO">STO</option>
+                        <option value="OPERATIONS">OPERATIONS</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>PAP Title:</label>
                     @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
-                @*<div class="form-group">
-            <label>Prexc:</label>
-            <select class="form-control" asp-for="PrexcId" asp-items="ViewBag.PrexcId"></select>
+              
+
+            </div>
+            <div class="col-md-6">
+                @* <div class="form-group">
+            <label>Description:</label>
+            <input asp-for="Description" class="form-control">
+            <span asp-validation-for="Description" class="text-danger"></span>
         </div>*@
+                <div class="form-group">
+                    <label>Responsibility Center: </label>
+                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+                </div>
                 <div class="form-group">
                     <label>FundSource Title:</label>
                     <input asp-for="FundSourceTitle" class="form-control" required />
                     <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
-                </div>
-               
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Responsibility Center: </label>
-                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
                 </div>
                 <div class="form-group">
                     <label>FundSource Title Code:</label>
                     <input asp-for="FundSourceTitleCode" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+
             </div>
         </div>
         <input type="hidden" id="FundSourceId" />

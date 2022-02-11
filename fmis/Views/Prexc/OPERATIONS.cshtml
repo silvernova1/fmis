@@ -24,7 +24,7 @@
 
 <input type="hidden" class="prexc" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-    (OPERATION) PAP Code
+    (OPERATIONS) PAP Description & Code
 </h3>
 <hr>
 @*<input id="search_field2" style="float: left" type="search" placeholder="Search" />*@
@@ -126,7 +126,7 @@
     const hot = new Handsontable(container, {
         data: data,
         colWidths: [600, 500],
-        colHeaders: ['ACCOUNT TITLE', 'CODE 1', 'ID', 'TOKEN'],
+        colHeaders: ['PAP DESCRIPTION', 'PAP CODE', 'ID', 'TOKEN'],
         columns: [
             {
 
@@ -200,7 +200,7 @@
                 );
             });
 
-            ajaxServer(ajax_data, '@Url.Action("SavePrexcOPERATION", "Prexc")');
+            ajaxServer(ajax_data, '@Url.Action("SavePrexcOPERATIONS", "Prexc")');
         },
         height: 'auto',
         className: 'as-you-type-demo',

@@ -68,13 +68,13 @@ namespace fmis.Controllers
         }
 
         // GET: OPERATION
-        public IActionResult OPERATION()
+        public IActionResult OPERATIONS()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "prexc", "operation");
+            ViewBag.filter = new FilterSidebar("master_data", "prexc", "operations");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated" && s.pap_type == "OPERATION").ToList());
+            var json = JsonSerializer.Serialize(_context.Prexc.Where(s => s.status == "activated" && s.pap_type == "OPERATIONS").ToList());
             ViewBag.temp = json;
-            return View("~/Views/Prexc/OPERATION.cshtml");
+            return View("~/Views/Prexc/OPERATIONS.cshtml");
         }
 
 
@@ -182,7 +182,7 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SavePrexcOPERATION(List<PrexcData> data)
+        public IActionResult SavePrexcOPERATIONS(List<PrexcData> data)
         {
             var data_holder = this._context.Prexc;
 
@@ -193,7 +193,7 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_type = "OPERATION";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_type = "OPERATIONS";
 
                     this._context.SaveChanges();
                 }
@@ -203,7 +203,7 @@ namespace fmis.Controllers
                     prexc.Id = item.Id;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
-                    prexc.pap_type = "OPERATION";
+                    prexc.pap_type = "OPERATIONS";
                     prexc.status = "activated";
                     prexc.token = item.token;
 

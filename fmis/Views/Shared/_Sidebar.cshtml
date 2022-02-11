@@ -58,13 +58,30 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "yearlyreference")
+                @Html.Raw("active")">
+                    <a asp-controller="Yearly_reference" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Yearly Budget Ref
+                    </a>
 
-
+                    <b class="arrow"></b>
+                </li>
                 <li class="@if(ViewBag.filter.sub == "Appropriations")
                     @Html.Raw("active")">
                     <a asp-controller="Appropriations" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Appropriations
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "Fund")
+                    @Html.Raw("active")">
+                    <a asp-controller="Fund" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Fund Source
                     </a>
 
                     <b class="arrow"></b>
@@ -125,14 +142,14 @@
                 </li>
 
                 @*    <li class="@if(ViewBag.filter.sub == "prexc")
-        @Html.Raw("active")">
-            <a asp-controller="Prexc" asp-action="Index">
-                <i class="menu-icon fa fa-caret-right"></i>
-                PAP Code
-            </a>
+                @Html.Raw("active")">
+                    <a asp-controller="Prexc" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        PAP Code
+                    </a>
 
-            <b class="arrow"></b>
-        </li>*@
+                    <b class="arrow"></b>
+                </li>*@
 
                 <li class="@if(ViewBag.filter.sub == "prexc")
                 @Html.Raw("active open")">
@@ -159,27 +176,17 @@
                             </a>
                             <b class="arrow"></b>
                         </li>
-                        <li class="@if(ViewBag.filter.sub2 == "operation")
+                        <li class="@if(ViewBag.filter.sub2 == "operations")
                      @Html.Raw("active")">
-                            <a asp-controller="Prexc" asp-action="OPERATION">
+                            <a asp-controller="Prexc" asp-action="OPERATIONS">
                                 <i class="menu-icon fa fa-arrow-right blue"></i>
-                                OPERATION
+                                OPERATIONS
                             </a>
                             <b class="arrow"></b>
                         </li>
                     </ul>
                 </li>
 
-
-                <li class="@if(ViewBag.filter.sub == "yearlyreference")
-                @Html.Raw("active")">
-                    <a asp-controller="Yearly_reference" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Yearly Budget Ref
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
                 <li class="@if(ViewBag.filter.sub == "BudgetAllotment")
                      @Html.Raw("active")">
                     <a asp-controller="BudgetAllotment" asp-action="Index">
@@ -252,7 +259,7 @@
                     <b class="arrow"></b>
                 </li>*@
             </ul>
-         </li>
+        </li>
 
         <li class="@if(ViewBag.filter.main == "upload_document")
                 @Html.Raw("active open")">
@@ -309,6 +316,163 @@
 
                     <b class="arrow"></b>
                 </li>
+            </ul>
+        </li>
+
+
+        <li class="@if(ViewBag.filter.main == "trust_fund")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-file-o"></i>
+                <span class="menu-text"> TRUST FUND </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "saob")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="Reports" asp-action="DownloadSaob">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Responsibility Center
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "uacs_trust_fund")
+                @Html.Raw("active open")">
+
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text"> UACS (Trust Fund) </span>
+
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li class="@if(ViewBag.filter.sub2 == "ps_trust_fund")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="PS">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                PS
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "mooe_trust_fund")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="MOOE">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                MOOE
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "co_trust_fund")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="CO">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                CO
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="@if(ViewBag.filter.sub == "pap_trust_fund")
+                @Html.Raw("active open")">
+
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text"> PAP (Trust Fund) </span>
+
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li class="@if(ViewBag.filter.sub2 == "gas_trust_fund")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="PS">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                GAS
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "sto_trust_fund")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="MOOE">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                STO
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="@if(ViewBag.filter.sub2 == "operations_trust_fund")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="CO">
+                                <i class="menu-icon fa fa-arrow-right green"></i>
+                                OPERATIONS
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="@if(ViewBag.filter.sub == "BudgetAllotment_trust_fund")
+                     @Html.Raw("active")">
+                    <a asp-controller="BudgetAllotment" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Budget Allotments
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "requesting_office_trust_fund")
+                     @Html.Raw("active")">
+                    <a asp-controller="BudgetAllotment" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Requesting Office
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+
+                <li class="@if(ViewBag.filter.main == "ors_trust_fund")
+                @Html.Raw("active open")">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-cog"></i>
+                        <span class="menu-text"> BURS </span>
+
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+
+                    <b class="arrow"></b>
+
+                    <ul class="submenu">
+                        <li class="@if(ViewBag.filter.sub == "obligation_trust_fund")
+                @Html.Raw("active")">
+                            <a asp-controller="Obligations" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                UTILIZATION
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "saob_trust_fund")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="Reports" asp-action="DownloadSaob">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        SAOB (Trust Fund)
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+
+
             </ul>
         </li>
 

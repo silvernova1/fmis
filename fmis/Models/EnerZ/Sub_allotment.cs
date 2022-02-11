@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using fmis.Models;
 using fmis.Models.silver;
@@ -25,6 +26,12 @@ namespace fmis.Models
         [ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }
         public Appropriation Appropriation { get; set; }
+
+        [ForeignKey("Fund")]
+        public int FundId { get; set; }
+        [JsonIgnore]
+        public Fund Fund { get; set; }
+
         public decimal Remaining_balance { get; set; }
         public decimal Beginning_balance { get; set; }
         public decimal obligated_amount { get; set; }

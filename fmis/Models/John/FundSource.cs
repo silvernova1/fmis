@@ -33,6 +33,11 @@ namespace fmis.Models.John
         [JsonIgnore]
         public Appropriation Appropriation { get; set; }
 
+        [ForeignKey("Fund")]
+        public int FundId { get; set; }
+        [JsonIgnore]
+        public Fund Fund { get; set; }
+
 
         public decimal Beginning_balance { get; set; }
         public decimal Remaining_balance { get; set; }

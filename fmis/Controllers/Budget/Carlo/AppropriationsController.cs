@@ -79,36 +79,16 @@ namespace fmis.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Appropriations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+      
+        public async Task<ActionResult> Delete(String id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "Appropriations", "");
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var appropriation = await _context.Appropriation
-                .FirstOrDefaultAsync(m => m.AppropriationId == id);
-            if (appropriation == null)
-            {
-                return NotFound();
-            }
-
-            return View(appropriation);
-        }
-
-        // POST: Appropriations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "Appropriations", "");
-            var appropriation = await _context.Appropriation.FindAsync(id);
+            Int32 ID = Convert.ToInt32(id);
+            var appropriation = await _context.Appropriation.Where(p => p.AppropriationId == ID).FirstOrDefaultAsync();
             _context.Appropriation.Remove(appropriation);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
+
 
         private bool AppropriationExists(int id)
         {
