@@ -27,7 +27,7 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "allotmentclass","");
             ViewBag.layout = "_Layout";
-            return View(await _context.AllotmentClass.ToListAsync());
+            return View(await _context.AllotmentClass.OrderBy(x=>x.Account_Code).ToListAsync());
         }
 
         // GET: AllotmentClasses/Details/5
@@ -59,7 +59,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Allotment_Class,Account_Code")] AllotmentClass allotmentClass)
+        public async Task<IActionResult> Create([Bind("Id,Allotment_Class,Account_Code,Fund_Code,Desc")] AllotmentClass allotmentClass)
         {
             if (ModelState.IsValid)
             {
