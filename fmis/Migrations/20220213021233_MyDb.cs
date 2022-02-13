@@ -259,6 +259,20 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RespoCenterTrustFund",
+                columns: table => new
+                {
+                    RespocentertrustfundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Respocentertrustfund = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespocentertrustfundCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RespoCenterTrustFund", x => x.RespocentertrustfundId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Section",
                 columns: table => new
                 {
@@ -1441,6 +1455,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Personal_Information");
+
+            migrationBuilder.DropTable(
+                name: "RespoCenterTrustFund");
 
             migrationBuilder.DropTable(
                 name: "Section");

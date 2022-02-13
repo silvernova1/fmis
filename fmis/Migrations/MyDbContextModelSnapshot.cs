@@ -912,6 +912,24 @@ namespace fmis.Migrations
                     b.ToTable("RespoCenter");
                 });
 
+            modelBuilder.Entity("fmis.Models.RespoCenterTrustFund", b =>
+                {
+                    b.Property<int>("RespocentertrustfundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Respocentertrustfund")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespocentertrustfundCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RespocentertrustfundId");
+
+                    b.ToTable("RespoCenterTrustFund");
+                });
+
             modelBuilder.Entity("fmis.Models.Section", b =>
                 {
                     b.Property<int>("Id")

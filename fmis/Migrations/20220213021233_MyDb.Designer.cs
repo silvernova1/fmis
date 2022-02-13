@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220211120256_MyDb")]
+    [Migration("20220213021233_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -912,6 +912,24 @@ namespace fmis.Migrations
                     b.HasKey("RespoId");
 
                     b.ToTable("RespoCenter");
+                });
+
+            modelBuilder.Entity("fmis.Models.RespoCenterTrustFund", b =>
+                {
+                    b.Property<int>("RespocentertrustfundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Respocentertrustfund")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespocentertrustfundCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RespocentertrustfundId");
+
+                    b.ToTable("RespoCenterTrustFund");
                 });
 
             modelBuilder.Entity("fmis.Models.Section", b =>
