@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.Budget;
 using fmis.Models.John;
 using fmis.Models.silver;
 
@@ -21,5 +22,9 @@ namespace fmis.Models
         public Sub_allotment Sub_Allotment { get; set; }
         public Uacs Uacs { get; set; }
         public virtual ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
+
+        public int PapTypeID { get; set; }
+        public PapType PapType { get; set; }
+
     }
 }

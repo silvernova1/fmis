@@ -51,12 +51,13 @@ namespace fmis.Controllers
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
-            .Include(c => c.AllotmentClass)
             .Include(x => x.FundSources)
             .Include(x => x.Sub_allotments)
             .AsNoTracking()
             .ToListAsync();
 
+            ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
+            ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
             return View(budget_allotment);
         }
 
