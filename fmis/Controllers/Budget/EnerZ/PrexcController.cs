@@ -153,7 +153,6 @@ namespace fmis.Controllers
                     prexc.pap_type = "STO";
                     prexc.status = "activated";
                     prexc.token = item.token;
-
                     this._context.Prexc.Update(prexc);
                     this._context.SaveChanges();
                 }

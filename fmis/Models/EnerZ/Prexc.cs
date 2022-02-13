@@ -23,8 +23,7 @@ namespace fmis.Models
         public Uacs Uacs { get; set; }
         public virtual ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
 
-        public int PapTypeID { get; set; }
-        public PapType PapType { get; set; }
+        /*public int PapTypeID { get; set; }*/
 
     }
 }

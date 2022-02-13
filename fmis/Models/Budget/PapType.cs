@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.Budget
 {
@@ -7,6 +8,7 @@ namespace fmis.Models.Budget
         public int PapTypeID { get; set; }
         public string PapTypeName { get; set; }
 
-        public ICollection<Prexc> Prexcs { get; set; }
+        [NotMapped]
+        public int Id { get; set; }
     }
 }
