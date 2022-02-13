@@ -28,7 +28,15 @@ namespace fmis.Models.John
         [JsonIgnore]
         public Prexc Prexc { get; set; }
 
+        [ForeignKey("AllotmentClass")]
+        public int AllotmentClassId { get; set; }
+        [JsonIgnore]
+        public AllotmentClass AllotmentClass { get; set; }
 
+        [ForeignKey("Appropriation")]
+        public int AppropriationId { get; set; }
+        [JsonIgnore]
+        public Appropriation Appropriation { get; set; }
 
         [ForeignKey("Fund")]
         public int FundId { get; set; }
