@@ -59,7 +59,7 @@ namespace fmis.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Year")]
-            public string? Year { get; set; }
+            public string Year { get; set; }
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }

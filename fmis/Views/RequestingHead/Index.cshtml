@@ -1,0 +1,97 @@
+﻿
+@model IEnumerable<fmis.Models.RequestingHead>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--EDIT MODAL-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<h3 class="grey lighter smaller">
+    Requesting Head
+</h3>
+<hr>
+<p>
+    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-striped" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                Head Name
+            </th>
+            <th>
+                Division
+            </th>
+            <th>
+                Section
+            </th>
+            <th>
+                Head Information
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Headname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Division)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Headinformation)
+            </td>
+            <!--<td>-->
+            @*@Html.DropDownList("ViewBag.Pi", null, htmlAttributes: new { @class = "form-control"})*@
+            <!--</td>-->
+            <td>
+                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.HeadnameId">
+                    <i class="ace-icon fa fa-edit"></i>Update
+                </a> |
+                <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","RequestingHead",new { id = @item.HeadnameId })" onclick="return confirm('Do you want to delete this Allotment Class?');">
+                    <i class="ace-icon fa fa-trash"></i>Delete
+                </a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

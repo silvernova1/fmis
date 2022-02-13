@@ -29,5 +29,5 @@ namespace fmis.Models
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-        }
+    }
 }

@@ -54,9 +54,11 @@ namespace fmis.Data
         public DbSet<RespoCenter> RespoCenter { get; set; }
         public DbSet<Dts> Dts { get; set; }
         public DbSet<Fund> Fund { get; set; }
+        public DbSet<PapType> PapType { get; set; }
         public DbSet<UacsTrustFund> UacsTrustFund { get; set; }
         public DbSet<PrexcTrustFund> PrexcTrustFund { get; set; }
         public DbSet<RespoCenterTrustFund> RespoCenterTrustFund { get; set; }
+        public DbSet<RequestingHead> RequestingHead { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -70,9 +72,9 @@ namespace fmis.Data
                  .HasDefaultValueSql("getdate()");*/
 
             //1:M relationship to budget allotments and fundsources
-            modelBuilder.Entity<FundSource>()
+            /*modelBuilder.Entity<FundSource>()
             .HasOne(p => p.BudgetAllotment)
-            .WithMany(b => b.FundSources);
+            .WithMany(b => b.FundSources);*/
 
 
             //1:M relationship to budget allotments and fundsourceamounts

@@ -161,7 +161,6 @@
 	$.each(obligation, function () {
 		data[counter] = [
 			get_fund_sub[this.source_id + this.source_type], //0
-		@*	get_obligated_amount[this.source_id + this.source_type], //2*@
             moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
@@ -169,15 +168,10 @@
 			this.Payee, //5
 			this.Address, //6
 			this.Particulars, //7
-			this.Ors_no, //7
-			this.Created_by, //8
-			this.Gross, //9
-			this.Id, //10
+			this.Ors_no, //8
+			this.Created_by, //9
+			this.Gross, //10
             this.obligation_token //11
-		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
-			moment(this.Time_recieved).format('HH:mm:ss'), //13
-			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
-			moment(this.Time_released).format('HH:mm:ss'), //15*@
 		];
 		counter++;
 	});
@@ -358,33 +352,6 @@
             {
 				//AMOUNT 12
             },
-
-			@*{
-				//DATE RECEIVED
-				type: 'date',
-				dateFormat: 'MM/DD/YYYY',
-				defaultDate: Date.now(),
-				correctFormat: true,
-			},
-			{
-				//TIME RECEIVED
-				type: 'time',
-				timeFormat: 'HH:mm:ss',
-				correctFormat: true
-			},
-			{
-				//DATE RELEASED
-				type: 'date',
-				dateFormat: 'MM/DD/YYYY',
-				defaultDate: Date.now(),
-				correctFormat: true,
-			},
-			{
-				//TIME RELEASED
-				type: 'time',
-				timeFormat: 'HH:mm:ss',
-				correctFormat: true
-			},*@
 			{
 				//HIDDEN ID
 			},
@@ -505,10 +472,9 @@
 			CHECK_AFTER_ROW = true;
             TRAP_LOAD = true;
             TRAP_LOAD1 = true;
-			hot.setDataAtCell(row, 36, guid());
+			hot.setDataAtCell(row, 36, guid()); //obligation token
 			hot.setDataAtCell(row, 1, today);
             hot.setDataAtCell(row, 6, Address);
-           @* hot.setDataAtCell(row, 8, Ors_no);*@
 			//DIRI
 		},
 		afterChange: function (changes, source) {
@@ -536,11 +502,7 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-							obligation_token: hot.getDataAtCell(row, 12)
-							@*Date_recieved: hot.getDataAtCell(row, 11),
-							Time_recieved: hot.getDataAtCell(row, 12),
-							Date_released: hot.getDataAtCell(row, 13),
-							Time_released: hot.getDataAtCell(row, 14),*@
+							obligation_token: hot.getDataAtCell(row, 36)
 						}
 					);
 					//ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
