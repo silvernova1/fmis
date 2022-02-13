@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220213021233_MyDb")]
+    [Migration("20220213055243_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -873,6 +873,30 @@ namespace fmis.Migrations
                     b.HasIndex("UacsId");
 
                     b.ToTable("Prexc");
+                });
+
+            modelBuilder.Entity("fmis.Models.RequestingHead", b =>
+                {
+                    b.Property<int>("HeadnameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Division")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Headinformation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Headname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Section")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HeadnameId");
+
+                    b.ToTable("RequestingHead");
                 });
 
             modelBuilder.Entity("fmis.Models.Requesting_office", b =>

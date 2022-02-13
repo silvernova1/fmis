@@ -138,6 +138,8 @@ namespace fmis
             options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
             services.AddDbContext<RespoCenterTrustFundContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
+            services.AddDbContext<RequestingHeadContext>(options =>
+         options.UseSqlServer(Configuration.GetConnectionString("RequestingHeadContext")));
 
 
 

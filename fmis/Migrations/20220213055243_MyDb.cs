@@ -245,6 +245,22 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RequestingHead",
+                columns: table => new
+                {
+                    HeadnameId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Headname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Division = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Section = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Headinformation = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestingHead", x => x.HeadnameId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RespoCenter",
                 columns: table => new
                 {
@@ -1455,6 +1471,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Personal_Information");
+
+            migrationBuilder.DropTable(
+                name: "RequestingHead");
 
             migrationBuilder.DropTable(
                 name: "RespoCenterTrustFund");

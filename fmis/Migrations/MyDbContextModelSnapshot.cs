@@ -873,6 +873,30 @@ namespace fmis.Migrations
                     b.ToTable("Prexc");
                 });
 
+            modelBuilder.Entity("fmis.Models.RequestingHead", b =>
+                {
+                    b.Property<int>("HeadnameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Division")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Headinformation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Headname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Section")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HeadnameId");
+
+                    b.ToTable("RequestingHead");
+                });
+
             modelBuilder.Entity("fmis.Models.Requesting_office", b =>
                 {
                     b.Property<int>("Id")
