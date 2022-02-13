@@ -140,6 +140,8 @@ namespace fmis
            options.UseSqlServer(Configuration.GetConnectionString("UacsTrustFundContext")));
             services.AddDbContext<PrexcTrustFundContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("PrexcTrustFundContext")));
+            services.AddDbContext<RespoCenterTrustFundContext>(options =>
+           options.UseSqlServer(Configuration.GetConnectionString("RespoCenterTrustFundContext")));
 
 
 

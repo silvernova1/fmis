@@ -137,7 +137,7 @@ namespace fmis.Controllers
             var departmentsQuery = from d in _context.AllotmentClass
                                    orderby d.Allotment_Class
                                    select d;
-            ViewBag.Allotment = new SelectList((from s in _context.AllotmentClass.ToList()
+            ViewBag.AllotmentClassId = new SelectList((from s in _context.AllotmentClass.ToList()
                                               select new
                                               {
                                                   Id = s.Id,
