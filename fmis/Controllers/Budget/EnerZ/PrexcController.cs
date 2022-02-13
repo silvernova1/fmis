@@ -78,25 +78,7 @@ namespace fmis.Controllers
         }
 
 
-
-        // GET: Prexc/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var prexc = await _context.Prexc
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (prexc == null)
-            {
-                return NotFound();
-            }
-
-            return View(prexc);
-        }
-
+        
         // GET: Prexc/Create
         public IActionResult Create()
         {
@@ -214,8 +196,6 @@ namespace fmis.Controllers
 
             return Json(data);
         }
-
-
 
 
         // POST: Prexc/Create

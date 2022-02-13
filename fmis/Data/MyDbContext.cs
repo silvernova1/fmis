@@ -55,6 +55,9 @@ namespace fmis.Data
         public DbSet<Dts> Dts { get; set; }
         public DbSet<Fund> Fund { get; set; }
         public DbSet<PapType> PapType { get; set; }
+        public DbSet<UacsTrustFund> UacsTrustFund { get; set; }
+        public DbSet<PrexcTrustFund> PrexcTrustFund { get; set; }
+        public DbSet<RespoCenterTrustFund> RespoCenterTrustFund { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
