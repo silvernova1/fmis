@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.Budget;
 using fmis.Models.silver;
 
 namespace fmis.Models.John
@@ -27,6 +28,9 @@ namespace fmis.Models.John
         public int PrexcId { get; set; }
         [JsonIgnore]
         public Prexc Prexc { get; set; }
+
+        [JsonIgnore]
+        public PapType PapType { get; set; }
 
         [ForeignKey("AllotmentClass")]
         public int AllotmentClassId { get; set; }

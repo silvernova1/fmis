@@ -555,6 +555,8 @@ namespace fmis.Controllers
                                        on fundsource.FundSourceId equals obligation.source_id
                                        join prexc in _MyDbContext.Prexc
                                        on fundsource.PrexcId equals prexc.Id
+                                       join respo in _MyDbContext.RespoCenter
+                                       on fundsource.RespoId equals respo.RespoId
                                        where obligation.Id == ID
 
                                        select new
@@ -563,7 +565,7 @@ namespace fmis.Controllers
                                            obligation_id = obligation.source_id,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
-                                           respo = fundsource.RespoCenter,
+                                           respo = respo.Respo,
                                            particulars = obligation.Particulars
                                        }).ToList();
 

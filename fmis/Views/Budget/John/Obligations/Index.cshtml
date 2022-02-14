@@ -505,7 +505,7 @@
 							obligation_token: hot.getDataAtCell(row, 36)
 						}
 					);
-					//ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(ajax_data);
 				}
 				@*else if (col == 11) {
@@ -570,7 +570,7 @@
                         }
                     );
 				});
-                //ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 				console.log(ajax_data);
 			}
 		},

@@ -14,6 +14,7 @@ using fmis.Data.silver;
 using fmis.Models.John;
 using System.Globalization;
 using fmis.Models.silver;
+using Microsoft.AspNetCore.Http;
 
 namespace fmis.Controllers
 {
@@ -46,6 +47,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments
         public async Task<IActionResult> Index(int? id)
         {
+            const string yearly_reference = "_yearly_reference";
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
 
@@ -53,6 +55,7 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.Sub_allotments)
+            .Where(x=>x.YearlyReferenceId == (int)HttpContext.Session.GetInt32(yearly_reference))
             .AsNoTracking()
             .ToListAsync();
 

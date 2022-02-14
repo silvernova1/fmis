@@ -27,7 +27,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("master_data", "respo", "");
             PopulateResposDropDownList();
-            return View(await _context.RespoCenter.ToListAsync());
+            return View(await _context.RespoCenter.OrderBy(x=>x.RespoCode).ToListAsync());
         }
 
         private void PopulateResposDropDownList(object selectedDepartment = null)

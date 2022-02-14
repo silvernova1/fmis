@@ -112,6 +112,7 @@ namespace fmis.Controllers
                 {
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
+                    prexc.PapTypeID = 1;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_type = "GAS";
@@ -148,6 +149,7 @@ namespace fmis.Controllers
                 {
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
+                    prexc.PapTypeID = 2;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_type = "STO";
@@ -182,6 +184,7 @@ namespace fmis.Controllers
                 {
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
+                    prexc.PapTypeID = 3;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_type = "OPERATIONS";
