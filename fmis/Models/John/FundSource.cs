@@ -28,10 +28,10 @@ namespace fmis.Models.John
         [JsonIgnore]
         public Prexc Prexc { get; set; }
 
-        [ForeignKey("Appropriation")]
+        /*[ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }
         [JsonIgnore]
-        public Appropriation Appropriation { get; set; }
+        public Appropriation Appropriation { get; set; }*/
 
         [ForeignKey("Fund")]
         public int FundId { get; set; }
