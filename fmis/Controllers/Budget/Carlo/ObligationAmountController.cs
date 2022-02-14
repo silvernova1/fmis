@@ -62,10 +62,10 @@ namespace fmis.Controllers
             public int UacsId { get; set; }
             public string Expense_code { get; set; }
             public decimal Amount { get; set; }
-            public float Total_disbursement { get; set; }
+           /* public float Total_disbursement { get; set; }
             public float Total_net_amount { get; set; }
             public float Total_tax_amount { get; set; }
-            public float Total_others { get; set; }
+            public float Total_others { get; set; }*/
             public string obligation_token { get; set; }
             public string obligation_amount_token { get; set; }
             public string status { get; set; }
@@ -105,10 +105,10 @@ namespace fmis.Controllers
                 obligation_amount.UacsId = item.UacsId;
                 obligation_amount.Expense_code = Convert.ToInt64(item.Expense_code);
                 obligation_amount.Amount =  item.Amount;
-                obligation_amount.Total_disbursement = item.Total_disbursement;
+                /*obligation_amount.Total_disbursement = item.Total_disbursement;
                 obligation_amount.Total_net_amount = item.Total_net_amount;
                 obligation_amount.Total_tax_amount = item.Total_tax_amount;
-                obligation_amount.Total_others = item.Total_others;
+                obligation_amount.Total_others = item.Total_others;*/
                 obligation_amount.status = "activated";
                 obligation_amount.obligation_token = item.obligation_token;
                 obligation_amount.obligation_amount_token = item.obligation_amount_token;

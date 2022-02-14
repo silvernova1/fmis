@@ -1,0 +1,39 @@
+﻿@model fmis.Models.RequestingHead
+
+
+<br />
+<center>
+    <h4>Are you sure you want to delete this?</h4>
+</center>
+<div class="container">
+    <div class="col-md-6">
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Head Name </th>
+                    <th scope="col">Division</th>
+                    <th scope="col">Section </th>
+                    <th scope="col">Head Information</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Html.DisplayFor(model => model.Headname)</td>
+                    <td>@Html.DisplayFor(model => model.Division)</td>
+                    <td>@Html.DisplayFor(model => model.Section)</td>
+                    <td>@Html.DisplayFor(model => model.Headinformation)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <center>
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="HeadnameId" />
+                <input type="submit" value="Delete" class="btn btn-danger btn-sm" /> |
+                <a data-dismiss="modal" class="btn btn-default btn-sm">Back to List</a>
+                <hr />
+            </form>
+        </center>
+    </div>
+</div>

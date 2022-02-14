@@ -63,14 +63,21 @@ namespace fmis.Controllers.Budget.John
             public List<ManyId> many_token { get; set; }
         }
 
-        public async Task<IActionResult> Index(int BudgetAllotmentId)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
+            ViewBag.AllotmentClassId = AllotmentClassId;
+            ViewBag.AppropriationId = AppropriationId;
+
             var budget_allotment = await _MyDbContext.Budget_allotments
-            .Include(x => x.FundSources)
+            .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
-            .Include(x => x.AllotmentClass)
+            .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+                .ThenInclude(x => x.Appropriation)
+            .Include(x=>x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+                .ThenInclude(x=>x.AllotmentClass)
+            .Include(x=>x.Yearly_reference)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
@@ -80,16 +87,14 @@ namespace fmis.Controllers.Budget.John
 
 
         // GET: FundSource/Create
-        public async Task<IActionResult> Create(int BudgetAllotmentId, int AllotmentClassId)
+        public async Task<IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
-
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            ViewBag.AllotmentClassId = AllotmentClassId;
+            ViewBag.AppropriationId = AppropriationId;
 
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
-
-            /*   var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Include(x => x.All);
-               ViewBag.uacs = uacs_data;*/
 
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
@@ -160,7 +165,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSource fundSource, int BudgetAllotmentId, int PrexcId, int RespoId)
+        public async Task<IActionResult> Create(FundSource fundSource, int PrexcId)
         {
             /*fundSource.Created_At = DateTime.Now;*/
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
@@ -179,7 +184,11 @@ namespace fmis.Controllers.Budget.John
             funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("index", "FundSource", new { BudgetAllotmentId = fundSource.BudgetAllotmentId });
+            return RedirectToAction("index", "FundSource", new {
+                AllotmentClassId = fundSource.AllotmentClassId,
+                AppropriationId = fundSource.AppropriationId,
+                BudgetAllotmentId = fundSource.BudgetAllotmentId  
+            });
         }
 
         /*DROPDOWN LIST FOR PREXC*/

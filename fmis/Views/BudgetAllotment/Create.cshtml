@@ -17,28 +17,32 @@
                     <label>Yearly Reference:</label>
                     <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
                 </div>
-                <div class="form-group">
-                    <label>Allotment Series:</label>
-                    <input asp-for="Allotment_series" class="form-control" />
-                    <span asp-validation-for="Allotment_series" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="form-group">
-                    <label>Allotment Title:</label>
-                    <input asp-for="Allotment_title" id="desc" class="form-control"  />
-                    <span asp-validation-for="Allotment_title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
+
+                @*<div class="form-group">
                     <label>Allotment Class:</label>
                     @Html.DropDownList("AllotmentClassId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
-                </div>
-            </div>
-            <br />
-            <div class="form-group" style="margin-left:13px;">
+                </div>*@
+                @*<div class="form-group">
+                    <label>Allotment Series:</label>
+                    <input asp-for="Allotment_series" id="account_Code" class="form-control" />
+                    <span asp-validation-for="Allotment_series" class="text-danger"></span>
+                </div>*@
+
+                <div class="form-group" style="margin-left:13px;">
                 <input type="submit" value="Create" class="btn btn-success btn-sm" />|
                 <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
             </div>
+
+            </div>
+            <div class="col-xs-6">
+                @*<div class="form-group">
+                    <label>Allotment Title:</label>
+                    <input asp-for="Allotment_title" id="desc" class="form-control"  />
+                    <span asp-validation-for="Allotment_title" class="text-danger"></span>
+                </div>*@
+            </div>
+            <br />
+            
         </form>
     </div>
 </div>
@@ -58,10 +62,10 @@
             data: "id=" + selected_val,
             success: function (data) {
                 if (data.length > 0) {
-                    $('#desc').val(data[0].desc);
+                    $('#account_Code').val(data[0].account_Code);
                 }
                 else {
-                    $('#desc').val('');
+                    $('#account_Code').val('');
                 }
             }
         });

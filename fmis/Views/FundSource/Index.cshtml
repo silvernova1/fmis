@@ -5,18 +5,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3 class="grey lighter smaller">
-    @Model.Allotment_title
-     <small>
-         <i class="ace-icon fa fa-angle-double-right"></i>
-         <b >@Model.AllotmentClass.Allotment_Class</b> 
-    </small>
-    <small>
-         <i class="ace-icon fa fa-angle-double-right"></i>
-         <b >Fund Source</b> 
-    </small>
+@if (Model.FundSources.Count() > 0)
+{
+    <h3 class="grey lighter smaller">
+        Fund Source
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+            @Model.Yearly_reference.YearlyReference
+        </small>
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+            @Model.FundSources.FirstOrDefault().Appropriation.AppropriationSource
+        </small>
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+            @Model.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class
+        </small>
 
-</h3>
+    </h3>
+}
 <hr />
 <div class="row  pull-left">
     <div class="space-5"></div>
@@ -181,7 +188,7 @@
                     @Html.DisplayFor(modelItem => item.FundSourceTitle)
                 </td>
                 <td>
-                 @*  @item.Appropriation.AppropriationSource*@
+                   @item.Appropriation.AppropriationSource
                 </td>
                  <td>
                    @item.RespoCenter.Respo
@@ -240,8 +247,10 @@ else
      function createFundSource(BudgetAllotmentId) {
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_create").html(loading);
+         var AllotmentClassId = @ViewBag.AllotmentClassId;
+         var AppropriationId = @ViewBag.AppropriationId;
          var url = '@Url.Action("Create", "FundSource")';
-         url += "?BudgetAllotmentId=" + BudgetAllotmentId;
+         url += "?AllotmentClassId="+AllotmentClassId+"&AppropriationId="+AppropriationId+"&BudgetAllotmentId=" + BudgetAllotmentId;
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_create").html(result);

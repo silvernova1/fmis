@@ -28,7 +28,16 @@ namespace fmis.Models.John
         [JsonIgnore]
         public Prexc Prexc { get; set; }
 
+<<<<<<< HEAD
         /*[ForeignKey("Appropriation")]
+=======
+        [ForeignKey("AllotmentClass")]
+        public int AllotmentClassId { get; set; }
+        [JsonIgnore]
+        public AllotmentClass AllotmentClass { get; set; }
+
+        [ForeignKey("Appropriation")]
+>>>>>>> 2560799df03bc495fe30f04bb0b91b39b9681505
         public int AppropriationId { get; set; }
         [JsonIgnore]
         public Appropriation Appropriation { get; set; }*/
@@ -37,7 +46,6 @@ namespace fmis.Models.John
         public int FundId { get; set; }
         [JsonIgnore]
         public Fund Fund { get; set; }
-
 
         public decimal Beginning_balance { get; set; }
         public decimal Remaining_balance { get; set; }

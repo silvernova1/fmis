@@ -30,12 +30,6 @@ namespace fmis.Models.silver
         [JsonIgnore]
         public Yearly_reference Yearly_reference { get; set; }
 
-        [ForeignKey("AllotmentClass")]
-        public int AllotmentClassId { get; set; }
-        public AllotmentClass AllotmentClass { get; set; }
-
-
-
-
+        /*public ICollection<AllotmentClass> AllotmentClass { get; set; }*/
     }
 }

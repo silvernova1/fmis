@@ -339,22 +339,21 @@
                 @Html.Raw("active")">
                     <a asp-area="" asp-controller="RespoCenterTrustFund" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Responsibility Center Trust Fund
+                        Responsibility Center 
                     </a>
 
                     <b class="arrow"></b>
                 </li>
 
+                @*  <li class="@if(ViewBag.filter.sub == "respo_trust_fund")
+              @Html.Raw("active")">
+            <a asp-controller="RespoCenterTrustFund" asp-action="Index">
+                <i class="menu-icon fa fa-caret-right"></i>
+                Responsibility Center Trust Fund
+            </a>
 
-              @*  <li class="@if(ViewBag.filter.sub == "respo_trust_fund")
-                      @Html.Raw("active")">
-                    <a asp-controller="RespoCenterTrustFund" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Responsibility Center Trust Fund
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>*@
+            <b class="arrow"></b>
+        </li>*@
 
                 <li class="@if(ViewBag.filter.sub == "uacs_trust_fund")
                 @Html.Raw("active open")">
@@ -441,9 +440,9 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="@if(ViewBag.filter.sub == "requesting_office_trust_fund")
+                <li class="@if(ViewBag.filter.sub == "requestinghead_fund")
                      @Html.Raw("active")">
-                    <a asp-controller="BudgetAllotment" asp-action="Index">
+                    <a asp-controller="RequestingHead" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Requesting Office
                     </a>
