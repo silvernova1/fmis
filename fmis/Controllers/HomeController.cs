@@ -53,7 +53,7 @@ namespace fmis.Controllers
                 id = (int)post_yearly_reference;
             }
             else {
-              /*  id = (int)HttpContext.Session.GetInt32(yearly_reference);*/
+                id = (int)HttpContext.Session.GetInt32(yearly_reference);
             }
 
             var ObligationAmount = _MyDbCOntext.ObligationAmount;

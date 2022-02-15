@@ -11,5 +11,7 @@ namespace fmis.Models
         public int RespoId { get; set; }
         public string Respo { get; set; }
         public string RespoCode { get; set; }
+        public string RespoHead { get; set; }
+        public string RespoHeadPosition { get; set; }
     }
 }

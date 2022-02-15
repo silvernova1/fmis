@@ -16,5 +16,9 @@ namespace fmis.Filters
             this.sub = sub;
             this.sub2 = sub2;
         }
+
+        public FilterSidebar(string v1, string v2)
+        {
+        }
     }
 }

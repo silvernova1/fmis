@@ -221,7 +221,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
                 ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
                 /*ws.Columns(11, 1).AdjustToContents();*/
-                ws.Cell("F5").Style.DateFormat.Format = "MMMM dd, yyyy";
+                ws.Cell("F5").Style.DateFormat.Format = "AS AT" + " " + "MMMM dd, yyyy";
                 ws.Cell("F5").Value = date2;
 
 
@@ -312,7 +312,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell(12, 8).WorksheetColumn().AdjustToContents();
 
-                ws.Cell(12, 8).Value = "As of " + date2.ToString("MMMM");
+                ws.Cell(12, 8).Value = "AS AT " + date2.ToString("MMMM");
 
 
                 //FIRST ROW
@@ -382,8 +382,10 @@ namespace fmis.Controllers.Budget.John
 
                 var budget_allotments = _MyDbContext.Budget_allotments
                     .Include(budget_allotment => budget_allotment.FundSources)
-                    .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                    .ThenInclude(uacs => uacs.Uacs);
+                        .ThenInclude(Allotment_class => Allotment_class.AllotmentClass)
+                    .Include(budget_allotment => budget_allotment.FundSources)
+                        .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
+                        .ThenInclude(uacs => uacs.Uacs);
 
                // var realignment_amount = 50;
                 
@@ -394,7 +396,7 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 1).Value = budget_allotment.Allotment_title.ToUpper().ToString();
+                    ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class;
                     currentRow++;
 
 
@@ -409,15 +411,13 @@ namespace fmis.Controllers.Budget.John
 
                     foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
-                        
 
+                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 1;
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
 
                         currentRow++;
-
-
 
                         ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
@@ -433,6 +433,7 @@ namespace fmis.Controllers.Budget.John
                             var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
 
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                            //ws.Cell(currentRow, 1).Value = _MyDbContext.FundsRealignment.FirstOrDefault(x => x.Id == fundsource_amount.UacsId)?.Realignment_to.ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
@@ -465,7 +466,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " /*+ budget_allotment.Allotment_code.ToUpper()*/;
+                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code;
 
 
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
@@ -659,7 +660,7 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();
+                    /*ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();*/
 
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
