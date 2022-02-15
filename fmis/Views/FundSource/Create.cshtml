@@ -114,7 +114,50 @@
     }
 </script>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+    })
+    $("#categoryId").change(function () {
+        getSubCategoryListByCategoryId();
+    });
+    var getSubCategoryListByCategoryId = function () {
+         $.ajax({
+            url: '@Url.Action("GetSubCategoryByCategoryId","Home")',
+            type: 'GET',
+            data: {
+                categoryId:$('#categoryId').val(),
+            },
+            success: function (data) {
+                $('#subCategoryId').find('option').remove()
+                $(data).each(
+                    function (index, item) {
+                        $('#subCategoryId').append('<option value="' + item.Id + '">' + item.pap_title + '</option>')
+                    });
+            },
+            error: function () {
+            }
+           });
+    }
+</script>
 
+<script type="text/javascript">
+    $(function(){
+        $("#Countryid").change(function(){
+            var url = '@Url.Content("~/")' + "FundSource/getstatebyid";
+            var ddlsource = "#Countryid";
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                var items = '';
+                $("#stateid").empty();
+                $.each(data, function (i, row){
+                    items += "<option value='" + row.value + "'>" + row.text + "</option";
+                });
+                $("#stateid").html(items);
+            })
+        });
+
+    });
+</script>
 
 <script>
     var BudgetAllotmentId = @ViewBag.BudgetAllotmentId;

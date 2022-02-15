@@ -21,6 +21,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Font = iTextSharp.text.Font;
 using System.Globalization;
+using System.Collections;
 using iTextSharp.tool.xml;
 using Image = iTextSharp.text.Image;
 using Grpc.Core;
@@ -410,9 +411,19 @@ namespace fmis.Controllers
         }
 
         //EXPORTING PDF FILE
-
-        public async Task<IActionResult> PrintOrs(int[] id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PrintOrs(DeleteData data)
         {
+            var id = new ArrayList();
+            if (data.many_token.Count > 1)
+            {
+                foreach (var many in data.many_token)
+                    id.Add(many.many_token);
+            }
+            else
+                id.Add(data.single_token);
+
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 string ExportData = "This is pdf generated";
@@ -422,9 +433,9 @@ namespace fmis.Controllers
 
                 doc.Open();
 
-                foreach (var i in id)
+                foreach (var i in id) 
                 {
-                    Int32 ID = Convert.ToInt32(i);
+                    Int32 ID = Convert.ToInt32(i);  
                     var ors = await _context.Obligation
                         .Include(f => f.FundSource)
                         .ThenInclude(p => p.Prexc)
@@ -555,6 +566,8 @@ namespace fmis.Controllers
                                        on fundsource.FundSourceId equals obligation.source_id
                                        join prexc in _MyDbContext.Prexc
                                        on fundsource.PrexcId equals prexc.Id
+                                       join respo in _MyDbContext.RespoCenter
+                                       on fundsource.RespoId equals respo.RespoId
                                        where obligation.Id == ID
 
                                        select new
@@ -563,7 +576,7 @@ namespace fmis.Controllers
                                            obligation_id = obligation.source_id,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
-                                           respo = fundsource.RespoCenter,
+                                           respo = respo.Respo,
                                            particulars = obligation.Particulars
                                        }).ToList();
 

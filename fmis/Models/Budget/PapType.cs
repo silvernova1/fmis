@@ -8,7 +8,6 @@ namespace fmis.Models.Budget
         public int PapTypeID { get; set; }
         public string PapTypeName { get; set; }
 
-        [NotMapped]
-        public int Id { get; set; }
+        public virtual ICollection<Prexc> Prexcs { get; set; }
     }
 }

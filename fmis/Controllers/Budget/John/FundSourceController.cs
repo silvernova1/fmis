@@ -70,6 +70,10 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
 
+            
+
+
+
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
@@ -96,6 +100,8 @@ namespace fmis.Controllers.Budget.John
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
+            ViewBag.CategoryList = _MyDbContext.PapType.ToList();
+
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
             PopulatePapTypeDropDownList();
@@ -104,6 +110,15 @@ namespace fmis.Controllers.Budget.John
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
+        }
+
+        //get Subcategory based on the category id
+        public JsonResult getstatebyid(int id)
+        {
+            List<Prexc> list = new List<Prexc>();
+            list = _MyDbContext.Prexc.Where(x => x.PapType.PapTypeID == id).ToList();
+            list.Insert(0, new Prexc { Id = 0, pap_title = "Please Select Prexc"});
+            return Json(new SelectList (list));
         }
 
         //POST

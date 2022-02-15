@@ -401,13 +401,31 @@
                             console.log("hello " + holder_data[j]);
 		                }
 		                var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
+
+						for (let j = first_column; j <= last_column; j++) {
+                            many_token.push({
+                                many_token: holder_data[j][13]
+                            })
+                            @*many_token.push(holder_data[j][13]);*@
+						}
+
+						var ajax_data = {
+							"single_token": single_token,
+							"many_token": many_token
+						};
+
+						console.log(ajax_data);
+						window.open(ajaxServer(ajax_data, '@Url.Action("PrintOrs", "Obligations")'));
+
+		                @*var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
+>>>>>>> 43b54fc229f07ceada5e7abf0073c2dc6a72017e
 		                for (i = 0; i < many_token.length; i++) {
 			                if ((i + 1) != many_token.length)
 				                url = url + "id=" + many_token[i] + "&";
 			                else
 				                url = url + "id=" + many_token[i];
 						}
-		                window.open(url);
+		                window.open(url);*@
 					}
 				},
 				"row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
