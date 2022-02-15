@@ -21,6 +21,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Font = iTextSharp.text.Font;
 using System.Globalization;
+using System.Collections;
 using iTextSharp.tool.xml;
 using Image = iTextSharp.text.Image;
 using Grpc.Core;
@@ -411,7 +412,7 @@ namespace fmis.Controllers
 
         //EXPORTING PDF FILE
 
-        public async Task<IActionResult> PrintOrs(int[] id)
+        public async Task<IActionResult> PrintOrs(string[] token)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
@@ -422,13 +423,14 @@ namespace fmis.Controllers
 
                 doc.Open();
 
-                foreach (var i in id)
+                foreach (var i in token)
                 {
-                    Int32 ID = Convert.ToInt32(i);
+                    string tok = Convert.ToString(i);
                     var ors = await _context.Obligation
                         .Include(f => f.FundSource)
                         .ThenInclude(p => p.Prexc)
-                        .FirstOrDefaultAsync(m => m.Id == ID);
+                        .FirstOrDefaultAsync(m => m.obligation_token == tok);
+
 
                     doc.NewPage();
                     var budget_allotments = _MyDbContext.Budget_allotments.Include(f => f.FundSources).FirstOrDefault();
@@ -569,7 +571,7 @@ namespace fmis.Controllers
                                        on fundsource.PrexcId equals prexc.Id
                                        join respo in _MyDbContext.RespoCenter
                                        on fundsource.RespoId equals respo.RespoId
-                                       where obligation.Id == ID
+                                       where obligation.obligation_token == tok
                                        select new
                                        {
                                            pap = prexc.pap_code1,
@@ -586,7 +588,7 @@ namespace fmis.Controllers
                                   join obligation_amount in _MyDbContext.ObligationAmount
                                   on obligation.Id equals obligation_amount.ObligationId
                                
-                                  where obligation.Id == ID
+                                  where obligation.obligation_token == tok
                                   select new
                                   {
                                       expense_code = obligation_amount.Expense_code,

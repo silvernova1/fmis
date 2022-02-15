@@ -176,33 +176,6 @@
 			(this.Id).toString().padStart(4, '0'), //8
 			this.Created_by, //9
 			this.Gross, //10
-			this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-			this.Amount,
-            this.Expense_code,
-            this.Amount,
-			this.Ors_no, //7
-			this.Created_by, //8
-			this.Gross, //9
             this.Id, //10
             this.obligation_token //11
 		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
@@ -343,15 +316,15 @@
 		                var last_column = selected[0][2];
 		                var many_token = [];
 		                for (let j = first_column; j <= last_column; j++) {
-                            many_token.push(holder_data[j][36]);
-                            console.log("hello " + holder_data[j]);
+							many_token.push(holder_data[j][12]);
+							console.log(holder_data[j]);
 		                }
 		                var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
 		                for (i = 0; i < many_token.length; i++) {
 			                if ((i + 1) != many_token.length)
-				                url = url + "id=" + many_token[i] + "&";
+				                url = url + "token=" + many_token[i] + "&";
 			                else
-				                url = url + "id=" + many_token[i];
+				                url = url + "token=" + many_token[i];
 						}
 		                window.open(url);
 					}
