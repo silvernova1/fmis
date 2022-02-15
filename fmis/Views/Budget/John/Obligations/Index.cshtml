@@ -161,7 +161,7 @@
 	$.each(obligation, function () {
 		data[counter] = [
 			get_fund_sub[this.source_id + this.source_type], //0
-            moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
+			moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
 			this.Po_no, //4
@@ -171,6 +171,30 @@
 			this.Ors_no, //8
 			this.Created_by, //9
 			this.Gross, //10
+			this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+			this.Amount,
+            this.Expense_code,
+            this.Amount,
             this.obligation_token //11
 		];
 		counter++;
@@ -194,13 +218,13 @@
 		},
         fixedColumnsLeft: 6,
 		colWidths: [230, 100, 100, 100, 100, 100, 100, 150, 100, 100, 150,
-					 150,  150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150,
-					100, 80],
+					150,  150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150,
+					100, 80, 80],
 		height: 'auto',
 		colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT',
 				'EXP CODE 1', 'AMOUNT 1', 'EXP CODE 2', 'AMOUNT 2', 'EXP CODE 3', 'AMOUNT 3', 'EXP CODE 4', 'AMOUNT 4', 'EXP CODE 5', 'AMOUNT 5', 'EXP CODE 6', 'AMOUNT 6',
 				'EXP CODE 7', 'AMOUNT 7','EXP CODE 8', 'AMOUNT 8', 'EXP CODE 9', 'AMOUNT 9', 'EXP CODE 10', 'AMOUNT 10', 'EXP CODE 11', 'AMOUNT 11', 'EXP CODE 12', 'AMOUNT 12',
-					'ID', 'TOKEN'],
+					'ID', 'TOKEN', 'OBLIGATION AMOUNT TOKEN'],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
@@ -373,7 +397,7 @@
 		                var last_column = selected[0][2];
 		                var many_token = [];
 		                for (let j = first_column; j <= last_column; j++) {
-                            many_token.push(holder_data[j][13]);
+                            many_token.push(holder_data[j][34]);
                             console.log("hello " + holder_data[j]);
 		                }
 		                var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
@@ -505,28 +529,23 @@
 							obligation_token: hot.getDataAtCell(row, 36)
 						}
 					);
-					//ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(ajax_data);
 				}
-				@*else if (col == 11) {
+				else if (col == 11) {
 					console.log(col);
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
                     ajax_data.push({
                         ObligationId: obligation_id,
                         UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                        Expense_code: EXPENSE_CODE,
-                        Amount: hot.getDataAtCell(row, 2),
-                        Total_disbursement: 0,
-                        Total_net_amount: 0,
-                        Total_tax_amount: 0,
-                        Total_others: 0,
-                        obligation_token: hot.getDataAtCell(row, 12),
-                        obligation_amount_token: hot.getDataAtCell(row, 12)+"amounttoken"
+                        Expense_code: hot.getDataAtCell(row, 11),
+                        Amount: hot.getDataAtCell(row, 12),
+                        obligation_amount_token: hot.getDataAtCell(row, 37)
 					});
 					console.log(ajax_data);
 					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-				}*@
+				}
 			});
 
             if (TRAP_LOAD) {
@@ -562,7 +581,7 @@
                             Ors_no: this[8] ? this[8] : "",
 							Created_by: this[9] ? this[9] : "",
 							Gross: this[10] ? this[10] : "",
-                            obligation_token: this[12]
+                            obligation_token: this[36]
                             @* Date_recieved: this[11] ? this[11] : "",
                             Time_recieved: this[12] ? this[12] : "",
                             Date_released: this[13] ? this[13] : "",
@@ -570,12 +589,12 @@
                         }
                     );
 				});
-                //ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 				console.log(ajax_data);
 			}
 		},
 		hiddenColumns: {
-			columns: [35,36],
+			columns: [35,36,37],
 			indicators: true
 		},
 		licenseKey: 'non-commercial-and-evaluation',
