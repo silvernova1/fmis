@@ -4,7 +4,7 @@ using fmis.Models;
 
 namespace fmis.Models
 {
-    public class RequestingHead
+    public class RequestingOfficeTrustFund
     {
         [Key]
         public int HeadnameId { get; set; }

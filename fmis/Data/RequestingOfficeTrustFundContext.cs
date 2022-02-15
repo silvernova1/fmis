@@ -8,14 +8,14 @@ using System.Threading;
 
 namespace fmis.Data
 {
-    public class RequestingHeadContext : DbContext
+    public class RequestingOfficeTrustFundContext : DbContext
     {
 
-        public RequestingHeadContext(DbContextOptions<RequestingHeadContext> options)
+        public RequestingOfficeTrustFundContext(DbContextOptions<RequestingOfficeTrustFundContext> options)
                   : base(options)
         {
         }
 
-        public DbSet<fmis.Models.RequestingHead> RequestingHead { get; set; }
+        public DbSet<fmis.Models.RequestingOfficeTrustFund> RequestingOfficeTrustFund { get; set; }
     }
 }
