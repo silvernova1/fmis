@@ -63,7 +63,7 @@ namespace fmis.Controllers.Budget.John
         {
             if (ModelState.IsValid)
             {
-                if (allotmentClass.Allotment_Class == "PS")
+                if (allotmentClass.Allotment_Class == "PS" || allotmentClass.Allotment_Class == "ps")
                 {
                     allotmentClass.Allotment_Class = "PS";
                     allotmentClass.Account_Code = "100";
@@ -73,7 +73,7 @@ namespace fmis.Controllers.Budget.John
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
                 }
-                else if (allotmentClass.Allotment_Class == "MOOE")
+                else if (allotmentClass.Allotment_Class == "MOOE" || allotmentClass.Allotment_Class == "mooe")
                 {
                     allotmentClass.Allotment_Class = "MOOE";
                     allotmentClass.Account_Code = "200";
@@ -83,7 +83,7 @@ namespace fmis.Controllers.Budget.John
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                else if (allotmentClass.Allotment_Class == "CO")
+                else if (allotmentClass.Allotment_Class == "CO" || allotmentClass.Allotment_Class == "co")
                 {
                     allotmentClass.Allotment_Class = "CO";
                     allotmentClass.Account_Code = "300";
