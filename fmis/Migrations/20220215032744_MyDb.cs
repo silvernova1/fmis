@@ -230,6 +230,36 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PapType",
+                columns: table => new
+                {
+                    PapTypeID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PapTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PapType", x => x.PapTypeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PrexcTrustFund",
+                columns: table => new
+                {
+                    PrexcTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    pap_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    pap_code1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    pap_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PrexcTrustFund", x => x.PrexcTrustFundId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Requesting_office",
                 columns: table => new
                 {
@@ -245,7 +275,7 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RequestingHead",
+                name: "RequestingOfficeTrustFund",
                 columns: table => new
                 {
                     HeadnameId = table.Column<int>(type: "int", nullable: false)
@@ -257,7 +287,7 @@ namespace fmis.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestingHead", x => x.HeadnameId);
+                    table.PrimaryKey("PK_RequestingOfficeTrustFund", x => x.HeadnameId);
                 });
 
             migrationBuilder.CreateTable(
@@ -305,6 +335,25 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Section", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UacsTrustFund",
+                columns: table => new
+                {
+                    UacsTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    uacs_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UacsTrustFund", x => x.UacsTrustFundId);
                 });
 
             migrationBuilder.CreateTable(
@@ -500,7 +549,7 @@ namespace fmis.Migrations
                     Allotment_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Allotment_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     YearlyReferenceId = table.Column<int>(type: "int", nullable: false),
-                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: true),
                     AppropriationId = table.Column<int>(type: "int", nullable: true),
                     FundId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -514,7 +563,7 @@ namespace fmis.Migrations
                         column: x => x.AllotmentClassId,
                         principalTable: "AllotmentClass",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_BudgetAllotment_Appropriation_AppropriationId",
                         column: x => x.AppropriationId,
@@ -588,6 +637,7 @@ namespace fmis.Migrations
                     FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RespoId = table.Column<int>(type: "int", nullable: false),
                     PrexcId = table.Column<int>(type: "int", nullable: false),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
                     AppropriationId = table.Column<int>(type: "int", nullable: false),
                     FundId = table.Column<int>(type: "int", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -597,7 +647,6 @@ namespace fmis.Migrations
                     realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    AllotmentClassId = table.Column<int>(type: "int", nullable: true),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
                     SummaryReportId = table.Column<int>(type: "int", nullable: true),
                     UtilizationId = table.Column<int>(type: "int", nullable: true),
@@ -612,7 +661,7 @@ namespace fmis.Migrations
                         column: x => x.AllotmentClassId,
                         principalTable: "AllotmentClass",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_FundSource_Appropriation_AppropriationId",
                         column: x => x.AppropriationId,
@@ -957,6 +1006,7 @@ namespace fmis.Migrations
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UacsId = table.Column<int>(type: "int", nullable: true),
+                    PapTypeID = table.Column<int>(type: "int", nullable: false),
                     SummaryReportId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -964,6 +1014,12 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Prexc", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prexc_PapType_PapTypeID",
+                        column: x => x.PapTypeID,
+                        principalTable: "PapType",
+                        principalColumn: "PapTypeID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Prexc_SummaryReport_SummaryReportId",
                         column: x => x.SummaryReportId,
@@ -1222,6 +1278,11 @@ namespace fmis.Migrations
                 column: "Requesting_officeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prexc_PapTypeID",
+                table: "Prexc",
+                column: "PapTypeID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Prexc_SummaryReportId",
                 table: "Prexc",
                 column: "SummaryReportId");
@@ -1473,7 +1534,10 @@ namespace fmis.Migrations
                 name: "Personal_Information");
 
             migrationBuilder.DropTable(
-                name: "RequestingHead");
+                name: "PrexcTrustFund");
+
+            migrationBuilder.DropTable(
+                name: "RequestingOfficeTrustFund");
 
             migrationBuilder.DropTable(
                 name: "RespoCenterTrustFund");
@@ -1483,6 +1547,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "SubAllotment_Realignment");
+
+            migrationBuilder.DropTable(
+                name: "UacsTrustFund");
 
             migrationBuilder.DropTable(
                 name: "UtilizationAmount");
@@ -1525,6 +1592,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Prexc");
+
+            migrationBuilder.DropTable(
+                name: "PapType");
 
             migrationBuilder.DropTable(
                 name: "RespoCenter");
