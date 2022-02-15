@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class MyDb : Migration
+    public partial class BudgetDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -123,21 +123,6 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dts", x => x.DtsId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Fund",
-                columns: table => new
-                {
-                    FundId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Fund_description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Fund_code_current = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Fund_code_conap = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Fund", x => x.FundId);
                 });
 
             migrationBuilder.CreateTable(
@@ -297,7 +282,9 @@ namespace fmis.Migrations
                     RespoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Respo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RespoCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    RespoCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespoHead = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespoHeadPosition = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -401,6 +388,28 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Yearly_reference", x => x.YearlyReferenceId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Fund",
+                columns: table => new
+                {
+                    FundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fund_description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Fund_code_current = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Fund_code_conap = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppropriationID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fund", x => x.FundId);
+                    table.ForeignKey(
+                        name: "FK_Fund_Appropriation_AppropriationID",
+                        column: x => x.AppropriationID,
+                        principalTable: "Appropriation",
+                        principalColumn: "AppropriationId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -537,6 +546,25 @@ namespace fmis.Migrations
                         principalTable: "Requesting_office",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BudgetAllotmentTrustFund",
+                columns: table => new
+                {
+                    BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BudgetAllotmentTrustFund", x => x.BudgetAllotmentTrustFundId);
+                    table.ForeignKey(
+                        name: "FK_BudgetAllotmentTrustFund_Yearly_reference_YearlyReferenceId",
+                        column: x => x.YearlyReferenceId,
+                        principalTable: "Yearly_reference",
+                        principalColumn: "YearlyReferenceId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1116,6 +1144,28 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Appropriation",
+                columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, "CURRENT", new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(1122), new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8353) },
+                    { 2, "CONAP", new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8586), new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8588) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Fund",
+                columns: new[] { "FundId", "AppropriationID", "Fund_code_conap", "Fund_code_current", "Fund_description" },
+                values: new object[,]
+                {
+                    { 1, null, "102101", "101101", "Specific Budget of National Government Agencies" },
+                    { 2, null, "102401", "101401", "National Disaster Risk Reduction and Management Fund (Calamity Fund)" },
+                    { 3, null, "102402", "101402", "Contingent Fund" },
+                    { 4, null, "101406", "101406", "Miscellaneous Personnel Benefits Fund (MPBF)" },
+                    { 5, null, "102407", "101407", "Pension and Gratuity Fund" },
+                    { 6, null, "", "104102", "Retirement and Life Insurance Premium (RLIP)" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "PapType",
                 columns: new[] { "PapTypeID", "PapTypeName" },
                 values: new object[,]
@@ -1124,6 +1174,17 @@ namespace fmis.Migrations
                     { 2, "STO" },
                     { 3, "OPERATION" },
                     { 4, "" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RespoCenter",
+                columns: new[] { "RespoId", "Respo", "RespoCode", "RespoHead", "RespoHeadPosition" },
+                values: new object[,]
+                {
+                    { 1, "MSD", "13-001-03-0007-2022-001", "ELIZABETH P. TABASA, CPA, MBA, CEO VI", "CHIEF - MANAGEMENT SUPPORT DIVISION" },
+                    { 2, "LHSD", "13-001-03-0007-2022-002", "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS", "CHIEF - LOCAL HEALTH SUPPORT DIVISION" },
+                    { 3, "RD/ARD", "13-001-03-0007-2022-003", "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", "DIRECTOR III" },
+                    { 4, "RLED", "13-001-03-0007-2022-004", "SOPHIA M. MANCAO, MD, DPSP", "CHIEF - Regulation of Regional Health Facilities and Services" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1186,6 +1247,11 @@ namespace fmis.Migrations
                 column: "YearlyReferenceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BudgetAllotmentTrustFund_YearlyReferenceId",
+                table: "BudgetAllotmentTrustFund",
+                column: "YearlyReferenceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Designation_Ors_headId",
                 table: "Designation",
                 column: "Ors_headId");
@@ -1194,6 +1260,11 @@ namespace fmis.Migrations
                 name: "IX_Designation_Requesting_officeId",
                 table: "Designation",
                 column: "Requesting_officeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Fund_AppropriationID",
+                table: "Fund",
+                column: "AppropriationID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FundSource_AllotmentClassId",
@@ -1451,6 +1522,10 @@ namespace fmis.Migrations
                 table: "BudgetAllotment");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_Fund_Appropriation_AppropriationID",
+                table: "Fund");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_Appropriation_AppropriationId",
                 table: "FundSource");
 
@@ -1539,6 +1614,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BudgetAllotmentTrustFund");
 
             migrationBuilder.DropTable(
                 name: "Designation");

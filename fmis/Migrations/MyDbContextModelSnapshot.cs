@@ -238,6 +238,22 @@ namespace fmis.Migrations
                     b.HasKey("AppropriationId");
 
                     b.ToTable("Appropriation");
+
+                    b.HasData(
+                        new
+                        {
+                            AppropriationId = 1,
+                            AppropriationSource = "CURRENT",
+                            CreatedAt = new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(1122),
+                            UpdatedAt = new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8353)
+                        },
+                        new
+                        {
+                            AppropriationId = 2,
+                            AppropriationSource = "CONAP",
+                            CreatedAt = new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8586),
+                            UpdatedAt = new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8588)
+                        });
                 });
 
             modelBuilder.Entity("fmis.Models.Budget.Account", b =>
@@ -293,6 +309,23 @@ namespace fmis.Migrations
                             PapTypeID = 4,
                             PapTypeName = ""
                         });
+                });
+
+            modelBuilder.Entity("fmis.Models.BudgetAllotmentTrustFund", b =>
+                {
+                    b.Property<int>("BudgetAllotmentTrustFundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("YearlyReferenceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BudgetAllotmentTrustFundId");
+
+                    b.HasIndex("YearlyReferenceId");
+
+                    b.ToTable("BudgetAllotmentTrustFund");
                 });
 
             modelBuilder.Entity("fmis.Models.Designation", b =>
@@ -386,6 +419,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AppropriationID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Fund_code_conap")
                         .HasColumnType("nvarchar(max)");
 
@@ -397,7 +433,53 @@ namespace fmis.Migrations
 
                     b.HasKey("FundId");
 
+                    b.HasIndex("AppropriationID");
+
                     b.ToTable("Fund");
+
+                    b.HasData(
+                        new
+                        {
+                            FundId = 1,
+                            Fund_code_conap = "102101",
+                            Fund_code_current = "101101",
+                            Fund_description = "Specific Budget of National Government Agencies"
+                        },
+                        new
+                        {
+                            FundId = 2,
+                            Fund_code_conap = "102401",
+                            Fund_code_current = "101401",
+                            Fund_description = "National Disaster Risk Reduction and Management Fund (Calamity Fund)"
+                        },
+                        new
+                        {
+                            FundId = 3,
+                            Fund_code_conap = "102402",
+                            Fund_code_current = "101402",
+                            Fund_description = "Contingent Fund"
+                        },
+                        new
+                        {
+                            FundId = 4,
+                            Fund_code_conap = "101406",
+                            Fund_code_current = "101406",
+                            Fund_description = "Miscellaneous Personnel Benefits Fund (MPBF)"
+                        },
+                        new
+                        {
+                            FundId = 5,
+                            Fund_code_conap = "102407",
+                            Fund_code_current = "101407",
+                            Fund_description = "Pension and Gratuity Fund"
+                        },
+                        new
+                        {
+                            FundId = 6,
+                            Fund_code_conap = "",
+                            Fund_code_current = "104102",
+                            Fund_description = "Retirement and Life Insurance Premium (RLIP)"
+                        });
                 });
 
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
@@ -1005,9 +1087,49 @@ namespace fmis.Migrations
                     b.Property<string>("RespoCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RespoHead")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespoHeadPosition")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("RespoId");
 
                     b.ToTable("RespoCenter");
+
+                    b.HasData(
+                        new
+                        {
+                            RespoId = 1,
+                            Respo = "MSD",
+                            RespoCode = "13-001-03-0007-2022-001",
+                            RespoHead = "ELIZABETH P. TABASA, CPA, MBA, CEO VI",
+                            RespoHeadPosition = "CHIEF - MANAGEMENT SUPPORT DIVISION"
+                        },
+                        new
+                        {
+                            RespoId = 2,
+                            Respo = "LHSD",
+                            RespoCode = "13-001-03-0007-2022-002",
+                            RespoHead = "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS",
+                            RespoHeadPosition = "CHIEF - LOCAL HEALTH SUPPORT DIVISION"
+                        },
+                        new
+                        {
+                            RespoId = 3,
+                            Respo = "RD/ARD",
+                            RespoCode = "13-001-03-0007-2022-003",
+                            RespoHead = "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE",
+                            RespoHeadPosition = "DIRECTOR III"
+                        },
+                        new
+                        {
+                            RespoId = 4,
+                            Respo = "RLED",
+                            RespoCode = "13-001-03-0007-2022-004",
+                            RespoHead = "SOPHIA M. MANCAO, MD, DPSP",
+                            RespoHeadPosition = "CHIEF - Regulation of Regional Health Facilities and Services"
+                        });
                 });
 
             modelBuilder.Entity("fmis.Models.RespoCenterTrustFund", b =>
@@ -1646,6 +1768,17 @@ namespace fmis.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("fmis.Models.BudgetAllotmentTrustFund", b =>
+                {
+                    b.HasOne("fmis.Models.Yearly_reference", "Yearly_reference")
+                        .WithMany()
+                        .HasForeignKey("YearlyReferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Yearly_reference");
+                });
+
             modelBuilder.Entity("fmis.Models.Designation", b =>
                 {
                     b.HasOne("fmis.Models.Ors_head", "Ors_head")
@@ -1659,6 +1792,15 @@ namespace fmis.Migrations
                     b.Navigation("Ors_head");
 
                     b.Navigation("Requesting_office");
+                });
+
+            modelBuilder.Entity("fmis.Models.Fund", b =>
+                {
+                    b.HasOne("fmis.Models.Appropriation", "Appropriation")
+                        .WithMany("Funds")
+                        .HasForeignKey("AppropriationID");
+
+                    b.Navigation("Appropriation");
                 });
 
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
@@ -1983,6 +2125,8 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.Appropriation", b =>
                 {
                     b.Navigation("BudgetAllotments");
+
+                    b.Navigation("Funds");
 
                     b.Navigation("FundSources");
                 });

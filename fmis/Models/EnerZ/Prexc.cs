@@ -24,7 +24,6 @@ namespace fmis.Models
         public virtual ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
 
         public int PapTypeID { get; set; }
-
         public PapType PapType { get; set; }
 
     }

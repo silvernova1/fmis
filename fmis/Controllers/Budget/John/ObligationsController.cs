@@ -21,7 +21,6 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Font = iTextSharp.text.Font;
 using System.Globalization;
-using System.Collections;
 using iTextSharp.tool.xml;
 using Image = iTextSharp.text.Image;
 using Grpc.Core;
@@ -206,15 +205,15 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveObligation(List<ObligationData> data, List<ObligationAmountData> data2 )
+        public async Task<IActionResult> SaveObligation(List<ObligationData> data, List<ObligationAmountData> data2)
         {
-       
+
             var data_holder = _context.Obligation;
             foreach (var item in data)
             {
-               
+
                 var obligation = new Obligation(); //CLEAR OBJECT
-    
+
                 if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
                 {
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
@@ -234,10 +233,10 @@ namespace fmis.Controllers
                 obligation.Gross = item.Gross;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-            /* obligation.Date_recieved = ToDateTime(item.Date_recieved);
-                obligation.Time_recieved = ToDateTime(item.Time_recieved);
-                obligation.Date_released = ToDateTime(item.Date_released);
-                obligation.Time_released = ToDateTime(item.Time_released);*/
+                /* obligation.Date_recieved = ToDateTime(item.Date_recieved);
+                    obligation.Time_recieved = ToDateTime(item.Time_recieved);
+                    obligation.Date_released = ToDateTime(item.Date_released);
+                    obligation.Time_released = ToDateTime(item.Time_released);*/
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
 
@@ -245,11 +244,11 @@ namespace fmis.Controllers
 
             var data_holder_2 = _Ucontext.ObligationAmount;
 
-            foreach(var item2 in data2 )
+            foreach (var item2 in data2)
             {
                 var obligation_amount = new ObligationAmount();
                 if (await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token) != null) //CHECK IF EXIST
-                { 
+                {
                     obligation_amount = await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token);
                 }
 
@@ -411,19 +410,9 @@ namespace fmis.Controllers
         }
 
         //EXPORTING PDF FILE
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PrintOrs(DeleteData data)
-        {
-            var id = new ArrayList();
-            if (data.many_token.Count > 1)
-            {
-                foreach (var many in data.many_token)
-                    id.Add(many.many_token);
-            }
-            else
-                id.Add(data.single_token);
 
+        public async Task<IActionResult> PrintOrs(int[] id)
+        {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 string ExportData = "This is pdf generated";
@@ -433,9 +422,9 @@ namespace fmis.Controllers
 
                 doc.Open();
 
-                foreach (var i in id) 
+                foreach (var i in id)
                 {
-                    Int32 ID = Convert.ToInt32(i);  
+                    Int32 ID = Convert.ToInt32(i);
                     var ors = await _context.Obligation
                         .Include(f => f.FundSource)
                         .ThenInclude(p => p.Prexc)
@@ -486,16 +475,28 @@ namespace fmis.Controllers
                     table3.SetWidths(table3widths);
                     table3.DefaultCell.Border = 0;
 
+                    var allotments = (from fundsource in _MyDbContext.FundSources
+                                       join allotmentclass in _MyDbContext.AllotmentClass
+                                       on fundsource.AllotmentClassId equals allotmentclass.Id
+                                       join fund in _MyDbContext.Fund
+                                       on fundsource.FundId equals fund.FundId
+                                      select new
+                                       {
+                                           allotment = allotmentclass.Fund_Code,
+                                           fund = fund.Fund_code_current
+                                      }).ToList();
+
+
                     Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
 
                     table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(_MyDbContext.Budget_allotments.FirstOrDefault(x => x.BudgetAllotmentId == 1)?.Allotment_series + " - 01101101 - " + ors.Date.ToString("yyyy-MM") + " - " + ors.Ors_no, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" +allotments.FirstOrDefault().fund + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                     table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
                     table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                     table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fund, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                     /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
                     table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
@@ -521,7 +522,7 @@ namespace fmis.Controllers
                     table_row_3.WidthPercentage = 100f;
                     table_row_3.SetWidths(tbt_row3_width);
                     table_row_3.AddCell(new PdfPCell(new Paragraph("Office", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_3.AddCell(new PdfPCell(new Paragraph("Department of Health", arial_font_10)));
+                    table_row_3.AddCell(new PdfPCell(new Paragraph("", arial_font_10)));
                     table_row_3.AddCell(new PdfPCell(new Paragraph()));
 
                     doc.Add(table_row_3);
@@ -531,7 +532,7 @@ namespace fmis.Controllers
                     table_row_4.WidthPercentage = 100f;
                     table_row_4.SetWidths(tbt_row4_width);
                     table_row_4.AddCell(new PdfPCell(new Paragraph("Address", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address, arial_font_10)));
+                    table_row_4.AddCell(new PdfPCell(new Paragraph("OSMEÑA BOULEVARD, CEBU CITY", arial_font_10)));
                     table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 
@@ -569,20 +570,22 @@ namespace fmis.Controllers
                                        join respo in _MyDbContext.RespoCenter
                                        on fundsource.RespoId equals respo.RespoId
                                        where obligation.Id == ID
-
                                        select new
                                        {
                                            pap = prexc.pap_code1,
                                            obligation_id = obligation.source_id,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
-                                           respo = respo.Respo,
+                                           respo = respo.RespoCode,
+                                           signatory = respo.RespoHead,
+                                           position = respo.RespoHeadPosition,
                                            particulars = obligation.Particulars
                                        }).ToList();
 
                     var uacses = (from obligation in _MyDbContext.Obligation
                                   join obligation_amount in _MyDbContext.ObligationAmount
                                   on obligation.Id equals obligation_amount.ObligationId
+                               
                                   where obligation.Id == ID
                                   select new
                                   {
@@ -671,15 +674,16 @@ namespace fmis.Controllers
                     table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { Border = 14 });
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+
                     //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(/*ors_head != null ? ors_head.Name : "", new Font(*//*Font.FontFamily.HELVETICA, 7f, Font.BOLD*//*)*/)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault().signatory, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Position :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(/*ors_head != null ? ors_head.Position : "", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD)*/)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault().position, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Position", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
@@ -786,7 +790,7 @@ namespace fmis.Controllers
 
                     table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                     table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                    table_row_12.AddCell(new PdfPCell(new Paragraph(_MyDbContext.Budget_allotments.FirstOrDefault(x => x.BudgetAllotmentId == ID)?.Allotment_series + " - 01101101 - " + ors.Date.ToString("yyyy-MM") + " - " + ors.Ors_no, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 14, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5, });
+                    table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fund + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                     table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("C", new CultureInfo("en-PH")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                     table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                     table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
