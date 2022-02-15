@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.John;
@@ -18,5 +19,9 @@ namespace fmis.Models
         public List<FundSource> FundSources { get; set; }
         public List<Sub_allotment> Sub_Allotments { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
+
+        [ForeignKey("AppropriationID")]
+        public int? AppropriationID { get; set; }
+        public Appropriation Appropriation { get; set; }
     }
 }

@@ -109,9 +109,10 @@
     };
 	var SOURCE_TYPE= "";
 	var CHECK_AFTER_ROW = false;
+	var CHECK_FIRST_ROW = true;
+	var CHECK_FIRST_ROW1 = false;
 	var TRAP_LOAD = false;
 	var TRAP_LOAD1 = false;
-    var TRAP_LOAD2 = false;
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -164,7 +165,8 @@
 	$.each(obligation, function () {
 		data[counter] = [
 			get_fund_sub[this.source_id + this.source_type], //0
-			moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
+		@*	get_obligated_amount[this.source_id + this.source_type], //2*@
+            moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
 			this.Po_no, //4
@@ -198,7 +200,15 @@
 			this.Amount,
             this.Expense_code,
             this.Amount,
+			this.Ors_no, //7
+			this.Created_by, //8
+			this.Gross, //9
+            this.Id, //10
             this.obligation_token //11
+		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
+			moment(this.Time_recieved).format('HH:mm:ss'), //13
+			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
+			moment(this.Time_released).format('HH:mm:ss'), //15*@
 		];
 		counter++;
 	});
@@ -219,15 +229,9 @@
 				this.deselectCell();
 			}
 		},
-        fixedColumnsLeft: 6,
-		colWidths: [230, 100, 100, 100, 100, 100, 100, 150, 100, 100, 150,
-					150,  150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150,
-					100, 80, 80],
+        colWidths: [180, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 80],
 		height: 'auto',
-		colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT',
-				'EXP CODE 1', 'AMOUNT 1', 'EXP CODE 2', 'AMOUNT 2', 'EXP CODE 3', 'AMOUNT 3', 'EXP CODE 4', 'AMOUNT 4', 'EXP CODE 5', 'AMOUNT 5', 'EXP CODE 6', 'AMOUNT 6',
-				'EXP CODE 7', 'AMOUNT 7','EXP CODE 8', 'AMOUNT 8', 'EXP CODE 9', 'AMOUNT 9', 'EXP CODE 10', 'AMOUNT 10', 'EXP CODE 11', 'AMOUNT 11', 'EXP CODE 12', 'AMOUNT 12',
-					'ID', 'TOKEN', 'OBLIGATION AMOUNT TOKEN'],
+        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'TOKEN'],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
@@ -283,105 +287,41 @@
 				},
                 readOnly: true,
 			},
+			@*{
+				//DATE RECEIVED
+				type: 'date',
+				dateFormat: 'MM/DD/YYYY',
+				defaultDate: Date.now(),
+				correctFormat: true,
+			},
 			{
-				//EXP CODE 1
-				type: 'dropdown',
-				source: uacs_data_dropdown
+				//TIME RECEIVED
+				type: 'time',
+				timeFormat: 'HH:mm:ss',
+				correctFormat: true
 			},
-            {
-				//AMOUNT 1
+			{
+				//DATE RELEASED
+				type: 'date',
+				dateFormat: 'MM/DD/YYYY',
+				defaultDate: Date.now(),
+				correctFormat: true,
 			},
-            {
-				//EXP CODE 2
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 2
-			},
-            {
-				//EXP CODE 3
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 3
-			},
-            {
-				//EXP CODE 4
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 4
-			},
-            {
-				//EXP CODE 5
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 5
-			},
-            {
-				//EXP CODE 6
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 6
-			},
-            {
-				//EXP CODE 7
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 7
-			},
-            {
-				//EXP CODE 8
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 8
-			},
-            {
-				//EXP CODE 9
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 9
-			},
-            {
-				//EXP CODE 10
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 10
-			},
-            {
-				//EXP CODE 11
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
-            {
-				//AMOUNT 11
-			},
-            {
-				//EXP CODE 12
-                type: 'dropdown',
-                source: uacs_data_dropdown
-			},
+
             {
 				//AMOUNT 12
 			},
             {
                 //OBLIGATION AMOUNT TOKEN
             },
+
+			{
+				//TIME RELEASED
+				type: 'time',
+				timeFormat: 'HH:mm:ss',
+				correctFormat: true
+			},*@
+
 			{
 				//HIDDEN ID
 			},
@@ -452,8 +392,8 @@
                             });
                             return;
 						}
-						var holder_id = holder_data[selection[0][0]][35];
-						var obligation_token = holder_data[selection[0][0]][36];
+						var holder_id = holder_data[selection[0][0]][11];
+						var obligation_token = holder_data[selection[0][0]][12];
 						$("#exampleModal").modal('show');
 						$(".ObligationContent").html(loading);
 						$.ajax({
@@ -478,13 +418,13 @@
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
 			var holder_data = this.getData();
-			var single_token = holder_data[selection[0][0]][36];
+			var single_token = holder_data[selection[0][0]][12];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-					many_token: holder_data[j][36]
+					many_token: holder_data[j][12]
 				})
 			}
 			console.log("execute here!");
@@ -506,11 +446,14 @@
 			CHECK_AFTER_ROW = true;
             TRAP_LOAD = true;
             TRAP_LOAD1 = true;
-			hot.setDataAtCell(row, 36, guid()); //obligation token
+			hot.setDataAtCell(row, 12, guid());
 			hot.setDataAtCell(row, 1, today);
 			hot.setDataAtCell(row, 6, Address);
 			let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
 			hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
+
+			//DIRI
+
 		},
 		afterChange: function (changes, source) {
 			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
@@ -518,9 +461,8 @@
 				return;
 			}
 			changes.forEach(([row, col, oldValue, newValue]) => {
-				console.log(col);
 				if (col == 0) {
-					TRAP_LOAD2 = true;
+					CHECK_FIRST_ROW1 = true;
 					console.log("if");
 					var ajax_data = [];
 					ajax_data.push(
@@ -537,12 +479,17 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-							obligation_token: hot.getDataAtCell(row, 36)
+                            obligation_token: hot.getDataAtCell(row, 12)
+							@*Date_recieved: hot.getDataAtCell(row, 11),
+							Time_recieved: hot.getDataAtCell(row, 12),
+							Date_released: hot.getDataAtCell(row, 13),
+							Time_released: hot.getDataAtCell(row, 14),*@
 						}
 					);
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(ajax_data);
 				}
+
 				else if (col == 11) {
 					console.log(col);
 					TRAP_LOAD2 = true;
@@ -554,10 +501,17 @@
 					});
 					console.log(ajax_data);
 					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+			@*	else {
+                    CHECK_FIRST_ROW = true;*@
+
 				}
 			});
-
-            if (TRAP_LOAD) {
+			if (CHECK_FIRST_ROW1) {
+				CHECK_FIRST_ROW = false;
+                CHECK_FIRST_ROW1 = false;
+				console.log("wew");
+			}
+            else if (TRAP_LOAD) {
                 TRAP_LOAD = false;
                 console.log("TREAP LOAD");
                 return;
@@ -566,13 +520,8 @@
                 TRAP_LOAD1 = false;
                 console.log("TRAP LOAD1");
                 return;
-			}
-			else if (TRAP_LOAD2) {
-                console.log("TRAP LOAD2");
-				TRAP_LOAD2 = false;
-				return;
-			}
-			else {
+            }
+			else if (CHECK_FIRST_ROW) {
                 console.log("else");
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
@@ -590,8 +539,8 @@
                             Ors_no: this[8] ? this[8] : "",
 							Created_by: this[9] ? this[9] : "",
 							Gross: this[10] ? this[10] : "",
-                            obligation_token: this[36]
-                            @* Date_recieved: this[11] ? this[11] : "",
+                            obligation_token: this[12]
+                           @* Date_recieved: this[11] ? this[11] : "",
                             Time_recieved: this[12] ? this[12] : "",
                             Date_released: this[13] ? this[13] : "",
                             Time_released: this[14] ? this[14] : "",*@
@@ -603,7 +552,7 @@
 			}
 		},
 		hiddenColumns: {
-			columns: [35,36,37],
+			columns: [11,12],
 			indicators: true
 		},
 		licenseKey: 'non-commercial-and-evaluation',

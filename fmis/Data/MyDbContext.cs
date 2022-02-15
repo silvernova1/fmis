@@ -140,7 +140,21 @@ namespace fmis.Data
                                                             new PapType { PapTypeID = 2, PapTypeName = "STO" },
                                                             new PapType { PapTypeID = 3, PapTypeName = "OPERATION" },
                                                             new PapType { PapTypeID = 4, PapTypeName = "" });
-
+            //APPROPRIATION SEEDER
+            modelBuilder.Entity<Appropriation>().HasData(new Appropriation { AppropriationId = 1, AppropriationSource = "CURRENT", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+                                                         new Appropriation { AppropriationId = 2, AppropriationSource = "CONAP", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
+            //FUND SEEDER
+            modelBuilder.Entity<Fund>().HasData(new Fund { FundId = 1, Fund_description = "Specific Budget of National Government Agencies", Fund_code_current = "101101", Fund_code_conap = "102101" },
+                new Fund { FundId = 2, Fund_description = "National Disaster Risk Reduction and Management Fund (Calamity Fund)", Fund_code_current = "101401", Fund_code_conap = "102401" },
+                new Fund { FundId = 3, Fund_description = "Contingent Fund", Fund_code_current = "101402", Fund_code_conap = "102402" },
+                new Fund { FundId = 4, Fund_description = "Miscellaneous Personnel Benefits Fund (MPBF)", Fund_code_current = "101406", Fund_code_conap = "101406" },
+                new Fund { FundId = 5, Fund_description = "Pension and Gratuity Fund", Fund_code_current = "101407", Fund_code_conap = "102407" },
+                new Fund { FundId = 6, Fund_description = "Retirement and Life Insurance Premium (RLIP)", Fund_code_current = "104102", Fund_code_conap = "" });
+            //RESPO SEEDER
+            modelBuilder.Entity<RespoCenter>().HasData(new RespoCenter { RespoId = 1, Respo = "MSD", RespoCode = "13-001-03-0007-2022-001", RespoHead = "ELIZABETH P. TABASA, CPA, MBA, CEO VI", RespoHeadPosition = "CHIEF - MANAGEMENT SUPPORT DIVISION" },
+                                                       new RespoCenter { RespoId = 2, Respo = "LHSD", RespoCode = "13-001-03-0007-2022-002", RespoHead = "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS", RespoHeadPosition = "CHIEF - LOCAL HEALTH SUPPORT DIVISION" },
+                                                       new RespoCenter { RespoId = 3, Respo = "RD/ARD", RespoCode = "13-001-03-0007-2022-003", RespoHead = "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", RespoHeadPosition = "DIRECTOR III" },
+                                                       new RespoCenter { RespoId = 4, Respo = "RLED", RespoCode = "13-001-03-0007-2022-004", RespoHead = "SOPHIA M. MANCAO, MD, DPSP", RespoHeadPosition = "CHIEF - Regulation of Regional Health Facilities and Services" });
         }
 
         public static MyDbContext Create()

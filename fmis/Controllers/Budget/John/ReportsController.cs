@@ -396,7 +396,7 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class.FirstOrDefault();
+                    ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class;
                     currentRow++;
 
 
@@ -433,6 +433,7 @@ namespace fmis.Controllers.Budget.John
                             var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
 
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                            //ws.Cell(currentRow, 1).Value = _MyDbContext.FundsRealignment.FirstOrDefault(x => x.Id == fundsource_amount.UacsId)?.Realignment_to.ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
