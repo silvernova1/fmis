@@ -1144,12 +1144,22 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AllotmentClass",
+                columns: new[] { "Id", "Account_Code", "Allotment_Class", "CreatedAt", "Desc", "Fund_Code", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 3, "300", "CO", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(8808), "Capital Outlay", "06", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(8809) },
+                    { 2, "200", "MOOE", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(8805), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(8806) },
+                    { 1, "100", "PS", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(8798), "Personnel Services", "01", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(8802) }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Appropriation",
                 columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "CURRENT", new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(1122), new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8353) },
-                    { 2, "CONAP", new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8586), new DateTime(2022, 2, 15, 14, 22, 18, 392, DateTimeKind.Local).AddTicks(8588) }
+                    { 1, "CURRENT", new DateTime(2022, 2, 15, 16, 23, 24, 970, DateTimeKind.Local).AddTicks(8475), new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(6933) },
+                    { 2, "CONAP", new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(7222), new DateTime(2022, 2, 15, 16, 23, 24, 971, DateTimeKind.Local).AddTicks(7225) }
                 });
 
             migrationBuilder.InsertData(
@@ -1157,12 +1167,12 @@ namespace fmis.Migrations
                 columns: new[] { "FundId", "AppropriationID", "Fund_code_conap", "Fund_code_current", "Fund_description" },
                 values: new object[,]
                 {
-                    { 1, null, "102101", "101101", "Specific Budget of National Government Agencies" },
-                    { 2, null, "102401", "101401", "National Disaster Risk Reduction and Management Fund (Calamity Fund)" },
+                    { 6, null, "", "104102", "Retirement and Life Insurance Premium (RLIP)" },
+                    { 5, null, "102407", "101407", "Pension and Gratuity Fund" },
                     { 3, null, "102402", "101402", "Contingent Fund" },
                     { 4, null, "101406", "101406", "Miscellaneous Personnel Benefits Fund (MPBF)" },
-                    { 5, null, "102407", "101407", "Pension and Gratuity Fund" },
-                    { 6, null, "", "104102", "Retirement and Life Insurance Premium (RLIP)" }
+                    { 1, null, "102101", "101101", "Specific Budget of National Government Agencies" },
+                    { 2, null, "102401", "101401", "National Disaster Risk Reduction and Management Fund (Calamity Fund)" }
                 });
 
             migrationBuilder.InsertData(
@@ -1170,10 +1180,10 @@ namespace fmis.Migrations
                 columns: new[] { "PapTypeID", "PapTypeName" },
                 values: new object[,]
                 {
-                    { 1, "GAS" },
-                    { 2, "STO" },
+                    { 4, "" },
                     { 3, "OPERATION" },
-                    { 4, "" }
+                    { 2, "STO" },
+                    { 1, "GAS" }
                 });
 
             migrationBuilder.InsertData(
@@ -1181,9 +1191,9 @@ namespace fmis.Migrations
                 columns: new[] { "RespoId", "Respo", "RespoCode", "RespoHead", "RespoHeadPosition" },
                 values: new object[,]
                 {
+                    { 3, "RD/ARD", "13-001-03-0007-2022-003", "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", "DIRECTOR III" },
                     { 1, "MSD", "13-001-03-0007-2022-001", "ELIZABETH P. TABASA, CPA, MBA, CEO VI", "CHIEF - MANAGEMENT SUPPORT DIVISION" },
                     { 2, "LHSD", "13-001-03-0007-2022-002", "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS", "CHIEF - LOCAL HEALTH SUPPORT DIVISION" },
-                    { 3, "RD/ARD", "13-001-03-0007-2022-003", "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", "DIRECTOR III" },
                     { 4, "RLED", "13-001-03-0007-2022-004", "SOPHIA M. MANCAO, MD, DPSP", "CHIEF - Regulation of Regional Health Facilities and Services" }
                 });
 

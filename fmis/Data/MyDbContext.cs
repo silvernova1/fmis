@@ -143,6 +143,10 @@ namespace fmis.Data
             //APPROPRIATION SEEDER
             modelBuilder.Entity<Appropriation>().HasData(new Appropriation { AppropriationId = 1, AppropriationSource = "CURRENT", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
                                                          new Appropriation { AppropriationId = 2, AppropriationSource = "CONAP", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
+            //ALLOTMENTCLASS SEEDER
+            modelBuilder.Entity<AllotmentClass>().HasData(new AllotmentClass { Id = 1, Allotment_Class = "PS", Account_Code = "100", Fund_Code = "01", Desc = "Personnel Services", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+                                                         new AllotmentClass { Id = 2, Allotment_Class = "MOOE", Account_Code = "200", Fund_Code = "02", Desc = "Maintenance and Other Operating Expenses", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+                                                         new AllotmentClass { Id = 3, Allotment_Class = "CO", Account_Code = "300", Fund_Code = "06", Desc = "Capital Outlay", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
             //FUND SEEDER
             modelBuilder.Entity<Fund>().HasData(new Fund { FundId = 1, Fund_description = "Specific Budget of National Government Agencies", Fund_code_current = "101101", Fund_code_conap = "102101" },
                 new Fund { FundId = 2, Fund_description = "National Disaster Risk Reduction and Management Fund (Calamity Fund)", Fund_code_current = "101401", Fund_code_conap = "102401" },

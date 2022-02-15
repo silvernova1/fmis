@@ -97,7 +97,9 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            string ac = AllotmentClassId.ToString();
+
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == ac).ToListAsync());
             ViewBag.uacs = uacs_data;
 
             ViewBag.CategoryList = _MyDbContext.PapType.ToList();
