@@ -10,11 +10,11 @@ using System;
 
 namespace fmis.Controllers.Budget
 {
-    public class RequestingHeadController : Controller
+    public class RequestingOfficeTrustFundController : Controller
     {
-        private readonly RequestingHeadContext _context;
+        private readonly RequestingOfficeTrustFundContext _context;
         private readonly MyDbContext _MyDbcontext;
-        public RequestingHeadController(RequestingHeadContext context, MyDbContext MyDbcontext)
+        public RequestingOfficeTrustFundController(RequestingOfficeTrustFundContext context, MyDbContext MyDbcontext)
         {
             _context = context;
             _MyDbcontext = MyDbcontext;
@@ -26,7 +26,7 @@ namespace fmis.Controllers.Budget
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "requestinghead_fund", "");
-            return View(await _context.RequestingHead.ToListAsync());
+            return View(await _context.RequestingOfficeTrustFund.ToListAsync());
         }
 
 
@@ -40,7 +40,7 @@ namespace fmis.Controllers.Budget
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Headname,Division,Section,Headinformation")] RequestingHead requestinghead)
+        public async Task<IActionResult> Create([Bind("Id,Headname,Division,Section,Headinformation")] RequestingOfficeTrustFund requestinghead)
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "requestinghead_fund", "");
             if (ModelState.IsValid)
@@ -61,7 +61,7 @@ namespace fmis.Controllers.Budget
                 return NotFound();
             }
 
-            var requestinghead = await _context.RequestingHead.FindAsync(id);
+            var requestinghead = await _context.RequestingOfficeTrustFund.FindAsync(id);
             if (requestinghead == null)
             {
                 return NotFound();
@@ -71,7 +71,7 @@ namespace fmis.Controllers.Budget
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Headname, Division, Section, Headinformation, HeadnameId")] RequestingHead requestinghead)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Headname, Division, Section, Headinformation, HeadnameId")] RequestingOfficeTrustFund requestinghead)
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "respo_trust_fund", "");
             if (id != requestinghead.HeadnameId)
@@ -88,7 +88,7 @@ namespace fmis.Controllers.Budget
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RequestingHeadExists(requestinghead.HeadnameId))
+                    if (!RequestingOfficeTrustFundExists(requestinghead.HeadnameId))
                     {
                         return NotFound();
                     }
@@ -102,16 +102,16 @@ namespace fmis.Controllers.Budget
             return View(requestinghead);
         }
 
-        private bool RequestingHeadExists(int id)
+        private bool RequestingOfficeTrustFundExists(int id)
         {
-            return _context.RequestingHead.Any(e => e.HeadnameId == id);
+            return _context.RequestingOfficeTrustFund.Any(e => e.HeadnameId == id);
         }
 
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var requestinghead = await _context.RequestingHead.Where(p => p.HeadnameId == ID).FirstOrDefaultAsync();
-            _context.RequestingHead.Remove(requestinghead);
+            var requestinghead = await _context.RequestingOfficeTrustFund.Where(p => p.HeadnameId == ID).FirstOrDefaultAsync();
+            _context.RequestingOfficeTrustFund.Remove(requestinghead);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

@@ -25,7 +25,7 @@ namespace fmis.Controllers.Budget
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("trust_fund", "respo_trust_fund", "");
+            ViewBag.filter = new FilterSidebar("trust_fund", "respo_tr ust_fund", "");
             return View(await _context.RespoCenterTrustFund.ToListAsync());
         }
 
