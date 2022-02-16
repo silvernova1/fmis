@@ -425,6 +425,15 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
+                        if(fundSource.FundsRealignment.Count > 0)
+                        {
+
+                            foreach(var amount in fundSource.FundsRealignment)
+                            {
+
+                            }
+                        }
+
 
 
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
