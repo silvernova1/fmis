@@ -14,6 +14,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -222,7 +223,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
                 /*ws.Columns(11, 1).AdjustToContents();*/
                 ws.Cell("F5").Style.DateFormat.Format = "AS AT" + " " + "MMMM dd, yyyy";
-                ws.Cell("F5").Value = date2;
+                ws.Cell("F5").Value = date2.ToString().ToUpper();
 
 
                 ws.Cell("F6").Style.Font.FontSize = 10;
@@ -301,7 +302,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Columns(12, 7).AdjustToContents();
 
-                ws.Cell(12, 7).Value = date2.ToString("MMMM");
+                ws.Cell(12, 7).Value = date2.ToString("MMMM").ToUpper();
                 //ws.Cell(12, 7).Value = DateTime.Now.ToString("MMMM yyyy");
 
 
@@ -312,7 +313,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Cell(12, 8).WorksheetColumn().AdjustToContents();
 
-                ws.Cell(12, 8).Value = "AS AT " + date2.ToString("MMMM");
+                ws.Cell(12, 8).Value = "AS AT" + " " + date2.ToString("MMMM").ToUpper();
 
 
                 //FIRST ROW
@@ -425,26 +426,19 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
-                        if(fundSource.FundsRealignment.Count > 0)
+                        /*if(fundSource.FundsRealignment.Count > 0)
                         {
 
-                            foreach(var amount in fundSource.FundsRealignment)
-                            {
-
+                            foreach(var amount in fundSource.FundsRealignment) { 
                             }
-                        }
-
-
+                        }*/
 
                         foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
                         {
                             total = 0;
                             var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
-
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
-                            //ws.Cell(currentRow, 1).Value = _MyDbContext.FundsRealignment.FirstOrDefault(x => x.Id == fundsource_amount.UacsId)?.Realignment_to.ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
                             ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
@@ -467,6 +461,16 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
+                            //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
+                            {
+                                currentRow++;
+                                Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
+                                ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper();
+                                ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+                                ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
+                                ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+                            }
                             currentRow++;
                             total = (double)fundsource_amount.beginning_balance;                    
                         }

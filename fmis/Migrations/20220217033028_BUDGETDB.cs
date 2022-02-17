@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class MyDb : Migration
+    public partial class BUDGETDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -747,6 +747,7 @@ namespace fmis.Migrations
                     RespoId = table.Column<int>(type: "int", nullable: false),
                     prexcId = table.Column<int>(type: "int", nullable: false),
                     AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
                     FundId = table.Column<int>(type: "int", nullable: false),
                     Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -763,6 +764,12 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sub_allotment", x => x.SubAllotmentId);
+                    table.ForeignKey(
+                        name: "FK_Sub_allotment_AllotmentClass_AllotmentClassId",
+                        column: x => x.AllotmentClassId,
+                        principalTable: "AllotmentClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Sub_allotment_Appropriation_AppropriationId",
                         column: x => x.AppropriationId,
@@ -1148,9 +1155,9 @@ namespace fmis.Migrations
                 columns: new[] { "Id", "Account_Code", "Allotment_Class", "CreatedAt", "Desc", "Fund_Code", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, "300", "CO", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8960), "Capital Outlay", "06", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8961) },
-                    { 2, "200", "MOOE", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8957), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8958) },
-                    { 1, "100", "PS", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8951), "Personnel Services", "01", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8954) }
+                    { 3, "300", "CO", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1176), "Capital Outlay", "06", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1177) },
+                    { 2, "200", "MOOE", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1172), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1173) },
+                    { 1, "100", "PS", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1167), "Personnel Services", "01", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1170) }
                 });
 
             migrationBuilder.InsertData(
@@ -1158,8 +1165,8 @@ namespace fmis.Migrations
                 columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "CURRENT", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(601), new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(7478) },
-                    { 2, "CONAP", new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(7722), new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(7725) }
+                    { 1, "CURRENT", new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(2741), new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9652) },
+                    { 2, "CONAP", new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9901), new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9904) }
                 });
 
             migrationBuilder.InsertData(
@@ -1397,6 +1404,11 @@ namespace fmis.Migrations
                 column: "UacsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sub_allotment_AllotmentClassId",
+                table: "Sub_allotment",
+                column: "AllotmentClassId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sub_allotment_AppropriationId",
                 table: "Sub_allotment",
                 column: "AppropriationId");
@@ -1526,6 +1538,10 @@ namespace fmis.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_AllotmentClass_AllotmentClassId",
                 table: "FundSource");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Sub_allotment_AllotmentClass_AllotmentClassId",
+                table: "Sub_allotment");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_BudgetAllotment_Appropriation_AppropriationId",

@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220216055648_MyDb")]
-    partial class MyDb
+    [Migration("20220217033028_BUDGETDB")]
+    partial class BUDGETDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -246,15 +246,15 @@ namespace fmis.Migrations
                         {
                             AppropriationId = 1,
                             AppropriationSource = "CURRENT",
-                            CreatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(601),
-                            UpdatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(7478)
+                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(2741),
+                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9652)
                         },
                         new
                         {
                             AppropriationId = 2,
                             AppropriationSource = "CONAP",
-                            CreatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(7722),
-                            UpdatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(7725)
+                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9901),
+                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9904)
                         });
                 });
 
@@ -559,30 +559,30 @@ namespace fmis.Migrations
                             Id = 1,
                             Account_Code = "100",
                             Allotment_Class = "PS",
-                            CreatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8951),
+                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1167),
                             Desc = "Personnel Services",
                             Fund_Code = "01",
-                            UpdatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8954)
+                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1170)
                         },
                         new
                         {
                             Id = 2,
                             Account_Code = "200",
                             Allotment_Class = "MOOE",
-                            CreatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8957),
+                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1172),
                             Desc = "Maintenance and Other Operating Expenses",
                             Fund_Code = "02",
-                            UpdatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8958)
+                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1173)
                         },
                         new
                         {
                             Id = 3,
                             Account_Code = "300",
                             Allotment_Class = "CO",
-                            CreatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8960),
+                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1176),
                             Desc = "Capital Outlay",
                             Fund_Code = "06",
-                            UpdatedAt = new DateTime(2022, 2, 16, 13, 56, 47, 266, DateTimeKind.Local).AddTicks(8961)
+                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1177)
                         });
                 });
 
@@ -1265,6 +1265,9 @@ namespace fmis.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AllotmentClassId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AppropriationId")
                         .HasColumnType("int");
 
@@ -1320,6 +1323,8 @@ namespace fmis.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SubAllotmentId");
+
+                    b.HasIndex("AllotmentClassId");
 
                     b.HasIndex("AppropriationId");
 
@@ -2020,6 +2025,12 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.Sub_allotment", b =>
                 {
+                    b.HasOne("fmis.Models.John.AllotmentClass", "AllotmentClass")
+                        .WithMany("Sub_allotment")
+                        .HasForeignKey("AllotmentClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fmis.Models.Appropriation", "Appropriation")
                         .WithMany()
                         .HasForeignKey("AppropriationId")
@@ -2055,6 +2066,8 @@ namespace fmis.Migrations
                         .HasForeignKey("fmis.Models.Sub_allotment", "prexcId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AllotmentClass");
 
                     b.Navigation("Appropriation");
 
@@ -2184,6 +2197,8 @@ namespace fmis.Migrations
                     b.Navigation("BudgetAllotments");
 
                     b.Navigation("FundSource");
+
+                    b.Navigation("Sub_allotment");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>

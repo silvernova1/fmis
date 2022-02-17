@@ -19,6 +19,8 @@
     <input hidden type="text" id="subs_input_token" name="token" value="" />
     <div>
         <input type="hidden" asp-for="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
+        <input type="hidden" asp-for="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+        <input type="hidden" asp-for="AppropriationId" value="@ViewBag.AppropriationId" />
         <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Sub Allotment)</h7>
             <div class="pull-right">
@@ -34,17 +36,19 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label>Fund Source: </label>
-                    <select class="form-control"></select>
+                    <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
                 </div>
-
                 <div class="form-group">
                     <label>PAP Type: </label>
-                    <select class="form-control"></select>
+                    <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@ id="categoryId">
+                        <option value="GAS">GAS</option>
+                        <option value="STO">STO</option>
+                        <option value="OPERATIONS">OPERATIONS</option>
+                    </select>
                 </div>
-
                 <div class="form-group">
-                    <label>Prexc:</label>
-                    @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                    <label>PAP Title:</label>
+                 @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
 
             </div>

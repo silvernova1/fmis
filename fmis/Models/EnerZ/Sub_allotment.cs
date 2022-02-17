@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.John;
 using fmis.Models.silver;
 
 namespace fmis.Models
@@ -26,6 +27,11 @@ namespace fmis.Models
         [ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }
         public Appropriation Appropriation { get; set; }
+
+        [ForeignKey("AllotmentClass")]
+        public int AllotmentClassId { get; set; }
+        [JsonIgnore]
+        public AllotmentClass AllotmentClass { get; set; }
 
         [ForeignKey("Fund")]
         public int FundId { get; set; }
