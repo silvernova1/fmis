@@ -463,21 +463,8 @@
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(ajax_data);
 				}
-
-				else if (col == 11) {
-					console.log(col);
-					TRAP_LOAD2 = true;
-                    var ajax_data = [];
-                    ajax_data.push({
-                        Expense_code: hot.getDataAtCell(row, 11),
-                        Amount: hot.getDataAtCell(row, 12),
-                        obligation_amount_token: hot.getDataAtCell(row, 37)
-					});
-					console.log(ajax_data);
-					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-			@*	else {
-                    CHECK_FIRST_ROW = true;*@
-
+				else {
+					CHECK_AFTER_ROW = true;
 				}
 			});
 			if (CHECK_FIRST_ROW1) {

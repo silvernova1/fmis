@@ -113,7 +113,7 @@
                         For Fund Source
                     </th>
                     <th>For Sub-Allotment</th>
-                    <th>Actions</th>
+                    @*<th>Actions</th>*@
                 </tr>
                 @foreach (var allotment_class in ViewBag.AllotmentClass)
                 {
@@ -163,7 +163,7 @@
                             <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                         </td>
                         <td>
-                            <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
+                            <a class="btn btn-sm btn-default" asp-controller="Sub_allotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
                                 <i class="ace-icon fa fa-plus"></i>Sub-Allotment
                             </a>
                             <br />
@@ -196,11 +196,11 @@
                             }
                             <b class="blue">@sub_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                         </td>
-                        <td>
+                        @*<td>
                             <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentId">
                                 <i class="ace-icon fa fa-edit"></i>Edit
                             </a>
-                        </td>
+                        </td>*@
                     </tr>
                 }       
             }

@@ -67,14 +67,21 @@ namespace fmis.Controllers
         }
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int BudgetAllotmentId)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
+            ViewBag.AllotmentClassId = AllotmentClassId;
+            ViewBag.AppropriationId = AppropriationId;
 
-            var budget_allotment = await _bContext.BudgetAllotment
-            .Include(x => x.Sub_allotments)
-                .ThenInclude(x=>x.Appropriation)
+            var budget_allotment = await _MyDbContext.Budget_allotments
+            .Include(x => x.Sub_allotments.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+                .ThenInclude(x => x.RespoCenter)
+            .Include(x => x.Sub_allotments.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+                .ThenInclude(x => x.Appropriation)
+            .Include(x => x.Sub_allotments.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+                .ThenInclude(x => x.AllotmentClass)
+            .Include(x => x.Yearly_reference)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
@@ -84,16 +91,20 @@ namespace fmis.Controllers
 
       
         // GET: Sub_allotment/Create
-        public async Task <IActionResult> Create(int BudgetAllotmentId)
+        public async Task <IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+
             ViewBag.uacs = uacs_data;
+            ViewBag.AllotmentClassId = AllotmentClassId;
+            ViewBag.AppropriationId = AppropriationId;
+            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             PopulatePrexcDropDownList();
             PopulateRespoDropDownList();
-            PopulateAppropriationDropDownList();
-            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+            PopulateFundDropDownList();
+            
 
             return View(); //open create
         }
@@ -160,7 +171,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Sub_allotment subAllotment, int BudgetAllotmentId)
+        public async Task<IActionResult> Create(Sub_allotment subAllotment)
 
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
@@ -171,13 +182,19 @@ namespace fmis.Controllers
             subAllotment.Beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
             subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
 
+
             _MyDbContext.Add(subAllotment);
             await _MyDbContext.SaveChangesAsync();
 
             sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("Index", "Sub_allotment", new { BudgetAllotmentId = subAllotment.BudgetAllotmentId });
+            return RedirectToAction("index", "FundSource", new
+            {
+                AllotmentClassId = subAllotment.AllotmentClassId,
+                AppropriationId = subAllotment.AppropriationId,
+                BudgetAllotmentId = subAllotment.BudgetAllotmentId
+            });
         }
 
     
@@ -225,6 +242,22 @@ namespace fmis.Controllers
                                      "AppropriationId",
                                      "AppropriationSource",
                                      null);
+
+        }
+
+        //POPULATE PAP TYPE
+        private void PopulateFundDropDownList()
+        {
+
+            ViewBag.FundId = new SelectList((from s in _MyDbContext.Fund.ToList()
+                                             select new
+                                             {
+                                                 FundId = s.FundId,
+                                                 FundDescription = s.Fund_description
+                                             }),
+                                       "FundId",
+                                       "FundDescription",
+                                       null);
 
         }
 

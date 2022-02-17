@@ -55,7 +55,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "uacs", "ps");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize( await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == "PS").ToListAsync());
+            var json = JsonSerializer.Serialize( await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == 1).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Carlo/Uacs/PS.cshtml");
@@ -66,7 +66,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "uacs", "mooe");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == "MOOE").ToListAsync());
+            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == 2).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Carlo/Uacs/MOOE.cshtml");
@@ -77,7 +77,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "uacs", "co");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == "CO").ToListAsync());
+            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == 3).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Carlo/Uacs/CO.cshtml");
@@ -110,7 +110,7 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "PS";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 1;
              
                     this._context.SaveChanges();
                 }
@@ -120,7 +120,7 @@ namespace fmis.Controllers
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
                     uacs.status = "activated";
-                    uacs.uacs_type = "PS";
+                    uacs.uacs_type = 1;
                     uacs.token = item.token;
 
                     this._context.Uacs.Update(uacs);
@@ -144,7 +144,7 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "MOOE";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 2;
 
                     this._context.SaveChanges();
                 }
@@ -154,7 +154,7 @@ namespace fmis.Controllers
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
                     uacs.status = "activated";
-                    uacs.uacs_type = "MOOE";
+                    uacs.uacs_type = 2;
                     uacs.token = item.token;
 
                     this._context.Uacs.Update(uacs);
@@ -179,7 +179,7 @@ namespace fmis.Controllers
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "CO";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 3;
 
                     this._context.SaveChanges();
                 }
@@ -189,7 +189,7 @@ namespace fmis.Controllers
                     uacs.Account_title = item.Account_title;
                     uacs.Expense_code = item.Expense_code;
                     uacs.status = "activated";
-                    uacs.uacs_type = "CO";
+                    uacs.uacs_type = 3;
                     uacs.token = item.token;
 
                     this._context.Uacs.Update(uacs);

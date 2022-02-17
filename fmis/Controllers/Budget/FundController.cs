@@ -42,14 +42,14 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "Fund", "");
             if (ModelState.IsValid)
             {
-                if (fund.Fund_code_current == "101101")
+                /*if (fund.Fund_code_current == "101101")
                 {
                     fund.AppropriationID = 1;
                 }
-            else if (fund.Fund_code_conap == "102101")
+            else if(fund.Fund_code_conap == "102101")
                 {
                     fund.AppropriationID = 2;
-                }
+                }*/
             
                 _fundContext.Add(fund);
                 await _fundContext.SaveChangesAsync();

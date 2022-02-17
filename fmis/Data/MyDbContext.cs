@@ -127,6 +127,8 @@ namespace fmis.Data
             .HasOne<Yearly_reference>(d => d.Yearly_reference)
             .WithOne(s => s.Budget_allotment);*/
 
+
+
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
             modelBuilder.Entity<FundSourceAmount>().ToTable("FundSourceAmount");
