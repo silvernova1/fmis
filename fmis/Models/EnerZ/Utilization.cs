@@ -23,19 +23,8 @@ namespace fmis.Models
         public string Particulars { get; set; }
         public int Ors_no { get; set; }
         public float Gross { get; set; }
+        public decimal remaining_balance { get; set; }
         public int Created_by { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        public DateTime Date_recieved { get; set; }
-        [DataType(DataType.Time)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
-        public DateTime Time_recieved { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        public DateTime Date_released { get; set; }
-        [DataType(DataType.Time)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
-        public DateTime Time_released { get; set; }
         public string status { get; set; }
         public string utilization_token { get; set; }
         public ICollection<UtilizationAmount> UtilizationAmount { get; set; }
