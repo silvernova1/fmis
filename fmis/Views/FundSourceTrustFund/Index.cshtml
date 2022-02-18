@@ -1,11 +1,11 @@
-﻿@model fmis.Models.silver.BudgetAllotment
+﻿@model fmis.Models.BudgetAllotmentTrustFund
 @using System.Globalization;
 @{
-    ViewData["Title"] = "Fundsource";
+    ViewData["Title"] = "FundSourceTrustFund";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (Model.FundSources.Count() > 0)
+@if (Model.FundSourceTrustFund.Count() > 0)
 {
     <h3 class="grey lighter smaller">
         Fund Source
@@ -15,11 +15,11 @@
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSources.FirstOrDefault().Appropriation.AppropriationSource
+            @Model.FundSourceTrustFund.FirstOrDefault().Appropriation.AppropriationSource
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class
+            @Model.FundSourceTrustFund.FirstOrDefault().AllotmentClass.Allotment_Class
         </small>
 
     </h3>
@@ -35,7 +35,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSources.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFund.Sum(x => x.BeginningBalance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -48,7 +48,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.FundSources.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFund.Sum(x => x.RemainingBalance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -61,7 +61,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSources.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFund.Sum(x => x.RealignmentAmount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
@@ -74,7 +74,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSources.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFund.Sum(x => x.ObligatedAmount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
@@ -90,7 +90,7 @@
 <div class="modal" id="createModal" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-body" id="fund_source_create">
+            <div class="modal-body" id="fund_source_create_trust_fund">
 
             </div>
         </div>
@@ -100,7 +100,7 @@
 <div class="modal" id="editModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-body" id="fund_source_edit">
+            <div class="modal-body" id="fund_source_edit_trust_fund">
 
             </div>
         </div>
@@ -115,15 +115,15 @@
 </div>
 
 <p>
-    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
+    <button type="button" asp-controller="FundSourceTrustFund" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSourceTrustFund(@Model.BudgetAllotmentTrustFundId)">
         <i class="ace-icon fa fa-plus "></i>Create New
     </button> |
-    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
+    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotmentTrustFund" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
 </p>
 
-@if (Model.FundSources.Count() > 0)
+@if (Model.FundSourceTrustFund.Count() > 0)
 {
     <table class="table">
         <thead>
@@ -158,62 +158,53 @@
                 <th>
                     Obligated Amount
                 </th>
-                @* <th>
-            Utilized Amount
-        </th>*@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.FundSources)
+            @foreach (var item in Model.FundSourceTrustFund)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
-                <td>
-                   @item.Appropriation.AppropriationSource
-                </td>
-                 <td>
-                   @item.RespoCenter.Respo
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
-                </td>
-                <td>
-                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                </td>
-           
-                <td>
-                    <b class="green">
-                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="red">
-                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="orange">
-                        <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="blue">
-                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTrustFundTitleCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTrustFundTitle)
+                    </td>
+                    <td>
+                        @item.Appropriation.AppropriationSource
+                    </td>
+                    <td>
+                        @item.RespoCenter.Respo
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-xs" onclick="getEditFundSourceTrustFund(@Model.BudgetAllotmentTrustFundId,@item.FundSourceTrustFundId)"> <span class="glyphicon glyphicon-edit"></span></button>
+                        <a asp-controller="FundSourceTrustFund" asp-action="Delete" asp-route-id="@item.FundSourceTrustFundId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                    <td>
+                        <a asp-controller="FundsRealignmentTrustFund" asp-route-fundsource_id="@item.FundSourceTrustFundId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    </td>
 
-                @* <td>
-            <b class="blue">
-                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-            </b>
-        </td>*@
-            </tr>
+                    <td>
+                        <b class="green">
+                            <span>@item.BeginningBalance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="red">
+                            <span>@item.BeginningBalance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="orange">
+                            <span>@item.RealignmentAmount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="blue">
+                            <span>@item.ObligatedAmount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -228,47 +219,46 @@ else
 
 <script>
 
-    console.log(@Model.BudgetAllotmentId);
 
-     function createFundSource(BudgetAllotmentId) {
+     function createFundSourceTrustFund(BudgetAllotmentTrustFundId) {
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_create").html(loading);
+         $("#fund_source_create_trust_fund").html(loading);
          var AllotmentClassId = @ViewBag.AllotmentClassId;
          var AppropriationId = @ViewBag.AppropriationId;
-         var url = '@Url.Action("Create", "FundSource")';
-         url += "?AllotmentClassId="+AllotmentClassId+"&AppropriationId="+AppropriationId+"&BudgetAllotmentId=" + BudgetAllotmentId;
+         var url = '@Url.Action("Create", "FundSourceTrustFund")';
+         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentTrustFundId;
          $.get(url, function (result) {
             setTimeout(function () {
-                $("#fund_source_create").html(result);
+                $("#fund_source_create_trust_fund").html(result);
             }, 500);
          });
      }
 
-     function getEditFundSource(BudgetAllotmentId, fund_source_id) {
+     function getEditFundSourceTrustFund(BudgetAllotmentTrustFundId, fund_source_id_trust_fund) {
          $("#editModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_edit").html(loading);
-         var url = '@Url.Action("Edit", "FundSource")';
-         url += "?budget_id=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id
+         $("#fund_source_edit_trust_fund").html(loading);
+         var url = '@Url.Action("Edit", "FundSourceTrustFund")';
+         url += "?budget_id=" + BudgetAllotmentTrustFundId + "&fund_source_trust_fund_id=" + fund_source_id_trust_fund
          $.get(url, function (result) {
             setTimeout(function () {
-                $("#fund_source_edit").html(result);
+                $("#fund_source_edit_trust_fund").html(result);
             }, 500);
          });
      }
 
-     function deleteFundSource(BudgetAllotmentId) {
+    function deleteFundSourceTrustFund(BudgetAllotmentTrustFundId) {
          $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_delete").html(loading);
-         var url = '@Url.Action("Delete", "FundSource")';
-         url += "?budget_id=" + BudgetAllotmentId
+         $("#fund_source_delete_trust_fund").html(loading);
+         var url = '@Url.Action("Delete", "FundSourceTrustFund")';
+        url += "?budget_id=" + BudgetAllotmentTrustFundId
          $.get(url, function (result) {
             setTimeout(function () {
-                $("#fund_source_delete").html(result);
+                $("#fund_source_delete_trust_fund").html(result);
             }, 500);
          });
      }
 
-    let generate_token = () => {
+    let generate_token_trust_fund = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -277,8 +267,8 @@ else
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function fundSourceToken() {
-        fundsource_token = generate_token();
+    function fundSourceTokenTrustFund() {
+        fundsource_token_trust_fund = generate_token_trust_fund();
         $("#funds_input_token").val(fundsource_token);
     }
 </script>

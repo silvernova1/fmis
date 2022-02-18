@@ -20,6 +20,6 @@ namespace fmis.Models
         public Yearly_reference Yearly_reference { get; set; }
 
         [JsonIgnore]
-        public ICollection<FundSource> FundSources { get; set; }
+        public ICollection<FundSourceTrustFund> FundSourceTrustFund { get; set; }
     }
 }
