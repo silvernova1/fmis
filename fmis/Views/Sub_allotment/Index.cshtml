@@ -231,13 +231,16 @@
             No Records found
         </div>
     }
-<script>
 
-        function createSub_allotment(BudgetAllotmentId) {
+<script>
+    function createSub_allotment(BudgetAllotmentId) {
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
          $("#suballotment_create").html(loading);
+         var AllotmentClassId = @ViewBag.AllotmentClassId;
+         var AppropriationId = @ViewBag.AppropriationId;
          var url = '@Url.Action("Create", "Sub_allotment")';
-        url += "?BudgetAllotmentId=" + BudgetAllotmentId
+         url += "?AllotmentClassId="+AllotmentClassId+"&AppropriationId="+AppropriationId+"&BudgetAllotmentId=" + BudgetAllotmentId;
+         console.log(url);
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#suballotment_create").html(result);
