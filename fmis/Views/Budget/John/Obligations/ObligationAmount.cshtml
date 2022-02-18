@@ -15,7 +15,6 @@
     .wtHider {
         margin-bottom: 150px;
     }
-
 </style>
 
 <div class="col-xs-12 infobox-container" style=" margin-bottom: 10px">
@@ -27,10 +26,10 @@
 
             @if (Model.source_type == "fund_source")
             {
-            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                
-                @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-            </span>
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+
+                    @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
             }
             else if (Model.source_type == "sub_allotment")
             {
@@ -110,7 +109,7 @@
                 else if (Model.source_type == "sub_allotment")
                 {
                     <p>@Model.SubAllotment.FirstOrDefault().Suballotment_title</p>
-                }                    
+                }
             </td>
         </tr>
         <tr>
@@ -132,13 +131,13 @@
              @Model.FundSource.FirstOrDefault().Remaining_balance
          else if (Model.source_type == "sub_allotment")
              @Model.SubAllotment.FirstOrDefault().Remaining_balance
-"/>
+" />
 <input type="hidden" id="obligated_amount" value="
         @if (Model.source_type == "fund_source")
              @Model.FundSource.FirstOrDefault().obligated_amount
         else if (Model.source_type == "sub_allotment")
              @Model.SubAllotment.FirstOrDefault().obligated_amount
-"/>
+" />
 
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
 <div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
@@ -188,17 +187,17 @@
     }
 
     var uacs = $.parseJSON($(".uacs").val());
-    var uacs_data_dropdown = []; 
-    var uacs_data_array = []; 
-    var get_account_title = []; 
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
     var uacs_counter = 0;
     $.each(uacs, function () {
-        uacs_data_dropdown[uacs_counter] = this.Account_title; 
-        var json_data = new Object(); 
-        json_data.UacsId = this.UacsId; 
-        json_data.Account_title = this.Account_title; 
-        json_data.Expense_code = this.Expense_code; 
-        uacs_data_array[this.Account_title] = json_data; 
+        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        var json_data = new Object();
+        json_data.UacsId = this.UacsId;
+        json_data.Account_title = this.Account_title;
+        json_data.Expense_code = this.Expense_code;
+        uacs_data_array[this.Account_title] = json_data;
         get_account_title[this.UacsId] = this.Account_title;
         uacs_counter++;
     });

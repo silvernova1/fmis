@@ -56,10 +56,6 @@ namespace fmis.Controllers
             public int Ors_no { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-            public string Date_recieved { get; set; }
-            public string Time_recieved { get; set; }
-            public string Date_released { get; set; }
-            public string Time_released { get; set; }
             public string utilization_token { get; set; }
             public string status { get; set; }
         }
@@ -77,7 +73,7 @@ namespace fmis.Controllers
         // GET: Utilization
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("ors", "utilization", "");
+            ViewBag.filter = new FilterSidebar("trust_fund", "burs_trust_fund", "utilization_trust_fund");
             ViewBag.layout = "_Layout";
 
             var utilization = await _context
@@ -176,10 +172,6 @@ namespace fmis.Controllers
                 utilization.Ors_no = item.Ors_no;
                 utilization.Gross = item.Gross;
                 utilization.Created_by = item.Created_by;
-                utilization.Date_recieved = ToDateTime(item.Date_recieved);
-                utilization.Time_recieved = ToDateTime(item.Time_recieved);
-                utilization.Date_released = ToDateTime(item.Date_released);
-                utilization.Time_released = ToDateTime(item.Time_released);
                 utilization.status = "activated";
                 utilization.utilization_token = item.utilization_token;
 
@@ -230,10 +222,6 @@ namespace fmis.Controllers
             utilizations.Ors_no = utilization.Ors_no;
             utilizations.Gross = utilization.Gross;
             utilizations.Created_by = utilization.Created_by;
-            utilizations.Date_recieved = utilization.Date_recieved;
-            utilizations.Time_recieved = utilization.Time_recieved;
-            utilizations.Date_released = utilization.Date_released;
-            utilizations.Time_released = utilization.Time_released;
 
             _context.Update(utilizations); 
             await _context.SaveChangesAsync();

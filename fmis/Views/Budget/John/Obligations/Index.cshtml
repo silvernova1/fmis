@@ -29,18 +29,55 @@
 </style>
 
 <input type="hidden" class="obligation" value="@JsonSerializer.Serialize(Model)">
+@*<input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.FirstOrDefault().ObligationAmounts)">*@
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <h3 class="grey lighter smaller">
     (ORS) Obligation Request and Status
 </h3>
 <hr>
+<div class="col-xs-12 ">
+    <div class="infobox infobox-red" style="margin-left: -10px">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-calculator"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                ₱ 0.00
+            </span>
+      
+            <div class="infobox-content">
+                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+            </div>
+        </div>
+    </div>
+    <div class="infobox infobox-orange2">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-bar-chart-o"></i>
+        </div>
+        <div class="infobox-data">
+           
+            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
+                ₱0.00
+            </span>
+            
+            <div class="infobox-content">
+                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />
 
+<div class="controls">
+    <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
+</div>
 <br />
 <div id="example" class="hot"></div>
 <br />
-<div class="controls" hidden>
-    <button id="export-file">Download CSV</button>
-</div>
+
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
         <div class="modal-content">
@@ -68,7 +105,120 @@
                 .substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken1 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 	}
+
+    let ObligationAmountToken2 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	}
+
+    let ObligationAmountToken3 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	}
+
+    let ObligationAmountToken4 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	}
+    let ObligationAmountToken5 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	}
+
+    let ObligationAmountToken6 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken7 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken8 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken9 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken10 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken11 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let ObligationAmountToken12 = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function isNumeric(value) {
+        return /^\d+$/.test(value);
+    }
+
+
 	//SET AUTO DATE
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -77,8 +227,6 @@
 	today = mm + '/' + dd + '/' + yyyy;
 	//SET AUTO ADDRESS
 	var Address = "CEBU CITY"
-
-
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
@@ -107,12 +255,14 @@
             TH.appendChild(getInitializedElements(col));
         }
     };
+
 	var SOURCE_TYPE= "";
 	var CHECK_AFTER_ROW = false;
 	var CHECK_FIRST_ROW = true;
 	var CHECK_FIRST_ROW1 = false;
-	var TRAP_LOAD = false;
-	var TRAP_LOAD1 = false;
+
+    var TRAP_LOAD = 0;
+    var TRAP_LOAD2 = false;
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -120,12 +270,11 @@
 			headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
 			data: { data: ajax_data },
 			success: function (output) {
-				$('#loading_modal').modal('hide');
-				@*console.log(output);*@
+				console.log(output);
 			}
 		});
 	}
-	var obligation = $.parseJSON($(".obligation").val());
+
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
 	var get_fund_sub = [];
@@ -143,57 +292,78 @@
 	});
 
 
-    var counter = 0;
-    var obligation_amount = 0;
-    var uacs = $.parseJSON($(".uacs").val());
-    var uacs_data_dropdown = []; //dara
-    var uacs_data_array = []; //dara
-    var get_account_title = []; //dara
-    var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data_dropdown[uacs_counter] = this.Expense_code; //dara
-        var json_data = new Object(); //dara
-        json_data.UacsId = this.UacsId; //dara
-        uacs_data_array[this.Expense_code] = json_data; //dara
-        get_account_title[this.UacsId] = this.Expense_code;
-        uacs_counter++;
-	});
+  @*  var obligation_amount = $.parseJSON($(".obligation_amount_data").val());
+	var obligation_amount_data_array = [];
+    var obligation_amount_counter = 0;
+    $.each(obligation_amount, function () {
+        var json_data = new Object();
+        obligation_amount_data_array.obligation_amount_token = this.obligation_amount_token;
+        uacs_data_array[this.obligation_token] = json_data;
+        obligation_amount_counter++;
+    });*@
 
+	var obligation = $.parseJSON($(".obligation").val());
+	console.log(obligation);
 	const data = [];
 	var counter = 0;
-	const Id = '';
 	$.each(obligation, function () {
 		data[counter] = [
 			get_fund_sub[this.source_id + this.source_type], //0
-		@*	get_obligated_amount[this.source_id + this.source_type], //2*@
             moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
 			this.Po_no, //4
 			this.Payee, //5
 			this.Address, //6
-			this.Particulars, //7
-			(this.Id).toString().padStart(4, '0'), //8
+			this.Particulars, //7 
+			(this.Id).toString().padStart(4, '0'), //8 
 			this.Created_by, //9
-			this.Gross, //10
-            this.Id, //10
-            this.obligation_token //11
-		@*	moment(this.Date_recieved, "YYYY/MM/DD").format('MM/DD/YYYY'), //12
-			moment(this.Time_recieved).format('HH:mm:ss'), //13
-			moment(this.Date_released, "YYYY/MM/DD").format('MM/DD/YYYY'), //14
-			moment(this.Time_released).format('HH:mm:ss'), //15*@
-		];
+			this.Gross,  //10
+            this.Id, //11
+            this.obligation_token, //12
+        ];
+
+        $.each(this.ObligationAmounts, function () {
+            data[counter].push(this.obligation_amount_token);
+            data[counter].push(this.Expense_code);
+            data[counter].push(this.Amount);
+        });
+
+        for (var i = this.ObligationAmounts.length; i < 12; i++) {
+            data[counter].push("");
+            data[counter].push("");
+            data[counter].push("");
+        }
+
 		counter++;
-	});
-	console.log(data);
+    });
+
+    console.log(data);
+
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var uacs_counter = 0;
+	$.each(uacs, function () {
+		uacs_data_dropdown[uacs_counter] = this.Expense_code;
+        var json_data = new Object();
+		json_data.UacsId = this.UacsId;
+		uacs_data_array[this.Expense_code] = json_data;
+        uacs_counter++;
+    });
+
 	const container = document.getElementById('example');
+    const button = document.querySelector('#export-file');
 	const hot = new Handsontable(container, {
 		data: data,
 		rowHeaders: true,
 		colHeaders: true,
+        preventOverflow: 'horizontal',
 		className: 'as-you-type-demo',
 		filters: true,
-		stretchH: 'all',
+        stretchH: 'all',
+        fixedColumnsLeft: 6,
+        manualColumnFreeze: true,
 		afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
@@ -202,9 +372,35 @@
 				this.deselectCell();
 			}
 		},
-        colWidths: [180, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 80],
+        colWidths: [220, 100, 100, 100, 100, 150, 100, 150, 80, 80, 100, 125, 125, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+        ],
 		height: 'auto',
-        colHeaders: ['FUND SOURCE & SUB ALLOTMENT', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'TOKEN'],
+		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
+                     'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
+                     'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
+                     'OBLIGATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
+                     'OBLIGATION AMOUNT TOKEN 4', 'EXP CODE 4', 'AMOUNT 4',
+                     'OBLIGATION AMOUNT TOKEN 5', 'EXP CODE 5', 'AMOUNT 5',
+                     'OBLIGATION AMOUNT TOKEN 6', 'EXP CODE 6', 'AMOUNT 6',
+                     'OBLIGATION AMOUNT TOKEN 7', 'EXP CODE 7', 'AMOUNT 7',
+                     'OBLIGATION AMOUNT TOKEN 8', 'EXP CODE 8', 'AMOUNT 8',
+                     'OBLIGATION AMOUNT TOKEN 9', 'EXP CODE 9', 'AMOUNT 9',
+                     'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
+                     'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
+                     'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
+        ],
 		columns: [
             {
 				//FUNDSOURCE&SUBALLOTMENT
@@ -260,47 +456,134 @@
 				},
                 readOnly: true,
 			},
-			@*{
-				//DATE RECEIVED
-				type: 'date',
-				dateFormat: 'MM/DD/YYYY',
-				defaultDate: Date.now(),
-				correctFormat: true,
-			},
-			{
-				//TIME RECEIVED
-				type: 'time',
-				timeFormat: 'HH:mm:ss',
-				correctFormat: true
-			},
-			{
-				//DATE RELEASED
-				type: 'date',
-				dateFormat: 'MM/DD/YYYY',
-				defaultDate: Date.now(),
-				correctFormat: true,
-			},
-
-            {
-				//AMOUNT 12
-			},
-            {
-                //OBLIGATION AMOUNT TOKEN
-            },
-
-			{
-				//TIME RELEASED
-				type: 'time',
-				timeFormat: 'HH:mm:ss',
-				correctFormat: true
-			},*@
-
 			{
 				//HIDDEN ID
 			},
 			{
-				//HIDDEN TOKEN
+				//HIDDEN OBLIGATION TOKEN
 			},
+            {
+                //OBLIGATION_AMOUNT_TOKEN 1
+            },
+            {
+                //OBLIGATION EXPENSE CODE 1
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                //OBLIGATION AMOUNT CODE 1
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 2
+            },
+            {
+                //OBLIGATION EXPENSE CODE 2
+            },
+            {
+                //OBLIGATION AMOUNT CODE 2
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 3
+            },
+            {
+                //OBLIGATION EXPENSE CODE 3
+            },
+            {
+                //OBLIGATION AMOUNT CODE 3
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 4
+            },
+            {
+                //OBLIGATION EXPENSE CODE 4
+            },
+            {
+                //OBLIGATION AMOUNT CODE 4
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 5
+            },
+            {
+                //OBLIGATION EXPENSE CODE 5
+            },
+            {
+                //OBLIGATION AMOUNT CODE 5
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 6
+            },
+            {
+                //OBLIGATION EXPENSE CODE 6
+            },
+            {
+                //OBLIGATION AMOUNT CODE 6
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 7
+            },
+            {
+                //OBLIGATION EXPENSE CODE 7
+            },
+            {
+                //OBLIGATION AMOUNT CODE 7
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 8
+            },
+            {
+                //OBLIGATION EXPENSE CODE 8
+            },
+            {
+                //OBLIGATION AMOUNT CODE 8
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 9
+            },
+            {
+                //OBLIGATION EXPENSE CODE 9
+            },
+            {
+                //OBLIGATION AMOUNT CODE 9
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 10
+            },
+            {
+                //OBLIGATION EXPENSE CODE 10
+            },
+            {
+                //OBLIGATION AMOUNT CODE 10
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 11
+            },
+            {
+                //OBLIGATION EXPENSE CODE 11
+            },
+            {
+                //OBLIGATION AMOUNT CODE 11
+            },
+
+            {
+                //OBLIGATION_AMOUNT_TOKEN 12
+            },
+            {
+                //OBLIGATION EXPENSE CODE 12
+            },
+            {
+                //OBLIGATION AMOUNT CODE 12
+            },
+
 		],
 		search: {
 			searchResultClass: 'search-result-custom'
@@ -414,19 +697,29 @@
 		},
 		afterCreateRow: function (row, column) {
 
-			console.log("row "+row);
-			console.log("column "+ column);
+            CHECK_AFTER_ROW = true;
+            TRAP_LOAD = 15; //mo load siya ka 14 tungud sa hot.setDataAtCell
+            hot.setDataAtCell(row, 12, guid()); //OBLIGATION TOKEN
 
-			CHECK_AFTER_ROW = true;
-            TRAP_LOAD = true;
-            TRAP_LOAD1 = true;
-			hot.setDataAtCell(row, 12, guid());
-			hot.setDataAtCell(row, 1, today);
-			hot.setDataAtCell(row, 6, Address);
-			let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
-			hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
+            hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
 
-			//DIRI
+            hot.setDataAtCell(row, 6, Address); //SET ADDRESS
+          
+            let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
+            hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
+
+            hot.setDataAtCell(row, 13, ObligationAmountToken1()); //OBLIGATION AMOUNT TOKEN 1
+            hot.setDataAtCell(row, 16, ObligationAmountToken2()); //OBLIGATION AMOUNT TOKEN 2
+            hot.setDataAtCell(row, 19, ObligationAmountToken3()); //OBLIGATION AMOUNT TOKEN 3
+            hot.setDataAtCell(row, 22, ObligationAmountToken4()); //OBLIGATION AMOUNT TOKEN 4
+            hot.setDataAtCell(row, 25, ObligationAmountToken5()); //OBLIGATION AMOUNT TOKEN 5
+            hot.setDataAtCell(row, 28, ObligationAmountToken6()); //OBLIGATION AMOUNT TOKEN 6
+            hot.setDataAtCell(row, 31, ObligationAmountToken7()); //OBLIGATION AMOUNT TOKEN 7
+            hot.setDataAtCell(row, 34, ObligationAmountToken8()); //OBLIGATION AMOUNT TOKEN 8
+            hot.setDataAtCell(row, 37, ObligationAmountToken9()); //OBLIGATION AMOUNT TOKEN 9
+            hot.setDataAtCell(row, 40, ObligationAmountToken10()); //OBLIGATION AMOUNT TOKEN 10
+            hot.setDataAtCell(row, 43, ObligationAmountToken11()); //OBLIGATION AMOUNT TOKEN 11
+            hot.setDataAtCell(row, 46, ObligationAmountToken12()); //OBLIGATION AMOUNT TOKEN 12
 
 		},
 		afterChange: function (changes, source) {
@@ -453,46 +746,60 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-                            obligation_token: hot.getDataAtCell(row, 12)
-							@*Date_recieved: hot.getDataAtCell(row, 11),
-							Time_recieved: hot.getDataAtCell(row, 12),
-							Date_released: hot.getDataAtCell(row, 13),
-							Time_released: hot.getDataAtCell(row, 14),*@
+							obligation_token: hot.getDataAtCell(row, 12)
 						}
 					);
+
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(ajax_data);
 				}
-
-				else if (col == 11) {
-					console.log(col);
+				else if (col >= 14)
+				{
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
-                    ajax_data.push({
-                        Expense_code: hot.getDataAtCell(row, 11),
-                        Amount: hot.getDataAtCell(row, 12),
-                        obligation_amount_token: hot.getDataAtCell(row, 37)
-					});
-					console.log(ajax_data);
-					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-			@*	else {
-                    CHECK_FIRST_ROW = true;*@
 
+                    if (isNaN(hot.getDataAtCell(row, col))) {
+                        ajax_data.push({
+                            obligation_token: hot.getDataAtCell(row, col - 3),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 2),
+                            Expense_code: hot.getDataAtCell(row, col - 1),
+                            Amount: hot.getDataAtCell(row, col),
+                        });
+                        console.log("number");
+                    }
+                    else {
+                        ajax_data.push({
+                            obligation_token: hot.getDataAtCell(row, col - 2),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
+                            Expense_code: hot.getDataAtCell(row, col),
+                            Amount: hot.getDataAtCell(row, col + 1),
+                        });
+                        console.log("string");
+                    }
+
+                    console.log(hot.getDataAtCell(row, col))
+					console.log(ajax_data);
+					//ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
 				}
+                else {
+                    CHECK_FIRST_ROW = true;
+                }
+
 			});
+
 			if (CHECK_FIRST_ROW1) {
 				CHECK_FIRST_ROW = false;
                 CHECK_FIRST_ROW1 = false;
 				console.log("wew");
 			}
             else if (TRAP_LOAD) {
-                TRAP_LOAD = false;
-                console.log("TREAP LOAD");
+                TRAP_LOAD--; //decrement trap load
+                console.log("wew");
                 return;
-			}
-            else if (TRAP_LOAD1) {
-                TRAP_LOAD1 = false;
-                console.log("TRAP LOAD1");
+            }
+            else if (TRAP_LOAD2) {
+                TRAP_LOAD2 = false;
+                console.log("TRAP_LOAD2");
                 return;
             }
 			else if (CHECK_FIRST_ROW) {
@@ -514,23 +821,38 @@
 							Created_by: this[9] ? this[9] : "",
 							Gross: this[10] ? this[10] : "",
                             obligation_token: this[12]
-                           @* Date_recieved: this[11] ? this[11] : "",
-                            Time_recieved: this[12] ? this[12] : "",
-                            Date_released: this[13] ? this[13] : "",
-                            Time_released: this[14] ? this[14] : "",*@
+
                         }
                     );
 				});
-                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
-				console.log(ajax_data);
-			}
+                //ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+                console.log(hot.getSourceData());
+            }
 		},
 		hiddenColumns: {
-			columns: [11,12],
+            columns: [11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46],
 			indicators: true
 		},
 		licenseKey: 'non-commercial-and-evaluation',
 	});
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
+
+    const exportPlugin = hot.getPlugin('exportFile');
+
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: false,
+            exportHiddenColumns: true,
+            exportHiddenRows: true,
+            fileExtension: 'csv',
+            filename: 'Obligation-[YYYY]-[MM]-[DD]',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true
+        });
+    });
+
 </script>

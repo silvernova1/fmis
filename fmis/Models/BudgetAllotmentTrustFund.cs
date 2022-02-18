@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using fmis.Models.John;
 
 namespace fmis.Models
 {
@@ -17,5 +18,8 @@ namespace fmis.Models
         public int YearlyReferenceId { get; set; }
         [JsonIgnore]
         public Yearly_reference Yearly_reference { get; set; }
+
+        [JsonIgnore]
+        public ICollection<FundSource> FundSources { get; set; }
     }
 }

@@ -432,7 +432,7 @@
 
                 <li class="@if(ViewBag.filter.sub == "BudgetAllotment_trust_fund")
                      @Html.Raw("active")">
-                    <a asp-controller="BudgetAllotment" asp-action="Index">
+                    <a asp-controller="BudgetAllotmentTrustFund" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Budget Allotments
                     </a>
@@ -451,7 +451,7 @@
                 </li>
 
 
-                <li class="@if(ViewBag.filter.main == "ors_trust_fund")
+                <li class="@if(ViewBag.filter.sub == "burs_trust_fund")
                 @Html.Raw("active open")">
                     <a href="#" class="dropdown-toggle">
                         <i class="menu-icon fa fa-cog"></i>
@@ -463,7 +463,7 @@
                     <b class="arrow"></b>
 
                     <ul class="submenu">
-                        <li class="@if(ViewBag.filter.sub == "obligation_trust_fund")
+                        <li class="@if(ViewBag.filter.sub2 == "utilization_trust_fund")
                 @Html.Raw("active")">
                             <a asp-controller="Utilization" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>

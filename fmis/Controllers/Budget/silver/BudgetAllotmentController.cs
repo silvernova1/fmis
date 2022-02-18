@@ -47,7 +47,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments
         public async Task<IActionResult> Index(int? id)
         {
-            const string yearly_reference = "_yearly_reference";
+           /* const string yearly_reference = "_yearly_reference";*/
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
 

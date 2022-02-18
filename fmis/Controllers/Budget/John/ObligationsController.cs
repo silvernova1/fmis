@@ -88,29 +88,9 @@ namespace fmis.Controllers
             public int Ors_no { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-            public string Date_recieved { get; set; }
-            public string Time_recieved { get; set; }
-            public string Date_released { get; set; }
-            public string Time_released { get; set; }
             public string obligation_token { get; set; }
             public string status { get; set; }
         }
-
-        public class ObligationAmountData
-        {
-            public int ObligationId { get; set; }
-            public int UacsId { get; set; }
-            public string Expense_code { get; set; }
-            public decimal Amount { get; set; }
-            public float Total_disbursement { get; set; }
-            public float Total_net_amount { get; set; }
-            public float Total_tax_amount { get; set; }
-            public float Total_others { get; set; }
-            public string obligation_token { get; set; }
-            public string obligation_amount_token { get; set; }
-            public string status { get; set; }
-        }
-
 
         public class ManyId
         {
@@ -206,7 +186,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveObligation(List<ObligationData> data, List<ObligationAmountData> data2)
+        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
 
             var data_holder = _context.Obligation;
@@ -234,36 +214,34 @@ namespace fmis.Controllers
                 obligation.Gross = item.Gross;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-                /* obligation.Date_recieved = ToDateTime(item.Date_recieved);
-                    obligation.Time_recieved = ToDateTime(item.Time_recieved);
-                    obligation.Date_released = ToDateTime(item.Date_released);
-                    obligation.Time_released = ToDateTime(item.Time_released);*/
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
 
             }
 
-            var data_holder_2 = _Ucontext.ObligationAmount;
-
-            foreach (var item2 in data2)
-            {
-                var obligation_amount = new ObligationAmount();
-                if (await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token) != null) //CHECK IF EXIST
-                {
-                    obligation_amount = await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token);
-                }
-
-                obligation_amount.ObligationId = item2.ObligationId;
-                obligation_amount.UacsId = item2.UacsId;
-                obligation_amount.Expense_code = Convert.ToInt64(item2.Expense_code);
-                obligation_amount.Amount = item2.Amount;
-                obligation_amount.obligation_amount_token = item2.obligation_amount_token;
-
-                _Ucontext.ObligationAmount.Update(obligation_amount);
-                await _context.SaveChangesAsync();
-            }
-
             return Json(data);
+
+            /*    var data_holder_2 = _Ucontext.ObligationAmount;
+
+                foreach (var item2 in data2)
+                {
+                    var obligation_amount = new ObligationAmount();
+                    if (await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token) != null) //CHECK IF EXIST
+                    {
+                        obligation_amount = await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token);
+                    }
+
+                    obligation_amount.ObligationId = item2.ObligationId;
+                    obligation_amount.UacsId = item2.UacsId;
+                    obligation_amount.Expense_code = Convert.ToInt64(item2.Expense_code);
+                    obligation_amount.Amount = item2.Amount;
+                    obligation_amount.obligation_amount_token = item2.obligation_amount_token;
+
+                    _Ucontext.ObligationAmount.Update(obligation_amount);
+                    await _context.SaveChangesAsync();
+                }*/
+
+
         }
 
         // POST: Obligations/Create
@@ -333,32 +311,6 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
 
-            /*if (id != obligation.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(obligation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ObligationExists(obligation.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(obligation);*/
         }
 
         // GET: Obligations/Delete/5
