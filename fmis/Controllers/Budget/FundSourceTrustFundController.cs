@@ -43,8 +43,6 @@ namespace fmis.Controllers.Budget
             public int BudgetAllotmentTrustFundId { get; set; }
         }
 
-
-
         public class ManyId
         {
             public string many_token { get; set; }
@@ -74,13 +72,14 @@ namespace fmis.Controllers.Budget
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentTrustFundId == BudgetAllotmentTrustFundId);
 
-
             return View(budget_allotment_trust_fund);
+
+            
         }
 
 
         // GET: FundSource/Create
-        public async Task<IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmenTrustFundId)
+        public async Task<IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentTrustFundId)
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
             ViewBag.AllotmentClassId = AllotmentClassId;
@@ -88,18 +87,52 @@ namespace fmis.Controllers.Budget
 
             string ac = AllotmentClassId.ToString();
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x => x.uacs_type == AllotmentClassId).ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(x => x.uacs_type == ac).ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            PopulatePrexcsDropDownList();
+            PopulatePrexcTrustFundDropDownList();
             PopulateRespoDropDownList();
             PopulatePapTypeDropDownList();
             PopulateFundDropDownList();
 
-            ViewBag.BudgetAllotmentTrustFundId = BudgetAllotmenTrustFundId;
+            ViewBag.BudgetAllotmentTrustFundId = BudgetAllotmentTrustFundId;
 
             return View(); //open create
         }
+
+
+        // POST: FundSource/Create 
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(FundSourceTrustFund fundSourceTrustFund, int PrexcId)
+        {
+
+            ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
+
+
+            var result = _MyDbContext.PrexcTrustFund.Where(x => x.PrexcTrustFundId == PrexcId).First();
+
+            var fundsource_amount_trust_fund = _MyDbContext.FundSourceAmountTrustFund.Where(f => f.FundSourceTokenTrustFund == fundSourceTrustFund.token).ToList();
+
+            fundSourceTrustFund.BeginningBalance = fundsource_amount_trust_fund.Sum(x => x.BeginningBalance);
+            fundSourceTrustFund.RemainingBalance = fundsource_amount_trust_fund.Sum(x => x.RemainingBalance);
+
+            _MyDbContext.Add(fundSourceTrustFund);
+            await _MyDbContext.SaveChangesAsync();
+
+            fundsource_amount_trust_fund.ForEach(a => a.FundSourceTrustFundId = fundSourceTrustFund.FundSourceTrustFundId);
+            this._MyDbContext.SaveChanges();
+
+            return RedirectToAction("Index", "FundSourceTrustFund", new
+            {
+                AllotmentClassId = fundSourceTrustFund.AllotmentClassId,
+                AppropriationId = fundSourceTrustFund.AppropriationId,
+                BudgetAllotmentTrustFundId = fundSourceTrustFund.BudgetAllotmentTrustFundId
+            });
+        }
+
 
         public async Task<IActionResult> Edit(int fund_source_id_trust_fund)
         {
@@ -113,7 +146,7 @@ namespace fmis.Controllers.Budget
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            PopulatePrexcsDropDownList(fundsource_trust_fund.PrexcId);
+            PopulatePrexcTrustFundDropDownList(fundsource_trust_fund.PrexcTrustFundId);
             PopulateRespoDropDownList();
             PopulatePapTypeDropDownList();
             PopulateFundDropDownList();
@@ -151,27 +184,30 @@ namespace fmis.Controllers.Budget
         //POST
         public IActionResult selectAT(int id)
         {
-            var branches = _MyDbContext.Prexc.ToList();
-            return Json(branches.Where(x => x.Id == id).ToList());
+            var branches = _MyDbContext.PrexcTrustFund.ToList();
+            return Json(branches.Where(x => x.PrexcTrustFundId == id).ToList());
         }
 
-        private void PopulatePrexcsDropDownList(object selectedDepartment = null)
+
+        private void PopulatePrexcTrustFundDropDownList(object selectedDepartment = null)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var departmentsQuery = from d in _MyDbContext.Prexc
+            var departmentsQuery = from d in _MyDbContext.PrexcTrustFund
                                    orderby d.pap_title
                                    select d;
-            ViewBag.PrexcId = new SelectList((from s in _MyDbContext.Prexc.ToList()
+            ViewBag.PrexcTrustFundId = new SelectList((from s in _MyDbContext.PrexcTrustFund.ToList()
                                               select new
                                               {
-                                                  PrexcId = s.Id,
+                                                  PrexcTrustFundId = s.PrexcTrustFundId,
                                                   prexc = s.pap_title
                                               }),
-                                       "PrexcId",
+                                       "PrexcTrustFundId",
                                        "prexc",
                                        null);
 
         }
+
+
 
         private void PopulateRespoDropDownList()
         {

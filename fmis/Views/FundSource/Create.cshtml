@@ -50,8 +50,6 @@
                     <label>PAP Title:</label>
                  @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
-              
-
             </div>
             <div class="col-md-6">
                 <div class="form-group">
@@ -68,7 +66,6 @@
                     <input asp-for="FundSourceTitleCode" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
                 </div>
-
             </div>
         </div>
         <input type="hidden" id="FundSourceId" />
@@ -213,7 +210,7 @@
             },
         ],
         stretchH: 'all',
-        height: '500px',
+        height: '450px',
         search: {
             searchResultClass: 'search-result-custom'
         },

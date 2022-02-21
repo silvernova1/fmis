@@ -18,7 +18,7 @@
 <form asp-action="Create">
     <input hidden type="text" id="funds_input_token" name="token" value="" />
     <div>
-        <input type="hidden" asp-for="BudgetAllotmenTrustFundId" value="@ViewBag.BudgetAllotmenTrustFundId" />
+        <input type="hidden" asp-for="BudgetAllotmentTrustFundId" value="@ViewBag.BudgetAllotmentTrustFundId" />
         <input type="hidden" asp-for="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
         <input type="hidden" asp-for="AppropriationId" value="@ViewBag.AppropriationId" />
         <div class="alert alert-info no-margin alert-dismissable" style="margin-top:10px;">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="form-group">
                     <label>PAP Title:</label>
-                   @* @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
+                    @Html.DropDownList("PrexcTrustFundId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
 
             </div>
@@ -218,7 +218,7 @@
                         {
                             BudgetAllotmentTrustFundId: BudgetAllotmentTrustFundId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                            Amount: hot.getDataAtCell(row, col+2),
+                            Amount: hot.getDataAtCell(row, col + 2),
                             FundSourceAmountTokenTrustFund: hot.getDataAtCell(row, col + 3),
                             FundSourceTokenTrustFund: fundsource_token_trust_fund
                         }
