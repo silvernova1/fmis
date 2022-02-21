@@ -14,6 +14,7 @@ namespace fmis.Models
         public string AppropriationSource { get; set; }
         public List<FundSource> FundSources { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
+        public List <FundSourceTrustFund> FundSourceTrustFund { get; set; }
 
         public virtual ICollection<Fund> Funds { get; set; }
     }

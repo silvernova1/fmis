@@ -24,7 +24,7 @@
     }
 
     .wtHider {
-        margin-bottom: 100px;
+        margin-bottom: 150px;
     }
 </style>
 
@@ -35,7 +35,7 @@
     (ORS) Obligation Request and Status
 </h3>
 <hr>
-<div class="col-xs-12 ">
+@*<div class="col-xs-12 ">
     <div class="infobox infobox-red" style="margin-left: -10px">
         <div class="infobox-icon">
             <i class="ace-icon fa fa-calculator"></i>
@@ -69,7 +69,7 @@
 <br />
 <br />
 <br />
-<br />
+<br />*@
 
 <div class="controls">
     <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
@@ -97,8 +97,8 @@
 </div>
 
 <script>
-	//SET TOKEN
-    let guid = () => {
+	//SET OBLIGATION TOKEN
+    let ObligationToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -107,7 +107,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    let ObligationAmountToken1 = () => {
+    let ObligationAmountToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -116,104 +116,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 	}
 
-    let ObligationAmountToken2 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	}
-
-    let ObligationAmountToken3 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	}
-
-    let ObligationAmountToken4 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	}
-    let ObligationAmountToken5 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	}
-
-    let ObligationAmountToken6 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let ObligationAmountToken7 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let ObligationAmountToken8 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let ObligationAmountToken9 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let ObligationAmountToken10 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let ObligationAmountToken11 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let ObligationAmountToken12 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
+   
 	//SET AUTO DATE
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -358,13 +261,14 @@
 	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
 	const hot = new Handsontable(container, {
-		data: data,
+        data: data,
 		rowHeaders: true,
 		colHeaders: true,
         preventOverflow: 'horizontal',
 		className: 'as-you-type-demo',
 		filters: true,
         stretchH: 'all',
+        fixedColumnsLeft: 1,
         manualColumnFreeze: true,
 		afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
@@ -388,7 +292,7 @@
                     100, 100, 100,
                     100, 100, 100,
         ],
-		height: 'auto',
+	
 		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
                      'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
                      'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -727,7 +631,7 @@
 
             CHECK_AFTER_ROW = true;
             TRAP_LOAD = 15; //mo load siya ka 14 tungud sa hot.setDataAtCell
-            hot.setDataAtCell(row, 12, guid()); //OBLIGATION TOKEN
+            hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
 
             hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
 
@@ -736,18 +640,18 @@
             let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
             hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
 
-            hot.setDataAtCell(row, 13, ObligationAmountToken1()); //OBLIGATION AMOUNT TOKEN 1
-            hot.setDataAtCell(row, 16, ObligationAmountToken2()); //OBLIGATION AMOUNT TOKEN 2
-            hot.setDataAtCell(row, 19, ObligationAmountToken3()); //OBLIGATION AMOUNT TOKEN 3
-            hot.setDataAtCell(row, 22, ObligationAmountToken4()); //OBLIGATION AMOUNT TOKEN 4
-            hot.setDataAtCell(row, 25, ObligationAmountToken5()); //OBLIGATION AMOUNT TOKEN 5
-            hot.setDataAtCell(row, 28, ObligationAmountToken6()); //OBLIGATION AMOUNT TOKEN 6
-            hot.setDataAtCell(row, 31, ObligationAmountToken7()); //OBLIGATION AMOUNT TOKEN 7
-            hot.setDataAtCell(row, 34, ObligationAmountToken8()); //OBLIGATION AMOUNT TOKEN 8
-            hot.setDataAtCell(row, 37, ObligationAmountToken9()); //OBLIGATION AMOUNT TOKEN 9
-            hot.setDataAtCell(row, 40, ObligationAmountToken10()); //OBLIGATION AMOUNT TOKEN 10
-            hot.setDataAtCell(row, 43, ObligationAmountToken11()); //OBLIGATION AMOUNT TOKEN 11
-            hot.setDataAtCell(row, 46, ObligationAmountToken12()); //OBLIGATION AMOUNT TOKEN 12
+            hot.setDataAtCell(row, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
+            hot.setDataAtCell(row, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
+            hot.setDataAtCell(row, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
+            hot.setDataAtCell(row, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
+            hot.setDataAtCell(row, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
+            hot.setDataAtCell(row, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
+            hot.setDataAtCell(row, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
+            hot.setDataAtCell(row, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
+            hot.setDataAtCell(row, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
+            hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
+            hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
+            hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
 
 		},
 		afterChange: function (changes, source) {
@@ -807,7 +711,7 @@
 
                     console.log(hot.getDataAtCell(row, col))
 					console.log(ajax_data);
-					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+					@*ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');*@
 				}
                 else {
                     CHECK_FIRST_ROW = true;
@@ -882,5 +786,6 @@
             rowHeaders: true
         });
     });
+
 
 </script>

@@ -21,10 +21,10 @@ namespace fmis.Models
         [JsonIgnore]
         public RespoCenter RespoCenter { get; set; }
 
-        [ForeignKey("Prexc")]
-        public int PrexcId { get; set; }
+        [ForeignKey("PrexcTrustFund")]
+        public int PrexcTrustFundId { get; set; }
         [JsonIgnore]
-        public Prexc Prexc { get; set; }
+        public PrexcTrustFund PrexcTrustFund { get; set; }
 
         [JsonIgnore]
         public PapType PapType { get; set; }
@@ -50,7 +50,7 @@ namespace fmis.Models
         public decimal UtilizedAmount { get; set; }
         public decimal RealignmentAmount { get; set; }
         public string token { get; set; }
-        public int? BudgetAllotmenTrustFundId { get; set; }
+        public int? BudgetAllotmentTrustFundId { get; set; }
         public BudgetAllotmentTrustFund BudgetAllotmentTrustFund { get; set; }
         public ICollection<FundSourceAmountTrustFund> FundSourceAmountTrustFund { get; set; }
         public ICollection<FundsRealignmentTrustFund> FundsRealignmentTrustFund { get; set; }

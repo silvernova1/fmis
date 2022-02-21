@@ -9,17 +9,18 @@ using fmis.Models.John;
 
 namespace fmis.Models
 {
-    public class BudgetAllotmentTrustFund
+    public class BudgetAllotmentTrustFund : BaseEntityTimeStramp
     {
         [Key]
         public int BudgetAllotmentTrustFundId { get; set; }
+
+        [JsonIgnore]
+        public ICollection<FundSourceTrustFund> FundSourceTrustFund { get; set; }
 
         [ForeignKey("Yearly_reference")]
         public int YearlyReferenceId { get; set; }
         [JsonIgnore]
         public Yearly_reference Yearly_reference { get; set; }
 
-        [JsonIgnore]
-        public ICollection<FundSourceTrustFund> FundSourceTrustFund { get; set; }
     }
 }

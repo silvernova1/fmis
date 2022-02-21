@@ -244,15 +244,15 @@ namespace fmis.Migrations
                         {
                             AppropriationId = 1,
                             AppropriationSource = "CURRENT",
-                            CreatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 22, DateTimeKind.Local).AddTicks(706),
-                            UpdatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(907)
+                            CreatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 6, DateTimeKind.Local).AddTicks(1718),
+                            UpdatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(919)
                         },
                         new
                         {
                             AppropriationId = 2,
                             AppropriationSource = "CONAP",
-                            CreatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(1239),
-                            UpdatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(1244)
+                            CreatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(1235),
+                            UpdatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(1241)
                         });
                 });
 
@@ -317,6 +317,12 @@ namespace fmis.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("YearlyReferenceId")
                         .HasColumnType("int");
@@ -544,9 +550,6 @@ namespace fmis.Migrations
                     b.Property<decimal>("BeginningBalance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("BudgetAllotmenTrustFundId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("BudgetAllotmentTrustFundId")
                         .HasColumnType("int");
 
@@ -568,7 +571,7 @@ namespace fmis.Migrations
                     b.Property<int?>("PapTypeID")
                         .HasColumnType("int");
 
-                    b.Property<int>("PrexcId")
+                    b.Property<int>("PrexcTrustFundId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("RealignmentAmount")
@@ -598,7 +601,7 @@ namespace fmis.Migrations
 
                     b.HasIndex("PapTypeID");
 
-                    b.HasIndex("PrexcId");
+                    b.HasIndex("PrexcTrustFundId");
 
                     b.HasIndex("RespoId");
 
@@ -717,30 +720,30 @@ namespace fmis.Migrations
                             Id = 1,
                             Account_Code = "100",
                             Allotment_Class = "PS",
-                            CreatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(2989),
+                            CreatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(2977),
                             Desc = "Personnel Services",
                             Fund_Code = "01",
-                            UpdatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(2993)
+                            UpdatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(2981)
                         },
                         new
                         {
                             Id = 2,
                             Account_Code = "200",
                             Allotment_Class = "MOOE",
-                            CreatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(2997),
+                            CreatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(2985),
                             Desc = "Maintenance and Other Operating Expenses",
                             Fund_Code = "02",
-                            UpdatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(2998)
+                            UpdatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(2986)
                         },
                         new
                         {
                             Id = 3,
                             Account_Code = "300",
                             Allotment_Class = "CO",
-                            CreatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(3000),
+                            CreatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(2988),
                             Desc = "Capital Outlay",
                             Fund_Code = "06",
-                            UpdatedAt = new DateTime(2022, 2, 18, 14, 33, 8, 23, DateTimeKind.Local).AddTicks(3001)
+                            UpdatedAt = new DateTime(2022, 2, 21, 11, 36, 4, 7, DateTimeKind.Local).AddTicks(2989)
                         });
                 });
 
@@ -2014,13 +2017,13 @@ namespace fmis.Migrations
             modelBuilder.Entity("fmis.Models.FundSourceTrustFund", b =>
                 {
                     b.HasOne("fmis.Models.John.AllotmentClass", "AllotmentClass")
-                        .WithMany()
+                        .WithMany("FundSourceTrustFund")
                         .HasForeignKey("AllotmentClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("fmis.Models.Appropriation", "Appropriation")
-                        .WithMany()
+                        .WithMany("FundSourceTrustFund")
                         .HasForeignKey("AppropriationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2039,9 +2042,9 @@ namespace fmis.Migrations
                         .WithMany()
                         .HasForeignKey("PapTypeID");
 
-                    b.HasOne("fmis.Models.Prexc", "Prexc")
+                    b.HasOne("fmis.Models.PrexcTrustFund", "PrexcTrustFund")
                         .WithMany()
-                        .HasForeignKey("PrexcId")
+                        .HasForeignKey("PrexcTrustFundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2061,7 +2064,7 @@ namespace fmis.Migrations
 
                     b.Navigation("PapType");
 
-                    b.Navigation("Prexc");
+                    b.Navigation("PrexcTrustFund");
 
                     b.Navigation("RespoCenter");
                 });
@@ -2422,6 +2425,8 @@ namespace fmis.Migrations
                     b.Navigation("Funds");
 
                     b.Navigation("FundSources");
+
+                    b.Navigation("FundSourceTrustFund");
                 });
 
             modelBuilder.Entity("fmis.Models.Budget.PapType", b =>
@@ -2457,6 +2462,8 @@ namespace fmis.Migrations
                     b.Navigation("BudgetAllotments");
 
                     b.Navigation("FundSource");
+
+                    b.Navigation("FundSourceTrustFund");
 
                     b.Navigation("Sub_allotment");
                 });

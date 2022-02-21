@@ -57,8 +57,6 @@ namespace fmis.Models.John
         public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
-
-
         public ICollection<Uacs> Uacs { get; set; }
 
     }
