@@ -59,8 +59,6 @@ namespace fmis.Controllers
             .AsNoTracking()
             .ToListAsync();
 
-            
-
             ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
             return View(budget_allotment);

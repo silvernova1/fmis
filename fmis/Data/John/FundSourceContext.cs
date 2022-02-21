@@ -35,10 +35,9 @@ namespace fmis.Data.John
             var entities = ChangeTracker.Entries()
                 .Where(x => x.Entity is BaseEntityTimeStramp && (x.State == EntityState.Added || x.State == EntityState.Modified));
 
-            foreach (var entity in entities) 
+            foreach (var entity in entities)
             {
-                //var now = DateTime.UtcNow; // current datetime
-                var now = DateTime.Now; 
+                var now = DateTime.Now;
 
                 if (entity.State == EntityState.Added)
                 {

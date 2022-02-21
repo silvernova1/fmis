@@ -70,10 +70,6 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
 
-            
-
-
-
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
@@ -184,7 +180,8 @@ namespace fmis.Controllers.Budget.John
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FundSource fundSource, int PrexcId)
         {
-            /*fundSource.Created_At = DateTime.Now;*/
+            fundSource.CreatedAt = DateTime.Now;
+            fundSource.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
