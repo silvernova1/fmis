@@ -214,11 +214,6 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function isNumeric(value) {
-        return /^\d+$/.test(value);
-    }
-
-
 	//SET AUTO DATE
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -273,7 +268,15 @@
 				console.log(output);
 			}
 		});
-	}
+    }
+
+    function isNumeric(o) {
+        if (!o || typeof o !== 'string') {
+            // Should not be given anything but strings.
+            return false;
+        }
+        return o.length <= 15 && o.indexOf('e+') < 0 && o.indexOf('E+') < 0 && !isNaN(o) && isFinite(o);
+    }
 
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
@@ -362,7 +365,6 @@
 		className: 'as-you-type-demo',
 		filters: true,
         stretchH: 'all',
-        fixedColumnsLeft: 6,
         manualColumnFreeze: true,
 		afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
@@ -471,7 +473,11 @@
                 source: uacs_data_dropdown
             },
             {
-                //OBLIGATION AMOUNT CODE 1
+                //OBLIGATION AMOUNT 1
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
@@ -479,6 +485,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 2
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 2
@@ -489,6 +497,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 3
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 3
@@ -499,6 +509,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 4
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 4
@@ -509,6 +521,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 5
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 5
@@ -519,6 +533,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 6
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 6
@@ -529,6 +545,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 7
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 7
@@ -539,6 +557,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 8
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 8
@@ -549,6 +569,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 9
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 9
@@ -559,6 +581,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 10
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 10
@@ -569,6 +593,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 11
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 11
@@ -579,6 +605,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 12
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT CODE 12
@@ -758,29 +786,28 @@
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
 
-                    if (isNaN(hot.getDataAtCell(row, col))) {
+                    if (isNumeric(hot.getDataAtCell(row, col))) {
                         ajax_data.push({
-                            obligation_token: hot.getDataAtCell(row, col - 3),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 2),
-                            Expense_code: hot.getDataAtCell(row, col - 1),
-                            Amount: hot.getDataAtCell(row, col),
+                            obligation_token: hot.getDataAtCell(row, 12),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
+                            Expense_code: hot.getDataAtCell(row, col),
+                            Amount: hot.getDataAtCell(row, col + 1),
                         });
                         console.log("number");
                     }
                     else {
                         ajax_data.push({
-                            obligation_token: hot.getDataAtCell(row, col - 2),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
-                            Expense_code: hot.getDataAtCell(row, col),
-                            Amount: hot.getDataAtCell(row, col + 1),
+                            obligation_token: hot.getDataAtCell(row, 12),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 2),
+                            Expense_code: hot.getDataAtCell(row, col - 1),
+                            Amount: hot.getDataAtCell(row, col),
                         });
                         console.log("string");
                     }
 
                     console.log(hot.getDataAtCell(row, col))
 					console.log(ajax_data);
-					//ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
-
+					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
 				}
                 else {
                     CHECK_FIRST_ROW = true;
@@ -826,7 +853,7 @@
                         }
                     );
 				});
-                //ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
                 console.log(hot.getSourceData());
             }
 		},

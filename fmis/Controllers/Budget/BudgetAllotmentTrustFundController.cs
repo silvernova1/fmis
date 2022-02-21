@@ -37,7 +37,7 @@ namespace fmis.Controllers.Budget
 
             var budget_allotment_trust_fund = await _context.BudgetAllotmentTrustFund
             .Include(c => c.Yearly_reference)
-            .Include(x => x.FundSources)
+            .Include(x => x.FundSourceTrustFund)
 
             .AsNoTracking()
             .ToListAsync();

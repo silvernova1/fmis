@@ -218,29 +218,7 @@ namespace fmis.Controllers
                 await _context.SaveChangesAsync();
 
             }
-
             return Json(data);
-
-            /*    var data_holder_2 = _Ucontext.ObligationAmount;
-
-                foreach (var item2 in data2)
-                {
-                    var obligation_amount = new ObligationAmount();
-                    if (await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token) != null) //CHECK IF EXIST
-                    {
-                        obligation_amount = await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item2.obligation_amount_token);
-                    }
-
-                    obligation_amount.ObligationId = item2.ObligationId;
-                    obligation_amount.UacsId = item2.UacsId;
-                    obligation_amount.Expense_code = Convert.ToInt64(item2.Expense_code);
-                    obligation_amount.Amount = item2.Amount;
-                    obligation_amount.obligation_amount_token = item2.obligation_amount_token;
-
-                    _Ucontext.ObligationAmount.Update(obligation_amount);
-                    await _context.SaveChangesAsync();
-                }*/
-
 
         }
 
@@ -436,16 +414,13 @@ namespace fmis.Controllers
                                        on fundsource.AllotmentClassId equals allotmentclass.Id
                                        join fund in _MyDbContext.Fund
                                        on fundsource.FundId equals fund.FundId
-                                       join saa in _MyDbContext.Sub_allotment
-                                       on allotmentclass.Id equals saa.AllotmentClassId
                                       where obligation.obligation_token == tok
                                       select new
                                        {
                                            allotment = allotmentclass.Fund_Code,
                                            fundCurrent = fund.Fund_code_current,
                                            fundConap = fund.Fund_code_conap,
-                                           fundsource = fundsource.AppropriationId,
-                                           saa = saa.AppropriationId
+                                           fundsource = fundsource.AppropriationId
                                       }).ToList();
 
 
@@ -473,8 +448,6 @@ namespace fmis.Controllers
                     doc.Add(table);
 
                     }
-
-
 
 
                     if (allotments.FirstOrDefault().fundsource == 2)

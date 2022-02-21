@@ -5,10 +5,9 @@
 
 
 
-    <h3 class="grey lighter smaller alert alert-info" >
-        (Trust Fund) Budget Allotments
-    </h3>
-
+<h3 class="grey lighter smaller" >
+    (Trust Fund) Budget Allotments
+</h3>
 <hr />
 <div class="row  pull-left">
     <div class="space-5"></div>
@@ -124,8 +123,8 @@
                             @allotment_class.Allotment_Class
                         </td>
                         <td>
-                            <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentTrustFundId">
-                                <i class="ace-icon fa fa-arrow-right"></i>Fund Source
+                            <a class="btn btn-sm btn-default" asp-controller="FundSourceTrustFund" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentTrustFundId="@item.BudgetAllotmentTrustFundId">
+                                <i class="ace-icon fa fa-arrow-right"></i>Fund Source (Trust Fund)
                             </a>
                             <br />
                             <span class="grey">(BB): </span>

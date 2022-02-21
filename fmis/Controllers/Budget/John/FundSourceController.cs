@@ -178,7 +178,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSource fundSource, int PrexcId)
+        public IActionResult Create(FundSource fundSource, int PrexcId)
         {
             fundSource.CreatedAt = DateTime.Now;
             fundSource.UpdatedAt = DateTime.Now;
@@ -192,8 +192,8 @@ namespace fmis.Controllers.Budget.John
             fundSource.Beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
             fundSource.Remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
 
-            _MyDbContext.Add(fundSource);
-            await _MyDbContext.SaveChangesAsync();
+            _FundSourceContext.Add(fundSource);
+            _FundSourceContext.SaveChanges();
 
             funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
             this._MyDbContext.SaveChanges();
