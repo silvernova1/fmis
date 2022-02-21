@@ -484,16 +484,13 @@ namespace fmis.Controllers
                                        on fundsource.AllotmentClassId equals allotmentclass.Id
                                        join fund in _MyDbContext.Fund
                                        on fundsource.FundId equals fund.FundId
-                                       join saa in _MyDbContext.Sub_allotment
-                                       on allotmentclass.Id equals saa.AllotmentClassId
                                       where obligation.obligation_token == tok
                                       select new
                                        {
                                            allotment = allotmentclass.Fund_Code,
                                            fundCurrent = fund.Fund_code_current,
                                            fundConap = fund.Fund_code_conap,
-                                           fundsource = fundsource.AppropriationId,
-                                           saa = saa.AppropriationId
+                                           fundsource = fundsource.AppropriationId
                                       }).ToList();
 
 
@@ -521,8 +518,6 @@ namespace fmis.Controllers
                     doc.Add(table);
 
                     }
-
-
 
 
                     if (allotments.FirstOrDefault().fundsource == 2)

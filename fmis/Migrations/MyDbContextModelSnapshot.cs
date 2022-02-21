@@ -232,8 +232,14 @@ namespace fmis.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AppropriationId");
 
@@ -244,15 +250,15 @@ namespace fmis.Migrations
                         {
                             AppropriationId = 1,
                             AppropriationSource = "CURRENT",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(2741),
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9652)
+                            CreatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 72, DateTimeKind.Local).AddTicks(3026),
+                            UpdatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(5772)
                         },
                         new
                         {
                             AppropriationId = 2,
                             AppropriationSource = "CONAP",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9901),
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9904)
+                            CreatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(5990),
+                            UpdatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(5993)
                         });
                 });
 
@@ -557,30 +563,30 @@ namespace fmis.Migrations
                             Id = 1,
                             Account_Code = "100",
                             Allotment_Class = "PS",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1167),
+                            CreatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7142),
                             Desc = "Personnel Services",
                             Fund_Code = "01",
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1170)
+                            UpdatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7145)
                         },
                         new
                         {
                             Id = 2,
                             Account_Code = "200",
                             Allotment_Class = "MOOE",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1172),
+                            CreatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7149),
                             Desc = "Maintenance and Other Operating Expenses",
                             Fund_Code = "02",
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1173)
+                            UpdatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7149)
                         },
                         new
                         {
                             Id = 3,
                             Account_Code = "300",
                             Allotment_Class = "CO",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1176),
+                            CreatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7151),
                             Desc = "Capital Outlay",
                             Fund_Code = "06",
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1177)
+                            UpdatedAt = new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7152)
                         });
                 });
 

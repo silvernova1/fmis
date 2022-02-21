@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class BUDGETDB : Migration
+    public partial class BudgetDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,6 +46,8 @@ namespace fmis.Migrations
                     AppropriationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppropriationSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -1155,18 +1157,18 @@ namespace fmis.Migrations
                 columns: new[] { "Id", "Account_Code", "Allotment_Class", "CreatedAt", "Desc", "Fund_Code", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, "300", "CO", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1176), "Capital Outlay", "06", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1177) },
-                    { 2, "200", "MOOE", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1172), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1173) },
-                    { 1, "100", "PS", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1167), "Personnel Services", "01", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1170) }
+                    { 3, "300", "CO", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7151), "Capital Outlay", "06", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7152) },
+                    { 2, "200", "MOOE", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7149), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7149) },
+                    { 1, "100", "PS", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7142), "Personnel Services", "01", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(7145) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Appropriation",
-                columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "UpdatedAt" },
+                columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "CreatedBy", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "CURRENT", new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(2741), new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9652) },
-                    { 2, "CONAP", new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9901), new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9904) }
+                    { 1, "CURRENT", new DateTime(2022, 2, 18, 16, 38, 46, 72, DateTimeKind.Local).AddTicks(3026), null, new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(5772), null },
+                    { 2, "CONAP", new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(5990), null, new DateTime(2022, 2, 18, 16, 38, 46, 73, DateTimeKind.Local).AddTicks(5993), null }
                 });
 
             migrationBuilder.InsertData(

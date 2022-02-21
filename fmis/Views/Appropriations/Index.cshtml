@@ -51,6 +51,12 @@
                 Appropriation Source
             </th>
             <th>
+                Created By
+            </th>
+            <th>
+                Updated By
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -61,6 +67,12 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.AppropriationSource)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedBy)
                 </td>
                 <td>
                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.AppropriationId">

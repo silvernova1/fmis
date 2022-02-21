@@ -14,10 +14,12 @@ namespace fmis.Controllers
     public class Yearly_referenceController : Controller
     {
         private readonly Yearly_referenceContext _context;
+        private readonly MyDbContext _MyDbcontext;
 
-        public Yearly_referenceController(Yearly_referenceContext context)
+        public Yearly_referenceController(Yearly_referenceContext context, MyDbContext MyDbcontext)
         {
             _context = context;
+            _MyDbcontext = MyDbcontext;
         }
 
         // GET: Yearly_reference
@@ -68,8 +70,8 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "yearlyreference", "");
             if (ModelState.IsValid)
             {
-                _context.Add(yearly_reference);
-                await _context.SaveChangesAsync();
+                _MyDbcontext.Add(yearly_reference);
+                await _MyDbcontext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.layout = "_Layout";
