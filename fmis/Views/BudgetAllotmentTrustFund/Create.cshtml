@@ -1,0 +1,64 @@
+﻿@model fmis.Models.BudgetAllotmentTrustFund
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3 class="grey lighter smaller">
+    Create Budget Allotment (Trust Fund)
+</h3>
+<hr />
+<div class="row">
+    <div class="col-xs-12">
+        <form asp-action="Create">
+            <div class="col-xs-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label>Yearly Reference:</label>
+                    <select class="form-control" asp-for="YearlyReferenceId" asp-items="ViewBag.YearlyReferenceId"></select>
+                </div>
+
+               
+
+                <div class="form-group" style="margin-left:13px;">
+                    <input type="submit" value="Create" class="btn btn-success btn-sm" />|
+                    <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
+                </div>
+
+            </div>
+            <div class="col-xs-6">
+               
+            </div>
+            <br />
+
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+
+    get_sbu()
+
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "BudgetAllotment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#account_Code').val(data[0].account_Code);
+                }
+                else {
+                    $('#account_Code').val('');
+                }
+            }
+        });
+    }
+</script>
+
+
+

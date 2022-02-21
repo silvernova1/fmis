@@ -70,9 +70,6 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
 
-            
-
-
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
