@@ -53,12 +53,12 @@
             <th>
                 Created By
             </th>
-            <th>
+            @*<th>
                 Updated By
             </th>
             <th>
                 Actions
-            </th>
+            </th>*@
         </tr>
     </thead>
     <tbody>
@@ -68,12 +68,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.AppropriationSource)
                 </td>
-                <td>
+                @*<td>
                     @Html.DisplayFor(modelItem => item.CreatedBy)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.UpdatedBy)
-                </td>
+                </td>*@
                 <td>
                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.AppropriationId">
                         <i class="ace-icon fa fa-edit"></i>Edit</a> |
