@@ -38,12 +38,31 @@ namespace fmis.Controllers.Budget.John
             return View(await _MyDbContext.FundSources.ToListAsync());
         }
 
-        [HttpPost]
 
         public IActionResult Export(string fn, string date_from, string date_to)
         {
+
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
+            date1.ToString("yyyy-MM-dd 00:00:00");
+            date2.ToString("yyyy-MM-dd 23:59:59");
+            DateTime dateTimeNow = date2;
+            DateTime dateTomorrow = dateTimeNow.Date.AddDays(1);
+            /*var lastDayOfMonth = DateTime.DaysInMonth(date1.Year, date1.Month);*/
+
+
+            //LASTDAY OF THE MONTH
+            var firstDayOfMonth = new DateTime(date1.Year, date1.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            DateTime lastday = Convert.ToDateTime(lastDayOfMonth);
+            lastday.ToString("yyyy-MM-dd 23:59:59");
+
+            /*var dateTime = _MyDbContext.FundSources.FirstOrDefault().CreatedAt;*/
+
+            var dateTime = _MyDbContext.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow).Select(y => new { y.FundSourceTitle} );
+
+
+
 
 
             DataTable dt = new DataTable("Saob Report");
@@ -302,7 +321,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Columns(12, 7).AdjustToContents();
 
-                ws.Cell(12, 7).Value = date2.ToString("MMMM").ToUpper();
+                ws.Cell(12, 7).Value = date1.ToString("MMMM").ToUpper();
                 //ws.Cell(12, 7).Value = DateTime.Now.ToString("MMMM yyyy");
 
 
@@ -410,8 +429,10 @@ namespace fmis.Controllers.Budget.John
                                  }).ToList();
 
 
-                    foreach (FundSource fundSource in budget_allotment.FundSources)
+                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
                     {
+
+                        /*if(fundSource.CreatedAt >= date1 && fundSource.CreatedAt <= lastDayOfMonth)*/
 
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 1;
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
@@ -424,6 +445,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
+                        //ws.Cell(currentRow, 1).Value = dateTime.FirstOrDefault().FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
                         /*if(fundSource.FundsRealignment.Count > 0)
@@ -456,11 +478,23 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+                            //OBLIGATED (AS OF THE MONTH)
+                            ws.Cell(currentRow, 7).Value = _MyDbContext.ObligationAmount.Where(x=>x.CreatedAt >= date1 && x.CreatedAt <= lastday).FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                            //OBLIGATED (AST AT)
+                            ws.Cell(currentRow, 8).Value = _MyDbContext.ObligationAmount.FirstOrDefault(x=>x.UacsId == fundsource_amount.UacsId)?.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                             //UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+
+                            //REALIGNMENT DATA
                             foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
                             //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
                             {
@@ -470,6 +504,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
                                 ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+
+                                ws.Cell(currentRow, 3).Value = "(0.00)";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             currentRow++;
                             total = (double)fundsource_amount.beginning_balance;                    
@@ -552,7 +590,7 @@ namespace fmis.Controllers.Budget.John
                         
                     foreach (BudgetAllotment b in saa)
                     {
-                        foreach (Sub_allotment sa in b.Sub_allotments)
+                        foreach (Sub_allotment sa in b.Sub_allotments.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
                         {
                             //Double suballotment_total = 0;
 

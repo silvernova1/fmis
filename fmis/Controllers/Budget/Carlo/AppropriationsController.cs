@@ -8,15 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
 using fmis.Filters;
+using Microsoft.AspNetCore.Identity;
+using fmis.Areas.Identity.Data;
 
 namespace fmis.Controllers
 {
     public class AppropriationsController : Controller
     {
         private readonly AppropriationContext _context;
-        public AppropriationsController(AppropriationContext context)
+        private readonly UserManager<fmisUser> _userManager;
+        public AppropriationsController(AppropriationContext context, UserManager<fmisUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Appropriations
@@ -42,6 +46,7 @@ namespace fmis.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(appropriation);
+                appropriation.CreatedBy = _userManager.GetUserName(User);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -75,6 +80,7 @@ namespace fmis.Controllers
          
 
             _context.Update(appro);
+            appro.UpdatedBy = _userManager.GetUserName(User);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

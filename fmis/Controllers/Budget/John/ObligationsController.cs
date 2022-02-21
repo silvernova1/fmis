@@ -420,7 +420,7 @@ namespace fmis.Controllers
                                            allotment = allotmentclass.Fund_Code,
                                            fundCurrent = fund.Fund_code_current,
                                            fundConap = fund.Fund_code_conap,
-                                           fundsource = fundsource.AppropriationId,
+                                           fundsource = fundsource.AppropriationId
                                       }).ToList();
 
 
@@ -448,8 +448,6 @@ namespace fmis.Controllers
                     doc.Add(table);
 
                     }
-
-
 
 
                     if (allotments.FirstOrDefault().fundsource == 2)

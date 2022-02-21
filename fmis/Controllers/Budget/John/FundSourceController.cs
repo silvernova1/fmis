@@ -70,7 +70,6 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
 
-
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
@@ -178,9 +177,10 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSource fundSource, int PrexcId)
+        public IActionResult Create(FundSource fundSource, int PrexcId)
         {
-            /*fundSource.Created_At = DateTime.Now;*/
+            fundSource.CreatedAt = DateTime.Now;
+            fundSource.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
@@ -191,8 +191,8 @@ namespace fmis.Controllers.Budget.John
             fundSource.Beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
             fundSource.Remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
 
-            _MyDbContext.Add(fundSource);
-            await _MyDbContext.SaveChangesAsync();
+            _FundSourceContext.Add(fundSource);
+            _FundSourceContext.SaveChanges();
 
             funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
             this._MyDbContext.SaveChanges();
