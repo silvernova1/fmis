@@ -46,6 +46,8 @@ namespace fmis.Migrations
                     AppropriationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppropriationSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -322,25 +324,6 @@ namespace fmis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Section", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UacsTrustFund",
-                columns: table => new
-                {
-                    UacsTrustFundId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    uacs_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UacsTrustFund", x => x.UacsTrustFundId);
                 });
 
             migrationBuilder.CreateTable(
@@ -673,7 +656,6 @@ namespace fmis.Migrations
                     realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: true),
                     ObligationId = table.Column<int>(type: "int", nullable: true),
                     SummaryReportId = table.Column<int>(type: "int", nullable: true),
                     UtilizationId = table.Column<int>(type: "int", nullable: true),
@@ -700,12 +682,6 @@ namespace fmis.Migrations
                         column: x => x.BudgetAllotmentId,
                         principalTable: "BudgetAllotment",
                         principalColumn: "BudgetAllotmentId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSource_BudgetAllotmentTrustFund_BudgetAllotmentTrustFundId",
-                        column: x => x.BudgetAllotmentTrustFundId,
-                        principalTable: "BudgetAllotmentTrustFund",
-                        principalColumn: "BudgetAllotmentTrustFundId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FundSource_Fund_FundId",
@@ -736,6 +712,162 @@ namespace fmis.Migrations
                         column: x => x.UtilizationId,
                         principalTable: "Utilization",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FundSourceTrustFund",
+                columns: table => new
+                {
+                    FundSourceTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FundSourceTrustFundTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTrustFundTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespoId = table.Column<int>(type: "int", nullable: false),
+                    PrexcId = table.Column<int>(type: "int", nullable: false),
+                    PapTypeID = table.Column<int>(type: "int", nullable: true),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
+                    AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    FundId = table.Column<int>(type: "int", nullable: false),
+                    BeginningBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RemainingBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ObligatedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UtilizedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RealignmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetAllotmenTrustFundId = table.Column<int>(type: "int", nullable: true),
+                    BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSourceTrustFund", x => x.FundSourceTrustFundId);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_AllotmentClass_AllotmentClassId",
+                        column: x => x.AllotmentClassId,
+                        principalTable: "AllotmentClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_Appropriation_AppropriationId",
+                        column: x => x.AppropriationId,
+                        principalTable: "Appropriation",
+                        principalColumn: "AppropriationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_BudgetAllotmentTrustFund_BudgetAllotmentTrustFundId",
+                        column: x => x.BudgetAllotmentTrustFundId,
+                        principalTable: "BudgetAllotmentTrustFund",
+                        principalColumn: "BudgetAllotmentTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_Fund_FundId",
+                        column: x => x.FundId,
+                        principalTable: "Fund",
+                        principalColumn: "FundId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_PapType_PapTypeID",
+                        column: x => x.PapTypeID,
+                        principalTable: "PapType",
+                        principalColumn: "PapTypeID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_RespoCenter_RespoId",
+                        column: x => x.RespoId,
+                        principalTable: "RespoCenter",
+                        principalColumn: "RespoId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UacsTrustFund",
+                columns: table => new
+                {
+                    UacsTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Account_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Expense_code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    uacs_type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTrustFundId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UacsTrustFund", x => x.UacsTrustFundId);
+                    table.ForeignKey(
+                        name: "FK_UacsTrustFund_FundSourceTrustFund_FundSourceTrustFundId",
+                        column: x => x.FundSourceTrustFundId,
+                        principalTable: "FundSourceTrustFund",
+                        principalColumn: "FundSourceTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FundSourceAmountTrustFund",
+                columns: table => new
+                {
+                    FundSourceAmountTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UacsId = table.Column<int>(type: "int", nullable: false),
+                    BeginningBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RemainingBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RealignmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceAmountTokenTrustFund = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTokenTrustFund = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: false),
+                    FundSourceTrustFundId = table.Column<int>(type: "int", nullable: true),
+                    UacsTrustFundId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSourceAmountTrustFund", x => x.FundSourceAmountTrustFundId);
+                    table.ForeignKey(
+                        name: "FK_FundSourceAmountTrustFund_FundSourceTrustFund_FundSourceTrustFundId",
+                        column: x => x.FundSourceTrustFundId,
+                        principalTable: "FundSourceTrustFund",
+                        principalColumn: "FundSourceTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSourceAmountTrustFund_UacsTrustFund_UacsTrustFundId",
+                        column: x => x.UacsTrustFundId,
+                        principalTable: "UacsTrustFund",
+                        principalColumn: "UacsTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FundsRealignmentTrustFund",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FundSourceAmountTrustFundId = table.Column<int>(type: "int", nullable: true),
+                    RealignmentTo = table.Column<int>(type: "int", nullable: false),
+                    RealignmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceId = table.Column<int>(type: "int", nullable: true),
+                    FundSourceTrustFundId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundsRealignmentTrustFund", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FundsRealignmentTrustFund_FundSourceAmountTrustFund_FundSourceAmountTrustFundId",
+                        column: x => x.FundSourceAmountTrustFundId,
+                        principalTable: "FundSourceAmountTrustFund",
+                        principalColumn: "FundSourceAmountTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundsRealignmentTrustFund_FundSourceTrustFund_FundSourceTrustFundId",
+                        column: x => x.FundSourceTrustFundId,
+                        principalTable: "FundSourceTrustFund",
+                        principalColumn: "FundSourceTrustFundId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1159,18 +1291,18 @@ namespace fmis.Migrations
                 columns: new[] { "Id", "Account_Code", "Allotment_Class", "CreatedAt", "Desc", "Fund_Code", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, "300", "CO", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9996), "Capital Outlay", "06", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9997) },
-                    { 2, "200", "MOOE", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9993), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9994) },
-                    { 1, "100", "PS", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9985), "Personnel Services", "01", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9990) }
+                    { 3, "300", "CO", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5165), "Capital Outlay", "06", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5166) },
+                    { 2, "200", "MOOE", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5162), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5163) },
+                    { 1, "100", "PS", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5155), "Personnel Services", "01", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5159) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Appropriation",
-                columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "UpdatedAt" },
+                columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "CreatedBy", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "CURRENT", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(60), new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(8095) },
-                    { 2, "CONAP", new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(8421), new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(8425) }
+                    { 1, "CURRENT", new DateTime(2022, 2, 21, 9, 41, 41, 590, DateTimeKind.Local).AddTicks(4710), null, new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(3343), null },
+                    { 2, "CONAP", new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(3650), null, new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(3655), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1303,11 +1435,6 @@ namespace fmis.Migrations
                 column: "BudgetAllotmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FundSource_BudgetAllotmentTrustFundId",
-                table: "FundSource",
-                column: "BudgetAllotmentTrustFundId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FundSource_FundId",
                 table: "FundSource",
                 column: "FundId");
@@ -1358,6 +1485,51 @@ namespace fmis.Migrations
                 column: "UacsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FundSourceAmountTrustFund_FundSourceTrustFundId",
+                table: "FundSourceAmountTrustFund",
+                column: "FundSourceTrustFundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceAmountTrustFund_UacsTrustFundId",
+                table: "FundSourceAmountTrustFund",
+                column: "UacsTrustFundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_AllotmentClassId",
+                table: "FundSourceTrustFund",
+                column: "AllotmentClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_AppropriationId",
+                table: "FundSourceTrustFund",
+                column: "AppropriationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_BudgetAllotmentTrustFundId",
+                table: "FundSourceTrustFund",
+                column: "BudgetAllotmentTrustFundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_FundId",
+                table: "FundSourceTrustFund",
+                column: "FundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_PapTypeID",
+                table: "FundSourceTrustFund",
+                column: "PapTypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_PrexcId",
+                table: "FundSourceTrustFund",
+                column: "PrexcId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundSourceTrustFund_RespoId",
+                table: "FundSourceTrustFund",
+                column: "RespoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FundsRealignment_FundSourceAmountId",
                 table: "FundsRealignment",
                 column: "FundSourceAmountId");
@@ -1366,6 +1538,16 @@ namespace fmis.Migrations
                 name: "IX_FundsRealignment_FundSourceId",
                 table: "FundsRealignment",
                 column: "FundSourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundsRealignmentTrustFund_FundSourceAmountTrustFundId",
+                table: "FundsRealignmentTrustFund",
+                column: "FundSourceAmountTrustFundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundsRealignmentTrustFund_FundSourceTrustFundId",
+                table: "FundsRealignmentTrustFund",
+                column: "FundSourceTrustFundId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ObligationAmount_FundSourceId",
@@ -1499,6 +1681,11 @@ namespace fmis.Migrations
                 column: "UtilizationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UacsTrustFund_FundSourceTrustFundId",
+                table: "UacsTrustFund",
+                column: "FundSourceTrustFundId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UtilizationAmount_FundSourceId",
                 table: "UtilizationAmount",
                 column: "FundSourceId");
@@ -1528,6 +1715,14 @@ namespace fmis.Migrations
                 principalTable: "SummaryReport",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_FundSourceTrustFund_Prexc_PrexcId",
+                table: "FundSourceTrustFund",
+                column: "PrexcId",
+                principalTable: "Prexc",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Sub_allotment_Prexc_prexcId",
@@ -1585,20 +1780,12 @@ namespace fmis.Migrations
                 table: "BudgetAllotment");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_BudgetAllotmentTrustFund_Yearly_reference_YearlyReferenceId",
-                table: "BudgetAllotmentTrustFund");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_BudgetAllotment_BudgetAllotmentId",
                 table: "FundSource");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Sub_allotment_BudgetAllotment_BudgetAllotmentId",
                 table: "Sub_allotment");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_FundSource_BudgetAllotmentTrustFund_BudgetAllotmentTrustFundId",
-                table: "FundSource");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_FundSource_Obligation_ObligationId",
@@ -1671,6 +1858,9 @@ namespace fmis.Migrations
                 name: "FundsRealignment");
 
             migrationBuilder.DropTable(
+                name: "FundsRealignmentTrustFund");
+
+            migrationBuilder.DropTable(
                 name: "Logs");
 
             migrationBuilder.DropTable(
@@ -1698,9 +1888,6 @@ namespace fmis.Migrations
                 name: "SubAllotment_Realignment");
 
             migrationBuilder.DropTable(
-                name: "UacsTrustFund");
-
-            migrationBuilder.DropTable(
                 name: "UtilizationAmount");
 
             migrationBuilder.DropTable(
@@ -1713,6 +1900,9 @@ namespace fmis.Migrations
                 name: "FundSourceAmount");
 
             migrationBuilder.DropTable(
+                name: "FundSourceAmountTrustFund");
+
+            migrationBuilder.DropTable(
                 name: "Ors_head");
 
             migrationBuilder.DropTable(
@@ -1720,6 +1910,15 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Suballotment_amount");
+
+            migrationBuilder.DropTable(
+                name: "UacsTrustFund");
+
+            migrationBuilder.DropTable(
+                name: "FundSourceTrustFund");
+
+            migrationBuilder.DropTable(
+                name: "BudgetAllotmentTrustFund");
 
             migrationBuilder.DropTable(
                 name: "AllotmentClass");
@@ -1735,9 +1934,6 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "BudgetAllotment");
-
-            migrationBuilder.DropTable(
-                name: "BudgetAllotmentTrustFund");
 
             migrationBuilder.DropTable(
                 name: "Obligation");

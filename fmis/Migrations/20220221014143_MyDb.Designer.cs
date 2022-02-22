@@ -10,7 +10,7 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220218021641_MyDb")]
+    [Migration("20220221014143_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,8 +234,14 @@ namespace fmis.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AppropriationId");
 
@@ -246,15 +252,15 @@ namespace fmis.Migrations
                         {
                             AppropriationId = 1,
                             AppropriationSource = "CURRENT",
-                            CreatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(60),
-                            UpdatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(8095)
+                            CreatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 590, DateTimeKind.Local).AddTicks(4710),
+                            UpdatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(3343)
                         },
                         new
                         {
                             AppropriationId = 2,
                             AppropriationSource = "CONAP",
-                            CreatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(8421),
-                            UpdatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(8425)
+                            CreatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(3650),
+                            UpdatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(3655)
                         });
                 });
 
@@ -484,6 +490,129 @@ namespace fmis.Migrations
                         });
                 });
 
+            modelBuilder.Entity("fmis.Models.FundSourceAmountTrustFund", b =>
+                {
+                    b.Property<int>("FundSourceAmountTrustFundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("BeginningBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("BudgetAllotmentTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FundSourceAmountTokenTrustFund")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FundSourceTokenTrustFund")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("FundSourceTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RealignmentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("RemainingBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UacsId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UacsTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FundSourceAmountTrustFundId");
+
+                    b.HasIndex("FundSourceTrustFundId");
+
+                    b.HasIndex("UacsTrustFundId");
+
+                    b.ToTable("FundSourceAmountTrustFund");
+                });
+
+            modelBuilder.Entity("fmis.Models.FundSourceTrustFund", b =>
+                {
+                    b.Property<int>("FundSourceTrustFundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AllotmentClassId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AppropriationId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("BeginningBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("BudgetAllotmenTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BudgetAllotmentTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FundId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FundSourceTrustFundTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FundSourceTrustFundTitleCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ObligatedAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("PapTypeID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrexcId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RealignmentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("RemainingBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RespoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UtilizedAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FundSourceTrustFundId");
+
+                    b.HasIndex("AllotmentClassId");
+
+                    b.HasIndex("AppropriationId");
+
+                    b.HasIndex("BudgetAllotmentTrustFundId");
+
+                    b.HasIndex("FundId");
+
+                    b.HasIndex("PapTypeID");
+
+                    b.HasIndex("PrexcId");
+
+                    b.HasIndex("RespoId");
+
+                    b.ToTable("FundSourceTrustFund");
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.Property<int>("Id")
@@ -524,6 +653,43 @@ namespace fmis.Migrations
                     b.ToTable("FundsRealignment");
                 });
 
+            modelBuilder.Entity("fmis.Models.FundsRealignmentTrustFund", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("FundSourceAmountTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FundSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FundSourceTrustFundId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RealignmentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RealignmentTo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundSourceAmountTrustFundId");
+
+                    b.HasIndex("FundSourceTrustFundId");
+
+                    b.ToTable("FundsRealignmentTrustFund");
+                });
+
             modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>
                 {
                     b.Property<int>("Id")
@@ -559,30 +725,30 @@ namespace fmis.Migrations
                             Id = 1,
                             Account_Code = "100",
                             Allotment_Class = "PS",
-                            CreatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9985),
+                            CreatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5155),
                             Desc = "Personnel Services",
                             Fund_Code = "01",
-                            UpdatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9990)
+                            UpdatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5159)
                         },
                         new
                         {
                             Id = 2,
                             Account_Code = "200",
                             Allotment_Class = "MOOE",
-                            CreatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9993),
+                            CreatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5162),
                             Desc = "Maintenance and Other Operating Expenses",
                             Fund_Code = "02",
-                            UpdatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9994)
+                            UpdatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5163)
                         },
                         new
                         {
                             Id = 3,
                             Account_Code = "300",
                             Allotment_Class = "CO",
-                            CreatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9996),
+                            CreatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5165),
                             Desc = "Capital Outlay",
                             Fund_Code = "06",
-                            UpdatedAt = new DateTime(2022, 2, 18, 10, 16, 40, 93, DateTimeKind.Local).AddTicks(9997)
+                            UpdatedAt = new DateTime(2022, 2, 21, 9, 41, 41, 591, DateTimeKind.Local).AddTicks(5166)
                         });
                 });
 
@@ -603,9 +769,6 @@ namespace fmis.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("BudgetAllotmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BudgetAllotmentTrustFundId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -666,8 +829,6 @@ namespace fmis.Migrations
                     b.HasIndex("AppropriationId");
 
                     b.HasIndex("BudgetAllotmentId");
-
-                    b.HasIndex("BudgetAllotmentTrustFundId");
 
                     b.HasIndex("FundId");
 
@@ -1467,6 +1628,9 @@ namespace fmis.Migrations
                     b.Property<string>("Expense_code")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("FundSourceTrustFundId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -1480,6 +1644,8 @@ namespace fmis.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UacsTrustFundId");
+
+                    b.HasIndex("FundSourceTrustFundId");
 
                     b.ToTable("UacsTrustFund");
                 });
@@ -1838,6 +2004,76 @@ namespace fmis.Migrations
                     b.Navigation("Appropriation");
                 });
 
+            modelBuilder.Entity("fmis.Models.FundSourceAmountTrustFund", b =>
+                {
+                    b.HasOne("fmis.Models.FundSourceTrustFund", "FundSourceTrustFund")
+                        .WithMany("FundSourceAmountTrustFund")
+                        .HasForeignKey("FundSourceTrustFundId");
+
+                    b.HasOne("fmis.Models.UacsTrustFund", "UacsTrustFund")
+                        .WithMany()
+                        .HasForeignKey("UacsTrustFundId");
+
+                    b.Navigation("FundSourceTrustFund");
+
+                    b.Navigation("UacsTrustFund");
+                });
+
+            modelBuilder.Entity("fmis.Models.FundSourceTrustFund", b =>
+                {
+                    b.HasOne("fmis.Models.John.AllotmentClass", "AllotmentClass")
+                        .WithMany()
+                        .HasForeignKey("AllotmentClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.Appropriation", "Appropriation")
+                        .WithMany()
+                        .HasForeignKey("AppropriationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.BudgetAllotmentTrustFund", "BudgetAllotmentTrustFund")
+                        .WithMany("FundSourceTrustFund")
+                        .HasForeignKey("BudgetAllotmentTrustFundId");
+
+                    b.HasOne("fmis.Models.Fund", "Fund")
+                        .WithMany()
+                        .HasForeignKey("FundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.Budget.PapType", "PapType")
+                        .WithMany()
+                        .HasForeignKey("PapTypeID");
+
+                    b.HasOne("fmis.Models.Prexc", "Prexc")
+                        .WithMany()
+                        .HasForeignKey("PrexcId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fmis.Models.RespoCenter", "RespoCenter")
+                        .WithMany()
+                        .HasForeignKey("RespoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AllotmentClass");
+
+                    b.Navigation("Appropriation");
+
+                    b.Navigation("BudgetAllotmentTrustFund");
+
+                    b.Navigation("Fund");
+
+                    b.Navigation("PapType");
+
+                    b.Navigation("Prexc");
+
+                    b.Navigation("RespoCenter");
+                });
+
             modelBuilder.Entity("fmis.Models.FundsRealignment", b =>
                 {
                     b.HasOne("fmis.Models.John.FundSourceAmount", "FundSourceAmount")
@@ -1851,6 +2087,21 @@ namespace fmis.Migrations
                     b.Navigation("FundSource");
 
                     b.Navigation("FundSourceAmount");
+                });
+
+            modelBuilder.Entity("fmis.Models.FundsRealignmentTrustFund", b =>
+                {
+                    b.HasOne("fmis.Models.FundSourceAmountTrustFund", "FundSourceAmountTrustFund")
+                        .WithMany()
+                        .HasForeignKey("FundSourceAmountTrustFundId");
+
+                    b.HasOne("fmis.Models.FundSourceTrustFund", "FundSourceTrustFund")
+                        .WithMany("FundsRealignmentTrustFund")
+                        .HasForeignKey("FundSourceTrustFundId");
+
+                    b.Navigation("FundSourceAmountTrustFund");
+
+                    b.Navigation("FundSourceTrustFund");
                 });
 
             modelBuilder.Entity("fmis.Models.John.FundSource", b =>
@@ -1870,10 +2121,6 @@ namespace fmis.Migrations
                     b.HasOne("fmis.Models.silver.BudgetAllotment", "BudgetAllotment")
                         .WithMany("FundSources")
                         .HasForeignKey("BudgetAllotmentId");
-
-                    b.HasOne("fmis.Models.BudgetAllotmentTrustFund", null)
-                        .WithMany("FundSources")
-                        .HasForeignKey("BudgetAllotmentTrustFundId");
 
                     b.HasOne("fmis.Models.Fund", "Fund")
                         .WithMany("FundSources")
@@ -2116,6 +2363,13 @@ namespace fmis.Migrations
                         .HasForeignKey("UtilizationId");
                 });
 
+            modelBuilder.Entity("fmis.Models.UacsTrustFund", b =>
+                {
+                    b.HasOne("fmis.Models.FundSourceTrustFund", null)
+                        .WithMany("UacsTrustFund")
+                        .HasForeignKey("FundSourceTrustFundId");
+                });
+
             modelBuilder.Entity("fmis.Models.UtilizationAmount", b =>
                 {
                     b.HasOne("fmis.Models.John.FundSource", "fundSource")
@@ -2185,7 +2439,7 @@ namespace fmis.Migrations
 
             modelBuilder.Entity("fmis.Models.BudgetAllotmentTrustFund", b =>
                 {
-                    b.Navigation("FundSources");
+                    b.Navigation("FundSourceTrustFund");
                 });
 
             modelBuilder.Entity("fmis.Models.Fund", b =>
@@ -2195,6 +2449,15 @@ namespace fmis.Migrations
                     b.Navigation("FundSources");
 
                     b.Navigation("Sub_Allotments");
+                });
+
+            modelBuilder.Entity("fmis.Models.FundSourceTrustFund", b =>
+                {
+                    b.Navigation("FundSourceAmountTrustFund");
+
+                    b.Navigation("FundsRealignmentTrustFund");
+
+                    b.Navigation("UacsTrustFund");
                 });
 
             modelBuilder.Entity("fmis.Models.John.AllotmentClass", b =>
