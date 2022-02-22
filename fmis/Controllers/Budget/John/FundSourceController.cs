@@ -81,7 +81,6 @@ namespace fmis.Controllers.Budget.John
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
-
             return View(budget_allotment);
         }
 
@@ -393,7 +392,7 @@ namespace fmis.Controllers.Budget.John
 
         //EXPORTING PDF FILE
 
-        public FileResult Export(String id)
+ /*       public FileResult Export(String id)
         {
             Int32 Id = Convert.ToInt32(id);
             var ors = _MyDbContext.Obligation.Where(p => p.Id == Id).FirstOrDefault();
@@ -543,7 +542,7 @@ namespace fmis.Controllers.Budget.John
 
                 //Loop the data
 
-                /*var ors_uacs = (from uacs_list in db.ors_expense_codes
+                *//*var ors_uacs = (from uacs_list in db.ors_expense_codes
                                 join expensecodes in db.uacs on uacs_list.uacs equals expensecodes.Title
                                 where uacs_list.ors_obligation == ors.ID
                                 select new
@@ -570,7 +569,7 @@ namespace fmis.Controllers.Budget.John
                     str_amt += u.amount.ToString("N", new CultureInfo("en-US")) + "\n";
                     total_amt += u.amount;
                     disbursements += u.net_amt + u.tax_amt + u.others;
-                }*/
+                }*//*
 
                 //
 
@@ -654,7 +653,7 @@ namespace fmis.Controllers.Budget.John
 
                 //var ors_requesting_head = db.ors_head_request.Where(p => p.Name == ors.head_requesting_office).FirstOrDefault();
 
-                /*var ors_fsh = (from list in db.ors
+                *//*var ors_fsh = (from list in db.ors
                                join allotment in db.allotments on list.allotment equals allotment.ID
                                join fsh in db.fsh on allotment.ID.ToString() equals fsh.allotment
                                where fsh.Code == ors.FundSource && fsh.allotment == allotment.ID.ToString()
@@ -662,7 +661,7 @@ namespace fmis.Controllers.Budget.John
                                select new
                                {
                                    ors_head = fsh.ors_head
-                               }).FirstOrDefault();*/
+                               }).FirstOrDefault();*//*
 
 
                 //var ors_head = db.ors_head_request.Where(p => p.ID.ToString() == ors_fsh.ors_head.ToString()).FirstOrDefault();
@@ -781,6 +780,6 @@ namespace fmis.Controllers.Budget.John
 
 
             }
-        }
+        }*/
     }
 }

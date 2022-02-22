@@ -16,6 +16,7 @@ namespace fmis.Models
         public string UpdatedBy { get; set; }
         public List<FundSource> FundSources { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
+        public List <FundSourceTrustFund> FundSourceTrustFund { get; set; }
 
         public virtual ICollection<Fund> Funds { get; set; }
     }

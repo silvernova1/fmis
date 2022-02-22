@@ -48,8 +48,15 @@ namespace fmis.Controllers.Budget.John
             date2.ToString("yyyy-MM-dd 23:59:59");
             DateTime dateTimeNow = date2;
             DateTime dateTomorrow = dateTimeNow.Date.AddDays(1);
+            /*var lastDayOfMonth = DateTime.DaysInMonth(date1.Year, date1.Month);*/
 
-            /*var dateTime = _MyDbContext.FundSources.FirstOrDefault().CreatedAt;*/
+
+            //LASTDAY OF THE MONTH
+            var firstDayOfMonth = new DateTime(date1.Year, date1.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            DateTime lastday = Convert.ToDateTime(lastDayOfMonth);
+            lastday.ToString("yyyy-MM-dd 23:59:59");
+
 
             var dateTime = _MyDbContext.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow).Select(y => new { y.FundSourceTitle} );
 
@@ -58,92 +65,20 @@ namespace fmis.Controllers.Budget.John
 
 
             DataTable dt = new DataTable("Saob Report");
-            /*dt.Columns.AddRange(new DataColumn[11] { new DataColumn("P/A/P / ALLOTMENT CLASS /"),
-                                            new DataColumn("EXPENSES CODE"),
-                                            new DataColumn("ALLOTMENT RECEIVED"),
-                                            new DataColumn("REALIGNMENT"),
-                                            new DataColumn("TRANSFER TO"),
-                                            new DataColumn("TOTAL AFTER REALIGNMENT"),
-                                            new DataColumn("DECEMBER"),
-                                            new DataColumn("AS OF DECEMBER"),
-                                            new DataColumn("UNOBLIGATED BALANCE OF ALLOTMENT"),
-                                            new DataColumn("% OF UTILIZATION"),
-                                            new DataColumn("DISBURSEMENT As of December")});*/
-            /*  dt.Columns.Add("P/A/P / ALLOTMENT CLASS /");
-              dt.Columns.Add("EXPENSES CODE");
-              dt.Columns.Add("ALLOTMENT RECEIVED");
-              dt.Columns.Add("REALIGNMENT");
-              dt.Columns.Add("TRANSFER TO");
-              dt.Columns.Add("TOTAL AFTER REALIGNMENT");
-              dt.Columns.Add("DECEMBER");
-              dt.Columns.Add("AS OF DECEMBER");
-              dt.Columns.Add("UNOBLIGATED BALANCE OF ALLOTMENT");
-              dt.Columns.Add("% OF UTILIZATION");
-              dt.Columns.Add("DISBURSEMENT As of December");*/
-
-
-            //var ballots = _MyDbContext.Budget_allotments;
-
-
-
-            /*  var ballots = (from ba in _MyDbContext.Budget_allotments
-                             join fs in _MyDbContext.FundSources
-                             on ba.BudgetAllotmentId equals fs.Budget_allotmentBudgetAllotmentId
-                             join fsa in _MyDbContext.FundSourceAmount
-                             on fs.FundSourceId equals fsa.FundSourceId
-                             join U in _MyDbContext.Uacs
-                             on fsa.Account_title equals U.Account_title
-                             select new
-                             {
-                                 BaTitle = ba.Allotment_title,
-                                 BaCode = ba.Allotment_code,
-                                 SelectedFs = fs.Prexc.pap_code1,
-                                 fsTitle = fs.FundSourceTitle,
-                                 fsaAccTitle = fsa.Account_title,
-                                 fsaAmount = fsa.Amount,
-                                 UaccCode = U.Expense_code
-                             }).ToList();*/
-
-
-
-
-
-
-            /*var customers = from customer in _MyDbContext.FundSources.ToList()
-                            select customer;*/
-
 
             var ballots = from ballot in _MyDbContext.Budget_allotments.ToList()
                           select ballot;
 
-            /*foreach (var customer in customers)
-            {
-                dt.Rows.Add(customer.FundSourceId, customer.FundSourceTitle, customer.FundSourceTitleCode);
-            }*/
 
 
             using (XLWorkbook wb = new XLWorkbook())
             {
 
-                /*var worksheet = wb.Worksheets.Add("Users");
-                var currentRow = 1;*/
-
-                /*  worksheet.Cell(currentRow, 1).Value = "Id";
-                  worksheet.Cell(currentRow, 2).Value = "Username";*/
-
-                /*var customers = from customer in _MyDbContext.FundSourceAmount.Take(10)
-                                select customer;
-
-                foreach (var user in customers)
-                {
-                    currentRow++;
-                    worksheet.Cell(currentRow, 1).Value = user.Account_title;
-                    worksheet.Cell(currentRow, 2).Value = user.Amount;
-                }*/
+ 
 
 
                 var ws = wb.Worksheets.Add(dt);
-                ws.Columns().AdjustToContents();
+                ws.Column(7).AdjustToContents();
                 ws.Worksheet.SheetView.FreezeColumns(2);
                 ws.Worksheet.SheetView.FreezeRows(13);
 
@@ -156,49 +91,10 @@ namespace fmis.Controllers.Budget.John
                 Double suballotment_total = 0;
                 Double GrandTotal = 0;
 
-                //var co = 2;
-                //var ro = 1;
+
                 var wsFreeze = ws.Worksheet.Cell("Freeze View");
 
 
-                /*ws.Cell(++ro, co).Value = "Horizontal = Right";
-                ws.Cell(ro, co).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-
-                ws.Cell(++ro, co).Value = "Indent = 2";
-                ws.Cell(ro, co).Style.Alignment.Indent = 2;
-
-                ws.Cell(++ro, co).Value = "JustifyLastLine = true";
-                ws.Cell(ro, co).Style.Alignment.JustifyLastLine = true;
-
-                ws.Cell(++ro, co).Value = "ReadingOrder = ContextDependent";
-                ws.Cell(ro, co).Style.Alignment.ReadingOrder = XLAlignmentReadingOrderValues.ContextDependent;
-
-                ws.Cell(++ro, co).Value = "RelativeIndent = 2";
-                ws.Cell(ro, co).Style.Alignment.RelativeIndent = 2;
-
-                ws.Cell(++ro, co).Value = "ShrinkToFit = true";
-                ws.Cell(ro, co).Style.Alignment.ShrinkToFit = true;
-
-                ws.Cell(++ro, co).Value = "TextRotation = 45";
-                ws.Cell(ro, co).Style.Alignment.TextRotation = 45;
-
-                ws.Cell(++ro, co).Value = "TopToBottom = true";
-                ws.Cell(ro, co).Style.Alignment.TopToBottom = true;
-
-                ws.Cell(++ro, co).Value = "Vertical = Center";
-                ws.Cell(ro, co).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-
-                ws.Cell(++ro, co).Value = "WrapText = true";
-                ws.Cell(ro, co).Style.Alignment.WrapText = true;*/
-
-                /*  int row = 1;
-                  int col = 1;*/
-
-
-
-                //  wsFreeze.Worksheet.SheetView.FreezeColumns();
-
-                //ws.Range(ws.Cell(row, col++), ws.Cell(row, col++)).Merge();
 
                 ws.Worksheet.SheetView.FreezeColumns(1);
                 ws.Worksheet.SheetView.FreezeRows(13);
@@ -207,14 +103,20 @@ namespace fmis.Controllers.Budget.John
                 range.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
 
 
-                // ws.PageSetup.CenterHorizontally = 1;
-
-
-                ws.Cell("A7").RichText.AddText("Department:");
+                //ws.Cell("A7").RichText.AddText("Department:");
                 ws.Cell("A8").RichText.AddText("Agency/OU:");
                 ws.Cell("A9").RichText.AddText("Fund");
                 ws.Cell("B7").RichText.AddText("HEALTH");
                 ws.Cell("B8").RichText.AddText("REGIONAL OFFICE VII");
+                ws.Range("A7:D7").Merge();
+                IXLRange titleRange = ws.Range("A7:D7");
+                //ws.Range("A7:D7").Value = "Department:";
+                titleRange.Cells().Style.Alignment.SetWrapText(true);
+                titleRange.Value = "Department:";
+                ws.Range("A8:D8").Merge();
+                ws.Range("A8:D8").Value = "Agency /OU:";
+                ws.Range("A9:D9").Merge();
+                ws.Range("A9:D9").Value = "Fund";
                 /*ws.Range("A7:C7").Merge();
                 ws.Range("A8:C8").Merge();
                 ws.Range("A9:C9").Merge();*/
@@ -411,7 +313,6 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Desc;
                     currentRow++;
 
-
                     var query = (from fundsource in _MyDbContext.FundSources
                                  join prexc in _MyDbContext.Prexc
                                  on fundsource.PrexcId equals prexc.Id
@@ -423,6 +324,8 @@ namespace fmis.Controllers.Budget.John
 
                     foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
                     {
+
+                        /*if(fundSource.CreatedAt >= date1 && fundSource.CreatedAt <= lastDayOfMonth)*/
 
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 1;
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
@@ -468,7 +371,12 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-                            //OBLIGATED
+                            //OBLIGATED (AS OF THE MONTH)
+                            ws.Cell(currentRow, 7).Value = _MyDbContext.ObligationAmount.Where(x=>x.CreatedAt >= date1 && x.CreatedAt <= lastday).FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Amount.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                            //OBLIGATED (AST AT)
                             ws.Cell(currentRow, 8).Value = _MyDbContext.ObligationAmount.FirstOrDefault(x=>x.UacsId == fundsource_amount.UacsId)?.Amount.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -478,6 +386,8 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
+
+                            //REALIGNMENT DATA
                             foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
                             //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
                             {
@@ -487,6 +397,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
                                 ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+
+                                ws.Cell(currentRow, 3).Value = "(0.00)";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             currentRow++;
                             total = (double)fundsource_amount.beginning_balance;                    
@@ -500,6 +414,7 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
