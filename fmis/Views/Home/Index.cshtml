@@ -48,14 +48,16 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label></center>
                         <center><h5>OBLIGATED</h5> </center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label></center>
+                        
                     </div>
                 </fieldset>
                 <fieldset>
                     <div>
+                        <center><h5>DISBURSED</h5> </center>
                         <center><label style="font-size: 18pt;">₱0.00</label></center>
-                        <center><h5>(DISBURSED)</h5> </center>
+                        
                     </div>                    
                 </fieldset>
             </form>
@@ -73,14 +75,16 @@
                 <!-- <legend>Form</legend> -->
                 <fieldset>
                     <div class="">
-                        <center><label style="font-size: 18pt;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label></center>
                         <center><h5>BALANCE</h5> </center>
+                        <center><label style="font-size: 18pt;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label></center>
+                        
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
+                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
                         <center><label style="font-size: 18pt;">₱0.00</label></center>
-                        <center><h5>(UNPAID OBLIGATIONS)</h5> </center>
+                        
                     </div>
                 </fieldset>
             </form>

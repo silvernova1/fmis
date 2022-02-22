@@ -534,7 +534,9 @@ namespace fmis.Migrations
                 {
                     BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false)
+                    YearlyReferenceId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -593,6 +595,76 @@ namespace fmis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FundSourceTrustFund",
+                columns: table => new
+                {
+                    FundSourceTrustFundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FundSourceTrustFundTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTrustFundTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespoId = table.Column<int>(type: "int", nullable: false),
+                    PrexcTrustFundId = table.Column<int>(type: "int", nullable: false),
+                    PapTypeID = table.Column<int>(type: "int", nullable: true),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
+                    AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    FundId = table.Column<int>(type: "int", nullable: false),
+                    BeginningBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RemainingBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ObligatedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UtilizedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RealignmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSourceTrustFund", x => x.FundSourceTrustFundId);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_AllotmentClass_AllotmentClassId",
+                        column: x => x.AllotmentClassId,
+                        principalTable: "AllotmentClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_Appropriation_AppropriationId",
+                        column: x => x.AppropriationId,
+                        principalTable: "Appropriation",
+                        principalColumn: "AppropriationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_BudgetAllotmentTrustFund_BudgetAllotmentTrustFundId",
+                        column: x => x.BudgetAllotmentTrustFundId,
+                        principalTable: "BudgetAllotmentTrustFund",
+                        principalColumn: "BudgetAllotmentTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_Fund_FundId",
+                        column: x => x.FundId,
+                        principalTable: "Fund",
+                        principalColumn: "FundId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_PapType_PapTypeID",
+                        column: x => x.PapTypeID,
+                        principalTable: "PapType",
+                        principalColumn: "PapTypeID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_PrexcTrustFund_PrexcTrustFundId",
+                        column: x => x.PrexcTrustFundId,
+                        principalTable: "PrexcTrustFund",
+                        principalColumn: "PrexcTrustFundId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSourceTrustFund_RespoCenter_RespoId",
+                        column: x => x.RespoId,
+                        principalTable: "RespoCenter",
+                        principalColumn: "RespoId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Personal_Information",
                 columns: table => new
                 {
@@ -632,152 +704,6 @@ namespace fmis.Migrations
                         principalTable: "Requesting_office",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FundSource",
-                columns: table => new
-                {
-                    FundSourceId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FundSourceTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RespoId = table.Column<int>(type: "int", nullable: false),
-                    PrexcId = table.Column<int>(type: "int", nullable: false),
-                    PapTypeID = table.Column<int>(type: "int", nullable: true),
-                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
-                    AppropriationId = table.Column<int>(type: "int", nullable: false),
-                    FundId = table.Column<int>(type: "int", nullable: false),
-                    Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    utilized_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
-                    ObligationId = table.Column<int>(type: "int", nullable: true),
-                    SummaryReportId = table.Column<int>(type: "int", nullable: true),
-                    UtilizationId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FundSource", x => x.FundSourceId);
-                    table.ForeignKey(
-                        name: "FK_FundSource_AllotmentClass_AllotmentClassId",
-                        column: x => x.AllotmentClassId,
-                        principalTable: "AllotmentClass",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSource_Appropriation_AppropriationId",
-                        column: x => x.AppropriationId,
-                        principalTable: "Appropriation",
-                        principalColumn: "AppropriationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSource_BudgetAllotment_BudgetAllotmentId",
-                        column: x => x.BudgetAllotmentId,
-                        principalTable: "BudgetAllotment",
-                        principalColumn: "BudgetAllotmentId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSource_Fund_FundId",
-                        column: x => x.FundId,
-                        principalTable: "Fund",
-                        principalColumn: "FundId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSource_Obligation_ObligationId",
-                        column: x => x.ObligationId,
-                        principalTable: "Obligation",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSource_PapType_PapTypeID",
-                        column: x => x.PapTypeID,
-                        principalTable: "PapType",
-                        principalColumn: "PapTypeID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSource_RespoCenter_RespoId",
-                        column: x => x.RespoId,
-                        principalTable: "RespoCenter",
-                        principalColumn: "RespoId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSource_Utilization_UtilizationId",
-                        column: x => x.UtilizationId,
-                        principalTable: "Utilization",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FundSourceTrustFund",
-                columns: table => new
-                {
-                    FundSourceTrustFundId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FundSourceTrustFundTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FundSourceTrustFundTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RespoId = table.Column<int>(type: "int", nullable: false),
-                    PrexcId = table.Column<int>(type: "int", nullable: false),
-                    PapTypeID = table.Column<int>(type: "int", nullable: true),
-                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
-                    AppropriationId = table.Column<int>(type: "int", nullable: false),
-                    FundId = table.Column<int>(type: "int", nullable: false),
-                    BeginningBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RemainingBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ObligatedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    UtilizedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RealignmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BudgetAllotmenTrustFundId = table.Column<int>(type: "int", nullable: true),
-                    BudgetAllotmentTrustFundId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FundSourceTrustFund", x => x.FundSourceTrustFundId);
-                    table.ForeignKey(
-                        name: "FK_FundSourceTrustFund_AllotmentClass_AllotmentClassId",
-                        column: x => x.AllotmentClassId,
-                        principalTable: "AllotmentClass",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSourceTrustFund_Appropriation_AppropriationId",
-                        column: x => x.AppropriationId,
-                        principalTable: "Appropriation",
-                        principalColumn: "AppropriationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSourceTrustFund_BudgetAllotmentTrustFund_BudgetAllotmentTrustFundId",
-                        column: x => x.BudgetAllotmentTrustFundId,
-                        principalTable: "BudgetAllotmentTrustFund",
-                        principalColumn: "BudgetAllotmentTrustFundId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSourceTrustFund_Fund_FundId",
-                        column: x => x.FundId,
-                        principalTable: "Fund",
-                        principalColumn: "FundId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FundSourceTrustFund_PapType_PapTypeID",
-                        column: x => x.PapTypeID,
-                        principalTable: "PapType",
-                        principalColumn: "PapTypeID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FundSourceTrustFund_RespoCenter_RespoId",
-                        column: x => x.RespoId,
-                        principalTable: "RespoCenter",
-                        principalColumn: "RespoId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -868,6 +794,87 @@ namespace fmis.Migrations
                         column: x => x.FundSourceTrustFundId,
                         principalTable: "FundSourceTrustFund",
                         principalColumn: "FundSourceTrustFundId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FundSource",
+                columns: table => new
+                {
+                    FundSourceId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FundSourceTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FundSourceTitleCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RespoId = table.Column<int>(type: "int", nullable: false),
+                    PrexcId = table.Column<int>(type: "int", nullable: false),
+                    PapTypeID = table.Column<int>(type: "int", nullable: true),
+                    AllotmentClassId = table.Column<int>(type: "int", nullable: false),
+                    AppropriationId = table.Column<int>(type: "int", nullable: false),
+                    FundId = table.Column<int>(type: "int", nullable: false),
+                    Beginning_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Remaining_balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    obligated_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    utilized_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    realignment_amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BudgetAllotmentId = table.Column<int>(type: "int", nullable: true),
+                    ObligationId = table.Column<int>(type: "int", nullable: true),
+                    SummaryReportId = table.Column<int>(type: "int", nullable: true),
+                    UtilizationId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundSource", x => x.FundSourceId);
+                    table.ForeignKey(
+                        name: "FK_FundSource_AllotmentClass_AllotmentClassId",
+                        column: x => x.AllotmentClassId,
+                        principalTable: "AllotmentClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSource_Appropriation_AppropriationId",
+                        column: x => x.AppropriationId,
+                        principalTable: "Appropriation",
+                        principalColumn: "AppropriationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSource_BudgetAllotment_BudgetAllotmentId",
+                        column: x => x.BudgetAllotmentId,
+                        principalTable: "BudgetAllotment",
+                        principalColumn: "BudgetAllotmentId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSource_Fund_FundId",
+                        column: x => x.FundId,
+                        principalTable: "Fund",
+                        principalColumn: "FundId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSource_Obligation_ObligationId",
+                        column: x => x.ObligationId,
+                        principalTable: "Obligation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSource_PapType_PapTypeID",
+                        column: x => x.PapTypeID,
+                        principalTable: "PapType",
+                        principalColumn: "PapTypeID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FundSource_RespoCenter_RespoId",
+                        column: x => x.RespoId,
+                        principalTable: "RespoCenter",
+                        principalColumn: "RespoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FundSource_Utilization_UtilizationId",
+                        column: x => x.UtilizationId,
+                        principalTable: "Utilization",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1291,9 +1298,9 @@ namespace fmis.Migrations
                 columns: new[] { "Id", "Account_Code", "Allotment_Class", "CreatedAt", "Desc", "Fund_Code", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, "300", "CO", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(6615), "Capital Outlay", "06", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(6616) },
-                    { 2, "200", "MOOE", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(6612), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(6613) },
-                    { 1, "100", "PS", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(6605), "Personnel Services", "01", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(6609) }
+                    { 3, "300", "CO", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(2163), "Capital Outlay", "06", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(2164) },
+                    { 2, "200", "MOOE", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(2161), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(2162) },
+                    { 1, "100", "PS", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(2156), "Personnel Services", "01", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(2159) }
                 });
 
             migrationBuilder.InsertData(
@@ -1301,8 +1308,8 @@ namespace fmis.Migrations
                 columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "CreatedBy", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "CURRENT", new DateTime(2022, 2, 21, 16, 38, 24, 979, DateTimeKind.Local).AddTicks(6663), null, new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(4830), null },
-                    { 2, "CONAP", new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(5101), null, new DateTime(2022, 2, 21, 16, 38, 24, 980, DateTimeKind.Local).AddTicks(5104), null }
+                    { 1, "CURRENT", new DateTime(2022, 2, 22, 8, 21, 0, 660, DateTimeKind.Local).AddTicks(4738), null, new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(809), null },
+                    { 2, "CONAP", new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(1026), null, new DateTime(2022, 2, 22, 8, 21, 0, 661, DateTimeKind.Local).AddTicks(1029), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1520,9 +1527,9 @@ namespace fmis.Migrations
                 column: "PapTypeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FundSourceTrustFund_PrexcId",
+                name: "IX_FundSourceTrustFund_PrexcTrustFundId",
                 table: "FundSourceTrustFund",
-                column: "PrexcId");
+                column: "PrexcTrustFundId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FundSourceTrustFund_RespoId",
@@ -1717,14 +1724,6 @@ namespace fmis.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_FundSourceTrustFund_Prexc_PrexcId",
-                table: "FundSourceTrustFund",
-                column: "PrexcId",
-                principalTable: "Prexc",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Sub_allotment_Prexc_prexcId",
                 table: "Sub_allotment",
                 column: "prexcId",
@@ -1873,9 +1872,6 @@ namespace fmis.Migrations
                 name: "Personal_Information");
 
             migrationBuilder.DropTable(
-                name: "PrexcTrustFund");
-
-            migrationBuilder.DropTable(
                 name: "RequestingOfficeTrustFund");
 
             migrationBuilder.DropTable(
@@ -1919,6 +1915,9 @@ namespace fmis.Migrations
 
             migrationBuilder.DropTable(
                 name: "BudgetAllotmentTrustFund");
+
+            migrationBuilder.DropTable(
+                name: "PrexcTrustFund");
 
             migrationBuilder.DropTable(
                 name: "AllotmentClass");

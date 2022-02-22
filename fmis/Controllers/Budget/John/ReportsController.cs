@@ -298,6 +298,8 @@ namespace fmis.Controllers.Budget.John
                     .Include(budget_allotment => budget_allotment.FundSources)
                         .ThenInclude(Allotment_class => Allotment_class.AllotmentClass)
                     .Include(budget_allotment => budget_allotment.FundSources)
+                        .ThenInclude(a => a.Appropriation)
+                    .Include(budget_allotment => budget_allotment.FundSources)
                         .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
                         .ThenInclude(uacs => uacs.Uacs);
 
@@ -307,6 +309,11 @@ namespace fmis.Controllers.Budget.John
 
                 foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
+                    ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                    ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().Appropriation.AppropriationSource + "APPROPRIATION";
+                    currentRow++;
+
                     //ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -398,7 +405,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
                                 ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = "(0.00)";
+                                ws.Cell(currentRow, 3).Value = "0.00";
                                 ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
