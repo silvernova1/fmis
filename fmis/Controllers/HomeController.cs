@@ -69,7 +69,8 @@ namespace fmis.Controllers
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             ViewBag.Balance = balance;
 
-            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
+            //var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
+            var allotment = _MyDbCOntext.FundSourceAmount.Where(x => x.BudgetAllotmentId == id).Sum(x => x.beginning_balance) + _MyDbCOntext.Suballotment_amount.Where(x => x.BudgetAllotmentId == id).Sum(s => s.beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);

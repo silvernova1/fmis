@@ -393,7 +393,8 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //UNOBLIGATED BALANCE OF ALLOTMENT
-                            ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance - _MyDbContext.ObligationAmount.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Amount;
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
