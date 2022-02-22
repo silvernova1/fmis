@@ -304,21 +304,33 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(uacs => uacs.Uacs);
 
                // var realignment_amount = 50;
-                
-
+               
 
                 foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
-                    ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                    ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                    ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().Appropriation.AppropriationSource + "APPROPRIATION";
                     currentRow++;
+
 
                     //ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Desc;
                     currentRow++;
+
 
                     var query = (from fundsource in _MyDbContext.FundSources
                                  join prexc in _MyDbContext.Prexc
@@ -332,9 +344,6 @@ namespace fmis.Controllers.Budget.John
                     foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
                     {
 
-                        /*if(fundSource.CreatedAt >= date1 && fundSource.CreatedAt <= lastDayOfMonth)*/
-
-                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 1;
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
@@ -348,21 +357,15 @@ namespace fmis.Controllers.Budget.John
                         //ws.Cell(currentRow, 1).Value = dateTime.FirstOrDefault().FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
-                        /*if(fundSource.FundsRealignment.Count > 0)
-                        {
-
-                            foreach(var amount in fundSource.FundsRealignment) { 
-                            }
-                        }*/
-
-                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
+                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.Where(x=>x.status == "activated"))
                         {
                             total = 0;
                             var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
-                            ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+                            ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
                             ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
@@ -380,6 +383,7 @@ namespace fmis.Controllers.Budget.John
 
                             //OBLIGATED (AS OF THE MONTH)
                             ws.Cell(currentRow, 7).Value = _MyDbContext.ObligationAmount.Where(x=>x.CreatedAt >= date1 && x.CreatedAt <= lastday).FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Amount.ToString("N", new CultureInfo("en-US"));
+                            //ws.Cell(currentRow, 7).Value = _MyDbContext.Obligation.Where(x => x.Date >= date1 && x.CreatedAt <= lastday).FirstOrDefault(x => x.source_id == fundsource_amount.UacsId).ObligationAmounts.FirstOrDefault().Amount;
                             ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -403,11 +407,19 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
-                                ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+                                ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
                                 ws.Cell(currentRow, 3).Value = "0.00";
                                 ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                //REALIGNMENT AMOUNT
+                                ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+
                             }
                             currentRow++;
                             total = (double)fundsource_amount.beginning_balance;                    
@@ -418,7 +430,6 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code;
-
 
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
@@ -438,11 +449,10 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 9).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
-                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                         ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance;
 
                         allotment_total += (double)fundSource.Beginning_balance;
-
 
                         currentRow++;
 
@@ -491,6 +501,30 @@ namespace fmis.Controllers.Budget.John
                         
                     foreach (BudgetAllotment b in saa)
                     {
+
+                        /*ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.OrangePeel;
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 12;
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 1).Value = "CONTINUING APPROPRIATION";
+                        currentRow++;
+
+
+                        //ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Desc;
+                        currentRow++;*/
+
                         foreach (Sub_allotment sa in b.Sub_allotments.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
                         {
                             //Double suballotment_total = 0;
@@ -629,24 +663,6 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 3).Value = suballotment_total.ToString("N", new CultureInfo("en-US"));
 
-
-
-                    /*
-                                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                                        ws.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
-                                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                                        ws.Cell(currentRow, 1).Value = "TOTAL" + " " + budget_allotment.Allotment_code.ToString();
-
-                                        currentRow++;
-                                        currentRow++;
-
-                                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                                        ws.Cell(currentRow, 1).Value = "GRANDTOTAL";*/
                 }
                 currentRow++;
                 currentRow++;
@@ -676,477 +692,13 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 ws.Cell(currentRow, 6).Value = GrandTotal.ToString("N", new CultureInfo("en-US"));
 
-
-
-
-
-                /* foreach (FundSource fundSource in budget_allotment.FundSources)
-                 {
-                     ws.Cell(20, 1).Style.Font.SetBold();
-                     ws.Cell(20, 1).Style.Font.FontSize = 10;
-                     ws.Cell(20, 1).Value = "SUBTOTAL" + " " + fundSource.FundSourceTitle + "-" + budget_allotment.Allotment_code;
-                     ws.Cell(20, 1).Style.Alignment.Indent = 2;
-
-                     ws.Cell(17, 1).Style.Font.SetBold();
-                     ws.Cell(17, 1).Style.Font.FontSize = 10;
-                     ws.Cell(17, 1).Value = fundSource.FundSourceTitle;
-                     ws.Cell(17, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-
-
-                     ws.Cell(16, 1).Value = fundSource.PrexcId;
-                     ws.Cell(16, 1).SetDataType(XLDataType.Number);
-                     ws.Cell(16, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-
-                     foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts)
-                     {
-                         currentRow++;
-
-                         ws.Cell(currentRow, 1).Value = fundsource_amount.Account_title;
-                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-
-                         *//*ws.Cell(currentRow, 2).Value = 
-                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*//*
-
-                         ws.Cell(currentRow, 3).Value = fundsource_amount.Amount;
-                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(currentRow, 6).Value = fundsource_amount.Amount;
-                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(currentRow, 9).Value = fundsource_amount.Amount;
-                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(currentRow, 10).Value = fundsource_amount.Amount;
-                         ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         ws.Cell("C20").Style.Font.SetBold();
-                         ws.Cell("C20").FormulaA1 = "SUM(C18:C19)";
-                         ws.Cell("C20").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell("F20").Style.Font.SetBold();
-                         ws.Cell("F20").FormulaA1 = "SUM(F18:F19)";
-                         ws.Cell("F20").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell("I20").Style.Font.SetBold();
-                         ws.Cell("I20").FormulaA1 = "SUM(I18:I19)";
-                         ws.Cell("I20").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell("J20").Style.Font.SetBold();
-                         ws.Cell("J20").FormulaA1 = "SUM(J18:J19)";
-                         ws.Cell("J20").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-
-                         foreach (Uacs uacs in fundsource_amount.Uacs.Where(uacs=> uacs.Account_title == fundsource_amount.Account_title))
-                         {
-
-                             ws.Cell(currentRow, 2).Value = uacs.Expense_code;
-                             ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-                             *//* currentRow++;
-                              ws.Cell(currentRow, 1).Value = fundsource_amount.Account_title;
-                              ws.Cell(currentRow, 2).Value = fundsource_amount.Account_title;*/
-
-
-
-
-
-                /* var uacsdata = from fs in _MyDbContext.FundSources
-                                join fsa in _MyDbContext.FundSourceAmount
-                                on fs.FundSourceId equals fsa.FundSourceId
-                                select fs;*//*
-
-
-                //  wsFreeze.Worksheet.SheetView.FreezeColumns();
-
-                //ws.Range(ws.Cell(row, col++), ws.Cell(row, col++)).Merge();
-
-
-
-
-                // ws.PageSetup.CenterHorizontally = 1;
-
-
-
-
-
-                //WITH DB DATA
-
-
-
-
-                *//*    foreach (var ballot in ballots)
-                    {*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                /*ws.Cell(16, 1).Value = ballot.SelectedFs;
-                ws.Cell(16, 1).SetDataType(XLDataType.Number);
-                ws.Cell(16, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);*/
-
-                /*ws.Cell(16, 1).Style.Font.SetBold();
-                ws.Cell(16, 1).Style.Font.FontSize = 14;
-                ws.Cell(16, 1).Value = "Total" + " " + ballot.BaTitle;
-                ws.Cell(16, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                ws.Range("A16:B16").Merge();*//*
-
-                //DISBURSEMENT COLUMNS
-              *//*  ws.Cell(16, 11).Style.Font.SetBold();
-                ws.Cell(16, 11).Style.Font.FontSize = 10;
-                ws.Cell(16, 11).Style.NumberFormat.Format = "0.00";
-                ws.Cell(16, 11).Value = "0";
-                ws.Cell(16, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*/
-
-
-
-                /* ws.Cell(17, 1).Style.Font.SetBold();
-                 ws.Cell(17, 1).Style.Font.FontSize = 10;
-                 ws.Cell(17, 1).Value = ballot.fsTitle;
-                 ws.Cell(17, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);*/
-
-
-                /*         ws.Cell(18, 1).Style.Font.FontSize = 14;
-                         ws.Cell(18, 1).Style.Font.FontSize = 10;
-                        // ws.Cell(18, 1).Value = fundsource_amount.Account_title;
-                         ws.Cell(18, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-
-                         ws.Cell(19, 1).Style.Font.FontSize = 14;
-                         ws.Cell(19, 1).Style.Font.FontSize = 10;
-                        // ws.Cell(19, 1).Value = fundsource_amount.Account_title;
-                         ws.Cell(19, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-
-                         ws.Cell(18, 2).Style.Font.FontSize = 14;
-                         ws.Cell(18, 2).Style.Font.FontSize = 10;
-                         ws.Cell(18, 2).Value = ballot.UaccCode;
-                         ws.Cell(18, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-
-                         ws.Cell(18, 3).Style.Font.FontSize = 14;
-                         ws.Cell(18, 3).Style.Font.FontSize = 10;
-                         ws.Cell(18, 3).Value = ballot.fsaAmount;
-                         ws.Cell(18, 3).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(18, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         ws.Cell(18, 6).Style.Font.FontSize = 14;
-                         ws.Cell(18, 6).Style.Font.FontSize = 10;
-                         ws.Cell(18, 6).Value = ballot.fsaAmount;
-                         ws.Cell(18, 6).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(18, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         ws.Cell(18, 9).Style.Font.FontSize = 14;
-                         ws.Cell(18, 9).Style.Font.FontSize = 10;
-                         ws.Cell(18, 9).Value = ballot.fsaAmount;
-                         ws.Cell(18, 9).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(18, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         ws.Cell(18, 10).Style.Font.FontSize = 14;
-                         ws.Cell(18, 10).Style.Font.FontSize = 10;
-                         ws.Cell(18, 10).Value = "0";
-                         ws.Cell(18, 10).Style.NumberFormat.Format = "0.00%";
-                         ws.Cell(18, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         ws.Cell(20, 1).Style.Font.SetBold();
-                         ws.Cell(20, 1).Style.Font.FontSize = 10;
-                         ws.Cell(20, 1).Value = "SUBTOTAL" + " " + ballot.fsTitle + "-" + ballot.BaCode;
-                         ws.Cell(20, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-
-                         ws.Cell("C20").Style.Font.SetBold();
-                         ws.Cell("C20").FormulaA1 = "SUM(C18:C19)";
-
-
-                         ws.Cell(19, 1).Style.Font.FontSize = 14;
-                         ws.Cell(19, 1).Style.Font.FontSize = 10;
-                         ws.Cell(19, 1).Value = ballot.fsaAccTitle;
-                         ws.Cell(19, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-
-                         ws.Cell(19, 2).Style.Font.FontSize = 14;
-                         ws.Cell(19, 2).Style.Font.FontSize = 10;
-                         ws.Cell(19, 2).Value = ballot.UaccCode;
-                         ws.Cell(19, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-
-
-                                             ws.Cell(19, 1).Style.Font.SetBold();
-                                             ws.Cell(19, 1).Style.Font.FontSize = 10;
-                                             ws.Cell(19, 1).Value = "Total" + " " + ballot.BaCode;
-                                             ws.Cell(19, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                         // ws.Range("A15:B15").Merge();
-
-                         ws.Cell(19, 3).Style.Font.FontSize = 10;
-                         ws.Cell(19, 3).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(19, 3).Value = "100";
-                         ws.Cell(19, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         ws.Cell(19, 6).Style.Font.SetBold();
-                         ws.Cell(19, 6).Style.Font.FontSize = 10;
-                         ws.Cell(19, 6).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(19, 6).Value = "100";
-                         ws.Cell(19, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(19, 7).Style.Font.SetBold();
-                         ws.Cell(19, 7).Style.Font.FontSize = 10;
-                         ws.Cell(19, 7).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(19, 7).Value = "0";
-                         ws.Cell(19, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(19, 8).Style.Font.SetBold();
-                         ws.Cell(19, 8).Style.Font.FontSize = 10;
-                         ws.Cell(19, 8).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(19, 8).Value = "0";
-                         ws.Cell(19, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(19, 9).Style.Font.SetBold();
-                         ws.Cell(19, 9).Style.Font.FontSize = 10;
-                         ws.Cell(19, 9).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(19, 9).Value = "100";
-                         ws.Cell(19, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         //DISBURSEMENT COLUMNS
-                         ws.Cell(19, 11).Style.Font.SetBold();
-                         ws.Cell(19, 11).Style.Font.FontSize = 10;
-                         ws.Cell(19, 11).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(19, 11).Value = "0";
-                         ws.Cell(19, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-
-                         ws.Cell(21, 1).Style.Font.SetBold();
-                         ws.Cell(21, 1).Style.Font.FontSize = 12;
-                         ws.Cell(21, 1).Value = "GRAND TOTAL";
-
-
-                         ws.Cell(21, 3).Style.Font.SetBold();
-                         ws.Cell(21, 3).Style.Font.FontSize = 10;
-                         ws.Cell(21, 3).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(21, 3).Value = "0";
-                         ws.Cell(21, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(21, 6).Style.Font.SetBold();
-                         ws.Cell(21, 6).Style.Font.FontSize = 10;
-                         ws.Cell(21, 6).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(21, 6).Value = "0";
-                         ws.Cell(21, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(21, 7).Style.Font.SetBold();
-                         ws.Cell(21, 7).Style.Font.FontSize = 10;
-                         ws.Cell(21, 7).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(21, 7).Value = "0";
-                         ws.Cell(21, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(21, 8).Style.Font.SetBold();
-                         ws.Cell(21, 8).Style.Font.FontSize = 10;
-                         ws.Cell(21, 8).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(21, 8).Value = "0";
-                         ws.Cell(21, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                         ws.Cell(21, 9).Style.Font.SetBold();
-                         ws.Cell(21, 9).Style.Font.FontSize = 10;
-                         ws.Cell(21, 9).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(21, 9).Value = "0";
-                         ws.Cell(21, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                         //DISBURSEMENT COLUMNS
-                         ws.Cell(21, 11).Style.Font.SetBold();
-                         ws.Cell(21, 11).Style.Font.FontSize = 10;
-                         ws.Cell(21, 11).Style.NumberFormat.Format = "0.00";
-                         ws.Cell(21, 11).Value = "0";
-                         ws.Cell(21, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*//*
-            }
-        }
-        }*/
-                //}
-                //}
-
-
-
-                //var CustomCells = ws.Cells().Style.Fill.SetBackgroundColor(XLColor.Gray);
-
-
-                //Cell backgound
-                /*ws.Cell(14, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                foreach (var ballot in ballots)
-                    {
-                    ws.Cell(15, 1).Style.Font.SetBold();
-                    ws.Cell(15, 1).Style.Font.FontSize = 14;
-                    ws.Cell(15, 1).Value = ballot.Allotment_code;
-
-                    ws.Cell(16, 1).Style.Font.SetBold();
-                    ws.Cell(16, 1).Style.Font.FontSize = 14;
-                    ws.Cell(16, 1).Value = "Total" + " " + ballot.Allotment_title;
-                    ws.Cell(16, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    ws.Range("A16:B16").Merge();
-
-                    ws.Cell(16, 11).Style.Font.SetBold();
-                    ws.Cell(16, 11).Style.Font.FontSize = 10;
-                    ws.Cell(16, 11).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(16, 11).Value = "0";
-                    ws.Cell(16, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                    ws.Cell(19, 1).Style.Font.SetBold();
-                    ws.Cell(19, 1).Style.Font.FontSize = 10;
-                    ws.Cell(19, 1).Value = "Total" + " " + ballot.Allotment_title;                  
-                    ws.Cell(19, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    // ws.Range("A15:B15").Merge();
-
-                    ws.Cell(19, 3).Style.Font.SetBold();
-                    ws.Cell(19, 3).Style.Font.FontSize = 10;
-                    ws.Cell(19, 3).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(19, 3).Value = "0";
-                    ws.Cell(19, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(19, 6).Style.Font.SetBold();
-                    ws.Cell(19, 6).Style.Font.FontSize = 10;
-                    ws.Cell(19, 6).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(19, 6).Value = "0";
-                    ws.Cell(19, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(19, 7).Style.Font.SetBold();
-                    ws.Cell(19, 7).Style.Font.FontSize = 10;
-                    ws.Cell(19, 7).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(19, 7).Value = "0";
-                    ws.Cell(19, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(19, 8).Style.Font.SetBold();
-                    ws.Cell(19, 8).Style.Font.FontSize = 10;
-                    ws.Cell(19, 8).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(19, 8).Value = "0";
-                    ws.Cell(19, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(19, 9).Style.Font.SetBold();
-                    ws.Cell(19, 9).Style.Font.FontSize = 10;
-                    ws.Cell(19, 9).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(19, 9).Value = "0";
-                    ws.Cell(19, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(19, 11).Style.Font.SetBold();
-                    ws.Cell(19, 11).Style.Font.FontSize = 10;
-                    ws.Cell(19, 11).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(19, 11).Value = "0";
-                    ws.Cell(19, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-
-                    ws.Cell(21, 1).Style.Font.SetBold();
-                    ws.Cell(21, 1).Style.Font.FontSize = 12;
-                    ws.Cell(21, 1).Value = "GRAND TOTAL";
-
-
-                    ws.Cell(21, 3).Style.Font.SetBold();
-                    ws.Cell(21, 3).Style.Font.FontSize = 10;
-                    ws.Cell(21, 3).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(21, 3).Value = "0";
-                    ws.Cell(21, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(21, 6).Style.Font.SetBold();
-                    ws.Cell(21, 6).Style.Font.FontSize = 10;
-                    ws.Cell(21, 6).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(21, 6).Value = "0";
-                    ws.Cell(21, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(21, 7).Style.Font.SetBold();
-                    ws.Cell(21, 7).Style.Font.FontSize = 10;
-                    ws.Cell(21, 7).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(21, 7).Value = "0";
-                    ws.Cell(21, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(21, 8).Style.Font.SetBold();
-                    ws.Cell(21, 8).Style.Font.FontSize = 10;
-                    ws.Cell(21, 8).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(21, 8).Value = "0";
-                    ws.Cell(21, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(21, 9).Style.Font.SetBold();
-                    ws.Cell(21, 9).Style.Font.FontSize = 10;
-                    ws.Cell(21, 9).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(21, 9).Value = "0";
-                    ws.Cell(21, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                    ws.Cell(21, 11).Style.Font.SetBold();
-                    ws.Cell(21, 11).Style.Font.FontSize = 10;
-                    ws.Cell(21, 11).Style.NumberFormat.Format = "0.00";
-                    ws.Cell(21, 11).Value = "0";
-                    ws.Cell(21, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                }
-
-
-                //var CustomCells = ws.Cells().Style.Fill.SetBackgroundColor(XLColor.Gray);
-
-                ws.Cell(14, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(15, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(16, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(17, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(18, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(19, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(20, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(21, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(22, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(23, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(24, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(25, 1).Style.Fill.BackgroundColor = XLColor.Gray;
-
-                ws.Cell(14, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(15, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(16, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(17, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(18, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(19, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(20, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(21, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(22, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(23, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(24, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(25, 2).Style.Fill.BackgroundColor = XLColor.Gray;
-
-                ws.Cell(14, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(15, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(16, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(17, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(18, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(19, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(20, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(21, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(22, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(23, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(24, 3).Style.Fill.BackgroundColor = XLColor.Gray;
-                ws.Cell(25, 3).Style.Fill.BackgroundColor = XLColor.Gray;*/
-
                 
                 ws.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Saob Report.xlsx");
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "JAN-DEC.xlsx");
                 }
             }
         }
