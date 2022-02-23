@@ -48,7 +48,7 @@
                 </div>
                 <div class="form-group">
                     <label>PAP Title:</label>
-                 @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                    @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
 
             </div>
@@ -57,21 +57,16 @@
                     <label>Responsibility Center:</label>
                     <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
                 </div>
-
                 <div class="form-group">
                     <label>Sub-Allotment Title:</label>
                     <input asp-for="Suballotment_title" class="form-control">
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
-
-
                 <div class="form-group">
                     <label>Suballotment Code:</label>
                     <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
                 </div>
-
-              
             </div>
             <div class="col-md-3">
                 <div class="form-group">
@@ -79,9 +74,12 @@
                     <input type="date" class="form-control">
                     <span class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <input asp-for="Description"  class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
             </div>
-
-
             </div>
             <input type="hidden" id="SubId" />
             <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
@@ -98,7 +96,7 @@
 
 <script>
     $(document).ready(function () {
-        $('.js-example-basic-single').select2();
+        $('.select2').select2();
     });
     get_sbu();
     function get_sbu() {
@@ -166,6 +164,7 @@
     const container = document.getElementById('suballotment_amount_create');
     const hot = new Handsontable(container, {
         data: data,
+        className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
         colWidths: [150, 150],
@@ -176,6 +175,10 @@
                 source: uacs_data_dropdown
             },
             {
+                type: 'text',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
             {
                 //HIDDEN ID

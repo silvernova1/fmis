@@ -109,6 +109,40 @@ namespace fmis.Controllers.Budget.John
             return View(); //open create
         }
 
+        // POST: FundSource/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(FundSource fundSource, int PrexcId, int FundId)
+        {
+            fundSource.CreatedAt = DateTime.Now;
+            fundSource.UpdatedAt = DateTime.Now;
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+            var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
+            var result2 = _MyDbContext.Fund.Where(x => x.FundId == FundId).First();
+
+
+            var fundsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
+
+            fundSource.Beginning_balance = fundsource_amount.Sum(x => x.beginning_balance);
+            fundSource.Remaining_balance = fundsource_amount.Sum(x => x.beginning_balance);
+
+            _FundSourceContext.Add(fundSource);
+            _FundSourceContext.SaveChanges();
+
+            fundsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
+            this._MyDbContext.SaveChanges();
+
+            return RedirectToAction("index", "FundSource", new
+            {
+                AllotmentClassId = fundSource.AllotmentClassId,
+                AppropriationId = fundSource.AppropriationId,
+                BudgetAllotmentId = fundSource.BudgetAllotmentId
+            });
+        }
+
         //get Subcategory based on the category id
         public JsonResult getstatebyid(int id)
         {
@@ -126,9 +160,13 @@ namespace fmis.Controllers.Budget.John
         }
 
         // GET: FundSource/Edit/5
-        public async Task<IActionResult> Edit(int fund_source_id)
+        public async Task<IActionResult> Edit(int fund_source_id, int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+            ViewBag.AllotmentClassId = AllotmentClassId;
+            ViewBag.AppropriationId = AppropriationId;
+            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
                 .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
@@ -144,6 +182,40 @@ namespace fmis.Controllers.Budget.John
             PopulateFundDropDownList();
 
             return View(fundsource);
+        }
+
+
+        // POST: FundSource/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(FundSource fundSource)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
+            var beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
+            var remaining_balance = funsource_amount.Sum(x => x.remaining_balance);
+
+            var fundsource_data = await _MyDbContext.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).AsNoTracking().FirstOrDefaultAsync();
+            fundsource_data.PrexcId = fundSource.PrexcId;
+            fundsource_data.FundId = fundSource.FundId;
+            fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
+            fundsource_data.FundSourceTitleCode = fundSource.FundSourceTitleCode;
+            fundsource_data.RespoId = fundSource.RespoId;
+            fundsource_data.Beginning_balance = beginning_balance;
+            fundsource_data.Remaining_balance = remaining_balance;
+
+            _FundSourceContext.Update(fundsource_data);
+            await _FundSourceContext.SaveChangesAsync();
+
+            return RedirectToAction("Index", "FundSource", new 
+            {
+                AllotmentClassId = fundSource.AllotmentClassId,
+                AppropriationId = fundSource.AppropriationId,
+                BudgetAllotmentId = fundSource.BudgetAllotmentId
+            });
+
         }
 
         [HttpPost]
@@ -172,37 +244,7 @@ namespace fmis.Controllers.Budget.John
             return Json(data);
         }
 
-        // POST: FundSource/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(FundSource fundSource, int PrexcId)
-        {
-            fundSource.CreatedAt = DateTime.Now;
-            fundSource.UpdatedAt = DateTime.Now;
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-
-            var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
-
-
-            var funsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
-
-            fundSource.Beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
-            fundSource.Remaining_balance = funsource_amount.Sum(x => x.beginning_balance);
-
-            _FundSourceContext.Add(fundSource);
-            _FundSourceContext.SaveChanges();
-
-            funsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
-            this._MyDbContext.SaveChanges();
-
-            return RedirectToAction("index", "FundSource", new {
-                AllotmentClassId = fundSource.AllotmentClassId,
-                AppropriationId = fundSource.AppropriationId,
-                BudgetAllotmentId = fundSource.BudgetAllotmentId  
-            });
-        }
+        
 
         /*DROPDOWN LIST FOR PREXC*/
 
@@ -259,7 +301,9 @@ namespace fmis.Controllers.Budget.John
         //POPULATE PAP TYPE
         private void PopulateFundDropDownList()
         {
-
+            var departmentsQuery = from d in _MyDbContext.Fund
+                                   orderby d.Fund_description
+                                   select d;
             ViewBag.FundId = new SelectList((from s in _MyDbContext.Fund.ToList()
                                                 select new
                                                 {
@@ -272,32 +316,7 @@ namespace fmis.Controllers.Budget.John
 
         }
 
-        // POST: FundSource/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(FundSource fundSource)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
-            var beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
-            var remaining_balance = funsource_amount.Sum(x => x.remaining_balance);
-
-            var fundsource_data = await _MyDbContext.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).AsNoTracking().FirstOrDefaultAsync();
-            fundsource_data.PrexcId = fundSource.PrexcId;
-            fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
-            fundsource_data.Description = fundSource.Description;
-            fundsource_data.FundSourceTitleCode = fundSource.FundSourceTitleCode;
-            fundsource_data.RespoId = fundSource.RespoId;
-            fundsource_data.Beginning_balance = beginning_balance;
-            fundsource_data.Remaining_balance = remaining_balance;
-
-            _FundSourceContext.Update(fundsource_data);
-            await _FundSourceContext.SaveChangesAsync();
-
-            return RedirectToAction("Index", "FundSource", new { BudgetAllotmentId = fundSource.BudgetAllotmentId });
-        }
+      
 
         // GET: FundSource/Delete/5
         public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
