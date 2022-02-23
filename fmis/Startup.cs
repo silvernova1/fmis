@@ -146,6 +146,10 @@ namespace fmis
          options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeTrustFundContext")));
             services.AddDbContext<BudgetAllotmentTrustFundContext>(options =>
          options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentTrustFundContext")));
+            services.AddDbContext<FundSourceTrustFundContext>(options =>
+         options.UseSqlServer(Configuration.GetConnectionString("FundSourceTrustFundContext")));
+            services.AddDbContext<FundSourceAmountTrustFundContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountTrustFundContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

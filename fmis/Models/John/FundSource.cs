@@ -16,7 +16,6 @@ namespace fmis.Models.John
         [Key]
         public int FundSourceId { get; set; }
         public string FundSourceTitle { get; set; }
-        public string Description { get; set; }
         public string FundSourceTitleCode { get; set; }
 
         [ForeignKey("RespoCenter")]
@@ -57,8 +56,6 @@ namespace fmis.Models.John
         public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
-
-
         public ICollection<Uacs> Uacs { get; set; }
 
     }

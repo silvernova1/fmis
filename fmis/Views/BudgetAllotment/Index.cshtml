@@ -169,7 +169,7 @@
                             <br />
                             <span class="grey">(BB): </span>
                             @{
-                                var sub_beginning_balance = item.Sub_allotments.Sum(x => x.Beginning_balance);
+                                var sub_beginning_balance = item.Sub_allotments.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.Beginning_balance);
                                 total_beginning_balance += sub_beginning_balance;
                             }
                             <b class="green">@sub_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
@@ -177,21 +177,21 @@
 
                             <span class="grey">(RB): </span>
                             @{
-                                var sub_remaining_balance = item.Sub_allotments.Sum(x => x.Remaining_balance);
+                                var sub_remaining_balance = item.Sub_allotments.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.Remaining_balance);
                                 total_remaining_balance += sub_beginning_balance;
                             }
                             <b class="red">@sub_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                             <br />
                             <span class="grey">(RA): </span>
                             @{
-                                var sub_realignment_amount = item.Sub_allotments.Sum(x => x.realignment_amount);
+                                var sub_realignment_amount = item.Sub_allotments.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.realignment_amount);
                                 total_realignment_amount += sub_realignment_amount;
                             }
                             <b class="orange">@sub_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>
                             <br />
                             <span class="grey">(OA): </span>
                             @{
-                                var sub_obligated_amount = item.Sub_allotments.Sum(x => x.obligated_amount);
+                                var sub_obligated_amount = item.Sub_allotments.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.obligated_amount);
                                 total_obligated_amount += sub_obligated_amount;
                             }
                             <b class="blue">@sub_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>

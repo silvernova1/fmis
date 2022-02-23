@@ -11,6 +11,8 @@
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
     <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
+    <input type="hidden" asp-for="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+    <input type="hidden" asp-for="AppropriationId" value="@ViewBag.AppropriationId" />
     <input type="hidden" class="suballotment_amount_uacs" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts)">
     <input type="hidden" class="uacs" value="@ViewBag.uacs">
     <input type="hidden" class="suballotment_token" value="@Model.token">
@@ -28,8 +30,26 @@
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="prexc" class="control-label"></label>
-                @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "prexc form-control" })
+                <label>Fund Source: </label>
+                <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+            </div>
+            <div class="form-group">
+                <label>PAP Type: </label>
+                <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@ id="categoryId">
+                    <option value="GAS">GAS</option>
+                    <option value="STO">STO</option>
+                    <option value="OPERATIONS">OPERATIONS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>PAP Title:</label>
+                @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Respo:</label>
+                @Html.DropDownList("RespoId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
             </div>
             <div class="form-group">
                 <label asp-for="Suballotment_title" class="control-label"></label>
@@ -37,20 +57,21 @@
                 <span asp-validation-for="Suballotment_title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Description:</label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
                 <label asp-for="Suballotment_code" class="control-label"></label>
-                <input asp-for="Suballotment_code" class="form-control" />
+                <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                 <span asp-validation-for="Suballotment_code" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-3">
             <div class="form-group">
-                <label>Respo:</label>
-                @Html.DropDownList("RespoId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
+                <label>Date:</label>
+                <input type="date" class="form-control">
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input asp-for="Description" class="form-control">
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -64,12 +85,27 @@
 </form>
 
 <script>
-    $(document).ready(function () {
-        $('.prexc').select2();
-    });
-</script>
 
-<script>
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
+       get_sbu();
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "Sub_allotment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#pap_code1').val(data[0].pap_code1);
+                }
+                else {
+                    $('#pap_code1').val('');
+                }
+            }
+        });
+    }
 
     var sub_allotment_id= @Model.SubAllotmentId;
     var BudgetAllotmentId = @Model.BudgetAllotmentId;
@@ -130,6 +166,7 @@
     const container = document.getElementById('suballotment_amount_edit');
     const hot = new Handsontable(container, {
         data: data,
+        className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
         colWidths: [150, 150],
@@ -140,6 +177,10 @@
                 source: uacs_data_dropdown
             },
             {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
             {
                 //HIDDEN ID

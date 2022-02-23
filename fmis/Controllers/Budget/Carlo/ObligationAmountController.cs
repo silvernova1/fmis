@@ -33,7 +33,7 @@ namespace fmis.Controllers
             _MyDbContext = myDbContext;
         }
 
-        public class ObligationCalculationData 
+        public class ObligationCalculationData
         {
             public int obligation_id { get; set; }
             public string obligation_token { get; set; }
@@ -51,14 +51,15 @@ namespace fmis.Controllers
             public decimal obligated_amount { get; set; }
         }
 
-        public class GetObligatedAndRemaining {
+        public class GetObligatedAndRemaining
+        {
             public decimal remaining_balance { get; set; }
             public decimal obligated_amount { get; set; }
         }
 
         public class ObligationAmountData
         {
-            public int ObligationId { get; set; }
+            /*public int ObligationId { get; set; }*/
             public int UacsId { get; set; }
             public string Expense_code { get; set; }
             public decimal Amount { get; set; }
@@ -84,7 +85,8 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        public class SourceRemainingAndObligated { 
+        public class SourceRemainingAndObligated
+        {
             public decimal remaining_balance { get; set; }
             public decimal obligated_amount { get; set; }
         }
@@ -99,16 +101,13 @@ namespace fmis.Controllers
             {
                 var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
                 if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item.obligation_amount_token) != null) //CHECK IF EXIST
-                    obligation_amount =  await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item.obligation_amount_token);
+                    obligation_amount = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item.obligation_amount_token);
 
-                obligation_amount.ObligationId = item.ObligationId;
+                var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
+                obligation_amount.ObligationId = obligation.Id;
                 obligation_amount.UacsId = item.UacsId;
                 obligation_amount.Expense_code = Convert.ToInt64(item.Expense_code);
-                obligation_amount.Amount =  item.Amount;
-                /*obligation_amount.Total_disbursement = item.Total_disbursement;
-                obligation_amount.Total_net_amount = item.Total_net_amount;
-                obligation_amount.Total_tax_amount = item.Total_tax_amount;
-                obligation_amount.Total_others = item.Total_others;*/
+                obligation_amount.Amount = item.Amount;
                 obligation_amount.status = "activated";
                 obligation_amount.obligation_token = item.obligation_token;
                 obligation_amount.obligation_amount_token = item.obligation_amount_token;
@@ -122,7 +121,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> calculateObligatedAmount(ObligationCalculationData calculation_data) 
+        public async Task<IActionResult> calculateObligatedAmount(ObligationCalculationData calculation_data)
         {
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
@@ -174,7 +173,7 @@ namespace fmis.Controllers
                 _MyDbContext.SaveChanges();
             }
 
-            NotificationLogs(fundsource_id,suballotment_id,obligation.source_type,"obligated",calculation_data.amount);
+            NotificationLogs(fundsource_id, suballotment_id, obligation.source_type, "obligated", calculation_data.amount);
 
             var obligation_amount = await _context.ObligationAmount.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == calculation_data.obligation_amount_token);
             obligation_amount.Amount = calculation_data.amount;
@@ -187,7 +186,8 @@ namespace fmis.Controllers
             return Json(get_obligated_remaining); //get the remaining_balance
         }
 
-        public void NotificationLogs(int fundsource_id,int suballotment_id,string source_type,string logs_type,decimal amount) {
+        public void NotificationLogs(int fundsource_id, int suballotment_id, string source_type, string logs_type, decimal amount)
+        {
             Logs logs = new();
             logs.created_id = 1;
             logs.created_name = "Rusel T. Tayong";
@@ -248,13 +248,13 @@ namespace fmis.Controllers
         [HttpPost]
         public IActionResult DeleteObligationAmount(DeleteData data)
         {
-            if(data.many_token.Count > 1)
+            if (data.many_token.Count > 1)
             {
                 foreach (var many in data.many_token)
-                    SetUpDeleteDataCalculation(many.many_token,data.source_id,data.source_type);
+                    SetUpDeleteDataCalculation(many.many_token, data.source_id, data.source_type);
             }
             else
-                SetUpDeleteDataCalculation(data.single_token,data.source_id,data.source_type);
+                SetUpDeleteDataCalculation(data.single_token, data.source_id, data.source_type);
 
 
             SourceRemainingAndObligated sourceRemainingObligated = new SourceRemainingAndObligated();
@@ -263,7 +263,7 @@ namespace fmis.Controllers
             return Json(sourceRemainingObligated);
         }
 
-        public void SetUpDeleteDataCalculation(string obligation_amount_token,int source_id,string source_type)
+        public void SetUpDeleteDataCalculation(string obligation_amount_token, int source_id, string source_type)
         {
             var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
             obligation_amount = _context.ObligationAmount
@@ -276,7 +276,7 @@ namespace fmis.Controllers
                 obligation_amount.fundSource.Remaining_balance += obligation_amount.Amount;
                 obligation_amount.fundSource.obligated_amount -= obligation_amount.Amount;
             }
-            else if (source_type == "sub_allotment") 
+            else if (source_type == "sub_allotment")
             {
                 obligation_amount.SubAllotment = _MyDbContext.Sub_allotment.FirstOrDefault(x => x.SubAllotmentId == source_id);
                 obligation_amount.SubAllotment.Remaining_balance += obligation_amount.Amount;
