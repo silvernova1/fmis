@@ -109,17 +109,40 @@ namespace fmis.Controllers
             return View(); //open create
         }
 
-        //POST
-        public IActionResult selectAT(int id)
+
+        // POST: Sub_allotment/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Sub_allotment subAllotment)
+
         {
-            var branches = _MyDbContext.Prexc.ToList();
-            return Json(branches.Where(x => x.Id == id).ToList());
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+
+            var sub_allotment_amount = _MyDbContext.Suballotment_amount.Where(f => f.suballotment_token == subAllotment.token).ToList();
+
+            subAllotment.Beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
+            subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
+
+
+            _MyDbContext.Add(subAllotment);
+            await _MyDbContext.SaveChangesAsync();
+
+            sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
+            this._MyDbContext.SaveChanges();
+
+            return RedirectToAction("index", "FundSource", new
+            {
+                AllotmentClassId = subAllotment.AllotmentClassId,
+                AppropriationId = subAllotment.AppropriationId,
+                BudgetAllotmentId = subAllotment.BudgetAllotmentId
+            });
         }
 
-
-
         // GET: Sub_allotment/Edit/5
-        public async Task<IActionResult> Edit(int sub_allotment_id)
+        public async Task<IActionResult> Edit(int sub_allotment_id, int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
@@ -127,15 +150,52 @@ namespace fmis.Controllers
                 .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated"))
                 .FirstOrDefault();
 
+            ViewBag.AllotmentClassId = AllotmentClassId;
+            ViewBag.AppropriationId = AppropriationId;
+            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcDropDownList(suballotment.prexcId);
             PopulateRespoDropDownList();
-            PopulateAppropriationDropDownList();
+            PopulateFundDropDownList();
 
             return View(suballotment);
+        }
+
+
+        // POST: Sub_allotment/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Sub_allotment subAllotment)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            var sub_allotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == subAllotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
+            var beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
+            var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
+
+            var sub_allotment_data = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
+            sub_allotment_data.prexcId = subAllotment.prexcId;
+            sub_allotment_data.FundId = subAllotment.FundId;
+            sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
+            sub_allotment_data.Description = subAllotment.Description;
+            sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
+            sub_allotment_data.RespoId = subAllotment.RespoId;
+            sub_allotment_data.Beginning_balance = beginning_balance;
+            sub_allotment_data.Remaining_balance = remaining_balance;
+
+            _MyDbContext.Update(sub_allotment_data);
+            await _MyDbContext.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Sub_allotment", new
+            {
+                AllotmentClassId = subAllotment.AllotmentClassId,
+                AppropriationId = subAllotment.AppropriationId,
+                BudgetAllotmentId = subAllotment.BudgetAllotmentId
+            });
         }
 
 
@@ -165,39 +225,17 @@ namespace fmis.Controllers
 
             return Json(data);
         }
-   
-        // POST: Sub_allotment/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Sub_allotment subAllotment)
 
+
+        //POST
+        public IActionResult selectAT(int id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-        
-
-            var sub_allotment_amount = _MyDbContext.Suballotment_amount.Where(f => f.suballotment_token == subAllotment.token).ToList();
-
-            subAllotment.Beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
-            subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
-
-
-            _MyDbContext.Add(subAllotment);
-            await _MyDbContext.SaveChangesAsync();
-
-            sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
-            this._MyDbContext.SaveChanges();
-
-            return RedirectToAction("index", "FundSource", new
-            {
-                AllotmentClassId = subAllotment.AllotmentClassId,
-                AppropriationId = subAllotment.AppropriationId,
-                BudgetAllotmentId = subAllotment.BudgetAllotmentId
-            });
+            var branches = _MyDbContext.Prexc.ToList();
+            return Json(branches.Where(x => x.Id == id).ToList());
         }
 
-    
+
+
         /*DROPDOWN LIST FOR PREXC*/
 
         private void PopulatePrexcDropDownList(object selectedDepartment = null)
@@ -210,7 +248,7 @@ namespace fmis.Controllers
                                               select new
                                               {
                                                   prexcId = s.Id,
-                                                  prexc = s.pap_title + " ( " + s.pap_code1 + ")"
+                                                  prexc = s.pap_title 
                                               }),
                                   "prexcId",
                                   "prexc",
@@ -261,33 +299,7 @@ namespace fmis.Controllers
 
         }
 
-        // POST: Sub_allotment/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Sub_allotment subAllotment)
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var sub_allotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == subAllotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
-            var beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
-            var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
-
-            var sub_allotment_data = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
-            sub_allotment_data.prexcId = subAllotment.prexcId;
-            sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
-            sub_allotment_data.Description = subAllotment.Description;
-            sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
-            sub_allotment_data.RespoId = subAllotment.RespoId;
-            sub_allotment_data.Beginning_balance = beginning_balance;
-            sub_allotment_data.Remaining_balance = remaining_balance;
-
-            _MyDbContext.Update(sub_allotment_data);
-            await _MyDbContext.SaveChangesAsync();
-
-            return RedirectToAction("Index", "Sub_allotment", new { BudgetAllotmentId = subAllotment.BudgetAllotmentId });
-        }
-
+     
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
         {

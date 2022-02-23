@@ -138,7 +138,7 @@
                     Appropriation (Source)
                 </th>
                 <th>
-                    Respo
+                    Responsibility Center
                 </th>
                 <th>
                     Actions
@@ -181,10 +181,10 @@
                 </td>
                 <td>
                     <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                  @*  <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>*@
                 </td>
                 <td>
-                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                 </td>
            
                 <td>
@@ -247,8 +247,11 @@ else
      function getEditFundSource(BudgetAllotmentId, fund_source_id) {
          $("#editModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_edit").html(loading);
+         var AllotmentClassId = @ViewBag.AllotmentClassId;
+         var AppropriationId = @ViewBag.AppropriationId;
          var url = '@Url.Action("Edit", "FundSource")';
-         url += "?budget_id=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id
+         //url += "?budget_id=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id
+         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id;
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_edit").html(result);
