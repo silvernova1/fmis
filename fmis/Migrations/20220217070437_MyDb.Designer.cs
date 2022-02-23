@@ -10,8 +10,8 @@ using fmis.Data;
 namespace fmis.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220217033028_BUDGETDB")]
-    partial class BUDGETDB
+    [Migration("20220217070437_MyDb")]
+    partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -246,15 +246,15 @@ namespace fmis.Migrations
                         {
                             AppropriationId = 1,
                             AppropriationSource = "CURRENT",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(2741),
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9652)
+                            CreatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 509, DateTimeKind.Local).AddTicks(4822),
+                            UpdatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(4630)
                         },
                         new
                         {
                             AppropriationId = 2,
                             AppropriationSource = "CONAP",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9901),
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9904)
+                            CreatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(4971),
+                            UpdatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(4975)
                         });
                 });
 
@@ -559,30 +559,30 @@ namespace fmis.Migrations
                             Id = 1,
                             Account_Code = "100",
                             Allotment_Class = "PS",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1167),
+                            CreatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6808),
                             Desc = "Personnel Services",
                             Fund_Code = "01",
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1170)
+                            UpdatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6813)
                         },
                         new
                         {
                             Id = 2,
                             Account_Code = "200",
                             Allotment_Class = "MOOE",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1172),
+                            CreatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6816),
                             Desc = "Maintenance and Other Operating Expenses",
                             Fund_Code = "02",
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1173)
+                            UpdatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6818)
                         },
                         new
                         {
                             Id = 3,
                             Account_Code = "300",
                             Allotment_Class = "CO",
-                            CreatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1176),
+                            CreatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6821),
                             Desc = "Capital Outlay",
                             Fund_Code = "06",
-                            UpdatedAt = new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1177)
+                            UpdatedAt = new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6822)
                         });
                 });
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fmis.Migrations
 {
-    public partial class BUDGETDB : Migration
+    public partial class MyDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -1155,9 +1155,9 @@ namespace fmis.Migrations
                 columns: new[] { "Id", "Account_Code", "Allotment_Class", "CreatedAt", "Desc", "Fund_Code", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, "300", "CO", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1176), "Capital Outlay", "06", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1177) },
-                    { 2, "200", "MOOE", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1172), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1173) },
-                    { 1, "100", "PS", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1167), "Personnel Services", "01", new DateTime(2022, 2, 17, 11, 30, 27, 495, DateTimeKind.Local).AddTicks(1170) }
+                    { 3, "300", "CO", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6821), "Capital Outlay", "06", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6822) },
+                    { 2, "200", "MOOE", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6816), "Maintenance and Other Operating Expenses", "02", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6818) },
+                    { 1, "100", "PS", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6808), "Personnel Services", "01", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(6813) }
                 });
 
             migrationBuilder.InsertData(
@@ -1165,8 +1165,8 @@ namespace fmis.Migrations
                 columns: new[] { "AppropriationId", "AppropriationSource", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "CURRENT", new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(2741), new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9652) },
-                    { 2, "CONAP", new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9901), new DateTime(2022, 2, 17, 11, 30, 27, 494, DateTimeKind.Local).AddTicks(9904) }
+                    { 1, "CURRENT", new DateTime(2022, 2, 17, 15, 4, 36, 509, DateTimeKind.Local).AddTicks(4822), new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(4630) },
+                    { 2, "CONAP", new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(4971), new DateTime(2022, 2, 17, 15, 4, 36, 510, DateTimeKind.Local).AddTicks(4975) }
                 });
 
             migrationBuilder.InsertData(

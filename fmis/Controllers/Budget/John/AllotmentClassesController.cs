@@ -22,6 +22,12 @@ namespace fmis.Controllers.Budget.John
             _context = context;
         }
 
+        public class AllotmentClassData {
+            public string Allotment_Class { get; set; }
+            public string Account_Code { get; set; }
+            public string Fund_Code { get; set; }
+        }
+
         // GET: AllotmentClasses
         public async Task<IActionResult> Index()
         {
@@ -54,12 +60,15 @@ namespace fmis.Controllers.Budget.John
             return View();
         }
 
+        public class TestClass {
+            public string data { get; set; }
+        }
+
         // POST: AllotmentClasses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Allotment_Class,Account_Code,Fund_Code,Desc")] AllotmentClass allotmentClass)
+        public async Task<IActionResult> Create([FromBody] AllotmentClass allotmentClass)
         {
             if (ModelState.IsValid)
             {
@@ -69,9 +78,9 @@ namespace fmis.Controllers.Budget.John
                     allotmentClass.Account_Code = "100";
                     allotmentClass.Fund_Code = "01";
                     allotmentClass.Desc = "Personnel Services";
-                    _context.Add(allotmentClass);       
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    _context.Add(allotmentClass);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction(nameof(Index));
                 }
                 else if (allotmentClass.Allotment_Class == "MOOE" || allotmentClass.Allotment_Class == "mooe")
                 {
@@ -81,7 +90,7 @@ namespace fmis.Controllers.Budget.John
                     allotmentClass.Desc = "Maintenance and Other Operating Expenses";
                     _context.Add(allotmentClass);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    //return RedirectToAction(nameof(Index));
                 }
                 else if (allotmentClass.Allotment_Class == "CO" || allotmentClass.Allotment_Class == "co")
                 {
@@ -91,10 +100,11 @@ namespace fmis.Controllers.Budget.John
                     allotmentClass.Desc = "Capital Outlay";
                     _context.Add(allotmentClass);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    //return RedirectToAction(nameof(Index));
                 }
             }
-            return View(allotmentClass);
+            //return View(allotmentClass);
+            return Json(allotmentClass);
         }
 
         // GET: AllotmentClasses/Edit/5
@@ -117,25 +127,28 @@ namespace fmis.Controllers.Budget.John
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(AllotmentClass allotmentClass)
+        /*[ValidateAntiForgeryToken]*/
+        public async Task<IActionResult> Edit([FromBody] AllotmentClass allotmentClass)
         {
-            var allotment_class = await _context.AllotmentClass.Where(x => x.Id == allotmentClass.Id).AsNoTracking().FirstOrDefaultAsync();
+            /*var allotment_class = await _context.AllotmentClass.Where(x => x.Id == allotmentClass.Id).AsNoTracking().FirstOrDefaultAsync();
             allotment_class.Allotment_Class = allotmentClass.Allotment_Class;
             allotment_class.Account_Code = allotmentClass.Account_Code;
+            return RedirectToAction("Index");*/
 
-            _context.Update(allotment_class); 
+            _context.Update(allotmentClass); 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+
+            return Json(allotmentClass);
+            
         }
 
-        public async Task<ActionResult> Delete(String id)
+        public async Task<ActionResult> Delete(int id)
         {
-            Int32 ID = Convert.ToInt32(id);
-            var allotmentClass = await _context.AllotmentClass.Where(p => p.Id == ID).FirstOrDefaultAsync();
+            var allotmentClass = await _context.AllotmentClass.Where(p => p.Id == id).FirstOrDefaultAsync();
             _context.AllotmentClass.Remove(allotmentClass);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            //return RedirectToAction("Index");
+            return Json(id);
         }
 
         private bool AllotmentClassExists(int id)

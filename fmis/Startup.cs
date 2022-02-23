@@ -147,10 +147,6 @@ namespace fmis
             services.AddDbContext<BudgetAllotmentTrustFundContext>(options =>
          options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentTrustFundContext")));
 
-
-
-
-
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
