@@ -69,8 +69,8 @@ namespace fmis.Controllers
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             ViewBag.Balance = balance;
 
-            //var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
-            var allotment = _MyDbCOntext.FundSourceAmount.Where(x => x.BudgetAllotmentId == id).Sum(x => x.beginning_balance) + _MyDbCOntext.Suballotment_amount.Where(x => x.BudgetAllotmentId == id).Sum(s => s.beginning_balance);
+            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
+            //var allotment = _MyDbCOntext.FundSourceAmount.Where(x => x.BudgetAllotmentId == id).Sum(x => x.beginning_balance) + _MyDbCOntext.Suballotment_amount.Where(x => x.BudgetAllotmentId == id).Sum(s => s.beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.Sub_allotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
@@ -79,10 +79,12 @@ namespace fmis.Controllers
             //ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("0.00");
 
             //var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
-            var obligated = _MyDbCOntext.ObligationAmount.Where(x => x.ObligationId == id).Sum(x => x.Amount);
+            //var obligated = _MyDbCOntext.ObligationAmount.Where(x => x.ObligationId == id).Sum(x => x.Amount);
+            var obligated = _MyDbCOntext.ObligationAmount.Sum(x => x.Amount);
 
 
             ViewBag.Obligated = obligated;
+
 
             List<AllotmentClass> allotmentClasses = (from allotmentclass in _MyDbCOntext.AllotmentClass
                                                      select allotmentclass).ToList();
