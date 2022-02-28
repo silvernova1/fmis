@@ -17,7 +17,7 @@
         name: 'AllotmentHeader',
         data() {
             return {
-                title : "Allotment Class haha"
+                title : "Allotment Class USAPA NAAAAA!!"
             }
         }
     }

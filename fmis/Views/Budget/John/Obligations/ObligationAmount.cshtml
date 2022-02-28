@@ -440,8 +440,8 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
     function displatTheCalculation(result) {
-        $("#total_remaining_balance").html(parseFloat(result.remaining_balance).toFixed(2));
-        $("#total_obligated_amount").html(parseFloat(result.obligated_amount).toFixed(2));
+        $("#total_remaining_balance").html(parseFloat(result.remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        $("#total_obligated_amount").html(parseFloat(result.obligated_amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     }
     function fillTheCell(row, col, fill_message) {
         TRAP_THE_LOAD = true; //need ni siya para dile ma doble ang pag save

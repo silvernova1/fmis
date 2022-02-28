@@ -133,7 +133,7 @@ namespace fmis.Controllers
             sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("index", "FundSource", new
+            return RedirectToAction("index", "Sub_allotment", new
             {
                 AllotmentClassId = subAllotment.AllotmentClassId,
                 AppropriationId = subAllotment.AppropriationId,

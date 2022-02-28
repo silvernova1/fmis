@@ -738,8 +738,8 @@ namespace fmis.Controllers
                     float[] due_width = { 10, 10 };
                     due.WidthPercentage = 100f;
                     due.SetWidths(due_width);
-                    due.AddCell(new PdfPCell(new Paragraph("Not Yet Due", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 10, VerticalAlignment = Element.ALIGN_MIDDLE });
-                    due.AddCell(new PdfPCell(new Paragraph("Due and \n Demandable", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 10, VerticalAlignment = Element.ALIGN_MIDDLE });
+                    due.AddCell(new PdfPCell(new Paragraph("Not Yet Due and Demandable", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 20, VerticalAlignment = Element.ALIGN_MIDDLE });
+                    due.AddCell(new PdfPCell(new Paragraph("Due and Demandable", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 20, VerticalAlignment = Element.ALIGN_MIDDLE });
                     blnc.AddCell(new PdfPCell(due) { Border = 14 });
 
                     PdfPTable duedate = new PdfPTable(2);
