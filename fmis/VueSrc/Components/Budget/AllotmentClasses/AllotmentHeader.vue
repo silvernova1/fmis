@@ -18,7 +18,7 @@
         data() {
             return {
                 title : "Allotment Class AGAWN NGA RAMENE"
-            }
+          }
         }
     }
 </script>

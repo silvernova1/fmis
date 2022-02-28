@@ -42,7 +42,7 @@
         </div>
         <div class="infobox-data">
             <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                ₱ 0.00
+               ₱0.00
             </span>
       
             <div class="infobox-content">
@@ -193,7 +193,7 @@
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
 		get_fund_sub[this.source_id + this.source_type] = this.source_title;
-		get_obligated_amount[this.Gross] = this.obligated_amount;
+        get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
 		fund_sub_counter++;
 	});
 
@@ -224,7 +224,7 @@
 			this.Particulars, //7 
 			(this.Id).toString().padStart(4, '0'), //8 
 			this.Created_by, //9
-			this.Gross,  //10
+		get_obligated_amount[this.source_id + this.source_type], //10
             this.Id, //11
             this.obligation_token, //12
         ];
@@ -545,7 +545,6 @@
 		                window.open(url);
 					}
 				},
-				"row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
 				"": {
 					name: 'UACS Amount Entry / Disbmt.',
 					callback: function (key, options) {
@@ -601,7 +600,8 @@
 						});
 						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
 					}
-				},
+                },
+                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
 			}
 		},
 		beforeRemoveRow: function (index, column) {
@@ -685,7 +685,7 @@
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(ajax_data);
 				}
-				else if (col >= 14)
+				else if (col > 14)
 				{
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
@@ -693,7 +693,7 @@
                     if (isNumeric(hot.getDataAtCell(row, col))) {
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 1 ),
                             Expense_code: hot.getDataAtCell(row, col),
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
@@ -711,7 +711,8 @@
 
                     console.log(hot.getDataAtCell(row, col))
 					console.log(ajax_data);
-					@*ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');*@}
+					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                }
                 else {
                     CHECK_FIRST_ROW = true;
                 }
@@ -782,7 +783,7 @@
             filename: 'Obligation-[YYYY]-[MM]-[DD]',
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
-            rowHeaders: true
+            rowHeaders: true,
         });
     });
 
