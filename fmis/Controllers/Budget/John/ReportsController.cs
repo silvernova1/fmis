@@ -379,13 +379,15 @@ namespace fmis.Controllers.Budget.John
                             var fortheMonth = (from oa in _MyDbContext.ObligationAmount
                                                join o in _MyDbContext.Obligation
                                                on oa.ObligationId equals o.Id
-                                               where o.Date >= date1 && o.Date <= lastday
+                                               where o.Date >= date2 && o.Date <= lastday || o.Date <= date2 && o.Date <= lastday
                                                select new
                                                {
                                                    amount = oa.Amount,
                                                    uacsId = oa.UacsId,
                                                    date = o.Date
                                                }).ToList();
+
+                            return Json(fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId));
 
 
                             var asAt = (from oa in _MyDbContext.ObligationAmount
