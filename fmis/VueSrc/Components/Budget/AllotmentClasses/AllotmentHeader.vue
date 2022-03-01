@@ -17,8 +17,8 @@
         name: 'AllotmentHeader',
         data() {
             return {
-                title : "Allotment Class USAPA NAAAAA!!"
-            }
+                title : "Allotment Class AGAWN NGA RAMENE"
+          }
         }
     }
 </script>

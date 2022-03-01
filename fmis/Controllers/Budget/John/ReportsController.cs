@@ -146,7 +146,6 @@ namespace fmis.Controllers.Budget.John
                 ws.Columns(11, 1).AdjustToContents();
                 ws.Cell("F6").RichText.AddText("(In Pesos)");
 
-
                 //FIRST ROW
                 ws.Cell(11, 1).Style.Font.SetBold();
                 ws.Cell(11, 1).RichText.AddText("P/A/P /ALLOTMENT CLASS/");
@@ -361,8 +360,8 @@ namespace fmis.Controllers.Budget.John
 
                         currentRow++;
 
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        //ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         //ws.Cell(currentRow, 1).Value = dateTime.FirstOrDefault().FundSourceTitle.ToUpper().ToString();
@@ -379,7 +378,7 @@ namespace fmis.Controllers.Budget.John
                             var fortheMonth = (from oa in _MyDbContext.ObligationAmount
                                                join o in _MyDbContext.Obligation
                                                on oa.ObligationId equals o.Id
-                                               where o.Date >= date1 && o.Date <= lastday
+                                               where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                                                select new
                                                {
                                                    amount = oa.Amount,
