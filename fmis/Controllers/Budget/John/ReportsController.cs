@@ -383,8 +383,29 @@ namespace fmis.Controllers.Budget.John
                                                {
                                                    amount = oa.Amount,
                                                    uacsId = oa.UacsId,
-                                                   date = o.Date
+                                                   date = o.Date,
+                                                   sourceId = o.source_id
                                                }).ToList();
+
+                            var fundsourceID = (from f in _MyDbContext.FundSources
+                                                join fa in _MyDbContext.FundSourceAmount
+                                                on f.FundSourceId equals fa.FundSourceId
+                                                where f.FundSourceId == fa.FundSourceId
+                                                select new
+                                                {
+                                                    faId = f.FundSourceId
+                                                }).ToList();
+
+                            var fundsourceamountID = (from f in _MyDbContext.FundSources
+                                                join fa in _MyDbContext.FundSourceAmount
+                                                on f.FundSourceId equals fa.FundSourceId
+                                                where f.FundSourceId == fa.FundSourceId
+                                                select new
+                                                {
+                                                    faAmountId = fa.FundSourceId
+                                                }).ToList();
+
+
 
 
                             var asAt = (from oa in _MyDbContext.ObligationAmount
@@ -396,6 +417,8 @@ namespace fmis.Controllers.Budget.John
                                                    amount = oa.Amount,
                                                    uacsId = oa.UacsId
                                                }).ToList();
+
+                            var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount);
 
 
                             total = 0;
@@ -421,25 +444,25 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //OBLIGATED (FOR THE MONTH)
-                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && fundsourceID.FirstOrDefault().faId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
                                 //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && fundsourceID.FirstOrDefault().faId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //UNOBLIGATED BALANCE OF ALLOTMENT
                             //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount);
+                            ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-                            //PERCENT
-                            ws.Cell(currentRow, 10).Value = afterrealignment_amount - asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) + "%";
-                            ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00";
+                            //PERCENT OF UTILIZATION
+                            //ws.Cell(currentRow, 10).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) / afterrealignment_amount;
+                            ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -447,7 +470,9 @@ namespace fmis.Controllers.Budget.John
                             foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
                             //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
                             {
+
                                 
+
 
                                 currentRow++;
                                 Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
@@ -472,40 +497,77 @@ namespace fmis.Controllers.Budget.John
                             total = (double)fundsource_amount.beginning_balance;                    
                         }
 
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        var fortheMonthTotal = (from oa in _MyDbContext.ObligationAmount
+                                                join o in _MyDbContext.Obligation
+                                                on oa.ObligationId equals o.Id
+                                                where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                                select new
+                                                {
+                                                    amount = oa.Amount,
+                                                    uacsId = oa.UacsId,
+                                                    date = o.Date
+                                                }).ToList();
+
+                        var funds_filterTotal = (from f in _MyDbContext.FundSources
+                                                 join fa in _MyDbContext.FundSourceAmount
+                                                 on f.FundSourceId equals fa.FundSourceId
+                                                 select new
+                                                 {
+                                                     Id = f.FundSourceId
+                                                 }).ToList();
+
+                        var asAtTotal = (from oa in _MyDbContext.ObligationAmount
+                                    join o in _MyDbContext.Obligation
+                                    on oa.ObligationId equals o.Id
+                                    where o.Date >= date1 && o.Date <= date2
+                                    select new
+                                    {
+                                        amount = oa.Amount,
+                                        uacsId = oa.UacsId
+                                    }).ToList();
+
+                        //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        //ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper() + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code;
+                        ws.Cell(currentRow, 1).Value = "TOTAL " + fundSource.FundSourceTitle.ToUpper()/* + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code*/;
 
-                        ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                        //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
+                        //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
                         ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
+                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
 
-                        ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
                         ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = fundSource.realignment_amount;
+                        ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+
+                        ws.Cell(currentRow, 7).Style.Font.SetBold();
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+
+                        ws.Cell(currentRow, 8).Style.Font.SetBold();
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 8).Value = asAtTotal.Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
 
                         //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
-                        ws.Cell(currentRow, 9).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
-                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance;
+                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
 
                         allotment_total += (double)fundSource.Beginning_balance;
 
                         currentRow++;
 
 
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                        //ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -513,25 +575,18 @@ namespace fmis.Controllers.Budget.John
 
                     }
 
-                    
-                    ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 3).Style.Font.SetBold();
                     ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 3).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
 
                     //TOTAL - TOTAL AFTER REALIGNMENT
-                    ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 6).Style.Font.SetBold();
                     ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 6).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
 
                     //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
-                    ws.Cell(currentRow, 9).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 9).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 9).Style.Font.SetBold();
                     ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
