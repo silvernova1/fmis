@@ -39,18 +39,13 @@
                     <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
                 </div>
                 <div class="form-group">
-                    <label>PAP Type: </label>
-                    <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@ id="categoryId">
-                        <option value="GAS">GAS</option>
-                        <option value="STO">STO</option>
-                        <option value="OPERATIONS">OPERATIONS</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label>PAP Title:</label>
                     @Html.DropDownList("PrexcTrustFundId", null, htmlAttributes: new { @class = "js-example-basic-single form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
-
+                <div class="form-group">
+                    <label>PAP Type: </label>
+                    <input asp-for="PapType" id="pap_type" class="form-control" readonly />
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
@@ -99,9 +94,11 @@
             success: function (data) {
                 if (data.length > 0) {
                     $('#pap_code1').val(data[0].pap_code1);
+                    $('#pap_type').val(data[0].pap_type);
                 }
                 else {
                     $('#pap_code1').val('');
+                    $('#pap_type').val('');
                 }
             }
         });
@@ -217,7 +214,7 @@
                     ajax_data.push(
                         {
                             BudgetAllotmentTrustFundId: BudgetAllotmentTrustFundId,
-                            UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            UacsTrustFundId: uacs_data_array[hot.getDataAtCell(row, col)].UacsTrustFundId,
                             Amount: hot.getDataAtCell(row, col + 2),
                             FundSourceAmountTokenTrustFund: hot.getDataAtCell(row, col + 3),
                             FundSourceTokenTrustFund: fundsource_token_trust_fund
@@ -235,7 +232,7 @@
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
                         BudgetAllotmentTrustFundId: BudgetAllotmentTrustFundId,
-                        UacsId: uacs_data_array[this[0]].UacsId,
+                        UacsTrustFundId: uacs_data_array[this[0]].UacsTrustFundId,
                         Amount: this[1],
                         FundSourceAmountTokenTrustFund: this[3],
                         FundSourceTokenTrustFund: fundsource_token_trust_fund

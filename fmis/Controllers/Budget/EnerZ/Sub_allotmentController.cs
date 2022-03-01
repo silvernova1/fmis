@@ -183,6 +183,7 @@ namespace fmis.Controllers
             sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
             sub_allotment_data.Description = subAllotment.Description;
             sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
+            sub_allotment_data.PapType = subAllotment.PapType;
             sub_allotment_data.RespoId = subAllotment.RespoId;
             sub_allotment_data.Beginning_balance = beginning_balance;
             sub_allotment_data.Remaining_balance = remaining_balance;

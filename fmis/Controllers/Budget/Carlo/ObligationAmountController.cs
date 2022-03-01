@@ -59,7 +59,7 @@ namespace fmis.Controllers
 
         public class ObligationAmountData
         {
-            /*public int ObligationId { get; set; }*/
+            public int ObligationId { get; set; }
             public int UacsId { get; set; }
             public string Expense_code { get; set; }
             public decimal Amount { get; set; }

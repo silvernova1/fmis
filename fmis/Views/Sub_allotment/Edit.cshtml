@@ -34,16 +34,12 @@
                 <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
             </div>
             <div class="form-group">
-                <label>PAP Type: </label>
-                <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@ id="categoryId">
-                    <option value="GAS">GAS</option>
-                    <option value="STO">STO</option>
-                    <option value="OPERATIONS">OPERATIONS</option>
-                </select>
-            </div>
-            <div class="form-group">
                 <label>PAP Title:</label>
                 @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+            </div>
+            <div class="form-group">
+                <label>PAP Type: </label>
+                <input asp-for="PapType" id="pap_type" class="form-control" readonly />
             </div>
         </div>
         <div class="col-md-3">
@@ -99,9 +95,10 @@
             success: function (data) {
                 if (data.length > 0) {
                     $('#pap_code1').val(data[0].pap_code1);
+                    $('#pap_type').val(data[0].pap_type);
                 }
                 else {
-                    $('#pap_code1').val('');
+                    $('#pap_type').val('');
                 }
             }
         });
