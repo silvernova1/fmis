@@ -14,7 +14,7 @@ namespace fmis.Models
         public int UacsTrustFundId { get; set; }
         public string Account_title { get; set; }
         public string Expense_code { get; set; }
-        public string uacs_type { get; set; }
+        public int uacs_type { get; set; }
         public string status { get; set; }
         public string token { get; set; }
     }

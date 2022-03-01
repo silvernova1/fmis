@@ -17,6 +17,7 @@ namespace fmis.Models.John
         public int FundSourceId { get; set; }
         public string FundSourceTitle { get; set; }
         public string FundSourceTitleCode { get; set; }
+        public string PapType { get; set; }
 
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
@@ -28,8 +29,6 @@ namespace fmis.Models.John
         [JsonIgnore]
         public Prexc Prexc { get; set; }
 
-        [JsonIgnore]
-        public PapType PapType { get; set; }
 
         [ForeignKey("AllotmentClass")]
         public int AllotmentClassId { get; set; }

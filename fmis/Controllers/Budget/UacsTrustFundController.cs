@@ -49,7 +49,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "ps_trust_fund");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == "PS").ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 1).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/UacsTrustFund/PS_Trust_Fund.cshtml");
@@ -60,7 +60,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "mooe_trust_fund");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == "MOOE").ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 2).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/UacsTrustFund/MOOE_Trust_Fund.cshtml");
@@ -71,7 +71,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "co_trust_fund");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == "CO").ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 3).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/UacsTrustFund/CO_Trust_Fund.cshtml");
@@ -114,7 +114,7 @@ namespace fmis.Controllers.Budget
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "PS";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 1;
 
                     this._context.SaveChanges();
                 }
@@ -124,7 +124,7 @@ namespace fmis.Controllers.Budget
                     uacs_trust_fund.Account_title = item.Account_title;
                     uacs_trust_fund.Expense_code = item.Expense_code;
                     uacs_trust_fund.status = "activated";
-                    uacs_trust_fund.uacs_type = "PS";
+                    uacs_trust_fund.uacs_type = 1;
                     uacs_trust_fund.token = item.token;
 
                     this._context.UacsTrustFund.Update(uacs_trust_fund);
@@ -149,7 +149,7 @@ namespace fmis.Controllers.Budget
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "MOOE";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 2;
 
                     this._context.SaveChanges();
                 }
@@ -159,7 +159,7 @@ namespace fmis.Controllers.Budget
                     uacs_trust_fund.Account_title = item.Account_title;
                     uacs_trust_fund.Expense_code = item.Expense_code;
                     uacs_trust_fund.status = "activated";
-                    uacs_trust_fund.uacs_type = "MOOE";
+                    uacs_trust_fund.uacs_type = 2;
                     uacs_trust_fund.token = item.token;
 
                     this._context.UacsTrustFund.Update(uacs_trust_fund);
@@ -184,7 +184,7 @@ namespace fmis.Controllers.Budget
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = "CO";
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 3;
 
                     this._context.SaveChanges();
                 }
@@ -194,7 +194,7 @@ namespace fmis.Controllers.Budget
                     uacs_trust_fund.Account_title = item.Account_title;
                     uacs_trust_fund.Expense_code = item.Expense_code;
                     uacs_trust_fund.status = "activated";
-                    uacs_trust_fund.uacs_type = "CO";
+                    uacs_trust_fund.uacs_type = 3;
                     uacs_trust_fund.token = item.token;
 
                     this._context.UacsTrustFund.Update(uacs_trust_fund);

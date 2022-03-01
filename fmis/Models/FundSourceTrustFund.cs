@@ -15,6 +15,7 @@ namespace fmis.Models
         public string FundSourceTrustFundTitle { get; set; }
         public string Description { get; set; }
         public string FundSourceTrustFundTitleCode { get; set; }
+        public string PapType { get; set; }
 
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
@@ -25,9 +26,6 @@ namespace fmis.Models
         public int PrexcTrustFundId { get; set; }
         [JsonIgnore]
         public PrexcTrustFund PrexcTrustFund { get; set; }
-
-        [JsonIgnore]
-        public PapType PapType { get; set; }
 
         [ForeignKey("AllotmentClass")]
         public int AllotmentClassId { get; set; }

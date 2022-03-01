@@ -66,7 +66,6 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
 
@@ -97,11 +96,9 @@ namespace fmis.Controllers.Budget.John
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == AllotmentClassId).ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            ViewBag.CategoryList = _MyDbContext.PapType.ToList();
 
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
-            PopulatePapTypeDropDownList();
             PopulateFundDropDownList();
 
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
@@ -143,14 +140,6 @@ namespace fmis.Controllers.Budget.John
             });
         }
 
-        //get Subcategory based on the category id
-        public JsonResult getstatebyid(int id)
-        {
-            List<Prexc> list = new List<Prexc>();
-            list = _MyDbContext.Prexc.Where(x => x.PapType.PapTypeID == id).ToList();
-            list.Insert(0, new Prexc { Id = 0, pap_title = "Please Select Prexc"});
-            return Json(new SelectList (list));
-        }
 
         //POST
         public IActionResult selectAT(int id)
@@ -178,7 +167,6 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList(fundsource.PrexcId);
             PopulateRespoDropDownList();
-            PopulatePapTypeDropDownList();
             PopulateFundDropDownList();
 
             return View(fundsource);
@@ -202,6 +190,7 @@ namespace fmis.Controllers.Budget.John
             fundsource_data.FundId = fundSource.FundId;
             fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
             fundsource_data.FundSourceTitleCode = fundSource.FundSourceTitleCode;
+            fundsource_data.PapType = fundSource.PapType;
             fundsource_data.RespoId = fundSource.RespoId;
             fundsource_data.Beginning_balance = beginning_balance;
             fundsource_data.Remaining_balance = remaining_balance;
@@ -258,10 +247,12 @@ namespace fmis.Controllers.Budget.John
                                               select new
                                               {
                                                   PrexcId = s.Id,
-                                                  prexc = s.pap_title
+                                                  prexc = s.pap_title,
+                                                  pap_type = s.pap_type,
                                               }),
                                        "PrexcId",
                                        "prexc",
+                                       "pap_type",
                                        null);
 
         }
@@ -281,24 +272,6 @@ namespace fmis.Controllers.Budget.John
         }
 
 
-
-        //POPULATE PAP TYPE
-        private void PopulatePapTypeDropDownList(object selectedDepartment = null)
-        {
-       
-            ViewBag.PapTypeId = new SelectList((from s in _pContext.Prexc.ToList()
-                                              select new
-                                              {
-                                                  PrexcId = s.Id,
-                                                  prexc = s.pap_type
-                                              }),
-                                       "PrexcId",
-                                       "prexc",
-                                       null);
-
-        }
-
-        //POPULATE PAP TYPE
         private void PopulateFundDropDownList()
         {
             var departmentsQuery = from d in _MyDbContext.Fund

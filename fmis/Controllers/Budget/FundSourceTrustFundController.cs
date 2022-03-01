@@ -54,7 +54,6 @@ namespace fmis.Controllers.Budget
             public List<ManyId> many_token { get; set; }
         }
 
-
         public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentTrustFundId)
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
@@ -73,8 +72,7 @@ namespace fmis.Controllers.Budget
             .FirstOrDefaultAsync(x => x.BudgetAllotmentTrustFundId == BudgetAllotmentTrustFundId);
 
             return View(budget_allotment_trust_fund);
-
-            
+  
         }
 
 
@@ -84,19 +82,18 @@ namespace fmis.Controllers.Budget
             ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
+            ViewBag.BudgetAllotmentTrustFundId = BudgetAllotmentTrustFundId;
 
             string ac = AllotmentClassId.ToString();
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(x => x.uacs_type == ac).ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(x => x.uacs_type == AllotmentClassId).ToListAsync());
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcTrustFundDropDownList();
             PopulateRespoDropDownList();
-            PopulatePapTypeDropDownList();
             PopulateFundDropDownList();
 
-            ViewBag.BudgetAllotmentTrustFundId = BudgetAllotmentTrustFundId;
-
+     
             return View(); //open create
         }
 
@@ -106,13 +103,10 @@ namespace fmis.Controllers.Budget
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FundSourceTrustFund fundSourceTrustFund, int PrexcId)
+        public async Task<IActionResult> Create(FundSourceTrustFund fundSourceTrustFund)
         {
 
             ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
-
-
-            var result = _MyDbContext.PrexcTrustFund.Where(x => x.PrexcTrustFundId == PrexcId).First();
 
             var fundsource_amount_trust_fund = _MyDbContext.FundSourceAmountTrustFund.Where(f => f.FundSourceTokenTrustFund == fundSourceTrustFund.token).ToList();
 
@@ -133,7 +127,7 @@ namespace fmis.Controllers.Budget
             });
         }
 
-
+        //EDIT GET
         public async Task<IActionResult> Edit(int fund_source_id_trust_fund)
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
@@ -152,6 +146,38 @@ namespace fmis.Controllers.Budget
             PopulateFundDropDownList();
 
             return View(fundsource_trust_fund);
+        }
+
+        //EDIT POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(FundSourceTrustFund fundSourceTrustFund)
+        {
+            ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
+            var fundsource_amount = await _MyDbContext.FundSourceAmountTrustFund.Where(f => f.FundSourceTrustFundId == fundSourceTrustFund.FundSourceTrustFundId && f.status == "activated").AsNoTracking().ToListAsync();
+            var beginning_balance = fundsource_amount.Sum(x => x.BeginningBalance);
+            var remaining_balance = fundsource_amount.Sum(x => x.RemainingBalance);
+
+            var fundsource_data = await _MyDbContext.FundSourceTrustFund.Where(s => s.FundSourceTrustFundId == fundSourceTrustFund.FundSourceTrustFundId).AsNoTracking().FirstOrDefaultAsync();
+            fundsource_data.PrexcTrustFundId = fundSourceTrustFund.PrexcTrustFundId;
+            fundsource_data.FundId = fundSourceTrustFund.FundId;
+            fundsource_data.FundSourceTrustFundTitle = fundSourceTrustFund.FundSourceTrustFundTitle;
+            fundsource_data.FundSourceTrustFundTitleCode = fundSourceTrustFund.FundSourceTrustFundTitleCode;
+            fundsource_data.PapType = fundSourceTrustFund.PapType;
+            fundsource_data.RespoId = fundSourceTrustFund.RespoId;
+            fundsource_data.BeginningBalance = beginning_balance;
+            fundsource_data.BeginningBalance = remaining_balance;
+
+            _MyDbContext.Update(fundsource_data);
+            await _MyDbContext.SaveChangesAsync();
+
+            return RedirectToAction("Index", "FundSource", new
+            {
+                AllotmentClassId = fundSourceTrustFund.AllotmentClassId,
+                AppropriationId = fundSourceTrustFund.AppropriationId,
+                BudgetAllotmentTrustFundId = fundSourceTrustFund.BudgetAllotmentTrustFundId
+            });
+
         }
 
         [HttpPost]
