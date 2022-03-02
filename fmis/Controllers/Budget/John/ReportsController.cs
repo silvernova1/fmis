@@ -357,7 +357,6 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-
                         currentRow++;
 
                         //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -415,10 +414,11 @@ namespace fmis.Controllers.Budget.John
                                                select new
                                                {
                                                    amount = oa.Amount,
-                                                   uacsId = oa.UacsId
+                                                   uacsId = oa.UacsId,
+                                                   sourceId = o.source_id
                                                }).ToList();
 
-                            var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount);
+                            var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId).Sum(x => x.amount);
 
 
                             total = 0;
@@ -444,13 +444,13 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //OBLIGATED (FOR THE MONTH)
-                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && fundsourceID.FirstOrDefault().faId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
                                 //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && fundsourceID.FirstOrDefault().faId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -505,6 +505,7 @@ namespace fmis.Controllers.Budget.John
                                                 {
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
+                                                    sourceId = o.source_id,
                                                     date = o.Date
                                                 }).ToList();
 
@@ -523,6 +524,7 @@ namespace fmis.Controllers.Budget.John
                                     select new
                                     {
                                         amount = oa.Amount,
+                                        sourceId = o.source_id,
                                         uacsId = oa.UacsId
                                     }).ToList();
 
@@ -547,19 +549,20 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
                         ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x=>x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
+                        //AS AT TOTAL
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
                         ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotal.Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
 
                         //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = fundSource.Remaining_balance.ToString("N", new CultureInfo("en-US"));
 
                         allotment_total += (double)fundSource.Beginning_balance;
 
