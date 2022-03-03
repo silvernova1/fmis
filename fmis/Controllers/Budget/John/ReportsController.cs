@@ -351,7 +351,7 @@ namespace fmis.Controllers.Budget.John
                     
 
 
-                    foreach (FundSource fundSource in budget_allotment.FundSources/*.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow)*/)
+                    foreach (FundSource fundSource in budget_allotment.FundSources)
                     {
 
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
@@ -558,11 +558,12 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
 
+                        var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                         //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = fundSource.Remaining_balance.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
 
                         allotment_total += (double)fundSource.Beginning_balance;
 
@@ -578,6 +579,29 @@ namespace fmis.Controllers.Budget.John
 
                     }
 
+                    var fortheMonthTotalinTotal = (from oa in _MyDbContext.ObligationAmount
+                                            join o in _MyDbContext.Obligation
+                                            on oa.ObligationId equals o.Id
+                                            where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                            select new
+                                            {
+                                                amount = oa.Amount,
+                                                uacsId = oa.UacsId,
+                                                sourceId = o.source_id,
+                                                date = o.Date
+                                            }).ToList();
+
+                    var asAtTotalinTotal = (from oa in _MyDbContext.ObligationAmount
+                                     join o in _MyDbContext.Obligation
+                                     on oa.ObligationId equals o.Id
+                                     where o.Date >= date1 && o.Date <= date2
+                                     select new
+                                     {
+                                         amount = oa.Amount,
+                                         sourceId = o.source_id,
+                                         uacsId = oa.UacsId
+                                     }).ToList();
+
                     ws.Cell(currentRow, 3).Style.Font.SetBold();
                     ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -589,11 +613,24 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 6).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
 
+                    //TOTAL - FOR THE MONTH
+                    ws.Cell(currentRow, 7).Style.Font.SetBold();
+                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotal.Sum(x=>x.amount).ToString("N", new CultureInfo("en-US"));
+
+                    //TOTAL - AS AT
+                    ws.Cell(currentRow, 8).Style.Font.SetBold();
+                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    ws.Cell(currentRow, 8).Value = asAtTotalinTotal.Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+
                     //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
+                    var unobligatedTotalinTotal = allotment_total - (double)asAtTotalinTotal.Sum(x => x.amount);
                     ws.Cell(currentRow, 9).Style.Font.SetBold();
                     ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 9).Value = allotment_total.ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 9).Value = unobligatedTotalinTotal.ToString("N", new CultureInfo("en-US"));
 
                     currentRow++;
 
