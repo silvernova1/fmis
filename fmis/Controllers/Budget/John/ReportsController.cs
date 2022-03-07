@@ -334,6 +334,7 @@ namespace fmis.Controllers.Budget.John
 
 
                     //ws.Cell(currentRow, 1).Style.Font.SetBold();
+                    ws.Cell(currentRow, 1).Style.Font.SetBold();
                     ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 1).Value = budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Desc;
@@ -383,7 +384,9 @@ namespace fmis.Controllers.Budget.John
                                                    amount = oa.Amount,
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
-                                                   sourceId = o.source_id
+                                                   sourceId = o.source_id,
+                                                   status = oa.status
+
                                                }).ToList();
 
                             var fundsourceID = (from f in _MyDbContext.FundSources
@@ -415,10 +418,11 @@ namespace fmis.Controllers.Budget.John
                                                {
                                                    amount = oa.Amount,
                                                    uacsId = oa.UacsId,
-                                                   sourceId = o.source_id
+                                                   sourceId = o.source_id,
+                                                   status = oa.status
                                                }).ToList();
 
-                            var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId).Sum(x => x.amount);
+                            var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                             total = 0;
@@ -444,13 +448,13 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //OBLIGATED (FOR THE MONTH)
-                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
                             ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
                                 //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -506,7 +510,8 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.source_id,
-                                                    date = o.Date
+                                                    date = o.Date,
+                                                    status = oa.status
                                                 }).ToList();
 
                         var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -525,14 +530,15 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         amount = oa.Amount,
                                         sourceId = o.source_id,
-                                        uacsId = oa.UacsId
+                                        uacsId = oa.UacsId,
+                                        status = oa.status
                                     }).ToList();
 
                         //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         //ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "TOTAL " + fundSource.FundSourceTitle.ToUpper()/* + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code*/;
+                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper()/* + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code*/;
 
                         //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                         //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
@@ -549,13 +555,13 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
                         ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x=>x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x=>x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
                         //AS AT TOTAL
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
                         ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
 
                         var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
@@ -564,6 +570,11 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+
+                        //PERCENT OF UTILIZATION
+                        ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
+                        ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
+                        ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                         allotment_total += (double)fundSource.Beginning_balance;
 
@@ -588,7 +599,8 @@ namespace fmis.Controllers.Budget.John
                                                 amount = oa.Amount,
                                                 uacsId = oa.UacsId,
                                                 sourceId = o.source_id,
-                                                date = o.Date
+                                                date = o.Date,
+                                                status = oa.status
                                             }).ToList();
 
                     var asAtTotalinTotal = (from oa in _MyDbContext.ObligationAmount
@@ -599,7 +611,8 @@ namespace fmis.Controllers.Budget.John
                                      {
                                          amount = oa.Amount,
                                          sourceId = o.source_id,
-                                         uacsId = oa.UacsId
+                                         uacsId = oa.UacsId,
+                                         status = oa.status
                                      }).ToList();
 
                     ws.Cell(currentRow, 3).Style.Font.SetBold();
@@ -631,6 +644,15 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 9).Value = unobligatedTotalinTotal.ToString("N", new CultureInfo("en-US"));
+
+                    //PERCENT OF UTILIZATION
+                    var totalPercent = (double)asAtTotalinTotal.Sum(x => x.amount) / allotment_total;
+                    //ws.Cell(currentRow, 10).Value = 11302415.87 / 136723000.00;
+                    ws.Cell(currentRow, 10).Value = totalPercent;
+                    ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
+                    ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                    
 
                     currentRow++;
 
