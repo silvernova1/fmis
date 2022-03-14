@@ -1,25 +1,25 @@
-﻿@model fmis.Models.BudgetAllotmentTrustFund
+﻿@model fmis.Models.silver.BudgetAllotment
 @using System.Globalization;
 @{
-    ViewData["Title"] = "FundSourceTrustFund";
+    ViewData["Title"] = "Sub_allotment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (Model.FundSourceTrustFunds.Count() > 0)
+@if (Model.SubAllotment.Count() > 0)
 {
     <h3 class="grey lighter smaller">
-        Fund Source (Trust Fund)
+        Sub Allotment
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
             @Model.Yearly_reference.YearlyReference
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSourceTrustFunds.FirstOrDefault().Appropriation.AppropriationSource
+            @Model.SubAllotment.FirstOrDefault().Appropriation.AppropriationSource
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSourceTrustFunds.FirstOrDefault().AllotmentClass.Allotment_Class
+            @Model.SubAllotment.FirstOrDefault().AllotmentClass.Allotment_Class
         </small>
 
     </h3>
@@ -35,7 +35,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSourceTrustFunds.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -48,7 +48,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.FundSourceTrustFunds.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -61,7 +61,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSourceTrustFunds.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
@@ -74,14 +74,29 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSourceTrustFunds.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
                 </div>
             </div>
         </div>
-    </div>
+        @*<div class="infobox infobox-blue">
+                <div class="infobox-icon">
+                    <i class="ace-icon fa fa-bar-chart-o"></i>
+                </div>
+                <div class="infobox-data">
+                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                        @Model.Sub_allotments.Sum(x => x.utilized_amount).ToString("C", new CultureInfo("en-PH"))
+                    </span>
+                    <div class="infobox-content">
+                        <span class="label label-primary arrowed-in arrowed-in-right"> Utilized Amount </span>
+                    </div>
+                </div>
+            </div>*@
+
+
+    </div><!-- /.widget-body -->
 </div>
 <br />
 <br />
@@ -90,7 +105,7 @@
 <div class="modal" id="createModal" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-body" id="fund_source_create_trust_fund">
+            <div class="modal-body" id="suballotment_create">
 
             </div>
         </div>
@@ -100,7 +115,7 @@
 <div class="modal" id="editModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-body" id="fund_source_edit_trust_fund">
+            <div class="modal-body" id="suballotment_edit">
 
             </div>
         </div>
@@ -110,29 +125,30 @@
 <div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
+
+
         </div>
     </div>
 </div>
 
 <p>
-    <button type="button" asp-controller="FundSourceTrustFund" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSourceTrustFund(@Model.BudgetAllotmentTrustFundId)">
+    <button type="button" asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
         <i class="ace-icon fa fa-plus "></i>Create New
     </button> |
-    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotmentTrustFund" asp-action="Index">
+    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
 </p>
-
-@if (Model.FundSourceTrustFunds.Count() > 0)
+@if (Model.SubAllotment.Count() > 0)
 {
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    Fund Source Code
+                    Sub Allotment Code
                 </th>
                 <th>
-                    Fund Source Title
+                    Sub Allotment Title
                 </th>
                 <th>
                     Appropriation (Source)
@@ -144,7 +160,7 @@
                     Actions
                 </th>
                 <th>
-                    Funds Source (Realignment)
+                    Sub-Allotment (Realignment)
                 </th>
                 <th>
                     Beginning Balance
@@ -158,17 +174,20 @@
                 <th>
                     Obligated Amount
                 </th>
+                @*<th>
+                        Utilized Amount
+                    </th>*@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.FundSourceTrustFunds)
+            @foreach (var item in Model.SubAllotment)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FundSourceTrustFundTitleCode)
+                        @Html.DisplayFor(modelItem => item.Suballotment_code)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FundSourceTrustFundTitle)
+                        @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
                     <td>
                         @item.Appropriation.AppropriationSource
@@ -177,13 +196,12 @@
                         @item.RespoCenter.Respo
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-xs" onclick="getEditFundSourceTrustFund(@Model.BudgetAllotmentTrustFundId,@item.FundSourceTrustFundId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                       @* <a asp-controller="FundSourceTrustFund" asp-action="Delete" asp-route-id="@item.FundSourceTrustFundId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>*@
+                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+                        @*<a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>*@
                     </td>
                     <td>
-                        <a asp-controller="FundsRealignmentTrustFund" asp-route-fundsource_trustfund_id="@item.FundSourceTrustFundId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
                     </td>
-
                     <td>
                         <b class="green">
                             <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
@@ -191,7 +209,7 @@
                     </td>
                     <td>
                         <b class="red">
-                            <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                     <td>
@@ -204,6 +222,11 @@
                             <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
+                    @* <td>
+                            <b class="blue">
+                                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                            </b>
+                        </td>*@
                 </tr>
             }
         </tbody>
@@ -218,47 +241,46 @@ else
 }
 
 <script>
-
-
-     function createFundSourceTrustFund(BudgetAllotmentTrustFundId) {
+    function createSub_allotment(BudgetAllotmentId) {
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_create_trust_fund").html(loading);
+         $("#suballotment_create").html(loading);
          var AllotmentClassId = @ViewBag.AllotmentClassId;
          var AppropriationId = @ViewBag.AppropriationId;
-         var url = '@Url.Action("Create", "FundSourceTrustFund")';
-         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentTrustFundId=" + BudgetAllotmentTrustFundId;
+         var url = '@Url.Action("Create", "SubAllotment")';
+         url += "?AllotmentClassId="+AllotmentClassId+"&AppropriationId="+AppropriationId+"&BudgetAllotmentId=" + BudgetAllotmentId;
+         console.log(url);
          $.get(url, function (result) {
             setTimeout(function () {
-                $("#fund_source_create_trust_fund").html(result);
+                $("#suballotment_create").html(result);
             }, 500);
          });
-     }
+    }
 
-     function getEditFundSourceTrustFund(BudgetAllotmentTrustFundId, fund_source_id_trust_fund) {
-         $("#editModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_edit_trust_fund").html(loading);
-         var AllotmentClassId = @ViewBag.AllotmentClassId;
-         var AppropriationId = @ViewBag.AppropriationId;
-         var url = '@Url.Action("Edit", "FundSourceTrustFund")';
-         //url += "?budget_id=" + BudgetAllotmentTrustFundId + "&fund_source_trust_fund_id=" + fund_source_id_trust_fund
-         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentTrustFundId=" + BudgetAllotmentTrustFundId + "&fund_source_id_trust_fund=" + fund_source_id_trust_fund;
+    function getEditSub_allotment(BudgetAllotmentId, sub_allotment_id) {
+        $("#editModal").modal({ backdrop: 'static', keyboard: false });
+        $("#suballotment_edit").html(loading);
+        var AllotmentClassId = @ViewBag.AllotmentClassId;
+        var AppropriationId = @ViewBag.AppropriationId;
+        var url = '@Url.Action("Edit", "SubAllotment")';
+        //url += "?budget_id=" + BudgetAllotmentId + "&sub_allotment_id=" + sub_allotment_id
+        url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentId + "&sub_allotment_id=" + sub_allotment_id ;
          $.get(url, function (result) {
             setTimeout(function () {
-                $("#fund_source_edit_trust_fund").html(result);
+                $("#suballotment_edit").html(result);
             }, 500);
          });
-     }
+        }
 
-    function deleteFundSourceTrustFund(BudgetAllotmentTrustFundId) {
-         $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
-         $("#fund_source_delete_trust_fund").html(loading);
-         var url = '@Url.Action("Delete", "FundSourceTrustFund")';
-        url += "?budget_id=" + BudgetAllotmentTrustFundId
-         $.get(url, function (result) {
-            setTimeout(function () {
-                $("#fund_source_delete_trust_fund").html(result);
-            }, 500);
-         });
+    function deleteSub_allotment(BudgetAllotmentId) {
+        $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
+        $("#suballotment_delete").html(loading);
+        var url = '@Url.Action("Delete", "SubAllotment")';
+        url += "?budget_id=" + BudgetAllotmentId
+        $.get(url, function (result) {
+        setTimeout(function () {
+            $("#suballotment_delete").html(result);
+        }, 500);
+        });
      }
 
     let generate_token = () => {
@@ -270,8 +292,8 @@ else
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function fundSourceToken() {
-        fundsource_token = generate_token();
-        $("#funds_input_token").val(fundsource_token);
+    function subAllotmentToken() {
+        suballotment_token = generate_token();
+        $("#subs_input_token").val(suballotment_token);
     }
 </script>

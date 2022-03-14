@@ -25,9 +25,9 @@ namespace fmis.Controllers
         private readonly Yearly_referenceContext _osContext;
         private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
-        private readonly Sub_allotmentContext _saContext;
+        private readonly SubAllotmentContext _saContext;
 
-        public BudgetAllotmentController(BudgetAllotmentContext BudgetAllotmentContext, MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, Sub_allotmentContext sa_Context)
+        public BudgetAllotmentController(BudgetAllotmentContext BudgetAllotmentContext, MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, SubAllotmentContext sa_Context)
         {
             _BudgetAllotmentContext = BudgetAllotmentContext;
             _context = context;
@@ -54,7 +54,7 @@ namespace fmis.Controllers
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
-            .Include(x => x.Sub_allotments)
+            .Include(x => x.SubAllotment)
             //.Where(x=>x.YearlyReferenceId == (int)HttpContext.Session.GetInt32(yearly_reference))
             .AsNoTracking()
             .ToListAsync();
@@ -185,13 +185,13 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            var sub_Allotment = _context.Sub_allotment.Where(s => s.BudgetAllotmentId == budget_id);
+            var sub_Allotment = _context.SubAllotment.Where(s => s.BudgetAllotmentId == budget_id);
             ViewBag.beginning_balance = sub_Allotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.obligated_amount = sub_Allotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
             ViewBag.remaining_balance = sub_Allotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             //START Query of the amounts
-            var subquery = _context.Sub_allotment
+            var subquery = _context.SubAllotment
                 .Select(x => new Suballotment_amount
                 {
                     SubAllotmentAmountId = x.prexcId,
@@ -211,7 +211,7 @@ namespace fmis.Controllers
             ViewBag.budget_id = budget_id;
 
             var budget_allotment = await _context.Budget_allotments
-                .Include(s => s.Sub_allotments)
+                .Include(s => s.SubAllotment)
                 .Include(s => s.Personal_Information)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.BudgetAllotmentId == budget_id);

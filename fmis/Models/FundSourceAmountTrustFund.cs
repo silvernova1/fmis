@@ -11,10 +11,10 @@ namespace fmis.Models
     {
         [Key]
         public int FundSourceAmountTrustFundId { get; set; }
-        public int UacsId { get; set; }
-        public decimal BeginningBalance { get; set; }
-        public decimal RemainingBalance { get; set; }
-        public decimal RealignmentAmount { get; set; }
+        public int UacsTrustFundId { get; set; }
+        public decimal beginning_balance { get; set; }
+        public decimal remaining_balance { get; set; }
+        public decimal realignment_amount { get; set; }
         public string status { get; set; }
         public string FundSourceAmountTokenTrustFund { get; set; }
         public string FundSourceTokenTrustFund { get; set; }

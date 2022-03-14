@@ -1,16 +1,25 @@
-﻿using fmis.Models.John;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using fmis.Models.John;
+
 
 namespace fmis.Models
 {
     public class Utilization : BaseEntityTimeStramp
     {
         public int Id { get; set; }
-        public int source_id { get; set; }
+
+        [JsonIgnore]
+        [ForeignKey("FundSourceTrustFundId")]
+        public FundSourceTrustFund FundSourceTrustFund { get; set; }
+        public int? FundSourceTrustFundId { get; set; }
+
+
         public string source_type { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
@@ -28,8 +37,8 @@ namespace fmis.Models
         public string status { get; set; }
         public string utilization_token { get; set; }
         public ICollection<UtilizationAmount> UtilizationAmount { get; set; }
-        public ICollection<FundSource> FundSource { get; set; }
-        public ICollection<Sub_allotment> SubAllotment { get; set; }
+        public ICollection<FundSource> FundSources { get; set; }
+        public ICollection<SubAllotment> SubAllotments { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
 
     }

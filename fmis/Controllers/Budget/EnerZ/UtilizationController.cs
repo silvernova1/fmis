@@ -122,63 +122,30 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        // GET: Utilization
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("trust_fund", "burs_trust_fund", "");
 
-            var utilization = await _context
+            var utilization = await _MyDbContext
                                     .Utilization
                                     .Where(x => x.status == "activated")
                                     .Include(x => x.UtilizationAmount)
+                                    .Include(x => x.FundSourceTrustFund)
                                     .AsNoTracking()
                                     .ToListAsync();
 
-            //return Json(utilization_json);
-            ViewBag.utilization_json = JsonSerializer.Serialize(utilization);
-
-            var fund_sub_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", utilization_amount = x.utilized_amount })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", utilization_amount = y.utilized_amount });
+            var fund_sub_data = (from x in _MyDbContext.FundSourceTrustFund select new { source_id = x.FundSourceTrustFundId, source_title = x.FundSourceTrustFundTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", utilized_amount = x.utilized_amount });
+                                    
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data);
-
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.ToListAsync());
             ViewBag.uacs = uacs_data;
 
+            //return Json(obligation);
             return View("~/Views/Utilization/Index.cshtml", utilization);
         }
 
-        [HttpGet]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> openUtilizationAmount(int id, string utilization_token)
-        {
-            var uacs_data = JsonSerializer.Serialize(await _UacsContext.Uacs.AsNoTracking().ToListAsync());
-            ViewBag.uacs = uacs_data;
-
-            if (id != 0)
-            {
-                utilization = await _context.Utilization
-                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                utilization.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                utilization = await _context.Utilization
-                    .Include(x => x.UtilizationAmount.Where(x => x.status == "activated"))
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(m => m.utilization_token == utilization_token);
-                utilization.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
-            }
-
-            if (utilization.source_type == "fund_source")
-                utilization.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == utilization.source_id).ToListAsync();
-            else if (utilization.source_type == "sub_allotment")
-                utilization.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == utilization.source_id).ToListAsync();
-
-            return View("~/Views/UtilizationAmount.cshtml", utilization);
-        }
+   
 
         // GET: Utilization/Create
         public IActionResult Create()
@@ -203,11 +170,13 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
+
+
         [HttpPost]
-        public async Task<IActionResult> SaveUtilization(List<UtilizationData> data, List<UtilizationAmountData> data2)
+        public async Task<IActionResult> SaveUtilization(List<UtilizationData> data)
         {
 
-            var data_holder = _context.Utilization;
+            var data_holder = _MyDbContext.Utilization;
             foreach (var item in data)
             {
 
@@ -218,7 +187,9 @@ namespace fmis.Controllers
                     utilization = await data_holder.Where(s => s.utilization_token == item.utilization_token).FirstOrDefaultAsync();
                 }
 
-                utilization.source_id = item.source_id;
+                if (item.source_type.Equals("fund_source"))
+                    utilization.FundSourceTrustFundId = item.source_id;
+
                 utilization.source_type = item.source_type;
                 utilization.Date = ToDateTime(item.Date);
                 utilization.Dv = item.Dv;
@@ -236,28 +207,8 @@ namespace fmis.Controllers
                 await _context.SaveChangesAsync();
 
             }
-
-            var data_holder_2 = _Ucontext.UtilizationAmount;
-
-            foreach (var item2 in data2)
-            {
-                var utilization_amount = new UtilizationAmount();
-                if (await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.utilization_amount_token == item2.utilization_amount_token) != null) //CHECK IF EXIST
-                {
-                    utilization_amount = await data_holder_2.AsNoTracking().FirstOrDefaultAsync(s => s.utilization_amount_token == item2.utilization_amount_token);
-                }
-
-                utilization_amount.UtilizationId = item2.UtilizationId;
-                utilization_amount.UacsId = item2.UacsId;
-                utilization_amount.Expense_code = Convert.ToInt64(item2.Expense_code);
-                utilization_amount.Amount = item2.Amount;
-                utilization_amount.utilization_amount_token = item2.utilization_amount_token;
-
-                _Ucontext.UtilizationAmount.Update(utilization_amount);
-                await _context.SaveChangesAsync();
-            }
-
             return Json(data);
+
         }
 
         // POST: Utilization/Create
@@ -299,34 +250,6 @@ namespace fmis.Controllers
                 return NotFound();
             }
             return View(utilization);
-        }
-
-        // POST: Ulitization/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Utilization utilization)
-        {
-            var utili = await _context.Utilization.Where(x => x.Id == utilization.Id).AsNoTracking().FirstOrDefaultAsync();
-            utili.source_id = utilization.source_id;
-            utili.source_type = utilization.source_type;
-            utili.Date = utilization.Date;
-            utili.Dv = utilization.Dv;
-            utili.Pr_no = utilization.Pr_no;
-            utili.Po_no = utilization.Po_no;
-            utili.Payee = utilization.Payee;
-            utili.Address = utilization.Address;
-            utili.Particulars = utilization.Particulars;
-            utili.Ors_no = utilization.Ors_no;
-            utili.Gross = utilization.Gross;
-            utili.remaining_balance = utilization.remaining_balance;
-            utili.Created_by = utilization.Created_by;
-
-            _context.Update(utili);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-
         }
 
         // GET: Utilization/Delete/5
@@ -395,8 +318,8 @@ namespace fmis.Controllers
                 {
                     string tok = Convert.ToString(i);
                     var ors = await _context.Utilization
-                        .Include(f => f.FundSource)
-                        .ThenInclude(p => p.Prexc)
+                        .Include(f => f.FundSourceTrustFund)
+                        .ThenInclude(p => p.PrexcTrustFund)
                         .FirstOrDefaultAsync(m => m.utilization_token == tok);
 
 
@@ -532,7 +455,7 @@ namespace fmis.Controllers
 
                     var fundsources = (from fundsource in _MyDbContext.FundSources
                                        join utilization in _MyDbContext.Utilization
-                                       on fundsource.FundSourceId equals utilization.source_id
+                                       on fundsource.FundSourceId equals utilization.FundSourceTrustFundId
                                        join prexc in _MyDbContext.Prexc
                                        on fundsource.PrexcId equals prexc.Id
                                        join respo in _MyDbContext.RespoCenter
@@ -541,7 +464,7 @@ namespace fmis.Controllers
                                        select new
                                        {
                                            pap = prexc.pap_code1,
-                                           utilization_id = utilization.source_id,
+                                           utilization_id = utilization.FundSourceTrustFundId,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
                                            respo = respo.RespoCode,

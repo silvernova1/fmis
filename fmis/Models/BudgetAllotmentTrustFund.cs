@@ -15,7 +15,7 @@ namespace fmis.Models
         public int BudgetAllotmentTrustFundId { get; set; }
 
         [JsonIgnore]
-        public ICollection<FundSourceTrustFund> FundSourceTrustFund { get; set; }
+        public ICollection<FundSourceTrustFund> FundSourceTrustFunds { get; set; }
 
         [ForeignKey("Yearly_reference")]
         public int YearlyReferenceId { get; set; }

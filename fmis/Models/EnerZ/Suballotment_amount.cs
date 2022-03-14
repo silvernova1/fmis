@@ -22,7 +22,7 @@ namespace fmis.Models
         public int? SubAllotmentId { get; set; }
         public int BudgetAllotmentId { get; set; }
         [JsonIgnore]
-        public Sub_allotment SubAllotment { get; set; }
+        public SubAllotment SubAllotment { get; set; }
         public Uacs Uacs { get; set; }
     }
 }

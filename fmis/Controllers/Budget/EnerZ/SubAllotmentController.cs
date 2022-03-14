@@ -23,9 +23,9 @@ using fmis.Models.silver;
 namespace fmis.Controllers
 
 {
-    public class Sub_allotmentController : Controller
+    public class SubAllotmentController : Controller
     {
-        private readonly Sub_allotmentContext _context;
+        private readonly SubAllotmentContext _context;
         private readonly Suballotment_amountContext _subAllotmentAmountContext;
         private readonly UacsContext _uContext;
         private readonly BudgetAllotmentContext _bContext;
@@ -33,7 +33,7 @@ namespace fmis.Controllers
         private readonly MyDbContext _MyDbContext;
       
 
-        public Sub_allotmentController(Sub_allotmentContext context, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
+        public SubAllotmentController(SubAllotmentContext context, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
         {
             _context = context;
             _uContext = uContext;
@@ -69,17 +69,18 @@ namespace fmis.Controllers
         // GET:Sub_allotment
         public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
-            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+          
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
+            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var budget_allotment = await _MyDbContext.Budget_allotments
-            .Include(x => x.Sub_allotments.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+            .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
-            .Include(x => x.Sub_allotments.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+            .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.Appropriation)
-            .Include(x => x.Sub_allotments.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+            .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.AllotmentClass)
             .Include(x => x.Yearly_reference)
             .AsNoTracking()
@@ -115,7 +116,7 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Sub_allotment subAllotment)
+        public async Task<IActionResult> Create(SubAllotment subAllotment)
 
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
@@ -133,7 +134,7 @@ namespace fmis.Controllers
             sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("index", "Sub_allotment", new
+            return RedirectToAction("Index", "SubAllotment", new
             {
                 AllotmentClassId = subAllotment.AllotmentClassId,
                 AppropriationId = subAllotment.AppropriationId,
@@ -146,7 +147,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            var suballotment = _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == sub_allotment_id)
+            var suballotment = _MyDbContext.SubAllotment.Where(x => x.SubAllotmentId == sub_allotment_id)
                 .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated"))
                 .FirstOrDefault();
 
@@ -170,14 +171,14 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Sub_allotment subAllotment)
+        public async Task<IActionResult> Edit(SubAllotment subAllotment)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var sub_allotment_amount = await _MyDbContext.Suballotment_amount.Where(f => f.SubAllotmentId == subAllotment.SubAllotmentId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
             var remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
 
-            var sub_allotment_data = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
+            var sub_allotment_data = await _MyDbContext.SubAllotment.Where(s => s.SubAllotmentId == subAllotment.SubAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             sub_allotment_data.prexcId = subAllotment.prexcId;
             sub_allotment_data.FundId = subAllotment.FundId;
             sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
@@ -191,7 +192,7 @@ namespace fmis.Controllers
             _MyDbContext.Update(sub_allotment_data);
             await _MyDbContext.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Sub_allotment", new
+            return RedirectToAction("Index", "SubAllotment", new
             {
                 AllotmentClassId = subAllotment.AllotmentClassId,
                 AppropriationId = subAllotment.AppropriationId,
@@ -313,7 +314,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var subAllotment = await _MyDbContext.Sub_allotment
+            var subAllotment = await _MyDbContext.SubAllotment
                 .FirstOrDefaultAsync(m => m.SubAllotmentId == id);
             if (subAllotment == null)
             {
@@ -338,11 +339,11 @@ namespace fmis.Controllers
                     _MyDbContext.Suballotment_amount.Update(sub_allotment_amount);
                     await _MyDbContext.SaveChangesAsync();
 
-                    var sub_allotment_update = await _MyDbContext.Sub_allotment.AsNoTracking().FirstOrDefaultAsync(s => s.token == sub_allotment_amount.suballotment_token);
+                    var sub_allotment_update = await _MyDbContext.SubAllotment.AsNoTracking().FirstOrDefaultAsync(s => s.token == sub_allotment_amount.suballotment_token);
                     sub_allotment_update.Remaining_balance -= sub_allotment_amount.beginning_balance;
 
                     //detach para ma calculate ang multiple delete
-                    var local = _MyDbContext.Set<Sub_allotment>()
+                    var local = _MyDbContext.Set<SubAllotment>()
                             .Local
                             .FirstOrDefault(entry => entry.token.Equals(sub_allotment_amount.suballotment_token));
                     // check if local is not null 
@@ -355,7 +356,7 @@ namespace fmis.Controllers
                     _MyDbContext.Entry(sub_allotment_update).State = EntityState.Modified;
                     //end detach
 
-                    _MyDbContext.Sub_allotment.Update(sub_allotment_update);
+                    _MyDbContext.SubAllotment.Update(sub_allotment_update);
                     _MyDbContext.SaveChanges();
                 }
             }
@@ -367,9 +368,9 @@ namespace fmis.Controllers
                 _MyDbContext.Suballotment_amount.Update(sub_amount);
                 await _MyDbContext.SaveChangesAsync();
 
-                var sub_update = await _MyDbContext.Sub_allotment.AsNoTracking().FirstOrDefaultAsync(s => s.token == sub_amount.suballotment_token);
+                var sub_update = await _MyDbContext.SubAllotment.AsNoTracking().FirstOrDefaultAsync(s => s.token == sub_amount.suballotment_token);
                 sub_update.Remaining_balance -= sub_amount.beginning_balance;
-                _MyDbContext.Sub_allotment.Update(sub_update);
+                _MyDbContext.SubAllotment.Update(sub_update);
                 _MyDbContext.SaveChanges();
             }
 
@@ -381,15 +382,15 @@ namespace fmis.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var sub_Allotment = await _context.Sub_allotment.FindAsync(id);
-            _context.Sub_allotment.Remove(sub_Allotment);
+            var sub_Allotment = await _context.SubAllotment.FindAsync(id);
+            _context.SubAllotment.Remove(sub_Allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Suballotment", "Budget_allotments", new { budget_id = sub_Allotment.BudgetAllotmentId });
         }
         private bool Sub_allotmentExists(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            return _context.Sub_allotment.Any(e => e.SubAllotmentId == id);
+            return _context.SubAllotment.Any(e => e.SubAllotmentId == id);
         }
     }
 }

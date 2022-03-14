@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Sub_allotment
+﻿@model fmis.Models.SubAllotment
 @using fmis.Models
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
@@ -77,22 +77,22 @@
                 </div>
                 <div class="form-group">
                     <label>Description:</label>
-                    <input asp-for="Description"  class="form-control" />
+                    <input asp-for="Description" class="form-control" />
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
-            </div>
-            <input type="hidden" id="SubId" />
-            <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
-            <input type="hidden" class="uacs" value="@ViewBag.uacs">
-            <br />
-            <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-            <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
-            <br />
-            <div class="controls" hidden>
-                <button id="export-file">Download CSV</button>
-            </div>
         </div>
+        <input type="hidden" id="SubId" />
+        <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+        <input type="hidden" class="uacs" value="@ViewBag.uacs">
+        <br />
+        <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+        <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
+        <br />
+        <div class="controls" hidden>
+            <button id="export-file">Download CSV</button>
+        </div>
+    </div>
 </form>
 
 <script>

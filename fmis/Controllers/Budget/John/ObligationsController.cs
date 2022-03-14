@@ -103,7 +103,7 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        // GET: Obligations
+
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
@@ -113,19 +113,19 @@ namespace fmis.Controllers
                                     .Obligation
                                     .Where(x => x.status == "activated")
                                     .Include(x => x.ObligationAmounts)
+                                    .Include(x => x.FundSource)  
+                                    .Include(x => x.SubAllotment)
                                     .AsNoTracking()
                                     .ToListAsync();
 
-            //return Json(obligation_json);
-            ViewBag.obligation_json = JsonSerializer.Serialize(obligation);
-
             var fund_sub_data = (from x in _MyDbContext.FundSources select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
-                                    .Concat(from y in _MyDbContext.Sub_allotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
-            ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data);
+                                    .Concat(from y in _MyDbContext.SubAllotment select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
 
+            ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data);
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
+            //return Json(obligation);
             return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
         }
 
@@ -153,10 +153,10 @@ namespace fmis.Controllers
                 obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
             }
 
-            if (obligation.source_type == "fund_source")
-                obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.source_id).ToListAsync();
+          /*  if (obligation.source_type == "fund_source")
+                obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
             else if (obligation.source_type == "sub_allotment")
-                obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.source_id).ToListAsync();
+                obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
 
             /*return Json(obligation);*/
             return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
@@ -200,7 +200,11 @@ namespace fmis.Controllers
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
 
-                obligation.source_id = item.source_id;
+                if(item.source_type.Equals("fund_source"))
+                    obligation.FundSourceId = item.source_id;
+                else if(item.source_type.Equals("sub_allotment"))
+                    obligation.SubAllotmentId = item.source_id;
+
                 obligation.source_type = item.source_type;
                 obligation.Date = ToDateTime(item.Date);
                 obligation.Dv = item.Dv;
@@ -261,34 +265,6 @@ namespace fmis.Controllers
                 return NotFound();
             }
             return View(obligation);
-        }
-
-        // POST: Obligations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Obligation obligation)
-        {
-            var obli = await _context.Obligation.Where(x => x.Id == obligation.Id).AsNoTracking().FirstOrDefaultAsync();
-            obli.source_id = obligation.source_id;
-            obli.source_type = obligation.source_type;
-            obli.Date = obligation.Date;
-            obli.Dv = obligation.Dv;
-            obli.Pr_no = obligation.Pr_no;
-            obli.Po_no = obligation.Po_no;
-            obli.Payee = obligation.Payee;
-            obli.Address = obligation.Address;
-            obli.Particulars = obligation.Particulars;
-            obli.Ors_no = obligation.Ors_no;
-            obli.Gross = obligation.Gross;
-            obli.remaining_balance = obligation.remaining_balance;
-            obli.Created_by = obligation.Created_by;
-
-            _context.Update(obli);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-
         }
 
         // GET: Obligations/Delete/5
@@ -409,7 +385,7 @@ namespace fmis.Controllers
 
                     var allotments = (from fundsource in _MyDbContext.FundSources
                                        join obligation in _MyDbContext.Obligation
-                                       on fundsource.FundSourceId equals obligation.source_id
+                                       on fundsource.FundSourceId equals obligation.FundSourceId
                                        join allotmentclass in _MyDbContext.AllotmentClass
                                        on fundsource.AllotmentClassId equals allotmentclass.Id
                                        join fund in _MyDbContext.Fund
@@ -424,9 +400,9 @@ namespace fmis.Controllers
                                            obligation = obligation.source_type
                                       }).ToList();
 
-                    var allotmentsAA = (from sub_allotment in _MyDbContext.Sub_allotment
-                                      join obligation in _MyDbContext.Obligation
-                                      on sub_allotment.SubAllotmentId equals obligation.source_id
+                    var allotmentsAA = (from sub_allotment in _MyDbContext.SubAllotment
+                                        join obligation in _MyDbContext.Obligation
+                                      on sub_allotment.SubAllotmentId equals obligation.FundSourceId
                                       join allotmentclass in _MyDbContext.AllotmentClass
                                       on sub_allotment.AllotmentClassId equals allotmentclass.Id
                                       join fund in _MyDbContext.Fund
@@ -596,7 +572,7 @@ namespace fmis.Controllers
 
                     var fundsources = (from fundsource in _MyDbContext.FundSources
                                        join obligation in _MyDbContext.Obligation
-                                       on fundsource.FundSourceId equals obligation.source_id
+                                       on fundsource.FundSourceId equals obligation.FundSourceId
                                        join prexc in _MyDbContext.Prexc
                                        on fundsource.PrexcId equals prexc.Id
                                        join respo in _MyDbContext.RespoCenter
@@ -605,7 +581,7 @@ namespace fmis.Controllers
                                        select new
                                        {
                                            pap = prexc.pap_code1,
-                                           obligation_id = obligation.source_id,
+                                           obligation_id = obligation.FundSourceId,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
                                            respo = respo.RespoCode,

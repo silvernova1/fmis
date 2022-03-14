@@ -1,5 +1,274 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model fmis.Models.FundSourceTrustFund
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
 }
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="FundSourceTrustFundId" value="@Model.FundSourceTrustFundId" />
+    <input type="hidden" asp-for="BudgetAllotmentTrustFundId" value="@Model.BudgetAllotmentTrustFundId" />
+    <input type="hidden" asp-for="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+    <input type="hidden" asp-for="AppropriationId" value="@ViewBag.AppropriationId" />
+    <input type="hidden" class="fundsource_amount_uacs" value="@JsonSerializer.Serialize(Model.FundSourceAmountTrustFund)">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+    <input type="hidden" class="FundSourceTokenTrustFund" value="@Model.token">
+
+    <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+        <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Fund Source)</h7>
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Save" class="btn btn-success btn-xs" />
+                <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label>Fund Source: </label>
+                <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrexcTrustFundId" class="control-label"></label>
+                @Html.DropDownList("PrexcTrustFundId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+            </div>
+            <div class="form-group">
+                <label>PAP Type: </label>
+                <input asp-for="PapType"  id="pap_type" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Respo Center: </label>
+                <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundSourceTrustFundTitle" class="control-label"></label>
+                <input asp-for="FundSourceTrustFundTitle" class="form-control" />
+                <span asp-validation-for="FundSourceTrustFundTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundSourceTrustFundTitleCode" class="control-label"></label>
+                <input asp-for="FundSourceTrustFundTitleCode" id="pap_code1" class="form-control" readonly />
+                <span asp-validation-for="FundSourceTrustFundTitleCode" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+    <br />
+    <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+    <div id="fundsource_amount_edit" class="hot handsontable htColumnHeaders"></div>
+    <br />
+    <div class="controls" hidden>
+        <button id="export-file">Download CSV</button>
+    </div>
+</form>
+
+<script>
+
+  $(document).ready(function () {
+      $('.prexcDropdown').select2();
+    });
+
+    get_sbu();
+
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "FundSourceTrustFund")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#pap_code1').val(data[0].pap_code1);
+                    $('#pap_type').val(data[0].pap_type);
+                }
+                else {
+                    $('#pap_type').val('');
+                }
+            }
+        });
+    }
+
+
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+
+    var FundSourceTrustFundId = @Model.FundSourceTrustFundId;
+    var BudgetAllotmentTrustFundId = @Model.BudgetAllotmentTrustFundId;
+    var FundSourceTokenTrustFund = $(".FundSourceTokenTrustFund").val();
+
+    let guid = () => {
+    let s4 = () => {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+    $(".obligation_amount").html(obligation_amount);
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        var json_data = new Object();
+        json_data.UacsTrustFundId = this.UacsTrustFundId;
+        uacs_data_array[this.Account_title] = json_data;
+        get_account_title[this.UacsTrustFundId] = this.Account_title;
+        uacs_counter++;
+    });
+
+    var fundsource_amount_uacs = $.parseJSON($(".fundsource_amount_uacs").val());
+    const data = [];
+    var counter = 0;
+    var obligation_amount = 0;
+    $.each(fundsource_amount_uacs, function () {
+        data[counter] = [get_account_title[this.UacsTrustFundId], this.BeginningBalance, this.FundSourceAmountTokenTrustFund, this.FundSourceTokenTrustFund]
+        counter++;
+        obligation_amount += this.BeginningBalance;
+    });
+
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('fundsource_amount_edit');
+    const hot = new Handsontable(container, {
+        data: data,
+        className: 'htLeft',
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [150, 150],
+        colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: '450',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][2];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][2]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+                console.log(ajax_data);
+                ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSourceTrustFund")');
+            }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            CHECK_FIRST_ROW = true;
+            console.log(generate_token());
+            hot.setDataAtCell(row, 2, generate_token());
+        },
+        afterChange: function (changes, source) {
+
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            FundSourceTrustFundId: FundSourceTrustFundId,
+                            BudgetAllotmentTrustFundId: BudgetAllotmentTrustFundId,
+                            UacsTrustFundId: uacs_data_array[hot.getDataAtCell(row, col)].UacsTrustFundId,
+                            Amount: hot.getDataAtCell(row, col + 1),
+                            FundSourceAmountTokenTrustFund: hot.getDataAtCell(row, col + 2),
+                            FundSourceTokenTrustFund: FundSourceTokenTrustFund
+                        }
+                    );
+                    @*console.log(hot.getSourceData());*@
+                    ajaxServer(ajax_data, '@Url.Action("SaveFundSourceAmountTrustFund", "FundSourceTrustFund")');
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        FundSourceTrustFundId: FundSourceTrustFundId,
+                        BudgetAllotmentTrustFundId: BudgetAllotmentTrustFundId,
+                        UacsTrustFundId: uacs_data_array[this[0]].UacsTrustFundId,
+                        Amount: this[1],
+                        FundSourceAmountTokenTrustFund: this[2],
+                        FundSourceTokenTrustFund: FundSourceTokenTrustFund
+                    });
+                });
+                @*console.log(ajax_data);*@
+                $(".obligation_amount").html(obligation_amount);
+                ajaxServer(ajax_data, '@Url.Action("SaveFundSourceAmountTrustFund", "FundSourceTrustFund")');
+            }
+		},
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+</script>

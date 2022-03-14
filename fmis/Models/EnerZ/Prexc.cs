@@ -19,7 +19,7 @@ namespace fmis.Models
         public string pap_type { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-        public Sub_allotment Sub_Allotment { get; set; }
+        public SubAllotment Sub_Allotment { get; set; }
         public Uacs Uacs { get; set; }
         public virtual ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
 

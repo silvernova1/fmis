@@ -43,19 +43,19 @@
         },       
         methods: {
             addAllotment(allotment) {
-                console.log(allotment);
-                //axios.post('AllotmentClasses/Create', JSON.parse(JSON.stringify(allotment)))
                 let self = this;
                 axios.post('AllotmentClasses/Create', allotment)
                     .then(response => {
+                        allotment.Id = response.data.id;
                         allotment.Account_Code = response.data.account_Code;
                         allotment.Fund_Code = response.data.fund_Code;
                         self.allotment_data = [...self.allotment_data, allotment];
+                        console.log(response.data);
+                        console.log(self.allotment_data);
                         Lobibox.notify("success", {
                             sound: false,
                             msg: 'Successfully added allotment class!'
                         });
-                        console.log(response.data);
                     })
                     .catch(error => {
                         return Promise.reject(error);
@@ -69,7 +69,6 @@
                 });
                 axios.delete(`AllotmentClasses/Delete/${id}`)
                     .then(response => {
-                        console.log(response.data);
                     })
                     .catch(error => {
                         return Promise.reject(error);

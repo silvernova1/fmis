@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (Model.Sub_allotments.Count() > 0)
+@if (Model.SubAllotment.Count() > 0)
 {
     <h3 class="grey lighter smaller">
         Sub Allotment
@@ -15,11 +15,11 @@
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.Sub_allotments.FirstOrDefault().Appropriation.AppropriationSource
+            @Model.SubAllotment.FirstOrDefault().Appropriation.AppropriationSource
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.Sub_allotments.FirstOrDefault().AllotmentClass.Allotment_Class
+            @Model.SubAllotment.FirstOrDefault().AllotmentClass.Allotment_Class
         </small>
 
     </h3>
@@ -35,7 +35,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Sub_allotments.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -48,7 +48,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.Sub_allotments.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -61,7 +61,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Sub_allotments.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
@@ -74,7 +74,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Sub_allotments.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
@@ -139,7 +139,7 @@
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
 </p>
-@if (Model.Sub_allotments.Count() > 0)
+@if (Model.SubAllotment.Count() > 0)
 {
     <table class="table">
         <thead>
@@ -180,7 +180,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Sub_allotments)
+            @foreach (var item in Model.SubAllotment)
             {
                 <tr>
                     <td>

@@ -37,7 +37,7 @@ namespace fmis.Controllers.Budget
 
             var budget_allotment_trust_fund = await _context.BudgetAllotmentTrustFund
             .Include(c => c.Yearly_reference)
-            .Include(x => x.FundSourceTrustFund)
+            .Include(x => x.FundSourceTrustFunds)
 
             .AsNoTracking()
             .ToListAsync();
@@ -49,7 +49,7 @@ namespace fmis.Controllers.Budget
 
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            ViewBag.filter = new FilterSidebar("trust_fund", "BudgetAllotment_trust_fund", "");
             PopulateYrDropDownList();
    
             return View();

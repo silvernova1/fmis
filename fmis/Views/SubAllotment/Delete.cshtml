@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Sub_allotment
+﻿@model fmis.Models.SubAllotment
 
 @{
 
@@ -11,7 +11,7 @@
     <center>
         <form asp-action="Delete" style="margin: 15px;">
             <input type="hidden" asp-for="SubAllotmentId" />
-            <input type="submit" value="Delete" class="btn btn-danger" asp-route-budget_id ="@ViewBag.budget_id" />
+            <input type="submit" value="Delete" class="btn btn-danger" asp-route-budget_id="@ViewBag.budget_id" />
             <a data-dismiss="modal" class="btn btn-info btn-sm">Back to List</a>
         </form>
     </center>

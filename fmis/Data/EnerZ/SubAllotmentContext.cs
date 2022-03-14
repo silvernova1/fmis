@@ -9,12 +9,12 @@ using System.Threading;
 
 namespace fmis.Data
 {
-    public class Sub_allotmentContext : DbContext
+    public class SubAllotmentContext : DbContext
     {
-        public DbSet<fmis.Models.Sub_allotment> Sub_allotment { get; set; }
-        public DbSet<fmis.Models.Uacs> Uacs { get; set; }
+        public DbSet<SubAllotment> SubAllotment { get; set; }
+        public DbSet<Uacs> Uacs { get; set; }
 
-        public Sub_allotmentContext(DbContextOptions<Sub_allotmentContext> options)
+        public SubAllotmentContext(DbContextOptions<SubAllotmentContext> options)
             : base(options)
         {
         }

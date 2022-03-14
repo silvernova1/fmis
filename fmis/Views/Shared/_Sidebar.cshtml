@@ -100,12 +100,12 @@
                 @Html.Raw("active")">
                     <a asp-controller="RespoCenter" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Responsibility Center 
+                        Responsibility Center
                     </a>
 
                     <b class="arrow"></b>
                 </li>
-                
+
                 <li class="@if(ViewBag.filter.sub == "uacs")
                 @Html.Raw("active open")">
 
@@ -143,14 +143,14 @@
                 </li>
 
                 @*    <li class="@if(ViewBag.filter.sub == "prexc")
-        @Html.Raw("active")">
-            <a asp-controller="Prexc" asp-action="Index">
-                <i class="menu-icon fa fa-caret-right"></i>
-                PAP Code
-            </a>
+                @Html.Raw("active")">
+                    <a asp-controller="Prexc" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        PAP Code
+                    </a>
 
-            <b class="arrow"></b>
-        </li>*@
+                    <b class="arrow"></b>
+                </li>*@
 
                 <li class="@if(ViewBag.filter.sub == "prexc")
                 @Html.Raw("active open")">
@@ -319,8 +319,6 @@
                 </li>
             </ul>
         </li>
-
-
         <li class="@if(ViewBag.filter.main == "trust_fund")
                 @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
@@ -339,21 +337,21 @@
                 @Html.Raw("active")">
                     <a asp-area="" asp-controller="RespoCenterTrustFund" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Responsibility Center 
+                        Responsibility Center
                     </a>
 
                     <b class="arrow"></b>
                 </li>
 
                 @*  <li class="@if(ViewBag.filter.sub == "respo_trust_fund")
-              @Html.Raw("active")">
-            <a asp-controller="RespoCenterTrustFund" asp-action="Index">
-                <i class="menu-icon fa fa-caret-right"></i>
-                Responsibility Center Trust Fund
-            </a>
+                      @Html.Raw("active")">
+                    <a asp-controller="RespoCenterTrustFund" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Responsibility Center Trust Fund
+                    </a>
 
-            <b class="arrow"></b>
-        </li>*@
+                    <b class="arrow"></b>
+                </li>*@
 
                 <li class="@if(ViewBag.filter.sub == "uacs_trust_fund")
                 @Html.Raw("active open")">

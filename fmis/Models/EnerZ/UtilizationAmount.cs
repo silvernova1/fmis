@@ -12,7 +12,7 @@ namespace fmis.Models
     {
         public int Id { get; set; }
         public int UtilizationId { get; set; }
-        public int UacsId { get; set; }
+        public int UacsTrustFundId { get; set; }
         public Int64 Expense_code { get; set; }
         public decimal Amount { get; set; }
         public float Total_disbursement { get; set; }
@@ -22,7 +22,7 @@ namespace fmis.Models
         public string status { get; set; }
         public string utilization_token { get; set; }
         public string utilization_amount_token { get; set; }
-        public FundSource fundSource { get; set; }
-        public Sub_allotment SubAllotment { get; set; }
+        public FundSourceTrustFund FundSourceTrustFund { get; set; }
+
     }
 }

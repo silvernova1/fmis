@@ -4,8 +4,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 
+@{
+    decimal total_beginning_balance = 0;
+    decimal total_obligated_amount = 0;
+    @*    decimal total_utilized_amount = 0;*@
+    decimal total_realignment_amount = 0;
+    decimal total_remaining_balance = 0;
 
-<h3 class="grey lighter smaller" >
+}
+
+
+<h3 class="grey lighter smaller">
     (Trust Fund) Budget Allotments
 </h3>
 <hr />
@@ -106,7 +115,6 @@
                     <th>
                         For Fund Source
                     </th>
-                    <th>Actions</th>
                 </tr>
                 @foreach (var allotment_class in ViewBag.AllotmentClass)
                 {
@@ -129,34 +137,37 @@
                             <br />
                             <span class="grey">(BB): </span>
                             @{
-                                
+                                var fund_beginning_balance = item.FundSourceTrustFunds.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.Beginning_balance);
+                                total_beginning_balance += fund_beginning_balance;
                             }
-                            <b class="green"></b>
+                            <b class="green">@fund_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
                             <br />
                             <span class="grey">(RB): </span>
                             @{
-                               
+                                var fund_remaining_balance = item.FundSourceTrustFunds.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.Remaining_balance);
+                                total_remaining_balance += fund_remaining_balance;
                             }
-                            <b class="red"></b>
+                            <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
                             <br />
                             <span class="grey">(RA): </span>
                             @{
-                                
+                                var fund_realignment_amount = item.FundSourceTrustFunds.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.realignment_amount);
+                                total_realignment_amount += fund_realignment_amount;
                             }
-                            <b class="orange"></b>
+                            <b class="orange">@fund_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>
                             <br />
                             <span class="grey">(OA): </span>
                             @{
-                                
+                                var fund_obligated_amount = item.FundSourceTrustFunds.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.obligated_amount);
+                                total_obligated_amount += fund_obligated_amount;
                             }
-                            <b class="blue"></b>
+                            <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                         </td>
-                     
-                        <td>
+                      @*  <td>
                             <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentTrustFundId">
                                 <i class="ace-icon fa fa-edit"></i>Edit
                             </a>
-                        </td>
+                        </td>*@
                     </tr>
                 }
             }
@@ -165,6 +176,8 @@
 </table>
 
 <script>
-
-
+    $("#total_beginning_balance").html("@total_beginning_balance.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_obligated_amount").html("@total_obligated_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_realignment_amount").html("@total_realignment_amount.ToString("C", new CultureInfo("en-PH"))");
+    $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
 </script>

@@ -23,7 +23,7 @@ namespace fmis.Models
         public string obligation_token { get; set; }
         public string obligation_amount_token { get; set; }
         public FundSource fundSource { get; set; }
-        public Sub_allotment SubAllotment { get; set; }
+        public SubAllotment SubAllotment { get; set; }
 
        
     }
