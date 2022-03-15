@@ -112,10 +112,6 @@ namespace fmis.Controllers.Budget.John
 
             using (XLWorkbook wb = new XLWorkbook())
             {
-
- 
-
-
                 var ws = wb.Worksheets.Add(dt);
                 ws.Column(7).AdjustToContents();
                 ws.Worksheet.SheetView.FreezeColumns(2);
@@ -4958,19 +4954,20 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
                         ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
                         ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
+                        var unobligatedTotalinTotalPSSaaConapTotal = PsTotalSaaConap - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaaConapTotal.ToString("N", new CultureInfo("en-US"));
 
                         //var totalPercentPSSaaTotalinTotal = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount) / PsTotalSaa;
                         //PERCENT OF UTILIZATION
@@ -5131,7 +5128,8 @@ namespace fmis.Controllers.Budget.John
                                                                   sourceId = o.source_id,
                                                                   date = o.Date,
                                                                   status = oa.status,
-                                                                  allotmentClassID = f.AllotmentClassId
+                                                                  allotmentClassID = f.AllotmentClassId,
+                                                                  appropriationID = f.AppropriationId
                                                               }).ToList();
 
                         var asAtTotalinTotalCONAP = (from oa in _MyDbContext.ObligationAmount
@@ -5146,36 +5144,37 @@ namespace fmis.Controllers.Budget.John
                                                            sourceId = o.source_id,
                                                            uacsId = oa.UacsId,
                                                            status = oa.status,
-                                                           allotmentClassID = f.AllotmentClassId
+                                                           allotmentClassID = f.AllotmentClassId,
+                                                           appropriationID = f.AppropriationId
                                                        }).ToList();
 
                         var ConapTotal = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.Sub_allotment.Sum(x => x.Beginning_balance);
 
                         //TOTAL - FOR THE MONTH
-                        var ConapApproForthemonth = fortheMonthTotalinTotalCONAP.Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                        var ConapApproAsat = asAtTotalinTotalCONAP.Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                        var ConapApproForthemonth = fortheMonthTotalinTotalCONAP.Where(x=>x.appropriationID == 2).Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                        var ConapApproAsat = asAtTotalinTotalCONAP.Where(x=>x.appropriationID == 2).Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
                         ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = CurrentApproForthemonth.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = ConapApproForthemonth.ToString("N", new CultureInfo("en-US"));
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
                         ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = CurrentApproAsat.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = ConapApproAsat.ToString("N", new CultureInfo("en-US"));
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
-                        var unobligatedTotalinTotalCONAP = TotalCA - asAtTotalinTotalCURRENT.Sum(x => x.amount);
+                        var unobligatedTotalinTotalCONAP = TotalCONAP - ConapApproAsat;
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
                         ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCURRENT.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCONAP.ToString("N", new CultureInfo("en-US"));
 
                         //PERCENT OF UTILIZATION
-                        var totalPercentCONAP = asAtTotalinTotalCURRENT.Sum(x => x.amount) / CurrentTotal;
+                        var totalPercentCONAP = ConapApproAsat / ConapTotal;
                         //ws.Cell(currentRow, 10).Value = 11302415.87 / 136723000.00;
-                        ws.Cell(currentRow, 10).Value = totalPercentCURRENT;
+                        ws.Cell(currentRow, 10).Value = totalPercentCONAP;
                         ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                         ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
