@@ -93,7 +93,7 @@ namespace fmis.Controllers.Budget.John
 
             string ac = AllotmentClassId.ToString();
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == AllotmentClassId).ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == AllotmentClassId || x.uacs_type == 4).ToListAsync());
             ViewBag.uacs = uacs_data;
 
 
