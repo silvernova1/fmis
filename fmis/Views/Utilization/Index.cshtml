@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<fmis.Models.Utilization>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
-@using System.Text.Json;
-
+@using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -24,44 +23,111 @@
     }
 
     .wtHider {
-        margin-bottom: 100px;
+        margin-bottom: 150px;
+    }
+
+    .htAutocompleteArrow {
+        cursor: pointer;
+    }
+
+    .handsontable .htAutocompleteArrow {
+        float: right;
+        font-size: 10px;
+        color: red;
+        cursor: default;
+        width: 16px;
+        text-align: center;
     }
 </style>
 
-<input type="hidden" class="utilization" value="@JsonSerializer.Serialize(Model)">
+<input type="hidden" class="utilization" value="@JsonConvert.SerializeObject(Model)">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
+<input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
 <h3 class="grey lighter smaller">
-    (BURS) Utilization Request and Status
+    (BURS) Budget Utilization Request and Status
 </h3>
 <hr>
+<div class="col-xs-12 ">
+    <div class="infobox infobox-red" style="margin-left: -10px">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-calculator"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                ₱0.00
+            </span>
 
+            <div class="infobox-content">
+                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+            </div>
+        </div>
+    </div>
+    <div class="infobox infobox-orange2">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-bar-chart-o"></i>
+        </div>
+        <div class="infobox-data">
+
+            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
+                ₱0.00
+            </span>
+
+            <div class="infobox-content">
+                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />
+
+<div class="controls">
+    <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
+</div>
 <br />
 <div id="example" class="hot"></div>
 <br />
-<div class="controls" hidden>
-    <button id="export-file">Download CSV</button>
-</div>
+
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
         <div class="modal-content">
             <h3 style="margin-left:20px;" class="grey lighter smaller-150">
-                UACS Amount Entry / Disbursement (Utilization)
+                UACS Amount Entry / Disbursement (Obligation)
             </h3>
-            <div class="modal-body UtilizationContext">
+            <div class="modal-body ObligationContent">
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
                     Close <i class="ace-icon fa fa-close"></i>
                 </button>
             </div>
-            <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
         </div>
     </div>
 </div>
 
 <script>
-	//SET TOKEN
-    let guid = () => {
+    $(".handsontable .htAutocompleteArrow").click(function (event) {
+        console.log("hahahahahahaha");
+    });
+
+    var myEl = $(".handsontable .htAutocompleteArrow");
+
+    myEl.onclick = function (event) { alert('Hello world'); };
+
+
+	//SET OBLIGATION TOKEN
+    let UtilizationToken = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    let UtilizationAmountToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -69,112 +135,7 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 	}
-    let UtilizationAmountToken1 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
 
-    let UtilizationAmountToken2 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken3 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken4 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-    let UtilizationAmountToken5 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken6 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken7 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken8 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken9 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken10 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken11 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    let UtilizationAmountToken12 = () => {
-        let s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
 
 	//SET AUTO DATE
     var today = new Date();
@@ -184,8 +145,6 @@
 	today = mm + '/' + dd + '/' + yyyy;
 	//SET AUTO ADDRESS
 	var Address = "CEBU CITY"
-
-
 
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
@@ -214,6 +173,7 @@
             TH.appendChild(getInitializedElements(col));
         }
     };
+
 	var SOURCE_TYPE= "";
 	var CHECK_AFTER_ROW = false;
 	var CHECK_FIRST_ROW = true;
@@ -228,10 +188,11 @@
 			headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
 			data: { data: ajax_data },
 			success: function (output) {
-				console.log(output);
+				//console.log(output);
 			}
 		});
-	}
+    }
+
     function isNumeric(o) {
         if (!o || typeof o !== 'string') {
             // Should not be given anything but strings.
@@ -240,39 +201,39 @@
         return o.length <= 15 && o.indexOf('e+') < 0 && o.indexOf('E+') < 0 && !isNaN(o) && isFinite(o);
     }
 
-    @*var utilization = $.parseJSON($(".utilization").val());*@
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
 	var get_fund_sub = [];
-	var get_utilization_amount = [];
+	var get_utilized_amount = [];
 	var fund_sub_counter = 0;
-	$.each($.parseJSON($(".fund_sub").val()), function () {
+    $.each($.parseJSON($(".fund_sub").val()), function () {
 		fund_sub_data_dropdown[fund_sub_counter] = this.source_title;
 		var json_data = new Object();
 		json_data.source_id = this.source_id;
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
-		get_fund_sub[this.source_id + this.source_type] = this.source_title;
-        get_utilization_amount[this.Gross] = this.utilization_amount;
+        get_fund_sub[this.source_id + this.source_type] = this.source_title;
+        get_utilized_amount[this.source_id + this.source_type] = this.utilized_amount;
 		fund_sub_counter++;
-    });
+	});
+
+
     var utilization = $.parseJSON($(".utilization").val());
-    console.log(utilization);
-    const data = [];
-    var counter = 0;
+	const data = [];
+	var counter = 0;
     $.each(utilization, function () {
-        data[counter] = [
-            get_fund_sub[this.source_id + this.source_type], //0
+		data[counter] = [
+           get_fund_sub[this.FundSourceTrustFundId + this.source_type], 
             moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
-            this.Dv, //2
-            this.Pr_no, //3
-            this.Po_no, //4
-            this.Payee, //5
-            this.Address, //6
-            this.Particulars, //7
-            (this.Id).toString().padStart(4, '0'), //8
-            this.Created_by, //9
-            this.Gross,  //10
+			this.Dv, //2
+			this.Pr_no, //3
+			this.Po_no, //4
+			this.Payee, //5
+			this.Address, //6
+			this.Particulars, //7
+			(this.Id).toString().padStart(4, '0'), //8
+			this.Created_by, //9
+		   get_utilized_amount[this.source_id + this.source_type], //10
             this.Id, //11
             this.utilization_token, //12
         ];
@@ -284,148 +245,187 @@
         });
 
         for (var i = this.UtilizationAmount.length; i < 12; i++) {
-            data[counter].push("");
-            data[counter].push("");
-            data[counter].push("");
+            data[counter].push(UtilizationAmountToken()); //obligation amount token
+            data[counter].push("");  // expense code
+            data[counter].push("");  // amount
         }
 
-        counter++;
+        if (this.source_type == "fund_source") {
+            data[counter].push(this.FundSourceTrustFund ? this.FundSourceTrustFund.Beginning_balance : 0);
+            data[counter].push(this.FundSourceTrustFund ? this.FundSourceTrustFund.Remaining_balance : 0);
+            data[counter].push(this.FundSourceTrustFund ? this.FundSourceTrustFund.utilized_amount : 0);
+        }
+
+
+		counter++;
     });
 
     console.log(data);
 
     var uacs = $.parseJSON($(".uacs").val());
-    var uacs_data_dropdown = []; //dara
-    var uacs_data_array = []; //dara
-    var get_account_title = []; //dara
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
     var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data_dropdown[uacs_counter] = this.Expense_code; //dara
-        var json_data = new Object(); //dara
-        json_data.UacsId = this.UacsId; //dara
-        uacs_data_array[this.Expense_code] = json_data; //dara
-        get_account_title[this.UacsId] = this.Expense_code;
+	$.each(uacs, function () {
+		uacs_data_dropdown[uacs_counter] = this.Expense_code;
+        var json_data = new Object();
+        json_data.UacsTrustFundId = this.UacsTrustFundId;
+		uacs_data_array[this.Expense_code] = json_data;
         uacs_counter++;
     });
-    const container = document.getElementById('example');
+
+	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
-    const hot = new Handsontable(container, {
+	const hot = new Handsontable(container, {
         data: data,
-        rowHeaders: true,
-        colHeaders: true,
+		rowHeaders: true,
+		colHeaders: true,
         preventOverflow: 'horizontal',
-        className: 'as-you-type-demo',
-        filters: true,
-        stretchH: 'all',
-        manualColumnFreeze: true,
+		@*className: 'as-you-type-demo',*@
+		filters: true,
+        @*stretchH: 'all',*@
+        fixedColumnsLeft: 7,
         afterGetColHeader: addInput,
-        beforeOnCellMouseDown(event, coords) {
-            // Deselect the column after clicking on input.
-            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
-                event.stopImmediatePropagation();
-                this.deselectCell();
-            }
-        },
+		@*beforeOnCellMouseDown(event, coords) {
+			// Deselect the column after clicking on input.
+			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+				event.stopImmediatePropagation();
+				this.deselectCell();
+			}
+		},*@
         colWidths: [220, 100, 100, 100, 100, 150, 100, 150, 80, 80, 100, 125, 125, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
-            100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100, 100,
+                    100, 100,
+                    150, 150, 150,
         ],
-        height: 'auto',
-        colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'UTILIZATION TOKEN',
-            'UTILIZATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
-            'UTILIZATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
-            'UTILIZATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
-            'UTILIZATION AMOUNT TOKEN 4', 'EXP CODE 4', 'AMOUNT 4',
-            'UTILIZATION AMOUNT TOKEN 5', 'EXP CODE 5', 'AMOUNT 5',
-            'UTILIZATION AMOUNT TOKEN 6', 'EXP CODE 6', 'AMOUNT 6',
-            'UTILIZATION AMOUNT TOKEN 7', 'EXP CODE 7', 'AMOUNT 7',
-            'UTILIZATION AMOUNT TOKEN 8', 'EXP CODE 8', 'AMOUNT 8',
-            'UTILIZATION AMOUNT TOKEN 9', 'EXP CODE 9', 'AMOUNT 9',
-            'UTILIZATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
-            'UTILIZATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
-            'UTILIZATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
+
+		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'UTILIZATION TOKEN',
+                     'UTILIZATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
+                     'UTILIZATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
+                     'UTILIZATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
+                     'UTILIZATION AMOUNT TOKEN 4', 'EXP CODE 4', 'AMOUNT 4',
+                     'UTILIZATION AMOUNT TOKEN 5', 'EXP CODE 5', 'AMOUNT 5',
+                     'UTILIZATION AMOUNT TOKEN 6', 'EXP CODE 6', 'AMOUNT 6',
+                     'UTILIZATION AMOUNT TOKEN 7', 'EXP CODE 7', 'AMOUNT 7',
+                     'UTILIZATION AMOUNT TOKEN 8', 'EXP CODE 8', 'AMOUNT 8',
+                     'UTILIZATION AMOUNT TOKEN 9', 'EXP CODE 9', 'AMOUNT 9',
+                     'UTILIZATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
+                     'UTILIZATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
+                     'UTILIZATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
+                     'BEGINNING BALANCE','REMAINING BALANCE', 'OBLIGATED AMOUNT',
+
         ],
-        columns: [
+		columns: [
             {
-                //FUNDSOURCE&SUBALLOTMENT
-                type: 'dropdown',
+				//FUNDSOURCE&SUBALLOTMENT
+				type: 'dropdown',
                 source: fund_sub_data_dropdown
-            },
-            {
-                //DATE
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-                defaultDate: Date.now(),
-                correctFormat: true,
-            },
-            {
-                //DV
+			},
+			{
+				//DATE
+				type: 'date',
+				dateFormat: 'MM/DD/YYYY',
+				defaultDate: Date.now(),
+				correctFormat: true,
+			},
+			{
+				//DV
+				type: 'text'
+			},
+			{
+				//PR#
                 type: 'text'
-            },
-            {
-                //PR#
+			},
+			{
+				//PO#
                 type: 'text'
-            },
-            {
-                //PO#
+			},
+			{
+				//PAYEE
                 type: 'text'
-            },
-            {
-                //PAYEE
-                type: 'text'
-            },
-            {
+			},
+			{
                 //ADDRESS
-                type: 'text',
+				type: 'text',
             },
             {
                 //PARTICULARS
                 type: 'text'
-            },
-            {
-                //ORS NUMBER
-                type: 'text',
-                readOnly: true,
-            },
-            {
+			},
+			{
+				//ORS NUMBER
+				type: 'text',
+				readOnly: true,
+			},
+			{
                 //CREATED BY
-                type: 'text',
-                readOnly: true,
-            },
-            {
-                //GROSS TOTAL AMOUNT
+				type: 'text',
+				readOnly: true,
+			},
+			{
+				//GROSS TOTAL AMOUNT
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
-                },
+				},
                 readOnly: true,
+			},
+			{
+				//HIDDEN ID
+			},
+			{
+				//HIDDEN OBLIGATION TOKEN
+			},
+            {
+                //OBLIGATION_AMOUNT_TOKEN 1
             },
             {
-                //HIDDEN ID
-            },
-            {
-                //HIDDEN UTILIZATION TOKEN
-            },
-            {
-                //UTILIZATION_AMOUNT_TOKEN 1
-            },
-            {
-                //UTILIZATION EXPENSE CODE 1
+                //OBLIGATION EXPENSE CODE 1
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT 1
+                //OBLIGATION AMOUNT 1
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //OBLIGATION_AMOUNT_TOKEN 2
+            },
+            {
+                //OBLIGATION EXPENSE CODE 2
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                //OBLIGATION AMOUNT 2
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //OBLIGATION_AMOUNT_TOKEN 3
+            },
+            {
+                //OBLIGATION EXPENSE CODE 3
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                //OBLIGATION AMOUNT 3
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
@@ -433,141 +433,175 @@
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 2
+                //OBLIGATION_AMOUNT_TOKEN 4
             },
             {
-                //UTILIZATION EXPENSE CODE 2
+                //OBLIGATION EXPENSE CODE 4
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 2
+                //OBLIGATION AMOUNT  4
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 3
+                //OBLIGATION_AMOUNT_TOKEN 5
             },
             {
-                //UTILIZATION EXPENSE CODE 3
+                //OBLIGATION EXPENSE CODE 5
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 3
+                //OBLIGATION AMOUNT  5
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 4
+                //OBLIGATION_AMOUNT_TOKEN 6
             },
             {
-                //UTILIZATION EXPENSE CODE 4
+                //OBLIGATION EXPENSE CODE 6
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 4
+                //OBLIGATION AMOUNT  6
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 5
+                //OBLIGATION_AMOUNT_TOKEN 7
             },
             {
-                //UTILIZATION EXPENSE CODE 5
+                //OBLIGATION EXPENSE CODE 7
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 5
+                //OBLIGATION AMOUNT  7
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 6
+                //OBLIGATION_AMOUNT_TOKEN 8
             },
             {
-                //UTILIZATION EXPENSE CODE 6
+                //OBLIGATION EXPENSE CODE 8
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 6
+                //OBLIGATION AMOUNT  8
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 7
+                //OBLIGATION_AMOUNT_TOKEN 9
             },
             {
-                //UTILIZATION EXPENSE CODE 7
+                //OBLIGATION EXPENSE CODE 9
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 7
+                //OBLIGATION AMOUNT  9
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 8
+                //OBLIGATION_AMOUNT_TOKEN 10
             },
             {
-                //UTILIZATION EXPENSE CODE 8
+                //OBLIGATION EXPENSE CODE 10
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 8
+                //OBLIGATION AMOUNT  10
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 9
+                //OBLIGATION_AMOUNT_TOKEN 11
             },
             {
-                //UTILIZATION EXPENSE CODE 9
+                //OBLIGATION EXPENSE CODE 11
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 9
+                //OBLIGATION AMOUNT  11
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
             {
-                //UTILIZATION_AMOUNT_TOKEN 10
+                //OBLIGATION_AMOUNT_TOKEN 12
             },
             {
-                //UTILIZATION EXPENSE CODE 10
+                //OBLIGATION EXPENSE CODE 12
                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
-                //UTILIZATION AMOUNT CODE 10
+                //OBLIGATION AMOUNT  12
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //BEGINNING BALANCE
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //REMAINING BALANCE
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //OBLIGATED AMOUNT
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
 
-            {
-                //UTILIZATION_AMOUNT_TOKEN 11
-            },
-            {
-                //UTILIZATION EXPENSE CODE 11
-                type: 'dropdown',
-                source: uacs_data_dropdown
-            },
-            {
-                //UTILIZATION AMOUNT CODE 11
-            },
-
-            {
-                //UTILIZATION_AMOUNT_TOKEN 12
-            },
-            {
-                //UTILIZATION EXPENSE CODE 12
-                type: 'dropdown',
-                source: uacs_data_dropdown
-            },
-            {
-                //UTILIZATION AMOUNT CODE 12
-            },
-        ],
-        search: {
-            searchResultClass: 'search-result-custom'
-        },
-        contextMenu: {
+		],
+		search: {
+			searchResultClass: 'search-result-custom'
+		},
+		contextMenu: {
 			items: {
 				"make_bold": {
 					name: 'Print ORS',
@@ -591,9 +625,10 @@
 						}
 		                window.open(url);
 					}
-				},
-				"row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-				"": {
+                },
+
+                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+			@*	"": {
 					name: 'UACS Amount Entry / Disbmt.',
 					callback: function (key, options) {
 						var selection = this.getSelected();
@@ -629,28 +664,29 @@
                             return;
 						}
 						var holder_id = holder_data[selection[0][0]][11];
-						var utilization_token = holder_data[selection[0][0]][12];
+						var obligation_token = holder_data[selection[0][0]][12];
 						$("#exampleModal").modal('show');
-						$(".UtilizationContent").html(loading);
+						$(".ObligationContent").html(loading);
 						$.ajax({
 							type: 'GET',
 							headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
 							url: '@Url.Action("openUtilizationAmount", "Utilization")',
 							data: {
 								id: holder_id,
-								utilization_token: utilization_token
+								obligation_token: obligation_token
 							},
 							success: function (output) {
 								setTimeout(function () {
-									$(".UtilizationContent").html(output);
+									$(".ObligationContent").html(output);
 								}, 500);
 							}
 						});
-						console.log('@Url.Action("openUtilizationAmount", "Utilization")' + "/" + holder_id + "?token=" + utilization_token);
+						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
 					}
-				},
+                },*@
+              
 			}
-        },
+		},
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
 			var holder_data = this.getData();
@@ -674,11 +710,11 @@
 		},
 		afterUndo: function (index, column) {
 		},
-        afterCreateRow: function (row, column) {
+		afterCreateRow: function (row, column) {
 
             CHECK_AFTER_ROW = true;
-            TRAP_LOAD = 15; //mo load siya ka 14 tungud sa hot.setDataAtCell
-            hot.setDataAtCell(row, 12, guid()); //Utilization TOKEN
+            TRAP_LOAD = 15; //mo load siya ka 15 tungud sa hot.setDataAtCell
+            hot.setDataAtCell(row, 12, UtilizationToken()); //OBLIGATION TOKEN
 
             hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
 
@@ -687,24 +723,29 @@
             let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
             hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
 
-            hot.setDataAtCell(row, 13, UtilizatitionAmountToken1()); //UTILIZATION AMOUNT TOKEN 1
-            hot.setDataAtCell(row, 16, UtilizatitionAmountToken2()); //UTILIZATION AMOUNT TOKEN 2
-            hot.setDataAtCell(row, 19, UtilizatitionAmountToken3()); //UTILIZATION AMOUNT TOKEN 3
-            hot.setDataAtCell(row, 22, UtilizatitionAmountToken4()); //UTILIZATION AMOUNT TOKEN 4
-            hot.setDataAtCell(row, 25, UtilizatitionAmountToken5()); //UTILIZATION AMOUNT TOKEN 5
-            hot.setDataAtCell(row, 28, UtilizatitionAmountToken6()); //UTILIZATION AMOUNT TOKEN 6
-            hot.setDataAtCell(row, 31, UtilizatitionAmountToken7()); //UTILIZATION AMOUNT TOKEN 7
-            hot.setDataAtCell(row, 34, UtilizatitionAmountToken8()); //UTILIZATION AMOUNT TOKEN 8
-            hot.setDataAtCell(row, 37, UtilizatitionAmountToken9()); //UTILIZATION AMOUNT TOKEN 9
-            hot.setDataAtCell(row, 40, UtilizatitionAmountToken10()); //UTILIZATION AMOUNT TOKEN 10
-            hot.setDataAtCell(row, 43, UtilizatitionAmountToken11()); //UTILIZATION AMOUNT TOKEN 11
-            hot.setDataAtCell(row, 46, UtilizatitionAmountToken12()); //UTILIZATION AMOUNT TOKEN 12
+            hot.setDataAtCell(row, 13, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
+            hot.setDataAtCell(row, 16, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
+            hot.setDataAtCell(row, 19, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
+            hot.setDataAtCell(row, 22, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
+            hot.setDataAtCell(row, 25, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
+            hot.setDataAtCell(row, 28, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
+            hot.setDataAtCell(row, 31, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
+            hot.setDataAtCell(row, 34, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
+            hot.setDataAtCell(row, 37, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
+            hot.setDataAtCell(row, 40, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
+            hot.setDataAtCell(row, 43, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
+            hot.setDataAtCell(row, 46, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
 		},
 		afterChange: function (changes, source) {
 			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
 				CHECK_AFTER_ROW = false;
 				return;
-			}
+            }
+            if (TRAP_LOAD) {
+                TRAP_LOAD--; //decrement trap load
+                console.log("TRAP_LOAD");
+                return;
+            }
 			changes.forEach(([row, col, oldValue, newValue]) => {
 				if (col == 0) {
 					CHECK_FIRST_ROW1 = true;
@@ -724,55 +765,56 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-                            utilization_token: hot.getDataAtCell(row, 12)
+							utilization_token: hot.getDataAtCell(row, 12)
 						}
 					);
-					ajaxServer(ajax_data, '@Url.Action("SaveUtilization", "Utilization")');
-					console.log(ajax_data);
-				}
 
-                else if (col >= 14) {
-                    TRAP_LOAD2 = true;
+					ajaxServer(ajax_data, '@Url.Action("SaveUtilization", "Utilization")');
+					console.log(col);
+				}
+				else if (col >= 14)
+				{
+					TRAP_LOAD2 = true;
                     var ajax_data = [];
 
-                     if (isNumeric(hot.getDataAtCell(row, col))) {
+                    if (!hot.getDataAtCell(row, col)) {
+                        console.log("NULL DATA");
+                        return;
+                    }
+                    else if (isNumeric(hot.getDataAtCell(row, col))) {
                         ajax_data.push({
-                            obligation_token: hot.getDataAtCell(row, 12),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
+                            utilization_token: hot.getDataAtCell(row, 12),
+                            utilization_amount_token: hot.getDataAtCell(row, col - 1 ),
                             Expense_code: hot.getDataAtCell(row, col),
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
-                        console.log("number");
+                        console.log("number"); //expense code
                     }
                     else {
                         ajax_data.push({
-                            obligation_token: hot.getDataAtCell(row, 12),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 2),
+                            utilization_token: hot.getDataAtCell(row, 12),
+                            utilization_amount_token: hot.getDataAtCell(row, col - 2),
                             Expense_code: hot.getDataAtCell(row, col - 1),
                             Amount: hot.getDataAtCell(row, col),
                         });
-                        console.log("string");
+                        console.log("string"); //amount
                     }
 
                     console.log(hot.getDataAtCell(row, col))
                     console.log(ajax_data);
 					ajaxServer(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
-
                 }
                 else {
                     CHECK_FIRST_ROW = true;
-                     }
-            });
-            if (CHECK_FIRST_ROW1) {
-                CHECK_FIRST_ROW = false;
+                }
+
+			});
+
+			if (CHECK_FIRST_ROW1) {
+				CHECK_FIRST_ROW = false;
                 CHECK_FIRST_ROW1 = false;
-                console.log("wew");
-            }
-            else if (TRAP_LOAD) {
-                TRAP_LOAD--; //decrement trap load
-                console.log("wew");
-                return;
-            }
+				console.log("wew");
+			}
             else if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
                 console.log("TRAP_LOAD2");
@@ -796,37 +838,40 @@
                             Ors_no: this[8] ? this[8] : "",
 							Created_by: this[9] ? this[9] : "",
 							Gross: this[10] ? this[10] : "",
-                            utilization_token: this[12]
+                           utilization_token: this[12]
                         }
                     );
-				});
+                });
+          @*      console.log(hot.getDataAtCell(row, col))*@
+                console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveUtilization", "Utilization")');
-				console.log(ajax_data);
-			}
+            }
 		},
 		hiddenColumns: {
             columns: [11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46],
-			indicators: true
+			indicators: false
 		},
 		licenseKey: 'non-commercial-and-evaluation',
 	});
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
+
     const exportPlugin = hot.getPlugin('exportFile');
 
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
             bom: false,
             columnDelimiter: ',',
-            columnHeaders: false,
-            exportHiddenColumns: true,
-            exportHiddenRows: true,
+            columnHeaders: true,
+            exportHiddenColumns: false,
+            exportHiddenRows: false,
             fileExtension: 'csv',
             filename: 'Obligation-[YYYY]-[MM]-[DD]',
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
-            rowHeaders: true
+            rowHeaders: true,
         });
     });
+
 
 </script>

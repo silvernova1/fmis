@@ -384,7 +384,7 @@ namespace fmis.Controllers.Budget.John
                                                    amount = oa.Amount,
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
-                                                   sourceId = o.source_id
+                                                  /* sourceId = o.source_id*/
                                                }).ToList();
 
                             var fundsourceID = (from f in _MyDbContext.FundSources
@@ -596,7 +596,7 @@ namespace fmis.Controllers.Budget.John
 
 
                     var saa = _MyDbContext.Budget_allotments
-                        .Include(sub_allotment => sub_allotment.Sub_allotments)
+                        .Include(sub_allotment => sub_allotment.SubAllotment)
                         .ThenInclude(suballotment_amount => suballotment_amount.SubAllotmentAmounts)
                         .ThenInclude(uacs => uacs.Uacs);
                     
@@ -604,7 +604,7 @@ namespace fmis.Controllers.Budget.John
                     foreach (BudgetAllotment b in saa)
                     {
 
-                        foreach (Sub_allotment sa in b.Sub_allotments.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
+                        foreach (SubAllotment sa in b.SubAllotment.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow))
                         {
                             //Double suballotment_total = 0;
 

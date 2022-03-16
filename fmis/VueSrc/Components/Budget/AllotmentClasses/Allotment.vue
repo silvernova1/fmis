@@ -23,7 +23,7 @@
 <script>
     export default {
         name: "Allotment",
-        emits: ['update-allotment-class'],
+        emits: ['update-allotment-class','delete-allotment-class'],
         props: {
             allotment: Object,
         },

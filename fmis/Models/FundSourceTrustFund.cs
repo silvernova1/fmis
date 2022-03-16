@@ -2,6 +2,7 @@
 using fmis.Models.John;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -11,6 +12,7 @@ namespace fmis.Models
 {
     public class FundSourceTrustFund
     {
+        [Key]
         public int FundSourceTrustFundId { get; set; }
         public string FundSourceTrustFundTitle { get; set; }
         public string Description { get; set; }
@@ -42,11 +44,11 @@ namespace fmis.Models
         [JsonIgnore]
         public Fund Fund { get; set; }
 
-        public decimal BeginningBalance { get; set; }
-        public decimal RemainingBalance { get; set; }
-        public decimal ObligatedAmount { get; set; }
-        public decimal UtilizedAmount { get; set; }
-        public decimal RealignmentAmount { get; set; }
+        public decimal Beginning_balance { get; set; }
+        public decimal Remaining_balance { get; set; }
+        public decimal obligated_amount { get; set; }
+        public decimal utilized_amount { get; set; }
+        public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public int? BudgetAllotmentTrustFundId { get; set; }
         public BudgetAllotmentTrustFund BudgetAllotmentTrustFund { get; set; }

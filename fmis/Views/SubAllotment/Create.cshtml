@@ -1,0 +1,284 @@
+﻿@model fmis.Models.SubAllotment
+@using fmis.Models
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = null;
+}
+
+<style>
+    .select2 {
+        min-height: 33px;
+    }
+</style>
+
+<form asp-action="Create">
+    <input hidden type="text" id="subs_input_token" name="token" value="" />
+    <div>
+        <input type="hidden" asp-for="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
+        <input type="hidden" asp-for="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+        <input type="hidden" asp-for="AppropriationId" value="@ViewBag.AppropriationId" />
+        <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+            <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (Sub Allotment)</h7>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <input type="submit" id="btnsubmit" onclick="subAllotmentToken" value="Create" class="btn btn-success btn-xs" />
+                    <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label>Fund Source: </label>
+                    <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+                </div>
+                <div class="form-group">
+                    <label>PAP Title:</label>
+                    @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                </div>
+                <div class="form-group">
+                    <label>PAP Type: </label>
+                    <input asp-for="PapType" id="pap_type" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Responsibility Center:</label>
+                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+                </div>
+                <div class="form-group">
+                    <label>Sub-Allotment Title:</label>
+                    <input asp-for="Suballotment_title" class="form-control">
+                    <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Suballotment Code:</label>
+                    <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
+                    <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Date:</label>
+                    <input type="date" class="form-control">
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="SubId" />
+        <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+        <input type="hidden" class="uacs" value="@ViewBag.uacs">
+        <br />
+        <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+        <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
+        <br />
+        <div class="controls" hidden>
+            <button id="export-file">Download CSV</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
+    get_sbu();
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "Sub_allotment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#pap_code1').val(data[0].pap_code1);
+                    $('#pap_type').val(data[0].pap_type);
+                }
+                else {
+                    $('#pap_code1').val('');
+                    $('#pap_type').val('');
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+
+    var BudgetAllotmentId = @ViewBag.BudgetAllotmentId;
+
+    var suballotment_token = generate_token();
+
+    $("#subs_input_token").val(suballotment_token);
+
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+
+    const data = [];
+    var counter = 0;
+    var obligation_amount = 0;
+
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = []; //dara
+    var uacs_data_array = []; //dara
+    var get_account_title = []; //dara
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
+        var json_data = new Object(); //dara
+        json_data.UacsId = this.UacsId; //dara
+        uacs_data_array[this.Account_title] = json_data; //dara
+        get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
+    });
+
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('suballotment_amount_create');
+    const hot = new Handsontable(container, {
+        data: data,
+        className: 'htLeft',
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [150, 150],
+        colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: '450px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][3];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][3]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+                console.log(ajax_data);
+                 ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+            }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            CHECK_FIRST_ROW = true;
+            console.log(generate_token());
+            hot.setDataAtCell(row, 3, generate_token());
+        },
+        afterChange: function (changes, source) {
+               if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            BudgetAllotmentId: BudgetAllotmentId,
+                            UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            Amount: hot.getDataAtCell(row, col+2),
+                            suballotment_amount_token: hot.getDataAtCell(row, col + 3),
+                            suballotment_token: suballotment_token
+                        }
+                    );
+                    console.log(ajax_data);
+                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        BudgetAllotmentId: BudgetAllotmentId,
+                        UacsId: uacs_data_array[this[0]].UacsId,
+                        Amount: this[1],
+                        suballotment_amount_token: this[3],
+                        suballotment_token: suballotment_token
+                    });
+                });
+                console.log(ajax_data);
+                $(".obligation_amount").html(obligation_amount);
+                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+            }
+
+		},
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
+
+</script>

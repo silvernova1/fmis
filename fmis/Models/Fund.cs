@@ -17,7 +17,7 @@ namespace fmis.Models
         public string Fund_code_current { get; set; }
         public string Fund_code_conap { get; set; }
         public List<FundSource> FundSources { get; set; }
-        public List<Sub_allotment> Sub_Allotments { get; set; }
+        public List<SubAllotment> Sub_Allotments { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
 
         [ForeignKey("AppropriationID")]

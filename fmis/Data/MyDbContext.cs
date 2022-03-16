@@ -42,7 +42,7 @@ namespace fmis.Data
         public DbSet<ObligationAmount> ObligationAmount { get; set; }
         public DbSet<FundSourceAmount> FundSourceAmount { get; set; }
         public DbSet<FundsRealignment> FundsRealignment { get; set; }
-        public DbSet<Sub_allotment> Sub_allotment { get; set; }
+        public DbSet<SubAllotment> SubAllotment { get; set; }
         public DbSet<Suballotment_amount> Suballotment_amount { get; set; }
         public DbSet<SubAllotment_Realignment> SubAllotment_Realignment { get; set; }
         public DbSet<Ors_head> Ors_head { get; set; }
@@ -62,10 +62,16 @@ namespace fmis.Data
         public DbSet<BudgetAllotmentTrustFund> BudgetAllotmentTrustFund { get; set; }
         public DbSet<FundSourceTrustFund> FundSourceTrustFund { get; set; }
         public DbSet<FundSourceAmountTrustFund> FundSourceAmountTrustFund { get; set; }
+        public DbSet<FundsRealignmentTrustFund> FundsRealignmentTrustFund { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             base.OnModelCreating(modelBuilder);
+
+
+
             /*modelBuilder.Entity<BudgetAllotment>()
                 .Property(b => b.CreatedAt)
                 .HasDefaultValueSql("getdate()");*/
@@ -130,11 +136,10 @@ namespace fmis.Data
             .WithOne(s => s.Budget_allotment);*/
 
 
-
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
             modelBuilder.Entity<FundSourceAmount>().ToTable("FundSourceAmount");
-            modelBuilder.Entity<Sub_allotment>().ToTable("Sub_allotment");
+            modelBuilder.Entity<SubAllotment>().ToTable("SubAllotment");
             modelBuilder.Entity<FundsRealignment>().ToTable("FundsRealignment");
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
@@ -164,6 +169,7 @@ namespace fmis.Data
                                                        new RespoCenter { RespoId = 3, Respo = "RD/ARD", RespoCode = "13-001-03-0007-2022-003", RespoHead = "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", RespoHeadPosition = "DIRECTOR III" },
                                                        new RespoCenter { RespoId = 4, Respo = "RLED", RespoCode = "13-001-03-0007-2022-004", RespoHead = "SOPHIA M. MANCAO, MD, DPSP", RespoHeadPosition = "CHIEF - Regulation of Regional Health Facilities and Services" });
         }
+
 
         public static MyDbContext Create()
         {

@@ -60,7 +60,7 @@ namespace fmis.Controllers.Budget
         public class UtilizationAmountData
         {
             public int UtilizationId { get; set; }
-            public int UacsId { get; set; }
+            public int UacsTrustFundId { get; set; }
             public string Expense_code { get; set; }
             public decimal Amount { get; set; }
             public float Total_disbursement { get; set; }
@@ -103,9 +103,12 @@ namespace fmis.Controllers.Budget
                 if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.utilization_amount_token == item.utilization_amount_token) != null) //CHECK IF EXIST
                     utilization_amount = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.utilization_amount_token == item.utilization_amount_token);
 
-                utilization_amount.UtilizationId = item.UtilizationId;
-                utilization_amount.UacsId = item.UacsId;
-                utilization_amount.Expense_code = Convert.ToInt64(item.Expense_code);
+                var utilization = await _MyDbContext.Utilization.AsNoTracking().FirstOrDefaultAsync(x => x.utilization_token == item.utilization_token);
+
+                utilization_amount.UtilizationId = utilization.Id;
+                utilization_amount.UacsTrustFundId = item.UacsTrustFundId;
+                if (item.Expense_code != "")
+                    utilization_amount.Expense_code = Convert.ToInt64(item.Expense_code);
                 utilization_amount.Amount = item.Amount;
                 utilization_amount.Total_disbursement = item.Total_disbursement;
                 utilization_amount.Total_net_amount = item.Total_net_amount;
@@ -146,7 +149,7 @@ namespace fmis.Controllers.Budget
             //Obligate/calculation the fundsource/suballotment
             if (utilization.source_type == "fund_source")
             {
-                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.source_id).FirstOrDefaultAsync();
+                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.FundSourceTrustFundId).FirstOrDefaultAsync();
                 fund_source.Remaining_balance = calculation_data.remaining_balance;
                 fund_source.utilized_amount = calculation_data.utilized_amount;
 
@@ -156,20 +159,7 @@ namespace fmis.Controllers.Budget
                 _MyDbContext.FundSources.Update(fund_source);
                 _MyDbContext.SaveChanges();
             }
-            else if (utilization.source_type == "sub_allotment")
-            {
-                //code ni amalio
-
-                var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == utilization.source_id).FirstOrDefaultAsync();
-                sub_allotment.Remaining_balance = calculation_data.remaining_balance;
-                sub_allotment.utilized_amount = calculation_data.utilized_amount;
-
-                remaining_balance = sub_allotment.Remaining_balance;
-                utilized_amount = sub_allotment.utilized_amount;
-
-                _MyDbContext.Sub_allotment.Update(sub_allotment);
-                _MyDbContext.SaveChanges();
-            }
+          
 
             var utilization_amount = await _context.UtilizationAmount.AsNoTracking().FirstOrDefaultAsync(s => s.utilization_amount_token == calculation_data.utilization_amount_token);
             utilization_amount.Amount = calculation_data.amount;
@@ -203,17 +193,11 @@ namespace fmis.Controllers.Budget
             //calculation for funsource or sub allotment
             if (utilization.source_type == "fund_source")
             {
-                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.source_id).FirstOrDefaultAsync();
+                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.FundSourceTrustFundId).FirstOrDefaultAsync();
                 remaining_balance = fund_source.Remaining_balance;
                 utilized_amount = fund_source.utilized_amount;
             }
-            else if (utilization.source_type == "sub_allotment")
-            {
-                //code ni amalio
-                var sub_allotment = await _MyDbContext.Sub_allotment.Where(s => s.SubAllotmentId == utilization.source_id).FirstOrDefaultAsync();
-                remaining_balance = sub_allotment.Remaining_balance;
-                utilized_amount = sub_allotment.utilized_amount;
-            }
+
 
             GetUtilizedAndRemaining get_utilized_remaining = new GetUtilizedAndRemaining();
             get_utilized_remaining.remaining_balance = remaining_balance;
@@ -244,26 +228,21 @@ namespace fmis.Controllers.Budget
         {
             var utilization_amount = new UtilizationAmount(); //CLEAR OBJECT
             utilization_amount = _context.UtilizationAmount
-                                .Include(x => x.fundSource)
+                                .Include(x => x.FundSourceTrustFund)
                                 .FirstOrDefault(x => x.utilization_amount_token == utilization_amount_token);
             utilization_amount.status = "deactivated";
             if (source_type == "fund_source")
             {
-                utilization_amount.fundSource = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceId == source_id);
-                utilization_amount.fundSource.Remaining_balance += utilization_amount.Amount;
-                utilization_amount.fundSource.utilized_amount -= utilization_amount.Amount;
+                utilization_amount.FundSourceTrustFund = _MyDbContext.FundSourceTrustFund.FirstOrDefault(x => x.FundSourceTrustFundId == source_id);
+                utilization_amount.FundSourceTrustFund.Remaining_balance += utilization_amount.Amount;
+                utilization_amount.FundSourceTrustFund.utilized_amount -= utilization_amount.Amount;
             }
-            else if (source_type == "sub_allotment")
-            {
-                utilization_amount.SubAllotment = _MyDbContext.Sub_allotment.FirstOrDefault(x => x.SubAllotmentId == source_id);
-                utilization_amount.SubAllotment.Remaining_balance += utilization_amount.Amount;
-                utilization_amount.SubAllotment.utilized_amount -= utilization_amount.Amount;
-            }
+
             _context.Update(utilization_amount);
             _context.SaveChanges();
 
-            REMAINING_BALANCE = utilization_amount.fundSource.Remaining_balance;
-            UTILIZED_AMOUNT = utilization_amount.fundSource.utilized_amount;
+            REMAINING_BALANCE = utilization_amount.FundSourceTrustFund.Remaining_balance;
+            UTILIZED_AMOUNT = utilization_amount.FundSourceTrustFund.utilized_amount;
         }
 
 

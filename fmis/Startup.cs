@@ -107,8 +107,8 @@ namespace fmis
             services.AddDbContext<Ors_headContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDbContext<Sub_allotmentContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Sub_allotmentContext")));
+            services.AddDbContext<SubAllotmentContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("SubAllotmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Suballotment_amountContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
@@ -150,6 +150,8 @@ namespace fmis
          options.UseSqlServer(Configuration.GetConnectionString("FundSourceTrustFundContext")));
             services.AddDbContext<FundSourceAmountTrustFundContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountTrustFundContext")));
+            services.AddDbContext<FundsRealignmentTrustFundContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentTrustFundContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

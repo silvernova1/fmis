@@ -17,54 +17,7 @@
     }
 </style>
 
-<div class="col-xs-12 infobox-container" style=" margin-bottom: 10px">
-    <div class="infobox infobox-red">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-calculator"></i>
-        </div>
-        <div class="infobox-data">
 
-            @if (Model.source_type == "fund_source")
-            {
-                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-
-                    @Model.FundSource.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-                </span>
-            }
-            else if (Model.source_type == "sub_allotment")
-            {
-                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                    @Model.SubAllotment.FirstOrDefault().Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-                </span>
-            }
-            <div class="infobox-content">
-                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
-            </div>
-        </div>
-    </div>
-    <div class="infobox infobox-orange2">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-bar-chart-o"></i>
-        </div>
-        <div class="infobox-data">
-            @if (Model.source_type == "fund_source")
-            {
-                <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
-                    @Model.FundSource.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
-                </span>
-            }
-            else if (Model.source_type == "sub_allotment")
-            {
-                <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.FirstOrDefault().obligated_amount.ToString("C", new CultureInfo("en-PH"))
-                </span>
-            }
-            <div class="infobox-content">
-                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
-            </div>
-        </div>
-    </div>
-</div>
 
 <table class="table">
     <tbody>
@@ -89,29 +42,13 @@
                 @Model.Address
             </td>
         </tr>
-        <tr>
-            <td class="col-sm-1">
-                @if (Model.source_type == "fund_source")
-                {
-                    <strong>Fund Source</strong>
-                }
-                else if (Model.source_type == "sub_allotment")
-                {
-                    <strong>Sub Allotment</strong>
-                }
-            </td>
+@*        <tr>
+            <td class="col-sm-1"><strong>Fund Source / Sub Allotment</strong> </td>
             <td class="col-sm-1"><strong>:</strong></td>
             <td class="col-sm-10">
-                @if (Model.source_type == "fund_source")
-                {
-                    <p>@Model.FundSource.FirstOrDefault().FundSourceTitle</p>
-                }
-                else if (Model.source_type == "sub_allotment")
-                {
-                    <p>@Model.SubAllotment.FirstOrDefault().Suballotment_title</p>
-                }
+                @Html.DisplayFor(model => model.)
             </td>
-        </tr>
+        </tr>*@
         <tr>
             <td class="col-sm-1"><strong>PR #</strong></td>
             <td class="col-sm-1"><strong>:</strong></td>
@@ -127,16 +64,10 @@
 <input type="hidden" id="obligation_token" value="@Model.obligation_token" />
 <input type="hidden" id="obligation_id" value="@Html.DisplayFor(model => model.Id)" />
 <input type="hidden" id="remaining_balance" value="
-         @if (Model.source_type == "fund_source")
-             @Model.FundSource.FirstOrDefault().Remaining_balance
-         else if (Model.source_type == "sub_allotment")
-             @Model.SubAllotment.FirstOrDefault().Remaining_balance
+
 " />
 <input type="hidden" id="obligated_amount" value="
-        @if (Model.source_type == "fund_source")
-             @Model.FundSource.FirstOrDefault().obligated_amount
-        else if (Model.source_type == "sub_allotment")
-             @Model.SubAllotment.FirstOrDefault().obligated_amount
+    
 " />
 
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
@@ -159,9 +90,8 @@
     var REMAINING_BALANCE = 0;
     var TRAP_SAVE_AMOUNT = false;
     var SOURCE_TYPE = "@Model.source_type";
-    var SOURCE_ID = @Model.source_id;
-    console.log("source type: " + SOURCE_TYPE);
-    console.log("source id : " + SOURCE_ID);
+   @* var SOURCE_ID = @Model.source_id;*@
+
     var obligation_id = $("#obligation_id").val();
     let generateObligationAmountToken = () => {
         let s4 = () => {
@@ -219,7 +149,7 @@
         data: obligation_amount_handsontable,
         rowHeaders: true,
         colWidths: [300, 150, 150, 150, 150, 150, 150],
-        colHeaders: ['EXPENSE TITLE', 'CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
+        colHeaders: ['EXPENSE TITLE', 'EXPENSE CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
         columns: [
             {
                 type: 'dropdown',
@@ -231,6 +161,7 @@
             },
             {
                 type: 'numeric',
+                readOnly: true,
                 numericFormat: {
                     pattern: '0,0.00',
                     culture: 'en-Ph'
@@ -433,7 +364,7 @@
             }
         },
         hiddenColumns: {
-            columns: [7,8],
+            columns: [0,7,8],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only

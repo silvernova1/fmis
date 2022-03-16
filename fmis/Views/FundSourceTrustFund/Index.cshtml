@@ -5,21 +5,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (Model.FundSourceTrustFund.Count() > 0)
+@if (Model.FundSourceTrustFunds.Count() > 0)
 {
     <h3 class="grey lighter smaller">
-        Fund Source
+        Fund Source (Trust Fund)
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
             @Model.Yearly_reference.YearlyReference
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSourceTrustFund.FirstOrDefault().Appropriation.AppropriationSource
+            @Model.FundSourceTrustFunds.FirstOrDefault().Appropriation.AppropriationSource
         </small>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSourceTrustFund.FirstOrDefault().AllotmentClass.Allotment_Class
+            @Model.FundSourceTrustFunds.FirstOrDefault().AllotmentClass.Allotment_Class
         </small>
 
     </h3>
@@ -35,7 +35,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSourceTrustFund.Sum(x => x.BeginningBalance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFunds.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -48,7 +48,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.FundSourceTrustFund.Sum(x => x.RemainingBalance).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFunds.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -61,7 +61,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSourceTrustFund.Sum(x => x.RealignmentAmount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFunds.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
@@ -74,7 +74,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSourceTrustFund.Sum(x => x.ObligatedAmount).ToString("C", new CultureInfo("en-PH"))
+                    @Model.FundSourceTrustFunds.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
@@ -123,7 +123,7 @@
     </a>
 </p>
 
-@if (Model.FundSourceTrustFund.Count() > 0)
+@if (Model.FundSourceTrustFunds.Count() > 0)
 {
     <table class="table">
         <thead>
@@ -138,7 +138,7 @@
                     Appropriation (Source)
                 </th>
                 <th>
-                    Respo
+                    Responsibility Center
                 </th>
                 <th>
                     Actions
@@ -161,7 +161,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.FundSourceTrustFund)
+            @foreach (var item in Model.FundSourceTrustFunds)
             {
                 <tr>
                     <td>
@@ -178,30 +178,30 @@
                     </td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditFundSourceTrustFund(@Model.BudgetAllotmentTrustFundId,@item.FundSourceTrustFundId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                        <a asp-controller="FundSourceTrustFund" asp-action="Delete" asp-route-id="@item.FundSourceTrustFundId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                       @* <a asp-controller="FundSourceTrustFund" asp-action="Delete" asp-route-id="@item.FundSourceTrustFundId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>*@
                     </td>
                     <td>
-                        <a asp-controller="FundsRealignmentTrustFund" asp-route-fundsource_id="@item.FundSourceTrustFundId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                        <a asp-controller="FundsRealignmentTrustFund" asp-route-fundsource_trustfund_id="@item.FundSourceTrustFundId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                     </td>
 
                     <td>
                         <b class="green">
-                            <span>@item.BeginningBalance.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                     <td>
                         <b class="red">
-                            <span>@item.BeginningBalance.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                     <td>
                         <b class="orange">
-                            <span>@item.RealignmentAmount.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                     <td>
                         <b class="blue">
-                            <span>@item.ObligatedAmount.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                 </tr>
@@ -226,7 +226,7 @@ else
          var AllotmentClassId = @ViewBag.AllotmentClassId;
          var AppropriationId = @ViewBag.AppropriationId;
          var url = '@Url.Action("Create", "FundSourceTrustFund")';
-         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentTrustFundId;
+         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentTrustFundId=" + BudgetAllotmentTrustFundId;
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_create_trust_fund").html(result);
@@ -237,8 +237,11 @@ else
      function getEditFundSourceTrustFund(BudgetAllotmentTrustFundId, fund_source_id_trust_fund) {
          $("#editModal").modal({ backdrop: 'static', keyboard: false });
          $("#fund_source_edit_trust_fund").html(loading);
+         var AllotmentClassId = @ViewBag.AllotmentClassId;
+         var AppropriationId = @ViewBag.AppropriationId;
          var url = '@Url.Action("Edit", "FundSourceTrustFund")';
-         url += "?budget_id=" + BudgetAllotmentTrustFundId + "&fund_source_trust_fund_id=" + fund_source_id_trust_fund
+         //url += "?budget_id=" + BudgetAllotmentTrustFundId + "&fund_source_trust_fund_id=" + fund_source_id_trust_fund
+         url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentTrustFundId=" + BudgetAllotmentTrustFundId + "&fund_source_id_trust_fund=" + fund_source_id_trust_fund;
          $.get(url, function (result) {
             setTimeout(function () {
                 $("#fund_source_edit_trust_fund").html(result);
@@ -258,7 +261,7 @@ else
          });
      }
 
-    let generate_token_trust_fund = () => {
+    let generate_token = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)

@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Sub_allotment
+﻿@model fmis.Models.SubAllotment
 @using System.Text.Json;
 @using System.Globalization;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
@@ -311,7 +311,7 @@
                                 post_realignment_amount = post_realignment_amount + AMOUNT;
                                 post_suballotment_amount_remaining = post_suballotment_amount_remaining - AMOUNT;
                                 post_suballotment_amount_realignment = post_suballotment_amount_realignment + AMOUNT;
-                               
+
 
                                 var calculated_amount_data = {
                                     "sub_allotment_id": parseInt(sub_allotment_id),

@@ -161,7 +161,6 @@ namespace fmis.Controllers.Budget.John
                 .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
                 .FirstOrDefault();
 
-
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 

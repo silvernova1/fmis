@@ -1,4 +1,11 @@
-﻿<h3 class="grey lighter smaller">
+﻿<style>
+    @*td:nth-child(2) {
+        background-color: red;
+    }*@
+
+</style>
+
+<h3 class="grey lighter smaller">
     TEMP HANDSONTABLE
 </h3>
 <hr>
@@ -15,7 +22,7 @@
     var uacs_data_dropdown = []; //dara
     var uacs_data_array = []; //dara
     $.each(uacs, function () {
-        uacs_data_dropdown[this.UacsId] = this.Account_title; //dara
+        uacs_data_dropdown[this.UacsId] = this.Expense_code; //dara
         var json_data = new Object(); //dara
         json_data.UacsId = this.UacsId; //dara
         json_data.Expense_code = this.Expense_code; //dara
@@ -32,7 +39,7 @@
     const example = document.getElementById('example');
     const hot = new Handsontable(example, {
         data: Handsontable.helper.createSpreadsheetData(2, 0),
-        colWidths: [350, 350],
+        colWidths: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
         columns: [
             {
                  type: 'dropdown',
@@ -40,11 +47,151 @@
             },
             {
                 type: 'dropdown',
-                readOnly: true
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
             },
         ],
         width: 'auto',
-        height: 500,
+        height: 300,
         rowHeights: 23,
         rowHeaders: true,
         colHeaders: ['ACCOUNT TITLE','DROPDOWN', 'EXPENSE CODE', ],
@@ -54,12 +201,20 @@
             if (!changes) {
                 return;
             }
-            changes.forEach(([row, col, oldValue, newValue]) => {
+            @*changes.forEach(([row, col, oldValue, newValue]) => {
                 var expense_code = uacs_data_array[hot.getDataAtCell(row, 0)].Expense_code; //dara
                 if (expense_code == newValue) //dara
                     return; //dara
                 hot.setDataAtCell(row, col + 1, expense_code); //dara
-            });
-        }
+            });*@
+        },
+        hiddenColumns: {
+            columns: [0, 1],
+            indicators: true
+        },
+        fixedColumnsLeft: 5,
+
     });
+
+
 </script>

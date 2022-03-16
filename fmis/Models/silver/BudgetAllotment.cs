@@ -20,7 +20,7 @@ namespace fmis.Models.silver
         [JsonIgnore]
         public ICollection<FundSource> FundSources { get; set; }
         [JsonIgnore]
-        public ICollection<Sub_allotment> Sub_allotments { get; set; }
+        public ICollection<SubAllotment> SubAllotment { get; set; }
         [JsonIgnore]
         public ICollection<Personal_Information> Personal_Information { get; set; }
 

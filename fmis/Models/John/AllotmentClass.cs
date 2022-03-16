@@ -17,7 +17,7 @@ namespace fmis.Models.John
         public string Desc { get; set; }
         public List<BudgetAllotment> BudgetAllotments { get; set; }
         public List<FundSource> FundSource { get; set; }
-        public List<Sub_allotment> Sub_allotment { get; set; }
+        public List<SubAllotment> Sub_allotment { get; set; }
         public List<FundSourceTrustFund> FundSourceTrustFund { get; set; }
 
 
