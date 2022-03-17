@@ -104,9 +104,10 @@ namespace fmis.Controllers.Budget
                     utilization_amount = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.utilization_amount_token == item.utilization_amount_token);
 
                 var utilization = await _MyDbContext.Utilization.AsNoTracking().FirstOrDefaultAsync(x => x.utilization_token == item.utilization_token);
+                var uacs = await _MyDbContext.UacsTrustFund.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
 
                 utilization_amount.UtilizationId = utilization.Id;
-                utilization_amount.UacsTrustFundId = item.UacsTrustFundId;
+                utilization_amount.UacsTrustFundId = uacs.UacsTrustFundId;
                 if (item.Expense_code != "")
                     utilization_amount.Expense_code = Convert.ToInt64(item.Expense_code);
                 utilization_amount.Amount = item.Amount;

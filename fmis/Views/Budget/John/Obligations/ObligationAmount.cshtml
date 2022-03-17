@@ -42,11 +42,11 @@
                 @Model.Address
             </td>
         </tr>
-@*        <tr>
+        @*     <tr>
             <td class="col-sm-1"><strong>Fund Source / Sub Allotment</strong> </td>
             <td class="col-sm-1"><strong>:</strong></td>
             <td class="col-sm-10">
-                @Html.DisplayFor(model => model.)
+                @Html.DisplayFor(model => model.FundSourceTitle)
             </td>
         </tr>*@
         <tr>
@@ -127,6 +127,8 @@
         get_account_title[this.UacsId] = this.Account_title;
         uacs_counter++;
     });
+
+
     var obligationamount = $.parseJSON($(".obligation_amount_data").val());
     const obligation_amount_handsontable = [];
     var counter = 0;

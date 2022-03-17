@@ -212,9 +212,7 @@
 		json_data.source_id = this.source_id;
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
-
         get_fund_sub[this.source_id + this.source_type] = this.source_title;
-
         get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
 		fund_sub_counter++;
 	});
@@ -275,7 +273,7 @@
 	$.each(uacs, function () {
 		uacs_data_dropdown[uacs_counter] = this.Expense_code;
         var json_data = new Object();
-		json_data.UacsId = this.UacsId;
+        json_data.UacsId = this.UacsId;
 		uacs_data_array[this.Expense_code] = json_data;
         uacs_counter++;
     });
@@ -788,8 +786,7 @@
                     else if (isNumeric(hot.getDataAtCell(row, col))) {
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 1 ),
-                            UacsId: hot.getDataAtCell(row, col),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
                             Expense_code: hot.getDataAtCell(row, col),
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
@@ -799,7 +796,6 @@
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
                             obligation_amount_token: hot.getDataAtCell(row, col - 2),
-                            UacsId: hot.getDataAtCell(row, col),
                             Expense_code: hot.getDataAtCell(row, col - 1),
                             Amount: hot.getDataAtCell(row, col),
                         });
