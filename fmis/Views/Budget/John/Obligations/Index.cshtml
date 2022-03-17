@@ -789,6 +789,7 @@
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
                             obligation_amount_token: hot.getDataAtCell(row, col - 1 ),
+                            UacsId: hot.getDataAtCell(row, col),
                             Expense_code: hot.getDataAtCell(row, col),
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
@@ -798,6 +799,7 @@
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
                             obligation_amount_token: hot.getDataAtCell(row, col - 2),
+                            UacsId: hot.getDataAtCell(row, col),
                             Expense_code: hot.getDataAtCell(row, col - 1),
                             Amount: hot.getDataAtCell(row, col),
                         });

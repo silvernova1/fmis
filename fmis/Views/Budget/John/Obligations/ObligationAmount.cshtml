@@ -1,1 +1,395 @@
+<<<<<<< HEAD
 ﻿
+=======
+﻿@model fmis.Models.Obligation
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
+@using System.Globalization;
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+
+<style>
+    .wtHider {
+        margin-bottom: 150px;
+    }
+</style>
+
+
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td class="col-sm-1"><strong>Particulars</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Model.Particulars
+            </td>
+        </tr>
+        <tr>
+            <td class="col-sm-1"><strong>Payee</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Model.Payee
+            </td>
+        </tr>
+        <tr>
+            <td class="col-sm-1"><strong>Address</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Model.Address
+            </td>
+        </tr>
+@*        <tr>
+            <td class="col-sm-1"><strong>Fund Source / Sub Allotment</strong> </td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Html.DisplayFor(model => model.)
+            </td>
+        </tr>*@
+        <tr>
+            <td class="col-sm-1"><strong>PR #</strong></td>
+            <td class="col-sm-1"><strong>:</strong></td>
+            <td class="col-sm-10">
+                @Html.DisplayFor(model => model.Pr_no)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.ObligationAmounts)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" id="obligation_token" value="@Model.obligation_token" />
+<input type="hidden" id="obligation_id" value="@Html.DisplayFor(model => model.Id)" />
+<input type="hidden" id="remaining_balance" value="
+
+" />
+<input type="hidden" id="obligated_amount" value="
+    
+" />
+
+<input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+<div id="obligation_handsontable" class="hot handsontable htColumnHeaders"></div>
+<br />
+<div class="controls" hidden>
+    <button id="export-file">Download CSV</button>
+</div>
+
+<script>
+    var EXPENSE_CODE = 0;
+    var AMOUNT = 0;
+    var CHECK_AFTER_ROW = false;
+    var TRAP_THE_LOAD = false;
+    var TRAP_THE_LOAD1 = false;
+    var INSUFFICIENT_AMOUNT = false;
+    var INSUFFICIENT_AMOUNT1 = false;
+    var OBLIGATION_TOKEN = $("#obligation_token").val();
+    var OBLIGATED_AMOUNT = $("#obligated_Aamount").val();
+    var REMAINING_BALANCE = 0;
+    var TRAP_SAVE_AMOUNT = false;
+    var SOURCE_TYPE = "@Model.source_type";
+   @* var SOURCE_ID = @Model.source_id;*@
+
+    var obligation_id = $("#obligation_id").val();
+    let generateObligationAmountToken = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+    function ajaxServerAmount(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                console.log(output);
+            }
+        });
+    }
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        var json_data = new Object();
+        json_data.UacsId = this.UacsId;
+        json_data.Account_title = this.Account_title;
+        json_data.Expense_code = this.Expense_code;
+        uacs_data_array[this.Account_title] = json_data;
+        get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
+    });
+    var obligationamount = $.parseJSON($(".obligation_amount_data").val());
+    const obligation_amount_handsontable = [];
+    var counter = 0;
+    $.each(obligationamount, function () {
+        obligation_amount_handsontable[counter] = [
+            get_account_title[this.UacsId],
+            this.Expense_code,
+            this.Amount,
+            this.Total_disbursement,
+            this.Total_net_amount,
+            this.Total_tax_amount,
+            this.Total_others,
+            this.obligation_token,
+            this.obligation_amount_token
+        ]
+        counter++;
+    });
+    const container = document.getElementById('obligation_handsontable');
+    const hot = new Handsontable(container, {
+        data: obligation_amount_handsontable,
+        rowHeaders: true,
+        colWidths: [300, 150, 150, 150, 150, 150, 150],
+        colHeaders: ['EXPENSE TITLE', 'EXPENSE CODE', 'AMOUNT', 'TOTAL DISBURSEMENT', 'TOTAL NET AMOUNT', 'TOTAL TAX AMOUNT', 'TOTAL OTHERS', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'text',
+                readOnly: true,
+            },
+            {
+                type: 'numeric',
+                readOnly: true,
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    @*pattern: '0,0.00',*@
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                },
+                readOnly: true
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: 'auto',
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][8];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][8]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "source_id" : SOURCE_ID,
+                    "source_type" : SOURCE_TYPE,
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeleteObligationAmount", "ObligationAmount")',
+                    headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                    data: { data: ajax_data },
+                    success: function (result) {
+                        displatTheCalculation(result);
+                    }
+                });
+            }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            CHECK_AFTER_ROW = true;
+            fillTheCell(row, 7, OBLIGATION_TOKEN);
+            fillTheCell(row, 8, generateObligationAmountToken());
+        },
+        afterChange(changes, source) {
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (EXPENSE_CODE == newValue) {
+                    console.log("first trap!")
+                    return;;
+                } // mao ni siya ang mo trap para dile mo load kaduha if mag set sa cell
+                else if (col == 0) {
+                    EXPENSE_CODE = uacs_data_array[hot.getDataAtCell(row, col)].Expense_code;
+                    fillTheCell(row, 1, EXPENSE_CODE);
+                    var ajax_data = [];
+                    ajax_data.push({
+                        ObligationId: obligation_id,
+                        UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                        Expense_code: EXPENSE_CODE,
+                        Amount: hot.getDataAtCell(row, 2),
+                        Total_disbursement: 0,
+                        Total_net_amount: 0,
+                        Total_tax_amount: 0,
+                        Total_others: 0,
+                        obligation_token: hot.getDataAtCell(row, col + 7),
+                        obligation_amount_token: hot.getDataAtCell(row, col + 8)
+                    });
+                    console.log(ajax_data);
+                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                }
+                else if (col == 2) {
+                    //get the exact remaining balance from DB
+                    var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
+                    var post_calculation_data = {
+                        "obligation_id": obligation_id,
+                        "obligation_token": OBLIGATION_TOKEN
+                    };
+                    $.post(url, post_calculation_data, function (result) {
+                        var post_remaining_balance = result.remaining_balance;
+                        var post_obligated_amount = result.obligated_amount;
+                        console.log("SAVED THE AMOUNT FROM FIRST ROW!");
+                        displatTheCalculation(result);
+                        if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                            post_remaining_balance = post_remaining_balance + oldValue; //2000
+                            post_obligated_amount = post_obligated_amount - oldValue;
+                        }
+                        AMOUNT = newValue;
+                        if (INSUFFICIENT_AMOUNT1) {
+                            INSUFFICIENT_AMOUNT1 = false;
+                            console.log("INSUFFICIENT_AMOUNT1");
+                            return;
+                        }
+                        else if (AMOUNT > post_remaining_balance) {
+                            trapTheInsuficientAmount(row, col, oldValue); //trap the insuficient amount
+                        }
+                        else {
+                            //do the calculalation
+                            post_remaining_balance = post_remaining_balance - AMOUNT;
+                            post_obligated_amount = post_obligated_amount + AMOUNT;
+                            var calculated_amount_data = {
+                                "obligation_id": obligation_id,
+                                "obligation_token": OBLIGATION_TOKEN,
+                                "obligation_amount_token": hot.getDataAtCell(row, 8),
+                                "remaining_balance": post_remaining_balance,
+                                "obligated_amount": post_obligated_amount,
+                                "amount": AMOUNT
+                            };
+                            console.log(calculated_amount_data);
+                            var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")'
+                            $.post(url, calculated_amount_data, function (result) {
+                                displatTheCalculation(result);
+                            });
+                        }
+                    });
+                    TRAP_SAVE_AMOUNT = true;
+                }
+            });
+            if (TRAP_THE_LOAD) {
+                console.log("TRAP THE LOAD");
+                TRAP_THE_LOAD = false;
+            }
+            else if (TRAP_THE_LOAD1) {
+                console.log("TRAP THE LOAD1");
+                TRAP_THE_LOAD1 = false;
+            }
+            else if (INSUFFICIENT_AMOUNT) {
+                console.log("INSUFFICIENT_AMOUNT");
+                INSUFFICIENT_AMOUNT = false;
+            }
+            else if (TRAP_SAVE_AMOUNT) {
+                TRAP_SAVE_AMOUNT = false;
+                console.log("TRAP SAVE AMOUNT");
+            }
+            else
+            {
+                console.log("else last");
+                OBLIGATED_AMOUNT = 0;
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        ObligationId: obligation_id,
+                        UacsId: uacs_data_array[this[0]].UacsId ? uacs_data_array[this[0]].UacsId : "",
+                        Expense_code: uacs_data_array[this[0]].Expense_code ? uacs_data_array[this[0]].Expense_code : "",
+                        Amount: this[2] ? this[2] : "",
+                        Total_disbursement: this[3] ? this[3] : "",
+                        Total_net_amount: this[4] ? this[4] : "",
+                        Total_tax_amount: this[5] ? this[5] : "",
+                        Total_others: this[6] ? this[6] : "",
+                        obligation_token: this[7] ? this[7] : "",
+                        obligation_amount_token: this[8] ? this[8] : "",
+                    });
+                    OBLIGATED_AMOUNT += this[2] ? this[2] : 0;
+                });
+                $("#total_obligated_amount").html(OBLIGATED_AMOUNT);
+                ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+            }
+        },
+        hiddenColumns: {
+            columns: [0,7,8],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    function displatTheCalculation(result) {
+        $("#total_remaining_balance").html(parseFloat(result.remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        $("#total_obligated_amount").html(parseFloat(result.obligated_amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+    }
+    function fillTheCell(row, col, fill_message) {
+        TRAP_THE_LOAD = true; //need ni siya para dile ma doble ang pag save
+        TRAP_THE_LOAD1 = true; //need ni siya para dile ma doble ang pag save
+        hot.setDataAtCell(row, col, fill_message);
+    }
+    function trapTheInsuficientAmount(row, col, oldValue) {
+        Lobibox.alert("error", {
+            msg: "Insufficient  Balance!",
+            sound: false,
+        });
+        INSUFFICIENT_AMOUNT1 = true; //trap so that can't save in DB
+        INSUFFICIENT_AMOUNT = true; //trap so that can't save in DB
+        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+    }
+</script>
+>>>>>>> a0933ab4708792111600d34cde759e658fc975ab

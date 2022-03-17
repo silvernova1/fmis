@@ -125,7 +125,7 @@ namespace fmis.Controllers
 
                     this._context.Uacs.Update(uacs);
                     this._context.SaveChanges();
-                }    
+                }
             }
 
             return Json(data);

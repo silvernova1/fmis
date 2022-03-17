@@ -146,9 +146,15 @@
     var counter = 0;
     var obligation_amount = 0;
     $.each(fundsource_amount_uacs, function () {
+<<<<<<< HEAD
         data[counter] = [get_account_title[this.UacsTrustFundId], this.BeginningBalance, this.FundSourceAmountTokenTrustFund, this.FundSourceTokenTrustFund]
         counter++;
         obligation_amount += this.BeginningBalance;
+=======
+        data[counter] = [get_account_title[this.UacsTrustFundId], this.beginning_balance, this.FundSourceAmountTokenTrustFund, this.FundSourceTokenTrustFund]
+        counter++;
+        obligation_amount += this.beginning_balance;
+>>>>>>> a0933ab4708792111600d34cde759e658fc975ab
     });
 
     const searchField = document.querySelector('#search_field2');

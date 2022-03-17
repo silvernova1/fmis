@@ -285,7 +285,11 @@
 		filters: true,
         @*stretchH: 'all',*@
         fixedColumnsLeft: 7,
+<<<<<<< HEAD
 		afterGetColHeader: addInput,
+=======
+        afterGetColHeader: addInput,
+>>>>>>> a0933ab4708792111600d34cde759e658fc975ab
 		@*beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
 			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
@@ -849,7 +853,11 @@
 		},
 		hiddenColumns: {
             columns: [11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46],
+<<<<<<< HEAD
 			@*indicators: true*@
+=======
+			indicators: false
+>>>>>>> a0933ab4708792111600d34cde759e658fc975ab
 		},
 		licenseKey: 'non-commercial-and-evaluation',
 	});
