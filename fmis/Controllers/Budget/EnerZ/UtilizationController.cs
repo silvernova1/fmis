@@ -514,9 +514,15 @@ namespace fmis.Controllers
 
                     var fundsources = (from fundsource in _MyDbContext.FundSourceTrustFund
                                        join utilization in _MyDbContext.Utilization
+<<<<<<< HEAD
+                                       on fundsource.FundSourceId equals utilization.FundSourceTrustFundId
+                                       join prexc in _MyDbContext.Prexc
+                                       on fundsource.PrexcId equals prexc.Id
+=======
                                        on fundsource.FundSourceTrustFundId equals utilization.FundSourceTrustFundId
                                        join prexc in _MyDbContext.PrexcTrustFund
                                        on fundsource.PrexcTrustFundId equals prexc.PrexcTrustFundId
+>>>>>>> a0933ab4708792111600d34cde759e658fc975ab
                                        join respo in _MyDbContext.RespoCenter
                                        on fundsource.RespoId equals respo.RespoId
                                        where utilization.utilization_token == tok
@@ -524,8 +530,13 @@ namespace fmis.Controllers
                                        {
                                            pap = prexc.pap_code1,
                                            utilization_id = utilization.FundSourceTrustFundId,
+<<<<<<< HEAD
+                                           fundsource_id = fundsource.FundSourceId,
+                                           fundsource_code = fundsource.FundSourceTitle,
+=======
                                            fundsource_id = fundsource.FundSourceTrustFundId,
                                            fundsource_code = fundsource.FundSourceTrustFundTitle,
+>>>>>>> a0933ab4708792111600d34cde759e658fc975ab
                                            respo = respo.RespoCode,
                                            signatory = respo.RespoHead,
                                            position = respo.RespoHeadPosition,
