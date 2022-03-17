@@ -104,7 +104,7 @@
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
         $.ajax({
             type: "POST",
-            url: '@Url.Action("selectAT", "Sub_allotment")',
+            url: '@Url.Action("selectAT", "SubAllotment")',
             data: "id=" + selected_val,
             success: function (data) {
                 if (data.length > 0) {
@@ -219,7 +219,7 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                 ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+                 ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
             }
         },
         afterUndo: function (index, column) {
@@ -248,7 +248,7 @@
                         }
                     );
                     console.log(ajax_data);
-                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
                     CHECK_FIRST_ROW = true;
                 }
             });
@@ -268,7 +268,7 @@
                 });
                 console.log(ajax_data);
                 $(".obligation_amount").html(obligation_amount);
-                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 
 		},
