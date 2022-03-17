@@ -136,7 +136,7 @@ namespace fmis.Controllers
                                     .ToListAsync();
 
             var fund_sub_data = (from x in _MyDbContext.FundSourceTrustFund select new { source_id = x.FundSourceTrustFundId, source_title = x.FundSourceTrustFundTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", utilized_amount = x.utilized_amount });
-                                    
+
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data);
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.ToListAsync());
             ViewBag.uacs = uacs_data;
@@ -145,7 +145,7 @@ namespace fmis.Controllers
             return View("~/Views/Utilization/Index.cshtml", utilization);
         }
 
-   
+
 
         // GET: Utilization/Create
         public IActionResult Create()
@@ -426,7 +426,7 @@ namespace fmis.Controllers
 
                     }
 
-             
+
 
 
                     if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().utilization == "fund_source")
@@ -454,7 +454,7 @@ namespace fmis.Controllers
 
                     }
 
-              
+
 
                     var table_row_2 = new PdfPTable(2);
                     float[] tbt_row2_width = { 5, 25 };
@@ -514,15 +514,10 @@ namespace fmis.Controllers
 
                     var fundsources = (from fundsource in _MyDbContext.FundSourceTrustFund
                                        join utilization in _MyDbContext.Utilization
-<<<<<<< HEAD
-                                       on fundsource.FundSourceId equals utilization.FundSourceTrustFundId
-                                       join prexc in _MyDbContext.Prexc
-                                       on fundsource.PrexcId equals prexc.Id
-=======
                                        on fundsource.FundSourceTrustFundId equals utilization.FundSourceTrustFundId
                                        join prexc in _MyDbContext.PrexcTrustFund
                                        on fundsource.PrexcTrustFundId equals prexc.PrexcTrustFundId
->>>>>>> a0933ab4708792111600d34cde759e658fc975ab
+
                                        join respo in _MyDbContext.RespoCenter
                                        on fundsource.RespoId equals respo.RespoId
                                        where utilization.utilization_token == tok
@@ -530,13 +525,10 @@ namespace fmis.Controllers
                                        {
                                            pap = prexc.pap_code1,
                                            utilization_id = utilization.FundSourceTrustFundId,
-<<<<<<< HEAD
-                                           fundsource_id = fundsource.FundSourceId,
-                                           fundsource_code = fundsource.FundSourceTitle,
-=======
+
                                            fundsource_id = fundsource.FundSourceTrustFundId,
                                            fundsource_code = fundsource.FundSourceTrustFundTitle,
->>>>>>> a0933ab4708792111600d34cde759e658fc975ab
+
                                            respo = respo.RespoCode,
                                            signatory = respo.RespoHead,
                                            position = respo.RespoHeadPosition,
@@ -767,7 +759,7 @@ namespace fmis.Controllers
 
                     }
 
-     
+
                     if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().utilization == "fund_source")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
