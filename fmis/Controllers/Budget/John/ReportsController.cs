@@ -1809,7 +1809,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //PERCENT OF UTILIZATION
-                                ws.Cell(currentRow, 10).Value = asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) / afterrealignment_amount;
+                                ws.Cell(currentRow, 10).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount) / afterrealignment_amount;
                                 ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -5538,11 +5538,18 @@ namespace fmis.Controllers.Budget.John
 
                 var ConapTotalGrand = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
                 var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1).Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2).Sum(x => x.amount);
-                var ConapApproAsatGrand = asAtTotalinTotalCONAPGrand.Sum(x => x.amount) + asAtTotalinTotalPS.Sum(x => x.amount);
+                var ConapApproAsatGrand = asAtTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1).Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2).Sum(x => x.amount);
                 ws.Cell(currentRow, 7).Style.Font.SetBold();
                 ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                ws.Cell(currentRow, 7).Style.Font.FontColor = XLColor.White;
                 ws.Cell(currentRow, 7).Value = ConapApproForthemonthGrand.ToString("N", new CultureInfo("en-US"));
+
+                ws.Cell(currentRow, 8).Style.Font.SetBold();
+                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                ws.Cell(currentRow, 8).Style.Font.FontColor = XLColor.White;
+                ws.Cell(currentRow, 8).Value = ConapApproAsatGrand.ToString("N", new CultureInfo("en-US"));
 
 
                 ws.Columns().AdjustToContents();
