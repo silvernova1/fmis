@@ -508,23 +508,28 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //PERCENT OF UTILIZATION
+                            if (asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) == 0 && afterrealignment_amount == 0)
+                            {
+                                ws.Cell(currentRow, 10).Value = "";
+                                ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
+                                ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else
+                            { 
                             ws.Cell(currentRow, 10).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) / afterrealignment_amount;
                             ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
+                            }
                             //REALIGNMENT DATA
                             foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
                             //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
                             {
 
-
-
-
                                 currentRow++;
                                 Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+
                                 ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
                                 ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
@@ -537,6 +542,11 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                //REALIGNMENT AMOUNT
+                                ws.Cell(currentRow, 6).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
                             }
