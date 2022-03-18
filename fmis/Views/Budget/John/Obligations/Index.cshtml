@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<fmis.Models.Obligation>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Globalization;
 @using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Index";
@@ -48,13 +49,33 @@
 </h3>
 <hr>
 <div class="col-xs-12 ">
+    <div class="infobox infobox-green" style="margin-left: -10px">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-calculator"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color: grey;">
+                @{
+                    decimal? overall_beginning_balance = (Model.Sum(x => x.FundSource?.Beginning_balance) + Model.Sum(x => x.SubAllotment?.Beginning_balance));
+                }
+                @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
+            </span>
+
+            <div class="infobox-content">
+                <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+            </div>
+        </div>
+    </div>
     <div class="infobox infobox-red" style="margin-left: -10px">
         <div class="infobox-icon">
             <i class="ace-icon fa fa-calculator"></i>
         </div>
         <div class="infobox-data">
             <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                ₱0.00
+                @{
+                    decimal? overall_remaining_balance = (Model.Sum(x => x.FundSource?.Remaining_balance) + Model.Sum(x => x.SubAllotment?.Remaining_balance));
+                }
+                @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
             </span>
 
             <div class="infobox-content">
@@ -68,8 +89,11 @@
         </div>
         <div class="infobox-data">
 
-            <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;">
-                ₱0.00
+            <span class="infobox-data-number" id="total_obligated_balance" style="font-size:11pt; color:grey;">
+                @{
+                    decimal? overall_obligated_balance = (Model.Sum(x => x.FundSource?.obligated_amount) + Model.Sum(x => x.SubAllotment?.obligated_amount));
+                }
+                @overall_obligated_balance?.ToString("C", new CultureInfo("en-PH"))
             </span>
 
             <div class="infobox-content">
@@ -177,10 +201,14 @@
 	var SOURCE_TYPE= "";
 	var CHECK_AFTER_ROW = false;
 	var CHECK_FIRST_ROW = true;
-	var CHECK_FIRST_ROW1 = false;
+    var CHECK_FIRST_ROW1 = false;
+    var AMOUNT = 0;
+    var INSUFFICIENT_AMOUNT1 = false;
 
     var TRAP_LOAD = 0;
+    var TRAP_LOAD1 = false;
     var TRAP_LOAD2 = false;
+    var TRAP_LOAD3 = false;
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -774,7 +802,7 @@
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
 					console.log(col);
 				}
-				else if (col >= 14)
+				else if (col >= 14 && col <= 50)
 				{
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
@@ -791,8 +819,19 @@
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
                         console.log("number"); //expense code
+                        ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
                     }
-                    else {
+                    else
+                    {
+                        if (!hot.getDataAtCell(row, col - 1)) {
+                            Lobibox.alert("error", {
+                                msg: "Please select expense code first!",
+                                sound: false,
+                            });
+                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+                            return;
+                        }
+
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
                             obligation_amount_token: hot.getDataAtCell(row, col - 2),
@@ -800,11 +839,58 @@
                             Amount: hot.getDataAtCell(row, col),
                         });
                         console.log("string"); //amount
+
+                        var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
+                        var post_calculation_data = {
+                            "obligation_id": 0,
+                            "obligation_token": hot.getDataAtCell(row, 12)
+                        };
+                        $.post(url, post_calculation_data, function (result) {
+                            var post_remaining_balance = result.remaining_balance;
+                            var post_obligated_amount = result.obligated_amount;
+
+                            console.log(result);
+                            if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                                post_remaining_balance = post_remaining_balance + oldValue; //2000
+                                post_obligated_amount = post_obligated_amount - oldValue;
+                            }
+
+                            AMOUNT = newValue;
+                            console.log("newValue : " + newValue);
+                            console.log("oldValue : " + oldValue);
+                            console.log("AMOUNT : " + AMOUNT);
+                            console.log("post_remaining_balance : " + post_remaining_balance);
+
+                            if (AMOUNT > post_remaining_balance)
+                            {
+                                console.log("trap the insuficient amount");
+                                trapTheInsuficientAmount(row, col, oldValue); //trap the insuficient amount
+                            }
+                            else {
+                                //do the calculalation
+                                console.log("do the calculation!");
+                                post_remaining_balance = post_remaining_balance - AMOUNT;
+                                post_obligated_amount = post_obligated_amount + AMOUNT;
+                                var calculated_amount_data = {
+                                    "obligation_id": 0,
+                                    "obligation_token": hot.getDataAtCell(row, 12),
+                                    "obligation_amount_token": ajax_data[0].obligation_amount_token,
+                                    "remaining_balance": post_remaining_balance,
+                                    "obligated_amount": post_obligated_amount,
+                                    "amount": AMOUNT
+                                };
+                                var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")';
+                                $.post(url, calculated_amount_data, function (result) {
+                                    console.log(result);
+                                    TRAP_LOAD = 2;
+                                    hot.setDataAtCell(row, 50, result.remaining_balance);
+                                    hot.setDataAtCell(row, 51, result.obligated_amount);
+                                    displayTheCalculation(result);
+                                });
+                            }
+                        });
                     }
 
-                    console.log(hot.getDataAtCell(row, col))
-                    console.log(ajax_data);
-					ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
                 }
                 else {
                     CHECK_FIRST_ROW = true;
@@ -816,10 +902,25 @@
 				CHECK_FIRST_ROW = false;
                 CHECK_FIRST_ROW1 = false;
 				console.log("wew");
-			}
+            }
+            else if (TRAP_LOAD1) {
+                TRAP_LOAD1 = false;
+                console.log("TRAP_LOAD1");
+                return;
+            }
             else if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
                 console.log("TRAP_LOAD2");
+                return;
+            }
+            else if (TRAP_LOAD3) {
+                TRAP_LOAD3 = false;
+                console.log("TRAP_LOAD3");
+                return;
+            }
+            else if (TRAP_LOAD3) {
+                TRAP_LOAD3 = false;
+                console.log("TRAP_LOAD3");
                 return;
             }
 			else if (CHECK_FIRST_ROW) {
@@ -844,7 +945,7 @@
                         }
                     );
                 });
-          @*      console.log(hot.getDataAtCell(row, col))*@
+          @*console.log(hot.getDataAtCell(row, col))*@
                 console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
             }
@@ -875,5 +976,20 @@
         });
     });
 
+    function trapTheInsuficientAmount(row, col, oldValue) {
+        Lobibox.alert("error", {
+            msg: "Insufficient  Balance!",
+            sound: false,
+        });
+        INSUFFICIENT_AMOUNT1 = true; //trap so that can't save in DB
+        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+    }
 
+    function displayTheCalculation(result) {
+        $("#total_beginning_balance").html(parseFloat(result.overall_beginning_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        $("#total_remaining_balance").html(parseFloat(result.overall_remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        $("#total_obligated_balance").html(parseFloat(result.overall_obligated_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+    }
+
+    console.log(hot.getSourceData());
 </script>

@@ -386,14 +386,9 @@
         return;
     }
 
-    function displayTotalCalculation(calculation) {
-<<<<<<< HEAD
-        $("#total_remaining_balance").html(parseFloat(calculation.remaining_balance).toFixed(2));
-        $("#total_realignment_amount").html(parseFloat(calculation.realignment_amount).toFixed(2));
-=======
-        $("#total_remaining_balance").html(parseFloat(calculation.remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
-        $("#total_realignment_amount").html(parseFloat(calculation.realignment_amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
->>>>>>> a0933ab4708792111600d34cde759e658fc975ab
+    function displatTheCalculation(result) {
+        $("#total_remaining_balance").html(parseFloat(result.remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        $("#total_obligated_amount").html(parseFloat(result.obligated_amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     }
 </script>
 
