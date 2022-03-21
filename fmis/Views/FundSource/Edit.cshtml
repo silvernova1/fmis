@@ -36,8 +36,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Prexc" class="control-label"></label>
-               
-                @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                 @*@Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @Id = "ddlBranches", onchange = "return get_sbu(this)" })*@
+            <select class="form-control select2" asp-for="PrexcId" asp-items="ViewBag.PrexcId " id = "ddlBranches", onchange = "return get_sbu(this)" > </select>
             </div>
             <div class="form-group">
                 <label>PAP Type: </label>
@@ -74,7 +74,7 @@
 <script>
 
   $(document).ready(function () {
-      $('.prexcDropdown').select2();
+      $('.select2').select2();
     });
 
 
