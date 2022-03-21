@@ -228,7 +228,6 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-
         //POST
         public IActionResult selectAT(int id)
         {
@@ -250,10 +249,12 @@ namespace fmis.Controllers
                                               select new
                                               {
                                                   prexcId = s.Id,
-                                                  prexc = s.pap_title 
+                                                  prexc = s.pap_title ,
+                                                  pap_type = s.pap_type
                                               }),
                                   "prexcId",
                                   "prexc",
+                                  "pap_type",
                                    null);
         }
 

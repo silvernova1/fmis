@@ -53,7 +53,7 @@
                     <input asp-for="PapType" id="pap_type" class="form-control" readonly />
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Responsibility Center:</label>
                     <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
@@ -67,18 +67,6 @@
                     <label>Suballotment Code:</label>
                     <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label>Date:</label>
-                    <input type="date" class="form-control">
-                    <span class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
         </div>

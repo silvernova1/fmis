@@ -130,13 +130,6 @@
 </div>
 
 <script>
-    $(".handsontable .htAutocompleteArrow").click(function (event) {
-        console.log("hahahahahahaha");
-    });
-
-    var myEl = $(".handsontable .htAutocompleteArrow");
-
-    myEl.onclick = function (event) { alert('Hello world'); };
 
 
 	//SET OBLIGATION TOKEN
@@ -280,7 +273,6 @@
             data[counter].push("");  // expense code
             data[counter].push("");  // amount
         }
-
         if (this.source_type == "fund_source") {
             data[counter].push(this.FundSource ? this.FundSource.Beginning_balance : 0);
             data[counter].push(this.FundSource ? this.FundSource.Remaining_balance : 0);
@@ -307,10 +299,9 @@
         uacs_counter++;
     });
 
-
-
 	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
+
 	const hot = new Handsontable(container, {
         data: data,
 		rowHeaders: true,
@@ -318,7 +309,8 @@
 		filters: true,
         height: 'auto',
         fixedColumnsLeft: 5,
-		afterGetColHeader: addInput,
+        afterGetColHeader: addInput,
+
 		beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
 			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
@@ -622,14 +614,6 @@
                     pattern: '0,0.00',
                 }
             },
-            {
-                //OBLIGATED AMOUNT
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0,0.00',
-                }
-            },
-
 		],
 		search: {
 			searchResultClass: 'search-result-custom'
@@ -749,7 +733,6 @@
             hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
 
             hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
-
             hot.setDataAtCell(row, 6, Address); //SET ADDRESS
 
             let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
@@ -767,6 +750,7 @@
             hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
             hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
             hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+
 		},
 		afterChange: function (changes, source) {
 			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
@@ -954,8 +938,13 @@
 		hiddenColumns: {
             columns: [ 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
 		},
-		licenseKey: 'non-commercial-and-evaluation',
+        licenseKey: 'non-commercial-and-evaluation',
+
+
     });
+
+
+
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@

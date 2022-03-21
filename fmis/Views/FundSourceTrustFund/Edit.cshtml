@@ -36,8 +36,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PrexcTrustFundId" class="control-label"></label>
-                @*@Html.DropDownList("PrexcTrustFundId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
-                <select class="form-control select2" asp-for="PrexcTrustFundId" asp-items="ViewBag.PrexcTrustFundId "> </select>
+                <select class="form-control select2" asp-for="PrexcTrustFundId" asp-items="ViewBag.PrexcTrustFundId " id="ddlBranches" , onchange="return get_sbu(this)"> </select>
             </div>
             <div class="form-group">
                 <label>PAP Type: </label>
@@ -74,7 +73,7 @@
 <script>
 
   $(document).ready(function () {
-      $('.prexcDropdown').select2();
+      $('.select2').select2();
     });
 
     get_sbu();
@@ -272,4 +271,9 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+    hot.updateSettings({
+        minSpareRows: 1
+    })
+
 </script>

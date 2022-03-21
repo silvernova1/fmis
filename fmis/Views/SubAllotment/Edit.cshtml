@@ -34,44 +34,29 @@
                 <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
             </div>
             <div class="form-group">
-                <label>PAP Type: </label>
-                <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@ id="categoryId">
-                    <option value="GAS">GAS</option>
-                    <option value="STO">STO</option>
-                    <option value="OPERATIONS">OPERATIONS</option>
-                </select>
+                <label>PAP Title:</label>
+               @* @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
+                <select class="form-control select2" asp-for="prexcId" asp-items="ViewBag.PrexcId " id="ddlBranches" , onchange="return get_sbu(this)"> </select>
             </div>
             <div class="form-group">
-                <label>PAP Title:</label>
-                @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                <label>PAP Type: </label>
+                <input asp-for="PapType" id="pap_type" class="form-control" readonly />
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="form-group">
-                <label>Respo:</label>
-                @Html.DropDownList("RespoId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
+                <label>Responsibility Center:</label>
+                <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Suballotment_title" class="control-label"></label>
-                <input asp-for="Suballotment_title" class="form-control" />
+                <label>Sub-Allotment Title:</label>
+                <input asp-for="Suballotment_title" class="form-control">
                 <span asp-validation-for="Suballotment_title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Suballotment_code" class="control-label"></label>
+                <label>Suballotment Code:</label>
                 <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                 <span asp-validation-for="Suballotment_code" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>Date:</label>
-                <input type="date" class="form-control">
-                <span class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Description:</label>
-                <input asp-for="Description" class="form-control">
-                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -98,6 +83,7 @@
             success: function (data) {
                 if (data.length > 0) {
                     $('#pap_code1').val(data[0].pap_code1);
+                    $('#pap_type').val(data[0].pap_type);
                 }
                 else {
                     $('#pap_code1').val('');
@@ -105,6 +91,11 @@
             }
         });
     }
+
+
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+
     var sub_allotment_id= @Model.SubAllotmentId;
     var BudgetAllotmentId = @Model.BudgetAllotmentId;
     var suballotment_token = generate_token();
@@ -236,7 +227,7 @@
                         }
                     );
                     @*console.log(hot.getSourceData());*@
-                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
                     CHECK_FIRST_ROW = true;
                 }
             });
@@ -256,7 +247,7 @@
                 });
                 @*console.log(ajax_data);*@
                 $(".obligation_amount").html(obligation_amount);
-                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 		},
         hiddenColumns: {
