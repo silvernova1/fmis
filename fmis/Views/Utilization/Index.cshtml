@@ -212,7 +212,9 @@
 		json_data.source_id = this.source_id;
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
+
         get_fund_sub[this.source_id + this.source_type] = this.source_title;
+
         get_utilized_amount[this.source_id + this.source_type] = this.utilized_amount;
 		fund_sub_counter++;
 	});
@@ -223,7 +225,7 @@
 	var counter = 0;
     $.each(utilization, function () {
 		data[counter] = [
-           get_fund_sub[this.FundSourceTrustFundId + this.source_type], 
+           get_fund_sub[this.FundSourceTrustFundId + this.source_type],
             moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
@@ -285,11 +287,7 @@
 		filters: true,
         @*stretchH: 'all',*@
         fixedColumnsLeft: 7,
-<<<<<<< HEAD
 		afterGetColHeader: addInput,
-=======
-        afterGetColHeader: addInput,
->>>>>>> a0933ab4708792111600d34cde759e658fc975ab
 		@*beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
 			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
@@ -608,7 +606,7 @@
 		contextMenu: {
 			items: {
 				"make_bold": {
-					name: 'Print ORS',
+					name: 'Print BUR',
 					callback: function (key, options) {
 						var selected = hot.getSelected() || [];
 		                var holder_data = hot.getData();
@@ -620,7 +618,7 @@
 							console.log(holder_data[j]);
 
 		                }
-		                var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
+		                var url = '@Url.Action("PrintOrs", "Utilization")' + "?";
 		                for (i = 0; i < many_token.length; i++) {
 			                if ((i + 1) != many_token.length)
 				                url = url + "token=" + many_token[i] + "&";
@@ -629,10 +627,8 @@
 						}
 		                window.open(url);
 					}
-                },
-
-                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-			@*	"": {
+				},
+				"": {
 					name: 'UACS Amount Entry / Disbmt.',
 					callback: function (key, options) {
 						var selection = this.getSelected();
@@ -687,8 +683,8 @@
 						});
 						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
 					}
-                },*@
-              
+                },
+                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
 			}
 		},
 		beforeRemoveRow: function (index, column) {
@@ -853,11 +849,7 @@
 		},
 		hiddenColumns: {
             columns: [11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46],
-<<<<<<< HEAD
 			@*indicators: true*@
-=======
-			indicators: false
->>>>>>> a0933ab4708792111600d34cde759e658fc975ab
 		},
 		licenseKey: 'non-commercial-and-evaluation',
 	});
