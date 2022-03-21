@@ -159,11 +159,10 @@
             },
             {
                 type: 'text',
-                readOnly: true,
+    
             },
             {
                 type: 'numeric',
-                readOnly: true,
                 numericFormat: {
                     pattern: '0,0.00',
                     culture: 'en-Ph'
@@ -366,7 +365,7 @@
             }
         },
         hiddenColumns: {
-            columns: [0,7,8],
+            columns: [7,8],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
@@ -391,4 +390,4 @@
         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
     }
 </script>
->>>>>>> a0933ab4708792111600d34cde759e658fc975ab
+

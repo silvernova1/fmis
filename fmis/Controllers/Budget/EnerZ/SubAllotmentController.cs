@@ -125,7 +125,7 @@ namespace fmis.Controllers
             var sub_allotment_amount = _MyDbContext.Suballotment_amount.Where(f => f.suballotment_token == subAllotment.token).ToList();
 
             subAllotment.Beginning_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
-            subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.beginning_balance);
+            subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
 
 
             _MyDbContext.Add(subAllotment);

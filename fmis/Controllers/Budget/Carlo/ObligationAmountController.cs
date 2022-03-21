@@ -47,14 +47,19 @@ namespace fmis.Controllers
         {
             public int obligation_id { get; set; }
             public string obligation_token { get; set; }
+            public decimal beginning_balance { get; set; }
             public decimal remaining_balance { get; set; }
             public decimal obligated_amount { get; set; }
         }
 
         public class GetObligatedAndRemaining
         {
+            public decimal beginning_balance { get; set; }
             public decimal remaining_balance { get; set; }
             public decimal obligated_amount { get; set; }
+            public decimal ?overall_beginning_balance { get; set; }
+            public decimal ?overall_remaining_balance { get; set; }
+            public decimal ?overall_obligated_balance { get; set; }
         }
 
         public class ObligationAmountData
@@ -186,6 +191,19 @@ namespace fmis.Controllers
             GetObligatedAndRemaining get_obligated_remaining = new GetObligatedAndRemaining();
             get_obligated_remaining.remaining_balance = remaining_balance;
             get_obligated_remaining.obligated_amount = obligated_amount;
+            var overall_obligation = await _MyDbContext
+                                    .Obligation
+                                    .Where(x => x.status == "activated")
+                                    .Include(x => x.ObligationAmounts)
+                                    .Include(x => x.FundSource)
+                                    .Include(x => x.SubAllotment)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            get_obligated_remaining.overall_beginning_balance = overall_obligation.Sum(x => x.FundSource?.Beginning_balance) + overall_obligation.Sum(x => x.SubAllotment?.Beginning_balance);
+            get_obligated_remaining.overall_remaining_balance = overall_obligation.Sum(x => x.FundSource?.Remaining_balance) + overall_obligation.Sum(x => x.SubAllotment?.Remaining_balance);
+            get_obligated_remaining.overall_obligated_balance = overall_obligation.Sum(x => x.FundSource?.obligated_amount) + overall_obligation.Sum(x => x.SubAllotment?.obligated_amount);
+
             return Json(get_obligated_remaining); //get the remaining_balance
         }
 
@@ -209,6 +227,7 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> getRemainigAndObligated(PostObligationCalculationData post_calculation_data)
         {
+            decimal beginning_balance = 0;
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
             if (post_calculation_data.obligation_id != 0)
@@ -228,18 +247,21 @@ namespace fmis.Controllers
             if (obligation.source_type == "fund_source")
             {
                 var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == obligation.FundSourceId).FirstOrDefaultAsync();
+                beginning_balance = fund_source.Remaining_balance;
                 remaining_balance = fund_source.Remaining_balance;
                 obligated_amount = fund_source.obligated_amount;
             }
             else if (obligation.source_type == "sub_allotment")
             {
                 //code ni amalio
-                /*var sub_allotment = await _MyDbContext.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
+                var sub_allotment = await _MyDbContext.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
+                beginning_balance = sub_allotment.Remaining_balance;
                 remaining_balance = sub_allotment.Remaining_balance;
-                obligated_amount = sub_allotment.obligated_amount;*/
+                obligated_amount = sub_allotment.obligated_amount;
             }
 
             GetObligatedAndRemaining get_obligated_remaining = new();
+            get_obligated_remaining.beginning_balance = beginning_balance;
             get_obligated_remaining.remaining_balance = remaining_balance;
             get_obligated_remaining.obligated_amount = obligated_amount;
 

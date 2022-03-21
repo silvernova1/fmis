@@ -1,289 +1,114 @@
-﻿@model fmis.Models.silver.BudgetAllotment
-@using System.Globalization;
-@{
-    ViewData["Title"] = "Sub_allotment";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@model fmis.Models.SubAllotment
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
 }
-
-@if (Model.SubAllotment.Count() > 0)
-{
-    <h3 class="grey lighter smaller">
-        Sub Allotment
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.Yearly_reference.YearlyReference
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.SubAllotment.FirstOrDefault().Appropriation.AppropriationSource
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.SubAllotment.FirstOrDefault().AllotmentClass.Allotment_Class
-        </small>
-
-    </h3>
-}
-<hr />
-<div class="row  pull-left">
-    <div class="space-5"></div>
-
-    <div class="col-xs-12 infobox-container">
-        <div class="infobox infobox-green">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.SubAllotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-orange2">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-blue">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
-                </div>
-            </div>
-        </div>
-        @*<div class="infobox infobox-blue">
-                <div class="infobox-icon">
-                    <i class="ace-icon fa fa-bar-chart-o"></i>
-                </div>
-                <div class="infobox-data">
-                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                        @Model.Sub_allotments.Sum(x => x.utilized_amount).ToString("C", new CultureInfo("en-PH"))
-                    </span>
-                    <div class="infobox-content">
-                        <span class="label label-primary arrowed-in arrowed-in-right"> Utilized Amount </span>
-                    </div>
-                </div>
-            </div>*@
-
-
-    </div><!-- /.widget-body -->
-</div>
-<br />
-<br />
-<br />
-<br />
-<div class="modal" id="createModal" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body" id="suballotment_create">
-
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
+    <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
+    <input type="hidden" asp-for="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+    <input type="hidden" asp-for="AppropriationId" value="@ViewBag.AppropriationId" />
+    <input type="hidden" class="suballotment_amount_uacs" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts)">
+    <input type="hidden" class="uacs" value="@ViewBag.uacs">
+    <input type="hidden" class="suballotment_token" value="@Model.token">
+    <div class="alert alert-success no-margin alert-dismissable" style="margin-top:10px;">
+        <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (Sub Alloment)</h7>
+        <div class="pull-right">
+            <div class="btn-group">
+                <input type="submit" value="Save" class="btn btn-success btn-xs" />
+                <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
             </div>
         </div>
     </div>
-</div>
-
-<div class="modal" id="editModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body" id="suballotment_edit">
-
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label>Fund Source: </label>
+                <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+            </div>
+            <div class="form-group">
+                <label>PAP Type: </label>
+                <select class="form-control" @*asp-for="PrexcId" asp-items="ViewBag.PapTypeId"*@ id="categoryId">
+                    <option value="GAS">GAS</option>
+                    <option value="STO">STO</option>
+                    <option value="OPERATIONS">OPERATIONS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>PAP Title:</label>
+                @Html.DropDownList("prexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Respo:</label>
+                @Html.DropDownList("RespoId", null, htmlAttributes: new { @class = "js-example-basic-single form-control" })
+            </div>
+            <div class="form-group">
+                <label asp-for="Suballotment_title" class="control-label"></label>
+                <input asp-for="Suballotment_title" class="form-control" />
+                <span asp-validation-for="Suballotment_title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Suballotment_code" class="control-label"></label>
+                <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
+                <span asp-validation-for="Suballotment_code" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Date:</label>
+                <input type="date" class="form-control">
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input asp-for="Description" class="form-control">
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
     </div>
-</div>
-
-<div class="modal fade" id="DeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-
-
-        </div>
+    <br />
+    <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+    <div id="suballotment_amount_edit" class="hot handsontable htColumnHeaders"></div>
+    <br />
+    <div class="controls" hidden>
+        <button id="export-file">Download CSV</button>
     </div>
-</div>
-
-<p>
-    <button type="button" asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </button> |
-    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
-        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
-    </a>
-</p>
-@if (Model.SubAllotment.Count() > 0)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Sub Allotment Code
-                </th>
-                <th>
-                    Sub Allotment Title
-                </th>
-                <th>
-                    Appropriation (Source)
-                </th>
-                <th>
-                    Responsibility Center
-                </th>
-                <th>
-                    Actions
-                </th>
-                <th>
-                    Sub-Allotment (Realignment)
-                </th>
-                <th>
-                    Beginning Balance
-                </th>
-                <th>
-                    Remaining Balance
-                </th>
-                <th>
-                    Realignment Amount
-                </th>
-                <th>
-                    Obligated Amount
-                </th>
-                @*<th>
-                        Utilized Amount
-                    </th>*@
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SubAllotment)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Suballotment_code)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Suballotment_title)
-                    </td>
-                    <td>
-                        @item.Appropriation.AppropriationSource
-                    </td>
-                    <td>
-                        @item.RespoCenter.Respo
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-                        @*<a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>*@
-                    </td>
-                    <td>
-                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
-                    </td>
-                    <td>
-                        <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="red">
-                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="orange">
-                            <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="blue">
-                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    @* <td>
-                            <b class="blue">
-                                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                            </b>
-                        </td>*@
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div class="alert alert-block alert-danger">
-        <i class="ace-icon fa fa-warning red"></i>
-        No Records found
-    </div>
-}
+</form>
 
 <script>
-    function createSub_allotment(BudgetAllotmentId) {
-         $("#createModal").modal({ backdrop: 'static', keyboard: false });
-         $("#suballotment_create").html(loading);
-         var AllotmentClassId = @ViewBag.AllotmentClassId;
-         var AppropriationId = @ViewBag.AppropriationId;
-         var url = '@Url.Action("Create", "Sub_allotment")';
-         url += "?AllotmentClassId="+AllotmentClassId+"&AppropriationId="+AppropriationId+"&BudgetAllotmentId=" + BudgetAllotmentId;
-         console.log(url);
-         $.get(url, function (result) {
-            setTimeout(function () {
-                $("#suballotment_create").html(result);
-            }, 500);
-         });
-    }
-
-    function getEditSub_allotment(BudgetAllotmentId, sub_allotment_id) {
-        $("#editModal").modal({ backdrop: 'static', keyboard: false });
-        $("#suballotment_edit").html(loading);
-        var AllotmentClassId = @ViewBag.AllotmentClassId;
-        var AppropriationId = @ViewBag.AppropriationId;
-        var url = '@Url.Action("Edit", "Sub_allotment")';
-        //url += "?budget_id=" + BudgetAllotmentId + "&sub_allotment_id=" + sub_allotment_id
-        url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentId + "&sub_allotment_id=" + sub_allotment_id ;
-         $.get(url, function (result) {
-            setTimeout(function () {
-                $("#suballotment_edit").html(result);
-            }, 500);
-         });
-        }
-
-    function deleteSub_allotment(BudgetAllotmentId) {
-        $("#deleteModal").modal({ backdrop: 'static', keyboard: false });
-        $("#suballotment_delete").html(loading);
-        var url = '@Url.Action("Delete", "Sub_allotment")';
-        url += "?budget_id=" + BudgetAllotmentId
-        $.get(url, function (result) {
-        setTimeout(function () {
-            $("#suballotment_delete").html(result);
-        }, 500);
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
+       get_sbu();
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "SubAllotment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#pap_code1').val(data[0].pap_code1);
+                }
+                else {
+                    $('#pap_code1').val('');
+                }
+            }
         });
-     }
-
-    let generate_token = () => {
+    }
+    var sub_allotment_id= @Model.SubAllotmentId;
+    var BudgetAllotmentId = @Model.BudgetAllotmentId;
+    var suballotment_token = generate_token();
+        let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -291,9 +116,155 @@ else
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
-    function subAllotmentToken() {
-        suballotment_token = generate_token();
-        $("#subs_input_token").val(suballotment_token);
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
     }
+    $(".obligation_amount").html(obligation_amount);
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Account_title;
+        var json_data = new Object();
+        json_data.UacsId = this.UacsId;
+        uacs_data_array[this.Account_title] = json_data;
+        get_account_title[this.UacsId] = this.Account_title;
+        uacs_counter++;
+    });
+    var suballotment_amount_uacs = $.parseJSON($(".suballotment_amount_uacs").val());
+    const data = [];
+    var counter = 0;
+    var obligation_amount = 0;
+    $.each(suballotment_amount_uacs, function () {
+        data[counter] = [get_account_title[this.UacsId], this.beginning_balance, this.suballotment_amount_token, this.suballotment_token]
+        counter++;
+        obligation_amount += this.beginning_balance;
+    })
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('suballotment_amount_edit');
+    const hot = new Handsontable(container, {
+        data: data,
+        className: 'htLeft',
+        rowHeaders: true,
+        colHeaders: true,
+        colWidths: [150, 150],
+        colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'TOKEN'],
+        columns: [
+            {
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        stretchH: 'all',
+        height: '200px',
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][2];
+            console.log(selection);
+            console.log(holder_data);
+            console.log(column);
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            console.log(first_column);
+            console.log(last_column);
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][2]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token,
+                };
+                console.log(ajax_data);
+                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+            }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            CHECK_FIRST_ROW = true;
+            hot.setDataAtCell(row, 2, generate_token());
+        },
+        afterChange: function (changes, source) {
+                if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) {
+                    var ajax_data = [];
+                    ajax_data.push(
+                        {
+                            SubAllotmentId: sub_allotment_id,
+                            BudgetAllotmentId: BudgetAllotmentId,
+                            UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
+                            Amount: hot.getDataAtCell(row, col + 1),
+                            suballotment_amount_token: hot.getDataAtCell(row, col + 2),
+                            suballotment_token: suballotment_token
+                        }
+                    );
+                    @*console.log(hot.getSourceData());*@
+                    ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+                    CHECK_FIRST_ROW = true;
+                }
+            });
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+            } else {
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        SubAllotmentId: sub_allotment_id,
+                        BudgetAllotmentId: BudgetAllotmentId,
+                        UacsId: uacs_data_array[this[0]].UacsId,
+                        Amount: this[1],
+                        suballotment_amount_token: this[2],
+                        suballotment_token: suballotment_token
+                    });
+                });
+                @*console.log(ajax_data);*@
+                $(".obligation_amount").html(obligation_amount);
+                ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "Sub_allotment")');
+            }
+		},
+        hiddenColumns: {
+            columns: [2,3],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+    console.log(hot.getSourceData());
 </script>
