@@ -130,13 +130,6 @@
 </div>
 
 <script>
-    $(".handsontable .htAutocompleteArrow").click(function (event) {
-        console.log("hahahahahahaha");
-    });
-
-    var myEl = $(".handsontable .htAutocompleteArrow");
-
-    myEl.onclick = function (event) { alert('Hello world'); };
 
 
 	//SET OBLIGATION TOKEN
@@ -197,16 +190,16 @@
     };
 
 	var SOURCE_TYPE= "";
-	var CHECK_AFTER_ROW = false;
-	var CHECK_FIRST_ROW = true;
-    var CHECK_FIRST_ROW1 = false;
+	var CHECK_AFTER_ROW = false; //goods
+	var CHECK_FIRST_ROW = false;
+    @*var CHECK_FIRST_ROW1 = false;*@
     var AMOUNT = 0;
     var INSUFFICIENT_AMOUNT1 = false;
 
     var TRAP_LOAD = 0;
-    var TRAP_LOAD1 = false;
     var TRAP_LOAD2 = false;
     var TRAP_LOAD3 = false;
+    var TRAP_LOAD4 = false;
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -280,7 +273,6 @@
             data[counter].push("");  // expense code
             data[counter].push("");  // amount
         }
-
         if (this.source_type == "fund_source") {
             data[counter].push(this.FundSource ? this.FundSource.Beginning_balance : 0);
             data[counter].push(this.FundSource ? this.FundSource.Remaining_balance : 0);
@@ -307,10 +299,9 @@
         uacs_counter++;
     });
 
-
-
 	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
+
 	const hot = new Handsontable(container, {
         data: data,
 		rowHeaders: true,
@@ -318,7 +309,7 @@
 		filters: true,
         height: 'auto',
         fixedColumnsLeft: 5,
-		afterGetColHeader: addInput,
+        afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
 			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
@@ -341,7 +332,6 @@
                     100, 100,
                     150, 150, 
         ],
-
 		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
                      'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
                      'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -356,7 +346,6 @@
                      'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
                      'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
                      'BEGINNING BALANCE','REMAINING BALANCE', 
-
         ],
 		columns: [
             {
@@ -431,8 +420,8 @@
                 //OBLIGATION AMOUNT 1
                 type: 'numeric',
                 numericFormat: {
-                    pattern: '0.00',
-                }
+                    pattern: '0,0.00',
+                },
             },
             {
                 //OBLIGATION_AMOUNT_TOKEN 2
@@ -622,14 +611,6 @@
                     pattern: '0,0.00',
                 }
             },
-            {
-                //OBLIGATED AMOUNT
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0,0.00',
-                }
-            },
-
 		],
 		search: {
 			searchResultClass: 'search-result-custom'
@@ -749,7 +730,6 @@
             hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
 
             hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
-
             hot.setDataAtCell(row, 6, Address); //SET ADDRESS
 
             let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
@@ -767,6 +747,7 @@
             hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
             hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
             hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+
 		},
 		afterChange: function (changes, source) {
 			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
@@ -778,10 +759,18 @@
                 console.log("TRAP_LOAD");
                 return;
             }
-			changes.forEach(([row, col, oldValue, newValue]) => {
-				if (col == 0) {
-					CHECK_FIRST_ROW1 = true;
-					console.log("if");
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if(!hot.getDataAtCell(row, 0)) {
+                    TRAP_LOAD3 = true;
+                    Lobibox.alert("error", {
+                        msg: "Please select FUND SOURCE & SAA first!",
+                        sound: false,
+                    });
+                    return;
+                }
+                else if (col == 0) {
+                    CHECK_FIRST_ROW1 = true;
+                    console.log("col 0");
 					var ajax_data = [];
 					ajax_data.push(
 						{
@@ -802,8 +791,8 @@
 					);
 
 					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
-					console.log(col);
-				}
+                    return;
+                }
 				else if (col >= 14 && col <= 50)
 				{
 					TRAP_LOAD2 = true;
@@ -833,12 +822,25 @@
                             hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
                             return;
                         }
-
+                        else if (isNaN(parseFloat(hot.getDataAtCell(row, col).toString())) && !hot.getDataAtCell(row, col).toString().includes(",")) {
+                            TRAP_LOAD4 = true;
+                            Lobibox.alert("error", {
+                                msg: "INVALID AMOUNT!",
+                                sound: false,
+                            });
+                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+                            return;
+                        }
+                        else if (TRAP_LOAD4) {
+                            TRAP_LOAD4 = false;
+                            console.log("TRAP_LOAD4");
+                            return;
+                        }
                         ajax_data.push({
                             obligation_token: hot.getDataAtCell(row, 12),
                             obligation_amount_token: hot.getDataAtCell(row, col - 2),
                             Expense_code: hot.getDataAtCell(row, col - 1),
-                            Amount: hot.getDataAtCell(row, col),
+                            Amount: hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col),
                         });
                         console.log("string"); //amount
 
@@ -851,13 +853,13 @@
                             var post_remaining_balance = result.remaining_balance;
                             var post_obligated_amount = result.obligated_amount;
 
-                            console.log(result);
                             if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                                oldValue = oldValue.toString().includes(",") ? parseFloat(oldValue.replace(/,/g, '')) : oldValue;
                                 post_remaining_balance = post_remaining_balance + oldValue; //2000
                                 post_obligated_amount = post_obligated_amount - oldValue;
                             }
 
-                            AMOUNT = newValue;
+                            AMOUNT = newValue.toString().includes(",") ? parseFloat(newValue.replace(/,/g, '')) : newValue;
                             console.log("newValue : " + newValue);
                             console.log("oldValue : " + oldValue);
                             console.log("AMOUNT : " + AMOUNT);
@@ -867,6 +869,10 @@
                             {
                                 console.log("trap the insuficient amount");
                                 trapTheInsuficientAmount(row, col, oldValue); //trap the insuficient amount
+                            }
+                            else if (INSUFFICIENT_AMOUNT1) {
+                                console.log("trap INSUFFICIENT_AMOUNT1");
+                                INSUFFICIENT_AMOUNT1 = false;
                             }
                             else {
                                 //do the calculalation
@@ -881,9 +887,9 @@
                                     "obligated_amount": post_obligated_amount,
                                     "amount": AMOUNT
                                 };
+                                console.log(calculated_amount_data);
                                 var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")';
                                 $.post(url, calculated_amount_data, function (result) {
-                                    console.log(result);
                                     TRAP_LOAD = 2;
                                     hot.setDataAtCell(row, 50, result.remaining_balance);
                                     hot.setDataAtCell(row, 10, result.obligated_amount);
@@ -899,24 +905,11 @@
                 }
 
             });
-			if (CHECK_FIRST_ROW1) {
-				CHECK_FIRST_ROW = false;
-                CHECK_FIRST_ROW1 = false;
-				console.log("wew");
-            }
-            else if (TRAP_LOAD1) {
-                TRAP_LOAD1 = false;
-                console.log("TRAP_LOAD1");
-                return;
-            }
-            else if (TRAP_LOAD2) {
+
+
+            if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
                 console.log("TRAP_LOAD2");
-                return;
-            }
-            else if (TRAP_LOAD3) {
-                TRAP_LOAD3 = false;
-                console.log("TRAP_LOAD3");
                 return;
             }
             else if (TRAP_LOAD3) {
@@ -946,7 +939,6 @@
                         }
                     );
                 });
-          @*console.log(hot.getDataAtCell(row, col))*@
                 console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
             }
@@ -954,8 +946,13 @@
 		hiddenColumns: {
             columns: [ 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
 		},
-		licenseKey: 'non-commercial-and-evaluation',
+        licenseKey: 'non-commercial-and-evaluation',
+
+
     });
+
+
+
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
@@ -974,6 +971,7 @@
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true,
+            colWidth: [100,200,300]
         });
     });
 
