@@ -540,7 +540,7 @@ namespace fmis.Controllers
                     table_row_4.WidthPercentage = 100f;
                     table_row_4.SetWidths(tbt_row4_width);
                     table_row_4.AddCell(new PdfPCell(new Paragraph("Address", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_4.AddCell(new PdfPCell(new Paragraph("OSMEÑA BOULEVARD, CEBU CITY", arial_font_10)));
+                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address.ToString(), arial_font_10)));
                     table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 

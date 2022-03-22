@@ -227,23 +227,21 @@ namespace fmis.Controllers.Budget.John
                 range.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
 
 
-                //ws.Cell("A7").RichText.AddText("Department:");
+                
+
                 ws.Cell("A8").RichText.AddText("Agency/OU:");
                 ws.Cell("A9").RichText.AddText("Fund");
                 ws.Cell("B7").RichText.AddText("HEALTH");
                 ws.Cell("B8").RichText.AddText("REGIONAL OFFICE VII");
-                ws.Range("A7:D7").Merge();
-                IXLRange titleRange = ws.Range("A7:D7");
-                //ws.Range("A7:D7").Value = "Department:";
-                titleRange.Cells().Style.Alignment.SetWrapText(true);
-                titleRange.Value = "Department:";
+
+                ws.Cell("A7").Value = "Department:";
+                ws.Columns(7, 1).AdjustToContents();
+                ws.Range("A7:D7").Row(1).Merge();
+
                 ws.Range("A8:D8").Merge();
                 ws.Range("A8:D8").Value = "Agency /OU:";
                 ws.Range("A9:D9").Merge();
                 ws.Range("A9:D9").Value = "Fund";
-                /*ws.Range("A7:C7").Merge();
-                ws.Range("A8:C8").Merge();
-                ws.Range("A9:C9").Merge();*/
 
 
                 ws.Cell("F4").Style.Font.SetBold();
@@ -492,7 +490,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
-                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.Where(x => x.status == "activated"))
+                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderBy(x=>x.UacsId).Where(x => x.status == "activated"))
                         {
                             var uacsID = from fa in _MyDbContext.FundSourceAmount
                                          join u in _MyDbContext.Uacs
@@ -546,7 +544,6 @@ namespace fmis.Controllers.Budget.John
                                             sourceId = o.FundSourceId,
                                             status = oa.status
                                         }).ToList();
-
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
@@ -685,7 +682,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 4).Style.Font.SetBold();
                         ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 4).Value = budget_allotment.FundSources.FirstOrDefault().FundsRealignment.Sum(x => x.Realignment_amount);
+                        ws.Cell(currentRow, 4).Value = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount);
 
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
                         ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
@@ -746,7 +743,7 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 4).Style.Font.SetBold();
                     ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 4).Value = budget_allotment.FundSources.FirstOrDefault().FundsRealignment.Sum(x => x.Realignment_amount);
+                    ws.Cell(currentRow, 4).Value = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount);
 
                     //TOTAL - TOTAL AFTER REALIGNMENT
                     ws.Cell(currentRow, 6).Style.Font.SetBold();
