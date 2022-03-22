@@ -23,7 +23,7 @@
  
 <input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
 <input type="hidden" class="fundsrealignment" value="@JsonSerializer.Serialize(Model.FundsRealignment)">
-<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(s => s.status == "activated" && s.uacs_type == 1))">
 <input type="hidden" id="fundsource_id" value="@Model.FundSourceId" />
 
 <h3 class="grey lighter smaller">

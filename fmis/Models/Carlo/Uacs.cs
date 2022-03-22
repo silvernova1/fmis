@@ -17,5 +17,6 @@ namespace fmis.Models
         public int uacs_type { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+
     }
 }
