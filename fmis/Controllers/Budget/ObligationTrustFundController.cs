@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,21 +30,17 @@ using fmis.DataHealpers;
 
 namespace fmis.Controllers
 {
-    public class UtilizationController : Controller
+    public class ObligationTrustFundController : Controller
     {
-        private readonly UtilizationContext _context;
-        private readonly UtilizationAmountContext _Ucontext;
-        private readonly UacsContext _UacsContext;
+      
         private readonly MyDbContext _MyDbContext;
 
         ORSReporting rpt_ors = new ORSReporting();
-        private Utilization utilization;
+        private ObligationTrustFund ObligationTrustFund;
 
-        public UtilizationController(UtilizationContext context, UtilizationAmountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
+        public ObligationTrustFundController(MyDbContext MyDbContext)
         {
-            _context = context;
-            _Ucontext = Ucontext;
-            _UacsContext = UacsContext;
+           
             _MyDbContext = MyDbContext;
         }
 
@@ -71,7 +67,7 @@ namespace fmis.Controllers
             return (DateTime)date1;
         }
 
-        public class UtilizationData
+        public class ObligationTrustFundData
         {
             public int Id { get; set; }
             public int source_id { get; set; }
@@ -88,26 +84,10 @@ namespace fmis.Controllers
             public int Ors_no { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
-            public string Time_recieved { get; set; }
-            public string Date_released { get; set; }
-            public string Time_released { get; set; }
-            public string utilization_token { get; set; }
+            public string obligation_token { get; set; }
             public string status { get; set; }
         }
-        public class UtilizationAmountData
-        {
-            public int UtilizationId { get; set; }
-            public int UacsId { get; set; }
-            public string Expense_code { get; set; }
-            public decimal Amount { get; set; }
-            public float Total_disbursement { get; set; }
-            public float Total_net_amount { get; set; }
-            public float Total_tax_amount { get; set; }
-            public float Total_others { get; set; }
-            public string utilization_token { get; set; }
-            public string utilization_amount_token { get; set; }
-            public string status { get; set; }
-        }
+
         public class ManyId
         {
             public string many_token { get; set; }
@@ -119,34 +99,61 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        // GET: Utilization
+
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
-            ViewBag.filter = new FilterSidebar("trust_fund", "burs_trust_fund", "");
+            ViewBag.filter = new FilterSidebar("trust_fund", "burs_trust_fund", "obligation_trustfund");
 
-            var utilization = await _MyDbContext
-                                    .Utilization
+            var obligation_trustfund = await _MyDbContext
+                                    .ObligationTrustFund
                                     .Where(x => x.status == "activated")
-                                    .Include(x => x.UtilizationAmount)
+                                    .Include(x => x.ObligationAmountTrustFund)
                                     .Include(x => x.FundSourceTrustFund)
                                     .AsNoTracking()
                                     .ToListAsync();
 
-            //return Json(utilization_json);
-            *//*ViewBag.utilization_json = JsonSerializer.Serialize(utilization);*//*
-
-            var fund_sub_data = (from x in _MyDbContext.FundSourceTrustFund select new { source_id = x.FundSourceTrustFundId, source_title = x.FundSourceTrustFundTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", utilized_amount = x.utilized_amount });
+            var fund_sub_data = (from x in _MyDbContext.FundSourceTrustFund select new { source_id = x.FundSourceTrustFundId, source_title = x.FundSourceTrustFundTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount });
+                                 
 
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data);
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.ToListAsync());
             ViewBag.uacs = uacs_data;
 
             //return Json(obligation);
-            return View("~/Views/Utilization/Index.cshtml", utilization);
+            return View("~/Views/ObligationTrustFund/Index.cshtml", obligation_trustfund);
         }
 
-        // GET: Utilization/Create
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> openObligationAmountTrustFund(int id, string obligation_token)
+        {
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.AsNoTracking().ToListAsync());
+            ViewBag.uacs = uacs_data;
+
+            if (id != 0)
+            {
+                ObligationTrustFund = await _MyDbContext.ObligationTrustFund
+                    .Include(x => x.ObligationAmountTrustFund.Where(x => x.status == "activated"))
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                ObligationTrustFund.UacsTrustFund = await _MyDbContext.UacsTrustFund.AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                ObligationTrustFund = await _MyDbContext.ObligationTrustFund
+                    .Include(x => x.ObligationAmountTrustFund.Where(x => x.status == "activated"))
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.obligation_token == obligation_token);
+                ObligationTrustFund.UacsTrustFund = await _MyDbContext.UacsTrustFund.AsNoTracking().ToListAsync();
+            }
+
+
+            /*return Json(obligation);*/
+            return View("~/Views/ObligationTrustFund/ObligationAmountTrustFund.cshtml", ObligationTrustFund);
+        }
+
+        // GET: Obligations/Create
         public IActionResult Create()
         {
 
@@ -170,86 +177,48 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveUtilization(List<UtilizationData> data)
+        public async Task<IActionResult> SaveObligationTrustFund(List<ObligationTrustFundData> data)
         {
 
-            var data_holder = _MyDbContext.Utilization;
+            var data_holder = _MyDbContext.ObligationTrustFund;
             foreach (var item in data)
             {
 
-                var utilization = new Utilization(); //CLEAR OBJECT
+                var obligation_trustfund = new ObligationTrustFund(); //CLEAR OBJECT
 
-                if (await data_holder.Where(s => s.utilization_token == item.utilization_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
+                if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
                 {
-                    utilization = await data_holder.Where(s => s.utilization_token == item.utilization_token).FirstOrDefaultAsync();
+                    obligation_trustfund = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
 
                 if (item.source_type.Equals("fund_source"))
-                    utilization.FundSourceTrustFundId = item.source_id;
+                    obligation_trustfund.FundSourceTrustFundId = item.source_id;
 
-                utilization.source_type = item.source_type;
-                utilization.Date = ToDateTime(item.Date);
-                utilization.Dv = item.Dv;
-                utilization.Pr_no = item.Pr_no;
-                utilization.Po_no = item.Po_no;
-                utilization.Payee = item.Payee;
-                utilization.Address = item.Address;
-                utilization.Particulars = item.Particulars;
-                utilization.Ors_no = item.Ors_no;
-                utilization.Created_by = item.Created_by;
-                utilization.Gross = item.Gross;
-                utilization.status = "activated";
-                utilization.utilization_token = item.utilization_token;
-                _context.Update(utilization);
-                await _context.SaveChangesAsync();
+
+                obligation_trustfund.source_type = item.source_type;
+                obligation_trustfund.Date = ToDateTime(item.Date);
+                obligation_trustfund.Dv = item.Dv;
+                obligation_trustfund.Pr_no = item.Pr_no;
+                obligation_trustfund.Po_no = item.Po_no;
+                obligation_trustfund.Payee = item.Payee;
+                obligation_trustfund.Address = item.Address;
+                obligation_trustfund.Particulars = item.Particulars;
+                obligation_trustfund.Ors_no = item.Ors_no;
+                obligation_trustfund.Created_by = item.Created_by;
+                obligation_trustfund.Gross = item.Gross;
+                obligation_trustfund.status = "activated";
+                obligation_trustfund.obligation_token = item.obligation_token;
+                _MyDbContext.Update(obligation_trustfund);
+                await _MyDbContext.SaveChangesAsync();
 
             }
             return Json(data);
 
         }
 
-        // POST: Utilization/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Utilization utilization)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(utilization);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(utilization);
-        }
+       
 
-        [HttpPost]
-
-        public ActionResult AddUtilization(IEnumerable<Utilization> UtilizationsInput)
-
-        {
-            var p = UtilizationsInput;
-            return null;
-        }
-
-        // GET: Utilization/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var utilization = await _context.Utilization.FindAsync(id);
-            if (utilization == null)
-            {
-                return NotFound();
-            }
-            return View(utilization);
-        }
-
-        // GET: Utilization/Delete/5
+        // GET: Obligations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -257,20 +226,20 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var utilization = await _context.Utilization
+            var obligation_trustfund = await _MyDbContext.ObligationTrustFund
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (utilization == null)
+            if (obligation_trustfund == null)
             {
                 return NotFound();
             }
 
-            return View(utilization);
+            return View(obligation_trustfund);
         }
 
-        // POST: Utilization/Delete/5
+        // POST: Obligations/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteUtilization(DeleteData data)
+        public IActionResult DeleteObligationTrustFund(DeleteData data)
         {
             if (data.many_token.Count > 1)
             {
@@ -283,20 +252,16 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-        public void setUpDeleteData(string utilization_token)
+        public void setUpDeleteData(string obligation_token)
         {
-            var utilization = new Utilization(); //CLEAR OBJECT
-            utilization = _context.Utilization.Where(s => s.utilization_token == utilization_token).FirstOrDefault();
-            utilization.status = "deactivated";
+            var obligation_trustfund = new ObligationTrustFund(); //CLEAR OBJECT
+            obligation_trustfund = _MyDbContext.ObligationTrustFund.Where(s => s.obligation_token == obligation_token).FirstOrDefault();
+            obligation_trustfund.status = "deactivated";
 
-            _context.Update(utilization);
-            _context.SaveChanges();
+            _MyDbContext.Update(obligation_trustfund);
+            _MyDbContext.SaveChanges();
         }
 
-        private bool UtilizationExists(int id)
-        {
-            return _context.Utilization.Any(e => e.Id == id);
-        }
 
         //EXPORTING PDF FILE
 
@@ -314,16 +279,16 @@ namespace fmis.Controllers
                 foreach (var i in token)
                 {
                     string tok = Convert.ToString(i);
-                    var ors = await _context.Utilization
+                    var ors = await _MyDbContext.ObligationTrustFund
                         .Include(f => f.FundSourceTrustFund)
-                       *//* .ThenInclude(p => p.PrexcTrustFund)*//*
-                        .FirstOrDefaultAsync(m => m.utilization_token == tok);
+                        .ThenInclude(p => p.PrexcTrustFund)
+                        .FirstOrDefaultAsync(m => m.obligation_token == tok);
 
 
                     doc.NewPage();
                     var budget_allotments = _MyDbContext.BudgetAllotmentTrustFund.Include(f => f.FundSourceTrustFunds).FirstOrDefault();
 
-                    Paragraph header_text = new Paragraph("UTILIZATION REQUEST AND STATUS");
+                    Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
 
                     header_text.Font = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
                     header_text.Alignment = Element.ALIGN_CENTER;
@@ -350,11 +315,11 @@ namespace fmis.Controllers
 
                     var table2 = new PdfPTable(1);
                     table2.DefaultCell.Border = 0;
-                    table2.AddCell(new PdfPCell(new Phrase("UTILIZATION REQUEST AND STATUS", header)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Phrase("OBLIGATION REQUEST AND STATUS", header)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
                     table2.AddCell(new PdfPCell(new Paragraph("Republic of Philippines", arial_font_10)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
                     table2.AddCell(new PdfPCell(new Paragraph("Department of Health", header)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
                     table2.AddCell(new PdfPCell(new Paragraph("Central Visayas Center for Health Development", arial_font_10)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
-                    
+
 
                     var no_left_bor = new PdfPCell(table2);
                     no_left_bor.DisableBorderSide(4);
@@ -366,41 +331,26 @@ namespace fmis.Controllers
                     table3.DefaultCell.Border = 0;
 
                     var allotments = (from fundsource in _MyDbContext.FundSourceTrustFund
-                                      join utilization in _MyDbContext.Utilization
-                                      on fundsource.FundSourceTrustFundId equals utilization.FundSourceTrustFundId
+                                      join obligation in _MyDbContext.ObligationTrustFund
+                                      on fundsource.FundSourceTrustFundId equals obligation.FundSourceTrustFundId
                                       join allotmentclass in _MyDbContext.AllotmentClass
                                       on fundsource.AllotmentClassId equals allotmentclass.Id
                                       join fund in _MyDbContext.Fund
                                       on fundsource.FundId equals fund.FundId
-                                      where utilization.utilization_token == tok
+                                      where obligation.obligation_token == tok
                                       select new
                                       {
                                           allotment = allotmentclass.Fund_Code,
                                           fundCurrent = fund.Fund_code_current,
                                           fundConap = fund.Fund_code_conap,
                                           fundsource = fundsource.AppropriationId,
-                                          utilization = utilization.source_type
+                                          obligation = obligation.source_type
                                       }).ToList();
 
-                    var allotmentsAA = (from sub_allotment in _MyDbContext.SubAllotment
-                                        join utilization in _MyDbContext.Utilization
-                                      on sub_allotment.SubAllotmentId equals utilization.FundSourceTrustFundId
-                                        join allotmentclass in _MyDbContext.AllotmentClass
-                                        on sub_allotment.AllotmentClassId equals allotmentclass.Id
-                                        join fund in _MyDbContext.Fund
-                                        on sub_allotment.FundId equals fund.FundId
-                                        where utilization.utilization_token == tok
-                                        select new
-                                        {
-                                            allotment = allotmentclass.Fund_Code,
-                                            fundCurrent = fund.Fund_code_current,
-                                            fundConap = fund.Fund_code_conap,
-                                            sub_allotment = sub_allotment.AppropriationId,
-                                            utilization = utilization.source_type
-                                        }).ToList();
+       
 
 
-                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().utilization == "fund_source")
+                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().obligation == "fund_source")
                     {
 
                         Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
@@ -414,31 +364,8 @@ namespace fmis.Controllers
                         table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
                         table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-                        *//*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*//*
-
-                        table.AddCell(table3);
-
-                        doc.Add(table);
-
-                    }
-
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 1 && allotmentsAA.FirstOrDefault().utilization == "sub_allotment")
-                    {
-
-                        Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
-
-                        table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
-
-                        table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
-
-                        table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
-
-                        *//*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*//*
+                        /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
+                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
 
                         table.AddCell(table3);
 
@@ -447,7 +374,8 @@ namespace fmis.Controllers
                     }
 
 
-                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().utilization == "fund_source")
+
+                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().obligation == "fund_source")
                     {
 
 
@@ -463,38 +391,14 @@ namespace fmis.Controllers
                         table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
                         table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundConap, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-                        *//*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*//*
+                        /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
+                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
 
                         table.AddCell(table3);
 
                         doc.Add(table);
 
                     }
-
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 2 && allotmentsAA.FirstOrDefault().utilization == "sub_allotment")
-                    {
-
-                        Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
-
-                        table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
-
-                        table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
-
-                        table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
-
-                        *//*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*//*
-
-                        table.AddCell(table3);
-
-                        doc.Add(table);
-
-                    }
-
 
                     var table_row_2 = new PdfPTable(2);
                     float[] tbt_row2_width = { 5, 25 };
@@ -522,7 +426,7 @@ namespace fmis.Controllers
                     table_row_4.WidthPercentage = 100f;
                     table_row_4.SetWidths(tbt_row4_width);
                     table_row_4.AddCell(new PdfPCell(new Paragraph("Address", arial_font_10)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_4.AddCell(new PdfPCell(new Paragraph("OSMEÑA BOULEVARD, CEBU CITY", arial_font_10)));
+                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address.ToString(), arial_font_10)));
                     table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 
@@ -553,34 +457,34 @@ namespace fmis.Controllers
                     Double disbursements = 0.00;
 
                     var fundsources = (from fundsource in _MyDbContext.FundSourceTrustFund
-                                       join utilization in _MyDbContext.Utilization
-                                       on fundsource.FundSourceTrustFundId equals utilization.FundSourceTrustFundId
+                                       join obligation in _MyDbContext.ObligationTrustFund
+                                       on fundsource.FundSourceTrustFundId equals obligation.FundSourceTrustFundId
                                        join prexc in _MyDbContext.PrexcTrustFund
                                        on fundsource.PrexcTrustFundId equals prexc.PrexcTrustFundId
                                        join respo in _MyDbContext.RespoCenter
                                        on fundsource.RespoId equals respo.RespoId
-                                       where utilization.utilization_token == tok
+                                       where obligation.obligation_token == tok
                                        select new
                                        {
                                            pap = prexc.pap_code1,
-                                           utilization_id = utilization.FundSourceTrustFundId,
+                                           obligation_id = obligation.FundSourceTrustFundId,
                                            fundsource_id = fundsource.FundSourceTrustFundId,
-                                           fundsource_code = fundsource.FundSourceTrustFundId,
+                                           fundsource_code = fundsource.FundSourceTrustFundTitle,
                                            respo = respo.RespoCode,
                                            signatory = respo.RespoHead,
                                            position = respo.RespoHeadPosition,
-                                           particulars = utilization.Particulars
+                                           particulars = obligation.Particulars
                                        }).ToList();
 
-                    var uacses = (from utilization in _MyDbContext.Utilization
-                                  join utilization_amount in _MyDbContext.UtilizationAmount
-                                  on utilization.Id equals utilization_amount.UtilizationId
+                    var uacses = (from obligation in _MyDbContext.ObligationTrustFund
+                                  join obligation_amount in _MyDbContext.ObligationAmountTrustFund
+                                  on obligation.Id equals obligation_amount.ObligationTrustFundId
 
-                                  where utilization.utilization_token == tok
+                                  where obligation.obligation_token == tok
                                   select new
                                   {
-                                      expense_code = utilization_amount.Expense_code,
-                                      amount = (double)Convert.ToDecimal(utilization_amount.Amount)
+                                      expense_code = obligation_amount.Expense_code,
+                                      amount = (double)Convert.ToDecimal(obligation_amount.Amount)
                                   }).ToList();
 
                     foreach (var u in uacses)
@@ -777,7 +681,7 @@ namespace fmis.Controllers
 
 
 
-                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().utilization == "fund_source")
+                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().obligation == "fund_source")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
                         table_row_12.WidthPercentage = 100f;
@@ -796,26 +700,9 @@ namespace fmis.Controllers
 
                     }
 
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 1 && allotments.FirstOrDefault().utilization == "sub_allotment")
-                    {
-                        PdfPTable table_row_12 = new PdfPTable(8);
-                        table_row_12.WidthPercentage = 100f;
-                        table_row_12.SetWidths(new float[] { 15, 20, 20, 15, 15, 15, 15, 15 });
+                   
 
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("C", new CultureInfo("en-PH")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-
-                        doc.Add(table_row_12);
-
-                    }
-
-                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().utilization == "fund_source")
+                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().obligation == "fund_source")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
                         table_row_12.WidthPercentage = 100f;
@@ -834,24 +721,7 @@ namespace fmis.Controllers
 
                     }
 
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 2 && allotments.FirstOrDefault().utilization == "sub_allotment")
-                    {
-                        PdfPTable table_row_12 = new PdfPTable(8);
-                        table_row_12.WidthPercentage = 100f;
-                        table_row_12.SetWidths(new float[] { 15, 20, 20, 15, 15, 15, 15, 15 });
-
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundConap + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("C", new CultureInfo("en-PH")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-
-                        doc.Add(table_row_12);
-
-                    }
+                   
                 }
 
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, reader);
@@ -859,6 +729,6 @@ namespace fmis.Controllers
             }
 
         }
+
     }
 }
-*/

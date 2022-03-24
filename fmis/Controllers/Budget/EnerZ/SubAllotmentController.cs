@@ -183,6 +183,7 @@ namespace fmis.Controllers
             sub_allotment_data.FundId = subAllotment.FundId;
             sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
             sub_allotment_data.Description = subAllotment.Description;
+            sub_allotment_data.Date = Convert.ToDateTime(subAllotment.Date); 
             sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
             sub_allotment_data.PapType = subAllotment.PapType;
             sub_allotment_data.RespoId = subAllotment.RespoId;
@@ -235,6 +236,15 @@ namespace fmis.Controllers
             return Json(branches.Where(x => x.Id == id).ToList());
         }
 
+        private DateTime ToDateTime(string date)
+        {
+            if (DateTime.TryParse(date, out DateTime result))
+            {
+                return result;
+            }
+
+            return DateTime.MinValue;
+        }
 
 
         /*DROPDOWN LIST FOR PREXC*/

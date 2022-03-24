@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -111,10 +111,6 @@ namespace fmis.Controllers.Budget
                 if (item.Expense_code != "")
                     utilization_amount.Expense_code = Convert.ToInt64(item.Expense_code);
                 utilization_amount.Amount = item.Amount;
-                utilization_amount.Total_disbursement = item.Total_disbursement;
-                utilization_amount.Total_net_amount = item.Total_net_amount;
-                utilization_amount.Total_tax_amount = item.Total_tax_amount;
-                utilization_amount.Total_others = item.Total_others;
                 utilization_amount.status = "activated";
                 utilization_amount.utilization_token = item.utilization_token;
                 utilization_amount.utilization_amount_token = item.utilization_amount_token;
@@ -150,14 +146,14 @@ namespace fmis.Controllers.Budget
             //Obligate/calculation the fundsource/suballotment
             if (utilization.source_type == "fund_source")
             {
-                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.FundSourceTrustFundId).FirstOrDefaultAsync();
+                var fund_source = await _MyDbContext.FundSourceTrustFund.Where(s => s.FundSourceTrustFundId == utilization.FundSourceTrustFundId).FirstOrDefaultAsync();
                 fund_source.Remaining_balance = calculation_data.remaining_balance;
                 fund_source.utilized_amount = calculation_data.utilized_amount;
 
                 remaining_balance = fund_source.Remaining_balance;
                 utilized_amount = fund_source.utilized_amount;
 
-                _MyDbContext.FundSources.Update(fund_source);
+                _MyDbContext.FundSourceTrustFund.Update(fund_source);
                 _MyDbContext.SaveChanges();
             }
           
@@ -176,8 +172,10 @@ namespace fmis.Controllers.Budget
         [HttpPost]
         public async Task<IActionResult> getRemainingAndUtilized(PostUtilizationCalculationData post_calculation_data)
         {
+            decimal beginning_balance = 0;
             decimal remaining_balance = 0;
             decimal utilized_amount = 0;
+          
             if (post_calculation_data.utilization_id != 0)
             {
                 utilization = await _MyDbContext.Utilization
@@ -194,7 +192,8 @@ namespace fmis.Controllers.Budget
             //calculation for funsource or sub allotment
             if (utilization.source_type == "fund_source")
             {
-                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == utilization.FundSourceTrustFundId).FirstOrDefaultAsync();
+                var fund_source = await _MyDbContext.FundSourceTrustFund.Where(s => s.FundSourceTrustFundId == utilization.FundSourceTrustFundId).FirstOrDefaultAsync();
+                beginning_balance = fund_source.Beginning_balance;
                 remaining_balance = fund_source.Remaining_balance;
                 utilized_amount = fund_source.utilized_amount;
             }
@@ -249,4 +248,4 @@ namespace fmis.Controllers.Budget
 
 
     }
-}
+}*/

@@ -19,6 +19,9 @@ namespace fmis.Models
         public string Description { get; set; }
         public string Suballotment_code { get; set; }
         public string PapType { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime Date { get; set; }
 
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }

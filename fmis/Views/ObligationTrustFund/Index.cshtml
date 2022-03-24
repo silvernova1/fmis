@@ -1,5 +1,6 @@
-﻿@model IEnumerable<fmis.Models.Utilization>
+﻿@model IEnumerable<fmis.Models.ObligationTrustFund>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Globalization;
 @using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Index";
@@ -40,11 +41,11 @@
     }
 </style>
 
-<input type="hidden" class="utilization" value="@JsonConvert.SerializeObject(Model)">
+<input type="hidden" class="obligation" value="@JsonConvert.SerializeObject(Model)">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
 <h3 class="grey lighter smaller">
-    (BURS) Budget Utilization Request and Status
+    (ORS) Obligation Request and Status
 </h3>
 <hr>
 
@@ -74,17 +75,10 @@
 </div>
 
 <script>
-    $(".handsontable .htAutocompleteArrow").click(function (event) {
-        console.log("hahahahahahaha");
-    });
-
-    var myEl = $(".handsontable .htAutocompleteArrow");
-
-    myEl.onclick = function (event) { alert('Hello world'); };
 
 
 	//SET OBLIGATION TOKEN
-    let UtilizationToken = () => {
+    let ObligationToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -93,7 +87,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    let UtilizationAmountToken = () => {
+    let ObligationAmountToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -141,10 +135,9 @@
     };
 
 	var SOURCE_TYPE= "";
-	var CHECK_AFTER_ROW = false;
-	var CHECK_FIRST_ROW = true;
-    var CHECK_FIRST_ROW1 = false;
-
+	var CHECK_AFTER_ROW = false; //goods
+	var CHECK_FIRST_ROW = false;
+    @*var CHECK_FIRST_ROW1 = false;*@
     var AMOUNT = 0;
     var INSUFFICIENT_AMOUNT1 = false;
 
@@ -152,8 +145,6 @@
     var TRAP_LOAD2 = false;
     var TRAP_LOAD3 = false;
     var TRAP_LOAD4 = false;
-
-
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -177,7 +168,7 @@
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
 	var get_fund_sub = [];
-	var get_utilized_amount = [];
+	var get_obligated_amount = [];
 	var fund_sub_counter = 0;
     $.each($.parseJSON($(".fund_sub").val()), function () {
 		fund_sub_data_dropdown[fund_sub_counter] = this.source_title;
@@ -185,24 +176,21 @@
 		json_data.source_id = this.source_id;
 		json_data.source_type = this.source_type;
 		fund_sub_data_array[this.source_title] = json_data;
-
         get_fund_sub[this.source_id + this.source_type] = this.source_title;
-
-        get_utilized_amount[this.source_id + this.source_type] = this.utilized_amount;
+        get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
 		fund_sub_counter++;
 	});
 
 
-    var utilization = $.parseJSON($(".utilization").val());
+	var obligation = $.parseJSON($(".obligation").val());
 	const data = [];
 	var counter = 0;
-    $.each(utilization, function () {
-
-        var utilized_amount = 0;
+    $.each(obligation, function () {
+        var obligated_amount = 0;
         if (this.source_type == "fund_source")
-            utilized_amount = this.FundSourceTrustFund ? this.FundSourceTrustFund.utilized_amount : 0;
-        data[counter] = [
-            get_fund_sub[this.FundSourceTrustFundId + this.source_type],
+            obligated_amount = this.FundSourceTrustFund ? this.FundSourceTrustFund.obligated_amount : 0;
+		data[counter] = [
+            this.source_type == "fund_source" ? get_fund_sub[this.FundSourceTrustFundId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
             moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
@@ -212,29 +200,27 @@
 			this.Particulars, //7
 			(this.Id).toString().padStart(4, '0'), //8
 			this.Created_by, //9
-            utilized_amount, //10
+            obligated_amount, //10
             this.Id, //11
-            this.utilization_token, //12
+            this.obligation_token, //12
         ];
 
-        $.each(this.UtilizationAmount, function () {
-            data[counter].push(this.utilization_amount_token);
+        $.each(this.ObligationAmountTrustFund, function () {
+            data[counter].push(this.obligation_amount_token);
             data[counter].push(this.Expense_code);
             data[counter].push(this.Amount);
         });
 
-        for (var i = this.UtilizationAmount.length; i < 12; i++) {
-            data[counter].push(UtilizationAmountToken()); //obligation amount token
+        for (var i = this.ObligationAmountTrustFund.length; i < 12; i++) {
+            data[counter].push(ObligationAmountToken()); //obligation amount token
             data[counter].push("");  // expense code
             data[counter].push("");  // amount
         }
-
         if (this.source_type == "fund_source") {
             data[counter].push(this.FundSourceTrustFund ? this.FundSourceTrustFund.Beginning_balance : 0);
             data[counter].push(this.FundSourceTrustFund ? this.FundSourceTrustFund.Remaining_balance : 0);
         }
-
-
+        
 		counter++;
     });
 
@@ -247,31 +233,32 @@
 	$.each(uacs, function () {
 		uacs_data_dropdown[uacs_counter] = this.Expense_code;
         var json_data = new Object();
-        json_data.UacsTrustFundId = this.UacsTrustFundId;
+        json_data.UacsId = this.UacsId;
 		uacs_data_array[this.Expense_code] = json_data;
         uacs_counter++;
     });
 
 	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
+
 	const hot = new Handsontable(container, {
         data: data,
 		rowHeaders: true,
-		colHeaders: true,
-        preventOverflow: 'horizontal',
-		@*className: 'as-you-type-demo',*@
+        colHeaders: true,
+        rowHeights: '10%',
+        manualRowResize: true,
 		filters: true,
-        @*stretchH: 'all',*@
-        fixedColumnsLeft: 7,
-		afterGetColHeader: addInput,
-		@*beforeOnCellMouseDown(event, coords) {
+        height: 'auto',
+        fixedColumnsLeft: 5,
+        afterGetColHeader: addInput,
+		beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
 			if (coords.row === -1 && event.target.nodeName === 'INPUT') {
 				event.stopImmediatePropagation();
 				this.deselectCell();
 			}
-		},*@
-        colWidths: [220, 100, 100, 100, 100, 150, 100, 150, 80, 80, 100, 125, 125, 100,
+        },
+        colWidths: [145, 100, 70, 80, 80, 150, 80, 350, 80, 80, 150, 125, 100, 100,
                     100, 100, 100,
                     100, 100, 100,
                     100, 100, 100,
@@ -286,22 +273,20 @@
                     100, 100,
                     150, 150,
         ],
-
-		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'UTILIZATION TOKEN',
-                     'UTILIZATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
-                     'UTILIZATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
-                     'UTILIZATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
-                     'UTILIZATION AMOUNT TOKEN 4', 'EXP CODE 4', 'AMOUNT 4',
-                     'UTILIZATION AMOUNT TOKEN 5', 'EXP CODE 5', 'AMOUNT 5',
-                     'UTILIZATION AMOUNT TOKEN 6', 'EXP CODE 6', 'AMOUNT 6',
-                     'UTILIZATION AMOUNT TOKEN 7', 'EXP CODE 7', 'AMOUNT 7',
-                     'UTILIZATION AMOUNT TOKEN 8', 'EXP CODE 8', 'AMOUNT 8',
-                     'UTILIZATION AMOUNT TOKEN 9', 'EXP CODE 9', 'AMOUNT 9',
-                     'UTILIZATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
-                     'UTILIZATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
-                     'UTILIZATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
+		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
+                     'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
+                     'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
+                     'OBLIGATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
+                     'OBLIGATION AMOUNT TOKEN 4', 'EXP CODE 4', 'AMOUNT 4',
+                     'OBLIGATION AMOUNT TOKEN 5', 'EXP CODE 5', 'AMOUNT 5',
+                     'OBLIGATION AMOUNT TOKEN 6', 'EXP CODE 6', 'AMOUNT 6',
+                     'OBLIGATION AMOUNT TOKEN 7', 'EXP CODE 7', 'AMOUNT 7',
+                     'OBLIGATION AMOUNT TOKEN 8', 'EXP CODE 8', 'AMOUNT 8',
+                     'OBLIGATION AMOUNT TOKEN 9', 'EXP CODE 9', 'AMOUNT 9',
+                     'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
+                     'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
+                     'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
                      'BEGINNING BALANCE','REMAINING BALANCE',
-
         ],
 		columns: [
             {
@@ -377,7 +362,7 @@
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
-                }
+                },
             },
             {
                 //OBLIGATION_AMOUNT_TOKEN 2
@@ -567,7 +552,6 @@
                     pattern: '0,0.00',
                 }
             },
-
 		],
 		search: {
 			searchResultClass: 'search-result-custom'
@@ -575,7 +559,7 @@
 		contextMenu: {
 			items: {
 				"make_bold": {
-					name: 'Print BUR',
+					name: 'Print ORS',
 					callback: function (key, options) {
 						var selected = hot.getSelected() || [];
 		                var holder_data = hot.getData();
@@ -587,7 +571,7 @@
 							console.log(holder_data[j]);
 
 		                }
-		                var url = '@Url.Action("PrintOrs", "Utilization")' + "?";
+		                var url = '@Url.Action("PrintOrs", "ObligationTrustFund")' + "?";
 		                for (i = 0; i < many_token.length; i++) {
 			                if ((i + 1) != many_token.length)
 				                url = url + "token=" + many_token[i] + "&";
@@ -639,7 +623,7 @@
 						$.ajax({
 							type: 'GET',
 							headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-							url: '@Url.Action("openUtilizationAmount", "Utilization")',
+							url: '@Url.Action("openObligationAmountTrustFund", "ObligationTrustFund")',
 							data: {
 								id: holder_id,
 								obligation_token: obligation_token
@@ -650,11 +634,12 @@
 								}, 500);
 							}
 						});
-						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
+						console.log('@Url.Action("openObligationAmountTrustFund", "ObligationTrustFund")' + "/" + holder_id + "?token=" + obligation_token);
 					}
                 },
                 "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-			}
+            }
+
 		},
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
@@ -675,15 +660,15 @@
 				"many_token": many_token
 			};
 			console.log(ajax_data);
-			ajaxServer(ajax_data,'@Url.Action("DeleteUtilization", "Utilization")');
+			ajaxServer(ajax_data,'@Url.Action("DeleteObligationTrustFund", "ObligationTrustFund")');
 		},
 		afterUndo: function (index, column) {
-		},
+        },
 		afterCreateRow: function (row, column) {
 
             CHECK_AFTER_ROW = true;
             TRAP_LOAD = 15; //mo load siya ka 15 tungud sa hot.setDataAtCell
-            hot.setDataAtCell(row, 12, UtilizationToken()); //OBLIGATION TOKEN
+            hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
 
             hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
             hot.setDataAtCell(row, 6, Address); //SET ADDRESS
@@ -691,21 +676,22 @@
             let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
             hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
 
-            hot.setDataAtCell(row, 13, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
-            hot.setDataAtCell(row, 16, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
-            hot.setDataAtCell(row, 19, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
-            hot.setDataAtCell(row, 22, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
-            hot.setDataAtCell(row, 25, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
-            hot.setDataAtCell(row, 28, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
-            hot.setDataAtCell(row, 31, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
-            hot.setDataAtCell(row, 34, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
-            hot.setDataAtCell(row, 37, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
-            hot.setDataAtCell(row, 40, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
-            hot.setDataAtCell(row, 43, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
-            hot.setDataAtCell(row, 46, UtilizationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+            hot.setDataAtCell(row, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
+            hot.setDataAtCell(row, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
+            hot.setDataAtCell(row, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
+            hot.setDataAtCell(row, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
+            hot.setDataAtCell(row, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
+            hot.setDataAtCell(row, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
+            hot.setDataAtCell(row, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
+            hot.setDataAtCell(row, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
+            hot.setDataAtCell(row, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
+            hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
+            hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
+            hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+
 		},
 		afterChange: function (changes, source) {
-				if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
 				CHECK_AFTER_ROW = false;
 				return;
             }
@@ -718,7 +704,7 @@
                 if(!hot.getDataAtCell(row, 0)) {
                     TRAP_LOAD3 = true;
                     Lobibox.alert("error", {
-                        msg: "Please select FUND SOURCE first!",
+                        msg: "Please select FUND SOURCE & SAA first!",
                         sound: false,
                     });
                     return;
@@ -741,14 +727,14 @@
 							Ors_no: hot.getDataAtCell(row, 8),
 							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
-							utilization_token: hot.getDataAtCell(row, 12)
+							obligation_token: hot.getDataAtCell(row, 12)
 						}
 					);
 
-					ajaxServer(ajax_data, '@Url.Action("SaveUtilization", "Utilization")');
+					ajaxServer(ajax_data, '@Url.Action("SaveObligationTrustFund", "ObligationTrustFund")');
                     return;
                 }
-			else if (col >= 14 && col <= 50)
+				else if (col >= 14 && col <= 50)
 				{
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
@@ -759,13 +745,13 @@
                     }
                     else if (isNumeric(hot.getDataAtCell(row, col))) {
                         ajax_data.push({
-                            utilization_token: hot.getDataAtCell(row, 12),
-                            utilization_amount_token: hot.getDataAtCell(row, col - 1),
+                            obligation_token: hot.getDataAtCell(row, 12),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
                             Expense_code: hot.getDataAtCell(row, col),
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
                         console.log("number"); //expense code
-                        ajaxServer(ajax_data, '@Url.Action("SaveUtilizationAmount", "UtilizationAmount")');
+                        ajaxServer(ajax_data, '@Url.Action("SaveObligationAmountTrustFund", "ObligationAmountTrustFund")');
                     }
                     else
                     {
@@ -792,26 +778,26 @@
                             return;
                         }
                         ajax_data.push({
-                            utilization_token: hot.getDataAtCell(row, 12),
-                            utilization_amount_token: hot.getDataAtCell(row, col - 2),
+                            obligation_token: hot.getDataAtCell(row, 12),
+                            obligation_amount_token: hot.getDataAtCell(row, col - 2),
                             Expense_code: hot.getDataAtCell(row, col - 1),
                             Amount: hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col),
                         });
                         console.log("string"); //amount
 
-                        var url = '@Url.Action("getRemainingAndUtilized", "UtilizationAmount")';
+                        var url = '@Url.Action("getRemainigAndObligated", "ObligationAmountTrustFund")';
                         var post_calculation_data = {
-                            "utilization_id": 0,
-                            "utilization_token": hot.getDataAtCell(row, 12)
+                            "obligation_id": 0,
+                            "obligation_token": hot.getDataAtCell(row, 12)
                         };
                         $.post(url, post_calculation_data, function (result) {
                             var post_remaining_balance = result.remaining_balance;
-                            var post_utilized_amount = result.post_utilized_amount;
+                            var post_obligated_amount = result.obligated_amount;
 
                             if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
                                 oldValue = oldValue.toString().includes(",") ? parseFloat(oldValue.replace(/,/g, '')) : oldValue;
                                 post_remaining_balance = post_remaining_balance + oldValue; //2000
-                                post_utilized_amount = post_utilized_amount - oldValue;
+                                post_obligated_amount = post_obligated_amount - oldValue;
                             }
 
                             AMOUNT = newValue.toString().includes(",") ? parseFloat(newValue.replace(/,/g, '')) : newValue;
@@ -833,21 +819,21 @@
                                 //do the calculalation
                                 console.log("do the calculation!");
                                 post_remaining_balance = post_remaining_balance - AMOUNT;
-                                post_utilized_amount = post_utilized_amount + AMOUNT;
+                                post_obligated_amount = post_obligated_amount + AMOUNT;
                                 var calculated_amount_data = {
-                                    "utilization_id": 0,
-                                    "utilization_token": hot.getDataAtCell(row, 12),
-                                    "utilization_amount_token": ajax_data[0].utilization_amount_token,
+                                    "obligation_id": 0,
+                                    "obligation_token": hot.getDataAtCell(row, 12),
+                                    "obligation_amount_token": ajax_data[0].obligation_amount_token,
                                     "remaining_balance": post_remaining_balance,
-                                    "utilized_amount": post_utilized_amount,
+                                    "obligated_amount": post_obligated_amount,
                                     "amount": AMOUNT
                                 };
                                 console.log(calculated_amount_data);
-                                var url = '@Url.Action("calculateUtilizedAmount", "UtilizationAmount")';
+                                var url = '@Url.Action("calculateObligatedAmount", "ObligationAmountTrustFund")';
                                 $.post(url, calculated_amount_data, function (result) {
                                     TRAP_LOAD = 2;
                                     hot.setDataAtCell(row, 50, result.remaining_balance);
-                                    hot.setDataAtCell(row, 10, result.utilized_amount);
+                                    hot.setDataAtCell(row, 10, result.obligated_amount);
                                     displayTheCalculation(result);
                                 });
                             }
@@ -859,9 +845,8 @@
                     CHECK_FIRST_ROW = true;
                 }
 
-			});
-
-			 if (TRAP_LOAD2) {
+            });
+            if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
                 console.log("TRAP_LOAD2");
                 return;
@@ -889,19 +874,22 @@
                             Ors_no: this[8] ? this[8] : "",
 							Created_by: this[9] ? this[9] : "",
 							Gross: this[10] ? this[10] : "",
-                            utilization_token: this[12]
+                            obligation_token: this[12]
                         }
                     );
                 });
                 console.log(ajax_data);
-                ajaxServer(ajax_data, '@Url.Action("SaveUtilization", "Utilization")');
+                ajaxServer(ajax_data, '@Url.Action("SaveObligationTrustFund", "ObligationTrustFund")');
             }
 		},
-        hiddenColumns: {
-            columns: [11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
-        },
-		licenseKey: 'non-commercial-and-evaluation',
-	});
+		hiddenColumns: {
+            columns: [ 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
+		},
+        licenseKey: 'non-commercial-and-evaluation',
+
+
+    });
+
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
 
@@ -919,6 +907,7 @@
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true,
+            colWidth: [100,200,300]
         });
     });
 
@@ -931,12 +920,11 @@
         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
     }
 
-
     function displayTheCalculation(result) {
         $("#total_beginning_balance").html(parseFloat(result.overall_beginning_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         $("#total_remaining_balance").html(parseFloat(result.overall_remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
-        $("#total_obligated_balance").html(parseFloat(result.overall_utilized_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        $("#total_obligated_balance").html(parseFloat(result.overall_obligated_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     }
 
-
+    console.log(hot.getSourceData());
 </script>

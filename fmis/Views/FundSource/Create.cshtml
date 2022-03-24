@@ -273,7 +273,7 @@
                         {
                             BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                            Amount: hot.getDataAtCell(row, col + 2).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col + 2).replace(/,/g, '')) : hot.getDataAtCell(row, col),
+                            Amount: hot.getDataAtCell(row, col + 2),
                             fundsource_amount_token: hot.getDataAtCell(row, col+3),
                             fundsource_token: fundsource_token
                         }

@@ -158,10 +158,10 @@
                             <br />
                             <span class="grey">(OA): </span>
                             @{
-                                var fund_obligated_amount = item.FundSourceTrustFunds.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.obligated_amount);
-                                total_obligated_amount += fund_obligated_amount;
+                                var fund_utilized_amount = item.FundSourceTrustFunds.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId).Sum(x => x.obligated_amount);
+                                total_obligated_amount += fund_utilized_amount;
                             }
-                            <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                            <b class="blue">@fund_utilized_amount.ToString("C", new CultureInfo("en-PH"))</b>
                         </td>
                       @*  <td>
                             <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.BudgetAllotmentTrustFundId">

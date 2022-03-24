@@ -111,7 +111,7 @@ namespace fmis.Controllers.Budget
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title.ToUpper();
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 1;
@@ -121,7 +121,7 @@ namespace fmis.Controllers.Budget
                 else if (item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs_trust_fund = new UacsTrustFund(); //clear object
-                    uacs_trust_fund.Account_title = item.Account_title;
+                    uacs_trust_fund.Account_title = item.Account_title.ToUpper();
                     uacs_trust_fund.Expense_code = item.Expense_code;
                     uacs_trust_fund.status = "activated";
                     uacs_trust_fund.uacs_type = 1;
@@ -146,7 +146,7 @@ namespace fmis.Controllers.Budget
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title.ToUpper();
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 2;
@@ -156,7 +156,7 @@ namespace fmis.Controllers.Budget
                 else if (item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs_trust_fund = new UacsTrustFund(); //clear object
-                    uacs_trust_fund.Account_title = item.Account_title;
+                    uacs_trust_fund.Account_title = item.Account_title.ToUpper();
                     uacs_trust_fund.Expense_code = item.Expense_code;
                     uacs_trust_fund.status = "activated";
                     uacs_trust_fund.uacs_type = 2;
@@ -181,7 +181,7 @@ namespace fmis.Controllers.Budget
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title.ToUpper();
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 3;
@@ -191,7 +191,7 @@ namespace fmis.Controllers.Budget
                 else if (item.Account_title != null || item.Expense_code != null) //save
                 {
                     var uacs_trust_fund = new UacsTrustFund(); //clear object
-                    uacs_trust_fund.Account_title = item.Account_title;
+                    uacs_trust_fund.Account_title = item.Account_title.ToUpper();
                     uacs_trust_fund.Expense_code = item.Expense_code;
                     uacs_trust_fund.status = "activated";
                     uacs_trust_fund.uacs_type = 3;

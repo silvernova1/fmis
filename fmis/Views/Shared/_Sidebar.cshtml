@@ -139,6 +139,15 @@
                             </a>
                             <b class="arrow"></b>
                         </li>
+
+                        <li class="@if(ViewBag.filter.sub2 == "aa")
+                     @Html.Raw("active")">
+                            <a asp-controller="Uacs" asp-action="AA">
+                                <i class="menu-icon fa fa-arrow-right blue"></i>
+                                AA
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
                     </ul>
                 </li>
 
@@ -461,9 +470,9 @@
                     <b class="arrow"></b>
 
                     <ul class="submenu">
-                        <li class="@if(ViewBag.filter.sub2 == "utilization_trust_fund")
+                        <li class="@if(ViewBag.filter.sub2 == "obligation_trustfund")
                 @Html.Raw("active")">
-                            <a asp-controller="Utilization" asp-action="Index">
+                            <a asp-controller="ObligationTrustFund" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 UTILIZATION
                             </a>
