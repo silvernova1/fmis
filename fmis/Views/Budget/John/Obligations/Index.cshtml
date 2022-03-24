@@ -39,6 +39,8 @@
         width: 16px;
         text-align: center;
     }
+
+
 </style>
 
 <input type="hidden" class="obligation" value="@JsonConvert.SerializeObject(Model)">
@@ -305,7 +307,9 @@
 	const hot = new Handsontable(container, {
         data: data,
 		rowHeaders: true,
-		colHeaders: true,
+        colHeaders: true,
+        rowHeights: '10%',
+        manualRowResize: true,
 		filters: true,
         height: 'auto',
         fixedColumnsLeft: 5,
@@ -317,7 +321,7 @@
 				this.deselectCell();
 			}
         },
-        colWidths: [145, 100, 70, 80, 80, 150, 80, 150, 80, 80, 150, 125, 100, 100,
+        colWidths: [145, 100, 70, 80, 80, 150, 80, 350, 80, 80, 150, 125, 100, 100,
                     100, 100, 100,
                     100, 100, 100,
                     100, 100, 100,
@@ -905,8 +909,6 @@
                 }
 
             });
-
-
             if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
                 console.log("TRAP_LOAD2");
@@ -950,9 +952,6 @@
 
 
     });
-
-
-
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@

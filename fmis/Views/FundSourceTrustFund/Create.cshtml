@@ -198,7 +198,7 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+                ajaxServer(ajax_data,'@Url.Action("DeleteFundSourceAmountTrustFund", "FundSourceTrustFund")');
             }
         },
         afterUndo: function (index, column) {
@@ -244,7 +244,6 @@
                     });
                 });
                 console.log(ajax_data);
-                $(".obligation_amount").html(obligation_amount);
                 ajaxServer(ajax_data, '@Url.Action("SaveFundSourceAmountTrustFund", "FundSourceTrustFund")');
             }
 		},

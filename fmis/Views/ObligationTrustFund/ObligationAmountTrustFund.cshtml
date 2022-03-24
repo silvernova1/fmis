@@ -1,4 +1,4 @@
-@model fmis.Models.Obligation
+﻿@model fmis.Models.ObligationTrustFund
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @using System.Text.Json;
 @using System.Globalization;
@@ -15,8 +15,6 @@
     .wtHider {
         margin-bottom: 150px;
     }
-
-
 </style>
 
 
@@ -45,12 +43,12 @@
             </td>
         </tr>
         @*     <tr>
-            <td class="col-sm-1"><strong>Fund Source / Sub Allotment</strong> </td>
-            <td class="col-sm-1"><strong>:</strong></td>
-            <td class="col-sm-10">
-                @Html.DisplayFor(model => model.FundSourceTitle)
-            </td>
-        </tr>*@
+                <td class="col-sm-1"><strong>Fund Source / Sub Allotment</strong> </td>
+                <td class="col-sm-1"><strong>:</strong></td>
+                <td class="col-sm-10">
+                    @Html.DisplayFor(model => model.FundSourceTitle)
+                </td>
+            </tr>*@
         <tr>
             <td class="col-sm-1"><strong>PR #</strong></td>
             <td class="col-sm-1"><strong>:</strong></td>
@@ -61,15 +59,15 @@
     </tbody>
 </table>
 
-<input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.ObligationAmounts)">
-<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
+<input type="hidden" class="obligation_amount_data" value="@JsonSerializer.Serialize(Model.ObligationAmountTrustFund)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.UacsTrustFund)">
 <input type="hidden" id="obligation_token" value="@Model.obligation_token" />
 <input type="hidden" id="obligation_id" value="@Html.DisplayFor(model => model.Id)" />
 <input type="hidden" id="remaining_balance" value="
 
 " />
 <input type="hidden" id="obligated_amount" value="
-    
+
 " />
 
 <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
@@ -163,7 +161,7 @@
             {
                 type: 'text',
                 readOnly: true
-    
+
             },
             {
                 type: 'numeric',
@@ -237,7 +235,7 @@
                 };
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("DeleteObligationAmount", "ObligationAmount")',
+                    url: '@Url.Action("DeleteObligationAmount", "ObligationAmountTrustFund")',
                     headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
                     data: { data: ajax_data },
                     success: function (result) {
@@ -280,11 +278,11 @@
                         obligation_amount_token: hot.getDataAtCell(row, col + 8)
                     });
                     console.log(ajax_data);
-                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                    ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmountTrustFund", "ObligationAmountTrustFund")');
                 }
                 else if (col == 2) {
                     //get the exact remaining balance from DB
-                    var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
+                    var url = '@Url.Action("getRemainigAndObligated", "ObligationAmountTrustFund")';
                     var post_calculation_data = {
                         "obligation_id": obligation_id,
                         "obligation_token": OBLIGATION_TOKEN
@@ -320,7 +318,7 @@
                                 "amount": AMOUNT
                             };
                             console.log(calculated_amount_data);
-                            var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")'
+                            var url = '@Url.Action("calculateObligatedAmount", "ObligationAmountTrustFund")'
                             $.post(url, calculated_amount_data, function (result) {
                                 displatTheCalculation(result);
                             });
@@ -366,7 +364,7 @@
                     OBLIGATED_AMOUNT += this[2] ? this[2] : 0;
                 });
                 $("#total_obligated_amount").html(OBLIGATED_AMOUNT);
-                ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")');
+                ajaxServerAmount(ajax_data, '@Url.Action("SaveObligationAmountTrustFund", "ObligationAmountTrustFund")');
             }
         },
         hiddenColumns: {

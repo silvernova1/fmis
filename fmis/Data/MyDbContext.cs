@@ -63,6 +63,9 @@ namespace fmis.Data
         public DbSet<FundSourceTrustFund> FundSourceTrustFund { get; set; }
         public DbSet<FundSourceAmountTrustFund> FundSourceAmountTrustFund { get; set; }
         public DbSet<FundsRealignmentTrustFund> FundsRealignmentTrustFund { get; set; }
+        public DbSet<ObligationTrustFund> ObligationTrustFund { get; set; }
+        public DbSet<ObligationAmountTrustFund> ObligationAmountTrustFund { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
