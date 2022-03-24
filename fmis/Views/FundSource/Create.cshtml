@@ -16,11 +16,9 @@
 }
 
 <style>
-
     .select2 {
         min-height: 33px;
     }
-
 </style>
 
 <form asp-action="Create">
@@ -90,9 +88,7 @@
     $(document).ready(function () {
         $('.prexcDropdown').select2();
     });
-
     get_sbu();
-
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
         $.ajax({
@@ -154,7 +150,6 @@
                 $("#stateid").html(items);
             })
         });
-
     });
 </script>
 
@@ -212,8 +207,7 @@
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
-                    culture: 'en-Ph'
-                },      
+                }
             },
             {
                 //HIDDEN FUNDSOURCE TOKEN
@@ -273,7 +267,7 @@
                         {
                             BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
-                            Amount: hot.getDataAtCell(row, col + 2).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col + 2).replace(/,/g, '')) : hot.getDataAtCell(row, col),
+                            Amount: hot.getDataAtCell(row, col + 2),
                             fundsource_amount_token: hot.getDataAtCell(row, col+3),
                             fundsource_token: fundsource_token
                         }

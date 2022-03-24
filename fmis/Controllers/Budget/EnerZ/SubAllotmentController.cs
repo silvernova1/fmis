@@ -128,8 +128,11 @@ namespace fmis.Controllers
             subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
 
 
-            _MyDbContext.Add(subAllotment);
-            await _MyDbContext.SaveChangesAsync();
+            var prexcID = _MyDbContext.SubAllotment.Where(x => x.prexcId == subAllotment.prexcId).FirstOrDefault();
+
+            _context.Add(subAllotment);
+            
+            await _context.SaveChangesAsync();
 
             sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
             this._MyDbContext.SaveChanges();
@@ -249,7 +252,7 @@ namespace fmis.Controllers
                                               select new
                                               {
                                                   prexcId = s.Id,
-                                                  prexc = s.pap_title ,
+                                                  prexc = s.pap_title,
                                                   pap_type = s.pap_type
                                               }),
                                   "prexcId",

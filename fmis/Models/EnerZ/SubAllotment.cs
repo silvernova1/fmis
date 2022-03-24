@@ -23,9 +23,11 @@ namespace fmis.Models
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
         public RespoCenter RespoCenter { get; set; }
+
         [ForeignKey("Prexc")]
         public int prexcId { get; set; }
-        public Prexc prexc { get; set; }
+        public List<Prexc> prexc { get; set; }
+
         [ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }
         public Appropriation Appropriation { get; set; }
