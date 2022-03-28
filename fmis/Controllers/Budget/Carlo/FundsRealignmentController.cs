@@ -91,7 +91,7 @@ namespace fmis.Controllers.Budget.Carlo
                             .Where(x => x.FundSourceId == fundsource_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
-            FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
+            FundSource.Uacs = await _UacsContext.Uacs/*.Where(p => !from_uacs.Contains(p.UacsId))*/.AsNoTracking().ToListAsync();
 
             //return Json(FundSource);
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
