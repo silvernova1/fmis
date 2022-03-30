@@ -190,7 +190,7 @@ namespace fmis.Controllers
 
             GetObligatedAndRemaining get_obligated_remaining = new GetObligatedAndRemaining();
             get_obligated_remaining.remaining_balance = remaining_balance;
-            get_obligated_remaining.obligated_amount = obligated_amount;
+            get_obligated_remaining.obligated_amount = await _context.ObligationAmount.AsNoTracking().Where(x => x.obligation_token == calculation_data.obligation_token).SumAsync(s => s.Amount);
             var overall_obligation = await _MyDbContext
                                     .Obligation
                                     .Where(x => x.status == "activated")
