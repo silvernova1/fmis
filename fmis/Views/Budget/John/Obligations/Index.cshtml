@@ -253,6 +253,7 @@
         else if (this.source_type == "sub_allotment")
             obligated_amount = this.SubAllotment ? this.SubAllotment.obligated_amount : 0;
 
+
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
             moment(this.Date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
@@ -263,7 +264,7 @@
 			this.Address, //6
 			this.Particulars, //7
 			(this.Id).toString().padStart(4, '0'), //8
-			this.Created_by, //9
+            this.Created_by, //9
             obligated_amount, //10
             this.Id, //11
             this.obligation_token, //12
@@ -1014,7 +1015,7 @@
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true,
-            width: 300,
+
         });
     });
 
