@@ -248,11 +248,9 @@
     $.each(obligation, function () {
         var obligated_amount = 0;
 
-        if (this.source_type == "fund_source")
-            obligated_amount = this.FundSource ? this.FundSource.obligated_amount : 0;
-        else if (this.source_type == "sub_allotment")
-            obligated_amount = this.SubAllotment ? this.SubAllotment.obligated_amount : 0;
-
+        $.each(this.ObligationAmounts, function () {
+            obligated_amount += this.Amount ;
+        });
 
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
