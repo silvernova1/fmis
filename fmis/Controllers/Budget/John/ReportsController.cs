@@ -518,7 +518,9 @@ namespace fmis.Controllers.Budget.John
                                                 where f.FundSourceId == fa.FundSourceId
                                                 select new
                                                 {
-                                                    faId = f.FundSourceId
+                                                    faId = f.FundSourceId,
+                                                    faBeginningBalance = fa.beginning_balance,
+                                                    uacsID = fa.UacsId
                                                 }).ToList();
 
                             var fundsourceamountID = (from f in _MyDbContext.FundSources
@@ -618,6 +620,7 @@ namespace fmis.Controllers.Budget.John
 
                             var addunobligated = afterrealignment_amount - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
                             var deductunobligated = afterrealignment_amountadd - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                            double zero = 0.00;
 
                             if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
                             {
@@ -641,12 +644,18 @@ namespace fmis.Controllers.Budget.John
                             
 
                             //PERCENT OF UTILIZATION
-                            if (asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) == 0 || afterrealignment_amount == 0)
+                            if (/*asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) == 0 || */afterrealignment_amount == 0)
                             {
                                 ws.Cell(currentRow, 10).Value = "";
                                 ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
+                            /*else if(asAt.Where(x => x.uacsId != fundsource_amount.UacsId && x.sourceId != fundsource_amount.FundSourceId).Any())
+                            {
+                                ws.Cell(currentRow, 10).Value = "asdasd";
+                                ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
+                                ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }*/
                             else
                             {
                             var percentTotal = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount) / afterrealignment_amount;
@@ -654,36 +663,35 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
+
                             //REALIGNMENT DATA
-                            /*foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
-                            //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
+                            var data = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundSourceAmount.Select(b => b.UacsId).Contains(c.UacsId)).FirstOrDefault().UacsId;
+                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.Realignment_to == data))
                             {
+                                    currentRow++;
+                                    Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
+                                    //ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundSourceAmount.Select(b => b.UacsId).Contains(c.UacsId)).FirstOrDefault().Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
 
-                                currentRow++;
-                                Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
-                                ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper();
-                                ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+                                    ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
+                                    ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                    //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
-                                ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                                //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+                                    ws.Cell(currentRow, 3).Value = "0.00";
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
-                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    //REALIGNMENT AMOUNT
+                                    ws.Cell(currentRow, 4).Value = "";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-                                //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
-                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                                //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 6).Value = fundsource_amount.beginning_balance + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
-                                ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                            }*/
+                                    //REALIGNMENT AMOUNT
+                                    ws.Cell(currentRow, 6).Value = "";
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
                             currentRow++;
                             total = (double)fundsource_amount.beginning_balance;
                         }
