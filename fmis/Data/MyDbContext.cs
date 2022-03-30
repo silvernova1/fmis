@@ -34,7 +34,6 @@ namespace fmis.Data
         public DbSet<Obligation> Obligation { get; set; }
         public DbSet<Prexc> Prexc { get; set; }
         public DbSet<Requesting_office> Requesting_office { get; set; }
-        public DbSet<Utilization> Utilization { get; set; }
         public DbSet<Yearly_reference> Yearly_reference { get; set; }
         public DbSet<Uacs> Uacs { get; set; }
         public DbSet<AllotmentClass> AllotmentClass { get; set; }
@@ -49,7 +48,6 @@ namespace fmis.Data
         public DbSet<Appropriation> Appropriation { get; set; }
         public DbSet<ManageUsers> ManageUsers { get; set; }
         public DbSet<SummaryReport> SummaryReport { get; set; }
-        public DbSet<UtilizationAmount> UtilizationAmount { get; set; }
         public DbSet<Logs> Logs { get; set; }
         public DbSet<RespoCenter> RespoCenter { get; set; }
         public DbSet<Dts> Dts { get; set; }

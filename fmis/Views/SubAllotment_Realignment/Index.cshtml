@@ -26,15 +26,16 @@
 <input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs)">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
 
+
 <h3 class="grey lighter smaller">
-    @Model.Budget_allotment.Allotment_title
+    Sub Allotment Realignment
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
-        <b>@Model.Suballotment_title</b>
+        @Model.Suballotment_title
     </small>
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="Sub_allotment" asp-action="Index" asp-route-id="@Model.SubAllotmentId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
+<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-id="@Model.SubAllotmentId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
 <br />
 <br />
 <div class="row  pull-left">

@@ -19,8 +19,8 @@ namespace fmis.Controllers
 {
     public class ObligationAmountTrustFundController : Controller
     {
-        private readonly ObligationAmountContext _context;
-        private readonly LogsContext _LContext;
+
+
         private readonly MyDbContext _MyDbContext;
         private ObligationTrustFund ObligationTrustFund;
         private decimal REMAINING_BALANCE = 0;
@@ -133,7 +133,7 @@ namespace fmis.Controllers
             decimal remaining_balance = 0;
             decimal obligated_amount = 0;
             int fundsource_id = 0;
-            int suballotment_id = 0;
+        
 
             if (calculation_data.obligation_id != 0)
             {

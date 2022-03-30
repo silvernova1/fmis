@@ -80,8 +80,6 @@ namespace fmis
               options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
             services.AddDbContext<PrexcContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
-            services.AddDbContext<UtilizationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("UtilizationContext")));
             services.AddDbContext<UacsContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<ObligationAmountContext>(options =>
@@ -128,8 +126,6 @@ namespace fmis
              options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));
             services.AddDbContext<SaobContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("SaobContext")));
-            services.AddDbContext<UtilizationAmountContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("UtilizationAmountContext")));
             services.AddDbContext<LogsContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
             services.AddDbContext<RespoCenterContext>(options =>

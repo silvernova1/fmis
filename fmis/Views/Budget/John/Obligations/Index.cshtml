@@ -24,7 +24,7 @@
     }
 
     .wtHider {
-        margin-bottom: 150px;
+        margin-bottom: 200px;
     }
 
     .htAutocompleteArrow {
@@ -39,7 +39,6 @@
         width: 16px;
         text-align: center;
     }
-
 
 </style>
 
@@ -107,12 +106,13 @@
 </div>
 -->
 
+
+<br />
+<div id="example" class="hot obligation_div"></div>
+<br />
 <div class="controls">
     <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
 </div>
-<br />
-<div id="example" class="hot"></div>
-<br />
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
@@ -130,6 +130,7 @@
         </div>
     </div>
 </div>
+
 
 <script>
 
@@ -202,6 +203,8 @@
     var TRAP_LOAD2 = false;
     var TRAP_LOAD3 = false;
     var TRAP_LOAD4 = false;
+    var SET_10_ROW = false;
+    var OPEN_LOADING_MODAL = false;
 	function ajaxServer(ajax_data, url) {
 		$.ajax({
 			type: 'POST',
@@ -244,13 +247,15 @@
 	var counter = 0;
     $.each(obligation, function () {
         var obligated_amount = 0;
+
         if (this.source_type == "fund_source")
             obligated_amount = this.FundSource ? this.FundSource.obligated_amount : 0;
         else if (this.source_type == "sub_allotment")
             obligated_amount = this.SubAllotment ? this.SubAllotment.obligated_amount : 0;
+
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
-            moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
+            moment(this.Date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
 			this.Dv, //2
 			this.Pr_no, //3
 			this.Po_no, //4
@@ -308,11 +313,10 @@
         data: data,
 		rowHeaders: true,
         colHeaders: true,
-        rowHeights: '10%',
-        manualRowResize: true,
 		filters: true,
-        height: 'auto',
+        height: '800px', 
         fixedColumnsLeft: 5,
+        manualRowResize: true,
         afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
 			// Deselect the column after clicking on input.
@@ -334,8 +338,9 @@
                     100, 100, 100,
                     100, 100, 100,
                     100, 100,
-                    150, 150, 
+                    150, 150,
         ],
+
 		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
                      'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
                      'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -349,7 +354,7 @@
                      'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
                      'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
                      'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
-                     'BEGINNING BALANCE','REMAINING BALANCE', 
+                     'BEGINNING BALANCE','REMAINING BALANCE',
         ],
 		columns: [
             {
@@ -620,7 +625,13 @@
 			searchResultClass: 'search-result-custom'
 		},
 		contextMenu: {
-			items: {
+            items: {
+                "insert": {
+                    name: 'Insert 10 rows below',
+                    callback: function (changes, options) {
+                        hot.alter('insert_row', hot.getSelected()[0] + 0, 10);
+                    }
+                },
 				"make_bold": {
 					name: 'Print ORS',
 					callback: function (key, options) {
@@ -700,7 +711,9 @@
 						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
 					}
                 },
-                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {}, 
+
+                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+
             }
 
 		},
@@ -728,41 +741,70 @@
 		afterUndo: function (index, column) {
         },
 		afterCreateRow: function (row, column) {
+            //CHECK_AFTER_ROW = true;
 
-            CHECK_AFTER_ROW = true;
-            TRAP_LOAD = 15; //mo load siya ka 15 tungud sa hot.setDataAtCell
-            hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
+            @*if (SET_10_ROW) {
+                SET_10_ROW = false;
+                for (var i = 0; i < 10; i++) {
+                    TRAP_LOAD = 24; //mo load siya ka 15 tungud sa hot.setDataAtCell
+                    hot.setDataAtCell(row+i, 12, ObligationToken()); //OBLIGATION TOKEN
 
-            hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
-            hot.setDataAtCell(row, 6, Address); //SET ADDRESS
+                    hot.setDataAtCell(row+i, 1, today); //SET DATE AND TODAY
+                    hot.setDataAtCell(row+i, 6, Address); //SET ADDRESS
 
-            let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
-            hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
+                    let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
+                    hot.setDataAtCell(row+i, 8, (above_ors).toString().padStart(4, '0'));
 
-            hot.setDataAtCell(row, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
-            hot.setDataAtCell(row, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
-            hot.setDataAtCell(row, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
-            hot.setDataAtCell(row, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
-            hot.setDataAtCell(row, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
-            hot.setDataAtCell(row, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
-            hot.setDataAtCell(row, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
-            hot.setDataAtCell(row, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
-            hot.setDataAtCell(row, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
-            hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
-            hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
-            hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+                    hot.setDataAtCell(row+i, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
+                    hot.setDataAtCell(row+i, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
+                    hot.setDataAtCell(row+i, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
+                    hot.setDataAtCell(row+i, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
+                    hot.setDataAtCell(row+i, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
+                    hot.setDataAtCell(row+i, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
+                    hot.setDataAtCell(row+i, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
+                    hot.setDataAtCell(row+i, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
+                    hot.setDataAtCell(row+i, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
+                    hot.setDataAtCell(row+i, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
+                    hot.setDataAtCell(row+i, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
+                    hot.setDataAtCell(row+i, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+                }
+            }
+            else {
+                TRAP_LOAD = 10; //mo load siya ka 15 tungud sa hot.setDataAtCell
+                hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
 
+                hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
+                hot.setDataAtCell(row, 6, Address); //SET ADDRESS
+
+                let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
+                hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
+
+                hot.setDataAtCell(row, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
+                hot.setDataAtCell(row, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
+                hot.setDataAtCell(row, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
+                hot.setDataAtCell(row, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
+                hot.setDataAtCell(row, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
+                hot.setDataAtCell(row, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
+                hot.setDataAtCell(row, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
+                hot.setDataAtCell(row, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
+                hot.setDataAtCell(row, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
+                hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
+                hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
+                hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
+            }*@
 		},
-		afterChange: function (changes, source) {
-			if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+        afterChange: function (changes, source) {
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                console.log("first trap");
 				CHECK_AFTER_ROW = false;
 				return;
             }
             if (TRAP_LOAD) {
                 TRAP_LOAD--; //decrement trap load
-                console.log("TRAP_LOAD");
+                console.log(TRAP_LOAD);
                 return;
             }
+
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if(!hot.getDataAtCell(row, 0)) {
                     TRAP_LOAD3 = true;
@@ -923,23 +965,25 @@
                 console.log("else");
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
-                    ajax_data.push(
-                        {
-                            source_id: this[0] ? fund_sub_data_array[this[0]].source_id : 0,
-                            source_type: this[0] ? fund_sub_data_array[this[0]].source_type : 0,
-                            Date: this[1] ? this[1] : "",
-                            Dv: this[2] ? this[2] : "",
-                            Pr_no: this[3] ? this[3] : "",
-                            Po_no: this[4] ? this[4] : "",
-                            Payee: this[5] ? this[5] : "",
-                            Address: this[6] ? this[6] : "",
-                            Particulars: this[7] ? this[7] : "",
-                            Ors_no: this[8] ? this[8] : "",
-							Created_by: this[9] ? this[9] : "",
-							Gross: this[10] ? this[10] : "",
-                            obligation_token: this[12]
-                        }
-                    );
+                    if (this[0]) {
+                        ajax_data.push(
+                            {
+                                source_id: this[0] ? fund_sub_data_array[this[0]].source_id : 0,
+                                source_type: this[0] ? fund_sub_data_array[this[0]].source_type : 0,
+                                Date: this[1] ? this[1] : "",
+                                Dv: this[2] ? this[2] : "",
+                                Pr_no: this[3] ? this[3] : "",
+                                Po_no: this[4] ? this[4] : "",
+                                Payee: this[5] ? this[5] : "",
+                                Address: this[6] ? this[6] : "",
+                                Particulars: this[7] ? this[7] : "",
+                                Ors_no: this[8] ? this[8] : "",
+                                Created_by: this[9] ? this[9] : "",
+                                Gross: this[10] ? this[10] : "",
+                                obligation_token: this[12]
+                            }
+                        );
+                    }
                 });
                 console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
@@ -949,9 +993,9 @@
             columns: [ 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
 		},
         licenseKey: 'non-commercial-and-evaluation',
-
-
     });
+
+
 
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
@@ -970,7 +1014,7 @@
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true,
-            colWidth: [100,200,300]
+            width: 300,
         });
     });
 
