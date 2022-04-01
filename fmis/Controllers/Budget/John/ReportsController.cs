@@ -550,7 +550,7 @@ namespace fmis.Controllers.Budget.John
 
 
                             total = 0;
-                            var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
+                            var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;                           
                             var afterrealignment_amountadd = fundsource_amount.beginning_balance + _MyDbContext.FundsRealignment.FirstOrDefault(x => x.Realignment_to == fundsource_amount.UacsId)?.Realignment_amount;
 
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
@@ -683,7 +683,7 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = "";
+                                    ws.Cell(currentRow, 4).Value = realignment.Realignment_amount.ToString("N", new CultureInfo("en-US"));
                                     ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
