@@ -571,7 +571,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
-                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).Any())
+                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId &&x.FundSourceId == fundsource_amount.FundSourceId).Any())
                             {
                                 //REALIGNMENT AMOUNT
                                 ws.Cell(currentRow, 4).Value = _MyDbContext.FundsRealignment.Where(x=>x.Realignment_to == fundsource_amount.UacsId).FirstOrDefault().Realignment_amount.ToString("N", new CultureInfo("en-US"));
@@ -595,7 +595,7 @@ namespace fmis.Controllers.Budget.John
                             else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).Any())
                             {
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amountadd;
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amountadd?.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
@@ -630,7 +630,7 @@ namespace fmis.Controllers.Budget.John
                             }
                             else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).Any())
                             {
-                                ws.Cell(currentRow, 9).Value = deductunobligated;
+                                ws.Cell(currentRow, 9).Value = deductunobligated?.ToString("N", new CultureInfo("en-US"));
                                 ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
@@ -745,24 +745,26 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
 
+                        //REALIGNMENT SUBTOTAL
+                        var realignment_subtotal = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount);
                         ws.Cell(currentRow, 4).Style.Font.SetBold();
                         ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 4).Value = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 4).Value = realignment_subtotal?.ToString("N", new CultureInfo("en-US"));
 
                         if(string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
                         {
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
+                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
                         }
                         else
                         {
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
                             ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = sub6;
+                            ws.Cell(currentRow, 6).Value = sub6?.ToString("N", new CultureInfo("en-US"));
                         }
                         
 
@@ -784,7 +786,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotal;
+                            ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
                         }
                         else
                         {
@@ -792,7 +794,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
                             ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = sub9;
+                            ws.Cell(currentRow, 9).Value = sub9?.ToString("N", new CultureInfo("en-US"));
                         }
                         
                         if(string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
@@ -838,10 +840,12 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     ws.Cell(currentRow, 3).Value = PsTotal.ToString("N", new CultureInfo("en-US"));
 
+                    //REALIGNMENT TOTAL
+                    var realignment_total = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount);
                     ws.Cell(currentRow, 4).Style.Font.SetBold();
                     ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 4).Value = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount).ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 4).Value = realignment_total?.ToString("N", new CultureInfo("en-US"));
 
                     //TOTAL - TOTAL AFTER REALIGNMENT
                     ws.Cell(currentRow, 6).Style.Font.SetBold();
