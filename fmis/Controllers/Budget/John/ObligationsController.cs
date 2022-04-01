@@ -402,7 +402,7 @@ namespace fmis.Controllers
 
                     var allotmentsAA = (from sub_allotment in _MyDbContext.SubAllotment
                                         join obligation in _MyDbContext.Obligation
-                                      on sub_allotment.SubAllotmentId equals obligation.FundSourceId
+                                      on sub_allotment.SubAllotmentId equals obligation.SubAllotmentId
                                       join allotmentclass in _MyDbContext.AllotmentClass
                                       on sub_allotment.AllotmentClassId equals allotmentclass.Id
                                       join fund in _MyDbContext.Fund
@@ -418,19 +418,19 @@ namespace fmis.Controllers
                                       }).ToList();
 
 
-                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().obligation == "fund_source")
+                    if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault()?.obligation == "fund_source")
                     {      
 
                     Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
 
                     table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" +allotments.FirstOrDefault().fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" +allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                     table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
                     table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                     table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                     /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
                     table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
@@ -465,7 +465,7 @@ namespace fmis.Controllers
                     }
 
 
-                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().obligation == "fund_source")
+                    if (allotments.FirstOrDefault()?.fundsource == 2 && allotments.FirstOrDefault()?.obligation == "fund_source")
                     {
 
 
@@ -473,13 +473,13 @@ namespace fmis.Controllers
                         Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
 
                         table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundConap + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundConap + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                         table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
                         table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                         table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundConap, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundConap, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                         /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
                         table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
@@ -490,7 +490,7 @@ namespace fmis.Controllers
 
                     }
 
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 2 && allotmentsAA.FirstOrDefault().obligation == "sub_allotment")
+                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 2 && allotmentsAA.FirstOrDefault()?.obligation == "sub_allotment")
                     {
 
                         Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
@@ -590,6 +590,27 @@ namespace fmis.Controllers
                                            particulars = obligation.Particulars
                                        }).ToList();
 
+                    var saa = (from SAA in _MyDbContext.SubAllotment
+                                       join obligation in _MyDbContext.Obligation
+                                       on SAA.SubAllotmentId equals obligation.FundSourceId
+                                       join prexc in _MyDbContext.Prexc
+                                       on SAA.prexcId equals prexc.Id
+                                       join respo in _MyDbContext.RespoCenter
+                                       on SAA.RespoId equals respo.RespoId
+                                       where obligation.obligation_token == tok
+                                       select new
+                                       {
+                                           pap = prexc.pap_code1,
+                                           obligation_id = obligation.FundSourceId,
+                                           fundsource_id = SAA.SubAllotmentId,
+                                           fundsource_code = SAA.Suballotment_title,
+                                           respo = respo.RespoCode,
+                                           signatory = respo.RespoHead,
+                                           position = respo.RespoHeadPosition,
+                                           particulars = obligation.Particulars
+                                       }).ToList();
+
+
                     var uacses = (from obligation in _MyDbContext.Obligation
                                   join obligation_amount in _MyDbContext.ObligationAmount
                                   on obligation.Id equals obligation_amount.ObligationId
@@ -608,9 +629,9 @@ namespace fmis.Controllers
                         total_amt += u.amount;
                     }
 
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault().fundsource_code + "\n\n" + fundsources.FirstOrDefault().respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault().pap, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
                     doc.Add(table_row_6);
@@ -683,15 +704,28 @@ namespace fmis.Controllers
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
 
+                    var saasignatory = (from rc in _MyDbContext.RespoCenter
+                                        join sa in _MyDbContext.SubAllotment
+                                        on rc.RespoId equals sa.RespoId
+                                        select new
+                                        {
+                                            respoHead = rc.RespoHead,
+                                            respoPosition = rc.RespoHeadPosition
+
+                                        }).ToList();
+
+
+                    if (allotments.FirstOrDefault()?.obligation == "fund_source")
+                    {
                     //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault().signatory, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.signatory, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Position :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault().position, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.position, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Position", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                     table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
@@ -712,10 +746,42 @@ namespace fmis.Controllers
                     table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Date", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
                     table_row_8.AddCell(new PdfPCell(new Paragraph(ors.Date.ToString("MM/dd/yyyy"), new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
-
-
                     doc.Add(table_row_8);
+                    }
+                    else
+                    {
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        table_row_8.AddCell(new PdfPCell(new Paragraph(saasignatory.FirstOrDefault()?.respoHead, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
+
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Position :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        table_row_8.AddCell(new PdfPCell(new Paragraph(saasignatory.FirstOrDefault()?.respoPosition, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Position", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+
+
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+
+
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("")));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office / Authorized Representative", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Unit / Authorized Representative", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_CENTER });
+
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Date :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Date", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph(ors.Date.ToString("MM/dd/yyyy"), new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        doc.Add(table_row_8);
+                    }
+                   
                     PdfPTable table_row_9 = new PdfPTable(2);
                     table_row_9.WidthPercentage = 100f;
                     table_row_9.SetWidths(new float[] { 10, 90 });
@@ -795,7 +861,7 @@ namespace fmis.Controllers
                     
 
 
-                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().obligation == "fund_source")
+                    if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault()?.obligation == "fund_source")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
                         table_row_12.WidthPercentage = 100f;
@@ -803,7 +869,7 @@ namespace fmis.Controllers
 
                         table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
+                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("C", new CultureInfo("en-PH")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
@@ -814,7 +880,7 @@ namespace fmis.Controllers
 
                     }
 
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 1 && allotments.FirstOrDefault().obligation == "sub_allotment")
+                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 1 && allotmentsAA.FirstOrDefault()?.obligation == "sub_allotment")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
                         table_row_12.WidthPercentage = 100f;
@@ -833,7 +899,7 @@ namespace fmis.Controllers
 
                     }
 
-                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().obligation == "fund_source")
+                    if (allotments.FirstOrDefault()?.fundsource == 2 && allotments.FirstOrDefault()?.obligation == "fund_source")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
                         table_row_12.WidthPercentage = 100f;
@@ -841,7 +907,7 @@ namespace fmis.Controllers
 
                         table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault().allotment + "-" + allotments.FirstOrDefault().fundConap + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
+                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundConap + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("C", new CultureInfo("en-PH")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph("\n", FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
@@ -852,7 +918,7 @@ namespace fmis.Controllers
 
                     }
 
-                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 2 && allotments.FirstOrDefault().obligation == "sub_allotment")
+                    if (allotmentsAA.FirstOrDefault()?.sub_allotment == 2 && allotmentsAA.FirstOrDefault()?.obligation == "sub_allotment")
                     {
                         PdfPTable table_row_12 = new PdfPTable(8);
                         table_row_12.WidthPercentage = 100f;
