@@ -76,7 +76,7 @@ namespace fmis.Controllers
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             //ViewBag.AllotmentBalance = allotmentbalance / allotment * 100;
 
-            //ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("0.00");
+            //ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("#,##0.00");
 
             //var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
             //var obligated = _MyDbCOntext.ObligationAmount.Where(x => x.ObligationId == id).Sum(x => x.Amount);

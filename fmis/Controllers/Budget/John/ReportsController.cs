@@ -559,64 +559,100 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
                             ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                            ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
-                            ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            if(fundsource_amount.beginning_balance != 0)
+                            {
+                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else
+                            {
+                                ws.Cell(currentRow, 3).Value = "-";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            
 
 
                             if (_MyDbContext.FundsRealignment.Where(x=>x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
                             {
                                 //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId).FirstOrDefault()?.Realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId).FirstOrDefault()?.Realignment_amount + ")";
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId &&x.FundSourceId == fundsource_amount.FundSourceId).Any())
                             {
                                 //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = _MyDbContext.FundsRealignment.Where(x=>x.Realignment_to == fundsource_amount.UacsId).FirstOrDefault().Realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Value = _MyDbContext.FundsRealignment.Where(x=>x.Realignment_to == fundsource_amount.UacsId).FirstOrDefault().Realignment_amount;
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             else
                             {
                                 //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = "";
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Value = "-";
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
-                            if(_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                            if(_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any() || afterrealignment_amount != 0)
                             {
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
-                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).Any())
+                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).Any() || afterrealignment_amount != 0)
                             {
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amountadd?.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amountadd;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else if (afterrealignment_amount != 0)
+                            {
+                                //TOTAL ADJUSTED ALLOTMENT
+                                ws.Cell(currentRow, 6).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             else
                             {
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = "-";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
 
-                            //OBLIGATED (FOR THE MONTH)
-                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
-                            ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            //OBLIGATED (AS AT)
-                            //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
-                            ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            if(fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount) != 0)
+                            { 
+                                //OBLIGATED (FOR THE MONTH)
+                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else
+                            {
+                                //OBLIGATED (FOR THE MONTH)
+                                ws.Cell(currentRow, 7).Value = "-";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            if(asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount) != 0)
+                            {
+                                //OBLIGATED (AS AT)
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else
+                            {
+                                //OBLIGATED (AS AT)
+                                ws.Cell(currentRow, 8).Value = "-";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            
 
                             var addunobligated = afterrealignment_amount - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
                             var deductunobligated = afterrealignment_amountadd - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -624,21 +660,28 @@ namespace fmis.Controllers.Budget.John
 
                             if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
                             {
-                                ws.Cell(currentRow, 9).Value = addunobligated.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Value = addunobligated;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).Any())
                             {
-                                ws.Cell(currentRow, 9).Value = deductunobligated?.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Value = deductunobligated;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else if (unobligated_amount != 0)
+                            {
+                                //UNOBLIGATED BALANCE OF ALLOTMENT
+                                ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             else
                             {
                                 //UNOBLIGATED BALANCE OF ALLOTMENT
-                                ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Value = "-";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             
@@ -646,7 +689,7 @@ namespace fmis.Controllers.Budget.John
                             //PERCENT OF UTILIZATION
                             if (/*asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) == 0 || */afterrealignment_amount == 0)
                             {
-                                ws.Cell(currentRow, 10).Value = "";
+                                ws.Cell(currentRow, 10).Value = "-";
                                 ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
@@ -678,18 +721,18 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = "0.00";
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = realignment.Realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = realignment.Realignment_amount;
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
                                     ws.Cell(currentRow, 6).Value = "";
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             currentRow++;
@@ -729,72 +772,72 @@ namespace fmis.Controllers.Budget.John
                                              status = oa.status
                                          }).ToList();
 
-                        var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
+                        var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount) + fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
                         var sub9 = sub6 - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                         //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                         //ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper()/* + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code*/;
+                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper();
 
                         //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                         //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                         //REALIGNMENT SUBTOTAL
                         var realignment_subtotal = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount);
                         ws.Cell(currentRow, 4).Style.Font.SetBold();
-                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 4).Value = realignment_subtotal?.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 4).Value = realignment_subtotal;
 
                         if(string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
                         {
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
                         }
                         else
                         {
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = sub6?.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = sub6;
                         }
                         
 
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                         //AS AT TOTAL
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                         if(string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
                         {
                             var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotal;
                         }
                         else
                         {
                             var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = sub9?.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = sub9;
                         }
                         
                         if(string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
@@ -836,41 +879,41 @@ namespace fmis.Controllers.Budget.John
 
 
                     ws.Cell(currentRow, 3).Style.Font.SetBold();
-                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 3).Value = PsTotal.ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 3).Value = PsTotal;
 
                     //REALIGNMENT TOTAL
                     var realignment_total = budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault().FundsRealignment?.Sum(x => x.Realignment_amount);
                     ws.Cell(currentRow, 4).Style.Font.SetBold();
-                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 4).Value = realignment_total?.ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 4).Value = realignment_total;
 
                     //TOTAL - TOTAL AFTER REALIGNMENT
                     ws.Cell(currentRow, 6).Style.Font.SetBold();
-                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 6).Value = PsTotal.ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 6).Value = PsTotal;
 
                     //TOTAL - FOR THE MONTH
                     ws.Cell(currentRow, 7).Style.Font.SetBold();
-                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
 
                     //TOTAL - AS AT
                     ws.Cell(currentRow, 8).Style.Font.SetBold();
-                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
 
                     //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                     var unobligatedTotalinTotalPS = PsTotal - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
                     ws.Cell(currentRow, 9).Style.Font.SetBold();
-                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPS.ToString("N", new CultureInfo("en-US"));
+                    ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPS;
 
                     //PERCENT OF UTILIZATION
                     var totalPercentPS = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount) / allotment_total;
@@ -967,46 +1010,45 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                             //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                            ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             if(fundsource_amount.realignment_amount == 0)
                             {
                                 //REALIGNMENT AMOUNT
                                 ws.Cell(currentRow, 4).Value = "";
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             else
                             {
                                 //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
                             
 
                             //TOTAL ADJUSTED ALLOTMENT
-                            ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //OBLIGATED (FOR THE MONTH)
-                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //OBLIGATED (AS AT)
-                            //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                            ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //UNOBLIGATED BALANCE OF ALLOTMENT
-                            //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Value = unobligated_amount;
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //PERCENT OF UTILIZATION
@@ -1031,13 +1073,13 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = "0.00";
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
+                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -1088,33 +1130,33 @@ namespace fmis.Controllers.Budget.John
                         //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                         //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
 
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                         //AS AT TOTAL
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                         var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                         //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                         //PERCENT OF UTILIZATION
                         ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
@@ -1147,34 +1189,34 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = PsTotalAP.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = PsTotalAP;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = PsTotalAP.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = PsTotalAP;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                         var unobligatedTotalinTotalPSAP = PsTotalAP - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSAP.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSAP;
 
                         //PERCENT OF UTILIZATION
                         var totalPercentPSAP = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount) / allotment_total;
@@ -1278,45 +1320,45 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 if (fundsource_amount.realignment_amount == 0)
                                 {
                                     //REALIGNMENT AMOUNT
                                     ws.Cell(currentRow, 4).Value = "";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 else
                                 {
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
 
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (FOR THE MONTH)
-                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
-                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //UNOBLIGATED BALANCE OF ALLOTMENT
-                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -1350,13 +1392,13 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = "0.00";
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -1408,33 +1450,33 @@ namespace fmis.Controllers.Budget.John
                             //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                             //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
 
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                             //AS AT TOTAL
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                             var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
@@ -1492,34 +1534,34 @@ namespace fmis.Controllers.Budget.John
                             var allotment_totalMOOE = +MooeTotal;
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = MooeTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = MooeTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = MooeTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = MooeTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             var unobligatedTotalinTotalMOOE = MooeTotal - asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOE.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOE;
 
 
                             //PERCENT OF UTILIZATION
@@ -1638,45 +1680,45 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 if (fundsource_amount.realignment_amount == 0)
                                 {
                                     //REALIGNMENT AMOUNT
                                     ws.Cell(currentRow, 4).Value = "";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 else
                                 {
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
 
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (FOR THE MONTH)
-                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
-                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //UNOBLIGATED BALANCE OF ALLOTMENT
-                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //PERCENT OF UTILIZATION
@@ -1701,13 +1743,13 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = "0.00";
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -1759,33 +1801,33 @@ namespace fmis.Controllers.Budget.John
                             //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                             //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
 
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                             //AS AT TOTAL
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                             var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
@@ -1840,34 +1882,34 @@ namespace fmis.Controllers.Budget.John
                         var allotment_totalCO = +CoTotal;
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = CoTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = CoTotal;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = CoTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = CoTotal;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                         var unobligatedTotalinTotalCO = CoTotal - asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCO.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCO;
 
                         //PERCENT OF UTILIZATION
                         if (asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount) == 0 && CoTotal == 0)
@@ -2030,8 +2072,8 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance;
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //REALIGNMENT SAA
@@ -2039,37 +2081,37 @@ namespace fmis.Controllers.Budget.John
                                 {
                                     //REALIGNMENT SAA AMOUNT
                                     ws.Cell(currentRow, 4).Value = "";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 else
                                 {
                                     //REALIGNMENT SAA AMOUNT
-                                    ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount + ")";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
 
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (FOR THE MONTH)
-                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
-                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //UNOBLIGATED BALANCE OF ALLOTMENT
-                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //PERCENT OF UTILIZATION
@@ -2089,13 +2131,13 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = "0.00";
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount;
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 currentRow++;
@@ -2145,33 +2187,33 @@ namespace fmis.Controllers.Budget.John
                             //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                             //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance;
 
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance;
 
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //AS AT TOTAL
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
                             var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
@@ -2196,34 +2238,34 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsTotalSaa;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsTotalSaa;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaa;
 
                             if (asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount) == 0 && PsTotalSaa == 0)
                             {
@@ -2337,8 +2379,8 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT SAA
@@ -2346,37 +2388,37 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         //REALIGNMENT SAA AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT SAA AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //PERCENT OF UTILIZATION
@@ -2396,13 +2438,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     currentRow++;
@@ -2452,33 +2494,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
@@ -2505,34 +2547,34 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = MooeTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = MooeTotalSaa;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = MooeTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = MooeTotalSaa;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaa;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = totalPercentMOOESaa;
@@ -2638,8 +2680,8 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT SAA
@@ -2647,37 +2689,37 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         //REALIGNMENT SAA AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT SAA AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //PERCENT OF UTILIZATION
@@ -2697,13 +2739,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     currentRow++;
@@ -2753,33 +2795,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
@@ -2808,34 +2850,34 @@ namespace fmis.Controllers.Budget.John
 
 
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = CoTotalSaa.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = CoTotalSaa;
 
                                 //TOTAL - TOTAL AFTER REALIGNMENT
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = CoTotalSaa.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = CoTotalSaa;
 
                                 //TOTAL - FOR THE MONTH
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //TOTAL - AS AT
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOSaa.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOSaa;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = totalPercentCOSaa;
@@ -2964,45 +3006,45 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     if (fundsource_amount.realignment_amount == 0)
                                     {
                                         //REALIGNMENT AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //PERCENT OF UTILIZATION
@@ -3027,13 +3069,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -3084,33 +3126,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
@@ -3173,33 +3215,33 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsConapTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsConapTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSConap;
 
                             //PERCENT OF UTILIZATION
                             if (asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) == 0 && PsConapTotal == 0)
@@ -3303,45 +3345,45 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 if (fundsource_amount.realignment_amount == 0)
                                 {
                                     //REALIGNMENT AMOUNT
                                     ws.Cell(currentRow, 4).Value = "";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 else
                                 {
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
 
                                 //TOTAL ADJUSTED ALLOTMENT
-                                ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (FOR THE MONTH)
-                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //OBLIGATED (AS AT)
-                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //UNOBLIGATED BALANCE OF ALLOTMENT
-                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //PERCENT OF UTILIZATION
@@ -3374,13 +3416,13 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = "0.00";
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT AMOUNT
-                                    ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -3431,33 +3473,33 @@ namespace fmis.Controllers.Budget.John
                             //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                             //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
 
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                             //AS AT TOTAL
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                             var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
@@ -3522,33 +3564,33 @@ namespace fmis.Controllers.Budget.John
 
 
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = MooeConapTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = MooeConapTotal;
 
                                 //TOTAL - TOTAL AFTER REALIGNMENT
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = MooeConapTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = MooeConapTotal;
 
                                 //TOTAL - FOR THE MONTH
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount);
 
                                 //TOTAL - AS AT
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount);
 
                                 //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMooeConap.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMooeConap;
 
                                 //PERCENT OF UTILIZATION
                                 if (asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) == 0 && PsConapTotal == 0)
@@ -3653,45 +3695,45 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     if (fundsource_amount.realignment_amount == 0)
                                     {
                                         //REALIGNMENT AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //PERCENT OF UTILIZATION
@@ -3716,13 +3758,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
 
@@ -3773,33 +3815,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
@@ -3862,33 +3904,33 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = CoConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = CoConapTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = CoConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = CoConapTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCoConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCoConap;
 
                             //PERCENT OF UTILIZATION
                             if (asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) == 0 || CoConapTotal == 0)
@@ -3999,8 +4041,8 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT SAA
@@ -4008,37 +4050,37 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         //REALIGNMENT SAA AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT SAA AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //PERCENT OF UTILIZATION
@@ -4058,13 +4100,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     currentRow++;
@@ -4114,33 +4156,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
@@ -4165,34 +4207,34 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsTotalSaaConapPS.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsTotalSaaConapPS;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsTotalSaaConapPS.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsTotalSaaConapPS;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaaConap;
 
                             if (asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount) == 0 && PsTotalSaa == 0)
                             {
@@ -4305,8 +4347,8 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT SAA
@@ -4314,37 +4356,37 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         //REALIGNMENT SAA AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT SAA AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     if (asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) == 0 || afterrealignment_amount == 0)
@@ -4374,13 +4416,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     currentRow++;
@@ -4430,33 +4472,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
@@ -4483,34 +4525,34 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = MooeTotalSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = MooeTotalSaaConap;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = MooeTotalSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = MooeTotalSaaConap;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaaConap;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = totalPercentMOOESaaConap;
@@ -4609,8 +4651,8 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 3).Value = suballotment_amount.beginning_balance;
+                                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //REALIGNMENT SAA
@@ -4618,37 +4660,37 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         //REALIGNMENT SAA AMOUNT
                                         ws.Cell(currentRow, 4).Value = "";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     else
                                     {
                                         //REALIGNMENT SAA AMOUNT
-                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US")) + ")";
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = "(" + suballotment_amount.realignment_amount + ")";
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
                                     //TOTAL ADJUSTED ALLOTMENT
-                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 6).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (FOR THE MONTH)
-                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                    ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //OBLIGATED (AS AT)
-                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
+                                    ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     //UNOBLIGATED BALANCE OF ALLOTMENT
-                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Value = unobligated_amount.ToString("N", new CultureInfo("en-US"));
-                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                    //ws.Cell(currentRow, 9).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 9).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                     if (asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) == 0 || afterrealignment_amount == 0)
@@ -4678,13 +4720,13 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
-                                        ws.Cell(currentRow, 3).Value = "0.00";
-                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 3).Value = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                         //REALIGNMENT AMOUNT
-                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount.ToString("N", new CultureInfo("en-US"));
-                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "0.00";
+                                        ws.Cell(currentRow, 4).Value = suballotment_amount.realignment_amount;
+                                        ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     currentRow++;
@@ -4734,33 +4776,33 @@ namespace fmis.Controllers.Budget.John
                                 //ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 3).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 6).Value = subAllotment.Beginning_balance;
 
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
                                 var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 9).Value = unobligatedTotal.ToString("N", new CultureInfo("en-US"));
+                                ws.Cell(currentRow, 9).Value = unobligatedTotal;
 
                                 //PERCENT OF UTILIZATION
                                 ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
@@ -4787,34 +4829,34 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = CoTotalSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = CoTotalSaaConap;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = CoTotalSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = CoTotalSaaConap;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCoSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCoSaaConap;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = totalPercentCoSaaConap;
@@ -4847,34 +4889,34 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Value = "TOTAL PERSONNEL SERVICES";
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             var unobligatedTotalinTotalPSCurrent = PsTotal - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1).Sum(x => x.amount);
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSCurrent.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSCurrent;
 
                             //PERCENT OF UTILIZATION
                             var totalPercentPSCurrent = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1).Sum(x => x.amount) / PsTotal;
@@ -4901,34 +4943,34 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = PsTotalAPTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = PsTotalAPTotal;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = PsTotalAPTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = PsTotalAPTotal;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                         var unobligatedTotalinTotalPSAPTotal = PsTotalAP - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSAPTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSAPTotal;
 
                         //PERCENT OF UTILIZATION
                         var totalPercentPSAPTotal = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount) / allotment_total;
@@ -4985,34 +5027,34 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = "TOTAL MOOE";
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = MooeTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = MooeTotal;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = MooeTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = MooeTotal;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                         var unobligatedTotalinTotalMOOECurent = MooeTotal - asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOECurent.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOECurent;
 
                         //PERCENT OF UTILIZATION
                         if (asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount) == 0 || MooeTotal == 0)
@@ -5079,34 +5121,34 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = CoTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = CoTotal;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = CoTotal.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = CoTotal;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                         var unobligatedTotalinTotalCOCurrent = CoTotal - asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOCurrent.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOCurrent;
 
                         //PERCENT OF UTILIZATION
                         if (asAtTotalinTotalCO.Where(x => x.allotmentClassID == 3).Sum(x => x.amount) == 0 && CoTotal == 0)
@@ -5134,34 +5176,34 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Value = "TOTAL PS SAA";
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsTotalSaa;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsTotalSaa;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaa;
 
                             if (asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount) == 0 && PsTotalSaa == 0)
                             {
@@ -5203,34 +5245,34 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = MooeTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = MooeTotalSaa;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = MooeTotalSaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = MooeTotalSaa;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaa.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaa;
 
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 10).Value = totalPercentMOOESaa;
@@ -5263,34 +5305,34 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = CoTotalSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = CoTotalSaa;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = CoTotalSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = CoTotalSaa;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOSaa;
 
                         //PERCENT OF UTILIZATION
                         ws.Cell(currentRow, 10).Value = totalPercentCOSaa;
@@ -5326,17 +5368,17 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = TotalCA.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = TotalCA;
 
                         //TOTAL FUNDSOURCE - TOTAL AFTER REALIGMENT
                         ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
                         ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = TotalCA.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = TotalCA;
 
                         var fortheMonthTotalinTotalCURRENT = (from oa in _MyDbContext.ObligationAmount
                                                               join o in _MyDbContext.Obligation
@@ -5377,22 +5419,22 @@ namespace fmis.Controllers.Budget.John
                         var CurrentApproForthemonth = fortheMonthTotalinTotalCURRENT.Where(x=>x.appropriationID == 1).Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.appropriationID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                         var CurrentApproAsat = asAtTotalinTotalCURRENT.Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = CurrentApproForthemonth.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = CurrentApproForthemonth;
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = CurrentApproAsat.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = CurrentApproAsat;
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                         var unobligatedTotalinTotalCURRENT = TotalCA - asAtTotalinTotalCURRENT.Sum(x => x.amount);
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCURRENT.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCURRENT;
 
                         //PERCENT OF UTILIZATION
                         var totalPercentCURRENT = asAtTotalinTotalCURRENT.Sum(x => x.amount) / CurrentTotal;
@@ -5421,33 +5463,33 @@ namespace fmis.Controllers.Budget.John
 
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsConapTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsConapTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSConap;
 
                             //PERCENT OF UTILIZATION
                             if (asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) == 0 && PsConapTotal == 0)
@@ -5472,33 +5514,33 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Value = "TOTAL CONAP MOOE";
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = MooeConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = MooeConapTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = MooeConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = MooeConapTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalMooeConap.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMooeConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMooeConap;
 
                             //PERCENT OF UTILIZATION
                             if (asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) == 0 && PsConapTotal == 0)
@@ -5524,33 +5566,33 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Value = "TOTAL CONAP CO";
 
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = CoConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = CoConapTotal;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = CoConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = CoConapTotal;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalCoConap.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCoConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCoConap;
 
                             //PERCENT OF UTILIZATION
                             if (asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) == 0 || CoConapTotal == 0)
@@ -5577,35 +5619,35 @@ namespace fmis.Controllers.Budget.John
 
                             var PsTotalSaaConap = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = PsTotalSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = PsTotalSaaConap;
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = PsTotalSaaConap.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = PsTotalSaaConap;
 
                             //TOTAL - FOR THE MONTH
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             var unobligatedTotalinTotalPSSaaConapTotal = PsTotalSaaConap - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaaConapTotal.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSSaaConapTotal;
 
                             if (asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount) == 0 && PsTotalSaa == 0)
                             {
@@ -5644,34 +5686,34 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = MooeTotalSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = MooeTotalSaa;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = MooeTotalSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = MooeTotalSaa;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalMOOESaa;
 
                         //PERCENT OF UTILIZATION
                         ws.Cell(currentRow, 10).Value = totalPercentMOOESaa;
@@ -5701,34 +5743,34 @@ namespace fmis.Controllers.Budget.John
 
 
                         ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = CoTotalSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 3).Value = CoTotalSaa;
 
                         //TOTAL - TOTAL AFTER REALIGNMENT
                         ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = CoTotalSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 6).Value = CoTotalSaa;
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount).ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
                         ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOSaa.ToString("N", new CultureInfo("en-US"));
+                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCOSaa;
 
                         //PERCENT OF UTILIZATION
                         ws.Cell(currentRow, 10).Value = totalPercentCOSaa;
@@ -5764,17 +5806,17 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                             ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.SetBold();
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 3).Value = TotalCONAP.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 3).Value = TotalCONAP;
 
                             //TOTAL FUNDSOURCE - TOTAL AFTER REALIGMENT
                             ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
                             ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 6).Style.Font.SetBold();
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 6).Value = TotalCONAP.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 6).Value = TotalCONAP;
 
                             var fortheMonthTotalinTotalCONAP = (from oa in _MyDbContext.ObligationAmount
                                                                 join o in _MyDbContext.Obligation
@@ -5815,22 +5857,22 @@ namespace fmis.Controllers.Budget.John
                             var ConapApproForthemonth = fortheMonthTotalinTotalCONAP.Where(x => x.appropriationID == 2).Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             var ConapApproAsat = asAtTotalinTotalCONAP.Where(x => x.appropriationID == 2).Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             ws.Cell(currentRow, 7).Style.Font.SetBold();
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 7).Value = ConapApproForthemonth.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 7).Value = ConapApproForthemonth;
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 8).Style.Font.SetBold();
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 8).Value = ConapApproAsat.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 8).Value = ConapApproAsat;
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             var unobligatedTotalinTotalCONAP = TotalCONAP - ConapApproAsat;
                             ws.Cell(currentRow, 9).Style.Font.SetBold();
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCONAP.ToString("N", new CultureInfo("en-US"));
+                            ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalCONAP;
 
                             //PERCENT OF UTILIZATION
                             var totalPercentCONAP = ConapApproAsat / ConapTotal;
@@ -5856,9 +5898,9 @@ namespace fmis.Controllers.Budget.John
                     ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                     ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 3).Style.Font.SetBold();
-                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 3).Value = suballotment_total.ToString("N", new CultureInfo("en-US"));*/
+                    ws.Cell(currentRow, 3).Value = suballotment_total;*/
 
                 }
 
@@ -5893,19 +5935,19 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
                 ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                 ws.Cell(currentRow, 3).Style.Font.SetBold();
-                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 ws.Cell(currentRow, 3).Style.Font.FontColor = XLColor.White;
-                ws.Cell(currentRow, 3).Value = GrandTotals.ToString("N", new CultureInfo("en-US"));
+                ws.Cell(currentRow, 3).Value = GrandTotals;
 
                 //GRANDTOTAL - TOTAL AFTER REALIGNMENT
                 ws.Cell(currentRow, 6).Style.Font.FontName = "TAHOMA";
                 ws.Cell(currentRow, 6).Style.Font.FontSize = 10;
                 ws.Cell(currentRow, 6).Style.Font.SetBold();
-                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 ws.Cell(currentRow, 6).Style.Font.FontColor = XLColor.White;
-                ws.Cell(currentRow, 6).Value = GrandTotals.ToString("N", new CultureInfo("en-US"));
+                ws.Cell(currentRow, 6).Value = GrandTotals;
 
                 var fortheMonthTotalinTotalCONAPGrand = (from oa in _MyDbContext.ObligationAmount
                                                     join o in _MyDbContext.Obligation
@@ -5944,22 +5986,22 @@ namespace fmis.Controllers.Budget.John
                 var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1).Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2).Sum(x => x.amount);
                 var ConapApproAsatGrand = asAtTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1).Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2).Sum(x => x.amount);
                 ws.Cell(currentRow, 7).Style.Font.SetBold();
-                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 ws.Cell(currentRow, 7).Style.Font.FontColor = XLColor.White;
-                ws.Cell(currentRow, 7).Value = ConapApproForthemonthGrand.ToString("N", new CultureInfo("en-US"));
+                ws.Cell(currentRow, 7).Value = ConapApproForthemonthGrand;
 
                 ws.Cell(currentRow, 8).Style.Font.SetBold();
-                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 ws.Cell(currentRow, 8).Style.Font.FontColor = XLColor.White;
-                ws.Cell(currentRow, 8).Value = ConapApproAsatGrand.ToString("N", new CultureInfo("en-US"));
+                ws.Cell(currentRow, 8).Value = ConapApproAsatGrand;
 
                 ws.Cell(currentRow, 9).Style.Font.SetBold();
-                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "0.00";
+                ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 ws.Cell(currentRow, 9).Style.Font.FontColor = XLColor.White;
-                ws.Cell(currentRow, 9).Value = GrandTotals.ToString("N", new CultureInfo("en-US"));
+                ws.Cell(currentRow, 9).Value = GrandTotals;
 
 
                 ws.Columns().AdjustToContents();
