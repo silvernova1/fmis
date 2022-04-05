@@ -24,7 +24,7 @@
     }
 
     .wtHider {
-        margin-bottom: 150px;
+        margin-bottom: 200px;
     }
 
     .htAutocompleteArrow {
@@ -54,7 +54,7 @@
     <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
 </div>
 <br />
-<div id="example" class="hot"></div>
+<div id="example" class="hot utilization_div"></div>
 <br />
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -187,8 +187,14 @@
 	var counter = 0;
     $.each(obligation, function () {
         var obligated_amount = 0;
-        if (this.source_type == "fund_source")
-            obligated_amount = this.FundSourceTrustFund ? this.FundSourceTrustFund.obligated_amount : 0;
+
+
+        $.each(this.ObligationAmountTrustFund, function () {
+            obligated_amount += this.Amount;
+        });
+
+
+
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceTrustFundId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
             moment(this.Date, "YYYY/MM/DD").format('MM/DD/YYYY'), //1
@@ -248,7 +254,7 @@
         rowHeights: '10%',
         manualRowResize: true,
 		filters: true,
-        height: 'auto',
+        height: '800px',
         fixedColumnsLeft: 5,
         afterGetColHeader: addInput,
 		beforeOnCellMouseDown(event, coords) {
@@ -557,7 +563,13 @@
 			searchResultClass: 'search-result-custom'
 		},
 		contextMenu: {
-			items: {
+            items: {
+                "insert": {
+                    name: 'Insert 10 rows below',
+                    callback: function (changes, options) {
+                        hot.alter('insert_row', hot.getSelected()[0] + 0, 10);
+                    }
+                },
 				"make_bold": {
 					name: 'Print ORS',
 					callback: function (key, options) {
