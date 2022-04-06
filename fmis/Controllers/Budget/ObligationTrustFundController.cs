@@ -350,7 +350,7 @@ namespace fmis.Controllers
        
 
 
-                    if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault().obligation == "fund_source")
+                    if (allotments.FirstOrDefault().fundsource == 1 && allotments.FirstOrDefault().obligation == "fund_source")
                     {
 
                         Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
@@ -375,7 +375,7 @@ namespace fmis.Controllers
 
 
 
-                    if (allotments.FirstOrDefault()?.fundsource == 2 && allotments.FirstOrDefault().obligation == "fund_source")
+                    if (allotments.FirstOrDefault().fundsource == 2 && allotments.FirstOrDefault().obligation == "fund_source")
                     {
 
 
