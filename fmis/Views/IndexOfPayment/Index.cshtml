@@ -1,0 +1,70 @@
+﻿
+@model IEnumerable<fmis.Models.Accounting.Category>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h3 class="grey lighter smaller">
+    Index of Payment
+</h3>
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label>SELECT CATEGORY:</label>
+            @Html.DropDownList("IndexOfPaymentId", null, htmlAttributes: new { @class = "indexDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+        </div>
+    </div>
+</div>
+
+
+<hr>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label>PAYEE: </label>
+                <input class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>PO #:</label>
+                <input class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>DV #: </label>
+                <input class="form-control" />
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>PARTICULARS: </label>
+                <input class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>PO DATE:</label>
+                <input type="date" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>INVOICE #:</label>
+                <input class="form-control" />
+            </div>
+        </div>
+    </div>
+<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-circle-right"></i> Submit </a>
+
+
+<br />
+
+<script>
+    $(document).ready(function () {
+        $('.indexDropdown').select2();
+    });
+</script>

@@ -57,7 +57,7 @@ namespace fmis.Controllers
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
         }
-
+        
         public DateTime CheckExcelDate(string excel_data)
         {
             string dateString = @"d/M/yyyy";
@@ -102,7 +102,6 @@ namespace fmis.Controllers
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
         }
-
 
         public async Task<IActionResult> Index()
         {
