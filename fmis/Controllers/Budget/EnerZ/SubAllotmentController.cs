@@ -95,7 +95,7 @@ namespace fmis.Controllers
         public async Task <IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == AllotmentClassId).ToListAsync());
 
             ViewBag.uacs = uacs_data;
             ViewBag.AllotmentClassId = AllotmentClassId;
