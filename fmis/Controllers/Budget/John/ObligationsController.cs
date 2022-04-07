@@ -85,7 +85,7 @@ namespace fmis.Controllers
             public string Payee { get; set; }
             public string Address { get; set; }
             public string Particulars { get; set; }
-            public int Ors_no { get; set; }
+            public string Ors_no { get; set; }
             public float Gross { get; set; }
             public int Created_by { get; set; }
             public string obligation_token { get; set; }
@@ -212,14 +212,15 @@ namespace fmis.Controllers
                 obligation.Payee = item.Payee;
                 obligation.Address = item.Address;
                 obligation.Particulars = item.Particulars;
-                obligation.Ors_no = item.Ors_no;
                 obligation.Created_by = item.Created_by;
                 obligation.Gross = item.Gross;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
-
+                obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
+                _context.Update(obligation);
+                await _context.SaveChangesAsync();
             }
             return Json(data);
 
