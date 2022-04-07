@@ -244,7 +244,7 @@
                 @Html.Raw("active")">
                     <a asp-controller="Obligations" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Obligation(ORS)
+                        Obligation (ORS)
                     </a>
 
                     <b class="arrow"></b>
@@ -328,6 +328,7 @@
                 </li>
             </ul>
         </li>
+
         <li class="@if(ViewBag.filter.main == "trust_fund")
                 @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
@@ -494,6 +495,41 @@
 
             </ul>
         </li>
+
+        <li class="@if(ViewBag.filter.main == "Accounting")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-bar-chart"></i>
+                <span class="menu-text"> ACCOUNTING </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "category")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="Category" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                       Add Category
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "index_of_payment")
+                    @Html.Raw("active")">
+                    <a asp-area="" asp-controller="IndexOfPayment" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Index of Payment
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
 
 
         <!--<!-- UPLOAD FILE -->

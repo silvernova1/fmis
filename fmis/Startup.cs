@@ -14,6 +14,7 @@ using Rotativa.AspNetCore;
 using fmis.Data.John;
 using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
+using fmis.Data.Accounting;
 using fmis.Data.silver;
 using fmis.Areas.Identity.Data;
 using Microsoft.Owin;
@@ -152,6 +153,10 @@ namespace fmis
         options.UseSqlServer(Configuration.GetConnectionString("ObligationTrustFundContext")));
             services.AddDbContext<ObligationAmountTrustFundContext >(options =>
         options.UseSqlServer(Configuration.GetConnectionString("ObligationAmountTrustFundContext")));
+            services.AddDbContext<CategoryContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("CategoryContext")));
+            services.AddDbContext<IndexofpaymentContext>(options =>
+       options.UseSqlServer(Configuration.GetConnectionString("IndexofpaymentContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

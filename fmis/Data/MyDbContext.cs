@@ -2,6 +2,7 @@
 using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.silver;
+using fmis.Models.Accounting;
 using System;
 using fmis.Models.Budget;
 using System.Collections.Generic;
@@ -63,6 +64,10 @@ namespace fmis.Data
         public DbSet<FundsRealignmentTrustFund> FundsRealignmentTrustFund { get; set; }
         public DbSet<ObligationTrustFund> ObligationTrustFund { get; set; }
         public DbSet<ObligationAmountTrustFund> ObligationAmountTrustFund { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<IndexOfPayment> IndexOfPayment { get; set; }
+
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
