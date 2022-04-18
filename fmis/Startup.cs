@@ -157,6 +157,8 @@ namespace fmis
         options.UseSqlServer(Configuration.GetConnectionString("CategoryContext")));
             services.AddDbContext<IndexofpaymentContext>(options =>
        options.UseSqlServer(Configuration.GetConnectionString("IndexofpaymentContext")));
+            services.AddDbContext<PayeeContext>(options =>
+options.UseSqlServer(Configuration.GetConnectionString("PayeeContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

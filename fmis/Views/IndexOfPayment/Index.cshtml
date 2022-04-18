@@ -22,28 +22,37 @@
         </div>
     *@
 
-    <div class="col-md-3">
-        <form>
-            <select class="filter form-control">
-                <option value="0">SELECT CATEGORY</option>
-                <option value="1">SUPPLIER </option>
-                <option value="2">INFASTRUCTURE</option>
-                <option value="3">SALARIES & WAGES</option>
-                <option value="4">TRAVELLING EXPENSES</option>
-                <option value="5">COMMUNICATION</option>
-                <option value="6">ELECTRICITY</option>
-                <option value="7">WATER</option>
-                <option value="8">HONORARIA</option>
-                <option value="9">RELEASE OF GUARANTY (SUPPLIES)</option>
-                <option value="10">RELEASE OF GUARANTY (INFRA)</option>
-                <option value="11">SUBSIDY ASSITANCE</option>
-                <option value="12">FUNDS TRANSFER</option>
-                <option value="13">REMITTANCES</option>
-                <option value="14">CASH ADVANCES</option>
-                <option value="15">REPLENISHMENT OF PETTY CASH</option>
-            </select>
-        </form>
-    </div>
+     <div class="col-md-3">
+         <form>
+             <select class="filter form-control">
+                 <option value="0">SELECT CATEGORY</option>
+                 <option value="1">SUPPLIER </option>
+                 <option value="2">INFASTRUCTURE</option>
+                 <option value="3">SALARIES & WAGES</option>
+                 <option value="4">TRAVELLING EXPENSES</option>
+                 <option value="5">COMMUNICATION</option>
+                 <option value="6">ELECTRICITY</option>
+                 <option value="7">WATER</option>
+                 <option value="8">HONORARIA</option>
+                 <option value="9">RELEASE OF GUARANTY (SUPPLIES)</option>
+                 <option value="10">RELEASE OF GUARANTY (INFRA)</option>
+                 <option value="11">SUBSIDY ASSITANCE</option>
+                 <option value="12">FUNDS TRANSFER</option>
+                 <option value="13">REMITTANCES</option>
+                 <option value="14">CASH ADVANCES</option>
+                 <option value="15">REPLENISHMENT OF PETTY CASH</option>
+             </select>
+         </form>
+         <br />
+
+         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+         <div class="form-group">
+             <label>SELECT PAYEE:</label>
+            @* @Html.DropDownList("PayeeId", null, htmlAttributes: new { @class = "indexDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
+             <select class="form-control select2"  asp-items="ViewBag.PayeeId " id="ddlBranches" , onchange="return get_sbu(this)"> </select>
+         </div>
+
+     </div>
 </div>
 <br />
 <div class="filterable" data-ref="1" hidden>

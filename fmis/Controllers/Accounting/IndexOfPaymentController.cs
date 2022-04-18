@@ -27,17 +27,18 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            PopulateIndexOfPaymenyDropDownList();
+            PopulateIndexOfPaymentDropDownList();
+            PopulatePayeeDropDownList();
 
             return View(await _MyDbContext.Category.ToListAsync());
         }
 
 
-        private void PopulateIndexOfPaymenyDropDownList(object selectedDepartment = null)
+        private void PopulateIndexOfPaymentDropDownList()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            ViewBag.IndexOfPaymentId = new SelectList((from s in _MyDbContext.Category.ToList()
+            ViewBag.CategoryId = new SelectList((from s in _MyDbContext.Category.ToList()
                                               select new
                                               {
                                                   CategoryId = s.CategoryId,
@@ -49,6 +50,26 @@ namespace fmis.Controllers.Accounting
                                        null);
 
         }
+
+        private void PopulatePayeeDropDownList()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+
+            ViewBag.PayeeId = new SelectList((from s in _MyDbContext.Payee.ToList()
+                                                 select new
+                                                 {
+                                                     PayeeId = s.PayeeId,
+                                                     PayeeDescription = s.PayeeDescription,
+
+                                                 }),
+                                       "PayeeId",
+                                       "PayeeDescription",
+                                       null);
+
+        }
+
+
+
 
     }
 }
