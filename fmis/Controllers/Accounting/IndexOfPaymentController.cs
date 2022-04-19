@@ -29,6 +29,7 @@ namespace fmis.Controllers.Accounting
 
             PopulateIndexOfPaymentDropDownList();
             PopulatePayeeDropDownList();
+            PopulateDeductionDropDownList();
 
             return View(await _MyDbContext.Category.ToListAsync());
         }
@@ -68,6 +69,22 @@ namespace fmis.Controllers.Accounting
 
         }
 
+        private void PopulateDeductionDropDownList()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+
+            ViewBag.DeductionId = new SelectList((from s in _MyDbContext.Deduction.ToList()
+                                              select new
+                                              {
+                                                  DeductionId = s.DeductionId,
+                                                  DeductionDescription = s.DeductionDescription,
+
+                                              }),
+                                       "DeductionId",
+                                       "DeductionDescription",
+                                       null);
+
+        }
 
 
 
