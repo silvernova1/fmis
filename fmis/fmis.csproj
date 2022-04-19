@@ -63,7 +63,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="ViewBag\" />
-		<Folder Include="Views\Dv\" />
 		<Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
 		<Folder Include="wwwroot\Rotativa\" />
 	</ItemGroup>

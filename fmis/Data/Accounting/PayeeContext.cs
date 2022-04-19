@@ -8,7 +8,7 @@ namespace fmis.Data.Accounting
 {
     public class PayeeContext : DbContext
     {
-        public PayeeContext(DbContextOptions<CategoryContext> options)
+        public PayeeContext(DbContextOptions<PayeeContext> options)
          : base(options)
         {
         }
