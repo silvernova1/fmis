@@ -527,7 +527,15 @@
 
                     <b class="arrow"></b>
                 </li>
+                <li class="@if(ViewBag.filter.sub == "DV")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="DV" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Add DV
+                    </a>
 
+                    <b class="arrow"></b>
+                </li>
 
                 <li class="@if(ViewBag.filter.sub == "index_of_payment")
                     @Html.Raw("active")">
