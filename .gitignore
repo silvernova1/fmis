@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /fmis/Migrations
 /fmis/fmis/node_modules
 /fmis/fmis/wwwroot/vue
+/fmis/fmis/appsettings.json

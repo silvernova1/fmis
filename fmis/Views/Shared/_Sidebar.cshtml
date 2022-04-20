@@ -496,7 +496,9 @@
             </ul>
         </li>
 
-        <li class="@if(ViewBag.filter.main == "Accounting")
+        @if (Context.User.IsInRole("Accounting"))
+        {
+            <li class="@if(ViewBag.filter.main == "Accounting")
                 @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-bar-chart"></i>
@@ -529,8 +531,7 @@
                 </li>
             </ul>
         </li>
-
-
+        }
 
         <!--<!-- UPLOAD FILE -->
         <!--<li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")

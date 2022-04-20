@@ -7744,6 +7744,7 @@ namespace fmis.Controllers.Budget.John
                 var realignment_grandtotal = GrandRealignment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount) - GrandRealignment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount);
                 if (realignment_grandtotal == null)
                 {
+                    ws.Cell(currentRow, 4).Style.Font.FontColor = XLColor.White;
                     ws.Cell(currentRow, 4).Style.Font.SetBold();
                     ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -7751,6 +7752,7 @@ namespace fmis.Controllers.Budget.John
                 }
                 else
                 {
+                    ws.Cell(currentRow, 4).Style.Font.FontColor = XLColor.White;
                     ws.Cell(currentRow, 4).Style.Font.SetBold();
                     ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -7758,6 +7760,7 @@ namespace fmis.Controllers.Budget.John
                 }
 
                 //TOTAL TRANSFER TO
+                ws.Cell(currentRow, 5).Style.Font.FontColor = XLColor.White;
                 ws.Cell(currentRow, 5).Style.Font.SetBold();
                 ws.Cell(currentRow, 5).Value = "0.00";
                 ws.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0.00";
