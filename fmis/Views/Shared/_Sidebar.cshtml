@@ -514,7 +514,37 @@
                 @Html.Raw("active")">
                     <a asp-area="" asp-controller="Category" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                       Add Category
+                        Category
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="@if(ViewBag.filter.sub == "payee")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="Payee" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                         Payee
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+
+                <li class="@if(ViewBag.filter.sub == "deduction")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="Deduction" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                         Deduction
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="@if(ViewBag.filter.sub == "DV")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="DV" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Add DV
                     </a>
 
                     <b class="arrow"></b>

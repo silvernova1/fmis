@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<fmis.Models.Accounting.Category>
+﻿@model IEnumerable<fmis.Models.Accounting.Category>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,7 +11,7 @@
     Index of Payment
 </h3>
 <hr>
-<div class="row">
+<div class="row" style="margin-left:2px;">
     @* <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -23,549 +22,579 @@
     *@
 
     <div class="col-md-3">
-        <form>
-            <select class="filter form-control">
-                <option value="0">SELECT CATEGORY</option>
-                <option value="1">SUPPLIER </option>
-                <option value="2">INFASTRUCTURE</option>
-                <option value="3">SALARIES & WAGES</option>
-                <option value="4">TRAVELLING EXPENSES</option>
-                <option value="5">COMMUNICATION</option>
-                <option value="6">ELECTRICITY</option>
-                <option value="7">WATER</option>
-                <option value="8">HONORARIA</option>
-                <option value="9">RELEASE OF GUARANTY (SUPPLIES)</option>
-                <option value="10">RELEASE OF GUARANTY (INFRA)</option>
-                <option value="11">SUBSIDY ASSITANCE</option>
-                <option value="12">FUNDS TRANSFER</option>
-                <option value="13">REMITTANCES</option>
-                <option value="14">CASH ADVANCES</option>
-                <option value="15">REPLENISHMENT OF PETTY CASH</option>
-            </select>
-        </form>
+        <div class="form-group">
+            <label>CATEGORY:</label>
+            <form>
+                <select class="filter select2 form-control">
+                    <option value="0"> SELECT CATEGORY </option>
+                    <option value="1"> PURCHASE OF GOODS AND SERVICES </option>
+                    <option value="2"> ADVANCE PAYMENT TO CONTRACTOR </option>
+                    <option value="3"> PROGRESS BILLING-INFRA </option>
+                    <option value="4"> PAYMENT OF OFFICE RENTAL </option>
+                    <option value="5"> PAYMENT OF RENTAL (EQUIPMENT) </option>
+                    <option value="6"> PAYMENT OF BAC HONORARIA </option>
+                    <option value="7"> PAYMENT OF HONORARIA TO RESOURCE PERSONS </option>
+                    <option value="8"> PAYMENT OF FIDELITY BOND </option>
+                    <option value="9"> REPLENISHMENT OF PETTY CASH </option>
+                    <option value="10"> PAYMENT OF CASH ADVANCE FOR TRAVEL </option>
+                    <option value="12"> PAYMENT OF CASH ADVANCE FOR SPECIAL DISBURSING OFFICER </option>
+                    <option value="12"> PAYMENT OF CASH ADVANCE FOR PETTY CASH </option>
+                    <option value="13"> PAYMENT OF COMMUNICATION ALLOWANCE </option>
+                    <option value="14"> PAYMENT OF ELECTRICITY </option>
+                    <option value="15"> PAYMENT OF WATER BILL </option>
+                    <option value="16"> PAYMENT OF TELEPHONE BILLS/INTERNET </option>
+                    <option value="17"> REIMBURSEMENT OF TRAVELLING EXPENSES </option>
+                    <option value="18"> OTHER REIMBURSEMENTS </option>
+                    <option value="19"> PAYMENT TO AIRLINE COMPANIES </option>
+                    <option value="20"> PAYMENT OF FUEL AND LUBRICANT EXPENSES </option>
+                    <option value="21"> TAX REFUND </option>
+                    <option value="22"> PAYMENT OF SALARIES TO JOB ORDER PERSONNEL </option>
+                    <option value="23"> PAYMENT OF BASIC SALARY AND PERA (REGULAR, PS CONTRACTUAL) </option>
+                    <option value="24"> PAYMENT OF SUBSISTENCE AND ALLOWANCE UNDER MAGNA CARTA </option>
+                    <option value="25"> PAYMENT OF HAZARD PAY UNDER MAGNA CARTA </option>
+                    <option value="26"> PAYMENT OF LONGEVITY PAY </option>
+                    <option value="27"> PAYMENT OF TERMINAL LEAVE PAY </option>
+                    <option value="28"> PAYMENT OF FIRST SALARY </option>
+                    <option value="29"> PAYMENT OF LAST SALARY </option>
+                    <option value="30"> REMITTANCE OF TAXES </option>
+                    <option value="31"> PHILHEALTH REMITTANCE </option>
+                    <option value="32"> PAG-IBIG REMITTANCE </option>
+                    <option value="33"> REMITTANCE OF OTHER PAYABLES </option>
+                </select>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label>DV #:</label>
+            <select class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label>PAYEE :</label>
+            <select asp-items="ViewBag.PayeeId" class="form-control select2"> </select>
+        </div>
     </div>
 </div>
-<br />
-<div class="filterable" data-ref="1" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
+
+<div class="col-md-3">
+    <label>DV DATE:</label>
+    <input type="date" class="form-control" />
+    <span class="text-danger"></span>
+</div>
+<div class="col-md-3">
+    <div class="form-group">
+        <label>PARTRICULARS:</label>
+        <input class="form-control" />
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="filterable" data-ref="1" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PO #: </label>
+                    <input class="form-control" />
+                </div>
             </div>
-            <div class="form-group">
-                <label>PARTRICULARS:</label>
-                <input class="form-control" />
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>INVOICE #:</label>
+                    <input class="form-control" />
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PO #: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PO DATE:</label>
-                <input type="date" class="form-control" />
-                <span class="text-danger"></span>
+    </div>
+
+    <div class="filterable" data-ref="2" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PROJECT ID: </label>
+                    <input class="form-control" />
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
+    </div>
+
+    <div class="filterable" data-ref="3" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PROJECT ID: </label>
+                    <input class="form-control" />
+                </div>
             </div>
-            <div class="form-group">
-                <label>INVOICE #:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label># OF BILLING (FIRST,SECOND):</label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="4" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="5" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="6" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="7" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="8" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="9" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="10" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>TRAVEL PERIOD: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>SO #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="11" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>SO #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="12" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>SO #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="13" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="14" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>ACCOUNT #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="15" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>ACCOUNT #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="16" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>ACCOUNT #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="17" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>TRAVEL PERIOD: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>SO #: </label>
+                    <input class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="20" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="21" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="22" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="23" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="24" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="25" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="26" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="28" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="29" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="30" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="31" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="32" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterable" data-ref="33" hidden>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>PERIOD COVERED: </label>
+                    <input type="date" class="form-control" />
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="filterable" data-ref="2" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PROJECT NAME:</label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input type="date" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>NO. OF BILLING:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-2" style="margin-top: 75px;">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="filterable" data-ref="3" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PARTICULARS: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input type="date" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>JOB STATUS:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-2" style="margin-top: 75px;">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="4" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>SO #: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>DV #:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="5" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>ACCOUNT #: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>DV #:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="6" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>ACCOUNT #: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>DV #:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="7" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>ACCOUNT #: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>DV #:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="8" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>ACCOUNT #: </label>
-                <input class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>DV #:</label>
-                <input class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="9" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PO #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="10" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PROJECT NAME: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="11" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input type="date" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="12" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PROJECT NAME: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="13" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input type="date" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="filterable" data-ref="14" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PERIOD COVERED: </label>
-                <input type="date" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="filterable" data-ref="15" hidden>
-    <div class="row">
-        <div class="col-md-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>PAYEE: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>PO #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>DV #: </label>
-                <input class="form-control" />
-            </div>
-        </div>
-    </div>
-</div>
 <hr />
 <h3 class="grey lighter smaller">
     DEDUCTIONS
 </h3>
 <br />
 <div class="row">
-    <div class="col-md-2">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-3">
         <div class="form-group">
-            <label>Liquidated Damages: </label>
+            <label>GROSS AMOUNT: </label>
             <input class="form-control" />
         </div>
-        <div class="form-group">
-            <label>Receivable/Overpayment: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>Percentage Tax 1% - 3%: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label style="font-weight:bold;">GROSS AMOUNT: </label>
-            <input class="form-control" />
-        </div>
-    </div>
-
-    <div class="col-md-2">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label>VAT 5%: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>EWT 2%: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>EWT 1%:</label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label style="font-weight:bold;">NET AMOUNT: </label>
-            <input class="form-control" />
-        </div>
-    </div>
-
-    <div class="col-md-2">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label>EWT 10%: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>EWT 5%: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>With Holding Tax - Employee: </label>
-            <input class="form-control" />
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label>Pag-Ibig: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>PHIC: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>COOP: </label>
-            <input class="form-control" />
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label>CFI: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>Others: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>Disallowances: </label>
-            <input class="form-control" />
-        </div>
-    </div>
-    <div class="col-md-2" style="margin-top: 75px">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label>Recoupment: </label>
-            <input class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>Retention of Advance payment: </label>
-            <input class="form-control" />
-        </div>
- 
     </div>
 </div>
 
-    <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-circle-right"></i> Submit </a>
-    <br />
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label>NET AMOUNT: </label>
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-circle-right"></i> Submit </a>
+<br />
+
+
 
 <script>
-    $(document).ready(function () {
-        $('.indexDropdown').select2();
-    });
 
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
 
     $(document).ready(function () {
         $('.filter').change(function () {
@@ -578,4 +607,6 @@
             });
         });
     });
+
+
 </script>

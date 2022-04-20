@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<fmis.Models.Accounting.Category>
+@model IEnumerable<fmis.Models.Accounting.Dv>
 
 @{
     ViewData["Title"] = "Index";
@@ -35,7 +35,7 @@
 </div>
 
 <h3 class="grey lighter smaller">
-    Categories
+    DV
 </h3>
 <hr>
 <p>
@@ -48,7 +48,7 @@
     <thead>
         <tr>
             <th>
-                Category Description
+                DV Description
             </th>
             <th>
                 Action
@@ -61,15 +61,15 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CategoryDescription)
+                    @Html.DisplayFor(modelItem => item.DvDescription)
                 </td>
-          
+
                 <td>
-                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.CategoryId">
-                        <i class="ace-icon fa fa-edit"></i>
-                    </a> 
-                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Category",new { id = @item.CategoryId })" onclick="return confirm('Do you want to delete this Category?');">
-                        <i class="ace-icon fa fa-trash"></i>
+                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId">
+                        <i class="ace-icon fa fa-edit"></i>Edit
+                    </a> |
+                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","DV",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Appropriation?');">
+                        <i class="ace-icon fa fa-trash"></i>Delete
                     </a>
                 </td>
             </tr>

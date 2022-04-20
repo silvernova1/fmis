@@ -66,6 +66,10 @@ namespace fmis.Data
         public DbSet<ObligationAmountTrustFund> ObligationAmountTrustFund { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<IndexOfPayment> IndexOfPayment { get; set; }
+        public DbSet<Payee> Payee { get; set; }
+        public DbSet<Deduction> Deduction { get; set; }
+        public DbSet<Dv> DV { get; set; }
+
 
 
 

@@ -1,0 +1,25 @@
+﻿@model fmis.Models.Accounting.Payee;
+
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3 class="grey lighter smaller">Edit Payee </h3></center>
+<hr />
+<div class="container">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PayeeId" />
+            <div class="form-group">
+                <h5>Category Description: </h5>
+                <input asp-for="PayeeDescription" class="form-control" />
+                <span asp-validation-for="PayeeDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group pull-right">
+                <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class="btn btn-default btn-sm" data-dismiss="modal">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
