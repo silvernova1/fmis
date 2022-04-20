@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace fmis.Data.Accounting
 {
-    public class PayeeContext : DbContext
+    public class DeductionContext : DbContext
     {
-        public PayeeContext(DbContextOptions<PayeeContext> options)
+        public DeductionContext(DbContextOptions<DeductionContext> options)
          : base(options)
         {
         }
