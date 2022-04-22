@@ -28,6 +28,8 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 
+//SAMPLE IGNORE
+
 namespace fmis.Controllers
 {
     public class ObligationsController : Controller
@@ -39,10 +41,6 @@ namespace fmis.Controllers
 
         ORSReporting rpt_ors = new ORSReporting();
         private Obligation obligation;
-
-        //LOCAL TO PRODUCTION
-        //asdahsdjhsjkdfsd
-        //sample changes
 
         public ObligationsController(ObligationContext context, ObligationAmountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
         {
