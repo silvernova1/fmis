@@ -58,7 +58,7 @@ namespace fmis.Controllers.Budget.John
             lastday.ToString("yyyy-MM-dd 23:59:59");
 
 
-            var dateTime = _MyDbContext.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow).Select(y => new { y.FundSourceTitle });
+            var dateTime = _MyDbContext.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow).Select(y => new { y.FundSourceTitle }).ToList();
 
 
             var fortheMonthTotalinTotalPS = (from oa in _MyDbContext.ObligationAmount
@@ -479,10 +479,8 @@ namespace fmis.Controllers.Budget.John
 
                     //START PS LOOP
 
-                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION"))
+                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION").ToList())
                     {
-
-
 
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
@@ -493,7 +491,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
-                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderBy(x=>x.UacsId).Where(x => x.status == "activated"))
+                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderBy(x=>x.UacsId).Where(x => x.status == "activated").ToList())
                         {
                             var uacsID = from fa in _MyDbContext.FundSourceAmount
                                          join u in _MyDbContext.Uacs
@@ -712,7 +710,7 @@ namespace fmis.Controllers.Budget.John
 
                             //REALIGNMENT DATA
                             var data = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundSourceAmount.Select(b => b.UacsId).Contains(c.UacsId)).FirstOrDefault().UacsId;
-                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.Realignment_to == data))
+                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.Realignment_to == data).ToList())
                             {
                                     currentRow++;
                                     Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
@@ -1007,7 +1005,7 @@ namespace fmis.Controllers.Budget.John
 
                     //START AUTOMATIC APPROPRIATION PS LOOP
 
-                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle == "AUTOMATIC APPROPRIATION"))
+                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle == "AUTOMATIC APPROPRIATION").ToList())
                     {
 
 
@@ -1021,7 +1019,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                         currentRow++;
 
-                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderByDescending(x=>x.UacsId).Where(x => x.status == "activated"))
+                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderByDescending(x=>x.UacsId).Where(x => x.status == "activated").ToList())
                         {
                             var uacsID = from fa in _MyDbContext.FundSourceAmount
                                          join u in _MyDbContext.Uacs
@@ -1138,7 +1136,7 @@ namespace fmis.Controllers.Budget.John
 
 
                             //REALIGNMENT DATA
-                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId))
+                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).ToList())
                             //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
                             {
 
@@ -1360,7 +1358,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses";
                         currentRow++;
 
-                        foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1))
+                        foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).ToList())
                         {
 
                             ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
@@ -1372,7 +1370,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                             currentRow++;
 
-                            foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.Where(x => x.status == "activated"))
+                            foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.Where(x => x.status == "activated").ToList())
                             {
                                 var uacsID = from fa in _MyDbContext.FundSourceAmount
                                              join u in _MyDbContext.Uacs
