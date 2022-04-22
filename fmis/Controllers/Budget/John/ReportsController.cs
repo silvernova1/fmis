@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers.Budget.John
 {
+    //"SampleContexts": "Server=(localdb)\\mssqllocaldb;Database=FMIS;Trusted_Connection=True;MultipleActiveResultSets=true"
     public class ReportsController : Controller
     {
         private readonly MyDbContext _MyDbContext;
