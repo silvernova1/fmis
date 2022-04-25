@@ -215,16 +215,18 @@
 
                     <b class="arrow"></b>
                 </li>
-
-                <li class="@if(ViewBag.filter.sub == "ManageUsers")
+                @if (Context.User.IsInRole("Admin"))
+                {
+                    <li class="@if(ViewBag.filter.sub == "ManageUsers")
                 @Html.Raw("active")">
-                    <a asp-controller="ManageUsers" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Manage Users
-                    </a>
+                        <a asp-controller="ManageUsers" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Manage Users
+                        </a>
 
-                    <b class="arrow"></b>
-                </li>
+                        <b class="arrow"></b>
+                    </li>
+                }
             </ul>
         </li>
 
@@ -496,6 +498,8 @@
             </ul>
         </li>
 
+        @if (Context.User.IsInRole("Accounting"))
+        {
         <li class="@if(ViewBag.filter.main == "Accounting")
                 @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
@@ -560,6 +564,7 @@
                 </li>
             </ul>
         </li>
+        }
 
 
 
