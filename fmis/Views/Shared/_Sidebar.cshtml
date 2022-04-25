@@ -518,33 +518,12 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="@if(ViewBag.filter.sub == "payee")
-                @Html.Raw("active")">
-                    <a asp-area="" asp-controller="Payee" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Payee
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-
                 <li class="@if(ViewBag.filter.sub == "deduction")
                 @Html.Raw("active")">
                     <a asp-area="" asp-controller="Deduction" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Deduction
                     </a>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="@if(ViewBag.filter.sub == "DV")
-                @Html.Raw("active")">
-                    <a asp-area="" asp-controller="DV" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Dv
-                    </a>
-
                     <b class="arrow"></b>
                 </li>
 
@@ -554,11 +533,34 @@
                         <i class="menu-icon fa fa-caret-right"></i>
                         Index of Payment
                     </a>
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
+
+        <li class="@if(ViewBag.filter.main == "end_user")
+                @Html.Raw("active open")">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-user"></i>
+                <span class="menu-text"> END USER </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+                <li class="@if(ViewBag.filter.sub == "DV")
+                @Html.Raw("active")">
+                    <a asp-area="" asp-controller="DV" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Dv & Payee
+                    </a>
 
                     <b class="arrow"></b>
                 </li>
             </ul>
         </li>
+
 
 
 

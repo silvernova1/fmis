@@ -20,22 +20,22 @@ namespace fmis.Controllers.Accounting
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "DV", "");
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             return View(await _MyDbContext.DV.ToListAsync());
         }
 
         // GET: Category/Create
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "DV", "");
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DvId,DvDescription")] Dv dv)
+        public async Task<IActionResult> Create([Bind("DvId,DvDescription,Payee")] Dv dv)
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "DV", "");
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             if (ModelState.IsValid)
             {
                 _MyDbContext.Add(dv);
@@ -48,7 +48,7 @@ namespace fmis.Controllers.Accounting
         // GET: Categoty/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "DV", "");
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             if (id == null)
             {
                 return NotFound();
@@ -82,6 +82,12 @@ namespace fmis.Controllers.Accounting
             _MyDbContext.DV.Remove(dvs);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult selectAT(int id)
+        {
+            var branches = _MyDbContext.DV.ToList();
+            return Json(branches.Where(x => x.DvId == id).ToList());
         }
 
     }

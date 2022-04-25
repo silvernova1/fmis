@@ -6,6 +6,12 @@
 }
 
 
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+</style>
+
 
 <h3 class="grey lighter smaller">
     Index of Payment
@@ -67,13 +73,16 @@
     <div class="col-md-3">
         <div class="form-group">
             <label>DV #:</label>
-            <select class="form-control select2"> </select>
+            @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+            @*<select asp-items="ViewBag.DvId" class="form-control select2"> </select>*@
+
         </div>
     </div>
     <div class="col-md-3">
         <div class="form-group">
             <label>PAYEE :</label>
-            <select asp-items="ViewBag.PayeeId" class="form-control select2"> </select>
+            @* <select asp-items="ViewBag.PayeeId" class="form-control select2"> </select>*@
+            <input id="payee" class="form-control" readonly />
         </div>
     </div>
 </div>
@@ -465,25 +474,12 @@
     </div>
 </div>
 
-
 <hr />
-<h3 class="grey lighter smaller">
-    DEDUCTIONS
-</h3>
 <br />
 <div class="row">
-    <div class="col-md-3">
-        <div class="form-group">
-            <label>GROSS AMOUNT: </label>
-            <input class="form-control" />
-        </div>
-    </div>
-</div>
-
-<div class="row">
     <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        <div class="form-group" style="margin-left: 120px">
+            <label style="font-weight:bold;">GROSS AMOUNT: </label>
         </div>
     </div>
     <div class="col-md-2">
@@ -505,21 +501,6 @@
         </div>
     </div>
 </div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" />
-        </div>
-    </div>
-</div>
-
 
 <div class="row">
     <div class="col-md-2">
@@ -576,10 +557,56 @@
     </div>
 </div>
 
+
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
-            <label>NET AMOUNT: </label>
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group" style="margin-left: 115px">
+            <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group" style="margin-left: 120px">
+            <label style="font-weight:bold;">NET AMOUNT: </label>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
             <input class="form-control" />
         </div>
     </div>
@@ -588,12 +615,11 @@
 <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-circle-right"></i> Submit </a>
 <br />
 
-
-
 <script>
 
     $(document).ready(function () {
         $('.select2').select2();
+
     });
 
     $(document).ready(function () {
@@ -608,5 +634,22 @@
         });
     });
 
+        get_sbu();
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "DV")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#payee').val(data[0].payee);
+                }
+                else {
+                    $('#payee').val('');
+                }
+            }
+        });
+    }
 
 </script>

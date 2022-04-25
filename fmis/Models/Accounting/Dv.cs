@@ -9,5 +9,6 @@ namespace fmis.Models.Accounting
     {
         public int DvId { get; set; }
         public string DvDescription { get; set; }
+        public string Payee { get; set; }
     }
 }
