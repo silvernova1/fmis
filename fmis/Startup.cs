@@ -210,7 +210,7 @@ namespace fmis
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<fmisUser>>();
-            string[] roleNames = { "Admin", "Budget" };
+            string[] roleNames = { "Admin", "Budget", "Accounting" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
@@ -222,25 +222,40 @@ namespace fmis
                     roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-
-            //Here you could create a super user who will maintain the web app
-            var poweruser = new fmisUser
+            var budgetuser = new fmisUser
             {
 
                 UserName = "doh7budget",
                 Email = "doh7budget@gmail.com",
             };
-            //Ensure you have these values in your appsettings.json file
             string userPWD = "doh7budget";
-            var _user = await UserManager.FindByEmailAsync("doh7budget");
+            var _Budgetuser = await UserManager.FindByEmailAsync("doh7budget");
 
-            if (_user == null)
+            if (_Budgetuser == null)
             {
-                var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
-                if (createPowerUser.Succeeded)
+                var createBudgetUser = await UserManager.CreateAsync(budgetuser, userPWD);
+                if (createBudgetUser.Succeeded)
                 {
-                    //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(poweruser, "Budget");
+                    await UserManager.AddToRoleAsync(budgetuser, "Budget");
+
+                }
+            }
+
+            var accountinguser = new fmisUser
+            {
+
+                UserName = "doh7accounting",
+                Email = "doh7accounting@gmail.com",
+            };
+            string AccountinguserPWD = "doh7accounting";
+            var _Accountinguser = await UserManager.FindByEmailAsync("doh7budget");
+
+            if (_Accountinguser == null)
+            {
+                var createAccountingUser = await UserManager.CreateAsync(accountinguser, AccountinguserPWD);
+                if (createAccountingUser.Succeeded)
+                {
+                    await UserManager.AddToRoleAsync(accountinguser, "Accounting");
 
                 }
             }

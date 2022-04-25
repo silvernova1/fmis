@@ -90,7 +90,7 @@ namespace fmis.Controllers.Budget.silver
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
-            ViewData["roles"] = roleManager.Roles.ToList();
+            ViewData["roles"] = roleManager.Roles.Where(x=>x.Name == "Budget").ToList();
             PopulatePsDropDownList();
             return View();
         }
