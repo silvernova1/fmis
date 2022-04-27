@@ -22,7 +22,7 @@ namespace fmis.Controllers.Accounting
         {
             _MyDbContext = MyDbContext;
         }
-
+        //COMMENT
         [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index()
         {
