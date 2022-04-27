@@ -1,8 +1,7 @@
-﻿
-@model IEnumerable<fmis.Models.Accounting.Dv>
+﻿@model IEnumerable<fmis.Models.Accounting.Dv>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Accounting/Dv/Payee";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -34,10 +33,21 @@
     </div>
 </div>
 
+
+
 <h3 class="grey lighter smaller">
     DV # & PAYEE
 </h3>
 <hr>
+<form asp-controller="Dv" asp-action="Index" method="get">
+    <p>
+        Title: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+<br />
+<br />
 <p>
     <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
         <i class="ace-icon fa fa-plus "></i>Create New
