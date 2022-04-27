@@ -25,7 +25,7 @@
         name: 'FundHeader',
         data() {
             return {
-                title: "Fund Source & Fund Code hahaha"
+                title: "Fund Source & Fund Code "
             }
         }
     }

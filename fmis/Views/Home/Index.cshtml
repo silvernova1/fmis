@@ -1,11 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using fmis.Areas.Identity.Data
-@using System.Globalization; 
+@using System.Globalization;
 @using fmis.Models.John
-@model fmis.ViewModel.DashboardVM 
+@model fmis.ViewModel.DashboardVM
 @inject SignInManager<fmisUser> SignInManager
 @inject UserManager<fmisUser> UserManager
 
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <div class="page-header">
     <h1>
@@ -26,14 +31,14 @@
                 <form>
                     <!-- <legend>Form</legend> -->
                     <fieldset>
-                        <div class="alert alert-block alert-warning">        
-                            <center><label style="font-size: 25pt;">@ViewBag.Allotment</label></center>           
+                        <div class="alert alert-block alert-warning">
+                            <center><label style="font-size: 25pt;">@ViewBag.Allotment</label></center>
                         </div>
                         <center><h4>(ALLOTMENT)</h4> </center>
-                    </fieldset>             
+                    </fieldset>
                 </form>
             </div>
-        </div>       
+        </div>
     </div>
 </div>
 <div class="col-sm-3">
@@ -50,15 +55,15 @@
                     <div class="">
                         <center><h5>OBLIGATED</h5> </center>
                         <center><label style="font-size: 18pt;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label></center>
-                        
+
                     </div>
                 </fieldset>
                 <fieldset>
                     <div>
                         <center><h5>DISBURSED</h5> </center>
                         <center><label style="font-size: 18pt;">₱0.00</label></center>
-                        
-                    </div>                    
+
+                    </div>
                 </fieldset>
             </form>
         </div>
@@ -77,14 +82,14 @@
                     <div class="">
                         <center><h5>BALANCE</h5> </center>
                         <center><label style="font-size: 18pt;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label></center>
-                        
+
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="">
                         <center><h5>UNPAID OBLIGATIONS</h5> </center>
                         <center><label style="font-size: 18pt;">₱0.00</label></center>
-                        
+
                     </div>
                 </fieldset>
             </form>
@@ -164,15 +169,15 @@
 
     <div class="row">
         @foreach (var allotmentClass in Model.AllotmentClasses)
-        {  
-        <div class="col-xs-9">
-            <h5>@allotmentClass.Allotment_Class</h5>
-            <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                <div class="progress-bar bg-info" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.DashboardAllotment"></div>
-            </div>
-        </div><!-- /.col -->
+        {
+            <div class="col-xs-9">
+                <h5>@allotmentClass.Allotment_Class</h5>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                    <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                    <div class="progress-bar bg-info" style="width: @ViewBag.AllotmentBalance%;" data-toggle="tooltip" title="BALANCE : @ViewBag.DashboardAllotment"></div>
+                </div>
+            </div><!-- /.col -->
         }
     </div><!-- /.row -->
 </div><!-- /.col -->
@@ -215,29 +220,29 @@
 
 @*    $(".progress-bar-danger").animate({
                 width: "25%",
-          
+
             }, 2500);
            var interval = setInterval(function () {
         $('.progress-bar-danger').html("25%");
-        
+
     }, 5000);
 
     $(".progress-bar-warning").animate({
                 width: "25%",
-          
+
             }, 2500);
            var interval = setInterval(function () {
         $('.progress-bar-warning').html("25%");
-        
+
     }, 5000);
 
     $(".bg-info").animate({
                 width: "@ViewBag.AllotmentBalance%",
-          
+
             }, 2500);
            var interval = setInterval(function () {
         $('.bg-info').html("@ViewBag.AllotmentBalance%");
-        
+
     }, 5000);*@
 
 

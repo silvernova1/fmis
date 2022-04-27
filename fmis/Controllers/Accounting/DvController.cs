@@ -18,24 +18,13 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
+        [Route("Accounting/Dv/Payee")]
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-
-            var dv = from m in _MyDbContext.DV
-                         select m;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                dv = dv.Where(s => s.DvDescription!.Contains(searchString));
-            }
-
-
             return View(await _MyDbContext.DV.ToListAsync());
 
         }
-
-
 
 
 

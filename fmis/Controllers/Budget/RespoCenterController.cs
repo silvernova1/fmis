@@ -20,9 +20,7 @@ namespace fmis.Controllers.Budget
             _MyDbcontext = MyDbcontext;
         }
 
-        
-
-
+        [Route("ResponsibilityCenter")]
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "respo", "");
