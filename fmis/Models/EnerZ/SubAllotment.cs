@@ -29,7 +29,7 @@ namespace fmis.Models
 
         [ForeignKey("Prexc")]
         public int prexcId { get; set; }
-        public List<Prexc> prexc { get; set; }
+        public Prexc prexc { get; set; }
 
         [ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }

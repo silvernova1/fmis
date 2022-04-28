@@ -46,8 +46,7 @@
             </a>
         </li>
 
-        @if (Context.User.IsInRole("Budget"))
-        {
+
             <li class="@if (ViewBag.filter.main == "master_data")
                 @Html.Raw("active open")">
                 <a href="#" class="dropdown-toggle">
@@ -499,7 +498,7 @@
                    
                 </ul>
             </li>
-        }
+   
 
             @if (Context.User.IsInRole("Accounting"))
             {
