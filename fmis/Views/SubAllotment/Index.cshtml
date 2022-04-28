@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-orange2">
+     @*   <div class="infobox infobox-orange2">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
@@ -67,7 +67,7 @@
                     <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
                 </div>
             </div>
-        </div>
+        </div>*@
         <div class="infobox infobox-blue">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
@@ -81,19 +81,7 @@
                 </div>
             </div>
         </div>
-        @*<div class="infobox infobox-blue">
-                <div class="infobox-icon">
-                    <i class="ace-icon fa fa-bar-chart-o"></i>
-                </div>
-                <div class="infobox-data">
-                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                        @Model.Sub_allotments.Sum(x => x.utilized_amount).ToString("C", new CultureInfo("en-PH"))
-                    </span>
-                    <div class="infobox-content">
-                        <span class="label label-primary arrowed-in arrowed-in-right"> Utilized Amount </span>
-                    </div>
-                </div>
-            </div>*@
+
 
 
     </div><!-- /.widget-body -->
@@ -151,9 +139,6 @@
                     Sub Allotment Title
                 </th>
                 <th>
-                    Appropriation (Source)
-                </th>
-                <th>
                     Responsibility Center
                 </th>
                 <th>
@@ -169,14 +154,11 @@
                     Remaining Balance
                 </th>
                 <th>
-                    Realignment Amount
-                </th>
-                <th>
                     Obligated Amount
                 </th>
-                @*<th>
-                        Utilized Amount
-                    </th>*@
+                <th>
+                        Description
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -188,9 +170,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
-                    </td>
-                    <td>
-                        @item.Appropriation.AppropriationSource
                     </td>
                     <td>
                         @item.RespoCenter.Respo
@@ -213,20 +192,13 @@
                         </b>
                     </td>
                     <td>
-                        <b class="orange">
-                            <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
                         <b class="blue">
                             <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
-                    @* <td>
-                            <b class="blue">
-                                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                            </b>
-                        </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
                 </tr>
             }
         </tbody>
