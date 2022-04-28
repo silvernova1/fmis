@@ -24,6 +24,7 @@ namespace fmis.Models.John
         [JsonIgnore]
         public RespoCenter RespoCenter { get; set; }
 
+
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         [JsonIgnore]
