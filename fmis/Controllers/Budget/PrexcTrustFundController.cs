@@ -45,6 +45,7 @@ namespace fmis.Controllers.Budget
 
 
         // GET: GAS
+        [Route("PapTrustFund/GAS")]
         public IActionResult GAS_Trust_Fund()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "pap_trust_fund", "gas_trust_fund");
@@ -55,6 +56,7 @@ namespace fmis.Controllers.Budget
         }
 
         // GET: STO
+        [Route("PapTrustFund/STO")]
         public IActionResult STO_Trust_Fund()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "pap_trust_fund", "sto_trust_fund");
@@ -65,6 +67,7 @@ namespace fmis.Controllers.Budget
         }
 
         // GET: OPERATION
+        [Route("PapTrustFund/OPERATIONS")]
         public IActionResult OPERATIONS_Trust_Fund()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "pap_trust_fund", "operations_trust_fund");

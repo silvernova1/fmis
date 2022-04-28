@@ -44,7 +44,7 @@ namespace fmis.Controllers.Budget
             public List<Many> many_token { get; set; }
         }
 
-
+        [Route("UacsTrustFund/PS")]
         public async Task<IActionResult> PS_Trust_Fund()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "ps_trust_fund");
@@ -55,7 +55,7 @@ namespace fmis.Controllers.Budget
             return View("~/Views/UacsTrustFund/PS_Trust_Fund.cshtml");
 
         }
-
+        [Route("UacsTrustFund/MOOE")]
         public async Task<IActionResult> MOOE_Trust_Fund()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "mooe_trust_fund");
@@ -67,6 +67,7 @@ namespace fmis.Controllers.Budget
 
         }
 
+        [Route("UacsTrustFund/CO")]
         public async Task<IActionResult> CO_Trust_Fund()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "co_trust_fund");

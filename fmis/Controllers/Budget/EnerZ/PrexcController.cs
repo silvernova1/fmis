@@ -48,6 +48,7 @@ namespace fmis.Controllers
         }
 
         // GET: GAS
+        [Route("Pap/GAS")]
         public IActionResult GAS()
         {
             ViewBag.filter = new FilterSidebar("master_data", "prexc","gas");
@@ -58,6 +59,7 @@ namespace fmis.Controllers
         }
 
         // GET: STO
+        [Route("Pap/STO")]
         public IActionResult STO()
         {
             ViewBag.filter = new FilterSidebar("master_data", "prexc", "sto");
@@ -68,6 +70,7 @@ namespace fmis.Controllers
         }
 
         // GET: OPERATION
+        [Route("Pap/OPERATIONS")]
         public IActionResult OPERATIONS()
         {
             ViewBag.filter = new FilterSidebar("master_data", "prexc", "operations");

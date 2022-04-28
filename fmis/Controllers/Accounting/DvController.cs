@@ -18,10 +18,20 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
-        public async Task<IActionResult> Index()
+        [Route("Accounting/Dv/Payee")]
+        public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             return View(await _MyDbContext.DV.ToListAsync());
+
+        }
+
+
+
+        [HttpPost]
+        public string Index(string searchString, bool notUsed)
+        {
+            return "From [HttpPost]Index: filter on " + searchString;
         }
 
         // GET: Category/Create
