@@ -2368,6 +2368,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.SetItalic();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                             ws.Cell(currentRow, 1).Value = subAllotment.Description?.ToString();
+                            ws.Range(ws.Cell(currentRow++, 1), ws.Cell(currentRow++, 1));
                             currentRow++;
 
 
