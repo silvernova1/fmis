@@ -46,8 +46,7 @@
             </a>
         </li>
 
-        @if (Context.User.IsInRole("Budget"))
-        {
+
             <li class="@if (ViewBag.filter.main == "master_data")
                 @Html.Raw("active open")">
                 <a href="#" class="dropdown-toggle">
@@ -138,15 +137,6 @@
                                 <a asp-controller="Uacs" asp-action="CO">
                                     <i class="menu-icon fa fa-arrow-right blue"></i>
                                     CO
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-
-                            <li class="@if (ViewBag.filter.sub2 == "aa")
-                     @Html.Raw("active")">
-                                <a asp-controller="Uacs" asp-action="AA">
-                                    <i class="menu-icon fa fa-arrow-right blue"></i>
-                                    AA
                                 </a>
                                 <b class="arrow"></b>
                             </li>
@@ -499,7 +489,7 @@
                    
                 </ul>
             </li>
-        }
+   
 
             @if (Context.User.IsInRole("Accounting"))
             {
