@@ -172,6 +172,9 @@
         rowHeaders: true,
         colHeaders: true,
         colWidths: [150, 150],
+        minRows: 1,
+        minCols: 5,
+        minSpareRows: 1,
         colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
@@ -278,8 +281,11 @@
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
 
 </script>
