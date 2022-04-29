@@ -246,29 +246,27 @@ namespace fmis.Controllers.Budget.John
                 ws.Range("A9:D9").Value = "Fund";
 
 
-                ws.Cell("F4").Style.Font.SetBold();
-                ws.Cell("F4").Style.Font.FontSize = 12;
+                ws.Cell("A4").Style.Font.SetBold();
+                ws.Cell("A4").Style.Font.FontSize = 10;
+                ws.Cell("A4").Style.Font.FontName = "Lucida Bright";
                 ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
                 ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
                 ws.Columns(11, 1).AdjustToContents();
-                ws.Cell("F4").RichText.AddText("STATEMENT OF ALLOTMENTS, OBLIGATIONS AND BALANCES");
+                ws.Cell("A4").RichText.AddText("STATEMENT OF ALLOTMENTS, OBLIGATIONS, DISBURSEMENTS AND BALANCES");
+                ws.Range("A4:K4").Merge();
+                ws.Cell("A4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                ws.Cell("F5").Style.Font.SetBold();
-                ws.Cell("F5").Style.Font.FontSize = 10;
-                ws.Cell("F5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                /*ws.Columns(11, 1).AdjustToContents();*/
-                ws.Cell("F5").Style.DateFormat.Format = "AS AT" + " " + "MMMM dd, yyyy";
-                ws.Cell("F5").Value = date2.ToString().ToUpper();
+                ws.Cell("A5").Style.Font.FontSize = 10;
+                ws.Cell("A5").Style.Font.FontName = "Lucida Bright";
+                ws.Cell("A5").Value = date2.ToString("MMMM dd");
+                ws.Range("A5:K5").Merge();
+                ws.Cell("A5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-
-                ws.Cell("F6").Style.Font.FontSize = 10;
-                ws.Cell("F6").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                ws.Cell(11, 1).Style.Font.SetFontColor(XLColor.RichBlack);
-                ws.Cell(11, 1).Style.Fill.BackgroundColor = XLColor.White;
-                ws.Columns(11, 1).AdjustToContents();
-                ws.Cell("F6").RichText.AddText("(In Pesos)");
+                ws.Cell("A6").Style.Font.FontSize = 10;
+                ws.Cell("A6").Style.Font.FontName = "Lucida Bright";
+                ws.Cell("A6").Value = "(In Pesos)";
+                ws.Range("A6:K6").Merge();
+                ws.Cell("A6").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 //FIRST ROW
                 ws.Cell(11, 1).Style.Font.SetBold();
@@ -2845,12 +2843,13 @@ namespace fmis.Controllers.Budget.John
 
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
                                 ws.Cell(currentRow, 1).Value = subAllotment.FundId.ToString();
-                                ws.Cell(currentRow, 1).Value = subAllotment.Suballotment_title.ToUpper().ToString() + " " + " " + " " + subAllotment.Date.ToShortDateString();
+                                ws.Cell(currentRow, 1).Value = subAllotment.Suballotment_title?.ToUpper().ToString() + " " + " " + " " + subAllotment.Date.ToShortDateString();
                                 currentRow++;
 
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description.ToString();
+                                ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 3)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -3138,7 +3137,7 @@ namespace fmis.Controllers.Budget.John
 
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
-                                ws.Cell(currentRow, 1).Value = "SUBTOTAL" + subAllotment.Suballotment_title.ToUpper();
+                                ws.Cell(currentRow, 1).Value = "SUBTOTAL" + subAllotment.Suballotment_title?.ToUpper();
 
 
                                 ws.Cell(currentRow, 3).Style.Font.SetBold();
@@ -3302,6 +3301,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description.ToString();
+                                ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -5188,6 +5188,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description?.ToString();
+                                ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -5648,6 +5649,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description.ToString();
+                                ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
