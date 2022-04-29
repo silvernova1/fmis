@@ -100,7 +100,7 @@
     </div>
 </div>
 
-<div class="modal" id="editModal" tabindex="-1" role="dialog">
+<div class="modal" id="editModal"  role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body" id="suballotment_edit">
@@ -139,6 +139,9 @@
                     Sub Allotment Title
                 </th>
                 <th>
+                    Description
+                </th>
+                <th>
                     Responsibility Center
                 </th>
                 <th>
@@ -156,50 +159,48 @@
                 <th>
                     Obligated Amount
                 </th>
-                <th>
-                        Description
-                </th>
+
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.SubAllotment)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.prexc.pap_title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Suballotment_title)
-                    </td>
-                    <td>
-                        @item.RespoCenter.Respo
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-                        @*<a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>*@
-                    </td>
-                    <td>
-                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
-                    </td>
-                    <td>
-                        <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="red">
-                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="blue">
-                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.prexc.pap_title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suballotment_title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @item.RespoCenter.Respo
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+                    @*<a asp-controller="Sub_allotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"><span class="glyphicon glyphicon-trash"></span></a>*@
+                </td>
+                <td>
+                    <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
+                </td>
+                <td>
+                    <b class="green">
+                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="red">
+                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="blue">
+                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

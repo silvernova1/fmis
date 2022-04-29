@@ -172,6 +172,8 @@
         rowHeaders: true,
         colHeaders: true,
         colWidths: [150, 150],
+ @*       minSpareRows: 1,*@
+  
         colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
@@ -191,6 +193,7 @@
                 //HIDDEN TOKEN
             },
         ],
+  
         stretchH: 'all',
         height: '450px',
         search: {
@@ -272,14 +275,18 @@
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 
-		},
+        },
+
         hiddenColumns: {
             columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
 
 </script>
