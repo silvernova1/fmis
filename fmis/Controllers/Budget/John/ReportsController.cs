@@ -204,6 +204,7 @@ namespace fmis.Controllers.Budget.John
 
                 range.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                 var currentRow = 14;
+                var currentColumn = 1;
                 Double total = 0.00;
                 Double allotment_total = 0;
                 Double allotment_totalSaa = 0;
@@ -2368,6 +2369,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.SetItalic();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                             ws.Cell(currentRow, 1).Value = subAllotment.Description?.ToString();
+                            ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
                             currentRow++;
 
 
