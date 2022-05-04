@@ -32,17 +32,31 @@
         </div>
     </div>
 </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 82695390d974100481e6f844e70999293fd8715d
 <h3 class="grey lighter smaller">
     DV # & PAYEE
 </h3>
 <hr>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 82695390d974100481e6f844e70999293fd8715d
 <p>
     <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
         <i class="ace-icon fa fa-plus "></i>Create New
     </a>
 </p>
+   <form method="get" asp-action="Index">
+       <p>
+           <input type="search" placeholder="enter DV
+                  " value="@ViewData["getpayee"]" name="searchString" style="width 500px"/>
+           <input type="submit" value="search" class="btn btn-primary"/>
+           <a asp-action="Index"> Get all DV </a>
+       </p>
+   </form>
 <br />
 <table class="table table-striped" style="width: 900px">
     <thead>

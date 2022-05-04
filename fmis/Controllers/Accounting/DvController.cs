@@ -22,12 +22,27 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+<<<<<<< HEAD
+            ViewData["getpayee"] = searchString;
+
+            var dv = from m in _MyDbContext.DV
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                dv = dv.Where(s => s.DvDescription!.Contains(searchString));
+            }
+            return View(await dv.AsNoTracking().ToListAsync());
+        }
+
+=======
             return View(await _MyDbContext.DV.ToListAsync());
 
         }
 
 
 
+>>>>>>> 82695390d974100481e6f844e70999293fd8715d
         [HttpPost]
         public string Index(string searchString, bool notUsed)
         {
