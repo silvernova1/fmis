@@ -21,6 +21,7 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+            ViewData["getpayee"] = searchString;
 
             var dv = from m in _MyDbContext.DV
                          select m;
@@ -29,15 +30,8 @@ namespace fmis.Controllers.Accounting
             {
                 dv = dv.Where(s => s.DvDescription!.Contains(searchString));
             }
-
-
-            return View(await _MyDbContext.DV.ToListAsync());
-
+            return View(await dv.AsNoTracking().ToListAsync());
         }
-
-
-
-
 
         [HttpPost]
         public string Index(string searchString, bool notUsed)
