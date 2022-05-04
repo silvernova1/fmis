@@ -23,6 +23,7 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
+        [Route("Accounting/Deduction")]
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "deduction", "");

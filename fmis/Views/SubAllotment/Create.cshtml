@@ -1,5 +1,5 @@
 ﻿@model fmis.Models.SubAllotment
-@using fmis.Models
+@using System.Globalization;
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
@@ -19,7 +19,16 @@
     .select2 {
         min-height: 33px;
     }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        margin: 0;
+    }
 </style>
+
+
 
 <form asp-action="Create">
     <input hidden type="text" id="subs_input_token" name="token" value="" />
@@ -48,7 +57,7 @@
                     <label>PAP Title:</label>
                     @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                 </div>
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>PAP Type: </label>
                     <input asp-for="PapType" id="pap_type" class="form-control" readonly />
                 </div>
@@ -63,7 +72,7 @@
                     <input asp-for="Suballotment_title" class="form-control">
                     <span asp-validation-for="Suballotment_title" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Suballotment Code:</label>
                     <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="Suballotment_code" class="text-danger"></span>
@@ -72,16 +81,20 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label>Date:</label>
-                    <input type ="date" asp-for="Date" class="form-control">
+                    <input type="date" asp-for="Date" class="form-control">
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
+            </div>
+            <div class="col-md-9">
                 <div class="form-group">
                     <label>Description:</label>
-                    <input asp-for="Description" class="form-control">
+                    <textarea asp-for="Description" class="form-control" style="height: 70px;"> </textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
         </div>
+
+        <br />
         <input type="hidden" id="SubId" />
         <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
@@ -92,13 +105,32 @@
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
         </div>
+
+
+        <div class="infobox infobox-green pull-right">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    0.00
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
+
+
 
 <script>
     $(document).ready(function () {
         $('.select2').select2();
     });
+
+
     get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
@@ -153,6 +185,7 @@
     var get_account_title = []; //dara
     var uacs_counter = 0;
     $.each(uacs, function () {
+
         uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
         var json_data = new Object(); //dara
         json_data.UacsId = this.UacsId; //dara
@@ -165,7 +198,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_create');
     const hot = new Handsontable(container, {
-        data: data,
+        data: Handsontable.helper.createSpreadsheetData(1, 0) ,
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -174,10 +207,12 @@
         columns: [
             {
                 type: 'dropdown',
-                source: uacs_data_dropdown
+                source: uacs_data_dropdown,
+                allowEmpty: true,
             },
             {
                 type: 'numeric',
+                strict: true,
                 numericFormat: {
                     pattern: '0,0.00',
                 }
@@ -189,6 +224,7 @@
                 //HIDDEN TOKEN
             },
         ],
+
         stretchH: 'all',
         height: '450px',
         search: {
@@ -270,14 +306,17 @@
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 
-		},
+        },
         hiddenColumns: {
             columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
 
 </script>

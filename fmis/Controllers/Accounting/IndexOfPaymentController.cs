@@ -22,7 +22,8 @@ namespace fmis.Controllers.Accounting
         {
             _MyDbContext = MyDbContext;
         }
-
+        //COMMENT
+        [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");

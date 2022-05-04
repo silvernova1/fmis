@@ -136,22 +136,6 @@
     }
 </script>
 
-<script type="text/javascript">
-    $(function(){
-        $("#Countryid").change(function(){
-            var url = '@Url.Content("~/")' + "FundSource/getstatebyid";
-            var ddlsource = "#Countryid";
-            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
-                var items = '';
-                $("#stateid").empty();
-                $.each(data, function (i, row){
-                    items += "<option value='" + row.value + "'>" + row.text + "</option";
-                });
-                $("#stateid").html(items);
-            })
-        });
-    });
-</script>
 
 <script>
     var BudgetAllotmentId = @ViewBag.BudgetAllotmentId;
@@ -192,10 +176,11 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount_create');
     const hot = new Handsontable(container, {
-        data: data,
+        data: Handsontable.helper.createSpreadsheetData(1, 0),
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
+      @*  minSpareRows: 1,*@
         colWidths: [150, 150],
         colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
@@ -245,7 +230,7 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+                ajaxServer(ajax_data, '@Url.Action("DeleteFundsourceamount", "FundSource")');
             }
         },
         afterUndo: function (index, column) {
@@ -268,7 +253,7 @@
                             BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
                             Amount: hot.getDataAtCell(row, col + 2),
-                            fundsource_amount_token: hot.getDataAtCell(row, col+3),
+                            fundsource_amount_token: hot.getDataAtCell(row, col + 3),
                             fundsource_token: fundsource_token
                         }
                     );
@@ -294,12 +279,13 @@
                 $(".obligation_amount").html(obligation_amount);
                 ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');
             }
-		},
+        },
         hiddenColumns: {
-            columns: [2,3],
+            columns: [2, 3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());

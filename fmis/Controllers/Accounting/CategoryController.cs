@@ -22,6 +22,7 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
+        [Route("Accounting/Category")]
         public async Task <IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "category", "");

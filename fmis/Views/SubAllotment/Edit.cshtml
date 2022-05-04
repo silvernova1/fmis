@@ -8,6 +8,9 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
     <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
@@ -35,10 +38,10 @@
             </div>
             <div class="form-group">
                 <label>PAP Title:</label>
-                @* @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
+                 @*@Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
                 <select class="form-control select2" asp-for="prexcId" asp-items="ViewBag.PrexcId " id="ddlBranches" , onchange="return get_sbu(this)"> </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>PAP Type: </label>
                 <input asp-for="PapType" id="pap_type" class="form-control" readonly />
             </div>
@@ -53,7 +56,7 @@
                 <input asp-for="Suballotment_title" class="form-control">
                 <span asp-validation-for="Suballotment_title" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>Suballotment Code:</label>
                 <input asp-for="Suballotment_code" id="pap_code1" class="form-control" readonly />
                 <span asp-validation-for="Suballotment_code" class="text-danger"></span>
@@ -62,12 +65,14 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>Date:</label> 
-                <input asp-for="Date" type="datetime" class="form-control">
+                <input asp-for="Date" type="datetime"  class="form-control">
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-9">
             <div class="form-group">
                 <label>Description:</label>
-                <input asp-for="Description" class="form-control">
+                <textarea asp-for="Description" style="height: 70px;"class="form-control"> </textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
@@ -86,8 +91,11 @@
 
 
     $(document).ready(function () {
-        $('.select2').select2();
+        $(".select2").select2();
     });
+
+
+
        get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
@@ -195,6 +203,7 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][2];
+
             console.log(selection);
             console.log(holder_data);
             console.log(column);
@@ -214,9 +223,10 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
             }
         },
+
         afterUndo: function (index, column) {
         },
         afterCreateRow: function (row, column) {
