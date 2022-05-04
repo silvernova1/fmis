@@ -81,7 +81,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label>Date:</label>
-                    <input type="date"  class="form-control">
+                    <input type="date" asp-for="Date" class="form-control">
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
             </div>
@@ -105,19 +105,21 @@
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
         </div>
-        <!--<div class="infobox infobox-green pull-right">
+
+
+        <div class="infobox infobox-green pull-right">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">-->
-                    @*  @Model.Beginning_balance.ToString("C", new CultureInfo("en-PH"));*@
-                <!--</span>
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    0.00
+                </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
                 </div>
             </div>
-        </div>-->
+        </div>
     </div>
 </form>
 
@@ -127,7 +129,6 @@
     $(document).ready(function () {
         $('.select2').select2();
     });
-
 
 
     get_sbu();
@@ -184,6 +185,7 @@
     var get_account_title = []; //dara
     var uacs_counter = 0;
     $.each(uacs, function () {
+
         uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
         var json_data = new Object(); //dara
         json_data.UacsId = this.UacsId; //dara
@@ -191,12 +193,12 @@
         get_account_title[this.UacsId] = this.Account_title;
         uacs_counter++;
     });
- 
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_create');
     const hot = new Handsontable(container, {
-        data: Handsontable.helper.createSpreadsheetData(1, 1) ,
+        data: Handsontable.helper.createSpreadsheetData(1, 0) ,
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
