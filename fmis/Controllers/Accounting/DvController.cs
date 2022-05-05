@@ -22,11 +22,17 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-            return View(await _MyDbContext.DV.ToListAsync());
+            ViewData["getpayee"] = searchString;
 
+            var dv = from m in _MyDbContext.DV
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                dv = dv.Where(s => s.DvDescription !.Contains(searchString) );
+            }
+            return View(await dv.AsNoTracking().ToListAsync());
         }
-
-
 
         [HttpPost]
         public string Index(string searchString, bool notUsed)
@@ -64,12 +70,12 @@ namespace fmis.Controllers.Accounting
                 return NotFound();
             }
 
-            var dvs = await _MyDbContext.DV.FindAsync(id);
-            if (dvs == null)
+            var dv = await _MyDbContext.DV.FindAsync(id);
+            if (dv == null)
             {
                 return NotFound();
             }
-            return View(dvs);
+            return View(dv);
         }
 
         [HttpPost]
@@ -77,13 +83,14 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Edit(Dv dv)
         {
 
-            var div = await _MyDbContext.DV.Where(x => x.DvId == dv.DvId).AsNoTracking().FirstOrDefaultAsync();
-            div.DvDescription = div.DvDescription;
+            var dvs = await _MyDbContext.DV.Where(x => x.DvId == dv.DvId).AsNoTracking().FirstOrDefaultAsync();
+            dvs.DvDescription = dv.DvDescription;
 
-            _MyDbContext.Update(div);
+            _MyDbContext.Update(dv);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+
 
         public async Task<ActionResult> Delete(String id)
         {

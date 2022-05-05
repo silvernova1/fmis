@@ -1,5 +1,5 @@
 ﻿@model fmis.Models.SubAllotment
-@using fmis.Models
+@using System.Globalization;
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
@@ -13,13 +13,23 @@
 @{
     ViewData["Title"] = "Create";
     Layout = null;
+
 }
 
 <style>
     .select2 {
         min-height: 33px;
     }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        margin: 0;
+    }
 </style>
+
+
 
 <form asp-action="Create">
     <input hidden type="text" id="subs_input_token" name="token" value="" />
@@ -83,24 +93,43 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
+        </div>
+
+        <br />
+        <input type="hidden" id="SubId" />
+        <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
+        <input type="hidden" class="uacs" value="@ViewBag.uacs">
+        <br />
+        <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
+        <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
+        <br />
+        <div class="controls" hidden>
+            <button id="export-file">Download CSV</button>
+        </div>
+
+        <div class="infobox infobox-green pull-right">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
             </div>
-            <input type="hidden" id="SubId" />
-            <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
-            <input type="hidden" class="uacs" value="@ViewBag.uacs">
-            <br />
-            <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
-            <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
-            <br />
-            <div class="controls" hidden>
-                <button id="export-file">Download CSV</button>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span id="sub_total_amt">₱0.00</span>
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
+                </div>
             </div>
         </div>
+    </div>
 </form>
+
 
 <script>
     $(document).ready(function () {
         $('.select2').select2();
     });
+
+
     get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
@@ -155,6 +184,7 @@
     var get_account_title = []; //dara
     var uacs_counter = 0;
     $.each(uacs, function () {
+
         uacs_data_dropdown[uacs_counter] = this.Account_title; //dara
         var json_data = new Object(); //dara
         json_data.UacsId = this.UacsId; //dara
@@ -167,7 +197,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_create');
     const hot = new Handsontable(container, {
-        data: data,
+        data: Handsontable.helper.createSpreadsheetData(1, 0),
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -176,10 +206,12 @@
         columns: [
             {
                 type: 'dropdown',
-                source: uacs_data_dropdown
+                source: uacs_data_dropdown,
+                allowEmpty: true,
             },
             {
                 type: 'numeric',
+                strict: true,
                 numericFormat: {
                     pattern: '0,0.00',
                 }
@@ -191,8 +223,9 @@
                 //HIDDEN TOKEN
             },
         ],
+
         stretchH: 'all',
-        height: '450px',
+        height: '400px',
         search: {
             searchResultClass: 'search-result-custom'
         },
@@ -200,7 +233,7 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][3];
+            var single_token = holder_data[selection[0][0]][2];
             console.log(selection);
             console.log(holder_data);
             console.log(column);
@@ -211,7 +244,7 @@
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
-                    many_token: holder_data[j][3]
+                    many_token: holder_data[j][2]
                 })
             }
             if (single_token) {
@@ -219,9 +252,17 @@
                     "single_token": single_token,
                     "many_token": many_token,
                 };
+
                 console.log(ajax_data);
-                 ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
+                ajaxServer(ajax_data, '@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
+                console.log(this.getSelected());
             }
+        },
+        afterRemoveRow: function () {
+            var sub_total = 0;
+            let str = "\u20B1"
+            $.each(this.getData(), function () { sub_total += this[1]; });
+            $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         },
         afterUndo: function (index, column) {
         },
@@ -268,18 +309,26 @@
                     });
                 });
                 console.log(ajax_data);
-                $(".obligation_amount").html(obligation_amount);
+                let str = "\u20B1"
+                var sub_total = 0;
+                $.each(this.getData(), function () { sub_total += this[1]; });
+                $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+
+
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 
-		},
+        },
         hiddenColumns: {
             columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
 
 </script>

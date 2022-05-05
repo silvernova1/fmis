@@ -71,9 +71,9 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" id="FundSourceId" />
-        <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
-        <input type="hidden" class="uacs" value="@ViewBag.uacs">
+            <input type="hidden" id="FundSourceId" />
+            <input type="hidden" class="fundsourceamount" value="@ViewBag.temp">
+            <input type="hidden" class="uacs" value="@ViewBag.uacs">
         <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
         <div id="fundsource_amount_create" class="hot handsontable htColumnHeaders"></div>
@@ -82,10 +82,27 @@
             <button id="export-file">Download CSV</button>
         </div>
     </div>
+    <div class="infobox infobox-green pull-right">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-money"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                <span id="sub_total_amt">₱0.00</span>
+            </span>
+            <div class="infobox-content">
+                <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
+            </div>
+        </div>
+    </div>
 </form>
 
+
+
+
 <script>
-    $(document).ready(function () {
+
+     $(document).ready(function () {
         $('.prexcDropdown').select2();
     });
     get_sbu();
@@ -107,53 +124,7 @@
             }
         });
     }
-</script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        
-    })
-    $("#categoryId").change(function () {
-        getSubCategoryListByCategoryId();
-    });
-    var getSubCategoryListByCategoryId = function () {
-         $.ajax({
-            url: '@Url.Action("GetSubCategoryByCategoryId","Home")',
-            type: 'GET',
-            data: {
-                categoryId:$('#categoryId').val(),
-            },
-            success: function (data) {
-                $('#subCategoryId').find('option').remove()
-                $(data).each(
-                    function (index, item) {
-                        $('#subCategoryId').append('<option value="' + item.Id + '">' + item.pap_title + '</option>')
-                    });
-            },
-            error: function () {
-            }
-           });
-    }
-</script>
-
-<script type="text/javascript">
-    $(function(){
-        $("#Countryid").change(function(){
-            var url = '@Url.Content("~/")' + "FundSource/getstatebyid";
-            var ddlsource = "#Countryid";
-            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
-                var items = '';
-                $("#stateid").empty();
-                $.each(data, function (i, row){
-                    items += "<option value='" + row.value + "'>" + row.text + "</option";
-                });
-                $("#stateid").html(items);
-            })
-        });
-    });
-</script>
-
-<script>
     var BudgetAllotmentId = @ViewBag.BudgetAllotmentId;
     console.log(BudgetAllotmentId);
     var fundsource_token = generate_token();
@@ -192,7 +163,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount_create');
     const hot = new Handsontable(container, {
-        data: data,
+        data: Handsontable.helper.createSpreadsheetData(1, 0),
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -217,7 +188,7 @@
             },
         ],
         stretchH: 'all',
-        height: '450px',
+        height: '400px',
         search: {
             searchResultClass: 'search-result-custom'
         },
@@ -225,7 +196,7 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][3];
+            var single_token = holder_data[selection[0][0]][2];
             console.log(selection);
             console.log(holder_data);
             console.log(column);
@@ -245,8 +216,14 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+                ajaxServer(ajax_data, '@Url.Action("DeleteFundsourceamount", "FundSource")');
             }
+        },
+        afterRemoveRow: function () {
+            var sub_total = 0;
+            let str = "\u20B1"
+            $.each(this.getData(), function () { sub_total += this[1]; });
+            $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         },
         afterUndo: function (index, column) {
         },
@@ -268,7 +245,7 @@
                             BudgetAllotmentId: BudgetAllotmentId,
                             UacsId: uacs_data_array[hot.getDataAtCell(row, col)].UacsId,
                             Amount: hot.getDataAtCell(row, col + 2),
-                            fundsource_amount_token: hot.getDataAtCell(row, col+3),
+                            fundsource_amount_token: hot.getDataAtCell(row, col + 3),
                             fundsource_token: fundsource_token
                         }
                     );
@@ -290,16 +267,20 @@
                         fundsource_token: fundsource_token
                     });
                 });
-                console.log(ajax_data);
-                $(".obligation_amount").html(obligation_amount);
+
+                let str = "\u20B1"
+                var sub_total = 0;
+                $.each(this.getData(), function () { sub_total += this[1]; });
+                $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
                 ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');
             }
-		},
+        },
         hiddenColumns: {
-            columns: [2,3],
+            columns: [2, 3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());

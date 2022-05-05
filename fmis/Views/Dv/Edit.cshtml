@@ -1,7 +1,7 @@
 ﻿@model fmis.Models.Accounting.Dv;
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3 class="grey lighter smaller">Edit DV </h3></center>
+<center><h3 class="grey lighter smaller">Edit Deduction </h3></center>
 <hr />
 <div class="container">
     <div class="col-md-6">
@@ -9,7 +9,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DvId" />
             <div class="form-group">
-                <h5>DV Description: </h5>
+                <h5>Deduction Description: </h5>
                 <input asp-for="DvDescription" class="form-control" />
                 <span asp-validation-for="DvDescription" class="text-danger"></span>
             </div>

@@ -38,13 +38,33 @@
 </h3>
 <hr>
 
-<p>
-    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </a>
-</p>
-<br />
-<table class="table table-striped" style="width: 900px">
+<div class="row">
+    <div class="col-md-5">
+        <p>
+            <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+                <i class="ace-icon fa fa-plus "></i> Create New
+            </a>
+            <a asp-action="Index" class="btn btn-sm btn-primary">
+                <i class="ace-icon fa fa-eye "></i> View All
+            </a>
+        </p>
+    </div>
+    <div class="col-md-7">
+        <form method="get" asp-action="Index">
+            <p>
+                <input type="search" placeholder="Search
+                  " value="@ViewData["getpayee"]" class="form-group" name="searchString" />
+                <input type="submit" value="search" class="btn btn-sm btn-primary" />
+              
+                <br />
+
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<table class="table table-striped" style="width: 960px">
     <thead>
         <tr>
             <th>

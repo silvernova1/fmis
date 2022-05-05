@@ -8,6 +8,9 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
     <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
@@ -35,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label>PAP Title:</label>
-                @* @Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
+                @*@Html.DropDownList("PrexcId", null, htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })*@
                 <select class="form-control select2" asp-for="prexcId" asp-items="ViewBag.PrexcId " id="ddlBranches" , onchange="return get_sbu(this)"> </select>
             </div>
             <div class="form-group" hidden>
@@ -61,16 +64,15 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label>Date:</label> 
-                <input asp-for="Date" type="datetime" class="form-control">
+                <label>Date:</label>
+                <input asp-for="Date" type="date" class="form-control">
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-            
         </div>
         <div class="col-md-9">
             <div class="form-group">
                 <label>Description:</label>
-                <textarea asp-for="Description" style="height: 70px;"class="form-control"> </textarea>
+                <textarea asp-for="Description" style="height: 70px;" class="form-control"> </textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
@@ -83,14 +85,33 @@
     <div class="controls" hidden>
         <button id="export-file">Download CSV</button>
     </div>
+
+    <div class="infobox infobox-green pull-right">
+        <div class="infobox-icon">
+            <i class="ace-icon fa fa-money"></i>
+        </div>
+        <div class="infobox-data">
+            <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                <span id="sub_total_amt">₱0.00</span>
+            </span>
+            <div class="infobox-content">
+                <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
+            </div>
+        </div>
+    </div>
+
+
 </form>
 
 <script>
 
 
     $(document).ready(function () {
-        $('.select2').select2();
+        $(".select2").select2();
     });
+
+
+
        get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
@@ -164,7 +185,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_edit');
     const hot = new Handsontable(container, {
-        data: data,
+        data: Handsontable.helper.createSpreadsheetData(1, 0),
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -189,7 +210,7 @@
             },
         ],
         stretchH: 'all',
-        height: '450px',
+        height: '400px',
         search: {
             searchResultClass: 'search-result-custom'
         },
@@ -198,6 +219,7 @@
             var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][2];
+
             console.log(selection);
             console.log(holder_data);
             console.log(column);
@@ -217,8 +239,14 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "Sub_allotment")');
+                ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
             }
+        },
+        afterRemoveRow: function () {
+            var sub_total = 0;
+            let str = "\u20B1"
+            $.each(this.getData(), function () { sub_total += this[1]; });
+            $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         },
         afterUndo: function (index, column) {
         },
@@ -263,8 +291,11 @@
                         suballotment_token: suballotment_token
                     });
                 });
-                @*console.log(ajax_data);*@
-                $(".obligation_amount").html(obligation_amount);
+            
+                var sub_total = 0;
+                let str = "\u20B1"
+                $.each(this.getData(), function () { sub_total += this[1]; });
+                $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 		},
