@@ -155,7 +155,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount_edit');
     const hot = new Handsontable(container, {
-        data: data,
+        data: Handsontable.helper.createSpreadsheetData(1, 0),
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,

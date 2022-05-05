@@ -13,6 +13,7 @@
 @{
     ViewData["Title"] = "Create";
     Layout = null;
+
 }
 
 <style>
@@ -106,14 +107,13 @@
             <button id="export-file">Download CSV</button>
         </div>
 
-
         <div class="infobox infobox-green pull-right">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    0.00
+                    <span id="sub_total_amt">₱0.00</span>
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
@@ -122,7 +122,6 @@
         </div>
     </div>
 </form>
-
 
 
 <script>
@@ -198,7 +197,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_create');
     const hot = new Handsontable(container, {
-        data: Handsontable.helper.createSpreadsheetData(1, 0) ,
+        data: Handsontable.helper.createSpreadsheetData(1, 0),
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -226,7 +225,7 @@
         ],
 
         stretchH: 'all',
-        height: '450px',
+        height: '400px',
         search: {
             searchResultClass: 'search-result-custom'
         },
@@ -234,7 +233,7 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][3];
+            var single_token = holder_data[selection[0][0]][2];
             console.log(selection);
             console.log(holder_data);
             console.log(column);
@@ -245,7 +244,7 @@
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
-                    many_token: holder_data[j][3]
+                    many_token: holder_data[j][2]
                 })
             }
             if (single_token) {
@@ -253,9 +252,17 @@
                     "single_token": single_token,
                     "many_token": many_token,
                 };
+
                 console.log(ajax_data);
-                 ajaxServer(ajax_data,'@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
+                ajaxServer(ajax_data, '@Url.Action("DeleteSuballotment_amount", "SubAllotment")');
+                console.log(this.getSelected());
             }
+        },
+        afterRemoveRow: function () {
+            var sub_total = 0;
+            let str = "\u20B1"
+            $.each(this.getData(), function () { sub_total += this[1]; });
+            $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         },
         afterUndo: function (index, column) {
         },
@@ -302,7 +309,12 @@
                     });
                 });
                 console.log(ajax_data);
-                $(".obligation_amount").html(obligation_amount);
+                let str = "\u20B1"
+                var sub_total = 0;
+                $.each(this.getData(), function () { sub_total += this[1]; });
+                $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+
+
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 
