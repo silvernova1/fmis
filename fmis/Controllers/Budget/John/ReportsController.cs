@@ -3315,7 +3315,6 @@ namespace fmis.Controllers.Budget.John
                                 currentRow++;
 
                                 ws.Cell(currentRow, 2).Style.Font.SetItalic();
-                                ws.Cell(currentRow, 2).Style.Font.SetBold();
                                 ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 2).Value = subAllotment.Description.ToString();
@@ -5849,7 +5848,8 @@ namespace fmis.Controllers.Budget.John
                                 currentRow++;
 
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
-                                ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
+                                ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description?.ToString();
                                 ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                                 currentRow++;
@@ -6312,7 +6312,8 @@ namespace fmis.Controllers.Budget.John
                                 currentRow++;
 
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
-                                ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
+                                ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description.ToString();
                                 ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                                 currentRow++;
