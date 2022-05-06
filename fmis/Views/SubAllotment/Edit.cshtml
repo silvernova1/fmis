@@ -295,7 +295,11 @@
                 let str = "\u20B1"
                 $.each(this.getData(), function () { sub_total += this[1]; });
                 $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+<<<<<<< HEAD
                 $(".obligation_amount").html(obligation_amount);
+=======
+         
+>>>>>>> d2685caa04c75ea2f8fbbfa2a87d132e14386593
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 		},
