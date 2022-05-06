@@ -29,8 +29,6 @@
     }
 </style>
 
-
-
 <form asp-action="Create">
     <input hidden type="text" id="subs_input_token" name="token" value="" />
     <div>
@@ -80,11 +78,11 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="form-group">
-                    <label>Date:</label>
-                    <input type="date" asp-for="Date" class="form-control">
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label>Date:</label>
+                <input type="date" asp-for="Date" class="form-control">
+                <span asp-validation-for="Date" class="text-danger"></span>
+              </div>
             </div>
             <div class="col-md-9">
                 <div class="form-group">
@@ -124,11 +122,11 @@
 </form>
 
 
+
 <script>
     $(document).ready(function () {
         $('.select2').select2();
     });
-
 
     get_sbu();
     function get_sbu() {
@@ -309,6 +307,8 @@
                     });
                 });
                 console.log(ajax_data);
+
+
                 let str = "\u20B1"
                 var sub_total = 0;
                 $.each(this.getData(), function () { sub_total += this[1]; });
