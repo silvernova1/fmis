@@ -6108,6 +6108,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description.ToString();
                                 ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
+
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
