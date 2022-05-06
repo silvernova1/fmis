@@ -3842,9 +3842,9 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 1).Value = "CURRENT CO SUB-ALLOTMENT";
                             currentRow++;
+
                             foreach (SubAllotment subAllotment in budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1))
                             {
-
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == subAllotment.prexcId)?.pap_code1;
@@ -3861,7 +3861,7 @@ namespace fmis.Controllers.Budget.John
                                 currentRow++;
 
                                 ws.Cell(currentRow, 2).Style.Font.SetItalic();
-                                ws.Cell(currentRow, 2).Style.Font.FontSize = 16;
+                                ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 2).Value = subAllotment.Description.ToString();
                                 ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
@@ -3998,9 +3998,9 @@ namespace fmis.Controllers.Budget.John
                                         //TOTAL ADJUSTED ALLOTMENT SAA
                                         ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 6).Value = SAACOafterrealignment_amount;
-                                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
-                                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                        ws.Cell(currentRow, 19).Value = SAACOafterrealignment_amount;
+                                        ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                        ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     if (_MyDbContext.SubAllotment_Realignment.Where(x => x.Realignment_to == suballotment_amount.UacsId && x.SubAllotmentId == suballotment_amount.SubAllotmentId).Any())
                                     {
