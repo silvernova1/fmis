@@ -2741,7 +2741,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 2).Value = subAllotment.Description?.ToString();
-                            ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
+                            ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                             currentRow++;
 
 
@@ -3319,7 +3319,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 2).Value = subAllotment.Description.ToString();
-                                ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 3)).Merge();
+                                ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -3864,7 +3864,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 2).Value = subAllotment.Description.ToString();
-                                ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
+                                ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -4859,7 +4859,7 @@ namespace fmis.Controllers.Budget.John
                         {
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                            ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses";
                             currentRow++;
                         }
@@ -4877,7 +4877,7 @@ namespace fmis.Controllers.Budget.John
                             currentRow++;
 
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
-                            ws.Cell(currentRow, 1).Style.Font.FontSize = 16;
+                            ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
                             currentRow++;
@@ -5851,7 +5851,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description?.ToString();
-                                ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
+                                ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -6293,12 +6293,13 @@ namespace fmis.Controllers.Budget.John
                             //START CONAP SAA MOOE LOOP
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
+                            ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 1).Value = "CONAP MOOE SUB-ALLOTMENT";
                             currentRow++;
                             foreach (SubAllotment subAllotment in budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2))
                             {
-
+                                ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == subAllotment.prexcId)?.pap_code1;
                                 ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                                 ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
@@ -6313,8 +6314,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
                                 ws.Cell(currentRow, 1).Value = subAllotment.Description.ToString();
-                                ws.Range(ws.Cell(currentRow, currentColumn++), ws.Cell(currentRow, currentColumn++)).Merge();
-
+                                ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                                 currentRow++;
 
                                 foreach (Suballotment_amount suballotment_amount in subAllotment.SubAllotmentAmounts.Where(x => x.status == "activated"))
@@ -8396,23 +8396,6 @@ namespace fmis.Controllers.Budget.John
                     }
 
                     currentRow++;
-
-                    /*ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                    ws.Cell(currentRow, 1).Style.Alignment.Indent = 2;
-                    ws.Cell(currentRow, 1).Style.Font.SetBold();
-                    ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    *//*ws.Cell(currentRow, 1).Value = "TOTAL" + " " + "SAA" + " " + budget_allotment.Allotment_code.ToString();*//*
-
-
-                    //TOTAL SAA - TOTAL AFTER REALIGNMENT
-                    ws.Cell(currentRow, 3).Style.Font.FontName = "TAHOMA";
-                    ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 3).Style.Font.SetBold();
-                    ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ws.Cell(currentRow, 3).Value = suballotment_total;*/
-
                 }
 
 
