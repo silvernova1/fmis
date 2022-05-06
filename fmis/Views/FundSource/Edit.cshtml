@@ -70,7 +70,6 @@
         <button id="export-file">Download CSV</button>
     </div>
 
-
     <div class="infobox infobox-green pull-right">
         <div class="infobox-icon">
             <i class="ace-icon fa fa-money"></i>
@@ -274,8 +273,10 @@
                         fundsource_token: fundsource_token
                     });
                 });
-                var sub_total = 0;
+
                 let str = "\u20B1"
+                var sub_total = 0;
+
                 $.each(this.getData(), function () { sub_total += this[1]; });
                 $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
                 ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');

@@ -65,7 +65,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>Date:</label>
-                <input asp-for="Date" type="datetime"  class="form-control">
+                <input asp-for="Date" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control">
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
         </div>
@@ -295,7 +295,11 @@
                 let str = "\u20B1"
                 $.each(this.getData(), function () { sub_total += this[1]; });
                 $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+<<<<<<< HEAD
+                $(".obligation_amount").html(obligation_amount);
+=======
          
+>>>>>>> d2685caa04c75ea2f8fbbfa2a87d132e14386593
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 		},
