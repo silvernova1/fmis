@@ -34,7 +34,6 @@ namespace fmis.Controllers.Accounting
             return View(await dv.AsNoTracking().ToListAsync());
         }
 
-
         [HttpPost]
         public string Index(string searchString, bool notUsed)
         {
