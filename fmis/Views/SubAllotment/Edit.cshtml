@@ -65,7 +65,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>Date:</label>
-                <input asp-for="Date" type="date" class="form-control">
+                <input asp-for="Date" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control">
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
         </div>
@@ -185,7 +185,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_edit');
     const hot = new Handsontable(container, {
-        data: Handsontable.helper.createSpreadsheetData(1, 0),
+        data: data,
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -291,11 +291,11 @@
                         suballotment_token: suballotment_token
                     });
                 });
-            
                 var sub_total = 0;
                 let str = "\u20B1"
                 $.each(this.getData(), function () { sub_total += this[1]; });
                 $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+                $(".obligation_amount").html(obligation_amount);
                 ajaxServer(ajax_data, '@Url.Action("SaveSuballotment_amount", "SubAllotment")');
             }
 		},
