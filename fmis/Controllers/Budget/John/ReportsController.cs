@@ -7142,7 +7142,7 @@ namespace fmis.Controllers.Budget.John
                                         //REALIGNMENT SAA AMOUNT
                                         ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 17).Value = "";
+                                        ws.Cell(currentRow, 17).Value = "-";
                                         ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
@@ -8811,7 +8811,7 @@ namespace fmis.Controllers.Budget.John
                         {
                             var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2).Sum(x => x.Beginning_balance);
 
-                            ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
+                            ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
