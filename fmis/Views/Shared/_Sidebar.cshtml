@@ -520,9 +520,7 @@
                 </ul>
             </li>
 
-        }
-        @if (Context.User.IsInRole("EndUser"))
-        {
+    
             <li class="@if (ViewBag.filter.main == "end_user")
                 @Html.Raw("active open")">
                 <a href="#" class="dropdown-toggle">
@@ -544,6 +542,7 @@
                     </li>
                 </ul>
             </li>
+        
         }
 
         <!--<!-- UPLOAD FILE -->
