@@ -10,6 +10,17 @@
     .select2 {
         width: 100% !important;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 
 
@@ -18,16 +29,16 @@
 </h3>
 <hr>
 <div class="row" style="margin-left:2px;">
-    @* <div class="col-md-3">
+    <div class="col-md-3">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label>SELECT CATEGORY:</label>
                 @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "select2 form-control"})
             </div>
-        </div>*@
-    
+        </div>
+        </div>
 
-    <div class="col-md-3">
+    @*<div class="col-md-3">
         <div class="form-group">
             <label>CATEGORY:</label>
             <form>
@@ -68,8 +79,9 @@
                     <option value="33"> REMITTANCE OF OTHER PAYABLES </option>
                 </select>
             </form>
-        </div>
+        </div>*@
     </div>
+
     <div class="col-md-3">
         <div class="form-group">
             <label>DV #:</label>
@@ -85,6 +97,18 @@
             <input id="payee" class="form-control" readonly />
         </div>
     </div>
+    <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
+        <div class="form-group">
+            <label>PO #:</label>
+            <input id="po" class="form-control"/>
+        </div>
+    </div>
+    <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
+        <div class="form-group">
+            <label>PROJECT ID:</label>
+            <input id="po" class="form-control"/>
+        </div>
+    </div>
 </div>
 
     <div class="col-md-3">
@@ -95,6 +119,12 @@
     <div class="col-md-3">
         <div class="form-group">
             <label>PARTRICULARS:</label>
+            <input class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-3" name="hidden-panel" id="hidden-panel">
+        <div class="form-group">
+            <label>INVOICE #:</label>
             <input class="form-control" />
         </div>
     </div>
@@ -484,7 +514,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -497,7 +527,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -510,21 +540,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -538,7 +554,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -552,7 +568,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -566,7 +582,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -580,7 +596,21 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -593,7 +623,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -607,19 +637,37 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
 
-<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-circle-right"></i> Submit </a>
+<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>
 <br />
 
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" > </script> 
 <script>
 
     $(document).ready(function () {
         $('.select2').select2();
     });
+
+    $(document).ready(function() {
+        $("#CategoryId").change(function() {
+            if ($("#CategoryId").val() == 1) {
+                $("#hidden-panel").show()
+                $("#hidden-panel1").show()
+            } else {
+                $("#hidden-panel").hide()
+                $("#hidden-panel1").hide()
+            }
+            if ($("#CategoryId").val() == 2) {
+                $("#hidden-panel2").show()
+            } else {
+                $("#hidden-panel2").hide()
+            }
+        })
+    }); 
 
     $(document).ready(function () {
         $('.filter').change(function () {
@@ -651,4 +699,8 @@
         });
     }
 
+
+    function setTwoNumberDecimal(event) {
+        this.value = parseFloat(this.value).toFixed(2);
+    }
 </script>

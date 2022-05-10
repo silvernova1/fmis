@@ -2746,6 +2746,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 2).Style.Font.SetItalic();
                             ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 2).SetDataType(XLDataType.DateTime).ToString();
                             ws.Cell(currentRow, 2).Value = subAllotment.Description?.ToString();
                             ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                             currentRow++;

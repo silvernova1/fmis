@@ -520,7 +520,7 @@
                 </ul>
             </li>
 
-        }
+ 
 
             <li class="@if (ViewBag.filter.main == "end_user")
                 @Html.Raw("active open")">
@@ -543,9 +543,10 @@
                     </li>
                 </ul>
             </li>
+        }
 
         <!--<!-- UPLOAD FILE -->
-        <!--<li class="@if(ViewBag.filter_sidebar == "upload_file/personal_information")
+        <!--<li class="@if (ViewBag.filter_sidebar == "upload_file/personal_information")
                 @Html.Raw("active open")">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-upload"></i>
