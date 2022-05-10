@@ -10,6 +10,17 @@
     .select2 {
         width: 100% !important;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 
 
@@ -25,7 +36,7 @@
                 @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "select2 form-control"})
             </div>
         </div>
-    
+        </div>
 
     @*<div class="col-md-3">
         <div class="form-group">
@@ -70,6 +81,7 @@
             </form>
         </div>*@
     </div>
+
     <div class="col-md-3">
         <div class="form-group">
             <label>DV #:</label>
@@ -484,7 +496,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -497,7 +509,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -510,21 +522,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -538,7 +536,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -552,7 +550,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -566,7 +564,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -580,7 +578,21 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -593,7 +605,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
@@ -607,12 +619,12 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
         </div>
     </div>
 </div>
 
-<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-circle-right"></i> Submit </a>
+<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>
 <br />
 
 <script>
@@ -650,5 +662,11 @@
             }
         });
     }
+
+
+    function setTwoNumberDecimal(event) {
+        this.value = parseFloat(this.value).toFixed(2);
+    }
+
 
 </script>
