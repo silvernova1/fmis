@@ -6487,6 +6487,11 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 1).Value = subAllotment.FundId.ToString();
                                 ws.Cell(currentRow, 1).Value = subAllotment.Suballotment_title?.ToUpper().ToString() + " " + subAllotment.Date.ToShortDateString();
+
+                                ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 11).Value = subAllotment.Date.ToShortDateString();
+
                                 currentRow++;
 
                                 ws.Cell(currentRow, 2).Style.Font.SetItalic();
@@ -6626,9 +6631,9 @@ namespace fmis.Controllers.Budget.John
                                         //TOTAL ADJUSTED ALLOTMENT SAA
                                         ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 6).Value = CONAPSAAMOOEafterrealignment_amount;
-                                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
-                                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                        ws.Cell(currentRow, 19).Value = CONAPSAAMOOEafterrealignment_amount;
+                                        ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                        ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
                                     if (_MyDbContext.SubAllotment_Realignment.Where(x => x.Realignment_to == suballotment_amount.UacsId && x.SubAllotmentId == suballotment_amount.SubAllotmentId).Any())
                                     {
