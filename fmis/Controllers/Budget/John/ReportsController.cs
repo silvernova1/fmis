@@ -45,7 +45,9 @@ namespace fmis.Controllers.Budget.John
 
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
-            DateTime date3 = Convert.ToDateTime(date_to);
+            DateTime datefilter = Convert.ToDateTime(date_to);
+            String date3 = datefilter.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture);
+
             date1.ToString("yyyy-MM-dd 00:00:00");
             date2.ToString("yyyy-MM-dd 23:59:59");
             DateTime dateTimeNow = date2;
@@ -225,14 +227,6 @@ namespace fmis.Controllers.Budget.John
                 ws.Worksheet.SheetView.FreezeRows(19);
 
 
-                /*ws.Range("A24:C24").Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.InsideBorder = XLBorderStyleValues.Dotted;
-                ws.Range("A24:C24").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.TopBorder = XLBorderStyleValues.Thin;*/
-
-
                 //range.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                 ws.Cell("A7").Style.Font.FontSize = 10;
                 ws.Cell("A7").Style.Font.FontName = "Calibri Light";
@@ -280,7 +274,7 @@ namespace fmis.Controllers.Budget.John
 
                 ws.Cell("A5").Style.Font.FontSize = 10;
                 ws.Cell("A5").Style.Font.FontName = "Lucida Bright";
-                ws.Cell("A5").Value = date2.ToString("MMMM dd");
+                ws.Cell("A5").Value =  "AS AT" + " " + date2.ToString("MMMM dd, yyyy");
                 ws.Range("A5:W5").Merge();
                 ws.Cell("A5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
@@ -424,7 +418,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(15, 21).Style.Font.FontSize = 10;
                 ws.Cell(15, 21).Style.Font.FontName = "Lucida Bright";
                 ws.Cell(15, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#F2DCDB");
-                ws.Cell(15, 21).Value = "AS AT" + " " + date3.ToString("MMMM dd, yyyy").ToUpper();
+                ws.Cell(15, 21).Value = "AS AT" + " " + date2.ToString("MMMM").ToUpper();
                 ws.Cell(15, 21).Style.Alignment.WrapText = true;
                 ws.Cell(15, 21).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Cell(15, 21).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
@@ -9127,7 +9121,7 @@ namespace fmis.Controllers.Budget.John
                     wb.SaveAs(stream);
                     //ws.Columns().AdjustToContents();
                     //ws.Rows().AdjustToContents();
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "JAN-DEC.xlsx");
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", date2.ToString("MMMM").ToUpper() + ".xlsx");
                 }
             }
         }
