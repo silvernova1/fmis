@@ -45,6 +45,9 @@ namespace fmis.Controllers.Budget.John
 
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
+            DateTime datefilter = Convert.ToDateTime(date_to);
+            String date3 = datefilter.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture);
+
             date1.ToString("yyyy-MM-dd 00:00:00");
             date2.ToString("yyyy-MM-dd 23:59:59");
             DateTime dateTimeNow = date2;
@@ -224,14 +227,6 @@ namespace fmis.Controllers.Budget.John
                 ws.Worksheet.SheetView.FreezeRows(19);
 
 
-                /*ws.Range("A24:C24").Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.InsideBorder = XLBorderStyleValues.Dotted;
-                ws.Range("A24:C24").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                ws.Range("A24:C24").Style.Border.TopBorder = XLBorderStyleValues.Thin;*/
-
-
                 //range.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                 ws.Cell("A7").Style.Font.FontSize = 10;
                 ws.Cell("A7").Style.Font.FontName = "Calibri Light";
@@ -279,7 +274,7 @@ namespace fmis.Controllers.Budget.John
 
                 ws.Cell("A5").Style.Font.FontSize = 10;
                 ws.Cell("A5").Style.Font.FontName = "Lucida Bright";
-                ws.Cell("A5").Value = date2.ToString("MMMM dd");
+                ws.Cell("A5").Value =  "AS AT" + " " + date2.ToString("MMMM dd, yyyy");
                 ws.Range("A5:W5").Merge();
                 ws.Cell("A5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
@@ -326,7 +321,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(14, 13).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Cell(14, 13).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 ws.Range(ws.Cell(14, 13), ws.Cell(17, 13)).Merge();
-                ws.Column(13).Width = 18;
+                ws.Column(13).Width = 20;
 
                 // Merge a range
                 ws.Cell(14, 14).Style.Font.SetBold();
@@ -610,12 +605,36 @@ namespace fmis.Controllers.Budget.John
                     currentRow++;
 
 
-                    if (_MyDbContext.FundSources.Where(x=>x.AllotmentClassId == 1 && x.AppropriationId == 1).Any()) { 
-                    ws.Cell(currentRow, 1).Style.Font.SetBold();
-                    ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                    ws.Cell(currentRow, 1).Value = "Personnel Services";
-                    currentRow++;
+                    if (_MyDbContext.FundSources.Where(x=>x.AllotmentClassId == 1 && x.AppropriationId == 1).Any()) {
+
+                        ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(currentRow, 1).Value = "Personnel Services".ToUpper();
+                        currentRow++;
                     }
                     
 
@@ -628,7 +647,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
-                        ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
                         currentRow++;
 
@@ -1139,6 +1158,29 @@ namespace fmis.Controllers.Budget.John
                     }
                     if (_MyDbContext.FundSources.Where(x=>x.AppropriationId ==1 && x.AllotmentClassId == 1).Any())
                     {
+                        ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
                         ws.Cell(currentRow, 11).Style.Font.SetBold();
                         ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
@@ -1231,12 +1273,7 @@ namespace fmis.Controllers.Budget.John
                         currentRow++;
                         //END PS LOOP
                     }
-
-
-
-
                     //START AUTOMATIC APPROPRIATION PS LOOP
-
                     foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle == "AUTOMATIC APPROPRIATION").ToList())
                     {
 
@@ -1496,21 +1533,38 @@ namespace fmis.Controllers.Budget.John
                         var subAllotmentTotal = _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1).Sum(x => x.Beginning_balance);
 
                         allotment_total += (double)fundSource.Beginning_balance + (double)subAllotmentTotal;
-
-                        //return Json(allotment_total);
-
                         currentRow++;
-
-
-
-
                     }
 
                     if (_MyDbContext.FundSources.Where(x => x.FundSourceTitle == "AUTOMATIC APPROPRIATION").Any())
                     {
                         var PsTotalAP = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.FundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.Beginning_balance);
-                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
+                        ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                        ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
+                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         ws.Cell(currentRow, 1).Value = "TOTAL AUTOMATIC APPROPRIATIONS";
 
@@ -1588,7 +1642,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses";
+                        ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses".ToUpper();
                         currentRow++;
 
                         foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).ToList())
@@ -2159,7 +2213,6 @@ namespace fmis.Controllers.Budget.John
                     }
                     else
                     {
-
                     }
 
                     //START CO LOOP
@@ -2716,7 +2769,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 1).Value = "CURRENT PS SUB-ALLOTMENT";
+                            ws.Cell(currentRow, 1).Value = "Current Saa Personnel Services".ToUpper();
                             currentRow++;
                         }
                         
@@ -2740,7 +2793,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                             ws.Cell(currentRow, 11).Value = subAllotment.Date.ToShortDateString();
-                            ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                            ws.Column(11).Width = 15;
                             currentRow++;
 
                             ws.Cell(currentRow, 2).Style.Font.SetItalic();
@@ -3188,11 +3241,34 @@ namespace fmis.Controllers.Budget.John
                         if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId ==1 && x.AllotmentClassId == 1).Any())
                         {
                             //START SAA PS LOOP
+                            ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
+                            ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
                             ws.Cell(currentRow, 11).Style.Font.SetBold();
                             ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 11).Value = "TOTAL PERSONNEL SERVICES SAA" + " " /*+ budget_allotment.Allotment_code.ToUpper().ToString()*/;
+                            ws.Cell(currentRow, 11).Value = "TOTAL PERSONNEL SERVICES SAA";
 
 
                             ws.Cell(currentRow, 13).Style.Font.SetBold();
@@ -4965,7 +5041,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses";
+                            ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses".ToUpper();
                             currentRow++;
                         }
                         //START CONAP MOOE LOOP
@@ -5437,6 +5513,29 @@ namespace fmis.Controllers.Budget.John
 
                         if(_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 2).Any())
                         {
+                                ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
+                                ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                                 ws.Cell(currentRow, 11).Style.Font.SetBold();
                                 ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
@@ -5538,7 +5637,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
-                                ws.Cell(currentRow, 1).Value = "Capital Outlay";
+                                ws.Cell(currentRow, 1).Value = "Capital Outlay".ToUpper();
                                 currentRow++;
                             }
                             //START CONAP CO LOOP
@@ -7156,6 +7255,12 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
+                                    ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 18).Value = "-";
+                                    ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                                     //TOTAL ADJUSTED ALLOTMENT
                                     ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
@@ -7276,6 +7381,14 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 ws.Cell(currentRow, 13).Value = subAllotment.Beginning_balance;
 
+                                //TOTAL TRANSFER TO
+                                ws.Cell(currentRow, 18).Style.Font.SetBold();
+                                ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 18).Value = "0.00";
+                                ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                                 ws.Cell(currentRow, 19).Style.Font.SetBold();
                                 ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
@@ -7340,6 +7453,14 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 13).Value = CoTotalSaaConap;
+
+                            //TOTAL TRANSFER TO
+                            ws.Cell(currentRow, 18).Style.Font.SetBold();
+                            ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 18).Value = "0.00";
+                            ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 19).Style.Font.SetBold();
@@ -7481,7 +7602,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
                             currentRow++;
                         }
 
@@ -7648,9 +7769,9 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 17).Style.Font.SetBold();
                             ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 4).Value = realignment_total;
+                            ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 17).Value = realignment_total;
                         }
                         //TOTAL TRANSFER TO
                         ws.Cell(currentRow, 18).Style.Font.SetBold();
@@ -7700,7 +7821,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 23).Value = "";
+                            ws.Cell(currentRow, 23).Value = "-";
                             ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             currentRow++;
@@ -8166,10 +8287,10 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
                         ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
                         ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(currentRow, 1).Value = "TOTAL CURRENT APPROPRIATION";
+                        ws.Cell(currentRow, 3).Style.Font.SetBold();
+                        ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(currentRow, 3).Value = "TOTAL CURRENT APPROPRIATION";
 
                         ws.Cell(currentRow, 13).Style.Font.SetBold();
                         ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
@@ -8280,7 +8401,7 @@ namespace fmis.Controllers.Budget.John
                         var totalPercentCURRENT = asAtTotalinTotalCURRENT.Sum(x => x.amount) / CurrentTotal;
                         ws.Cell(currentRow, 23).Style.Font.SetBold();
                         ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 23).Value = totalPercentCURRENT;
                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -8452,7 +8573,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = "";
+                                ws.Cell(currentRow, 23).Value = "-";
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 currentRow++;
@@ -8792,6 +8913,7 @@ namespace fmis.Controllers.Budget.John
 
                             ws.Cell(currentRow, 22).Style.Font.SetBold();
                             ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 22).Value = unobligatedTotalinTotalCOSaa;
@@ -8799,6 +8921,7 @@ namespace fmis.Controllers.Budget.John
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 23).Value = totalPercentCOSaa;
                             ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -8834,11 +8957,11 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                            ws.Cell(currentRow, 1).Style.Font.SetBold();
-                            ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                            ws.Cell(currentRow, 1).Value = "TOTAL CONTINUING APPROPRIATION";
+                            ws.Cell(currentRow, 3).Style.Font.SetBold();
+                            ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                            ws.Cell(currentRow, 3).Value = "TOTAL CONTINUING APPROPRIATION";
 
                             ws.Cell(currentRow, 13).Style.Font.SetBold();
                             ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
@@ -9125,7 +9248,7 @@ namespace fmis.Controllers.Budget.John
                     wb.SaveAs(stream);
                     //ws.Columns().AdjustToContents();
                     //ws.Rows().AdjustToContents();
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "JAN-DEC.xlsx");
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", date2.ToString("MMMM").ToUpper() + ".xlsx");
                 }
             }
         }
