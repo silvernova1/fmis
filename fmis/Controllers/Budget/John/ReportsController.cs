@@ -2740,13 +2740,12 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                             ws.Cell(currentRow, 11).Value = subAllotment.Date.ToShortDateString();
-                            ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                            ws.Column(11).Width = 15;
                             currentRow++;
 
                             ws.Cell(currentRow, 2).Style.Font.SetItalic();
                             ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 2).SetDataType(XLDataType.DateTime).ToString();
                             ws.Cell(currentRow, 2).Value = subAllotment.Description?.ToString();
                             ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                             currentRow++;
@@ -7157,6 +7156,12 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
 
+                                    ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 18).Value = "-";
+                                    ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                                     //TOTAL ADJUSTED ALLOTMENT
                                     ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
@@ -7277,6 +7282,14 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 ws.Cell(currentRow, 13).Value = subAllotment.Beginning_balance;
 
+                                //TOTAL TRANSFER TO
+                                ws.Cell(currentRow, 18).Style.Font.SetBold();
+                                ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 18).Value = "0.00";
+                                ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                                 ws.Cell(currentRow, 19).Style.Font.SetBold();
                                 ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
@@ -7341,6 +7354,14 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 13).Value = CoTotalSaaConap;
+
+                            //TOTAL TRANSFER TO
+                            ws.Cell(currentRow, 18).Style.Font.SetBold();
+                            ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 18).Value = "0.00";
+                            ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             //TOTAL - TOTAL AFTER REALIGNMENT
                             ws.Cell(currentRow, 19).Style.Font.SetBold();
@@ -7482,7 +7503,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
                             currentRow++;
                         }
 
@@ -7649,9 +7670,9 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 17).Style.Font.SetBold();
                             ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 4).Value = realignment_total;
+                            ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 17).Value = realignment_total;
                         }
                         //TOTAL TRANSFER TO
                         ws.Cell(currentRow, 18).Style.Font.SetBold();
@@ -7701,7 +7722,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 23).Value = "";
+                            ws.Cell(currentRow, 23).Value = "-";
                             ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             currentRow++;
@@ -8281,7 +8302,7 @@ namespace fmis.Controllers.Budget.John
                         var totalPercentCURRENT = asAtTotalinTotalCURRENT.Sum(x => x.amount) / CurrentTotal;
                         ws.Cell(currentRow, 23).Style.Font.SetBold();
                         ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 23).Value = totalPercentCURRENT;
                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -8453,7 +8474,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = "";
+                                ws.Cell(currentRow, 23).Value = "-";
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 currentRow++;
@@ -8793,6 +8814,7 @@ namespace fmis.Controllers.Budget.John
 
                             ws.Cell(currentRow, 22).Style.Font.SetBold();
                             ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 22).Value = unobligatedTotalinTotalCOSaa;
@@ -8800,6 +8822,7 @@ namespace fmis.Controllers.Budget.John
                             //PERCENT OF UTILIZATION
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 23).Value = totalPercentCOSaa;
                             ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
