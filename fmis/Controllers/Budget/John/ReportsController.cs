@@ -45,6 +45,7 @@ namespace fmis.Controllers.Budget.John
 
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
+            DateTime date3 = Convert.ToDateTime(date_to);
             date1.ToString("yyyy-MM-dd 00:00:00");
             date2.ToString("yyyy-MM-dd 23:59:59");
             DateTime dateTimeNow = date2;
@@ -423,7 +424,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(15, 21).Style.Font.FontSize = 10;
                 ws.Cell(15, 21).Style.Font.FontName = "Lucida Bright";
                 ws.Cell(15, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#F2DCDB");
-                ws.Cell(15, 21).Value = "AS AT" + " " + date2.ToString("MMMM").ToUpper();
+                ws.Cell(15, 21).Value = "AS AT" + " " + date3.ToString("MMMM dd, yyyy").ToUpper();
                 ws.Cell(15, 21).Style.Alignment.WrapText = true;
                 ws.Cell(15, 21).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Cell(15, 21).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
@@ -628,7 +629,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
-                        ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
                         currentRow++;
 
