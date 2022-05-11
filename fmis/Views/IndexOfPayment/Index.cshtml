@@ -29,58 +29,58 @@
 </h3>
 <hr>
 <div class="row" style="margin-left:2px;">
-    @* <div class="col-md-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>SELECT CATEGORY:</label>
-                @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "select2 form-control"})
-            </div>
-        </div>*@
-
-
     <div class="col-md-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label>CATEGORY:</label>
-            <form>
-                <select class="filter select2 form-control">
-                    <option value="0"> SELECT CATEGORY </option>
-                    <option value="1"> PURCHASE OF GOODS AND SERVICES </option>
-                    <option value="2"> ADVANCE PAYMENT TO CONTRACTOR </option>
-                    <option value="3"> PROGRESS BILLING-INFRA </option>
-                    <option value="4"> PAYMENT OF OFFICE RENTAL </option>
-                    <option value="5"> PAYMENT OF RENTAL (EQUIPMENT) </option>
-                    <option value="6"> PAYMENT OF BAC HONORARIA </option>
-                    <option value="7"> PAYMENT OF HONORARIA TO RESOURCE PERSONS </option>
-                    <option value="8"> PAYMENT OF FIDELITY BOND </option>
-                    <option value="9"> REPLENISHMENT OF PETTY CASH </option>
-                    <option value="10"> PAYMENT OF CASH ADVANCE FOR TRAVEL </option>
-                    <option value="12"> PAYMENT OF CASH ADVANCE FOR SPECIAL DISBURSING OFFICER </option>
-                    <option value="12"> PAYMENT OF CASH ADVANCE FOR PETTY CASH </option>
-                    <option value="13"> PAYMENT OF COMMUNICATION ALLOWANCE </option>
-                    <option value="14"> PAYMENT OF ELECTRICITY </option>
-                    <option value="15"> PAYMENT OF WATER BILL </option>
-                    <option value="16"> PAYMENT OF TELEPHONE BILLS/INTERNET </option>
-                    <option value="17"> REIMBURSEMENT OF TRAVELLING EXPENSES </option>
-                    <option value="18"> OTHER REIMBURSEMENTS </option>
-                    <option value="19"> PAYMENT TO AIRLINE COMPANIES </option>
-                    <option value="20"> PAYMENT OF FUEL AND LUBRICANT EXPENSES </option>
-                    <option value="21"> TAX REFUND </option>
-                    <option value="22"> PAYMENT OF SALARIES TO JOB ORDER PERSONNEL </option>
-                    <option value="23"> PAYMENT OF BASIC SALARY AND PERA (REGULAR, PS CONTRACTUAL) </option>
-                    <option value="24"> PAYMENT OF SUBSISTENCE AND ALLOWANCE UNDER MAGNA CARTA </option>
-                    <option value="25"> PAYMENT OF HAZARD PAY UNDER MAGNA CARTA </option>
-                    <option value="26"> PAYMENT OF LONGEVITY PAY </option>
-                    <option value="27"> PAYMENT OF TERMINAL LEAVE PAY </option>
-                    <option value="28"> PAYMENT OF FIRST SALARY </option>
-                    <option value="29"> PAYMENT OF LAST SALARY </option>
-                    <option value="30"> REMITTANCE OF TAXES </option>
-                    <option value="31"> PHILHEALTH REMITTANCE </option>
-                    <option value="32"> PAG-IBIG REMITTANCE </option>
-                    <option value="33"> REMITTANCE OF OTHER PAYABLES </option>
-                </select>
-            </form>
+            <label>SELECT CATEGORY:</label>
+            @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "select2 form-control" })
         </div>
     </div>
+
+
+    @*    <div class="col-md-3">
+            <div class="form-group">
+                <label>CATEGORY:</label>
+                <form>
+                    <select class="filter select2 form-control">
+                        <option value="0"> SELECT CATEGORY </option>
+                        <option value="1"> PURCHASE OF GOODS AND SERVICES </option>
+                        <option value="2"> ADVANCE PAYMENT TO CONTRACTOR </option>
+                        <option value="3"> PROGRESS BILLING-INFRA </option>
+                        <option value="4"> PAYMENT OF OFFICE RENTAL </option>
+                        <option value="5"> PAYMENT OF RENTAL (EQUIPMENT) </option>
+                        <option value="6"> PAYMENT OF BAC HONORARIA </option>
+                        <option value="7"> PAYMENT OF HONORARIA TO RESOURCE PERSONS </option>
+                        <option value="8"> PAYMENT OF FIDELITY BOND </option>
+                        <option value="9"> REPLENISHMENT OF PETTY CASH </option>
+                        <option value="10"> PAYMENT OF CASH ADVANCE FOR TRAVEL </option>
+                        <option value="12"> PAYMENT OF CASH ADVANCE FOR SPECIAL DISBURSING OFFICER </option>
+                        <option value="12"> PAYMENT OF CASH ADVANCE FOR PETTY CASH </option>
+                        <option value="13"> PAYMENT OF COMMUNICATION ALLOWANCE </option>
+                        <option value="14"> PAYMENT OF ELECTRICITY </option>
+                        <option value="15"> PAYMENT OF WATER BILL </option>
+                        <option value="16"> PAYMENT OF TELEPHONE BILLS/INTERNET </option>
+                        <option value="17"> REIMBURSEMENT OF TRAVELLING EXPENSES </option>
+                        <option value="18"> OTHER REIMBURSEMENTS </option>
+                        <option value="19"> PAYMENT TO AIRLINE COMPANIES </option>
+                        <option value="20"> PAYMENT OF FUEL AND LUBRICANT EXPENSES </option>
+                        <option value="21"> TAX REFUND </option>
+                        <option value="22"> PAYMENT OF SALARIES TO JOB ORDER PERSONNEL </option>
+                        <option value="23"> PAYMENT OF BASIC SALARY AND PERA (REGULAR, PS CONTRACTUAL) </option>
+                        <option value="24"> PAYMENT OF SUBSISTENCE AND ALLOWANCE UNDER MAGNA CARTA </option>
+                        <option value="25"> PAYMENT OF HAZARD PAY UNDER MAGNA CARTA </option>
+                        <option value="26"> PAYMENT OF LONGEVITY PAY </option>
+                        <option value="27"> PAYMENT OF TERMINAL LEAVE PAY </option>
+                        <option value="28"> PAYMENT OF FIRST SALARY </option>
+                        <option value="29"> PAYMENT OF LAST SALARY </option>
+                        <option value="30"> REMITTANCE OF TAXES </option>
+                        <option value="31"> PHILHEALTH REMITTANCE </option>
+                        <option value="32"> PAG-IBIG REMITTANCE </option>
+                        <option value="33"> REMITTANCE OF OTHER PAYABLES </option>
+                    </select>
+                </form>
+            </div>
+        </div>*@
 
     <div class="col-md-3">
         <div class="form-group">
@@ -99,24 +99,25 @@
     </div>
 </div>
 
-    <div class="col-md-3">
-        <label>DV DATE:</label>
-        <input type="date" class="form-control" />
-        <span class="text-danger"></span>
+<div class="col-md-3">
+    <label>DV DATE:</label>
+    <input type="date" class="form-control" />
+    <span class="text-danger"></span>
+</div>
+<div class="col-md-3">
+    <div class="form-group">
+        <label>PARTRICULARS:</label>
+        <input class="form-control" />
     </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            <label>PARTRICULARS:</label>
-            <input class="form-control" />
-        </div>
-    </div>
+</div>
 
 
 <div class="row">
-    <div class="filterable" data-ref="1" hidden>
+    <div class="filterable" hidden>
+
         <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
+            <div class="col-md-2" name="hidden-panel" id="hidden-panel">
+                <div class="form-group" >
                     <label>PO #: </label>
                     <input class="form-control" />
                 </div>
@@ -131,7 +132,7 @@
     </div>
 
     <div class="filterable" data-ref="2" hidden>
-        <div class="row">
+        <div class="row" >
             <div class="col-md-2">
                 <div class="form-group">
                     <label>PROJECT ID: </label>
@@ -496,7 +497,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -509,7 +510,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -522,21 +523,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -550,7 +537,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -564,7 +551,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -578,7 +565,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -592,7 +579,21 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
         </div>
     </div>
 </div>
@@ -605,7 +606,7 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" readonly />
         </div>
     </div>
 </div>
@@ -619,14 +620,14 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
+            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" readonly />
         </div>
     </div>
 </div>
 
 <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>
 <br />
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
 
     $(document).ready(function () {
@@ -667,6 +668,17 @@
     function setTwoNumberDecimal(event) {
         this.value = parseFloat(this.value).toFixed(2);
     }
+
+
+    $(document).ready(function() {
+        $("#CategoryId").change(function() {
+            if ($("#hidden-panel").val() == 1) {
+                $("#hidden-panel").show()
+            } else {
+                $("#hidden-panel").hide()
+            }
+        })
+    });
 
 
 </script>

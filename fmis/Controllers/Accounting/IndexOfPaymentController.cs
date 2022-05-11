@@ -96,12 +96,12 @@ namespace fmis.Controllers.Accounting
                                                   select new
                                                   {
                                                       DvId = s.DvId,
-                                                      DvDescription = s.DvDescription,
+                                                      DvNo = s.DvNo,
                                                       Payee = s.Payee,
 
                                                   }),
                                        "DvId",
-                                       "DvDescription",
+                                       "DvNo",
                                        "Payee",
                                        null);
 

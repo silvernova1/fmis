@@ -115,6 +115,7 @@ namespace fmis.Controllers
             var prexsQuery = from d in _context.Yearly_reference
                              orderby d.YearlyReference
                              select d;
+
             ViewBag.YearlyReferenceId = new SelectList((from s in _context.Yearly_reference.ToList()
                                                         where !_context.Budget_allotments.Any(ro => ro.YearlyReferenceId == s.YearlyReferenceId)
                                                         select new
