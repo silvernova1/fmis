@@ -52,7 +52,8 @@ namespace fmis.Controllers
                 HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
                 id = (int)post_yearly_reference;
             }
-            else {
+            else
+            {
                 id = (int)HttpContext.Session.GetInt32(yearly_reference);
             }
 
@@ -62,7 +63,6 @@ namespace fmis.Controllers
             DashboardVM dashboard = new DashboardVM();
             dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == id).ToList();
             dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
-          /*  dashboard.Obligations = _MyDbCOntext.Obligation.Where(x => x.source_id == id).ToList();*/
             dashboard.Sub_allotments = _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id).ToList();
             dashboard.AllotmentClasses = _MyDbCOntext.AllotmentClass.Where(x => x.Id == id).ToList();
 
@@ -70,16 +70,9 @@ namespace fmis.Controllers
             ViewBag.Balance = balance;
 
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
-            //var allotment = _MyDbCOntext.FundSourceAmount.Where(x => x.BudgetAllotmentId == id).Sum(x => x.beginning_balance) + _MyDbCOntext.Suballotment_amount.Where(x => x.BudgetAllotmentId == id).Sum(s => s.beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            //ViewBag.AllotmentBalance = allotmentbalance / allotment * 100;
-
-            //ViewBag.DashboardAllotment = ViewBag.AllotmentBalance.ToString("#,##0.00");
-
-            //var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.obligated_amount) + _MyDbCOntext.Sub_allotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.obligated_amount);
-            //var obligated = _MyDbCOntext.ObligationAmount.Where(x => x.ObligationId == id).Sum(x => x.Amount);
             var obligated = _MyDbCOntext.ObligationAmount.Sum(x => x.Amount);
 
 
@@ -89,24 +82,6 @@ namespace fmis.Controllers
             List<AllotmentClass> allotmentClasses = (from allotmentclass in _MyDbCOntext.AllotmentClass
                                                      select allotmentclass).ToList();
             ViewBag.progress = 0.36 * 100;
-
-            /*    var dashboard_report = *//*(from fundsource in _MyDbCOntext.FundSources
-                                       join budget_allotment in _MyDbCOntext.Budget_allotments
-                                       on fundsource.BudgetAllotmentId equals budget_allotment.BudgetAllotmentId
-                                       join yearly in _MyDbCOntext.Yearly_reference
-                                       on budget_allotment.YearlyReferenceId equals id*//*
-                                       (from budget_allotment in _MyDbCOntext.Budget_allotments
-                                        join yearly in _MyDbCOntext.Yearly_reference
-                                        on budget_allotment.BudgetAllotmentId equals id
-                                        select new DashboardVM
-                                       {
-                                          // Fundsource = fundsource,
-                                           Budgetallotments = budget_allotment
-                                       }).ToList();
-    */
-            // return Json(new { id = id, dash = dashboard_report } );
-            /*
-                        var obligation = _MyDbCOntext.ObligationAmount.ToList();*/
 
 
 
