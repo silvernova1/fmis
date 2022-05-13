@@ -112,7 +112,7 @@
 $('#btnsubmit').click(function(){
 
     var yearid = $('#year option:selected').val()
-
+    alert($('#year option:selected').val());
     $.ajax({
         type:'GET',
         data: { id: yearid},

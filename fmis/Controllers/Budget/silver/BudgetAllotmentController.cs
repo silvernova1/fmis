@@ -45,17 +45,20 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? id, int? post_yearly_reference)
         {
            /* const string yearly_reference = "_yearly_reference";*/
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
 
+            const string yearly_reference = "_yearly_reference";
+            HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
+            
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
-            //.Where(x=>x.YearlyReferenceId == (int)HttpContext.Session.GetInt32(yearly_reference))
+            .Where(x=>x.YearlyReferenceId == (int)post_yearly_reference)
             .AsNoTracking()
             .ToListAsync();
 
