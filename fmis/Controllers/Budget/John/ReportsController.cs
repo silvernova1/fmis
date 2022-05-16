@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -40,8 +41,20 @@ namespace fmis.Controllers.Budget.John
         }
 
 
-        public IActionResult Export(string fn, string date_from, string date_to)
+        public IActionResult Export(string fn, string date_from, string date_to, int? post_yearly_reference)
         {
+            const string yearly_reference = "_yearly_reference";
+
+            int id = 0;
+            if (post_yearly_reference != null)
+            {
+                HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
+                id = (int)post_yearly_reference;
+            }
+            else
+            {
+                id = (int)HttpContext.Session.GetInt32(yearly_reference);
+            }
 
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
@@ -99,7 +112,8 @@ namespace fmis.Controllers.Budget.John
                                           status = oa.status,
                                           allotmentClassID = f.AllotmentClassId,
                                           appropriationID = f.AppropriationId,
-                                          fundSourceTitle = f.FundSourceTitle
+                                          fundSourceTitle = f.FundSourceTitle,
+                                          fundSourceBudgetAllotmentId = f.BudgetAllotmentId
                                       }).ToList();
             var PsTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.Beginning_balance);
 
@@ -556,7 +570,7 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(a => a.Appropriation)
                     .Include(budget_allotment => budget_allotment.FundSources)
                         .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                        .ThenInclude(uacs => uacs.Uacs).ToList();
+                        .ThenInclude(uacs => uacs.Uacs).Where(x=>x.YearlyReferenceId == id).ToList();
 
                 // var realignment_amount = 50;
 
@@ -605,7 +619,7 @@ namespace fmis.Controllers.Budget.John
                     currentRow++;
 
 
-                    if (_MyDbContext.FundSources.Where(x=>x.AllotmentClassId == 1 && x.AppropriationId == 1).Any()) {
+                    if (_MyDbContext.FundSources.Where(x=>x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 2).Any()) {
 
                         ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
                         ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
@@ -641,7 +655,7 @@ namespace fmis.Controllers.Budget.John
 
                     //START PS LOOP
 
-                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION").ToList())
+                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION" && x.BudgetAllotmentId == id).ToList())
                     {
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
@@ -1156,7 +1170,7 @@ namespace fmis.Controllers.Budget.John
 
 
                     }
-                    if (_MyDbContext.FundSources.Where(x=>x.AppropriationId ==1 && x.AllotmentClassId == 1).Any())
+                    if (_MyDbContext.FundSources.Where(x=>x.AppropriationId ==1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id).Any())
                     {
                         ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
                         ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
@@ -1637,7 +1651,7 @@ namespace fmis.Controllers.Budget.John
 
 
                     //START MOOE LOOP
-                    if (budget_allotment.FundSources.Where(x=>x.AllotmentClassId == 2).Any())
+                    if (budget_allotment.FundSources.Where(x=>x.AllotmentClassId == 2 && x.BudgetAllotmentId == id).Any())
                     {
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
@@ -2758,13 +2772,13 @@ namespace fmis.Controllers.Budget.John
                     var saa = _MyDbContext.Budget_allotments
                         .Include(sub_allotment => sub_allotment.SubAllotment)
                         .ThenInclude(suballotment_amount => suballotment_amount.SubAllotmentAmounts)
-                        .ThenInclude(uacs => uacs.Uacs);
+                        .ThenInclude(uacs => uacs.Uacs).Where(x=>x.YearlyReferenceId == id);
 
 
                     foreach (BudgetAllotment b in saa)
                     {
 
-                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 1).Any())
+                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 1 && x.BudgetAllotmentId == id).Any())
                         {
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
@@ -3238,7 +3252,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId ==1 && x.AllotmentClassId == 1).Any())
+                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId ==1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id).Any())
                         {
                             //START SAA PS LOOP
                             ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
@@ -3921,7 +3935,7 @@ namespace fmis.Controllers.Budget.John
                             currentRow++;
                             //END SAA MOOE LOOP
                         }
-                        if (_MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 3).Any())
+                        if (_MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 3 && x.BudgetAllotmentId == id).Any())
                         {
                             //START SAA CO LOOP
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -4470,7 +4484,7 @@ namespace fmis.Controllers.Budget.John
 
 
                         //CONAP HEADER
-                        if(_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2).Any())
+                        if(_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any())
                         {
                             ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
@@ -5036,7 +5050,7 @@ namespace fmis.Controllers.Budget.John
                         //END CONAP PS LOOP
 
 
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 2).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 2 && x.BudgetAllotmentId == id).Any())
                         {
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
@@ -5511,31 +5525,8 @@ namespace fmis.Controllers.Budget.John
                         var unobligatedTotalinTotalMooeConap = MooeConapTotal - asAtTotalinTotalMooeConap.Where(x => x.appropriationID == 2 && x.allotmentClassID == 2).Sum(x => x.amount);
                         //var totalPercentPSConap = asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) / PsConapTotal;
 
-                        if(_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 2).Any())
+                        if(_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 2 && x.BudgetAllotmentId == id).Any())
                         {
-                                ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
-                                ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                                 ws.Cell(currentRow, 11).Style.Font.SetBold();
                                 ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
@@ -7031,8 +7022,8 @@ namespace fmis.Controllers.Budget.John
 
                             }
 
-                            var MooeTotalSaaConap = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
-                            var unobligatedTotalinTotalMOOESaaConap = MooeTotalSaaConap - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            var MooeTotalSaaConap = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                            var unobligatedTotalinTotalMOOESaaConap = MooeTotalSaaConap - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
                             var totalPercentMOOESaaConap = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.appropriationID == 2).Sum(x => x.amount) / allotment_total;
 
 
@@ -7122,7 +7113,7 @@ namespace fmis.Controllers.Budget.John
                             //END CONAP SAA MOOE LOOP
                     }
 
-                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 3).Any())
+                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 3 && x.BudgetAllotmentId == id).Any())
                         {
                             //START CONAP CO SAA LOOP
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -7130,7 +7121,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 1).Value = "CONAP CO SUB-ALLOTMENT";
                             currentRow++;
-                            foreach (SubAllotment subAllotment in budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 2))
+                            foreach (SubAllotment subAllotment in budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 2 && x.BudgetAllotmentId == id))
                             {
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
@@ -7436,7 +7427,7 @@ namespace fmis.Controllers.Budget.John
                             }
 
                             var CoTotalSaaConap = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
-                            var unobligatedTotalinTotalCoSaaConap = CoTotalSaaConap - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            var unobligatedTotalinTotalCoSaaConap = CoTotalSaaConap - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
                             var totalPercentCoSaaConap = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.appropriationID == 2).Sum(x => x.amount) / allotment_total;
 
 
@@ -7509,7 +7500,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1).Any() || _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1 && x.BudgetAllotmentId == id).Any() || _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Any())
                         {
                             //CURRENT APPROPRIATION
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -7520,7 +7511,7 @@ namespace fmis.Controllers.Budget.John
                             currentRow++;
                         }
                         
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 1).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id).Any())
                         {
                             ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
@@ -7981,7 +7972,7 @@ namespace fmis.Controllers.Budget.John
                         }
 
 
-                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 1).Any())
+                        if (_MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id).Any())
                         {
                             ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
@@ -8079,11 +8070,11 @@ namespace fmis.Controllers.Budget.John
                             }
                         }
 
-                        if (budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 2).Any()) {
+                        if (budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.BudgetAllotmentId == id).Any()) {
 
-                            var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).Sum(x => x.Beginning_balance);
-                            var unobligatedTotalinTotalMOOESaa = MooeTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                            var totalPercentMOOESaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3).Sum(x => x.amount) / allotment_total;
+                            var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                            var unobligatedTotalinTotalMOOESaa = MooeTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
+                            var totalPercentMOOESaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount) / allotment_total;
 
                             ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
@@ -8262,7 +8253,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                        var TotalCA = _MyDbContext.FundSources.Where(x => x.AppropriationId == 1).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1).Sum(x => x.Beginning_balance);
+                        var TotalCA = _MyDbContext.FundSources.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
 
                         ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
                         ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
@@ -8408,7 +8399,7 @@ namespace fmis.Controllers.Budget.John
 
                         currentRow++;
 
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any())
                         {
                             //START CONAP SUMMARY
                             ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -8493,7 +8484,7 @@ namespace fmis.Controllers.Budget.John
                                 currentRow++;
                             }
                         }
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 2).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.AllotmentClassId == 2 && x.BudgetAllotmentId == id).Any())
                         {
                             ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
@@ -8743,11 +8734,11 @@ namespace fmis.Controllers.Budget.John
                             }
                         }
 
-                        if (budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2).Any()) { 
+                        if (budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any()) { 
 
-                        var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
-                        var unobligatedTotalinTotalMOOESaa = MooeTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                        var totalPercentMOOESaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3).Sum(x => x.amount) / allotment_total;
+                        var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                        var unobligatedTotalinTotalMOOESaa = MooeTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
+                        var totalPercentMOOESaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount) / allotment_total;
 
                         ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 3).Style.Font.FontName = "Calibri Light";
@@ -8930,9 +8921,9 @@ namespace fmis.Controllers.Budget.John
                         }
 
 
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any())
                         {
-                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2).Sum(x => x.Beginning_balance);
+                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
 
                             ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
@@ -9086,7 +9077,7 @@ namespace fmis.Controllers.Budget.John
                     currentRow++;
                 }
 
-                var GrandTotals = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
+                var GrandTotals = _MyDbContext.FundSources.Where(x=>x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
 
                 ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
                 ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
