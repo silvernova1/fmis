@@ -7021,7 +7021,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
+                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault()?.FundSourceAmounts.FirstOrDefault()?.FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
