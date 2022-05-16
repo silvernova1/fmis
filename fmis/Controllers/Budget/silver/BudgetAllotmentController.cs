@@ -60,8 +60,7 @@ namespace fmis.Controllers
             else
             {
                 id = (int)HttpContext.Session.GetInt32(yearly_reference);
-            }
-
+            }           
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
