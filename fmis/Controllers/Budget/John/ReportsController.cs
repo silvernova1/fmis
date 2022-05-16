@@ -24,7 +24,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace fmis.Controllers.Budget.John
 {
-    //"SampleContexts": "Server=(localdb)\\mssqllocaldb;Database=FMIS;Trusted_Connection=True;MultipleActiveResultSets=true"
     public class ReportsController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -230,9 +229,9 @@ namespace fmis.Controllers.Budget.John
 
 
                 //PS SAA
-                var PsTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1).Sum(x => x.Beginning_balance);
-                var unobligatedTotalinTotalPSSaa = PsTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                var totalPercentPSSaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1).Sum(x => x.amount) / allotment_total;
+                var PsTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                var unobligatedTotalinTotalPSSaa = PsTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
+                var totalPercentPSSaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount) / allotment_total;
 
 
                 var wsFreeze = ws.Worksheet.Cell("Freeze View");
@@ -3843,9 +3842,9 @@ namespace fmis.Controllers.Budget.John
 
                             }
 
-                            var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).Sum(x => x.Beginning_balance);
-                            var unobligatedTotalinTotalMOOESaa = MooeTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                            var totalPercentMOOESaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3).Sum(x => x.amount) / allotment_total;
+                            var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                            var unobligatedTotalinTotalMOOESaa = MooeTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
+                            var totalPercentMOOESaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount) / allotment_total;
 
 
                             ws.Cell(currentRow, 11).Style.Font.SetBold();
@@ -4386,12 +4385,12 @@ namespace fmis.Controllers.Budget.John
 
                             }
 
-                            if (budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 3).Any())
+                            if (budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 3 && x.BudgetAllotmentId == id).Any())
                             {
 
-                                var CoTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 3).Sum(x => x.Beginning_balance);
-                                var unobligatedTotalinTotalCOSaa = CoTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                                var totalPercentCOSaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3).Sum(x => x.amount) / allotment_total;
+                                var CoTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 3  && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                                var unobligatedTotalinTotalCOSaa = CoTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
+                                var totalPercentCOSaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 3 && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount) / allotment_total;
 
                                 ws.Cell(currentRow, 11).Style.Font.SetBold();
                                 ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
@@ -8921,9 +8920,9 @@ namespace fmis.Controllers.Budget.John
                         }
 
 
-                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any())
+                        if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 2).Any() || _MyDbContext.SubAllotment.Where(x=>x.AppropriationId == 2).Any())
                         {
-                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2).Sum(x => x.Beginning_balance);
 
                             ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
