@@ -69,6 +69,11 @@ namespace fmis.Controllers
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             ViewBag.Balance = balance;
 
+            var div = _MyDbCOntext.FundSources.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            ViewBag.Div = div.ToString("{0:0.##}");
+            var res = div / balance * 100;
+            ViewBag.Res = String.Format("{0:0.##}", res);
+
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
