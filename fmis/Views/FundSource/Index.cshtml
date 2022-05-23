@@ -140,6 +140,12 @@
                 <th>
                     Obligated Amount
                 </th>
+                @if (@Model.FundSources.FirstOrDefault().AppropriationId == 2)
+                {
+                    <th>
+                            Previous Allotment?
+                    </th>
+                }
                 @* <th>
             Utilized Amount
         </th>*@
@@ -183,6 +189,14 @@
                         <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                     </b>
                 </td>
+                @if (@Model.FundSources.FirstOrDefault().AppropriationId == 2)
+                {
+                <td>
+                    <b class="blue">
+                        <input type="checkbox" class="custom-control-input"/>
+                    </b>
+                </td>
+                }
 
                 @* <td>
             <b class="blue">
@@ -260,4 +274,14 @@ else
         fundsource_token = generate_token();
         $("#funds_input_token").val(fundsource_token);
     }
+
+    $(function(){
+    var test = localStorage.input === 'true'? true: false;
+    $('input').prop('checked', test || false);
+    });
+
+    $('input').on('change', function() {
+        localStorage.input = $(this).is(':checked');
+        console.log($(this).is(':checked'));
+    });
 </script>

@@ -50,5 +50,7 @@ namespace fmis.Models.John
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
 
+        public bool IsPreviousAllotment { get; set; }
+
     }
 }
