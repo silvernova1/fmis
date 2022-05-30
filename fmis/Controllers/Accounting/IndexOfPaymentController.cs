@@ -92,7 +92,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            ViewBag.DvId = new SelectList((from s in _MyDbContext.DV.ToList()
+            ViewBag.DvId = new SelectList((from s in _MyDbContext.Dv.ToList()
                                                   select new
                                                   {
                                                       DvId = s.DvId,

@@ -48,7 +48,7 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             ViewData["GetDvNo"] = searchString;
 
-            var dv = from m in _MyDbContext.DV
+            var dv = from m in _MyDbContext.Dv
                      select m;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -96,7 +96,7 @@ namespace fmis.Controllers.Accounting
                 return NotFound();
             }
 
-            var dv = await _MyDbContext.DV.FindAsync(id);
+            var dv = await _MyDbContext.Dv.FindAsync(id);
             if (dv == null)
             {
                 return NotFound();
@@ -109,7 +109,7 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Edit(Dv dv)
         {
 
-            var dvs = await _MyDbContext.DV.Where(x => x.DvId == dv.DvId).AsNoTracking().FirstOrDefaultAsync();
+            var dvs = await _MyDbContext.Dv.Where(x => x.DvId == dv.DvId).AsNoTracking().FirstOrDefaultAsync();
             dvs.DvNo = dv.DvNo;
 
             PopulateFundClusterDropDownList();
@@ -123,15 +123,15 @@ namespace fmis.Controllers.Accounting
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var dvs = await _MyDbContext.DV.Where(p => p.DvId == ID).FirstOrDefaultAsync();
-            _MyDbContext.DV.Remove(dvs);
+            var dvs = await _MyDbContext.Dv.Where(p => p.DvId == ID).FirstOrDefaultAsync();
+            _MyDbContext.Dv.Remove(dvs);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         public IActionResult selectAT(int id)
         {
-            var branches = _MyDbContext.DV.ToList();
+            var branches = _MyDbContext.Dv.ToList();
             return Json(branches.Where(x => x.DvId == id).ToList());
         }
 

@@ -59,6 +59,8 @@
                 <input asp-for="FundSourceTitleCode" id="pap_code1" class="form-control" readonly />
                 <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
             </div>
+            @Html.CheckBoxFor(x => x.IsPreviousAllotment, new { @class = "custom-checkbox" })
+            Add to <b>@ViewBag.result</b> Allotment?
 
         </div>
     </div>

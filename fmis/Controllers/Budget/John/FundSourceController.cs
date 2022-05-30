@@ -82,6 +82,12 @@ namespace fmis.Controllers.Budget.John
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
+            string year = budget_allotment.Yearly_reference.YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(1);
+            var result = res.Year.ToString();
+            ViewBag.result = result;
+
             return View(budget_allotment);
         }
 
@@ -161,6 +167,7 @@ namespace fmis.Controllers.Budget.John
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
                 .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
+                .Include(x=>x.BudgetAllotment).ThenInclude(x=>x.Yearly_reference)
                 .FirstOrDefault();
 
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
@@ -169,6 +176,12 @@ namespace fmis.Controllers.Budget.John
             PopulatePrexcsDropDownList(fundsource.PrexcId);
             PopulateRespoDropDownList();
             PopulateFundDropDownList();
+
+            string year = fundsource.BudgetAllotment.Yearly_reference.YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(1);
+            var result = res.Year.ToString();
+            ViewBag.result = result;
 
             return View(fundsource);
         }
@@ -179,7 +192,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(FundSource fundSource)
+        public async Task<IActionResult> Edit(FundSource fundSource, bool check, int fundsourceId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
@@ -191,6 +204,7 @@ namespace fmis.Controllers.Budget.John
             fundsource_data.FundId = fundSource.FundId;
             fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
             fundsource_data.FundSourceTitleCode = fundSource.FundSourceTitleCode;
+            fundsource_data.IsPreviousAllotment = fundSource.IsPreviousAllotment;
             fundsource_data.PapType = fundSource.PapType;
             fundsource_data.RespoId = fundSource.RespoId;
             fundsource_data.Beginning_balance = beginning_balance;

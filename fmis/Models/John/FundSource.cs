@@ -18,6 +18,7 @@ namespace fmis.Models.John
         public string FundSourceTitle { get; set; }
         public string FundSourceTitleCode { get; set; }
         public string PapType { get; set; }
+        public bool IsPreviousAllotment { get; set; }
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
         [JsonIgnore]
@@ -49,8 +50,6 @@ namespace fmis.Models.John
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
-
-        public bool IsPreviousAllotment { get; set; }
 
     }
 }

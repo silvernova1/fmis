@@ -41,26 +41,6 @@ namespace fmis
         public void ConfigureServices(IServiceCollection services)
         {
 
-            /*services.AddDbContext<MyDbContext>(options =>
-                    options.UseSqlServer(
-                        Configuration.GetConnectionString("UserContextConnection")));
-            services.AddScoped<IUserClaimsPrincipalFactory<fmisUser>,
-                ApplicationUserClaimsPrincipalFactory>();
-
-            services.AddDefaultIdentity<fmisUser>(options => {
-                options.SignIn.RequireConfirmedAccount = false;
-                options.User.AllowedUserNameCharacters = " abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
-                options.Password.RequiredLength = 3;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireDigit = false;
-            }).AddRoles<IdentityRole>()
-                    .AddDefaultTokenProviders()
-                    .AddEntityFrameworkStores<MyDbContext>();*/
-
-
-
             services.AddControllers();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -163,6 +143,8 @@ namespace fmis
         options.UseSqlServer(Configuration.GetConnectionString("DeductionContext")));
             services.AddDbContext<FundClusterContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("FundClusterContext")));
+            services.AddDbContext<DvContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("DvContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
