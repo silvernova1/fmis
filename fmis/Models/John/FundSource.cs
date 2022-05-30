@@ -18,33 +18,27 @@ namespace fmis.Models.John
         public string FundSourceTitle { get; set; }
         public string FundSourceTitleCode { get; set; }
         public string PapType { get; set; }
-
+        public bool IsPreviousAllotment { get; set; }
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
         [JsonIgnore]
         public RespoCenter RespoCenter { get; set; }
-
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         [JsonIgnore]
         public Prexc Prexc { get; set; }
-
-
         [ForeignKey("AllotmentClass")]
         public int AllotmentClassId { get; set; }
         [JsonIgnore]
         public AllotmentClass AllotmentClass { get; set; }
-
         [ForeignKey("Appropriation")]
         public int AppropriationId { get; set; }
         [JsonIgnore]
         public Appropriation Appropriation { get; set; }
-
         [ForeignKey("Fund")]
         public int FundId { get; set; }
         [JsonIgnore]
         public Fund Fund { get; set; }
-
         public decimal Beginning_balance { get; set; }
         public decimal Remaining_balance { get; set; }
         public decimal obligated_amount { get; set; }

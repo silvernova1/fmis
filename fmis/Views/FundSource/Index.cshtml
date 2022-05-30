@@ -55,19 +55,6 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-orange2">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSources.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
-                </div>
-            </div>
-        </div>
         <div class="infobox infobox-blue">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
@@ -129,13 +116,10 @@
         <thead>
             <tr>
                 <th>
-                    Fund Source Code
+                    Pap Title
                 </th>
                 <th>
                     Fund Source Title
-                </th>
-                <th>
-                    Appropriation (Source)
                 </th>
                 <th>
                     Responsibility Center
@@ -152,12 +136,16 @@
                 <th>
                     Remaining Balance
                 </th>
-                <th>
-                    Realignment Amount
-                </th>
+
                 <th>
                     Obligated Amount
                 </th>
+                @if (@Model.FundSources.FirstOrDefault().AppropriationId == 2)
+                {
+                    <th>
+                         Added to <b>@ViewBag.result</b> Allotment
+                    </th>
+                }
                 @* <th>
             Utilized Amount
         </th>*@
@@ -168,20 +156,19 @@
             {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitleCode)
+
+                    @Html.DisplayFor(modelItem => item.Prexc.pap_title)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FundSourceTitle)
                 </td>
-                <td>
-                   @item.Appropriation.AppropriationSource
-                </td>
+
                  <td>
                    @item.RespoCenter.Respo
                 </td>
                 <td>
                     <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                  @*  <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>*@
+                    <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
                 </td>
                 <td>
                     <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
@@ -198,14 +185,18 @@
                     </b>
                 </td>
                 <td>
-                    <b class="orange">
-                        <span>@item.realignment_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
                     <b class="blue">
                         <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                     </b>
+                </td>
+                @*@if (@Model.FundSources.FirstOrDefault().AppropriationId == 2)
+                {}*@
+                <td>
+                    @*@Html.HiddenFor(modelItem => item.FundSourceId)
+                    <input type="checkbox" id="@item.IsPreviousAllotment"/>*@
+                    @Html.CheckBoxFor(m =>@item.IsPreviousAllotment, new { onclick = "UpdateCheck(this)",
+                                                       data_fundsourceid = @item.FundSourceId,
+                                                       data_budgetallotmentid = @item.BudgetAllotmentId, @disabled = "disabled" })
                 </td>
 
                 @* <td>
@@ -250,7 +241,6 @@ else
          var AllotmentClassId = @ViewBag.AllotmentClassId;
          var AppropriationId = @ViewBag.AppropriationId;
          var url = '@Url.Action("Edit", "FundSource")';
-         //url += "?budget_id=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id
          url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentId + "&fund_source_id=" + fund_source_id;
          $.get(url, function (result) {
             setTimeout(function () {
@@ -280,8 +270,4 @@ else
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function fundSourceToken() {
-        fundsource_token = generate_token();
-        $("#funds_input_token").val(fundsource_token);
-    }
 </script>

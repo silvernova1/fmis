@@ -84,16 +84,6 @@ namespace fmis.Controllers
 
         }
 
-        public async Task<IActionResult> AA()
-        {
-            ViewBag.filter = new FilterSidebar("master_data", "uacs", "aa");
-            ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _context.Uacs.Where(s => s.status == "activated" && s.uacs_type == 4).ToListAsync());
-            ViewBag.temp = json;
-
-            return View("~/Views/Carlo/Uacs/AA.cshtml");
-
-        }
 
 
         // GET: Obligations/Create
@@ -211,41 +201,6 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult SaveUacsAA(List<UacsData> data)
-        {
-            var data_holder = this._context.Uacs;
-
-            foreach (var item in data)
-            {
-                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
-                {
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Account_title = item.Account_title.ToUpper();
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().Expense_code = item.Expense_code;
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
-                    data_holder.Where(s => s.token == item.token).FirstOrDefault().uacs_type = 4;
-
-                    this._context.SaveChanges();
-                }
-                else if (item.Account_title != null || item.Expense_code != null)  //save
-                {
-                    var uacs = new Uacs(); //clear object
-                    uacs.Account_title = item.Account_title.ToUpper();
-                    uacs.Expense_code = item.Expense_code;
-                    uacs.status = "activated";
-                    uacs.uacs_type = 4;
-                    uacs.token = item.token;
-
-                    this._context.Uacs.Update(uacs);
-                    this._context.SaveChanges();
-                }
-            }
-
-            return Json(data);
-        }
 
 
         // POST: Uacs/Create
