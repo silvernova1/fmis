@@ -59,8 +59,6 @@
                 <input asp-for="FundSourceTitleCode" id="pap_code1" class="form-control" readonly />
                 <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
             </div>
-            @Html.CheckBoxFor(x => x.IsPreviousAllotment, new { @class = "custom-checkbox" })
-            Add to <b>@ViewBag.result</b> Allotment?
 
         </div>
     </div>
@@ -89,12 +87,9 @@
 </form>
 
 <script>
-
   $(document).ready(function () {
       $('.select2').select2();
     });
-
-
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
         $.ajax({
@@ -113,14 +108,11 @@
             }
         });
     }
-
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
-
     var fundsource_id = @Model.FundSourceId;
     var BudgetAllotmentId = @Model.BudgetAllotmentId;
     var fundsource_token = $(".fundsource_token").val();
-
     let guid = () => {
     let s4 = () => {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -129,7 +121,6 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
     function ajaxServer(ajax_data, url) {
         $.ajax({
             type: 'POST',
@@ -142,7 +133,6 @@
             }
         });
     }
-
     $(".obligation_amount").html(obligation_amount);
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown = [];
@@ -157,7 +147,6 @@
         get_account_title[this.UacsId] = this.Account_title;
         uacs_counter++;
     });
-
     var fundsource_amount_uacs = $.parseJSON($(".fundsource_amount_uacs").val());
     const data = [];
     var counter = 0;
@@ -167,7 +156,6 @@
         counter++;
         obligation_amount += this.beginning_balance;
     });
-
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount_edit');
@@ -236,12 +224,10 @@
             hot.setDataAtCell(row, 2, generate_token());
         },
         afterChange: function (changes, source) {
-
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 CHECK_AFTER_ROW = false;
                 return;
             }
-
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if (col == 0) {
                     var ajax_data = [];
@@ -260,7 +246,6 @@
                     CHECK_FIRST_ROW = true;
                 }
             });
-
             if (CHECK_FIRST_ROW) {
                 CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
             } else {
@@ -275,10 +260,8 @@
                         fundsource_token: fundsource_token
                     });
                 });
-
                 let str = "\u20B1"
                 var sub_total = 0;
-
                 $.each(this.getData(), function () { sub_total += this[1]; });
                 $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
                 ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');

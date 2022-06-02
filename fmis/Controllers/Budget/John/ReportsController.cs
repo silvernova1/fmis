@@ -634,7 +634,8 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(a => a.Appropriation)
                     .Include(budget_allotment => budget_allotment.FundSources)
                         .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                        .ThenInclude(uacs => uacs.Uacs).Where(x => x.YearlyReferenceId == id).ToList();
+                        .ThenInclude(uacs => uacs.Uacs).Include(sub_allotment => sub_allotment.SubAllotment)
+                    .Where(x => x.YearlyReferenceId == id).ToList();
 
                 // var realignment_amount = 50;
 
@@ -6133,7 +6134,6 @@ namespace fmis.Controllers.Budget.John
                             //END CONAP MOOE LOOP
                         }
 
-
                         if (_MyDbContext.SubAllotment.Where(x => x.AppropriationId ==2 && x.AllotmentClassId == 2).Any())
                         {
                             //START CONAP SAA MOOE LOOP
@@ -6157,6 +6157,8 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 1).Value = subAllotment.FundId.ToString();
                                 ws.Cell(currentRow, 1).Value = subAllotment.Suballotment_title?.ToUpper().ToString();
+
+                                
 
                                 ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
@@ -6250,6 +6252,7 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 13).Value = suballotment_amount.beginning_balance;
                                         ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                                     }
                                     else
                                     {
@@ -7458,7 +7461,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
+                                //ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources?.FirstOrDefault().FundSourceAmounts?.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources?.FirstOrDefault().Beginning_balance;
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
