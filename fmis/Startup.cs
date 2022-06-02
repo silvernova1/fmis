@@ -136,7 +136,7 @@ namespace fmis
             services.AddDbContext<CategoryContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("CategoryContext")));
             services.AddDbContext<IndexofpaymentContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("IndexofpaymentContext")));
+        options.UseSqlServer(Configuration.GetConnectionString("IndexOfPaymentContext")));
             services.AddDbContext<PayeeContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("PayeeContext")));
             services.AddDbContext<DeductionContext>(options =>
