@@ -18,9 +18,11 @@ namespace fmis.Models.Accounting
         public DateTime Date { get; set; }
         public string Particulars { get; set; }
         public string Amount { get; set; }
-        [ForeignKey("FundCluster")]
+
+        [ForeignKey("FundClusterId")]
         public int FundClusterId { get; set; }
         [JsonIgnore]
         public FundCluster FundCluster { get; set; }
+
     }
 }

@@ -1,5 +1,19 @@
 ﻿@model fmis.Models.Accounting.Dv;
 
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Edit Disbursement Voucher </h3></center>
 <hr />
@@ -10,7 +24,7 @@
             <input type="hidden" asp-for="DvId" />
             <div class="form-group">
                 <h5>Fund Cluster: </h5>
-                <select class="form-control" asp-for="FundClusterId" asp-items="ViewBag.FundClusterId"></select>
+                @Html.DropDownList("FundClusterId", null,  htmlAttributes: new { @class = "form-control" })
             </div>
             <div class="form-group">
                 <h5>Dv #: </h5>
@@ -38,7 +52,7 @@
             </div>
             <div class="form-group">
                 <h5>Amount: </h5>
-                <input asp-for="Amount" class="form-control" />
+                <input asp-for="Amount" type="number" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <br />
