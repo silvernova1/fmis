@@ -161,6 +161,8 @@ namespace fmis
        options.UseSqlServer(Configuration.GetConnectionString("PayeeContext")));
             services.AddDbContext<DeductionContext>(options =>
       options.UseSqlServer(Configuration.GetConnectionString("DeductionContext")));
+            services.AddDbContext<DvContext>(options =>
+      options.UseSqlServer(Configuration.GetConnectionString("DvContext")));
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
