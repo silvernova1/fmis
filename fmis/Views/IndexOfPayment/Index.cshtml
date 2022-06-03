@@ -254,14 +254,11 @@
             </div>
         </div>
     </div>
-
+@*
+    <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
     <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-xs" />
-    @*<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
 
 </form>
-@*<button type="button" asp-controller="IndexOfPayment" asp-action="Create" class="btn btn-success btn-sm" onclick="createIndexOfPayment@Model.IndexOfPaymentId)">
-        <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>
-    </button> |*@
 
 <br />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -277,7 +274,7 @@
     });
     // dummy/live
 
-    @*$("#CategoryId").on('change', function () {
+    $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
@@ -315,11 +312,11 @@
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
-    });*@
+    });
 
 
     //local
-    $("#CategoryId").on('change', function () {
+   @* $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
@@ -357,7 +354,7 @@
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
-    });
+    });*@
 
     $(document).ready(function () {
         $('.filter').change(function () {

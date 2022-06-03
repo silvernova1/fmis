@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using fmis.Models.Accounting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace fmis.Data.Accounting
          : base(options)
         {
         }
+        public DbSet<Dv> Dv { get; set; }
     }
 }

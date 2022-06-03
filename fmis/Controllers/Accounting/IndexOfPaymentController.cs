@@ -101,16 +101,16 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            ViewBag.DvId = new SelectList((from s in _MyDbContext.DV.ToList()
+            ViewBag.DvId = new SelectList((from s in _MyDbContext.Dv.ToList()
                                                   select new
                                                   {
                                                       DvId = s.DvId,
-                                                      DvDescription = s.DvDescription,
+                                                      DvNo = s.DvNo,
                                                       Payee = s.Payee,
 
                                                   }),
                                        "DvId",
-                                       "DvDescription",
+                                       "DvNo",
                                        "Payee",
                                        null);
 
@@ -137,6 +137,7 @@ namespace fmis.Controllers.Accounting
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
         public  IActionResult Create(IndexOfPayment indexOfPayment)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
@@ -147,6 +148,10 @@ namespace fmis.Controllers.Accounting
 
             indexOfPayment.CategoryDescription = cat_desc;
 
+=======
+        public IActionResult Create(IndexOfPayment indexOfPayment)
+        {
+>>>>>>> 3772890c2b9b3e6f22114bd63f5c7c04675c94eb
             _IndexofpaymentContext.Add(indexOfPayment);
             _IndexofpaymentContext.SaveChanges();
             return RedirectToAction(nameof(Index));

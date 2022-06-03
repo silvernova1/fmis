@@ -90,6 +90,12 @@ namespace fmis.Controllers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
+            string year = budget_allotment.Yearly_reference.YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(1);
+            var result = res.Year.ToString();
+            ViewBag.result = result;
+
 
             return View(budget_allotment);
         }
@@ -109,7 +115,7 @@ namespace fmis.Controllers
             PopulatePrexcDropDownList();
             PopulateRespoDropDownList();
             PopulateFundDropDownList();
-            
+
 
             return View(); //open create
         }
@@ -132,7 +138,7 @@ namespace fmis.Controllers
             subAllotment.Remaining_balance = sub_allotment_amount.Sum(x => x.remaining_balance);
 
 
-            var prexcID = _MyDbContext.SubAllotment.Where(x => x.prexcId == subAllotment.prexcId).FirstOrDefault();
+            //var prexcID = _MyDbContext.SubAllotment.Where(x => x.prexcId == subAllotment.prexcId).FirstOrDefault();
 
             _context.Add(subAllotment);
             
@@ -154,8 +160,8 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            var suballotment = _MyDbContext.SubAllotment.Where(x => x.SubAllotmentId == sub_allotment_id)
-                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated"))
+            var suballotment = _MyDbContext.SubAllotment?.Where(x => x.SubAllotmentId == sub_allotment_id)
+                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated")).Include(x=>x.Budget_allotment).ThenInclude(x=>x.Yearly_reference)
                 .FirstOrDefault();
 
             ViewBag.AllotmentClassId = AllotmentClassId;
@@ -164,6 +170,12 @@ namespace fmis.Controllers
 
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
+
+            string year = suballotment.Budget_allotment.Yearly_reference.YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(1);
+            var result = res.Year.ToString();
+            ViewBag.result = result;
 
             PopulatePrexcDropDownList(suballotment.prexcId);
             PopulateRespoDropDownList();
@@ -190,6 +202,7 @@ namespace fmis.Controllers
             sub_allotment_data.FundId = subAllotment.FundId;
             sub_allotment_data.Suballotment_title = subAllotment.Suballotment_title;
             sub_allotment_data.Description = subAllotment.Description;
+            sub_allotment_data.IsAddToNextAllotment = subAllotment.IsAddToNextAllotment;
             sub_allotment_data.Date = subAllotment.Date;
             sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
             sub_allotment_data.PapType = subAllotment.PapType;

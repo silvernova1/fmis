@@ -65,10 +65,11 @@ namespace fmis.Data
         public DbSet<ObligationTrustFund> ObligationTrustFund { get; set; }
         public DbSet<ObligationAmountTrustFund> ObligationAmountTrustFund { get; set; }
         public DbSet<Category> Category { get; set; }
-        public DbSet<IndexOfPayment> IndexOfPayment { get; set; }
+        public DbSet<IndexOfPayment> Indexofpayment { get; set; }
         public DbSet<Payee> Payee { get; set; }
         public DbSet<Deduction> Deduction { get; set; }
-        public DbSet<Dv> DV { get; set; }
+        public DbSet<Dv> Dv { get; set; }
+        public DbSet<FundCluster> FundCluster { get; set; }
 
 
 
@@ -79,72 +80,6 @@ namespace fmis.Data
 
 
             base.OnModelCreating(modelBuilder);
-
-
-
-            /*modelBuilder.Entity<BudgetAllotment>()
-                .Property(b => b.CreatedAt)
-                .HasDefaultValueSql("getdate()");*/
-
-            /* modelBuilder.Entity<BudgetAllotment>()
-                 .Property(b => b.CreatedAt)
-                 .HasDefaultValueSql("getdate()");*/
-
-            //1:M relationship to budget allotments and fundsources
-            /*modelBuilder.Entity<FundSource>()
-            .HasOne(p => p.BudgetAllotment)
-            .WithMany(b => b.FundSources);*/
-
-
-            //1:M relationship to budget allotments and fundsourceamounts
-            /* modelBuilder.Entity<FundSourceAmount>()
-             .HasOne(p => p.FundSource)
-             .WithMany(b => b.FundSourceAmounts);*/
-
-            //1:M relationship to budget allotments and fundsourceamounts
-            /*modelBuilder.Entity<FundSourceAmount>()
-            .HasOne(p => p.Budget_allotment)
-            .WithMany(b => b.FundSourceAmounts);*/
-
-            //1:M relationship to budget allotments and sub allotments
-
-
-            //1:M relationship
-            /*modelBuilder.Entity<FundSourceAmount>()
-            .HasOne(p => p.FundSource)
-            .WithMany(b => b.FundSourceAmounts);*/
-
-            /*modelBuilder.Entity<FundSource>()
-           .HasKey(s => s.FundSourceId);*/
-
-            /*  //1:M relationship
-              modelBuilder.Entity<Suballotment_amount>()
-              .HasOne(p => p.Sub_allotment)
-              .WithMany(b => b.Suballotment_amount);*/
-
-            /*modelBuilder.Entity<Sub_allotment>()
-           .HasKey(s => s.SubAllotmentId);*/
-
-
-            //arnell
-            /*modelBuilder.Entity<Personal_Information>()
-           .HasKey(s => s.Pid);
-            modelBuilder.Entity<ManageUsers>()
-           .HasKey(s => s.Id);
-
-            modelBuilder.Entity<Personal_Information>()
-           .HasKey(s => s.Pid);
-            modelBuilder.Entity<Requesting_office>()
-           .HasKey(s => s.Id);*/
-
-            //Yearylyref
-            /* modelBuilder.Entity<Yearly_reference>()
-            .HasKey(s => s.YearlyReferenceId);
-
-             modelBuilder.Entity<BudgetAllotment>()
-            .HasOne<Yearly_reference>(d => d.Yearly_reference)
-            .WithOne(s => s.Budget_allotment);*/
-
 
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
