@@ -16,7 +16,6 @@
         -webkit-appearance: none;
         margin: 0;
     }
-
     /* Firefox */
     input[type=number] {
         -moz-appearance: textfield;
@@ -28,646 +27,337 @@
     Index of Payment
 </h3>
 <hr>
-<div class="row" style="margin-left:2px;">
-    <div class="col-md-3">
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-3">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label>SELECT CATEGORY:</label>
-                @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "select2 form-control"})
+                @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "select2 form-control" })
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>DV #:</label>
+                @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                @*<select asp-items="ViewBag.DvId" class="form-control select2"> </select>*@
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>PAYEE :</label>
+                <input id="payee" class="form-control" readonly />
+            </div>
+        </div>
+        <div>
+            <div class="col-md-3">
+                <label>DV DATE:</label>
+                <input type="date" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
         </div>
 
-    @*<div class="col-md-3">
-        <div class="form-group">
-            <label>CATEGORY:</label>
-            <form>
-                <select class="filter select2 form-control">
-                    <option value="0"> SELECT CATEGORY </option>
-                    <option value="1"> PURCHASE OF GOODS AND SERVICES </option>
-                    <option value="2"> ADVANCE PAYMENT TO CONTRACTOR </option>
-                    <option value="3"> PROGRESS BILLING-INFRA </option>
-                    <option value="4"> PAYMENT OF OFFICE RENTAL </option>
-                    <option value="5"> PAYMENT OF RENTAL (EQUIPMENT) </option>
-                    <option value="6"> PAYMENT OF BAC HONORARIA </option>
-                    <option value="7"> PAYMENT OF HONORARIA TO RESOURCE PERSONS </option>
-                    <option value="8"> PAYMENT OF FIDELITY BOND </option>
-                    <option value="9"> REPLENISHMENT OF PETTY CASH </option>
-                    <option value="10"> PAYMENT OF CASH ADVANCE FOR TRAVEL </option>
-                    <option value="12"> PAYMENT OF CASH ADVANCE FOR SPECIAL DISBURSING OFFICER </option>
-                    <option value="12"> PAYMENT OF CASH ADVANCE FOR PETTY CASH </option>
-                    <option value="13"> PAYMENT OF COMMUNICATION ALLOWANCE </option>
-                    <option value="14"> PAYMENT OF ELECTRICITY </option>
-                    <option value="15"> PAYMENT OF WATER BILL </option>
-                    <option value="16"> PAYMENT OF TELEPHONE BILLS/INTERNET </option>
-                    <option value="17"> REIMBURSEMENT OF TRAVELLING EXPENSES </option>
-                    <option value="18"> OTHER REIMBURSEMENTS </option>
-                    <option value="19"> PAYMENT TO AIRLINE COMPANIES </option>
-                    <option value="20"> PAYMENT OF FUEL AND LUBRICANT EXPENSES </option>
-                    <option value="21"> TAX REFUND </option>
-                    <option value="22"> PAYMENT OF SALARIES TO JOB ORDER PERSONNEL </option>
-                    <option value="23"> PAYMENT OF BASIC SALARY AND PERA (REGULAR, PS CONTRACTUAL) </option>
-                    <option value="24"> PAYMENT OF SUBSISTENCE AND ALLOWANCE UNDER MAGNA CARTA </option>
-                    <option value="25"> PAYMENT OF HAZARD PAY UNDER MAGNA CARTA </option>
-                    <option value="26"> PAYMENT OF LONGEVITY PAY </option>
-                    <option value="27"> PAYMENT OF TERMINAL LEAVE PAY </option>
-                    <option value="28"> PAYMENT OF FIRST SALARY </option>
-                    <option value="29"> PAYMENT OF LAST SALARY </option>
-                    <option value="30"> REMITTANCE OF TAXES </option>
-                    <option value="31"> PHILHEALTH REMITTANCE </option>
-                    <option value="32"> PAG-IBIG REMITTANCE </option>
-                    <option value="33"> REMITTANCE OF OTHER PAYABLES </option>
-                </select>
-            </form>
-        </div>*@
-    </div>
-
-    <div class="col-md-3">
-        <div class="form-group">
-            <label>DV #:</label>
-            @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
-            @*<select asp-items="ViewBag.DvId" class="form-control select2"> </select>*@
-
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>PARTICULARS:</label>
+                <input id="particular" class="form-control" />
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            <label>PAYEE :</label>
-            @* <select asp-items="ViewBag.PayeeId" class="form-control select2"> </select>*@
-            <input id="payee" class="form-control" readonly />
+    <div class="row">
+        <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
+            <div class="form-group">
+                <label>PO #:</label>
+                <input id="po" class="form-control" />
+            </div>
         </div>
-    </div>
-    <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
-        <div class="form-group">
-            <label>PO #:</label>
-            <input id="po" class="form-control"/>
+        <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
+            <div class="form-group">
+                <label>PROJECT ID:</label>
+                <input id="pi" class="form-control" />
+            </div>
         </div>
-    </div>
-    <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
-        <div class="form-group">
-            <label>PROJECT ID:</label>
-            <input id="po" class="form-control"/>
+        <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
+            <div class="form-group">
+                <label>INVOICE #:</label>
+                <input id="invoice" class="form-control" />
+            </div>
         </div>
-    </div>
-</div>
-
-    <div class="col-md-3">
-        <label>DV DATE:</label>
-        <input type="date" class="form-control" />
-        <span class="text-danger"></span>
-    </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            <label>PARTRICULARS:</label>
-            <input class="form-control" />
+        <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+            <div class="form-group">
+                <label>PERIOD COVERED:</label>
+                <input id="covered" class="form-control" />
+            </div>
         </div>
-    </div>
-    <div class="col-md-3" name="hidden-panel" id="hidden-panel">
-        <div class="form-group">
-            <label>INVOICE #:</label>
-            <input class="form-control" />
-        </div>
-    </div>
-
-
-<div class="row">
-    <div class="filterable" data-ref="1" hidden>
-        <div class="row">
-            <div class="col-md-2">
+        <div>
+            <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                 <div class="form-group">
-                    <label>PO #: </label>
-                    <input class="form-control" />
+                    <label>S.O #:</label>
+                    <input id="so" class="form-control" />
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                 <div class="form-group">
-                    <label>INVOICE #:</label>
-                    <input class="form-control" />
+                    <label>TRAVEL PERIOD:</label>
+                    <input id="travel" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
+                <div class="form-group">
+                    <label>ACCOUNT #:</label>
+                    <input id="account" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
+                <div class="form-group">
+                    <label># OF BILLING: (FIRST, SECOND):</label>
+                    <input id="billings" class="form-control" />
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="2" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PROJECT ID: </label>
-                    <input class="form-control" />
-                </div>
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group" style="margin-left: 120px">
+                <label style="font-weight:bold;">GROSS AMOUNT: </label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="3" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PROJECT ID: </label>
-                    <input class="form-control" />
-                </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label># OF BILLING (FIRST,SECOND):</label>
-                    <input class="form-control" />
-                </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="4" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="5" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="6" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="7" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="8" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="9" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="10" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>TRAVEL PERIOD: </label>
-                    <input type="date" class="form-control" />
-                </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group" style="margin-left: 115px">
+                <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>SO #: </label>
-                    <input class="form-control" />
-                </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="11" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>SO #: </label>
-                    <input class="form-control" />
-                </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group" style="margin-left: 120px">
+                <label style="font-weight:bold;">NET AMOUNT: </label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00" />
             </div>
         </div>
     </div>
 
-    <div class="filterable" data-ref="12" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>SO #: </label>
-                    <input class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
+    <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-xs" />
+    @*<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
 
-    <div class="filterable" data-ref="13" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
+</form>
+@*<button type="button" asp-controller="IndexOfPayment" asp-action="Create" class="btn btn-success btn-sm" onclick="createIndexOfPayment@Model.IndexOfPaymentId)">
+        <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>
+    </button> |*@
 
-    <div class="filterable" data-ref="14" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>ACCOUNT #: </label>
-                    <input class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="15" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>ACCOUNT #: </label>
-                    <input class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="16" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>ACCOUNT #: </label>
-                    <input class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="17" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>TRAVEL PERIOD: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>SO #: </label>
-                    <input class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="20" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="21" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="22" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="23" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="24" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="25" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="26" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="28" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="29" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="30" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="31" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="32" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filterable" data-ref="33" hidden>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>PERIOD COVERED: </label>
-                    <input type="date" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<hr />
 <br />
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group" style="margin-left: 120px">
-            <label style="font-weight:bold;">GROSS AMOUNT: </label>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control"  type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group" style="margin-left: 115px">
-            <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group" style="margin-left: 120px">
-            <label style="font-weight:bold;">NET AMOUNT: </label>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="form-group">
-            <input class="form-control" type="number" onchange="setTwoNumberDecimal" min="0" max="12" placeholder="0.00"  />
-        </div>
-    </div>
-</div>
-
-<a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>
-<br />
-
-<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" > </script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script>
-
+    $('.select2').select2();
+    $("#CategoryId").val(36);
+    $("#CategoryId").trigger("click");
     $(document).ready(function () {
-        $('.select2').select2();
+        for (i = 1; i <= 10; i++) {
+            $('#hidden-panel' + i).hide();
+        }
     });
+    // dummy/live
 
-    $(document).ready(function() {
-        $("#CategoryId").change(function() {
-            if ($("#CategoryId").val() == 1) {
-                $("#hidden-panel").show()
-                $("#hidden-panel1").show()
-            } else {
-                $("#hidden-panel").hide()
-                $("#hidden-panel1").hide()
-            }
-            if ($("#CategoryId").val() == 2) {
-                $("#hidden-panel2").show()
-            } else {
-                $("#hidden-panel2").hide()
-            }
-        })
-    }); 
+    @*$("#CategoryId").on('change', function () {
+        var value = $(this).val();
+        console.log(value);
+        const categ = [];
+        if (value == 36) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel5").show();
+            categ.push('2', '6', '7', '8', '9', '10');
+        } else if (value == 37) {
+            $("#hidden-panel2").show();
+            categ.push('1', '5', '6', '7', '8', '9', '10');
+        } else if (value == 38) {
+            $("#hidden-panel2").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '5', '6', '7', '8', '9');
+        } else if (value == 45 || value == 52) {
+            $("#hidden-panel8").show();
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '5', '10', '6', '9');
+        } else if (value == 46 || value == 47) {
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '5', '8', '6', '9', '10');
+        } else if (value == 48) {
+            $("#hidden-panel6").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10');
+        } else if (value == 49 || value == 50 || value == 51) {
+            $("#hidden-panel6").show();
+            $("#hidden-panel9").show();
+            categ.push('1', '5', '2', '7', '8', '10');
+        } else if ((value >= 39 && value <= 44) || (value >= 55 && value <= 68 && value != 62)) {
+            $("#hidden-panel6").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10');
+        } else if (value == 53 || value == 54 || value == 62) {
+            categ.push('1', '2', '5', '6', '7', '8', '9', '10');
+        }
+        categ.forEach(function (i) {
+            $('#hidden-panel' + i).hide();
+        });
+    });*@
+
+
+    //local
+    $("#CategoryId").on('change', function () {
+        var value = $(this).val();
+        console.log(value);
+        const categ = [];
+        if (value == 1) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel5").show();
+            categ.push('2', '6', '7', '8', '9', '10');
+        } else if (value == 2) {
+            $("#hidden-panel2").show();
+            categ.push('1', '5', '6', '7', '8', '9', '10');
+        } else if (value == 3) {
+            $("#hidden-panel2").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '5', '6', '7', '8', '9');
+        } else if (value == 10 || value == 17) {
+            $("#hidden-panel8").show();
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '5', '10', '6', '9');
+        } else if (value == 11 || value == 12) {
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '5', '8', '6', '9', '10');
+        } else if (value == 13) {
+            $("#hidden-panel6").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10');
+        } else if (value == 14 || value == 15 || value == 16) {
+            $("#hidden-panel6").show();
+            $("#hidden-panel9").show();
+            categ.push('1', '5', '2', '7', '8', '10');
+        } else if ((value >= 4 && value <= 9) || (value >= 20 && value <= 33 && value != 27)) {
+            $("#hidden-panel6").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10');
+        } else if (value == 18 || value == 19 || value == 27) {
+            categ.push('1', '2', '5', '6', '7', '8', '9', '10');
+        }
+        categ.forEach(function (i) {
+            $('#hidden-panel' + i).hide();
+        });
+    });
 
     $(document).ready(function () {
         $('.filter').change(function () {
@@ -680,7 +370,6 @@
             });
         });
     });
-
         get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
@@ -698,8 +387,6 @@
             }
         });
     }
-
-
     function setTwoNumberDecimal(event) {
         this.value = parseFloat(this.value).toFixed(2);
     }

@@ -11,20 +11,29 @@ using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
 using fmis.Areas.Identity.Data;
+using fmis.Data.Accounting;
 
 namespace fmis.Controllers.Accounting
 {
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
+        private readonly CategoryContext _CategoryContext;
+        private readonly DeductionContext _DeductionContext;
+        private readonly DvContext _DvContext;
+        private readonly IndexofpaymentContext _IndexofpaymentContext;
 
-        public IndexOfPaymentController(MyDbContext MyDbContext)
+        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext)
         {
             _MyDbContext = MyDbContext;
+            _CategoryContext = categoryContext;
+            _DeductionContext = deductionContext;
+            _DvContext = dvContext;
+            _IndexofpaymentContext = indexofpaymentContext;
         }
         //COMMENT
         [Route("Accounting/IndexOfPayment")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
@@ -106,8 +115,41 @@ namespace fmis.Controllers.Accounting
                                        null);
 
         }
+        // GET: Create
+        public IActionResult Create(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+            ViewBag.CategoryId = CategoryId;
+            ViewBag.DeductionId = DeductionId;
+            ViewBag.DvId = DvId;
 
+            PopulateIndexOfPaymentDropDownList();
+            PopulatePayeeDropDownList();
+            PopulateDeductionDropDownList();
+            PopulateDvDropDownList();
 
+            /* ViewBag.IndexOfPaymentId = IndexOfPaymentId;*/
 
+            return View(); //open create
+        }
+        // POST: Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public  IActionResult Create(IndexOfPayment indexOfPayment)
+        {
+            indexOfPayment.CreatedAt = DateTime.Now;
+            indexOfPayment.UpdatedAt = DateTime.Now;
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+
+            var cat_desc = _MyDbContext.Category.Where(f => f.CategoryId == indexOfPayment.CategoryId).FirstOrDefault().CategoryDescription;
+
+            indexOfPayment.CategoryDescription = cat_desc;
+
+            _IndexofpaymentContext.Add(indexOfPayment);
+            _IndexofpaymentContext.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
