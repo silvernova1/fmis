@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace fmis.Data.Accounting
 {
-    public class CategoryContext : DbContext
+    public class FundClusterContext : DbContext
     {
-        public CategoryContext(DbContextOptions<CategoryContext> options)
-           : base(options)
+        public FundClusterContext(DbContextOptions<FundClusterContext> options)
+        : base(options)
         {
         }
-        public DbSet<Category> Category { get; set; }
+        public DbSet<FundCluster> FundCluster { get; set; }
     }
 }

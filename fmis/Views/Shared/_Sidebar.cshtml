@@ -517,6 +517,15 @@
                         </a>
                         <b class="arrow"></b>
                     </li>
+
+                    <li class="@if(ViewBag.filter.sub == "fund_cluster")
+                    @Html.Raw("active")">
+                        <a asp-area="" asp-controller="FundCluster" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Fund Cluster
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
 

@@ -5,10 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .hr {
+        border: 1px solid black;
+    }
+</style>
 
 <!-- CREATE MODAL -->
-<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade " id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
         <div class="modal-content">
 
         </div>
@@ -17,7 +22,7 @@
 
 <!--EDIT MODAL-->
 <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
 
         </div>
@@ -39,67 +44,93 @@
 <hr>
 
 <div class="row">
-    <div class="col-md-5">
-        <p>
-            <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
-                <i class="ace-icon fa fa-plus "></i> Create New
-            </a>
-            <a asp-action="Index" class="btn btn-sm btn-primary">
-                <i class="ace-icon fa fa-eye "></i> View All
-            </a>
-        </p>
+    <div class="col-md-8">
+        <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+            <i class="ace-icon fa fa-plus "></i> Create New
+        </a>
+        <a asp-action="Index" class="btn btn-sm btn-primary">
+            <i class="ace-icon fa fa-eye "></i> View All
+        </a>
     </div>
-    <div class="col-md-7">
-        <form method="get" asp-action="Index">
-            <p>
-                <input type="search" placeholder="Search
-                  " value="@ViewData["getpayee"]" class="form-group" name="searchString" />
-                <input type="submit" value="search" class="btn btn-sm btn-primary" />
-              
-                <br />
+    <div class="col-md-4">
+        <form method="get" asp-action="Index" asp-controller="Dv">
+            <input type="search" placeholder="S00-0001" value="@ViewData["GetDvNo"]" class="form-group" name="searchString" style="width: 340px;" />
+            @*    <button type="submit" class="btn btn-xs btn-primary "> Search </button>*@
 
-            </p>
+            <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+                <i class="ace-icon fa fa-search "></i> Search
+            </button>
+            <br />
         </form>
     </div>
 </div>
 
 
-<table class="table table-striped" style="width: 960px">
-    <thead>
-        <tr>
-            <th>
-                DV #
-            </th>
-            <th>
-                Payee
-            </th>
-            <th>
-                Action
-            </th>
+    <table class="table table-striped" @*style="width: 960px"*@>
+        <thead>
+            <tr>
+                <th>
+                    Fund Cluster
+                </th>
+                <th>
+                    Dv #
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Payee
+                </th>
+                <th>
+                    Particulars
+                </th>
+                <th>
+                    Amount
+                </th>
+                <th>
+                    Action
+                </th>
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DvDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Payee)
-            </td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.FundCluster?.FundClusterDescription
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DvNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Payee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Particulars)
+                    </td>
+                    <td>
+                        <span>&#8369;</span>@Html.DisplayFor(modelItem => item.Amount)
+                    </td>
 
-            <td>
-                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId">
-                    <i class="ace-icon fa fa-edit"></i>
-                </a>
-                <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","DV",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Dv?');">
-                    <i class="ace-icon fa fa-trash"></i>
-                </a>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+                    <td>
+                        <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId">
+                            <i class="ace-icon fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","DV",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Dv?');">
+                            <i class="ace-icon fa fa-trash"></i>
+                        </a>
+                        <a class="btn btn-xs btn-success" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })">
+                            <i class="ace-icon fa fa-file-pdf-o"></i>
+                        </a>
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
