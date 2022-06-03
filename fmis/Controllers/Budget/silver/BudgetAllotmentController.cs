@@ -38,24 +38,34 @@ namespace fmis.Controllers
         }
 
         //POST
-        public IActionResult selectAT(int id)
+        public IActionResult selectAT(int? id)
         {
             var branches = _context.AllotmentClass.ToList();
             return Json(branches.Where(x => x.Id == id).ToList());
         }
 
         // GET: Budget_allotments
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? post_yearly_reference)
         {
-           /* const string yearly_reference = "_yearly_reference";*/
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
+            const string yearly_reference = "_yearly_reference";
 
+            int id = 0;
+            if (post_yearly_reference != null)
+            {
+                HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
+                id = (int)post_yearly_reference;
+            }
+            else
+            {
+                id = (int)HttpContext.Session.GetInt32(yearly_reference);
+            }           
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
-            //.Where(x=>x.YearlyReferenceId == (int)HttpContext.Session.GetInt32(yearly_reference))
+            .Where(x=>x.YearlyReferenceId == id)
             .AsNoTracking()
             .ToListAsync();
 
