@@ -351,19 +351,13 @@ namespace fmis.Controllers
 
                     Paragraph nextline = new Paragraph("\n");
                     doc.Add(nextline);
+
+
                     PdfPTable table = new PdfPTable(3);
                     table.PaddingTop = 5f;
                     table.WidthPercentage = 100f;
                     float[] columnWidths = { 5, 25, 15 };
                     table.SetWidths(columnWidths);
-
-                    Image logo = Image.GetInstance("wwwroot/assets/images/ro7.png");
-                    logo.ScaleAbsolute(60f, 60f);
-                    PdfPCell logo_cell = new PdfPCell(logo);
-                    logo_cell.DisableBorderSide(8);
-
-                    logo_cell.Padding = 5f;
-                    table.AddCell(logo_cell);
 
                     Font arial_font_10 = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
                     Font header = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
