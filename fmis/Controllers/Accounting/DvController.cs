@@ -89,6 +89,18 @@ namespace fmis.Controllers.Accounting
             return View(dv);
         }
 
+        public async Task<IActionResult> GetLatestDvType(string type)
+        {
+            var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
+            var dvCtr = "0001";
+            var dvNo = $"{type}00-{dvCtr}";
+            if (latest == null) return Ok(dvNo);
+            dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1])+1:0000}";
+            dvNo = $"{type}00-{dvCtr}";
+            return Ok(dvNo);
+        }
+
+
         // GET: Categoty/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -171,7 +183,7 @@ namespace fmis.Controllers.Accounting
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
-                var fundCluster = _MyDbContext.Dv.Where(x => x.FundClusterId == id).Include(x=>x.FundCluster).ToList();
+                var fundCluster = _MyDbContext.Dv.Where(x => x.FundClusterId == id).Include(x=>x.FundCluster).ToListAsync();
                 string ExportData = "This is pdf generated";
                 StringReader reader = new StringReader(ExportData);
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -211,6 +223,7 @@ namespace fmis.Controllers.Accounting
                     table.AddCell(logo_cell);
 
 
+                    Font arial_font_8 = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
                     Font arial_font_9 = FontFactory.GetFont("", 9, Font.NORMAL, BaseColor.BLACK);
                     Font arial_font_9b = FontFactory.GetFont("", 9, Font.BOLD, BaseColor.BLACK);
                     Font arial_font_10 = FontFactory.GetFont("Times New Roman", 10, Font.NORMAL, BaseColor.BLACK);
@@ -281,7 +294,7 @@ namespace fmis.Controllers.Accounting
                     doc.Add(table);
 
                     //MODE OF PAYMENT
-                    iTextSharp.text.Image myImage = iTextSharp.text.Image.GetInstance("wwwroot/assets/images/final_textbox.png");
+                    iTextSharp.text.Image myImage = iTextSharp.text.Image.GetInstance("wwwroot/assets/images/final_textbox_f.png");
                     PdfPCell cell = new PdfPCell(myImage);
                     var table_row_2 = new PdfPTable(9);
                     float[] tbt_row2_width = { 7, 3, 10, 3, 10, 3, 9, 3, 29 };
@@ -296,8 +309,8 @@ namespace fmis.Controllers.Accounting
                     table_row_2.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
                         Border = PdfPCell.NO_BORDER,
-                        PaddingTop = 3,
-                        PaddingLeft = 10,
+                        PaddingTop = 5,
+                        PaddingLeft = 12,
 
                     });
                     table_row_2.AddCell(new PdfPCell(new Paragraph("MDS Check", arial_font_9))
@@ -311,8 +324,8 @@ namespace fmis.Controllers.Accounting
                     table_row_2.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
                         Border = PdfPCell.NO_BORDER,
-                        PaddingTop = 3,
-                        PaddingLeft = 10,
+                        PaddingTop = 5,
+                        PaddingLeft = 12,
                     });
                     table_row_2.AddCell(new PdfPCell(new Paragraph("Commercial Check", arial_font_9))
                     {
@@ -324,8 +337,8 @@ namespace fmis.Controllers.Accounting
                     table_row_2.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
                         Border = PdfPCell.NO_BORDER,
-                        PaddingTop = 3,
-                        PaddingLeft = 10,
+                        PaddingTop = 5,
+                        PaddingLeft = 12,
                     });
                     table_row_2.AddCell(new PdfPCell(new Paragraph("ADA", arial_font_9))
                     {
@@ -337,8 +350,8 @@ namespace fmis.Controllers.Accounting
                     table_row_2.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
                         Border = PdfPCell.NO_BORDER,
-                        PaddingTop = 3,
-                        PaddingLeft = 10,
+                        PaddingTop = 5,
+                        PaddingLeft = 12,
                     });
                     table_row_2.AddCell(new PdfPCell(new Paragraph("Others (Please specify) ____________ ", arial_font_9))
                     {
@@ -434,9 +447,9 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_ro6_width = { 10, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + dv.Particulars.ToString() + "\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 80f, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_TOP });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 100f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 100f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + dv.Particulars.ToString() + "\n\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 120f, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_TOP });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 120f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 120f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("___________________" +
                         ""+"\n" + "\n" + dv.Amount.ToString(), arial_font_9)) 
                     {
@@ -518,10 +531,10 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_row11_width = { 30, 10, 10, 10 };
                     table_row_11.WidthPercentage = 100f;
                     table_row_11.SetWidths(tbt_row11_width);
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 30f });
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 30f });
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 30f });
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 30f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 100f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 100f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 100f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 100f });
                     doc.Add(table_row_11);
 
                     var table_row_13 = new PdfPTable(2);
@@ -548,9 +561,9 @@ namespace fmis.Controllers.Accounting
                     table_row_15.SetWidths(tbt_row15_width);
                     table_row_15.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
-                        Padding = 3,
+                        Padding = 5,
                         PaddingLeft = 20,
-                        Border = PdfPCell.LEFT_BORDER
+                        Border = PdfPCell.LEFT_BORDER,
                     });
                     table_row_15.AddCell(new PdfPCell(new Paragraph("Cash available ", arial_font_9))
                     {
@@ -565,7 +578,7 @@ namespace fmis.Controllers.Accounting
                     });
                     table_row_15.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
-                        Padding = 3,
+                        Padding = 5,
                         PaddingLeft = 20,
                         Border = PdfPCell.LEFT_BORDER
                     });
@@ -582,7 +595,7 @@ namespace fmis.Controllers.Accounting
                     });
                     table_row_15.AddCell(new PdfPCell(new PdfPCell(myImage))
                     {
-                        Padding = 3,
+                        Padding = 5,
                         PaddingLeft = 20,
                         Border = PdfPCell.LEFT_BORDER
                     });
@@ -607,24 +620,24 @@ namespace fmis.Controllers.Accounting
                     { 
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER, 
-                        FixedHeight = 30f
+                        FixedHeight = 20f
                     });
                     table_row_16.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
                     { 
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_16.AddCell(new PdfPCell(new Paragraph("Signature", arial_font_9)) 
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE, 
                         HorizontalAlignment = Element.ALIGN_CENTER, 
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_16.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
                     { 
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     doc.Add(table_row_16);
 
@@ -632,28 +645,28 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_row_17_width = { 5, 20, 5, 20 };
                     table_row_17.WidthPercentage = 100f;
                     table_row_17.SetWidths(tbt_row_17_width);
-                    table_row_17.AddCell(new PdfPCell(new Paragraph("Printed Name", arial_font_9)) 
+                    table_row_17.AddCell(new PdfPCell(new Paragraph("Printed Name", arial_font_8)) 
                     { 
                         Border = 13, VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_17.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
                     {
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
-                    table_row_17.AddCell(new PdfPCell(new Paragraph("Printed Name", arial_font_9)) 
+                    table_row_17.AddCell(new PdfPCell(new Paragraph("Printed Name", arial_font_8)) 
                     {
                         Border = 13, VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER, 
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_17.AddCell(new PdfPCell(new Paragraph("", arial_font_9))
                     { 
                         Border = 13, VerticalAlignment = Element.ALIGN_LEFT, 
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     doc.Add(table_row_17);
 
@@ -667,28 +680,28 @@ namespace fmis.Controllers.Accounting
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_MIDDLE, 
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
-                    table_row_18.AddCell(new PdfPCell(new Paragraph("_________________________________________\n\n " + "Head, Accounting Unit/ Authorized Representative", arial_font_9))
+                    table_row_18.AddCell(new PdfPCell(new Paragraph("______________________________________________\n " + "Head, Accounting Unit/ Authorized Representative", arial_font_8))
                     {
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 40f,
+                        FixedHeight = 20f,
                     });
                     table_row_18.AddCell(new PdfPCell(new Paragraph("Position", arial_font_9)) 
                     { 
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE, 
                         HorizontalAlignment = Element.ALIGN_CENTER, 
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
-                    table_row_18.AddCell(new PdfPCell(new Paragraph("_________________________________________\n\n " + "Agency Head/Authorized Representative", arial_font_9))
+                    table_row_18.AddCell(new PdfPCell(new Paragraph("______________________________________________\n " + "Agency Head/Authorized Representative", arial_font_8))
                     { 
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 30f
+                        FixedHeight = 20f
                     });
                     doc.Add(table_row_18);
 
@@ -702,25 +715,25 @@ namespace fmis.Controllers.Accounting
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE, 
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_19.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
                     { 
                         Border = 13, VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_19.AddCell(new PdfPCell(new Paragraph("Date", arial_font_9)) 
                     { 
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER, 
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_19.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
                     { 
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     doc.Add(table_row_19);
 
@@ -740,34 +753,34 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_row_21_width = { 3, 8, 5, 8, 5 };
                     table_row_21.WidthPercentage = 100f;
                     table_row_21.SetWidths(tbt_row_21_width);
-                    table_row_21.AddCell(new PdfPCell(new Paragraph("Check/ ADA No.: ", arial_font_9)) 
+                    table_row_21.AddCell(new PdfPCell(new Paragraph("Check/ ADA No.: ", arial_font_8)) 
                     { 
                         Border = 13, VerticalAlignment = Element.ALIGN_MIDDLE, 
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 30f
+                        FixedHeight = 25f
                     });
-                    table_row_21.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
+                    table_row_21.AddCell(new PdfPCell(new Paragraph("", arial_font_8)) 
                     { 
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f
+                        FixedHeight = 25f
                     });
                     table_row_21.AddCell(new PdfPCell(new Paragraph(" Date: ", arial_font_9))
                     { 
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 25f 
                     });
                     table_row_21.AddCell(new PdfPCell(new Paragraph("Bank Name & Account Number: ", arial_font_9))
                     {
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f });
+                        FixedHeight = 25f });
                     table_row_21.AddCell(new PdfPCell(new Paragraph("JEV No.", arial_font_9)) 
                     { 
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_LEFT, 
-                        FixedHeight = 30f 
+                        FixedHeight = 2f 
                     });
                     doc.Add(table_row_21);
 
@@ -780,31 +793,31 @@ namespace fmis.Controllers.Accounting
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 30f
+                        FixedHeight = 20f
                     });
                     table_row_22.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) 
                     { 
                         Border = 13, 
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_22.AddCell(new PdfPCell(new Paragraph(" Date: ", arial_font_9)) 
                     { 
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f 
+                        FixedHeight = 20f 
                     });
                     table_row_22.AddCell(new PdfPCell(new Paragraph("Printed Name: ", arial_font_9))
                     { 
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_LEFT,
-                        FixedHeight = 30f
+                        FixedHeight = 20f
                     });
                     table_row_22.AddCell(new PdfPCell(new Paragraph("Date", arial_font_9)) 
                     { 
                         Border = 13,
-                        VerticalAlignment = Element.ALIGN_LEFT, 
-                        FixedHeight = 30f 
+                        VerticalAlignment = Element.ALIGN_LEFT,
+                        FixedHeight = 20f 
                     });
                     doc.Add(table_row_22);
 
