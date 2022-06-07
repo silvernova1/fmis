@@ -183,7 +183,7 @@ namespace fmis.Controllers.Accounting
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
-                var fundCluster = _MyDbContext.Dv.Where(x => x.FundClusterId == id).Include(x=>x.FundCluster).ToListAsync();
+                var fundCluster = _MyDbContext.Dv.Where(x => x.FundClusterId == id).Include(x=>x.FundCluster).ToList();
                 string ExportData = "This is pdf generated";
                 StringReader reader = new StringReader(ExportData);
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -193,8 +193,7 @@ namespace fmis.Controllers.Accounting
 
                 doc.Open();
 
-
-                    doc.NewPage();
+                doc.NewPage();
 
                 foreach (var dv in fundCluster)
                 {
@@ -230,9 +229,6 @@ namespace fmis.Controllers.Accounting
                     Font arial_font_11 = FontFactory.GetFont("Times New Roman", 11, Font.NORMAL, BaseColor.BLACK);
                     Font arial_font_12 = FontFactory.GetFont("Times New Roman", 12, Font.BOLD, BaseColor.BLACK);
                     Font header = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
-
-   
-
 
                     var table2 = new PdfPTable(1);
                     table2.DefaultCell.Border = 0;
