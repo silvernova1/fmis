@@ -1,6 +1,5 @@
-
 ﻿using fmis.Models;
-﻿using fmis.Models.Accounting;
+using fmis.Models.Accounting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,14 +9,13 @@ using System.Threading.Tasks;
 
 namespace fmis.Data.Accounting
 {
-    public class IndexofpaymentContext : DbContext
+    public class InOfPayDeductionContext : DbContext
     {
-        public IndexofpaymentContext(DbContextOptions<IndexofpaymentContext> options)
-          : base(options)
+        public InOfPayDeductionContext(DbContextOptions<InOfPayDeductionContext> options)
+           : base(options)
         {
         }
-
-        public DbSet<IndexOfPayment> IndexOfPayment { get; set; }
+        public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
         public override int SaveChanges()
         {
             AddTimestamps();
@@ -46,6 +44,5 @@ namespace fmis.Data.Accounting
                 ((BaseEntityTimeStramp)entity.Entity).UpdatedAt = now;
             }
         }
-
     }
 }

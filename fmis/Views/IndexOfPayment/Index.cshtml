@@ -42,7 +42,6 @@
             <div class="form-group">
                 <label>DV #:</label>
                 @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
-                @*<select asp-items="ViewBag.DvId" class="form-control select2"> </select>*@
             </div>
         </div>
         <div class="col-md-3">
@@ -54,7 +53,7 @@
         <div>
             <div class="col-md-3">
                 <label>DV DATE:</label>
-                <input type="date" class="form-control" />
+                <input name="DvDate" type="date" class="form-control" />
                 <span class="text-danger"></span>
             </div>
         </div>
@@ -136,7 +135,7 @@
     <div class="row">
         <div class="col-md-2">
             <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2"> </select>
+                @Html.DropDownList("DeductionID", null, htmlAttributes: new { @class = "select2 form-control" })
             </div>
         </div>
         <div class="col-md-2">
@@ -274,7 +273,7 @@
     });
     // dummy/live
 
-    $("#CategoryId").on('change', function () {
+    @*$("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
@@ -312,11 +311,11 @@
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
-    });
+    });*@
 
 
     //local
-   @* $("#CategoryId").on('change', function () {
+    $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
@@ -354,7 +353,7 @@
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
-    });*@
+    });
 
     $(document).ready(function () {
         $('.filter').change(function () {
