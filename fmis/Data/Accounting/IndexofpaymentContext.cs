@@ -1,5 +1,4 @@
-
-﻿using fmis.Models;
+using fmis.Models;
 ﻿using fmis.Models.Accounting;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,7 +15,6 @@ namespace fmis.Data.Accounting
           : base(options)
         {
         }
-
         public DbSet<IndexOfPayment> IndexOfPayment { get; set; }
         public override int SaveChanges()
         {
@@ -46,6 +44,5 @@ namespace fmis.Data.Accounting
                 ((BaseEntityTimeStramp)entity.Entity).UpdatedAt = now;
             }
         }
-
     }
 }

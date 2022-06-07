@@ -17,7 +17,7 @@ namespace fmis.Models.Accounting
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
         public string Particulars { get; set; }
-        public string Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [ForeignKey("FundClusterId")]
         public int FundClusterId { get; set; }
