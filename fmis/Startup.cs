@@ -120,9 +120,9 @@ namespace fmis
             services.AddDbContext<RespoCenterTrustFundContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
             services.AddDbContext<RequestingOfficeTrustFundContext>(options =>
-         options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeTrustFundContext")));
+           options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeTrustFundContext")));
             services.AddDbContext<BudgetAllotmentTrustFundContext>(options =>
-         options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentTrustFundContext")));
+           options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentTrustFundContext")));
             services.AddDbContext<FundSourceTrustFundContext>(options =>
          options.UseSqlServer(Configuration.GetConnectionString("FundSourceTrustFundContext")));
             services.AddDbContext<FundSourceAmountTrustFundContext>(options =>
@@ -143,6 +143,11 @@ namespace fmis
         options.UseSqlServer(Configuration.GetConnectionString("DeductionContext")));
             services.AddDbContext<DvContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("DvContext")));
+            services.AddDbContext<FundClusterContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("FundClusterContext")));
+            services.AddDbContext<InOfPayDeductionContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
+
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();

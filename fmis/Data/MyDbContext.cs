@@ -70,6 +70,7 @@ namespace fmis.Data
         public DbSet<Deduction> Deduction { get; set; }
         public DbSet<Dv> Dv { get; set; }
         public DbSet<FundCluster> FundCluster { get; set; }
+        public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
 
 
 

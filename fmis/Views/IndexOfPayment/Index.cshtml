@@ -42,8 +42,12 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>DV #:</label>
+<<<<<<< HEAD
                 @Html.DropDownList("DvId", null, " - Select Dv No - ", htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
 
+=======
+                @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+>>>>>>> 2f65fa0b2042169e9bb394ea3bdeb0e7002eae8e
             </div>
         </div>
         <div class="col-md-3">
@@ -55,7 +59,7 @@
         <div>
             <div class="col-md-3">
                 <label>DV DATE:</label>
-                <input type="date" class="form-control" />
+                <input name="DvDate" type="date" class="form-control" />
                 <span class="text-danger"></span>
             </div>
         </div>
@@ -137,9 +141,13 @@
     <div class="row">
         <div class="col-md-2">
             <div class="form-group">
+<<<<<<< HEAD
                 <select asp-items="ViewBag.DeductionId" class="form-control select2">
                     <option> - Select Deduction - </option>
                 </select>
+=======
+                @Html.DropDownList("DeductionID", null, htmlAttributes: new { @class = "select2 form-control" })
+>>>>>>> 2f65fa0b2042169e9bb394ea3bdeb0e7002eae8e
             </div>
         </div>
         <div class="col-md-2">
@@ -292,7 +300,9 @@
     });
     // dummy/live
 
+
 @*    $("#CategoryId").on('change', function () {
+
         var value = $(this).val();
         console.log(value);
         const categ = [];
