@@ -351,13 +351,19 @@ namespace fmis.Controllers
 
                     Paragraph nextline = new Paragraph("\n");
                     doc.Add(nextline);
-
-
                     PdfPTable table = new PdfPTable(3);
                     table.PaddingTop = 5f;
                     table.WidthPercentage = 100f;
                     float[] columnWidths = { 5, 25, 15 };
                     table.SetWidths(columnWidths);
+
+                    Image logo = Image.GetInstance("wwwroot/assets/images/ro7.png");
+                    logo.ScaleAbsolute(60f, 60f);
+                    PdfPCell logo_cell = new PdfPCell(logo);
+                    logo_cell.DisableBorderSide(8);
+
+                    logo_cell.Padding = 5f;
+                    table.AddCell(logo_cell);
 
                     Font arial_font_10 = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
                     Font header = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
@@ -380,60 +386,60 @@ namespace fmis.Controllers
                     table3.DefaultCell.Border = 0;
 
                     var allotments = (from fundsource in _MyDbContext.FundSources
-                                       join obligation in _MyDbContext.Obligation
-                                       on fundsource.FundSourceId equals obligation.FundSourceId
-                                       join allotmentclass in _MyDbContext.AllotmentClass
-                                       on fundsource.AllotmentClassId equals allotmentclass.Id
-                                       join fund in _MyDbContext.Fund
-                                       on fundsource.FundId equals fund.FundId
-                                      where obligation.obligation_token == tok
-                                      select new
-                                       {
-                                           allotment = allotmentclass.Fund_Code,
-                                           fundCurrent = fund.Fund_code_current,
-                                           fundConap = fund.Fund_code_conap,
-                                           fundsource = fundsource.AppropriationId,
-                                           obligation = obligation.source_type
-                                      }).ToList();
-
-                    var allotmentsAA = (from sub_allotment in _MyDbContext.SubAllotment
-                                        join obligation in _MyDbContext.Obligation
-                                      on sub_allotment.SubAllotmentId equals obligation.SubAllotmentId
+                                      join obligation in _MyDbContext.Obligation
+                                      on fundsource.FundSourceId equals obligation.FundSourceId
                                       join allotmentclass in _MyDbContext.AllotmentClass
-                                      on sub_allotment.AllotmentClassId equals allotmentclass.Id
+                                      on fundsource.AllotmentClassId equals allotmentclass.Id
                                       join fund in _MyDbContext.Fund
-                                      on sub_allotment.FundId equals fund.FundId
+                                      on fundsource.FundId equals fund.FundId
                                       where obligation.obligation_token == tok
                                       select new
                                       {
                                           allotment = allotmentclass.Fund_Code,
                                           fundCurrent = fund.Fund_code_current,
                                           fundConap = fund.Fund_code_conap,
-                                          sub_allotment = sub_allotment.AppropriationId,
+                                          fundsource = fundsource.AppropriationId,
                                           obligation = obligation.source_type
                                       }).ToList();
 
+                    var allotmentsAA = (from sub_allotment in _MyDbContext.SubAllotment
+                                        join obligation in _MyDbContext.Obligation
+                                      on sub_allotment.SubAllotmentId equals obligation.SubAllotmentId
+                                        join allotmentclass in _MyDbContext.AllotmentClass
+                                        on sub_allotment.AllotmentClassId equals allotmentclass.Id
+                                        join fund in _MyDbContext.Fund
+                                        on sub_allotment.FundId equals fund.FundId
+                                        where obligation.obligation_token == tok
+                                        select new
+                                        {
+                                            allotment = allotmentclass.Fund_Code,
+                                            fundCurrent = fund.Fund_code_current,
+                                            fundConap = fund.Fund_code_conap,
+                                            sub_allotment = sub_allotment.AppropriationId,
+                                            obligation = obligation.source_type
+                                        }).ToList();
+
 
                     if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault()?.obligation == "fund_source")
-                    {      
+                    {
 
-                    Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
+                        Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
 
-                    table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" +allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                        table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-                    table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                        table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
+                        table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-                    table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                        table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
-                    /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
-                    table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
+                        /*table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
+                        table3.AddCell(new PdfPCell(new Paragraph(budget_allotments.Allotment_series + "-01101101", FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Padding = 6f, Border = 2, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });*/
 
-                    table.AddCell(table3);
+                        table.AddCell(table3);
 
-                    doc.Add(table);
+                        doc.Add(table);
 
                     }
 
@@ -587,30 +593,30 @@ namespace fmis.Controllers
                                        }).ToList();
 
                     var saa = (from SAA in _MyDbContext.SubAllotment
-                                       join obligation in _MyDbContext.Obligation
-                                       on SAA.SubAllotmentId equals obligation.FundSourceId
-                                       join prexc in _MyDbContext.Prexc
-                                       on SAA.prexcId equals prexc.Id
-                                       join respo in _MyDbContext.RespoCenter
-                                       on SAA.RespoId equals respo.RespoId
-                                       where obligation.obligation_token == tok
-                                       select new
-                                       {
-                                           pap = prexc.pap_code1,
-                                           obligation_id = obligation.FundSourceId,
-                                           fundsource_id = SAA.SubAllotmentId,
-                                           fundsource_code = SAA.Suballotment_title,
-                                           respo = respo.RespoCode,
-                                           signatory = respo.RespoHead,
-                                           position = respo.RespoHeadPosition,
-                                           particulars = obligation.Particulars
-                                       }).ToList();
+                               join obligation in _MyDbContext.Obligation
+                               on SAA.SubAllotmentId equals obligation.FundSourceId
+                               join prexc in _MyDbContext.Prexc
+                               on SAA.prexcId equals prexc.Id
+                               join respo in _MyDbContext.RespoCenter
+                               on SAA.RespoId equals respo.RespoId
+                               where obligation.obligation_token == tok
+                               select new
+                               {
+                                   pap = prexc.pap_code1,
+                                   obligation_id = obligation.FundSourceId,
+                                   fundsource_id = SAA.SubAllotmentId,
+                                   fundsource_code = SAA.Suballotment_title,
+                                   respo = respo.RespoCode,
+                                   signatory = respo.RespoHead,
+                                   position = respo.RespoHeadPosition,
+                                   particulars = obligation.Particulars
+                               }).ToList();
 
 
                     var uacses = (from obligation in _MyDbContext.Obligation
                                   join obligation_amount in _MyDbContext.ObligationAmount
                                   on obligation.Id equals obligation_amount.ObligationId
-                               
+
                                   where obligation.obligation_token == tok
                                   select new
                                   {
@@ -713,36 +719,36 @@ namespace fmis.Controllers
 
                     if (allotments.FirstOrDefault()?.obligation == "fund_source")
                     {
-                    //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.signatory, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.signatory, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
 
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Position :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
-                    //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.position, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Position", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Position :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.position, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Position", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
 
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
 
 
-                    //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("")));
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office / Authorized Representative", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))));
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Unit / Authorized Representative", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("")));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office / Authorized Representative", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))));
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Unit / Authorized Representative", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_CENTER });
 
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Date :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Date", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph(ors.Date.ToString("MM/dd/yyyy"), new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    doc.Add(table_row_8);
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Date :", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("", new Font(Font.FontFamily.HELVETICA, 6f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Date", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))) { HorizontalAlignment = Element.ALIGN_LEFT });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph(ors.Date.ToString("MM/dd/yyyy"), new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        doc.Add(table_row_8);
                     }
                     else
                     {
@@ -777,7 +783,7 @@ namespace fmis.Controllers
                         table_row_8.AddCell(new PdfPCell(new Paragraph(ors.Date.ToString("MM/dd/yyyy"), new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                         doc.Add(table_row_8);
                     }
-                   
+
                     PdfPTable table_row_9 = new PdfPTable(2);
                     table_row_9.WidthPercentage = 100f;
                     table_row_9.SetWidths(new float[] { 10, 90 });
@@ -854,7 +860,7 @@ namespace fmis.Controllers
 
                     doc.Add(table_row_11);
 
-                    
+
 
 
                     if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault()?.obligation == "fund_source")
@@ -937,8 +943,7 @@ namespace fmis.Controllers
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, reader);
                 doc.Close(); return File(stream.ToArray(), "application/pdf");
             }
-
         }
 
-    }
+        }
 }

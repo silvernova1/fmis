@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<fmis.Models.Accounting.Dv>
-@using System.Globalization;
+
 @{
     ViewData["Title"] = "DV";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -112,11 +112,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Particulars)
             </td>
-
             <td>
-                <span>&#8369;</span>@Html.DisplayFor(modelItem => item.Amount)
-
-
+                  <span >&#8369;@Html.DisplayFor(modelItem => item.Amount)</span> 
             </td>
 
             <td>

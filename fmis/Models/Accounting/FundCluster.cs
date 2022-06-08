@@ -10,6 +10,6 @@ namespace fmis.Models.Accounting
     {
         public int FundClusterId { get; set; }
         public string FundClusterDescription { get; set; }
-        //public ICollection<Dv> Dvs { get; set; }
+   /*     public ICollection<Dv> Dvs { get; set; }*/
     }
 }
