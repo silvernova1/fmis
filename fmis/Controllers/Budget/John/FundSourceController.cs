@@ -68,6 +68,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
+            ViewBag.budget_id = BudgetAllotmentId;
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
@@ -373,7 +374,9 @@ namespace fmis.Controllers.Budget.John
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var fundSource = await _FundSourceContext.FundSource.FindAsync(id);
-            _FundSourceContext.FundSource.Remove(fundSource);
+
+
+            _MyDbContext.Remove(fundSource);
             await _FundSourceContext.SaveChangesAsync();
             return RedirectToAction("Index", "FundSource", new { budget_id = fundSource.BudgetAllotmentId });
         }

@@ -364,7 +364,7 @@ namespace fmis.Controllers.Budget.John
 
                 ws.Cell("A5").Style.Font.FontSize = 10;
                 ws.Cell("A5").Style.Font.FontName = "Lucida Bright";
-                ws.Cell("A5").Value =  "AS AT" + " " + date2.ToString("MMMM dd, yyyy");
+                ws.Cell("A5").Value =  "As at" + " " + date2.ToString("MMMM dd, yyyy");
                 ws.Range("A5:W5").Merge();
                 ws.Cell("A5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
