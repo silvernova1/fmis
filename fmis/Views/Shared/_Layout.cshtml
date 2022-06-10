@@ -171,6 +171,11 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+@if (User.Identity.IsAuthenticated)
+{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/signalRConnect.js" asp-append-version=true></script>
+}
 <script type="text/javascript">
     var loading = '<center><img src="/dummy/assets/images/loading.gif"/></center>';
 

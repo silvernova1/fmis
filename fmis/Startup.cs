@@ -158,11 +158,19 @@ namespace fmis
 
             services.Add(new ServiceDescriptor(typeof(DtsMySqlContext), new DtsMySqlContext(Configuration.GetConnectionString("DtsMySqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.AddSignalR();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(3);
+            });
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+
             CreateRoles(serviceProvider).Wait();
 
             if (env.IsDevelopment())
@@ -190,6 +198,7 @@ namespace fmis
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
         private async Task CreateRoles(IServiceProvider serviceProvider)

@@ -69,10 +69,43 @@ namespace fmis.Controllers
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
             ViewBag.Balance = balance;
 
-            var div = _MyDbCOntext.FundSources.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            ViewBag.Div = div.ToString("{0:0.##}");
-            //var res = div / balance * 100;
-            //ViewBag.Res = String.Format("{0:0.##}", res);
+            var allotmentPS = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(s => s.Remaining_balance);
+            var allotmentPSObligation = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(x => x.obligated_amount) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(s => s.obligated_amount);
+
+            var allotmentMOOE = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 2).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 2).Sum(s => s.Remaining_balance);
+            var allotmentCO = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 3).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 3).Sum(s => s.Remaining_balance);
+
+            var allotmentPS_res = allotmentPS / balance * 100;
+            ViewBag.PS = String.Format("{0:0.##}", allotmentPS_res);
+
+            var allotmentPSObligation_res = allotmentPSObligation / balance * 100;
+            ViewBag.PSObligation = String.Format("{0:0.##}", allotmentPSObligation_res);
+
+            var allotmentMOOE_res = allotmentMOOE / balance * 100;
+            ViewBag.MOOE = String.Format("{0:0.##}", allotmentMOOE_res);
+
+            var allotmentCO_res = allotmentCO / balance * 100;
+            ViewBag.CO = String.Format("{0:0.##}", allotmentCO_res);
+
+            var msd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            var lhsd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 2 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            var rdard = _MyDbCOntext.FundSources.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            var rled = _MyDbCOntext.FundSources.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            ViewBag.Div = msd.ToString("{0:0.##}");
+            var msd_res = msd / balance * 100;
+            ViewBag.MSD = String.Format("{0:0.##}", msd_res);
+
+            ViewBag.Div = lhsd.ToString("{0:0.##}");
+            var lhsd_res = lhsd / balance * 100;
+            ViewBag.LHSD = String.Format("{0:0.##}", lhsd_res);
+
+            ViewBag.Div = rdard.ToString("{0:0.##}");
+            var rdard_res = rdard / balance * 100;
+            ViewBag.RDARD = String.Format("{0:0.##}", rdard_res);
+
+            ViewBag.Div = rled.ToString("{0:0.##}");
+            var rled_res = rled / balance * 100;
+            ViewBag.RLED = String.Format("{0:0.##}", rled_res);
 
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
