@@ -58,7 +58,7 @@
             </div>
             <div class="form-group">
                 <h5>Amount: </h5>
-                <input asp-for="Amount"   placeholder="0.00" onkeyup = "javascript:this.value=Comma(this.value);"  class="form-control" />
+                <input asp-for="Amount" type="text" class="form-control"  onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);"  placeholder="0.00"  />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin-top: 41px">
@@ -103,6 +103,15 @@
         while (rgx.test(x1))
             x1 = x1.replace(rgx, '$1' + ',' + '$2');
         return x1 + x2;
+    }
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
     }
 
 </script>

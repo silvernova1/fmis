@@ -22,7 +22,7 @@
 
     <!-- handsontable styles -->
     @*  <link rel="stylesheet" href="~/css/handsontable.css" />*@
-    <link rel="stylesheet" href="~/css/handsontable/latesthandsontable.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/handsontable/latesthandsontable.css" asp-append-version="true" />
 
     <!-- page specific plugin styles -->
     <link rel="stylesheet" href="~/assets/css/colorbox.min.css" />
@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="~/assets/plugins/dist/css/Lobibox.css" />
 
     <link rel="stylesheet" href="~/main/main.css" />
- 
+
     <script src="~/assets/js/ace-extra.min.js"></script>
 
     <script src="~/assets/js/jquery-2.1.4.min.js"></script>
@@ -89,48 +89,50 @@
         </script>
 
         <partial name="~/Views/Shared/_Sidebar.cshtml" />
-
-        <div class="main-content">
-            <div class="main-content-inner">
-                <div class="breadcrumbs ace-save-state" id="breadcrumbs" style="padding:0.6%;">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ul class="breadcrumb">
-                                <li>
-                                    <i class="ace-icon fa fa-home home-icon"></i>
-                                    <a href="#">Home</a>
-                                </li>
-                                <li class="active">
-                                    Budget Utilization Dashboard
-                                    <small>
-                                        <i class="ace-icon fa fa-angle-double-right"></i>
-                                        overview &amp; stats
-                                    </small>
-                                </li>
-                            </ul><!-- /.breadcrumb -->
-                        </div>
-                        <div class="col-md-6">
-                            <div class="navbar-buttons navbar-header pull-right" role="navigation">
-                                <ul class="nav ace-nav">
-                                    <partial name="~/Views/Shared/_Notification.cshtml" />
-                                    <partial name="~/Views/Shared/_Account.cshtml" />  
-                                </ul>
+  
+            <div class="main-content">
+                <div class="main-content-inner">
+                    <div class="breadcrumbs ace-save-state" id="breadcrumbs" style="padding:0.6%;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="breadcrumb">
+                                    <li>
+                                        <i class="ace-icon fa fa-home home-icon"></i>
+                                        <a href="#">Home</a>
+                                    </li>
+                          
+                                        <li class="active">
+                                            Budget Utilization Dashboard
+                                            <small>
+                                                <i class="ace-icon fa fa-angle-double-right"></i>
+                                              
+                                            </small>
+                                        </li>
+                  
+                                    </ul><!-- /.breadcrumb -->
+                            </div>
+                            <div class="col-md-6">
+                                <div class="navbar-buttons navbar-header pull-right" role="navigation">
+                                    <ul class="nav ace-nav">
+                                        <partial name="~/Views/Shared/_Notification.cshtml" />
+                                        <partial name="~/Views/Shared/_Account.cshtml" />
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="page-content">
-                    @RenderBody()
-                    <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <center><img src="~/dummy/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
+                    <div class="page-content">
+                        @RenderBody()
+                        <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <center><img src="~/dummy/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
+                            </div>
                         </div>
-                    </div>
-                </div><!-- /.page-content -->
-            </div>
-        </div><!-- /.main-content -->
-
+                    </div><!-- /.page-content -->
+                </div>
+            </div><!-- /.main-content -->
+    
         <div class="footer">
             <div class="footer-inner">
                 <div class="footer-content">

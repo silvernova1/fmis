@@ -294,27 +294,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-        // GET: FundSource/Delete/5
-        public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
-        {
-            ViewBag.BudgetId = BudgetId;
-            ViewBag.budget_id = budget_id;
-
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var fundSource = await _FundSourceContext.FundSource
-                .FirstOrDefaultAsync(m => m.FundSourceId == id);
-            if (fundSource == null)
-            {
-                return NotFound();
-            }
-
-            return View(fundSource);
-        }
+ 
 
         // POST: FundSource/Delete/5
         [HttpPost]
@@ -367,19 +347,48 @@ namespace fmis.Controllers.Budget.John
 
             return Json(data);
         }
+
+        // GET: FundSource/Delete/5
+        public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
+        {
+            ViewBag.BudgetId = BudgetId;
+            ViewBag.budget_id = budget_id;
+
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var fundSource = await _FundSourceContext.FundSource
+                .FirstOrDefaultAsync(m => m.FundSourceId == id);
+            if (fundSource == null)
+            {
+                return NotFound();
+            }
+
+            return View(fundSource);
+        }
+
         // POST: FundSource/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var fundSource = await _FundSourceContext.FundSource.FindAsync(id);
+            var fundSource = await _MyDbContext.FundSources.Include(x => x.FundSourceAmounts).FirstOrDefaultAsync(x=>x.FundSourceId == id);
 
 
             _MyDbContext.Remove(fundSource);
-            await _FundSourceContext.SaveChangesAsync();
-            return RedirectToAction("Index", "FundSource", new { budget_id = fundSource.BudgetAllotmentId });
+            await _MyDbContext.SaveChangesAsync();
+            return RedirectToAction("Index", "FundSource", new { /*budget_id = fundSource.BudgetAllotmentId*/
+                AllotmentClassId = fundSource.AllotmentClassId,
+                AppropriationId = fundSource.AppropriationId,
+                BudgetAllotmentId = fundSource.BudgetAllotmentId
+            });
         }
+
+
 
         private bool FundSourceExists(int id)
         {
