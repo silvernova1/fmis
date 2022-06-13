@@ -403,7 +403,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var sub_Allotment = await _context.SubAllotment.FindAsync(id);
+            var sub_Allotment = await _context.SubAllotment.Include(x => x.SubAllotmentAmounts).FirstOrDefaultAsync(x => x.SubAllotmentId == id);
             _context.SubAllotment.Remove(sub_Allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "SubAllotment", new

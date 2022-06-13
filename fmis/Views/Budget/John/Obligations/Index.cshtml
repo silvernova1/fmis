@@ -340,7 +340,7 @@
                     150, 150,
         ],
 
-		colHeaders: ['FUND SOURCE & SAA', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
+		colHeaders: ['FUND SOURCE ', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
                      'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
                      'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
                      'OBLIGATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
@@ -359,7 +359,8 @@
             {
 				//FUNDSOURCE&SUBALLOTMENT
 				type: 'dropdown',
-                source: fund_sub_data_dropdown
+                source: fund_sub_data_dropdown,
+      
 			},
 			{
 				//DATE
@@ -989,7 +990,7 @@
             }
 		},
 		hiddenColumns: {
-            columns: [ 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
+            columns: [ 9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
 		},
         licenseKey: 'non-commercial-and-evaluation',
     });

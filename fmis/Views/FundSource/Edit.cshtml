@@ -191,7 +191,7 @@
         },
         contextMenu: ['row_above', 'row_below', 'remove_row'],
         beforeRemoveRow: function (index, column) {
-            var selection = this.getSelected();
+        var selection = this.getSelected();
             var holder_data = this.getData();
             var single_token = holder_data[selection[0][0]][2];
             console.log(selection);
@@ -213,8 +213,14 @@
                     "many_token": many_token,
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeleteFundsourceamount", "FundSource")');
+                ajaxServer(ajax_data, '@Url.Action("DeleteFundsourceamount", "FundSource")');
             }
+        },
+        afterRemoveRow: function () {
+            var sub_total = 0;
+            let str = "\u20B1"
+            $.each(this.getData(), function () { sub_total += this[1]; });
+            $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         },
         afterUndo: function (index, column) {
         },

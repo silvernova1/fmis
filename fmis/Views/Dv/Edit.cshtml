@@ -58,7 +58,7 @@
             </div>
             <div class="form-group">
                 <h5>Amount: </h5>
-                <input asp-for="Amount" type="number" class="form-control" />
+                <input asp-for="Amount" type="text" class="form-control" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <br />
@@ -89,6 +89,28 @@
                     $('#dv_no').val(output);
                 }
             })
-        });
+     });
+
+    function Comma(Num) { //function to add commas to textboxes
+        Num += '';
+        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
+        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
+        x = Num.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1))
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        return x1 + x2;
+    }
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
 
 </script>
