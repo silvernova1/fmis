@@ -161,7 +161,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var fundsourcess = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
-                .Include(x => x.FundSourceAmounts/*.Where(x => x.status == "activated")*/)
+                .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
                 .FirstOrDefault();
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id).FirstOrDefault();
@@ -310,25 +310,25 @@ namespace fmis.Controllers.Budget.John
                     _MyDbContext.FundSourceAmount.Update(fund_source_amount);
                     await _MyDbContext.SaveChangesAsync();
 
-                    var fund_source_update = await _FundSourceContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
+                    var fund_source_update = await _MyDbContext.FundSources.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
                     fund_source_update.Remaining_balance -= fund_source_amount.beginning_balance;
 
                     //detach para ma calculate ang multiple delete
-                    var local = _FundSourceContext.Set<FundSource>()
+                    var local = _MyDbContext.Set<FundSource>()
                             .Local
                             .FirstOrDefault(entry => entry.token.Equals(fund_source_amount.fundsource_token));
                     // check if local is not null 
                     if (local != null)
                     {
                         // detach
-                        _FundSourceContext.Entry(local).State = EntityState.Detached;
+                        _MyDbContext.Entry(local).State = EntityState.Detached;
                     }
                     // set Modified flag in your entry
-                    _FundSourceContext.Entry(fund_source_update).State = EntityState.Modified;
+                    _MyDbContext.Entry(fund_source_update).State = EntityState.Modified;
                     //end detach
 
-                    _FundSourceContext.FundSource.Update(fund_source_update);
-                    _FundSourceContext.SaveChanges();
+                    _MyDbContext.FundSources.Update(fund_source_update);
+                    _MyDbContext.SaveChanges();
                 }
             }
             else
@@ -339,10 +339,10 @@ namespace fmis.Controllers.Budget.John
                 _MyDbContext.FundSourceAmount.Update(fund_source_amount);
                 await _MyDbContext.SaveChangesAsync();
 
-                var fund_source_update = await _FundSourceContext.FundSource.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
+                var fund_source_update = await _MyDbContext.FundSources.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
                 fund_source_update.Remaining_balance -= fund_source_amount.beginning_balance;
-                _FundSourceContext.FundSource.Update(fund_source_update);
-                _FundSourceContext.SaveChanges();
+                _MyDbContext.FundSources.Update(fund_source_update);
+                _MyDbContext.SaveChanges();
             }
 
             return Json(data);

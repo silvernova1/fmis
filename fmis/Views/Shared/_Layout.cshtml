@@ -1,4 +1,6 @@
 ﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@inject fmis.Data.MyDbContext _context
+@using Microsoft.EntityFrameworkCore;
 
 @functions{
     public string GetAntiXsrfRequestToken()
@@ -89,50 +91,54 @@
         </script>
 
         <partial name="~/Views/Shared/_Sidebar.cshtml" />
-  
-            <div class="main-content">
-                <div class="main-content-inner">
-                    <div class="breadcrumbs ace-save-state" id="breadcrumbs" style="padding:0.6%;">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="breadcrumb">
-                                    <li>
-                                        <i class="ace-icon fa fa-home home-icon"></i>
-                                        <a href="#">Home</a>
+
+        <div class="main-content">
+            <div class="main-content-inner">
+                <div class="breadcrumbs ace-save-state" id="breadcrumbs" style="padding:0.6%;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="breadcrumb">
+                                <li>
+                                    <i class="ace-icon fa fa-home home-icon"></i>
+                                    <a href="#">Home</a>
+                                </li>
+                                <li class="active">
+                                    Budget Utilization Dashboard
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="navbar-buttons navbar-header pull-right" role="navigation">
+                                <ul class="nav ace-nav">
+                                    <li class="active" style="font-size: 15pt; margin-right : 20px">
+                                         @{
+                                             var yearId = _context.Budget_allotments.Include(x=>x.Yearly_reference).FirstOrDefault().YearlyReferenceId;
+                                             var year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == yearId).YearlyReference.ToString();
+                                          }
+     
+                                        CY:  @yearId + @year
+
                                     </li>
-                          
-                                        <li class="active">
-                                            Budget Utilization Dashboard
-                                            <small>
-                                                <i class="ace-icon fa fa-angle-double-right"></i>
-                                              
-                                            </small>
-                                        </li>
-                  
-                                    </ul><!-- /.breadcrumb -->
-                            </div>
-                            <div class="col-md-6">
-                                <div class="navbar-buttons navbar-header pull-right" role="navigation">
-                                    <ul class="nav ace-nav">
-                                        <partial name="~/Views/Shared/_Notification.cshtml" />
-                                        <partial name="~/Views/Shared/_Account.cshtml" />
-                                    </ul>
-                                </div>
+                                    <partial name="~/Views/Shared/_Notification.cshtml" />
+                                    <partial name="~/Views/Shared/_Account.cshtml" />
+                                </ul>
                             </div>
                         </div>
                     </div>
-
-                    <div class="page-content">
-                        @RenderBody()
-                        <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
-                            <div class="modal-dialog" role="document">
-                                <center><img src="~/dummy/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
-                            </div>
-                        </div>
-                    </div><!-- /.page-content -->
                 </div>
-            </div><!-- /.main-content -->
-    
+
+                <div class="page-content">
+                    @RenderBody()
+                    <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <center><img src="~/dummy/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
+                        </div>
+                    </div>
+                </div><!-- /.page-content -->
+            </div>
+        </div><!-- /.main-content -->
+
+
         <div class="footer">
             <div class="footer-inner">
                 <div class="footer-content">

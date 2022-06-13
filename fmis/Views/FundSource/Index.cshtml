@@ -101,14 +101,28 @@
     </div>
 </div>
 
-<p>
-    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </button> |
-    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
-        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
-    </a>
-</p>
+<div class="col-md-8">
+    <p>
+        <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
+            <i class="ace-icon fa fa-plus "></i>Create New
+        </button> |
+        <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
+        </a>
+    </p>
+</div>
+<div class="col-md-4">
+    <form method="get" asp-action="Index" asp-controller="Dv">
+        <input type="search"  value="@ViewData["GetDvNo"]" class="form-group" name="searchString" style="width: 340px;" />
+ 
+
+        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+            <i class="ace-icon fa fa-search "></i> Search
+        </button>
+        <br />
+    </form>
+</div>
+
 
 @if (Model.FundSources.Count() > 0)
 {
@@ -141,58 +155,58 @@
                     Obligated Amount
                 </th>
                 @* <th>
-            Utilized Amount
-        </th>*@
+                        Utilized Amount
+                    </th>*@
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.FundSources)
             {
-            <tr>
-                <td>
+                <tr>
+                    <td>
 
-                    @Html.DisplayFor(modelItem => item.Prexc.pap_title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
+                        @Html.DisplayFor(modelItem => item.Prexc.pap_title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                    </td>
 
-                 <td>
-                   @item.RespoCenter.Respo
-                </td>
-                 <td>
-                     <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                     @* <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>*@
+                    <td>
+                        @item.RespoCenter.Respo
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
+                        @* <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>*@
 
-                     <a class="btn btn-danger btn-xs"   href="@Url.Action("Delete", "FundSource", new { id = @item.FundSourceId })" onclick="return confirm('Do you want to delete this Fund Source?');"> <span class="glyphicon glyphicon-trash"></span></a>
-                   
-                 </td>
-                <td>
-                    <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                </td>
-           
-                <td>
-                    <b class="green">
-                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="red">
-                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="blue">
-                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
+                        <a class="btn btn-danger btn-xs" href="@Url.Action("Delete", "FundSource", new { id = @item.FundSourceId })" onclick="return confirm('Do you want to delete this Fund Source?');"> <span class="glyphicon glyphicon-trash"></span></a>
 
-                @* <td>
-            <b class="blue">
-                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-            </b>
-        </td>*@
-            </tr>
+                    </td>
+                    <td>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    </td>
+
+                    <td>
+                        <b class="green">
+                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="red">
+                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="blue">
+                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+
+                    @* <td>
+                            <b class="blue">
+                                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                            </b>
+                        </td>*@
+                </tr>
             }
         </tbody>
     </table>
