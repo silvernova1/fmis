@@ -61,7 +61,11 @@
                 </div>
                 <div class="form-group">
                     <label>FundSource Title:</label>
-                    <input asp-for="FundSourceTitle" class="form-control" required />
+                    <input asp-for="FundSourceTitle" class="form-control" name = "FundSourceTitle" required />
+                    @if (ViewBag.Message != null && ViewBag.Message == "Exist")
+                    {
+                        <br /><span style="color:red;">Fund Source already exist.</span>
+                    }
                     <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -96,8 +100,6 @@
         </div>
     </div>
 </form>
-
-
 
 
 <script>
@@ -182,6 +184,8 @@
             },
             {
                 //HIDDEN FUNDSOURCE TOKEN
+
+               
             },
             {
                 //HIDDEN FUNDSOURCE AMOUNT TOKEN
@@ -219,6 +223,7 @@
                 ajaxServer(ajax_data, '@Url.Action("DeleteFundsourceamount", "FundSource")');
             }
         },
+
         afterRemoveRow: function () {
             var sub_total = 0;
             let str = "\u20B1"

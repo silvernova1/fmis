@@ -60,12 +60,20 @@ namespace fmis.Controllers
             else
             {
                 id = (int)HttpContext.Session.GetInt32(yearly_reference);
-            }           
+            }
+
+
+            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == id).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
+
+
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
-            .Where(x=>x.YearlyReferenceId == id)
+            .Where(x=>x.YearlyReferenceId == id || x.Yearly_reference.YearlyReference == year)
             .AsNoTracking()
             .ToListAsync();
 

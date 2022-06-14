@@ -145,9 +145,6 @@
     {
         @Html.TextBox("search") <input type="submit" value="search" />
     }*@
-
-
-
 </p>
 
 @if (Model.SubAllotment.Count() > 0)
@@ -199,7 +196,7 @@
                 {
                     @if (item.Suballotment_title.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()))
                     {
-                       <tr>
+                        <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.prexc.pap_title)
                             </td>
@@ -242,8 +239,8 @@
                                 </td>
                             }
                         </tr>
-                    }
-                }
+                     }
+                 }
 
             } else
             {
