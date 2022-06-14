@@ -67,14 +67,25 @@ namespace fmis.Controllers
         }
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, Boolean viewAllBtn)
         {
           
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+            ViewData["search"] = "";
 
+            if (!String.IsNullOrEmpty(search))
+            {
+                ViewData["search"] = search.ToUpper();
+            }
+
+            if(viewAllBtn == true)
+            {
+                ViewData["search"] = "";
+            }
+            
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
@@ -86,7 +97,7 @@ namespace fmis.Controllers
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.AllotmentClass)
             .Include(x => x.Yearly_reference)
-         
+
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 

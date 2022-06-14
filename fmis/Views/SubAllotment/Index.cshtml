@@ -55,19 +55,19 @@
                 </div>
             </div>
         </div>
-     @*   <div class="infobox infobox-orange2">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
+        @*   <div class="infobox infobox-orange2">
+                <div class="infobox-icon">
+                    <i class="ace-icon fa fa-bar-chart-o"></i>
                 </div>
-            </div>
-        </div>*@
+                <div class="infobox-data">
+                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                        @Model.SubAllotment.Sum(x => x.realignment_amount).ToString("C", new CultureInfo("en-PH"))
+                    </span>
+                    <div class="infobox-content">
+                        <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
+                    </div>
+                </div>
+            </div>*@
         <div class="infobox infobox-blue">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-bar-chart-o"></i>
@@ -100,7 +100,7 @@
     </div>
 </div>
 
-<div class="modal" id="editModal"  role="dialog">
+<div class="modal" id="editModal" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body" id="suballotment_edit">
@@ -118,7 +118,22 @@
         </div>
     </div>
 </div>
+<form method="get" asp-action="Index" asp-controller="SubAllotment">
+    <input type="hidden" name="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+    <input type="hidden" name="AppropriationId" value="@ViewBag.AppropriationId" />
+    <input type="hidden" name="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
 
+    <span class="pull-right">
+        <input type="hidden" name="viewAllBtn" id="viewAllValue" value=""/>
+        <button type="submit" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked()">
+            View All
+        </button>
+        <input type="search" placeholder="Enter keyword..." class="form-group" name="search" style="width: 340px;" />
+        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+            <i class="ace-icon fa fa-search "></i> Search
+        </button>
+    </span>
+</form>
 <p>
     <button type="button" asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
         <i class="ace-icon fa fa-plus "></i>Create New
@@ -126,7 +141,12 @@
     <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
+    @*  @using (@Html.BeginForm())
+    {
+        @Html.TextBox("search") <input type="submit" value="search" />
+    }*@
 </p>
+
 @if (Model.SubAllotment.Count() > 0)
 {
     <table class="table">
@@ -162,60 +182,116 @@
                 @if (@Model.SubAllotment.FirstOrDefault().AppropriationId == 2)
                 {
                     <th>
-                    Added to @ViewBag.result Allotment
-                </th>
+                        Added to @ViewBag.result Allotment
+                    </th>
                 }
-                
+
 
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.SubAllotment)
+            @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "")
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.prexc.pap_title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Suballotment_title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @item.RespoCenter.Respo
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-
-                    <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
-                </td>
-                <td>
-                    <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
-                </td>
-                <td>
-                    <b class="green">
-                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="red">
-                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                <td>
-                    <b class="blue">
-                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                    </b>
-                </td>
-                @if (@Model.SubAllotment.FirstOrDefault().AppropriationId == 2)
+                @foreach (var item in Model.SubAllotment)
                 {
-                <td>
-                    @Html.CheckBoxFor(m =>@item.IsAddToNextAllotment, new { @disabled = "disabled" })
-                </td>
+                    @if (item.Suballotment_title.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.prexc.pap_title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Suballotment_title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @item.RespoCenter.Respo
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+
+                                <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                            <td>
+                                <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
+                            </td>
+                            <td>
+                                <b class="green">
+                                    <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                                </b>
+                            </td>
+                            <td>
+                                <b class="red">
+                                    <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                                </b>
+                            </td>
+                            <td>
+                                <b class="blue">
+                                    <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                                </b>
+                            </td>
+                            @if (@Model.SubAllotment.FirstOrDefault().AppropriationId == 2)
+                            {
+                                <td>
+                                    @Html.CheckBoxFor(m => @item.IsAddToNextAllotment, new { @disabled = "disabled" })
+                                </td>
+                            }
+                        </tr>
+                     }
+                 }
+
+            } else
+            {
+                @foreach (var item in Model.SubAllotment)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.prexc.pap_title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Suballotment_title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @item.RespoCenter.Respo
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+
+                            <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                        <td>
+                            <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
+                        </td>
+                        <td>
+                            <b class="green">
+                                <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                            </b>
+                        </td>
+                        <td>
+                            <b class="red">
+                                <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                            </b>
+                        </td>
+                        <td>
+                            <b class="blue">
+                                <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                            </b>
+                        </td>
+                        @if (@Model.SubAllotment.FirstOrDefault().AppropriationId == 2)
+                        {
+                            <td>
+                                @Html.CheckBoxFor(m => @item.IsAddToNextAllotment, new { @disabled = "disabled" })
+                            </td>
+                        }
+                    </tr>
                 }
-            </tr>
             }
+
         </tbody>
     </table>
 }
@@ -228,6 +304,10 @@ else
 }
 
 <script>
+    function viewAllClicked() {
+        $('viewAllValue').val(true);
+    }
+
     function createSub_allotment(BudgetAllotmentId) {
          $("#createModal").modal({ backdrop: 'static', keyboard: false });
          $("#suballotment_create").html(loading);

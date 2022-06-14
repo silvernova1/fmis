@@ -101,14 +101,28 @@
     </div>
 </div>
 
-<p>
-    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </button> |
-    <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
-        <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
-    </a>
-</p>
+<div class="col-md-8">
+    <p>
+        <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
+            <i class="ace-icon fa fa-plus "></i>Create New
+        </button> |
+        <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
+        </a>
+    </p>
+</div>
+<div class="col-md-4">
+    <form method="get" asp-action="Index" asp-controller="Dv">
+        <input type="search"  value="@ViewData["GetDvNo"]" class="form-group" name="searchString" style="width: 340px;" />
+ 
+
+        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+            <i class="ace-icon fa fa-search "></i> Search
+        </button>
+        <br />
+    </form>
+</div>
+
 
 @if (Model.FundSources.Count() > 0)
 {
@@ -141,22 +155,21 @@
                     Obligated Amount
                 </th>
                 @* <th>
-            Utilized Amount
-        </th>*@
+                        Utilized Amount
+                    </th>*@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.FundSources)
+            @foreach (var item in Model.FundSources.OrderByDescending(x=>x.CreatedAt))
             {
-            <tr>
-                <td>
+                <tr>
+                    <td>
 
-                    @Html.DisplayFor(modelItem => item.Prexc.pap_title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                </td>
-
+                        @Html.DisplayFor(modelItem => item.Prexc.pap_title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                    </td>
                  <td>
                    @item.RespoCenter.Respo
                 </td>
@@ -184,12 +197,32 @@
                     </b>
                 </td>
 
-                @* <td>
-            <b class="blue">
-                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-            </b>
-        </td>*@
-            </tr>
+                    <td>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                    </td>
+
+                    <td>
+                        <b class="green">
+                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="red">
+                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+                    <td>
+                        <b class="blue">
+                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                        </b>
+                    </td>
+
+                    @* <td>
+                            <b class="blue">
+                                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                            </b>
+                        </td>*@
+                </tr>
             }
         </tbody>
     </table>
