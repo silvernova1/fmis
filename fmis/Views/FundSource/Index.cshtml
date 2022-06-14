@@ -197,31 +197,6 @@
                     </b>
                 </td>
 
-                    <td>
-                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                    </td>
-
-                    <td>
-                        <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="red">
-                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="blue">
-                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-
-                    @* <td>
-                            <b class="blue">
-                                <span>@item.utilized_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                            </b>
-                        </td>*@
                 </tr>
             }
         </tbody>
