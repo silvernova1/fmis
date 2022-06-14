@@ -20,7 +20,9 @@
         min-height: 33px;
     }
 </style>
-
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
 <form asp-action="Create">
     <input hidden type="text" id="funds_input_token" name="token" value="" />
     <div>
@@ -62,10 +64,7 @@
                 <div class="form-group">
                     <label>FundSource Title:</label>
                     <input asp-for="FundSourceTitle" class="form-control" name = "FundSourceTitle" required />
-                    @if (ViewBag.Message != null && ViewBag.Message == "Exist")
-                    {
-                        <br /><span style="color:red;">Fund Source already exist.</span>
-                    }
+                    @Html.ValidationMessageFor(model => model.FundSourceTitle)
                     <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -100,6 +99,12 @@
         </div>
     </div>
 </form>
+<p>
+    @Html.Label("", Convert.ToString((string)ViewBag.Duplicate))
+</p>
+}
+
+
 
 
 <script>
