@@ -242,7 +242,7 @@
 	});
 
 
-	var obligation = $.parseJSON($(".obligation").val());
+    var obligation = $.parseJSON($(".obligation").val());
 	const data = [];
     var counter = 0;
     $.each(obligation, function () {
@@ -288,6 +288,12 @@
             data[counter].push(this.SubAllotment ? this.SubAllotment.Remaining_balance : 0);
         }
 
+        if (this.source_type == "fund_source") {
+            data[counter].push(this.FundSource.PapType)
+        }
+        else {
+            data[counter].push(this.SubAllotment.PapType)
+        }
 		counter++;
     });
 
@@ -337,7 +343,7 @@
                     100, 100, 100,
                     100, 100, 100,
                     100, 100,
-                    150, 150,
+                    150, 150,10
         ],
 
 		colHeaders: ['FUND SOURCE ', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
@@ -353,7 +359,7 @@
                      'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
                      'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
                      'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
-                     'BEGINNING BALANCE','REMAINING BALANCE',
+                     'BEGINNING BALANCE','REMAINING BALANCE','PAP TYPE'
         ],
 		columns: [
             {
@@ -453,7 +459,10 @@
             {
                 //OBLIGATION EXPENSE CODE 3
                 type: 'dropdown',
-                source: uacs_data_dropdown
+                source(query, callback) {
+                    console.log(this);
+                    console.log(this.instance.getDataAtCell(this.row, 51));
+                }
             },
             {
                 //OBLIGATION AMOUNT 3
@@ -484,8 +493,9 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 5
+                data: ['water'],
                 type: 'dropdown',
-                source: uacs_data_dropdown
+                //source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  5
@@ -620,6 +630,10 @@
                     pattern: '0,0.00',
                 }
             },
+            {
+
+                type: 'text'
+            }
 		],
 		search: {
 			searchResultClass: 'search-result-custom'
@@ -990,7 +1004,7 @@
             }
 		},
 		hiddenColumns: {
-            columns: [ 9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
+            columns: [ 9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
 		},
         licenseKey: 'non-commercial-and-evaluation',
     });

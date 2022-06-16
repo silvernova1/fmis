@@ -2,6 +2,7 @@
 @inject fmis.Data.MyDbContext _context
 @using Microsoft.EntityFrameworkCore;
 
+
 @functions{
     public string GetAntiXsrfRequestToken()
     {
@@ -111,12 +112,21 @@
                             <div class="navbar-buttons navbar-header pull-right" role="navigation">
                                 <ul class="nav ace-nav">
                                     <li class="active" style="font-size: 15pt; margin-right : 20px">
-                                         @{
-                                             var yearId = _context.Budget_allotments.Include(x=>x.Yearly_reference).FirstOrDefault().YearlyReferenceId;
-                                             var year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == yearId).YearlyReference.ToString();
-                                          }
-     
-                                        CY: @year
+                                        @*  @{
+                             var yearId = _context.Budget_allotments.Include(x=>x.Yearly_reference).FirstOrDefault().YearlyReferenceId;
+                             var year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == yearId).YearlyReference.ToString();
+                          }
+
+                        CY: @year*@
+
+                                    @{
+                                        var yearId = _context.Budget_allotments.Include(x => x.Yearly_reference).FirstOrDefault().YearlyReferenceId;
+                                        var year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == yearId).YearlyReference;
+                                    }
+
+                                    CY:   @User.FindFirst("YearlyRef").Value
+
+
                                     </li>
                                     <partial name="~/Views/Shared/_Notification.cshtml" />
                                     <partial name="~/Views/Shared/_Account.cshtml" />

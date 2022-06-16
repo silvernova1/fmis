@@ -48,7 +48,13 @@ namespace fmis
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            ); 
+            
+            services.AddScoped<IUserClaimsPrincipalFactory<fmisUser>, ApplicationUserClaimsPrincipalFactory>();
+
+
+            services.AddDbContext<UserContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>

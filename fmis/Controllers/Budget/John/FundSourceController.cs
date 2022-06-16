@@ -11,6 +11,7 @@ using fmis.Models;
 using fmis.Data;
 using fmis.ViewModel;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.IO;
 using iTextSharp.text;
@@ -30,8 +31,9 @@ namespace fmis.Controllers.Budget.John
         private readonly PrexcContext _pContext;
         private readonly RespoCenterContext _rContext;
         private readonly MyDbContext _MyDbContext;
+        private readonly ILogger<FundSourceController> _logger;
 
-        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, BudgetAllotmentContext BudgetAllotmentContext, RespoCenterContext rContext)
+        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, BudgetAllotmentContext BudgetAllotmentContext, RespoCenterContext rContext, ILogger<FundSourceController> logger)
         {
             _FundSourceContext = FundSourceContext;
             _uContext = uContext;
@@ -39,6 +41,7 @@ namespace fmis.Controllers.Budget.John
             _pContext = pContext;
             _MyDbContext = MyDbContext;
             _rContext = rContext;
+            _logger = logger;
         }
 
         public class FundsourceamountData
@@ -63,12 +66,36 @@ namespace fmis.Controllers.Budget.John
             public List<ManyId> many_token { get; set; }
         }
 
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
+        #region API
+        public ActionResult CheckFundSourceTitle(string title)
+        {
+            if (_MyDbContext.FundSources.Where(x => x.FundSourceTitle == title).Count() > 0)
+            {
+                ModelState.AddModelError("FundSourceTitle", "Duplicate Fund Source Title");
+                return Ok(true);
+            }
+            return Ok(false);
+        }
+        #endregion
+
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, Boolean viewAllBtn)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
-            ViewBag.budget_id = BudgetAllotmentId;
+            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+
+            ViewData["search"] = "";
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                ViewData["search"] = search.ToUpper();
+            }
+
+            if (viewAllBtn == true)
+            {
+                ViewData["search"] = "";
+            }
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
@@ -123,6 +150,11 @@ namespace fmis.Controllers.Budget.John
             var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
             var result2 = _MyDbContext.Fund.Where(x => x.FundId == FundId).First();
 
+            /*if (_MyDbContext.FundSources.Where(x => x.FundSourceTitle == fundSource.FundSourceTitle).Count() > 0)
+            {
+                ModelState.AddModelError("FundSourceTitle", "Duplicate Fund Source Title");
+                return View(fundSource);
+            }*/
 
             var fundsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
@@ -135,7 +167,7 @@ namespace fmis.Controllers.Budget.John
             fundsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("index", "FundSource", new
+            return RedirectToAction("Index", "FundSource", new
             {
                 AllotmentClassId = fundSource.AllotmentClassId,
                 AppropriationId = fundSource.AppropriationId,

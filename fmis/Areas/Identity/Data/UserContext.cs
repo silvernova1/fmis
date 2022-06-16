@@ -20,13 +20,13 @@ namespace fmis.Data
             : base(options)
         {
         }
+        public DbSet<fmisUser> BudgetYears { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            //builder.Entity<fmisUser>(b => { b.HasMany(p => p.BudgetYears); });
+            builder.Entity<fmisUser>().ToTable("AspNetUsers");
         }
-        //public DbSet<BudgetYear> BudgetYears { get; set; }
 
         public static UserContext Create()
         {
