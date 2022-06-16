@@ -1123,7 +1123,7 @@ namespace fmis.Controllers.Budget.John
                                          }).ToList();
 
                         var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount) + fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
-                        var sub9 = sub6 - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
+                        var sub9 = sub6 - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts?.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                         ws.Cell(currentRow, 4).Style.Font.SetBold();
                         ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
@@ -1226,13 +1226,26 @@ namespace fmis.Controllers.Budget.John
 
                         if (string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
                         {
-                            //PERCENT OF UTILIZATION
-                            ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
-                            ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
-                            ws.Cell(currentRow, 23).Style.Font.SetBold();
-                            ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            if(asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) == 0)
+                            {
+                                //PERCENT OF UTILIZATION
+                                ws.Cell(currentRow, 23).Value = "-";
+                                ws.Cell(currentRow, 23).Style.Font.SetBold();
+                                ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            else
+                            {
+                                //PERCENT OF UTILIZATION
+                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
+                                ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
+                                ws.Cell(currentRow, 23).Style.Font.SetBold();
+                                ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            }
+                            
                         }
                         else
                         {

@@ -161,11 +161,31 @@ namespace fmis.Controllers.Budget.John
             fundSource.Beginning_balance = fundsource_amount.Sum(x => x.beginning_balance);
             fundSource.Remaining_balance = fundsource_amount.Sum(x => x.beginning_balance);
 
-            _FundSourceContext.Add(fundSource);
-            _FundSourceContext.SaveChanges();
+            var item = _MyDbContext.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).ToList();
+            if (ModelState.IsValid)
+            {
+                if(item.Count() > 0)
+                {
 
-            fundsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
-            this._MyDbContext.SaveChanges();
+                    ViewBag.Duplicate = fundSource.FundSourceTitle + " already exist in our database.";
+                }
+                else
+                {
+                    _FundSourceContext.Add(fundSource);
+                    _FundSourceContext.SaveChanges();
+
+                    fundsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
+                    this._MyDbContext.SaveChanges();
+                }
+            }
+            /*var item = _MyDbContext.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).FirstOrDefault();
+            if (item!=null)
+            {
+                ModelState.AddModelError("keyName", "Message");
+                return View();
+            }*/
+
+
 
             return RedirectToAction("Index", "FundSource", new
             {

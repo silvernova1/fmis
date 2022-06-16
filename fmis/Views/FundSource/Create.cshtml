@@ -20,7 +20,9 @@
         min-height: 33px;
     }
 </style>
-
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
 <form asp-action="Create">
     <input hidden type="text" id="funds_input_token" name="token" value="" />
     <div>
@@ -100,6 +102,12 @@
         </div>
     </div>
 </form>
+<p>
+    @Html.Label("", Convert.ToString((string)ViewBag.Duplicate))
+</p>
+}
+
+
 
 
 <script>
