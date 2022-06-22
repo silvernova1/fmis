@@ -105,13 +105,43 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        /*public async Task<ActionResult> GetExpenseCode(string pap)
+        public async Task<ActionResult> GetExpenseCode(int allotmentId)
         {
-            switch (pap)
-            {
-                case ""
-            }
-        }*/
+            var expenseCode = await _MyDbContext.Uacs
+                .Where(x => x.uacs_type == allotmentId)
+                .Select(x=>x.Expense_code)
+                .ToListAsync();
+
+            if (expenseCode.Count() == 0) return BadRequest();
+
+            return Ok(new { items = expenseCode });
+        }
+
+        public async Task<ActionResult> GetObligation(string title)
+        {
+            var obligation = await _context
+                .Obligation
+                .Where(x => x.status == "activated")
+                .Include(x => x.ObligationAmounts)
+                .Include(x => x.FundSource)
+                .Include(x => x.SubAllotment)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.FundSource.FundSourceTitle == title);
+            if (obligation is not null) return Ok(obligation);
+
+            obligation = await _context
+                .Obligation
+                .Where(x => x.status == "activated")
+                .Include(x => x.ObligationAmounts)
+                .Include(x => x.FundSource)
+                .Include(x => x.SubAllotment)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.SubAllotment.Suballotment_title == title);
+
+            if (obligation is not null) return Ok(obligation);
+
+            return BadRequest();
+        }
 
         public async Task<IActionResult> Index()
         {

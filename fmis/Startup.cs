@@ -44,6 +44,8 @@ namespace fmis
             services.AddControllers();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddAuthentication()
+                .AddCookie("CustomClaimCookie");
             services.AddSession();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

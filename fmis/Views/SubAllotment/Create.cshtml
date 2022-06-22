@@ -196,7 +196,7 @@
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_create');
     const hot = new Handsontable(container, {
-        data: Handsontable.helper.createSpreadsheetData(1, 0),
+        data: [['', '', '', generate_token()]],
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
