@@ -192,7 +192,7 @@
         <tbody>
             @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "")
             {
-                @foreach (var item in Model.SubAllotment)
+                @foreach (var item in Model.SubAllotment.OrderByDescending(x=>x.CreatedAt))
                 {
                     @if (item.Suballotment_title.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()))
                     {
@@ -244,7 +244,7 @@
 
             } else
             {
-                @foreach (var item in Model.SubAllotment)
+                @foreach (var item in Model.SubAllotment.OrderByDescending(x=>x.CreatedAt))
                 {
                     <tr>
                         <td>
