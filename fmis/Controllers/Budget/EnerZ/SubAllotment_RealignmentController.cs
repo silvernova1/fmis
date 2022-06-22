@@ -92,7 +92,7 @@ namespace fmis.Controllers
                             .Where(x => x.SubAllotmentId == sub_allotment_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
-            SubAllotment.Uacs = await _UacsContext.Uacs./*Where(p => !from_uacs.Contains(p.UacsId))*/AsNoTracking().ToListAsync();
+            SubAllotment.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
             //return Json(FundSource);
             return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
