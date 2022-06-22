@@ -49,21 +49,10 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
-            const string yearly_reference = "_yearly_reference";
-
-            int id = 0;
-            if (post_yearly_reference != null)
-            {
-                HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
-                id = (int)post_yearly_reference;
-            }
-            else
-            {
-                id = (int)HttpContext.Session.GetInt32(yearly_reference);
-            }
 
 
-            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == id).YearlyReference;
+
+            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
@@ -73,9 +62,11 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
-            .Where(x=>x.YearlyReferenceId == id || x.Yearly_reference.YearlyReference == year)
+            .Where(x=>x.YearlyReferenceId == YearlyRefId/* || x.Yearly_reference.YearlyReference == result*/)
             .AsNoTracking()
             .ToListAsync();
+
+            var budget_allotment_lastyr = await _context.Budget_allotments.Where(x=>x.Yearly_reference.YearlyReference == result).ToListAsync();
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
@@ -312,5 +303,11 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _context.Budget_allotments.Any(e => e.BudgetAllotmentId == id);
         }
+
+        #region COOKIES
+
+        public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
+
+        #endregion
     }
 }

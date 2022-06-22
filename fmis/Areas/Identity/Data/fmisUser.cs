@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.Budget;
@@ -11,5 +12,9 @@ namespace fmis.Areas.Identity.Data
     public class fmisUser : IdentityUser
     {
         /*public ICollection<BudgetYear> BudgetYears { get; set; }*/
+        [NotMapped]
+        public string Year { get; set; }
+        [NotMapped]
+        public int YearId { get; set; }
     }
 }

@@ -26,16 +26,18 @@ namespace fmis.Areas.Identity.Pages.Account
         private readonly UserManager<fmisUser> _userManager;
         private readonly SignInManager<fmisUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserContext _context;
         private readonly MyDbContext _MyDbCOntext;
 
-        public LoginModel(MyDbContext context, SignInManager<fmisUser> signInManager, 
+        public LoginModel(UserContext context, MyDbContext myDbContext, SignInManager<fmisUser> signInManager, 
             ILogger<LoginModel> logger,
             UserManager<fmisUser> userManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _MyDbCOntext = context;
+            _context = context;
+            _MyDbCOntext = myDbContext;
         }
 
         [BindProperty]
@@ -59,7 +61,7 @@ namespace fmis.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Year")]
-            public string Year { get; set; }
+            public int Year { get; set; }
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
@@ -90,12 +92,17 @@ namespace fmis.Areas.Identity.Pages.Account
             returnUrl ??= Url.Action("Dashboard", "Home")+ "?post_yearly_reference="+ Input.Year;
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+
+            var fmisUser = _context.Users.FirstOrDefault(x => x.UserName == Input.Username);
+            fmisUser.YearId = Input.Year;
+            fmisUser.Year = _MyDbCOntext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == Input.Year)?.YearlyReference;
+            _logger.LogInformation("Username: " + fmisUser.UserName);
+            _logger.LogInformation("Email: " + fmisUser.Email);
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(fmisUser, Input.Password, Input.RememberMe, false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -113,6 +120,7 @@ namespace fmis.Areas.Identity.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ViewData["Year"] = _MyDbCOntext.Yearly_reference.ToList();
                     return Page();
                 }
             }

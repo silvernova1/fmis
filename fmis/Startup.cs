@@ -19,6 +19,7 @@ using fmis.Data.silver;
 using fmis.Areas.Identity.Data;
 using Microsoft.Owin;
 using fmis.Hubs;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -48,7 +49,13 @@ namespace fmis
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            ); 
+            
+            services.AddScoped<IUserClaimsPrincipalFactory<fmisUser>, ApplicationUserClaimsPrincipalFactory>();
+
+
+            services.AddDbContext<UserContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<fmisContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>
@@ -165,6 +172,15 @@ namespace fmis
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(360);
             });
+
+            /*services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.Cookie.MaxAge = options.ExpireTimeSpan; // optional
+            });*/
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

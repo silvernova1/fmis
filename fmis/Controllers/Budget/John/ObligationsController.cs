@@ -105,6 +105,14 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
+        /*public async Task<ActionResult> GetExpenseCode(string pap)
+        {
+            switch (pap)
+            {
+                case ""
+            }
+        }*/
+
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";

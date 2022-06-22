@@ -66,6 +66,18 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
+        #region API
+        public ActionResult CheckSubAllotmentTitle(string title)
+        {
+            if (_MyDbContext.SubAllotment.Where(x => x.Suballotment_title == title).Count() > 0)
+            {
+                ModelState.AddModelError("Suballotment_title", "Sub Allotment Title");
+                return Ok(true);
+            }
+            return Ok(false);
+        }
+        #endregion
+
         // GET:Sub_allotment
         public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, Boolean viewAllBtn)
         {
@@ -74,6 +86,7 @@ namespace fmis.Controllers
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+
             ViewData["search"] = "";
 
             if (!String.IsNullOrEmpty(search))
@@ -85,37 +98,49 @@ namespace fmis.Controllers
             {
                 ViewData["search"] = "";
             }
-            
+
+            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
+
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
-                .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
+            .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.prexc)
-
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.Appropriation)
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.AllotmentClass)
             .Include(x => x.Yearly_reference)
-
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
-
-            string year = budget_allotment.Yearly_reference.YearlyReference;
+            Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
+            var suballotmentsLastYr = await _MyDbContext.SubAllotment
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Include(x=>x.RespoCenter)
+                .Include(x=>x.prexc)
+                .Include(x=>x.Appropriation)
+                .Include(x=>x.AllotmentClass)
+                .ToListAsync();
+            Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
+            /*string year = budget_allotment.Yearly_reference.YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(1);
             var result = res.Year.ToString();
-            ViewBag.result = result;
+            ViewBag.result = result;*/
 
-
+            budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
+            Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
             return View(budget_allotment);
         }
 
-      
         // GET: Sub_allotment/Create
         public async Task <IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == AllotmentClassId).ToListAsync());
 
             ViewBag.uacs = uacs_data;
@@ -127,6 +152,8 @@ namespace fmis.Controllers
             PopulateRespoDropDownList();
             PopulateFundDropDownList();
 
+
+            ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
         }
@@ -430,5 +457,11 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _context.SubAllotment.Any(e => e.SubAllotmentId == id);
         }
+
+        #region COOKIES
+
+        public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
+
+        #endregion
     }
 }
