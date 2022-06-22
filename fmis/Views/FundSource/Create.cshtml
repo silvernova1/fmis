@@ -64,10 +64,6 @@
                 <div class="form-group">
                     <label>FundSource Title:</label>
                     <input asp-for="FundSourceTitle" class="form-control" name = "FundSourceTitle" onchange="CheckFundSourceTitle(this);" required />
-                    @if (ViewBag.Message != null && ViewBag.Message == "Exist")
-                    {
-                        <br /><span style="color:red;">Fund Source already exist.</span>
-                    }
                     <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -146,7 +142,7 @@
             async: true,
             success: function (output) {
                 if (output) {
-                    alert("Fund Source Title duplicate");
+                    alert("Fund Source Already Exist!");
                     input.value = "";
                 }
             }

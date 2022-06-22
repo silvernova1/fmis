@@ -62,9 +62,11 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
-            .Where(x=>x.YearlyReferenceId == YearlyRefId || x.Yearly_reference.YearlyReference == year)
+            .Where(x=>x.YearlyReferenceId == YearlyRefId/* || x.Yearly_reference.YearlyReference == result*/)
             .AsNoTracking()
             .ToListAsync();
+
+            var budget_allotment_lastyr = await _context.Budget_allotments.Where(x=>x.Yearly_reference.YearlyReference == result).ToListAsync();
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
