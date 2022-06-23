@@ -433,7 +433,7 @@ namespace fmis.Controllers.Budget.John
 
             _MyDbContext.Remove(fundSource);
             await _MyDbContext.SaveChangesAsync();
-            return RedirectToAction("Index", "FundSource", new { /*budget_id = fundSource.BudgetAllotmentId*/
+            return RedirectToAction("Index", "FundSource", new { 
                 AllotmentClassId = fundSource.AllotmentClassId,
                 AppropriationId = fundSource.AppropriationId,
                 BudgetAllotmentId = fundSource.BudgetAllotmentId

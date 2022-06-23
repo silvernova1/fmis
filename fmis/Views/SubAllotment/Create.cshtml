@@ -93,19 +93,16 @@
                 <label>@Html.CheckBox("IsAddToNextAllotment", false) Add to Next Allotment</label>
             </div>
         </div>
-
-        <br />
         <input type="hidden" id="SubId" />
         <input type="hidden" class="suballotment_amount" value="@ViewBag.temp">
         <input type="hidden" class="uacs" value="@ViewBag.uacs">
-        <br />
         <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
         <div id="suballotment_amount_create" class="hot handsontable htColumnHeaders"></div>
         <br />
         <div class="controls" hidden>
             <button id="export-file">Download CSV</button>
         </div>
-
+        <br />
         <div class="infobox infobox-green pull-right">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-money"></i>
