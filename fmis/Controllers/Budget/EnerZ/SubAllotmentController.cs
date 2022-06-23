@@ -125,11 +125,6 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
             Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
-            /*string year = budget_allotment.Yearly_reference.YearlyReference;
-            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
-            var res = next_year.AddYears(1);
-            var result = res.Year.ToString();
-            ViewBag.result = result;*/
 
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());

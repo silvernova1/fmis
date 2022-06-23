@@ -40,20 +40,25 @@ namespace fmis.Controllers.Budget.John
             return View(await _MyDbContext.FundSources.ToListAsync());
         }
 
+        #region COOKIES
+
+        public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
+
+        #endregion
+
 
         public IActionResult Export(string fn, string date_from, string date_to, int? post_yearly_reference)
         {
             const string yearly_reference = "_yearly_reference";
 
-            int id = 0;
+            int id = YearlyRefId;
             if (post_yearly_reference != null)
             {
-                HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
-                id = (int)post_yearly_reference;
+                id = YearlyRefId;
             }
             else
             {
-                id = (int)HttpContext.Session.GetInt32(yearly_reference);
+                id = YearlyRefId;
             }
 
             DateTime date1 = Convert.ToDateTime(date_from);
