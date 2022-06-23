@@ -24,8 +24,9 @@
     }
 
     .wtHider {
-        margin-bottom: 200px;
+        margin-bottom: 20px;
     }
+
 
     .htAutocompleteArrow {
         cursor: pointer;
@@ -133,8 +134,6 @@
 
 
 <script>
-
-
 	//SET OBLIGATION TOKEN
     let ObligationToken = () => {
         let s4 = () => {
@@ -205,16 +204,15 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
-	function ajaxServer(ajax_data, url) {
-		$.ajax({
-			type: 'POST',
-			url: url,
-			headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-			data: { data: ajax_data },
-			success: function (output) {
-				//console.log(output);
-			}
-		});
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+        });
+
+        return data;
     }
 
     function isNumeric(o) {
@@ -289,10 +287,10 @@
         }
 
         if (this.source_type == "fund_source") {
-            data[counter].push(this.FundSource.PapType)
+            data[counter].push(this.FundSource.AllotmentClassId)
         }
         else {
-            data[counter].push(this.SubAllotment.PapType)
+            data[counter].push(this.SubAllotment.AllotmentClassId)
         }
 		counter++;
     });
@@ -319,7 +317,7 @@
 		rowHeaders: true,
         colHeaders: true,
 		filters: true,
-        height: '800px', 
+        height: '800px',
         fixedColumnsLeft: 5,
         manualRowResize: true,
         afterGetColHeader: addInput,
@@ -343,9 +341,8 @@
                     100, 100, 100,
                     100, 100, 100,
                     100, 100,
-                    150, 150,10
+                    150, 150, 10
         ],
-
 		colHeaders: ['FUND SOURCE ', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
                      'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
                      'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -366,7 +363,8 @@
 				//FUNDSOURCE&SUBALLOTMENT
 				type: 'dropdown',
                 source: fund_sub_data_dropdown,
-      
+
+
 			},
 			{
 				//DATE
@@ -430,6 +428,7 @@
                 //OBLIGATION EXPENSE CODE 1
                 type: 'dropdown',
                 source: uacs_data_dropdown
+
             },
             {
                 //OBLIGATION AMOUNT 1
@@ -458,11 +457,27 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 3
-                type: 'dropdown',
+           @*     type: 'dropdown',
                 source(query, callback) {
-                    console.log(this);
-                    console.log(this.instance.getDataAtCell(this.row, 51));
-                }
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                    console.log(url);
+                }*@
+                type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT 3
@@ -471,13 +486,12 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 4
             },
             {
                 //OBLIGATION EXPENSE CODE 4
-                type: 'dropdown',
+                 type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
@@ -487,15 +501,13 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 5
             },
             {
                 //OBLIGATION EXPENSE CODE 5
-                data: ['water'],
-                type: 'dropdown',
-                //source: uacs_data_dropdown
+                 type: 'dropdown',
+                source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  5
@@ -510,8 +522,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 6
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                 type: 'dropdown',
+                 source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  6
@@ -520,7 +532,6 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 7
             },
@@ -536,13 +547,12 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 8
             },
             {
                 //OBLIGATION EXPENSE CODE 8
-                type: 'dropdown',
+               type: 'dropdown',
                 source: uacs_data_dropdown
             },
             {
@@ -552,14 +562,13 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 9
             },
             {
                 //OBLIGATION EXPENSE CODE 9
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                 type: 'dropdown',
+                  source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  9
@@ -574,8 +583,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 10
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                 type: 'dropdown',
+                 source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  10
@@ -590,8 +599,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 11
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                 type: 'dropdown',
+                 source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  11
@@ -606,8 +615,8 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 12
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                 type: 'dropdown',
+                 source: uacs_data_dropdown
             },
             {
                 //OBLIGATION AMOUNT  12
@@ -727,6 +736,13 @@
                 },
 
                 "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+                "created": {
+                    name: 'CREATED BY',
+                    callback: function (changes, options) {
+
+                    }
+                },
+
 
             }
 
@@ -756,7 +772,6 @@
         },
 		afterCreateRow: function (row, column) {
             //CHECK_AFTER_ROW = true;
-
             @*if (SET_10_ROW) {
                 SET_10_ROW = false;
                 for (var i = 0; i < 10; i++) {
@@ -850,10 +865,25 @@
 						}
 					);
 
-					ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+                    ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+
+                    $.ajax({
+                        url: '@Url.Action("GetObligation","Obligations")',
+                        data: {
+                            title: hot.getDataAtCell(row, 0)
+                        },
+                        method: 'GET',
+                        success: function (result, text, jqsumting) {
+                            if (jqsumting.status == 200) {
+                                console.log(result)
+                            }
+                        }
+                    });
+
+
                     return;
                 }
-				else if (col >= 14 && col <= 50)
+				else if (col >= 14 && col <= 52)
 				{
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
