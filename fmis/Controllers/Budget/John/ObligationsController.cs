@@ -104,7 +104,6 @@ namespace fmis.Controllers
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
         }
-
         #region COOKIES
 
         public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
@@ -120,8 +119,9 @@ namespace fmis.Controllers
                                     .Obligation
                                     .Where(x => x.status == "activated")
                                     .Include(x => x.ObligationAmounts)
-                                    .Include(x => x.FundSource)  
+                                    .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
+                                    .Where(x=>x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId)
                                     .AsNoTracking()
                                     .ToListAsync();
 
