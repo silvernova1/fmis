@@ -45,7 +45,7 @@ namespace fmis.Controllers
         }
 
         // GET: Budget_allotments
-        public async Task<IActionResult> Index(int? post_yearly_reference)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
@@ -62,14 +62,23 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
-            .Where(x=>x.YearlyReferenceId == YearlyRefId/* || x.Yearly_reference.YearlyReference == result*/)
+            .Where(x=>x.YearlyReferenceId == YearlyRefId)
             .AsNoTracking()
             .ToListAsync();
 
-            var budget_allotment_lastyr = await _context.Budget_allotments.Where(x=>x.Yearly_reference.YearlyReference == result).ToListAsync();
+            
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
+
+            var allotmentClass_Id = _context.AllotmentClass.FirstOrDefault(x => x.Id == 3).Id;
+
+                var suballotmentsLastYr = await _context.SubAllotment
+                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Include(x=>x.AllotmentClass)
+                .ToListAsync();
+
+            budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
             return View(budget_allotment);
         }
 

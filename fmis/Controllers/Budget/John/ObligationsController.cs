@@ -105,13 +105,11 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        /*public async Task<ActionResult> GetExpenseCode(string pap)
-        {
-            switch (pap)
-            {
-                case ""
-            }
-        }*/
+        #region COOKIES
+
+        public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
+
+        #endregion
 
         public async Task<IActionResult> Index()
         {
@@ -127,14 +125,13 @@ namespace fmis.Controllers
                                     .AsNoTracking()
                                     .ToListAsync();
 
-            var fund_sub_data = (from x in _MyDbContext.FundSources.ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
-                                    .Concat(from y in _MyDbContext.SubAllotment.ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
+            var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x=>x.BudgetAllotment.YearlyReferenceId == YearlyRefId).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
+                                    .Concat(from y in _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.YearlyReferenceId == YearlyRefId).ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
 
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data.ToList());
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            //return Json(obligation);
             return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
         }
 

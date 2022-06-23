@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -39,41 +40,55 @@ namespace fmis.Controllers
             return View("~/Views/Shared/_LoginPartial.cshtml");
         }
 
+        #region COOKIES
+
+        public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
+
+        #endregion
+
         public IActionResult Dashboard(int? post_yearly_reference)
         {
-            const string yearly_reference = "_yearly_reference";
+            const string yearly_reference = "YearlyRefId";
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
 
-            int id = 0;
+            string year = _MyDbCOntext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
+
+            /*int id = YearlyRefId;
             if (post_yearly_reference != null)
             {
-                HttpContext.Session.SetInt32(yearly_reference, (int)post_yearly_reference);
-                id = (int)post_yearly_reference;
+                id = YearlyRefId;
             }
             else
             {
-                id = (int)HttpContext.Session.GetInt32(yearly_reference);
-            }
+                id = YearlyRefId;
+            }*/
+
+            var suballotmentsLastYr = _MyDbCOntext.SubAllotment
+            .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+            .Include(x => x.AllotmentClass).Sum(x => x.Beginning_balance);
 
             var ObligationAmount = _MyDbCOntext.ObligationAmount;
             var FundSource = _MyDbCOntext.FundSources;
 
             DashboardVM dashboard = new DashboardVM();
-            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == id).ToList();
-            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).ToList();
-            dashboard.Sub_allotments = _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id).ToList();
-            dashboard.AllotmentClasses = _MyDbCOntext.AllotmentClass.Where(x => x.Id == id).ToList();
+            dashboard.BudgetAllotments = _MyDbCOntext.Budget_allotments.Where(x=>x.BudgetAllotmentId == YearlyRefId).ToList();
+            dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).ToList();
+            dashboard.Sub_allotments = _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).ToList();
+            dashboard.AllotmentClasses = _MyDbCOntext.AllotmentClass.Where(x => x.Id == YearlyRefId).ToList();
 
-            var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s=>s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s=>s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance) + suballotmentsLastYr;
             ViewBag.Balance = balance;
 
-            var allotmentPS = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(s => s.Remaining_balance);
-            var allotmentPSObligation = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(x => x.obligated_amount) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 1).Sum(s => s.obligated_amount);
+            var allotmentPS = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.AllotmentClassId == 1).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId && x.AllotmentClassId == 1).Sum(s => s.Remaining_balance);
+            var allotmentPSObligation = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.AllotmentClassId == 1).Sum(x => x.obligated_amount) + _MyDbCOntext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId && x.AllotmentClassId == 1).Sum(s => s.obligated_amount);
 
-            var allotmentMOOE = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 2).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 2).Sum(s => s.Remaining_balance);
-            var allotmentCO = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 3).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id && x.AllotmentClassId == 3).Sum(s => s.Remaining_balance);
+            var allotmentMOOE = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 2).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 2).Sum(s => s.Remaining_balance);
+            var allotmentCO = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 3).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 3).Sum(s => s.Remaining_balance);
 
             var allotmentPS_res = allotmentPS / balance * 100;
             ViewBag.PS = String.Format("{0:0.##}", allotmentPS_res);
@@ -87,10 +102,10 @@ namespace fmis.Controllers
             var allotmentCO_res = allotmentCO / balance * 100;
             ViewBag.CO = String.Format("{0:0.##}", allotmentCO_res);
 
-            var msd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            var lhsd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 2 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            var rdard = _MyDbCOntext.FundSources.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            var rled = _MyDbCOntext.FundSources.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
+            var msd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
+            var lhsd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 2 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 2 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
+            var rdard = _MyDbCOntext.FundSources.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
+            var rled = _MyDbCOntext.FundSources.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
             ViewBag.Div = msd.ToString("{0:0.##}");
             var msd_res = msd / balance * 100;
             ViewBag.MSD = String.Format("{0:0.##}", msd_res);
@@ -107,13 +122,16 @@ namespace fmis.Controllers
             var rled_res = rled / balance * 100;
             ViewBag.RLED = String.Format("{0:0.##}", rled_res);
 
-            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(s => s.Beginning_balance);
+            
+
+            //return Json(suballotmentsLastYr);
+
+            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Beginning_balance) + suballotmentsLastYr;
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
-            var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.BudgetAllotmentId == id).Sum(s => s.Remaining_balance);
-            var obligated = _MyDbCOntext.ObligationAmount.Sum(x => x.Amount);
-
-
+            var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance);
+            //var obligated = _MyDbCOntext.ObligationAmount.Sum(x => x.Amount);
+            var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.obligated_amount);
             ViewBag.Obligated = obligated;
 
 
