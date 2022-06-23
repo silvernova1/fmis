@@ -105,17 +105,6 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
-        public async Task<ActionResult> GetExpenseCode(int allotmentId)
-        {
-            var expenseCode = await _MyDbContext.Uacs
-                .Where(x => x.uacs_type == allotmentId)
-                .Select(x=>x.Expense_code)
-                .ToListAsync();
-
-            if (expenseCode.Count() == 0) return BadRequest();
-
-            return Ok(new { items = expenseCode });
-        }
 
         public async Task<ActionResult> GetObligation(string title)
         {
@@ -143,6 +132,8 @@ namespace fmis.Controllers
             return BadRequest();
         }
 
+        public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
+
         public async Task<IActionResult> Index()
         {
             ViewBag.layout = "_Layout";
@@ -152,8 +143,9 @@ namespace fmis.Controllers
                                     .Obligation
                                     .Where(x => x.status == "activated")
                                     .Include(x => x.ObligationAmounts)
-                                    .Include(x => x.FundSource)  
+                                    .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
+                                    .Where(x=>x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId)
                                     .AsNoTracking()
                                     .ToListAsync();
 
