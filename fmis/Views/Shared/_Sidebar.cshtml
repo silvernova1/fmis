@@ -36,7 +36,7 @@
 
 
     <ul class="nav nav-list" style="top: 0px;">
-        @if (Context.User.IsInRole("Budget"))
+        @if (User.FindFirstValue(ClaimTypes.Role) == "budget_admin")
         {
 
             <li class="
@@ -477,7 +477,7 @@
             </li>
         }
 
-        @if (Context.User.IsInRole("Accounting"))
+        @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
         {
             <li class="@if(ViewBag.filter.main == "Accounting")
                 @Html.Raw("active open")">
