@@ -73,21 +73,23 @@ namespace fmis.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            ViewData["Year"] = _context.Yearly_reference.ToList();
             if (!User.Identity.IsAuthenticated)
             {
-                ViewData["Year"] = _context.Yearly_reference.ToList();
                 return View();
             }
             else
             {
                 switch (User.FindFirstValue(ClaimTypes.Role))
                 {
-                    case "admin":
-                        return RedirectToAction("Index", "Admin");
-                    case "RESU":
-                        return RedirectToAction("Index", "Resu");
-                    case "test_center":
-                        return RedirectToAction("Index", "TestCenter");
+                    case "budget_admin":
+                        return RedirectToAction("Dashboard", "Home");
+                    case "budget_user":
+                        return RedirectToAction("Dashboard", "Home");
+                    case "accounting_admin":
+                        return RedirectToAction("Dashboard", "Home");
+                    case "accounting_user":
+                        return RedirectToAction("Dashboard", "Home");
                     default:
                         return NotFound();
                 }
@@ -98,6 +100,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, IFormCollection collection)
         {
+            ViewData["Year"] = _context.Yearly_reference.ToList();
             if (ModelState.IsValid)
             {
                 var user = await _userService.ValidateUserCredentialsAsync(model.Username, model.Password);
@@ -121,7 +124,6 @@ namespace fmis.Controllers
                     }
                 }
 
-                ViewData["Year"] = _context.Yearly_reference.ToList();
             }
             return View(model);
         }

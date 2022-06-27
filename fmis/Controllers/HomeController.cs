@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace fmis.Controllers
 {
 
-    [Authorize(Policy = "BudgetAdmin")]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -47,7 +47,7 @@ namespace fmis.Controllers
 
         public IActionResult Dashboard(int? post_yearly_reference)
         {
-            const string yearly_reference = "YearlyRefId";
+            //const string yearly_reference = "YearlyRefId";
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
@@ -89,16 +89,16 @@ namespace fmis.Controllers
             var allotmentMOOE = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 2).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 2).Sum(s => s.Remaining_balance);
             var allotmentCO = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 3).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 3).Sum(s => s.Remaining_balance);
 
-            /*var allotmentPS_res = allotmentPS / balance * 100;
+            var allotmentPS_res = balance == 0? 0 : allotmentPS / balance * 100;
             ViewBag.PS = String.Format("{0:0.##}", allotmentPS_res);
 
-            var allotmentPSObligation_res = allotmentPSObligation / balance * 100;
+            var allotmentPSObligation_res = balance == 0 ? 0 :  allotmentPSObligation / balance * 100;
             ViewBag.PSObligation = String.Format("{0:0.##}", allotmentPSObligation_res);
 
-            var allotmentMOOE_res = allotmentMOOE / balance * 100;
+            var allotmentMOOE_res = balance == 0 ? 0 : allotmentMOOE / balance * 100;
             ViewBag.MOOE = String.Format("{0:0.##}", allotmentMOOE_res);
 
-            var allotmentCO_res = allotmentCO / balance * 100;
+            var allotmentCO_res = balance == 0 ? 0 : allotmentCO / balance * 100;
             ViewBag.CO = String.Format("{0:0.##}", allotmentCO_res);
 
             var msd = _MyDbCOntext.FundSources.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 1 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
@@ -106,20 +106,20 @@ namespace fmis.Controllers
             var rdard = _MyDbCOntext.FundSources.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 3 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
             var rled = _MyDbCOntext.FundSources.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.RespoId == 4 && x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance);
             ViewBag.Div = msd.ToString("{0:0.##}");
-            var msd_res = msd / balance * 100;
+            var msd_res = balance == 0 ? 0 : msd / balance * 100;
             ViewBag.MSD = String.Format("{0:0.##}", msd_res);
 
             ViewBag.Div = lhsd.ToString("{0:0.##}");
-            var lhsd_res = lhsd / balance * 100;
+            var lhsd_res = balance == 0 ? 0 : lhsd / balance * 100;
             ViewBag.LHSD = String.Format("{0:0.##}", lhsd_res);
 
             ViewBag.Div = rdard.ToString("{0:0.##}");
-            var rdard_res = rdard / balance * 100;
+            var rdard_res = balance == 0 ? 0 : rdard / balance * 100;
             ViewBag.RDARD = String.Format("{0:0.##}", rdard_res);
 
             ViewBag.Div = rled.ToString("{0:0.##}");
-            var rled_res = rled / balance * 100;
-            ViewBag.RLED = String.Format("{0:0.##}", rled_res);*/
+            var rled_res = balance == 0 ? 0 : rled / balance * 100;
+            ViewBag.RLED = String.Format("{0:0.##}", rled_res);
 
             
 
