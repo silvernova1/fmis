@@ -105,8 +105,19 @@ namespace fmis.Controllers
             public List<ManyId> many_token { get; set; }
         }
 
+        public async Task<ActionResult> GetExpenseCode(int allotmentId)
+        {
+            var expenseCode = await _MyDbContext.Uacs
+                .Where(x => x.uacs_type == allotmentId)
+                .Select(x => x.Expense_code)
+                .ToListAsync();
 
-        public async Task<ActionResult> GetObligation(string title)
+            if (expenseCode.Count() == 0) return BadRequest();
+
+            return Ok(new { items = expenseCode });
+        }
+
+        /*public async Task<ActionResult> GetObligation(string title)
         {
             var obligation = await _context
                 .Obligation
@@ -130,7 +141,7 @@ namespace fmis.Controllers
             if (obligation is not null) return Ok(obligation);
 
             return BadRequest();
-        }
+        }*/
 
         public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
 
@@ -221,6 +232,7 @@ namespace fmis.Controllers
         {
 
             var data_holder = _context.Obligation;
+            var retObligation = new List<Obligation>();
             foreach (var item in data)
             {
 
@@ -253,8 +265,13 @@ namespace fmis.Controllers
                 obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
+                if (item.source_type == "fund_source")
+                    obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+                else
+                    obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+                retObligation.Add(obligation);
             }
-            return Json(data);
+            return Json(retObligation.FirstOrDefault());
 
         }
 

@@ -205,14 +205,12 @@
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
     function ajaxServer(ajax_data, url) {
-        $.ajax({
+        return Promise.resolve($.ajax({
             type: 'POST',
             url: url,
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
             data: { data: ajax_data },
-        });
-
-        return data;
+        }));
     }
 
     function isNumeric(o) {
@@ -294,8 +292,6 @@
         }
 		counter++;
     });
-
-    console.log(data);
 
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown = [];
@@ -426,39 +422,10 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 1
-                type: 'dropdown',
-                source: uacs_data_dropdown
-
-            },
-            {
-                //OBLIGATION AMOUNT 1
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0,0.00',
-                },
-            },
-            {
-                //OBLIGATION_AMOUNT_TOKEN 2
-            },
-            {
-                //OBLIGATION EXPENSE CODE 2
-                type: 'dropdown',
-                source: uacs_data_dropdown
-            },
-            {
-                //OBLIGATION AMOUNT 2
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0,0.00',
-                }
-            },
-            {
-                //OBLIGATION_AMOUNT_TOKEN 3
-            },
-            {
-                //OBLIGATION EXPENSE CODE 3
-           @*     type: 'dropdown',
-                source(query, callback) {
+                //type: 'dropdown',
+                //source: uacs_data_dropdown
+                   type: 'dropdown',
+                    source(query, callback) {
                     var url = '@Url.Action("GetExpenseCode", "Obligations")';
                     var test = {};
                     $.ajax({
@@ -474,10 +441,69 @@
                             }
                         }
                     })
-                    console.log(url);
-                }*@
+                }
+            },
+            {
+                //OBLIGATION AMOUNT 1
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                },
+            },
+            {
+                //OBLIGATION_AMOUNT_TOKEN 2
+            },
+            {
+                //OBLIGATION EXPENSE CODE 2
                 type: 'dropdown',
-                source: uacs_data_dropdown
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
+            },
+            {
+                //OBLIGATION AMOUNT 2
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
+            {
+                //OBLIGATION_AMOUNT_TOKEN 3
+            },
+            {
+                //OBLIGATION EXPENSE CODE 3
+                 type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT 3
@@ -491,8 +517,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 4
-                 type: 'dropdown',
-                source: uacs_data_dropdown
+                type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  4
@@ -506,8 +548,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 5
-                 type: 'dropdown',
-                source: uacs_data_dropdown
+                type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  5
@@ -522,8 +580,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 6
-                 type: 'dropdown',
-                 source: uacs_data_dropdown
+                type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  6
@@ -537,8 +611,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 7
-                type: 'dropdown',
-                source: uacs_data_dropdown
+               type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  7
@@ -553,7 +643,23 @@
             {
                 //OBLIGATION EXPENSE CODE 8
                type: 'dropdown',
-                source: uacs_data_dropdown
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  8
@@ -567,8 +673,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 9
-                 type: 'dropdown',
-                  source: uacs_data_dropdown
+                type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  9
@@ -583,8 +705,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 10
-                 type: 'dropdown',
-                 source: uacs_data_dropdown
+                type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  10
@@ -599,8 +737,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 11
-                 type: 'dropdown',
-                 source: uacs_data_dropdown
+                type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  11
@@ -615,8 +769,24 @@
             },
             {
                 //OBLIGATION EXPENSE CODE 12
-                 type: 'dropdown',
-                 source: uacs_data_dropdown
+               type: 'dropdown',
+                    source(query, callback) {
+                    var url = '@Url.Action("GetExpenseCode", "Obligations")';
+                    var test = {};
+                    $.ajax({
+                        url: url,
+                        data: {
+                            allotmentId: this.instance.getDataAtCell(this.row, 51)
+                        },
+                        async: true,
+                        method: 'GET',
+                        success: function (response, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                callback(response.items)
+                            }
+                        }
+                    })
+                }
             },
             {
                 //OBLIGATION AMOUNT  12
@@ -665,8 +835,6 @@
 		                var many_token = [];
 		                for (let j = first_column; j <= last_column; j++) {
 							many_token.push(holder_data[j][12]);
-							console.log(holder_data[j]);
-
 		                }
 		                var url = '@Url.Action("PrintOrs", "Obligations")' + "?";
 		                for (i = 0; i < many_token.length; i++) {
@@ -731,7 +899,6 @@
 								}, 500);
 							}
 						});
-						console.log('@Url.Action("openObligationAmount", "Obligations")' + "/" + holder_id + "?token=" + obligation_token);
 					}
                 },
 
@@ -759,13 +926,10 @@
 					many_token: holder_data[j][12]
 				})
 			}
-			console.log("execute here!");
-			console.log(selection);
 			var ajax_data = {
 				"single_token": single_token,
 				"many_token": many_token
 			};
-			console.log(ajax_data);
 			ajaxServer(ajax_data,'@Url.Action("DeleteObligation", "Obligations")');
 		},
 		afterUndo: function (index, column) {
@@ -865,9 +1029,16 @@
 						}
 					);
 
-                    ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
-
-                    $.ajax({
+                    ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
+                        .then(data => {
+                            console.log(data.fundSource.allotmentClassId);
+                            console.log(hot.getDataAtCell(row, 51));
+                            if (data.source_type == 'fund_source')
+                                hot.setDataAtCell(row, 51, data.fundSource.allotmentClassId)
+                            else
+                                hot.setDataAtCell(row, 51, data.subAllotment.allotmentClassId)
+                        }); //HERE
+                    @*$.ajax({
                         url: '@Url.Action("GetObligation","Obligations")',
                         data: {
                             title: hot.getDataAtCell(row, 0)
@@ -875,16 +1046,16 @@
                         method: 'GET',
                         success: function (result, text, jqsumting) {
                             if (jqsumting.status == 200) {
-                                console.log(result)
+                                console.log(result);
                             }
-                        }
-                    });
+                        },
+                    });*@
 
 
                     return;
                 }
-				else if (col >= 14 && col <= 52)
-				{
+				else if (col >= 14 && col <= 50)
+                {
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
 

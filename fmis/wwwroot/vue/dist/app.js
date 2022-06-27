@@ -19768,7 +19768,7 @@ __webpack_require__.r(__webpack_exports__);
   name: 'FundHeader',
   data: function data() {
     return {
-      title: "Fund Source & Fund Code hahaha"
+      title: "Fund Source & Fund Code "
     };
   }
 });
