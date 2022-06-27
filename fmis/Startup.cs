@@ -16,10 +16,11 @@ using Microsoft.AspNetCore.Identity;
 using fmis.Data.Carlo;
 using fmis.Data.Accounting;
 using fmis.Data.silver;
-using fmis.Areas.Identity.Data;
 using Microsoft.Owin;
 using fmis.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using fmis.Services;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -41,122 +42,114 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
-
-            services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddAuthentication()
-                .AddCookie("CustomClaimCookie");
-            services.AddSession();
+            services.AddRazorPages();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            ); 
-            
-            services.AddScoped<IUserClaimsPrincipalFactory<fmisUser>, ApplicationUserClaimsPrincipalFactory>();
+            );
 
+            services.AddTransient<IUserService, UserService>();
 
-            services.AddDbContext<UserContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
+            #region CONTEXTS
             services.AddDbContext<fmisContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
             services.AddDbContext<DesignationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
             services.AddDbContext<DivisionContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("DivisionContext")));
             services.AddDbContext<SectionContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("SectionContext")));
             services.AddDbContext<ObligationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("ObligationContext")));
             services.AddDbContext<PrexcContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("PrexcContext")));
             services.AddDbContext<UacsContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("UacsContext")));
             services.AddDbContext<ObligationAmountContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("ObligationAmountContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("ObligationAmountContext")));
             services.AddDbContext<AppropriationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<AllotmentClassContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("AllotmentClassContext")));
             services.AddDbContext<FundSourceContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("FundSourceContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundSourceContext")));
             services.AddDbContext<BudgetAllotmentContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentContext")));
             services.AddDbContext<Yearly_referenceContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
             services.AddDbContext<AppropriationContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
             services.AddDbContext<MyDbContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<FundSourceAmountContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Ors_headContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("Ors_headContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<SubAllotmentContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("SubAllotmentContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("SubAllotmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<Suballotment_amountContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("Suballotment_amountContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<FundsRealignmentContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<SubAllotment_RealignmentContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("SubAllotment_RealignmentContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("SubAllotment_RealignmentContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<RequestingOfficeContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeContext")));
             services.AddDbContext<ManageUsersContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("ManageUsersContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("ManageUsersContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<SummaryReportContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("SummaryReportContext")));
             services.AddDbContext<SaobContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("SaobContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("SaobContext")));
             services.AddDbContext<LogsContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("LogsContext")));
             services.AddDbContext<RespoCenterContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("RespoCenterContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("RespoCenterContext")));
             services.AddDbContext<FundContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
             services.AddDbContext<UacsTrustFundContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("UacsTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("UacsTrustFundContext")));
             services.AddDbContext<PrexcTrustFundContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("PrexcTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("PrexcTrustFundContext")));
             services.AddDbContext<RespoCenterTrustFundContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundContext")));
             services.AddDbContext<RequestingOfficeTrustFundContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("RequestingOfficeTrustFundContext")));
             services.AddDbContext<BudgetAllotmentTrustFundContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("BudgetAllotmentTrustFundContext")));
             services.AddDbContext<FundSourceTrustFundContext>(options =>
-         options.UseSqlServer(Configuration.GetConnectionString("FundSourceTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundSourceTrustFundContext")));
             services.AddDbContext<FundSourceAmountTrustFundContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountTrustFundContext")));
             services.AddDbContext<FundsRealignmentTrustFundContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundsRealignmentTrustFundContext")));
             services.AddDbContext<ObligationTrustFundContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("ObligationTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("ObligationTrustFundContext")));
             services.AddDbContext<ObligationAmountTrustFundContext >(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("ObligationAmountTrustFundContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("ObligationAmountTrustFundContext")));
             services.AddDbContext<CategoryContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("CategoryContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("CategoryContext")));
             services.AddDbContext<IndexofpaymentContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("IndexofpaymentContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("IndexofpaymentContext")));
             services.AddDbContext<PayeeContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("PayeeContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("PayeeContext")));
             services.AddDbContext<DeductionContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("DeductionContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("DeductionContext")));
             services.AddDbContext<DvContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("DvContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("DvContext")));
             services.AddDbContext<FundClusterContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("FundClusterContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("FundClusterContext")));
             services.AddDbContext<InOfPayDeductionContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
-
+                options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
+            #endregion
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -171,26 +164,38 @@ namespace fmis
             services.AddSignalR();
 
             services.AddDistributedMemoryCache();
-            services.AddSession(options => {
-                options.IdleTimeout = TimeSpan.FromMinutes(360);
-            });
 
-            /*services.AddAuthentication(options =>
+            services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(options =>
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
             {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.Cookie.MaxAge = options.ExpireTimeSpan; // optional
-            });*/
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/NotFound";
+                options.ExpireTimeSpan = TimeSpan.FromHours(5);
+                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("BudgetAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_admin"));
+                options.AddPolicy("BudgetUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_user"));
+                options.AddPolicy("AccountingAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
+                options.AddPolicy("AccountingUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_user"));
+            });
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
+            });
         }    
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-
-            CreateRoles(serviceProvider).Wait();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -201,15 +206,10 @@ namespace fmis
             }
 
             app.UseStaticFiles();
-
-            app.UseSession();
-
+            app.UseCookiePolicy();
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -219,7 +219,7 @@ namespace fmis
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
-        private async Task CreateRoles(IServiceProvider serviceProvider)
+        /*private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -273,6 +273,6 @@ namespace fmis
 
                 }
             }
-        }
+        }*/
     }
 }

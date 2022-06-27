@@ -9,18 +9,16 @@ using fmis.Data;
 using fmis.Models;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
-using fmis.Areas.Identity.Data;
+using System.Security.Claims;
 
 namespace fmis.Controllers
 {
     public class AppropriationsController : Controller
     {
         private readonly AppropriationContext _context;
-        private readonly UserManager<fmisUser> _userManager;
-        public AppropriationsController(AppropriationContext context, UserManager<fmisUser> userManager)
+        public AppropriationsController(AppropriationContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         // GET: Appropriations
@@ -46,7 +44,7 @@ namespace fmis.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(appropriation);
-                appropriation.CreatedBy = _userManager.GetUserName(User);
+                appropriation.CreatedBy = Username;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -80,7 +78,7 @@ namespace fmis.Controllers
          
 
             _context.Update(appro);
-            appro.UpdatedBy = _userManager.GetUserName(User);
+            appro.UpdatedBy = Username;
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -100,5 +98,9 @@ namespace fmis.Controllers
         {
             return _context.Appropriation.Any(e => e.AppropriationId == id);
         }
+
+        #region COOKIES
+        public string Username => User.FindFirstValue(ClaimTypes.Name);
+        #endregion
     }
 }

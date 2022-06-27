@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
 using fmis.Models.silver;
 using fmis.ViewModel;
-using fmis.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using fmis.Models.UserModels;
 
 namespace fmis.Controllers.Budget.silver
 {
@@ -21,14 +21,14 @@ namespace fmis.Controllers.Budget.silver
     {
         private readonly ManageUsersContext _Context;
         private readonly PersonalInformationMysqlContext _pis_context;
-        private UserManager<fmisUser> userManager;
-        private SignInManager<fmisUser> signinManager;
+        private UserManager<FmisUser> userManager;
+        private SignInManager<FmisUser> signinManager;
         private readonly RoleManager<IdentityRole> roleManager;
  
 
-        UserContext context = new UserContext();
+        //UserContext context = new UserContext();
 
-        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context, UserManager<fmisUser> usrMgr, SignInManager<fmisUser> signManager, RoleManager<IdentityRole> roleMgr)
+        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context, UserManager<FmisUser> usrMgr, SignInManager<FmisUser> signManager, RoleManager<IdentityRole> roleMgr)
         {
             _Context = Context;
             _pis_context = pis_context;
@@ -107,9 +107,9 @@ namespace fmis.Controllers.Budget.silver
             if (ModelState.IsValid)
                 {
                 // Copy data from RegisterViewModel to IdentityUser
-                var user = new fmisUser
+                var user = new FmisUser
                 {
-                    UserName = model.Username
+                    Username = model.Username
                 };
 
                 // Store user data in AspNetUsers database table
@@ -117,7 +117,7 @@ namespace fmis.Controllers.Budget.silver
                 await userManager.AddToRoleAsync(user, role.Name);
                 //
                 _Context.Add(model);
-                user.UserName = model.UserId;
+                user.Username = model.UserId;
                 model.Password = model.Password;
                 await _Context.SaveChangesAsync();
 

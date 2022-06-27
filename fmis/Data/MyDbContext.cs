@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using fmis.Areas.Identity.Data;
+using fmis.Models.UserModels;
 
 namespace fmis.Data
 {
-    public class MyDbContext : IdentityDbContext<fmisUser>
+    public class MyDbContext : DbContext
     {
         public MyDbContext()
         {
@@ -26,6 +26,7 @@ namespace fmis.Data
         }
 
 
+        public DbSet<FmisUser> FmisUsers { get; set; }
         public DbSet<Account> Account { get; set; }
         public DbSet<Section> Section { get; set; }
         public DbSet<Division> Division { get; set; }
@@ -82,6 +83,7 @@ namespace fmis.Data
 
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<FmisUser>().ToTable("FMISUser");
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
             modelBuilder.Entity<FundSourceAmount>().ToTable("FundSourceAmount");

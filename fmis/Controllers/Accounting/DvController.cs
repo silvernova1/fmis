@@ -10,7 +10,6 @@ using fmis.Models;
 using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
-using fmis.Areas.Identity.Data;
 using AutoMapper;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;

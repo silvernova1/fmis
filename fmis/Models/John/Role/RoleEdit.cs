@@ -1,4 +1,5 @@
-﻿using fmis.Areas.Identity.Data;
+﻿
+using fmis.Models.UserModels;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace fmis.Models.John.Role
     public class RoleEdit
     {
         public IdentityRole Role { get; set; }
-        public IEnumerable<fmisUser> Members { get; set; }
-        public IEnumerable<fmisUser> NonMembers { get; set; }
+        public IEnumerable<FmisUser> Members { get; set; }
+        public IEnumerable<FmisUser> NonMembers { get; set; }
 
     }
 }

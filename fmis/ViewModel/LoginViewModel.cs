@@ -17,7 +17,7 @@ namespace fmis.ViewModel
 
         [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
-
-        public IEnumerable<SelectListItem> Yearly { get; set; }
+        public string ReturnUrl { get; set; }
+        public int Year { get; set; }
     }
 }

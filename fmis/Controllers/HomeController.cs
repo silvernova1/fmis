@@ -20,8 +20,7 @@ using System.Threading.Tasks;
 namespace fmis.Controllers
 {
 
-    [Authorize(Roles = "Budget")]
-
+    [Authorize(Policy = "BudgetAdmin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -90,7 +89,7 @@ namespace fmis.Controllers
             var allotmentMOOE = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 2).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 2).Sum(s => s.Remaining_balance);
             var allotmentCO = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 3).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == 3).Sum(s => s.Remaining_balance);
 
-            var allotmentPS_res = allotmentPS / balance * 100;
+            /*var allotmentPS_res = allotmentPS / balance * 100;
             ViewBag.PS = String.Format("{0:0.##}", allotmentPS_res);
 
             var allotmentPSObligation_res = allotmentPSObligation / balance * 100;
@@ -120,7 +119,7 @@ namespace fmis.Controllers
 
             ViewBag.Div = rled.ToString("{0:0.##}");
             var rled_res = rled / balance * 100;
-            ViewBag.RLED = String.Format("{0:0.##}", rled_res);
+            ViewBag.RLED = String.Format("{0:0.##}", rled_res);*/
 
             
 
@@ -182,6 +181,5 @@ namespace fmis.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }*/
-
     }
 }

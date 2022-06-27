@@ -1,4 +1,5 @@
-﻿using fmis.Areas.Identity.Data;
+﻿
+using fmis.Models.UserModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -13,10 +14,10 @@ namespace Fed
     [HtmlTargetElement("td", Attributes = "i-role")]
     public class RoleUsersTH : TagHelper
     {
-        private UserManager<fmisUser> userManager;
+        private UserManager<FmisUser> userManager;
         private RoleManager<IdentityRole> roleManager;
 
-        public RoleUsersTH(UserManager<fmisUser> usermgr, RoleManager<IdentityRole> rolemgr)
+        public RoleUsersTH(UserManager<FmisUser> usermgr, RoleManager<IdentityRole> rolemgr)
         {
             userManager = usermgr;
             roleManager = rolemgr;
@@ -34,7 +35,7 @@ namespace Fed
                 foreach (var user in userManager.Users)
                 {
                     if (user != null && await userManager.IsInRoleAsync(user, role.Name))
-                        names.Add(user.UserName);
+                        names.Add(user.Username);
                 }
             }
             output.Content.SetContent(names.Count == 0 ? "No Users" : string.Join(", ", names));

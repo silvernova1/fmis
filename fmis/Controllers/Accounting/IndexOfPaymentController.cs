@@ -10,7 +10,7 @@ using fmis.Models;
 using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
-using fmis.Areas.Identity.Data;
+
 using fmis.Data.Accounting;
 
 namespace fmis.Controllers.Accounting

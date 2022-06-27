@@ -10,7 +10,6 @@ using fmis.Models;
 using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
-using fmis.Areas.Identity.Data;
 namespace fmis.Controllers.Accounting
 {
     public class CategoryController : Controller

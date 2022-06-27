@@ -1,13 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using fmis.Areas.Identity.Data
-@inject SignInManager<fmisUser> SignInManager
-@inject UserManager<fmisUser> UserManager
+
 <li class="light-blue dropdown-modal">
     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
         <img class="nav-user-photo" src="~/assets/images/doh.png" alt="Amal's Photo" />
         <span class="user-info">
             <small>Welcome,</small>
-            @UserManager.GetUserName(User)
+            @User.FindFirstValue(ClaimTypes.Name)
         </span>
 
         <i class="ace-icon fa fa-caret-down"></i>
@@ -27,10 +25,10 @@
             </a>
         </li>
         <li class="divider"></li>
-        <form method="post" asp-controller="account" asp-action="logout">
+        <form method="post" asp-controller="Account" asp-action="Logout">
         <button type="submit" style="width:auto"
                 class="nav-link btn btn-link py-0">
-            Logout @User.Identity.Name
+            Logout @User.FindFirstValue(ClaimTypes.Name)
         </button>
     </form>
     </ul>
