@@ -2192,7 +2192,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Value = SAAsub6;
                             }
 
-                            if(fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount) == 0)
+                            if(fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment") == null)
                             {
                                 ws.Cell(currentRow, 20).Style.Font.SetBold();
                                 ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
@@ -2208,7 +2208,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             }
                             
 
@@ -2218,10 +2218,10 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                            var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 22).Style.Font.SetBold();
                             ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -3235,11 +3235,11 @@ namespace fmis.Controllers.Budget.John
                                     }
 
                                     //PERCENT OF UTILIZATION
-                                    if (asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) != 0 || afterrealignment_amount != 0)
+                                    if (asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) == 0 || afterrealignment_amount == 0)
                                     {
                                         ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 23).Value = asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) / afterrealignment_amount;
+                                        ws.Cell(currentRow, 23).Value = "-";
                                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
@@ -3247,7 +3247,7 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 23).Value = "-";
+                                        ws.Cell(currentRow, 23).Value = asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) / afterrealignment_amount;
                                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
@@ -3337,7 +3337,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var SAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var SAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var SAAMOOEsub9 = SAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var SAAMOOEsub9 = SAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (SAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -3377,7 +3377,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -3385,10 +3385,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -4450,7 +4450,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -4458,10 +4458,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -5469,7 +5469,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -5499,16 +5499,16 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
                                 ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
                                 ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
                                 ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
@@ -6558,7 +6558,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -6598,7 +6598,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -6606,10 +6606,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -7099,7 +7099,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -7139,7 +7139,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -7147,10 +7147,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -8026,7 +8026,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -8034,10 +8034,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -8508,7 +8508,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -8548,7 +8548,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -8556,10 +8556,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -10006,7 +10006,7 @@ namespace fmis.Controllers.Budget.John
 
 
                         //START IF PREVIOUS ALLOTMENT IS CHECKED TOTAL CONAP MOOE
-                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 2 && x.AppropriationId == 2).Any())
+                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 2 && x.AppropriationId == 2 && x.Budget_allotment.Yearly_reference.YearlyReference == result).Any())
                         {
 
                             var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 2 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
@@ -10194,7 +10194,7 @@ namespace fmis.Controllers.Budget.John
                         //TOTAL CO SAA
 
                         //START IF PREVIOUS ALLOTMENT IS CHECKED TOTAL CONAP CO
-                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 3 && x.AppropriationId == 2).Any())
+                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 3 && x.AppropriationId == 2 && x.Budget_allotment.Yearly_reference.YearlyReference == result).Any())
                         {
 
                             var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 3 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
@@ -10290,7 +10290,7 @@ namespace fmis.Controllers.Budget.John
 
                         if (_MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any() || _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any())
                         {
-                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true).Sum(x => x.Beginning_balance);
+                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
 
                             ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
@@ -10444,7 +10444,7 @@ namespace fmis.Controllers.Budget.John
                     currentRow++;
                 }
 
-                var GrandTotals = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true).Sum(x => x.Beginning_balance);
+                var GrandTotals = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
 
                 ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
                 ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
