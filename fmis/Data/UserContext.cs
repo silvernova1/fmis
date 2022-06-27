@@ -15,6 +15,6 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<FmisUser> FmisUsers { get; set; }
+        public DbSet<FmisUser> FmisUser { get; set; }
     }
 }
