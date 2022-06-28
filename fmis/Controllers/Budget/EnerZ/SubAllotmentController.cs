@@ -69,7 +69,7 @@ namespace fmis.Controllers
         #region API
         public ActionResult CheckSubAllotmentTitle(string title)
         {
-            if (_MyDbContext.SubAllotment.Where(x => x.Suballotment_title == title).Count() > 0)
+            if (_MyDbContext.SubAllotment.Where(x => x.Suballotment_title == title && x.Budget_allotment.YearlyReferenceId != YearlyRefId).Count() > 0)
             {
                 ModelState.AddModelError("Suballotment_title", "Sub Allotment Title");
                 return Ok(true);
