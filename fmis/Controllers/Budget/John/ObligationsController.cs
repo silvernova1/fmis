@@ -117,7 +117,7 @@ namespace fmis.Controllers
             return Ok(new { items = expenseCode });
         }
 
-        /*public async Task<ActionResult> GetObligation(string title)
+        public async Task<ActionResult> GetObligation(string title)
         {
             var obligation = await _context
                 .Obligation
@@ -141,7 +141,7 @@ namespace fmis.Controllers
             if (obligation is not null) return Ok(obligation);
 
             return BadRequest();
-        }*/
+        }
 
         public int YearlyRefId => int.Parse(User.FindFirst("YearlyRefId").Value);
 

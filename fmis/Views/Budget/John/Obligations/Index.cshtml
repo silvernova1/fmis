@@ -287,7 +287,7 @@
         if (this.source_type == "fund_source") {
             data[counter].push(this.FundSource.AllotmentClassId)
         }
-        else {
+        else if (this.source_type == "sub_allotment") {
             data[counter].push(this.SubAllotment.AllotmentClassId)
         }
 		counter++;
