@@ -79,11 +79,11 @@ namespace fmis.Controllers.Budget.Carlo
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            FundSource = await _FContext.FundSource
+            FundSource = await _allContext.FundSources
                             .Include(x => x.FundSourceAmounts)
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
-                            .Include(x => x.FundsRealignment.Where(w => w.status == "activated"))
+                            .Include(x => x.FundsRealignment./*Where(x=>x.FundSourceId == fundsource_id)*/Where(w => w.status == "activated"))
                                 .ThenInclude(x => x.FundSourceAmount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
@@ -91,7 +91,7 @@ namespace fmis.Controllers.Budget.Carlo
                             .Where(x => x.FundSourceId == fundsource_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
-            FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId))/*Where(x=>x.uacs_type == fundsource_id)*/.AsNoTracking().ToListAsync();
+            FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
             //return Json(FundSource);
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);
@@ -107,7 +107,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         public async Task<IActionResult> fundSourceAmountRemainingBalance(string fundsource_amount_token)
         {
-            var fundsource_amount_remaining_balance = await _FAContext.FundSourceAmount.AsNoTracking().FirstOrDefaultAsync(x => x.fundsource_amount_token == fundsource_amount_token);
+            var fundsource_amount_remaining_balance = await _allContext.FundSourceAmount.AsNoTracking().FirstOrDefaultAsync(x => x.fundsource_amount_token == fundsource_amount_token);
             return Json(fundsource_amount_remaining_balance.remaining_balance);
         }
 
