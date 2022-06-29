@@ -262,17 +262,20 @@ namespace fmis.Controllers
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
-                if (!string.IsNullOrEmpty(obligation.Ors_no))
-                {
-                    obligation.Ors_no = obligation.Ors_no;
-                }
-                else
-                {
-                    var lastActOrs = await _context.Obligation.LastOrDefaultAsync(x => x.status == "activated");
-                    obligation.Ors_no = lastActOrs is null ? "0001" : lastActOrs.Ors_no.PadLeft(4, '0');
-                }
+                obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
+                /*         if (!string.IsNullOrEmpty(obligation.Ors_no))
+                         {
+                             obligation.Ors_no = obligation.Ors_no;
+                         }
+                         else
+                         {
+                             var lastActOrs = await _context.Obligation.LastOrDefaultAsync(x => x.status == "activated");
+                             obligation.Ors_no = lastActOrs is null ? "0001" : lastActOrs.Ors_no.PadLeft(4, '0');
+                         }
+                         _context.Update(obligation);
+                         await _context.SaveChangesAsync();*/
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
                 else
