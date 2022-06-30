@@ -69,12 +69,7 @@ namespace fmis.Controllers.Budget.John
         #region API
         public ActionResult CheckFundSourceTitle(string title)
         {
-            if (_MyDbContext.FundSources.Where(x => x.FundSourceTitle == title && x.BudgetAllotment.YearlyReferenceId != YearlyRefId).Count() > 0)
-            {
-                ModelState.AddModelError("FundSourceTitle", "Duplicate Fund Source Title");
-                return Ok(true);
-            }
-            return Ok(false);
+            return Ok(_MyDbContext.FundSources.Any(x => x.FundSourceTitle == title && x.BudgetAllotment.YearlyReferenceId == YearlyRefId));
         }
         #endregion
 

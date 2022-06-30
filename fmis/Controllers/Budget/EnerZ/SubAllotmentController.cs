@@ -69,7 +69,7 @@ namespace fmis.Controllers
         #region API
         public ActionResult CheckSubAllotmentTitle(string title)
         {
-            if (_MyDbContext.SubAllotment.Where(x => x.Suballotment_title == title && x.Budget_allotment.YearlyReferenceId != YearlyRefId).Count() > 0)
+            if (_MyDbContext.SubAllotment.Where(x => x.Suballotment_title == title && x.BudgetAllotmentId != YearlyRefId).Count() > 0)
             {
                 ModelState.AddModelError("Suballotment_title", "Sub Allotment Title");
                 return Ok(true);
@@ -129,6 +129,20 @@ namespace fmis.Controllers
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
             return View(budget_allotment);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
+        {
+            var subAllotments = await _context.SubAllotment.FindAsync(subAllotmentId);
+
+            subAllotments.IsAddToNextAllotment = addToNext;
+
+            _context.Update(subAllotments);
+            await _context.SaveChangesAsync();
+
+
+            return Ok(await _context.SaveChangesAsync());
         }
 
         // GET: Sub_allotment/Create

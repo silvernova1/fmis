@@ -132,7 +132,6 @@
     }
 
     function CheckFundSourceTitle(input) {
-        console.log(input.value);
         $.ajax({
             url: '@Url.Action("CheckFundSourceTitle","FundSource")',
             type: 'GET',
@@ -141,6 +140,7 @@
             },
             async: true,
             success: function (output) {
+                console.log(output);
                 if (output) {
                     alert("Fund Source Already Exist!");
                     input.value = "";
