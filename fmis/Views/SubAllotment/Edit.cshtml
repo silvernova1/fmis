@@ -75,8 +75,6 @@
                 <textarea asp-for="Description" style="height: 70px;" class="form-control"> </textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            @Html.CheckBoxFor(x => x.IsAddToNextAllotment, new { @class = "custom-checkbox" })
-            Add to <b>@ViewBag.result</b> Allotment?
         </div>
 
     </div>
