@@ -233,6 +233,7 @@ namespace fmis.Controllers
 
             var data_holder = _context.Obligation.Where(x=>x.status == "activated");
             var retObligation = new List<Obligation>();
+
             foreach (var item in data)
             {
 
@@ -262,21 +263,17 @@ namespace fmis.Controllers
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
-                obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
+                //obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
+                //_context.Update(obligation);
+                //await _context.SaveChangesAsync();
+                if (string.IsNullOrEmpty(obligation.Ors_no)) //IF NOT EDIT
+                {
+                    var lastActOrs = await _context.Obligation.Where(x=>x.status == "activated" && x.Id != obligation.Id).OrderBy(x=>x.Id).LastOrDefaultAsync();
+                    obligation.Ors_no = lastActOrs is null ? "0001" : SetORSNo(lastActOrs.Ors_no);
+                }
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
-                /* if (!string.IsNullOrEmpty(obligation.Ors_no))
-                         {
-                             obligation.Ors_no = obligation.Ors_no;
-                         }
-                         else
-                         {
-                             var lastActOrs = await _context.Obligation.LastOrDefaultAsync(x => x.status == "activated");
-                             obligation.Ors_no = lastActOrs is null ? "0001" : lastActOrs.Ors_no.PadLeft(4, '0');
-                         }
-                         _context.Update(obligation);
-                         await _context.SaveChangesAsync();
-                */
+
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
                 else
@@ -285,6 +282,13 @@ namespace fmis.Controllers
             }
             return Json(retObligation.FirstOrDefault());
 
+        }
+
+        public string SetORSNo(string lastORSNo)
+        {
+            var no = int.Parse(lastORSNo.Substring(0, 4)) + 1;
+
+            return no.ToString().PadLeft(4,'0');
         }
 
         // POST: Obligations/Create
@@ -366,10 +370,12 @@ namespace fmis.Controllers
         {
             var obligation = new Obligation(); //CLEAR OBJECT
             obligation = _context.Obligation.Where(s => s.obligation_token == obligation_token).FirstOrDefault();
-            obligation.status = "deactivated";
-
-            _context.Update(obligation);
-            _context.SaveChanges();
+            if (obligation is not null)
+            {
+                obligation.status = "deactivated";
+                _context.Update(obligation);
+                _context.SaveChanges();
+            }
         }
 
         private bool ObligationExists(int id)
