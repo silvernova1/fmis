@@ -220,6 +220,8 @@ namespace fmis
                 endpoints.MapRazorPages();
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
+
+            
         }
         /*private async Task CreateRoles(IServiceProvider serviceProvider)
         {
