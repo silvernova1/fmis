@@ -108,6 +108,10 @@
             }
         });
     }
+
+
+    let str = "\u20B1"
+
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
     var fundsource_id = @Model.FundSourceId;
@@ -151,11 +155,18 @@
     const data = [];
     var counter = 0;
     var obligation_amount = 0;
+    var total_uacs_amount = 0; 
     $.each(fundsource_amount_uacs, function () {
         data[counter] = [get_account_title[this.UacsId], this.beginning_balance,this.fundsource_amount_token, this.fundsource_token]
         counter++;
+
         obligation_amount += this.beginning_balance;
+
     });
+
+
+    $('#sub_total_amt').html(str + obligation_amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('fundsource_amount_edit');
@@ -218,7 +229,6 @@
         },
         afterRemoveRow: function () {
             var sub_total = 0;
-            let str = "\u20B1"
             $.each(this.getData(), function () { sub_total += this[1]; });
             $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         },
@@ -266,8 +276,10 @@
                         fundsource_token: fundsource_token
                     });
                 });
+        
                 let str = "\u20B1"
                 var sub_total = 0;
+
                 $.each(this.getData(), function () { sub_total += this[1]; });
                 $('#sub_total_amt').html(str + sub_total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
                 ajaxServer(ajax_data, '@Url.Action("SaveFundsourceamount", "FundSource")');

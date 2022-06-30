@@ -133,6 +133,7 @@
         });
     }
 
+    let str = "\u20B1"
 
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
@@ -183,6 +184,9 @@
         counter++;
         obligation_amount += this.beginning_balance;
     })
+
+    $('#sub_total_amt').html(str + obligation_amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_edit');
