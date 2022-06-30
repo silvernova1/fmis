@@ -308,7 +308,7 @@
 
                             <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
                             
-                            @if (item.BudgetAllotmentId == Model.BudgetAllotmentId)
+                            @if (item.BudgetAllotmentId == Model.BudgetAllotmentId && item.AppropriationId == 2)
                             {
                                 <div class="checkbox">
 							        <label>
