@@ -107,7 +107,7 @@ namespace fmis.Controllers.Budget.John
                                                  sourceId = o.FundSourceId,
                                                  sourceType = o.source_type,
                                                  date = o.Date,
-                                                 status = oa.status,
+                                                 status = o.status,
                                                  allotmentClassID = f.AllotmentClassId,
                                                  appropriationID = f.AppropriationId,
                                                  fundSourceTitle = f.FundSourceTitle
@@ -125,7 +125,7 @@ namespace fmis.Controllers.Budget.John
                                           sourceId = o.FundSourceId,
                                           sourceType = o.source_type,
                                           uacsId = oa.UacsId,
-                                          status = oa.status,
+                                          status = o.status,
                                           allotmentClassID = f.AllotmentClassId,
                                           appropriationID = f.AppropriationId,
                                           fundSourceTitle = f.FundSourceTitle,
@@ -149,7 +149,7 @@ namespace fmis.Controllers.Budget.John
                                                       sourceId = o.FundSourceId,
                                                       sourceType = o.source_type,
                                                       date = o.Date,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
                                                   }).ToList();
@@ -166,7 +166,7 @@ namespace fmis.Controllers.Budget.John
                                                sourceId = o.FundSourceId,
                                                sourceType = o.source_type,
                                                uacsId = oa.UacsId,
-                                               status = oa.status,
+                                               status = o.status,
                                                allotmentClassID = f.AllotmentClassId,
                                                appropriationID = f.AppropriationId
                                            }).ToList();
@@ -189,7 +189,7 @@ namespace fmis.Controllers.Budget.John
                                                       sourceId = o.FundSourceId,
                                                       sourceType = o.source_type,
                                                       date = o.Date,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
                                                   }).ToList();
@@ -206,7 +206,7 @@ namespace fmis.Controllers.Budget.John
                                                sourceId = o.FundSourceId,
                                                sourceType = o.source_type,
                                                uacsId = oa.UacsId,
-                                               status = oa.status,
+                                               status = o.status,
                                                allotmentClassID = f.AllotmentClassId,
                                                appropriationID = f.AppropriationId
                                            }).ToList();
@@ -230,7 +230,7 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    sourceId = o.FundSourceId,
                                                    date = o.Date,
-                                                   status = oa.status,
+                                                   status = o.status,
                                                    allotmentClassID = f.AllotmentClassId
                                                }).ToList();
 
@@ -245,7 +245,7 @@ namespace fmis.Controllers.Budget.John
                                             amount = oa.Amount,
                                             sourceId = o.FundSourceId,
                                             uacsId = oa.UacsId,
-                                            status = oa.status,
+                                            status = o.status,
                                             allotmentClassID = f.AllotmentClassId
                                         }).ToList();
 
@@ -261,7 +261,7 @@ namespace fmis.Controllers.Budget.John
                                                  uacsId = oa.UacsId,
                                                  sourceId = o.FundSourceId,
                                                  date = o.Date,
-                                                 status = oa.status,
+                                                 status = o.status,
                                                  allotmentClassID = f.AllotmentClassId
                                              }).ToList();
 
@@ -276,7 +276,7 @@ namespace fmis.Controllers.Budget.John
                                           amount = oa.Amount,
                                           sourceId = o.FundSourceId,
                                           uacsId = oa.UacsId,
-                                          status = oa.status,
+                                          status = o.status,
                                           allotmentClassID = f.AllotmentClassId
                                       }).ToList();
 
@@ -779,7 +779,7 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
                                                    sourceId = o.FundSourceId,
-                                                   status = oa.status
+                                                   status = o.status
 
                                                }).ToList();
 
@@ -815,7 +815,7 @@ namespace fmis.Controllers.Budget.John
                                             amount = oa.Amount,
                                             uacsId = oa.UacsId,
                                             sourceId = o.FundSourceId,
-                                            status = oa.status
+                                            status = o.status
                                         }).ToList();
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
@@ -1104,7 +1104,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     date = o.Date,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                         var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -1124,7 +1124,7 @@ namespace fmis.Controllers.Budget.John
                                              amount = oa.Amount,
                                              sourceId = o.FundSourceId,
                                              uacsId = oa.UacsId,
-                                             status = oa.status
+                                             status = o.status
                                          }).ToList();
 
                         var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount) + fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
@@ -1424,7 +1424,7 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
                                                    sourceId = o.FundSourceId,
-                                                   status = oa.status
+                                                   status = o.status
 
                                                }).ToList();
 
@@ -1458,7 +1458,7 @@ namespace fmis.Controllers.Budget.John
                                             amount = oa.Amount,
                                             uacsId = oa.UacsId,
                                             sourceId = o.FundSourceId,
-                                            status = oa.status
+                                            status = o.status
                                         }).ToList();
 
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -1563,7 +1563,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     date = o.Date,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                         var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -1583,7 +1583,7 @@ namespace fmis.Controllers.Budget.John
                                              amount = oa.Amount,
                                              sourceId = o.FundSourceId,
                                              uacsId = oa.UacsId,
-                                             status = oa.status
+                                             status = o.status
                                          }).ToList();
 
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
@@ -1821,7 +1821,7 @@ namespace fmis.Controllers.Budget.John
                                                        date = o.Date,
                                                        sourceId = o.FundSourceId,
                                                        sourceType = o.source_type,
-                                                       status = oa.status,
+                                                       status = o.status,
                                                        allotmentClassID = f.AllotmentClassId
 
                                                    }).ToList();
@@ -1854,7 +1854,7 @@ namespace fmis.Controllers.Budget.John
                                                 uacsId = oa.UacsId,
                                                 sourceId = o.SubAllotmentId,
                                                 sourceType = o.source_type,
-                                                status = oa.status
+                                                status = o.status
                                             }).ToList();
 
                                 var SAAunobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -2105,7 +2105,7 @@ namespace fmis.Controllers.Budget.John
                                                         sourceId = o.SubAllotmentId,
                                                         sourceType = o.source_type,
                                                         date = o.Date,
-                                                        status = oa.status
+                                                        status = o.status
                                                     }).ToList();
 
                             var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -2126,7 +2126,7 @@ namespace fmis.Controllers.Budget.John
                                                  sourceId = o.SubAllotmentId,
                                                  uacsId = oa.UacsId,
                                                  sourceType = o.source_type,
-                                                 status = oa.status
+                                                 status = o.status
                                              }).ToList();
 
 
@@ -2420,7 +2420,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -2454,7 +2454,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -2700,7 +2700,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
 
                                                         }).ToList();
 
@@ -2721,7 +2721,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -2833,7 +2833,7 @@ namespace fmis.Controllers.Budget.John
                                                                        uacsId = oa.UacsId,
                                                                        sourceId = o.FundSourceId,
                                                                        date = o.Date,
-                                                                       status = oa.status,
+                                                                       status = o.status,
                                                                        allotmentClassID = f.AllotmentClassId
                                                                    }).ToList();
 
@@ -2848,7 +2848,7 @@ namespace fmis.Controllers.Budget.John
                                                                 amount = oa.Amount,
                                                                 sourceId = o.FundSourceId,
                                                                 uacsId = oa.UacsId,
-                                                                status = oa.status,
+                                                                status = o.status,
                                                                 allotmentClassID = f.AllotmentClassId
                                                             }).ToList();*/
 
@@ -3012,7 +3012,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -3045,7 +3045,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -3296,7 +3296,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -3317,7 +3317,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -3549,7 +3549,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -3583,7 +3583,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -3828,7 +3828,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
 
                                                         }).ToList();
 
@@ -3849,7 +3849,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -3936,7 +3936,7 @@ namespace fmis.Controllers.Budget.John
                                                                  uacsId = oa.UacsId,
                                                                  sourceId = o.FundSourceId,
                                                                  date = o.Date,
-                                                                 status = oa.status,
+                                                                 status = o.status,
                                                                  allotmentClassID = f.AllotmentClassId
                                                              }).ToList();
 
@@ -3951,7 +3951,7 @@ namespace fmis.Controllers.Budget.John
                                                           amount = oa.Amount,
                                                           sourceId = o.FundSourceId,
                                                           uacsId = oa.UacsId,
-                                                          status = oa.status,
+                                                          status = o.status,
                                                           allotmentClassID = f.AllotmentClassId
                                                       }).ToList();*/
 
@@ -4092,7 +4092,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -4125,7 +4125,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -4370,7 +4370,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -4391,7 +4391,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -4656,7 +4656,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -4690,7 +4690,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -4932,7 +4932,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -4952,7 +4952,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -5198,7 +5198,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -5231,7 +5231,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -5430,7 +5430,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -5451,7 +5451,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -5653,7 +5653,7 @@ namespace fmis.Controllers.Budget.John
                                                        uacsId = oa.UacsId,
                                                        date = o.Date,
                                                        sourceId = o.FundSourceId,
-                                                       status = oa.status
+                                                       status = o.status
 
                                                    }).ToList();
 
@@ -5687,7 +5687,7 @@ namespace fmis.Controllers.Budget.John
                                                 amount = oa.Amount,
                                                 uacsId = oa.UacsId,
                                                 sourceId = o.FundSourceId,
-                                                status = oa.status
+                                                status = o.status
                                             }).ToList();
 
                                 var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -5928,7 +5928,7 @@ namespace fmis.Controllers.Budget.John
                                                         uacsId = oa.UacsId,
                                                         sourceId = o.FundSourceId,
                                                         date = o.Date,
-                                                        status = oa.status
+                                                        status = o.status
                                                     }).ToList();
 
                             var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -5948,7 +5948,7 @@ namespace fmis.Controllers.Budget.John
                                                  amount = oa.Amount,
                                                  sourceId = o.FundSourceId,
                                                  uacsId = oa.UacsId,
-                                                 status = oa.status
+                                                 status = o.status
                                              }).ToList();
 
 
@@ -6056,7 +6056,7 @@ namespace fmis.Controllers.Budget.John
                                                                     sourceId = o.FundSourceId,
                                                                     sourceType = o.source_type,
                                                                     date = o.Date,
-                                                                    status = oa.status,
+                                                                    status = o.status,
                                                                     allotmentClassID = f.AllotmentClassId,
                                                                     appropriationID = f.AppropriationId
                                                                 }).ToList();
@@ -6073,7 +6073,7 @@ namespace fmis.Controllers.Budget.John
                                                              sourceId = o.FundSourceId,
                                                              sourceType = o.source_type,
                                                              uacsId = oa.UacsId,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId,
                                                              fundSourceBudgetAllotmentId = f.BudgetAllotmentId
@@ -6244,7 +6244,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -6277,7 +6277,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -6518,7 +6518,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -6539,7 +6539,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -6785,7 +6785,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -6818,7 +6818,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -7059,7 +7059,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -7080,7 +7080,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -7309,7 +7309,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -7343,7 +7343,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -7538,7 +7538,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -7558,7 +7558,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
                                 //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -7646,7 +7646,7 @@ namespace fmis.Controllers.Budget.John
                                                                       sourceId = o.FundSourceId,
                                                                       sourceType = o.source_type,
                                                                       date = o.Date,
-                                                                      status = oa.status,
+                                                                      status = o.status,
                                                                       allotmentClassID = f.AllotmentClassId,
                                                                       appropriationID = f.AppropriationId
                                                                   }).ToList();
@@ -7663,7 +7663,7 @@ namespace fmis.Controllers.Budget.John
                                                                sourceId = o.FundSourceId,
                                                                sourceType = o.source_type,
                                                                uacsId = oa.UacsId,
-                                                               status = oa.status,
+                                                               status = o.status,
                                                                allotmentClassID = f.AllotmentClassId,
                                                                appropriationID = f.AppropriationId
                                                            }).ToList();
@@ -7804,7 +7804,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -7837,7 +7837,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -7969,7 +7969,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -7990,7 +7990,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -8194,7 +8194,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -8227,7 +8227,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -8468,7 +8468,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -8489,7 +8489,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -8883,7 +8883,7 @@ namespace fmis.Controllers.Budget.John
                                                                uacsId = oa.UacsId,
                                                                sourceId = o.FundSourceId,
                                                                date = o.Date,
-                                                               status = oa.status,
+                                                               status = o.status,
                                                                allotmentClassID = f.AllotmentClassId
                                                            }).ToList();
 
@@ -8898,7 +8898,7 @@ namespace fmis.Controllers.Budget.John
                                                         amount = oa.Amount,
                                                         sourceId = o.FundSourceId,
                                                         uacsId = oa.UacsId,
-                                                        status = oa.status,
+                                                        status = o.status,
                                                         allotmentClassID = f.AllotmentClassId
                                                     }).ToList();*/
 
@@ -9023,7 +9023,7 @@ namespace fmis.Controllers.Budget.John
                                                              uacsId = oa.UacsId,
                                                              sourceId = o.FundSourceId,
                                                              date = o.Date,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId
                                                          }).ToList();
 
@@ -9038,7 +9038,7 @@ namespace fmis.Controllers.Budget.John
                                                       amount = oa.Amount,
                                                       sourceId = o.FundSourceId,
                                                       uacsId = oa.UacsId,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId
                                                   }).ToList();*/
 
@@ -9515,7 +9515,7 @@ namespace fmis.Controllers.Budget.John
                                                                   uacsId = oa.UacsId,
                                                                   sourceId = o.FundSourceId,
                                                                   date = o.Date,
-                                                                  status = oa.status,
+                                                                  status = o.status,
                                                                   allotmentClassID = f.AllotmentClassId,
                                                                   appropriationID = f.AppropriationId
                                                               }).ToList();
@@ -9531,7 +9531,7 @@ namespace fmis.Controllers.Budget.John
                                                            amount = oa.Amount,
                                                            sourceId = o.FundSourceId,
                                                            uacsId = oa.UacsId,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId,
                                                            appropriationID = f.AppropriationId
                                                        }).ToList();
@@ -10376,7 +10376,7 @@ namespace fmis.Controllers.Budget.John
                                                                     uacsId = oa.UacsId,
                                                                     sourceId = o.FundSourceId,
                                                                     date = o.Date,
-                                                                    status = oa.status,
+                                                                    status = o.status,
                                                                     allotmentClassID = f.AllotmentClassId,
                                                                     appropriationID = f.AppropriationId
                                                                 }).ToList();
@@ -10392,7 +10392,7 @@ namespace fmis.Controllers.Budget.John
                                                              amount = oa.Amount,
                                                              sourceId = o.FundSourceId,
                                                              uacsId = oa.UacsId,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId
                                                          }).ToList();
@@ -10541,7 +10541,7 @@ namespace fmis.Controllers.Budget.John
                                                              uacsId = oa.UacsId,
                                                              sourceId = o.FundSourceId,
                                                              date = o.Date,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId
                                                          }).ToList();
@@ -10557,7 +10557,7 @@ namespace fmis.Controllers.Budget.John
                                                       amount = oa.Amount,
                                                       sourceId = o.FundSourceId,
                                                       uacsId = oa.UacsId,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
                                                   }).ToList();
