@@ -1,429 +1,114 @@
-﻿@model IEnumerable<fmis.Models.Accounting.Category>
+﻿
+@model IEnumerable<fmis.Models.Accounting.IndexOfPayment>
 
 @{
-    ViewData["Title"] = "IndexOfPayment";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
-<style>
-    .select2 {
-        width: 100% !important;
-    }
+<!-- CREATE MODAL -->
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
-</style>
+        </div>
+    </div>
+</div>
 
+<!--EDIT MODAL-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
 
 <h3 class="grey lighter smaller">
-    Index of Payment
+    Categories
 </h3>
 <hr>
-<form asp-action="Create">
-    <div class="row">
-        <div class="col-md-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>SELECT CATEGORY:</label>
-                @Html.DropDownList("CategoryId", null, " - Select Category - ", htmlAttributes: new { @class = "select2 form-control" })
+<div class="form-group form-inline" style="margin-bottom: 10px;">
 
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>DV #:</label>
-                @Html.DropDownList("DvId", null, " - Select Dv No - ", htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>PAYEE :</label>
-                <input id="payee" class="form-control" readonly />
-            </div>
-        </div>
-        <div>
-            <div class="col-md-3">
-                <label>DV DATE:</label>
-                <input name="DvDate" type="date" class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>PARTICULARS:</label>
-                <input id="particular" class="form-control" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
-            <div class="form-group">
-                <label>PO #:</label>
-                <input id="po" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
-            <div class="form-group">
-                <label>PROJECT ID:</label>
-                <input id="pi" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
-            <div class="form-group">
-                <label>INVOICE #:</label>
-                <input id="invoice" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
-            <div class="form-group">
-                <label>PERIOD COVERED:</label>
-                <input id="covered" type="date" class="form-control" />
-            </div>
-        </div>
-        <div>
-            <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
-                <div class="form-group">
-                    <label>S.O #:</label>
-                    <input id="so" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
-                <div class="form-group">
-                    <label>TRAVEL PERIOD:</label>
-                    <input id="travel" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
-                <div class="form-group">
-                    <label>ACCOUNT #:</label>
-                    <input id="account" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
-                <div class="form-group">
-                    <label># OF BILLING: (FIRST, SECOND):</label>
-                    <input id="billings" class="form-control" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <br />
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 120px">
-                <label style="font-weight:bold;">GROSS AMOUNT: </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control"  type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control"  type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 115px">
-                <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 120px">
-                <label style="font-weight:bold;">NET AMOUNT: </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
-            </div>
-            <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
-        </div>
-    </div>
-    @*
-        <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
-  @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
-*@
-
-</form>
-
+    <a asp-action="Create" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</div>
 <br />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script>
+<table class="table table-striped" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                Category
+            </th>
+            <th>
+                Dv #
+            </th>
+            <th>
+               Payee
+            </th>
+            <th>
+               Date
+            </th>
+            <th>
+               Particulars
+            </th>
+            <th>
+               Po #
+            </th>
+            <th>
+               Invoice #
+            </th>
+            <th>
+                Action
+            </th>
 
-    $('.select2').select2();
-    $("#CategoryId").val(36);
-    $("#CategoryId").trigger("click");
-    $(document).ready(function () {
-        for (i = 1; i <= 10; i++) {
-            $('#hidden-panel' + i).hide();
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dv.DvNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dv.Payee)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DvDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Particulars)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Invoice)
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.CategoryId">
+                        <i class="ace-icon fa fa-edit"></i>
+                    </a>
+                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Category",new { id = @item.CategoryId })" onclick="return confirm('Do you want to delete this Category?');">
+                        <i class="ace-icon fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
         }
-    });
-    // dummy/live
-
-
-@*    $("#CategoryId").on('change', function () {
-
-        var value = $(this).val();
-        console.log(value);
-        const categ = [];
-        if (value == 36) {
-            $("#hidden-panel1").show();
-            $("#hidden-panel5").show();
-            categ.push('2', '6', '7', '8', '9', '10');
-        } else if (value == 37) {
-            $("#hidden-panel2").show();
-            categ.push('1', '5', '6', '7', '8', '9', '10');
-        } else if (value == 38) {
-            $("#hidden-panel2").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '5', '6', '7', '8', '9');
-        } else if (value == 45 || value == 52) {
-            $("#hidden-panel8").show();
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '10', '6', '9');
-        } else if (value == 46 || value == 47) {
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '8', '6', '9', '10');
-        } else if (value == 48) {
-            $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
-        } else if (value == 49 || value == 50 || value == 51) {
-            $("#hidden-panel6").show();
-            $("#hidden-panel9").show();
-            categ.push('1', '5', '2', '7', '8', '10');
-        } else if ((value >= 39 && value <= 44) || (value >= 55 && value <= 68 && value != 62)) {
-            $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
-        } else if (value == 53 || value == 54 || value == 62) {
-            categ.push('1', '2', '5', '6', '7', '8', '9', '10');
-        }
-        categ.forEach(function (i) {
-            $('#hidden-panel' + i).hide();
-        });
-    });*@
-
-
-    //local
-    $("#CategoryId").on('change', function () {
-        var value = $(this).val();
-        console.log(value);
-        const categ = [];
-        if (value == 1) {
-            $("#hidden-panel1").show();
-            $("#hidden-panel5").show();
-            categ.push('2', '6', '7', '8', '9', '10');
-        } else if (value == 2) {
-            $("#hidden-panel2").show();
-            categ.push('1', '5', '6', '7', '8', '9', '10');
-        } else if (value == 3) {
-            $("#hidden-panel2").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '5', '6', '7', '8', '9');
-        } else if (value == 10 || value == 17) {
-            $("#hidden-panel8").show();
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '10', '6', '9');
-        } else if (value == 11 || value == 12) {
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '8', '6', '9', '10');
-        } else if (value == 13) {
-            $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
-        } else if (value == 14 || value == 15 || value == 16) {
-            $("#hidden-panel6").show();
-            $("#hidden-panel9").show();
-            categ.push('1', '5', '2', '7', '8', '10');
-        } else if ((value >= 4 && value <= 9) || (value >= 20 && value <= 33 && value != 27)) {
-            $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
-        } else if (value == 18 || value == 19 || value == 27) {
-            categ.push('1', '2', '5', '6', '7', '8', '9', '10');
-        }
-        categ.forEach(function (i) {
-            $('#hidden-panel' + i).hide();
-        });
-    });
-
-    $(document).ready(function () {
-        $('.filter').change(function () {
-            $('.filterable').each(function () {
-                if ($(this).data('ref') != $('.filter').val() && $('.filter').val() != -1) {
-                    $(this).hide();
-                } else {
-                    $(this).show();
-                }
-            });
-        });
-    });
-        get_sbu();
-    function get_sbu() {
-        var selected_val = $('#ddlBranches').find(":selected").attr('value');
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("selectAT", "DV")',
-            data: "id=" + selected_val,
-            success: function (data) {
-                if (data.length > 0) {
-                    $('#payee').val(data[0].payee);
-                }
-                else {
-                    $('#payee').val('');
-                }
-            }
-        });
-    }
-
-    function Comma(Num) { //function to add commas to textboxes
-        Num += '';
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        x = Num.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1))
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        return x1 + x2;
-    }
-
-
-    function isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            return false;
-        }
-        return true;
-    }
-</script>
+    </tbody>
+</table>
