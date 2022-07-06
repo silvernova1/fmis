@@ -69,12 +69,7 @@ namespace fmis.Controllers
         #region API
         public ActionResult CheckSubAllotmentTitle(string title)
         {
-            if (_MyDbContext.SubAllotment.Where(x => x.Suballotment_title == title).Count() > 0)
-            {
-                ModelState.AddModelError("Suballotment_title", "Sub Allotment Title");
-                return Ok(true);
-            }
-            return Ok(false);
+            return Ok(_MyDbContext.SubAllotment.Any(x => x.Suballotment_title == title && x.Budget_allotment.YearlyReferenceId == YearlyRefId));
         }
         #endregion
 
@@ -129,6 +124,20 @@ namespace fmis.Controllers
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
             return View(budget_allotment);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
+        {
+            var subAllotments = await _context.SubAllotment.FindAsync(subAllotmentId);
+
+            subAllotments.IsAddToNextAllotment = addToNext;
+
+            _context.Update(subAllotments);
+            await _context.SaveChangesAsync();
+
+
+            return Ok(await _context.SaveChangesAsync());
         }
 
         // GET: Sub_allotment/Create
@@ -194,7 +203,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var suballotment = _MyDbContext.SubAllotment?.Where(x => x.SubAllotmentId == sub_allotment_id)
-                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated")).Include(x=>x.Budget_allotment).ThenInclude(x=>x.Yearly_reference)
+                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated")).Include(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
                 .FirstOrDefault();
 
             ViewBag.AllotmentClassId = AllotmentClassId;
@@ -204,11 +213,11 @@ namespace fmis.Controllers
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            string year = suballotment.Budget_allotment.Yearly_reference.YearlyReference;
+     /*       string year = suballotment.Budget_allotment.Yearly_reference.YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(1);
             var result = res.Year.ToString();
-            ViewBag.result = result;
+            ViewBag.result = result;*/
 
             PopulatePrexcDropDownList(suballotment.prexcId);
             PopulateRespoDropDownList();

@@ -73,12 +73,12 @@ namespace fmis.Controllers
 
             var allotmentClass_Id = _context.AllotmentClass.FirstOrDefault(x => x.Id == 3).Id;
 
-                var suballotmentsLastYr = await _context.SubAllotment
+            var suballotmentsLastYr = await _context.SubAllotment
                 .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
-            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+            budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
             return View(budget_allotment);
         }
 
@@ -312,6 +312,35 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _context.Budget_allotments.Any(e => e.BudgetAllotmentId == id);
         }
+
+        #region APIs
+        [HttpPost]
+        public async Task<ActionResult> CheckNextYear(int allotmentClassId, int appropriationId, int budgetAllotmentId, bool addToNext)
+        {
+            var subAllotments = await _context.SubAllotment.Where(x => x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationId && x.BudgetAllotmentId == budgetAllotmentId).ToListAsync();
+
+            subAllotments.ForEach(x=>x.IsAddToNextAllotment = addToNext);
+
+            _context.UpdateRange(subAllotments);
+            await _context.SaveChangesAsync();
+
+
+            return Ok(_context.SaveChangesAsync());
+        }
+        /*[HttpPost]
+        public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
+        {
+            var subAllotments = await _context.SubAllotment.FindAsync(subAllotmentId);
+
+            subAllotments.IsAddToNextAllotment = addToNext;
+
+            _context.Update(subAllotments);
+            await _context.SaveChangesAsync();
+
+
+            return Ok(await _context.SaveChangesAsync());
+        }*/
+        #endregion
 
         #region COOKIES
 

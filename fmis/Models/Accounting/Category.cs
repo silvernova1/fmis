@@ -9,6 +9,7 @@ namespace fmis.Models.Accounting
     {
         public int CategoryId { get; set; }
         public string CategoryDescription { get; set; }
+        public IndexOfPayment IndexOfPayment { get; set; }
 
     }
 }

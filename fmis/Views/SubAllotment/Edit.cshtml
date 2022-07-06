@@ -11,6 +11,22 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
 
+<style>
+
+    .select2-selection__rendered {
+        line-height: 31px !important;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 35px !important;
+    }
+
+    .select2-selection__arrow {
+        height: 34px !important;
+    }
+
+
+</style>
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SubAllotmentId" value="@Model.SubAllotmentId" />
     <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
@@ -75,8 +91,6 @@
                 <textarea asp-for="Description" style="height: 70px;" class="form-control"> </textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            @Html.CheckBoxFor(x => x.IsAddToNextAllotment, new { @class = "custom-checkbox" })
-            Add to <b>@ViewBag.result</b> Allotment?
         </div>
 
     </div>
@@ -107,12 +121,9 @@
 
 <script>
 
-
     $(document).ready(function () {
         $(".select2").select2();
     });
-
-
 
        get_sbu();
     function get_sbu() {
@@ -133,6 +144,7 @@
         });
     }
 
+    let str = "\u20B1"
 
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
@@ -183,11 +195,14 @@
         counter++;
         obligation_amount += this.beginning_balance;
     })
+
+    $('#sub_total_amt').html(str + obligation_amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('suballotment_amount_edit');
     const hot = new Handsontable(container, {
-        data: data,
+        data: data,       
         className: 'htLeft',
         rowHeaders: true,
         colHeaders: true,
@@ -272,6 +287,7 @@
                             Amount: hot.getDataAtCell(row, col + 1),
                             suballotment_amount_token: hot.getDataAtCell(row, col + 2),
                             suballotment_token: suballotment_token
+
                         }
                     );
                     @*console.log(hot.getSourceData());*@

@@ -107,7 +107,7 @@ namespace fmis.Controllers.Budget.John
                                                  sourceId = o.FundSourceId,
                                                  sourceType = o.source_type,
                                                  date = o.Date,
-                                                 status = oa.status,
+                                                 status = o.status,
                                                  allotmentClassID = f.AllotmentClassId,
                                                  appropriationID = f.AppropriationId,
                                                  fundSourceTitle = f.FundSourceTitle
@@ -125,7 +125,7 @@ namespace fmis.Controllers.Budget.John
                                           sourceId = o.FundSourceId,
                                           sourceType = o.source_type,
                                           uacsId = oa.UacsId,
-                                          status = oa.status,
+                                          status = o.status,
                                           allotmentClassID = f.AllotmentClassId,
                                           appropriationID = f.AppropriationId,
                                           fundSourceTitle = f.FundSourceTitle,
@@ -149,7 +149,7 @@ namespace fmis.Controllers.Budget.John
                                                       sourceId = o.FundSourceId,
                                                       sourceType = o.source_type,
                                                       date = o.Date,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
                                                   }).ToList();
@@ -166,7 +166,7 @@ namespace fmis.Controllers.Budget.John
                                                sourceId = o.FundSourceId,
                                                sourceType = o.source_type,
                                                uacsId = oa.UacsId,
-                                               status = oa.status,
+                                               status = o.status,
                                                allotmentClassID = f.AllotmentClassId,
                                                appropriationID = f.AppropriationId
                                            }).ToList();
@@ -189,7 +189,7 @@ namespace fmis.Controllers.Budget.John
                                                       sourceId = o.FundSourceId,
                                                       sourceType = o.source_type,
                                                       date = o.Date,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
                                                   }).ToList();
@@ -206,7 +206,7 @@ namespace fmis.Controllers.Budget.John
                                                sourceId = o.FundSourceId,
                                                sourceType = o.source_type,
                                                uacsId = oa.UacsId,
-                                               status = oa.status,
+                                               status = o.status,
                                                allotmentClassID = f.AllotmentClassId,
                                                appropriationID = f.AppropriationId
                                            }).ToList();
@@ -230,7 +230,7 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    sourceId = o.FundSourceId,
                                                    date = o.Date,
-                                                   status = oa.status,
+                                                   status = o.status,
                                                    allotmentClassID = f.AllotmentClassId
                                                }).ToList();
 
@@ -245,7 +245,7 @@ namespace fmis.Controllers.Budget.John
                                             amount = oa.Amount,
                                             sourceId = o.FundSourceId,
                                             uacsId = oa.UacsId,
-                                            status = oa.status,
+                                            status = o.status,
                                             allotmentClassID = f.AllotmentClassId
                                         }).ToList();
 
@@ -261,7 +261,7 @@ namespace fmis.Controllers.Budget.John
                                                  uacsId = oa.UacsId,
                                                  sourceId = o.FundSourceId,
                                                  date = o.Date,
-                                                 status = oa.status,
+                                                 status = o.status,
                                                  allotmentClassID = f.AllotmentClassId
                                              }).ToList();
 
@@ -276,7 +276,7 @@ namespace fmis.Controllers.Budget.John
                                           amount = oa.Amount,
                                           sourceId = o.FundSourceId,
                                           uacsId = oa.UacsId,
-                                          status = oa.status,
+                                          status = o.status,
                                           allotmentClassID = f.AllotmentClassId
                                       }).ToList();
 
@@ -779,7 +779,7 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
                                                    sourceId = o.FundSourceId,
-                                                   status = oa.status
+                                                   status = o.status
 
                                                }).ToList();
 
@@ -815,7 +815,7 @@ namespace fmis.Controllers.Budget.John
                                             amount = oa.Amount,
                                             uacsId = oa.UacsId,
                                             sourceId = o.FundSourceId,
-                                            status = oa.status
+                                            status = o.status
                                         }).ToList();
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
@@ -1104,7 +1104,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     date = o.Date,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                         var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -1124,7 +1124,7 @@ namespace fmis.Controllers.Budget.John
                                              amount = oa.Amount,
                                              sourceId = o.FundSourceId,
                                              uacsId = oa.UacsId,
-                                             status = oa.status
+                                             status = o.status
                                          }).ToList();
 
                         var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount) + fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
@@ -1424,7 +1424,7 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
                                                    sourceId = o.FundSourceId,
-                                                   status = oa.status
+                                                   status = o.status
 
                                                }).ToList();
 
@@ -1458,7 +1458,7 @@ namespace fmis.Controllers.Budget.John
                                             amount = oa.Amount,
                                             uacsId = oa.UacsId,
                                             sourceId = o.FundSourceId,
-                                            status = oa.status
+                                            status = o.status
                                         }).ToList();
 
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -1563,7 +1563,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     date = o.Date,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                         var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -1583,7 +1583,7 @@ namespace fmis.Controllers.Budget.John
                                              amount = oa.Amount,
                                              sourceId = o.FundSourceId,
                                              uacsId = oa.UacsId,
-                                             status = oa.status
+                                             status = o.status
                                          }).ToList();
 
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
@@ -1821,7 +1821,7 @@ namespace fmis.Controllers.Budget.John
                                                        date = o.Date,
                                                        sourceId = o.FundSourceId,
                                                        sourceType = o.source_type,
-                                                       status = oa.status,
+                                                       status = o.status,
                                                        allotmentClassID = f.AllotmentClassId
 
                                                    }).ToList();
@@ -1854,7 +1854,7 @@ namespace fmis.Controllers.Budget.John
                                                 uacsId = oa.UacsId,
                                                 sourceId = o.SubAllotmentId,
                                                 sourceType = o.source_type,
-                                                status = oa.status
+                                                status = o.status
                                             }).ToList();
 
                                 var SAAunobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -2105,7 +2105,7 @@ namespace fmis.Controllers.Budget.John
                                                         sourceId = o.SubAllotmentId,
                                                         sourceType = o.source_type,
                                                         date = o.Date,
-                                                        status = oa.status
+                                                        status = o.status
                                                     }).ToList();
 
                             var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -2126,7 +2126,7 @@ namespace fmis.Controllers.Budget.John
                                                  sourceId = o.SubAllotmentId,
                                                  uacsId = oa.UacsId,
                                                  sourceType = o.source_type,
-                                                 status = oa.status
+                                                 status = o.status
                                              }).ToList();
 
 
@@ -2192,7 +2192,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Value = SAAsub6;
                             }
 
-                            if(fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount) == 0)
+                            if(fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment") == null)
                             {
                                 ws.Cell(currentRow, 20).Style.Font.SetBold();
                                 ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
@@ -2208,7 +2208,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             }
                             
 
@@ -2218,10 +2218,10 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                            var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                             //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 22).Style.Font.SetBold();
                             ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -2420,7 +2420,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -2454,7 +2454,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -2700,7 +2700,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
 
                                                         }).ToList();
 
@@ -2721,7 +2721,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -2833,7 +2833,7 @@ namespace fmis.Controllers.Budget.John
                                                                        uacsId = oa.UacsId,
                                                                        sourceId = o.FundSourceId,
                                                                        date = o.Date,
-                                                                       status = oa.status,
+                                                                       status = o.status,
                                                                        allotmentClassID = f.AllotmentClassId
                                                                    }).ToList();
 
@@ -2848,7 +2848,7 @@ namespace fmis.Controllers.Budget.John
                                                                 amount = oa.Amount,
                                                                 sourceId = o.FundSourceId,
                                                                 uacsId = oa.UacsId,
-                                                                status = oa.status,
+                                                                status = o.status,
                                                                 allotmentClassID = f.AllotmentClassId
                                                             }).ToList();*/
 
@@ -2905,7 +2905,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.status == "activated").Sum(x => x.amount);
 
                                 //TOTAL - AS AT
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -2913,7 +2913,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2 && x.status == "activated").Sum(x => x.amount);
 
                                 //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                                 var unobligatedTotalinTotalMOOE = MooeTotal - asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
@@ -3012,7 +3012,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -3045,7 +3045,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -3235,11 +3235,11 @@ namespace fmis.Controllers.Budget.John
                                     }
 
                                     //PERCENT OF UTILIZATION
-                                    if (asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) != 0 || afterrealignment_amount != 0)
+                                    if (asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) == 0 || afterrealignment_amount == 0)
                                     {
                                         ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 23).Value = asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) / afterrealignment_amount;
+                                        ws.Cell(currentRow, 23).Value = "-";
                                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
@@ -3247,7 +3247,7 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 23).Value = "-";
+                                        ws.Cell(currentRow, 23).Value = asAt.Where(x => x.uacsId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().UacsId).Sum(x => x.amount) / afterrealignment_amount;
                                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
@@ -3296,7 +3296,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -3317,7 +3317,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -3337,7 +3337,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var SAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var SAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var SAAMOOEsub9 = SAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var SAAMOOEsub9 = SAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (SAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -3377,7 +3377,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -3385,10 +3385,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -3473,7 +3473,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -3481,7 +3481,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
 
@@ -3549,7 +3549,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -3583,7 +3583,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -3828,7 +3828,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
 
                                                         }).ToList();
 
@@ -3849,7 +3849,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -3936,7 +3936,7 @@ namespace fmis.Controllers.Budget.John
                                                                  uacsId = oa.UacsId,
                                                                  sourceId = o.FundSourceId,
                                                                  date = o.Date,
-                                                                 status = oa.status,
+                                                                 status = o.status,
                                                                  allotmentClassID = f.AllotmentClassId
                                                              }).ToList();
 
@@ -3951,7 +3951,7 @@ namespace fmis.Controllers.Budget.John
                                                           amount = oa.Amount,
                                                           sourceId = o.FundSourceId,
                                                           uacsId = oa.UacsId,
-                                                          status = oa.status,
+                                                          status = o.status,
                                                           allotmentClassID = f.AllotmentClassId
                                                       }).ToList();*/
 
@@ -4092,7 +4092,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -4125,7 +4125,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -4370,7 +4370,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -4391,7 +4391,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -4450,7 +4450,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -4458,10 +4458,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -4656,7 +4656,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -4690,7 +4690,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -4932,7 +4932,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -4952,7 +4952,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -5198,7 +5198,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -5231,7 +5231,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -5430,7 +5430,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -5451,7 +5451,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -5469,7 +5469,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -5499,16 +5499,16 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 7).Style.Font.SetBold();
                                 ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 8).Style.Font.SetBold();
                                 ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 9).Style.Font.SetBold();
                                 ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
@@ -5653,7 +5653,7 @@ namespace fmis.Controllers.Budget.John
                                                        uacsId = oa.UacsId,
                                                        date = o.Date,
                                                        sourceId = o.FundSourceId,
-                                                       status = oa.status
+                                                       status = o.status
 
                                                    }).ToList();
 
@@ -5687,7 +5687,7 @@ namespace fmis.Controllers.Budget.John
                                                 amount = oa.Amount,
                                                 uacsId = oa.UacsId,
                                                 sourceId = o.FundSourceId,
-                                                status = oa.status
+                                                status = o.status
                                             }).ToList();
 
                                 var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -5928,7 +5928,7 @@ namespace fmis.Controllers.Budget.John
                                                         uacsId = oa.UacsId,
                                                         sourceId = o.FundSourceId,
                                                         date = o.Date,
-                                                        status = oa.status
+                                                        status = o.status
                                                     }).ToList();
 
                             var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -5948,7 +5948,7 @@ namespace fmis.Controllers.Budget.John
                                                  amount = oa.Amount,
                                                  sourceId = o.FundSourceId,
                                                  uacsId = oa.UacsId,
-                                                 status = oa.status
+                                                 status = o.status
                                              }).ToList();
 
 
@@ -6056,7 +6056,7 @@ namespace fmis.Controllers.Budget.John
                                                                     sourceId = o.FundSourceId,
                                                                     sourceType = o.source_type,
                                                                     date = o.Date,
-                                                                    status = oa.status,
+                                                                    status = o.status,
                                                                     allotmentClassID = f.AllotmentClassId,
                                                                     appropriationID = f.AppropriationId
                                                                 }).ToList();
@@ -6073,7 +6073,7 @@ namespace fmis.Controllers.Budget.John
                                                              sourceId = o.FundSourceId,
                                                              sourceType = o.source_type,
                                                              uacsId = oa.UacsId,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId,
                                                              fundSourceBudgetAllotmentId = f.BudgetAllotmentId
@@ -6244,7 +6244,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -6277,7 +6277,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -6518,7 +6518,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -6539,7 +6539,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -6558,7 +6558,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -6598,7 +6598,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -6606,10 +6606,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -6785,7 +6785,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -6818,7 +6818,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -7059,7 +7059,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -7080,7 +7080,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -7099,7 +7099,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -7139,7 +7139,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -7147,10 +7147,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -7309,7 +7309,7 @@ namespace fmis.Controllers.Budget.John
                                                            uacsId = oa.UacsId,
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
-                                                           status = oa.status
+                                                           status = o.status
 
                                                        }).ToList();
 
@@ -7343,7 +7343,7 @@ namespace fmis.Controllers.Budget.John
                                                     amount = oa.Amount,
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -7538,7 +7538,7 @@ namespace fmis.Controllers.Budget.John
                                                             uacsId = oa.UacsId,
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
@@ -7558,7 +7558,7 @@ namespace fmis.Controllers.Budget.John
                                                      amount = oa.Amount,
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
                                 //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
@@ -7646,7 +7646,7 @@ namespace fmis.Controllers.Budget.John
                                                                       sourceId = o.FundSourceId,
                                                                       sourceType = o.source_type,
                                                                       date = o.Date,
-                                                                      status = oa.status,
+                                                                      status = o.status,
                                                                       allotmentClassID = f.AllotmentClassId,
                                                                       appropriationID = f.AppropriationId
                                                                   }).ToList();
@@ -7663,7 +7663,7 @@ namespace fmis.Controllers.Budget.John
                                                                sourceId = o.FundSourceId,
                                                                sourceType = o.source_type,
                                                                uacsId = oa.UacsId,
-                                                               status = oa.status,
+                                                               status = o.status,
                                                                allotmentClassID = f.AllotmentClassId,
                                                                appropriationID = f.AppropriationId
                                                            }).ToList();
@@ -7804,7 +7804,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -7837,7 +7837,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -7969,7 +7969,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -7990,7 +7990,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -8026,7 +8026,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -8034,10 +8034,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -8194,7 +8194,7 @@ namespace fmis.Controllers.Budget.John
                                                            date = o.Date,
                                                            sourceId = o.FundSourceId,
                                                            sourceType = o.source_type,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
                                                        }).ToList();
@@ -8227,7 +8227,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
-                                                    status = oa.status
+                                                    status = o.status
                                                 }).ToList();
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
@@ -8468,7 +8468,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.SubAllotmentId,
                                                             sourceType = o.source_type,
                                                             date = o.Date,
-                                                            status = oa.status
+                                                            status = o.status
                                                         }).ToList();
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
@@ -8489,7 +8489,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.SubAllotmentId,
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
-                                                     status = oa.status
+                                                     status = o.status
                                                  }).ToList();
 
 
@@ -8508,7 +8508,7 @@ namespace fmis.Controllers.Budget.John
                                 //REALIGNMENT SUBTOTAL
                                 var CONAPSAAMOOErealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                                 var CONAPSAAMOOEsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
-                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
+                                var CONAPSAAMOOEsub9 = CONAPSAAMOOEsub6 - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                                 if (CONAPSAAMOOErealignment_subtotal == null)
                                 {
                                     ws.Cell(currentRow, 17).Style.Font.SetBold();
@@ -8548,7 +8548,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonthTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
                                 //AS AT TOTAL
                                 ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -8556,10 +8556,10 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                ws.Cell(currentRow, 21).Value = asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
 
-                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == subAllotment.SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                                var unobligatedTotal = subAllotment.Beginning_balance - asAtTotal.Where(x => x.sourceId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
                                 //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
                                 ws.Cell(currentRow, 22).Style.Font.SetBold();
                                 ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
@@ -8883,7 +8883,7 @@ namespace fmis.Controllers.Budget.John
                                                                uacsId = oa.UacsId,
                                                                sourceId = o.FundSourceId,
                                                                date = o.Date,
-                                                               status = oa.status,
+                                                               status = o.status,
                                                                allotmentClassID = f.AllotmentClassId
                                                            }).ToList();
 
@@ -8898,7 +8898,7 @@ namespace fmis.Controllers.Budget.John
                                                         amount = oa.Amount,
                                                         sourceId = o.FundSourceId,
                                                         uacsId = oa.UacsId,
-                                                        status = oa.status,
+                                                        status = o.status,
                                                         allotmentClassID = f.AllotmentClassId
                                                     }).ToList();*/
 
@@ -8962,7 +8962,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
+                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.status == "activated").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -8970,7 +8970,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
+                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2 && x.status == "activated").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             var unobligatedTotalinTotalMOOECurent = MooeTotal - asAtTotalinTotalMOOE.Where(x => x.allotmentClassID == 2).Sum(x => x.amount);
@@ -9023,7 +9023,7 @@ namespace fmis.Controllers.Budget.John
                                                              uacsId = oa.UacsId,
                                                              sourceId = o.FundSourceId,
                                                              date = o.Date,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId
                                                          }).ToList();
 
@@ -9038,7 +9038,7 @@ namespace fmis.Controllers.Budget.John
                                                       amount = oa.Amount,
                                                       sourceId = o.FundSourceId,
                                                       uacsId = oa.UacsId,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId
                                                   }).ToList();*/
 
@@ -9307,7 +9307,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
 
                             //TOTAL - AS AT
                             ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -9315,7 +9315,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 2 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
 
                             //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
                             ws.Cell(currentRow, 22).Style.Font.SetBold();
@@ -9515,7 +9515,7 @@ namespace fmis.Controllers.Budget.John
                                                                   uacsId = oa.UacsId,
                                                                   sourceId = o.FundSourceId,
                                                                   date = o.Date,
-                                                                  status = oa.status,
+                                                                  status = o.status,
                                                                   allotmentClassID = f.AllotmentClassId,
                                                                   appropriationID = f.AppropriationId
                                                               }).ToList();
@@ -9531,7 +9531,7 @@ namespace fmis.Controllers.Budget.John
                                                            amount = oa.Amount,
                                                            sourceId = o.FundSourceId,
                                                            uacsId = oa.UacsId,
-                                                           status = oa.status,
+                                                           status = o.status,
                                                            allotmentClassID = f.AllotmentClassId,
                                                            appropriationID = f.AppropriationId
                                                        }).ToList();
@@ -9539,8 +9539,8 @@ namespace fmis.Controllers.Budget.John
                         var CurrentTotal = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
 
                         //TOTAL - FOR THE MONTH
-                        var CurrentApproForthemonth = fortheMonthTotalinTotalCURRENT.Where(x => x.appropriationID == 1).Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.appropriationID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                        var CurrentApproAsat = asAtTotalinTotalCURRENT.Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
+                        var CurrentApproForthemonth = fortheMonthTotalinTotalCURRENT.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.appropriationID == 1 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
+                        var CurrentApproAsat = asAtTotalinTotalCURRENT.Where(x=>x.status == "activated").Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
                         ws.Cell(currentRow, 20).Style.Font.SetBold();
                         ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
@@ -10006,7 +10006,7 @@ namespace fmis.Controllers.Budget.John
 
 
                         //START IF PREVIOUS ALLOTMENT IS CHECKED TOTAL CONAP MOOE
-                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 2 && x.AppropriationId == 2).Any())
+                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 2 && x.AppropriationId == 2 && x.Budget_allotment.Yearly_reference.YearlyReference == result).Any())
                         {
 
                             var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 2 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
@@ -10194,7 +10194,7 @@ namespace fmis.Controllers.Budget.John
                         //TOTAL CO SAA
 
                         //START IF PREVIOUS ALLOTMENT IS CHECKED TOTAL CONAP CO
-                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 3 && x.AppropriationId == 2).Any())
+                        if (_MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 3 && x.AppropriationId == 2 && x.Budget_allotment.Yearly_reference.YearlyReference == result).Any())
                         {
 
                             var MooeTotalSaa = _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.AllotmentClassId == 3 && x.AppropriationId == 2).Sum(x => x.Beginning_balance);
@@ -10290,7 +10290,7 @@ namespace fmis.Controllers.Budget.John
 
                         if (_MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any() || _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Any())
                         {
-                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true).Sum(x => x.Beginning_balance);
+                            var TotalCONAP = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
 
                             ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
                             ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#FABF8F");
@@ -10376,7 +10376,7 @@ namespace fmis.Controllers.Budget.John
                                                                     uacsId = oa.UacsId,
                                                                     sourceId = o.FundSourceId,
                                                                     date = o.Date,
-                                                                    status = oa.status,
+                                                                    status = o.status,
                                                                     allotmentClassID = f.AllotmentClassId,
                                                                     appropriationID = f.AppropriationId
                                                                 }).ToList();
@@ -10392,7 +10392,7 @@ namespace fmis.Controllers.Budget.John
                                                              amount = oa.Amount,
                                                              sourceId = o.FundSourceId,
                                                              uacsId = oa.UacsId,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId
                                                          }).ToList();
@@ -10444,7 +10444,7 @@ namespace fmis.Controllers.Budget.John
                     currentRow++;
                 }
 
-                var GrandTotals = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true).Sum(x => x.Beginning_balance);
+                var GrandTotals = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
 
                 ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
                 ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
@@ -10541,7 +10541,7 @@ namespace fmis.Controllers.Budget.John
                                                              uacsId = oa.UacsId,
                                                              sourceId = o.FundSourceId,
                                                              date = o.Date,
-                                                             status = oa.status,
+                                                             status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId
                                                          }).ToList();
@@ -10557,14 +10557,14 @@ namespace fmis.Controllers.Budget.John
                                                       amount = oa.Amount,
                                                       sourceId = o.FundSourceId,
                                                       uacsId = oa.UacsId,
-                                                      status = oa.status,
+                                                      status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
                                                   }).ToList();
 
                 var ConapTotalGrand = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
-                var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1).Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2).Sum(x => x.amount);
-                var ConapApproAsatGrand = asAtTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1).Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2).Sum(x => x.amount);
+                var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2 && x.status == "activated").Sum(x => x.amount);
+                var ConapApproAsatGrand = asAtTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2).Sum(x => x.amount);
                 ws.Cell(currentRow, 20).Style.Font.SetBold();
                 ws.Cell(currentRow, 20).Style.Font.FontSize = 12;
                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";

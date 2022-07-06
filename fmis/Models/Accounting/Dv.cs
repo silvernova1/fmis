@@ -26,5 +26,8 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public FundCluster FundCluster { get; set; }
 
+
+        public IndexOfPayment IndexOfPayment { get; set; }
+
     }
 }

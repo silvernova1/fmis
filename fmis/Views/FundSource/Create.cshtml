@@ -19,6 +19,19 @@
     .select2 {
         min-height: 33px;
     }
+
+    .select2-selection__rendered {
+        line-height: 31px !important;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 35px !important;
+    }
+
+    .select2-selection__arrow {
+        height: 34px !important;
+    }
+
 </style>
 @using (Html.BeginForm())
 {
@@ -132,7 +145,6 @@
     }
 
     function CheckFundSourceTitle(input) {
-        console.log(input.value);
         $.ajax({
             url: '@Url.Action("CheckFundSourceTitle","FundSource")',
             type: 'GET',
@@ -141,6 +153,7 @@
             },
             async: true,
             success: function (output) {
+                console.log(output);
                 if (output) {
                     alert("Fund Source Already Exist!");
                     input.value = "";

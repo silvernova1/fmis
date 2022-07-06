@@ -102,6 +102,25 @@ namespace fmis.Controllers
             var data_holder = _context.ObligationAmount;
             decimal utilized_amount = 0;
 
+
+            var currentObligation = await _MyDbContext.Obligation
+                .Include(x => x.FundSource)
+                .Include(x => x.SubAllotment)
+                .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
+
+       
+            if (currentObligation.source_type == "fund_source")
+            {
+                if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == data.First().Expense_code)) 
+                    return BadRequest(new { error_message = "INVALID EXPENSE CODE"});
+            }
+            else if (currentObligation.source_type == "sub_allotment")
+            {
+                if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == data.First().Expense_code))
+                    return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
+            }
+                
+
             foreach (var item in data)
             {
                 var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
