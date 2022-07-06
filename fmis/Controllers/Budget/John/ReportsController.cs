@@ -9539,8 +9539,8 @@ namespace fmis.Controllers.Budget.John
                         var CurrentTotal = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
 
                         //TOTAL - FOR THE MONTH
-                        var CurrentApproForthemonth = fortheMonthTotalinTotalCURRENT.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.appropriationID == 1 && x.sourceType == "sub_allotment").Sum(x => x.amount);
-                        var CurrentApproAsat = asAtTotalinTotalCURRENT.Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
+                        var CurrentApproForthemonth = fortheMonthTotalinTotalCURRENT.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalPS.Where(x => x.appropriationID == 1 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
+                        var CurrentApproAsat = asAtTotalinTotalCURRENT.Where(x=>x.status == "activated").Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment" && x.status == "activated").Sum(x => x.amount);
                         ws.Cell(currentRow, 20).Style.Font.SetBold();
                         ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
