@@ -8,6 +8,23 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
+
+<style>
+
+    .select2-selection__rendered {
+        line-height: 31px !important;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 35px !important;
+    }
+
+    .select2-selection__arrow {
+        height: 34px !important;
+    }
+
+
+</style>
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="FundSourceId" value="@Model.FundSourceId" />
     <input type="hidden" asp-for="BudgetAllotmentId" value="@Model.BudgetAllotmentId" />
