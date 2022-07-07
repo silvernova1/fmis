@@ -902,7 +902,14 @@
 					}
                 },
 
-                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+                "row_below": {
+                    @*callback: function (changes, options) {
+                        hot.alter('insert_row', options[0].end.row + 1);
+                        var above = hot.getDataAtCell(options[0].end.row, 8)
+                        hot.setDataAtCell(options[0].end.row + 1, 8, above+'a')
+                    }*@
+                },
+                "remove_row": {}, "row_above": {}, "copy": {},
                 "created": {
                     name: 'CREATED BY',
                     callback: function (changes, options) {

@@ -74,7 +74,7 @@ namespace fmis.Controllers
         #endregion
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, Boolean viewAllBtn)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search)
         {
           
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
@@ -82,17 +82,6 @@ namespace fmis.Controllers
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
-            ViewData["search"] = "";
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                ViewData["search"] = search.ToUpper();
-            }
-
-            if(viewAllBtn == true)
-            {
-                ViewData["search"] = "";
-            }
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
@@ -125,6 +114,16 @@ namespace fmis.Controllers
 
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.Trim();
+                ViewBag.Search = search;
+                budget_allotment.SubAllotment = budget_allotment.SubAllotment
+                    .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
             return View(budget_allotment);
         }
 

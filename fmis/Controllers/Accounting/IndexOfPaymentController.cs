@@ -33,13 +33,16 @@ namespace fmis.Controllers.Accounting
         }
         //COMMENT
         [Route("Accounting/IndexOfPayment")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            var index = await _MyDbContext.Indexofpayment.Include(x=>x.Dv).Include(x=>x.Category).ToListAsync();
+            PopulateIndexOfPaymentDropDownList();
+            PopulatePayeeDropDownList();
+            PopulateDeductionDropDownList();
+            PopulateDvDropDownList();
 
-            return View(index);
+            return View(await _MyDbContext.Category.ToListAsync());
         }
 
 
@@ -48,12 +51,12 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.CategoryId = new SelectList((from s in _MyDbContext.Category.ToList()
-                                              select new
-                                              {
-                                                  CategoryId = s.CategoryId,
-                                                  CategotyDescription = s.CategoryDescription,
-                                    
-                                              }),
+                                                 select new
+                                                 {
+                                                     CategoryId = s.CategoryId,
+                                                     CategotyDescription = s.CategoryDescription,
+
+                                                 }),
                                        "CategoryId",
                                        "CategotyDescription",
                                        null);
@@ -65,12 +68,12 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.PayeeId = new SelectList((from s in _MyDbContext.Payee.ToList()
-                                                 select new
-                                                 {
-                                                     PayeeId = s.PayeeId,
-                                                     PayeeDescription = s.PayeeDescription,
+                                              select new
+                                              {
+                                                  PayeeId = s.PayeeId,
+                                                  PayeeDescription = s.PayeeDescription,
 
-                                                 }),
+                                              }),
                                        "PayeeId",
                                        "PayeeDescription",
                                        null);
@@ -82,12 +85,12 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.DeductionId = new SelectList((from s in _MyDbContext.Deduction.ToList()
-                                              select new
-                                              {
-                                                  DeductionId = s.DeductionId,
-                                                  DeductionDescription = s.DeductionDescription,
+                                                  select new
+                                                  {
+                                                      DeductionId = s.DeductionId,
+                                                      DeductionDescription = s.DeductionDescription,
 
-                                              }),
+                                                  }),
                                        "DeductionId",
                                        "DeductionDescription",
                                        null);
@@ -99,13 +102,13 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.DvId = new SelectList((from s in _MyDbContext.Dv.ToList()
-                                                  select new
-                                                  {
-                                                      DvId = s.DvId,
-                                                      DvNo = s.DvNo,
-                                                      Payee = s.Payee,
+                                           select new
+                                           {
+                                               DvId = s.DvId,
+                                               DvNo = s.DvNo,
+                                               Payee = s.Payee,
 
-                                                  }),
+                                           }),
                                        "DvId",
                                        "DvNo",
                                        "Payee",
@@ -113,7 +116,6 @@ namespace fmis.Controllers.Accounting
 
         }
         // GET: Create
-        [Route("Accounting/IndexOfPayment/Create")]
         public IActionResult Create(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
@@ -126,23 +128,25 @@ namespace fmis.Controllers.Accounting
             PopulateDeductionDropDownList();
             PopulateDvDropDownList();
 
-            return View();
+            /* ViewBag.IndexOfPaymentId = IndexOfPaymentId;*/
+
+            return View(); //open create
         }
         // POST: Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Accounting/IndexOfPayment/Create")]
-        public  IActionResult Create(IndexOfPayment indexOfPayment)
+
+        public IActionResult Create(IndexOfPayment indexOfPayment)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            //var cat_desc = _MyDbContext.Category.Where(f => f.CategoryId == indexOfPayment.CategoryId).FirstOrDefault().CategoryDescription;
+            var cat_desc = _MyDbContext.Category.Where(f => f.CategoryId == indexOfPayment.CategoryId).FirstOrDefault().CategoryDescription;
 
-            //indexOfPayment.CategoryDescription = cat_desc;
+            indexOfPayment.CategoryDescription = cat_desc;
 
             _IndexofpaymentContext.Add(indexOfPayment);
             _IndexofpaymentContext.SaveChanges();

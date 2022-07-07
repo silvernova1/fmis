@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.silver;
+using fmis.Models.Carlo;
 
 namespace fmis.Models
 {
@@ -56,6 +57,7 @@ namespace fmis.Models
         public BudgetAllotment Budget_allotment { get; set; }
         public ICollection<Suballotment_amount> SubAllotmentAmounts { get; set; }
         public ICollection<SubAllotment_Realignment> SubAllotmentRealignment { get; set; }
+        public ICollection<SubTransferedTo> SubTransferedTo { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
     }
 
