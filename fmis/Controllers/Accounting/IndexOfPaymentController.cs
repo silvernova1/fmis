@@ -51,12 +51,12 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.CategoryId = new SelectList((from s in _MyDbContext.Category.ToList()
-                                              select new
-                                              {
-                                                  CategoryId = s.CategoryId,
-                                                  CategotyDescription = s.CategoryDescription,
-                                    
-                                              }),
+                                                 select new
+                                                 {
+                                                     CategoryId = s.CategoryId,
+                                                     CategotyDescription = s.CategoryDescription,
+
+                                                 }),
                                        "CategoryId",
                                        "CategotyDescription",
                                        null);
@@ -68,12 +68,12 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.PayeeId = new SelectList((from s in _MyDbContext.Payee.ToList()
-                                                 select new
-                                                 {
-                                                     PayeeId = s.PayeeId,
-                                                     PayeeDescription = s.PayeeDescription,
+                                              select new
+                                              {
+                                                  PayeeId = s.PayeeId,
+                                                  PayeeDescription = s.PayeeDescription,
 
-                                                 }),
+                                              }),
                                        "PayeeId",
                                        "PayeeDescription",
                                        null);
@@ -85,12 +85,12 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.DeductionId = new SelectList((from s in _MyDbContext.Deduction.ToList()
-                                              select new
-                                              {
-                                                  DeductionId = s.DeductionId,
-                                                  DeductionDescription = s.DeductionDescription,
+                                                  select new
+                                                  {
+                                                      DeductionId = s.DeductionId,
+                                                      DeductionDescription = s.DeductionDescription,
 
-                                              }),
+                                                  }),
                                        "DeductionId",
                                        "DeductionDescription",
                                        null);
@@ -102,13 +102,13 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
             ViewBag.DvId = new SelectList((from s in _MyDbContext.Dv.ToList()
-                                                  select new
-                                                  {
-                                                      DvId = s.DvId,
-                                                      DvNo = s.DvNo,
-                                                      Payee = s.Payee,
+                                           select new
+                                           {
+                                               DvId = s.DvId,
+                                               DvNo = s.DvNo,
+                                               Payee = s.Payee,
 
-                                                  }),
+                                           }),
                                        "DvId",
                                        "DvNo",
                                        "Payee",
@@ -138,7 +138,7 @@ namespace fmis.Controllers.Accounting
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public  IActionResult Create(IndexOfPayment indexOfPayment)
+        public IActionResult Create(IndexOfPayment indexOfPayment)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
