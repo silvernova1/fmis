@@ -84,7 +84,7 @@ namespace fmis.Controllers.Budget.John
 
             if (!String.IsNullOrEmpty(search))
             {
-                ViewData["search"] = search.ToUpper();
+                ViewData["search"] = search.ToString();
             }
 
             if (viewAllBtn == true)

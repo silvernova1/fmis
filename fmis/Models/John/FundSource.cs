@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.Carlo;
 using fmis.Models.Budget;
 using fmis.Models.silver;
 
@@ -48,6 +49,7 @@ namespace fmis.Models.John
         public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
+        public ICollection<TransferedTo> TransferedTo { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
 
     }

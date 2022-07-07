@@ -199,6 +199,9 @@
                     Funds Source (Realignment)
                 </th>
                 <th>
+                    Transfered To
+                </th>
+                <th>
                     Beginning Balance
                 </th>
                 <th>
@@ -215,11 +218,11 @@
         </thead>
         <tbody>
 
-            @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "")
+            @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "" && ViewData["search"].ToString() != "")
             {
                 @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
                 {
-                    @if (item.FundSourceTitle.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()))
+                    @if (item.FundSourceTitle.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()) || item.Prexc.pap_title.Contains(ViewData["search"].ToString()) )
                     {
                         <tr>
                             <td>
@@ -238,7 +241,9 @@
                             <td>
                                 <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                             </td>
-
+                            <td>
+                                <center><button asp-controller="TransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-share-alt"></span></button></center>
+                            </td>
                             <td>
                                 <b class="green">
                                     <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
@@ -281,7 +286,9 @@
                     <td>
                         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
                     </td>
-
+                    <td>
+                        <center><button asp-controller="TransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-share-alt"></span></button></center>
+                    </td>
                     <td>
                         <b class="green">
                             <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>

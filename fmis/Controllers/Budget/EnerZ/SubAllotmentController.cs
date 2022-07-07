@@ -86,7 +86,7 @@ namespace fmis.Controllers
 
             if (!String.IsNullOrEmpty(search))
             {
-                ViewData["search"] = search.ToUpper();
+                ViewData["search"] = search.ToString();
             }
 
             if(viewAllBtn == true)

@@ -207,6 +207,9 @@
                     Sub-Allotment (Realignment)
                 </th>
                 <th>
+                    Transfered To
+                </th>
+                <th>
                     Beginning Balance
                 </th>
                 <th>
@@ -225,12 +228,12 @@
             </tr>
         </thead>
         <tbody>
-            @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "")
+            @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "" && ViewData["search"].ToString() != "" )
             {
                 @foreach (var item in Model.SubAllotment.OrderByDescending(x=>x.CreatedAt))
                 {
                     var check = item.IsAddToNextAllotment ? "checked" : "";
-                    if (item.Suballotment_title.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()))
+                    if (item.Suballotment_title.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()) || item.prexc.pap_title.Contains(ViewData["search"].ToString()))
                     {
                         <tr>
                             <td>
@@ -259,6 +262,9 @@
                             </td>
                             <td>
                                 <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
+                            </td>
+                            <td>
+                                <center><button class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-share-alt"></span></button></center>
                             </td>
                             <td>
                                 <b class="green">
@@ -321,6 +327,9 @@
                         </td>
                         <td>
                             <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
+                        </td>
+                        <td>
+                           <center><button class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-share-alt"></span></button></center> 
                         </td>
                         <td>
                             <b class="green">
