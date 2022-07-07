@@ -15,9 +15,11 @@ using fmis.Models.John;
 using System.Globalization;
 using fmis.Models.silver;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+    [Authorize]
     public class BudgetAllotmentController : Controller
     {
         private readonly MyDbContext _context;
@@ -74,9 +76,11 @@ namespace fmis.Controllers
             var allotmentClass_Id = _context.AllotmentClass.FirstOrDefault(x => x.Id == 3).Id;
 
             var suballotmentsLastYr = await _context.SubAllotment
-                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
+
+            suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
             budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
             return View(budget_allotment);
