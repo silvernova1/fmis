@@ -10,13 +10,13 @@ using fmis.Models.Carlo;
 
 namespace fmis.Data.Carlo
 {
-    public class TransferedToContext : DbContext
+    public class SubTransferedToContext : DbContext
     {
-        public TransferedToContext(DbContextOptions<TransferedToContext> options)
+        public SubTransferedToContext(DbContextOptions<SubTransferedToContext> options)
            : base(options)
         {
         }
 
-        public DbSet<TransferedTo> TransferedTo { get; set; }
+        public DbSet<SubTransferedTo> SubTransferedTo { get; set; }
     }
 }

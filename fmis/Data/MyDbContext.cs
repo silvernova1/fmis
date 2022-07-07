@@ -73,7 +73,8 @@ namespace fmis.Data
         public DbSet<Dv> Dv { get; set; }
         public DbSet<FundCluster> FundCluster { get; set; }
         public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
-        public DbSet<TransferedTo> TransferedTo { get; set; }
+        public DbSet<FundTransferedTo> FundTransferedTo { get; set; }
+        public DbSet<SubTransferedTo> SubTransferedTo { get; set; }
 
 
 

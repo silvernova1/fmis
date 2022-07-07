@@ -1,4 +1,4 @@
-﻿@model fmis.Models.John.FundSource
+﻿@model fmis.Models.SubAllotment
 @using System.Text.Json;
 @using System.Globalization;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
@@ -20,22 +20,20 @@
     }
 </style>
 
-
-<input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
-<input type="hidden" class="fundsrealignment" value="@JsonSerializer.Serialize(Model.FundsRealignment)">
-<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(s => s.status == "activated"@* && s.uacs_type == 1*@))">
-<input type="hidden" id="fundsource_id" value="@Model.FundSourceId" />
+<input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts.Where(x=>x.SubAllotmentId == @Model.SubAllotmentId))">
+<input type="hidden" class="subtransferedto" value="@JsonSerializer.Serialize(Model.SubTransferedTo.Where(x=>x.SubAllotmentId == @Model.SubAllotmentId))">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.uacs_type == @Model.SubAllotmentId))">
+<input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
 
 <h3 class="grey lighter smaller">
-    Fund Source Realignment
+    Sub Allotment Transfered To
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
-        @Model.FundSourceTitle
+        @Model.Suballotment_title
     </small>
 </h3>
 <hr />
-@*<a class="btn btn-primary btn-sm " asp-controller="FundSource" asp-action="Index" asp-route-id="@Model.FundSourceId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>*@
-<a class="btn btn-primary btn-sm " asp-controller="FundSource" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
+<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Sub Allotment</a>
 <br />
 <br />
 <div class="row  pull-left">
@@ -91,7 +89,7 @@
 <div id="example" class="hot"></div>
 <br />
 <script>
-    var fundsource_id = $("#fundsource_id").val();
+    var sub_allotment_id = $("#sub_allotment_id").val();
 
     var CHECK_AFTER_ROW = false;
     var CHECK_FIRST_ROW = false;
@@ -108,7 +106,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function ajaxServerFundsRealignment(ajax_data, url) {
+    function ajaxServerRealignment(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -129,10 +127,10 @@
     $.each(uacs, function () {
         uacs_data_dropdown[uacs_counter] = this.Uacs.Account_title;
         var json_data = new Object();
-        json_data.FundSourceAmountId = this.FundSourceAmountId;
-        json_data.fundsource_amount_token = this.fundsource_amount_token;
+        json_data.SubAllotmentAmountId = this.SubAllotmentAmountId;
+        json_data.suballotment_amount_token = this.suballotment_amount_token;
         uacs_data_array[this.Uacs.Account_title] = json_data;
-        get_account_title[this.FundSourceAmountId] = this.Uacs.Account_title;
+        get_account_title[this.SubAllotmentAmountId] = this.Uacs.Account_title;
         uacs_counter++;
     });
 
@@ -151,33 +149,31 @@
         uacs_counter_2++;
     });
 
-    var fundsource_amount = 0;
-    var fundsrealignment = $.parseJSON($(".fundsrealignment").val());
+    var sub_allotment_amount = 0;
+    var subtransferedto = $.parseJSON($(".subtransferedto").val());
     const data = [];
     var counter = 0;
-    $.each(fundsrealignment, function () {
+    $.each(subtransferedto, function () {
         data[counter] = [
-            get_account_title[this.FundSourceAmountId],
-            this.FundSourceAmount.remaining_balance,
+            get_account_title[this.SubAllotmentAmountId],
+            this.SubAllotmentAmount.remaining_balance,
             get_account_title_2[this.Realignment_to],
             this.Realignment_amount,
-            this.FundSourceId,
+            this.SubAllotmentId,
             this.token]
         counter++;
-        fundsource_amount += this.Realignment_amount;
+        sub_allotment_amount += this.Realignment_amount;
     })
-
-
-    $(".fundsource_amount").html(fundsource_amount);
+    $(".sub_allotment_amount").html(sub_allotment_amount);
 
     const searchField = document.querySelector('#search_field2');
     const button = document.querySelector('#export-file');
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [300, 150, 300, 150],
+        colWidths: [300, 150, 300, 150, 300],
         rowHeaders: true,
-        colHeaders: ['REALIGNMENT FROM','REMAINING BALANCE','REALIGNMENT TO', 'AMOUNT', 'ID', 'TOKEN'],
+        colHeaders: ['REALIGNMENT FROM','REMAINING BALANCE','TRANSFERED TO', 'AMOUNT', 'DESCRIPTION' ,'ID', 'TOKEN'],
         columns: [
             {
                 //REALIGNMENT FROM
@@ -205,6 +201,11 @@
                 },
             },
             {
+                //REALIGNMENT TO
+                type: 'text',
+               
+            },
+            {
                 //HIDDEN ID
             },
             {
@@ -230,14 +231,14 @@
 			}
 
             var ajax_data = {
-                "fundsource_id": fundsource_id,
+                "sub_allotment_id": sub_allotment_id,
 				"single_token": single_token,
 				"many_token": many_token
             };
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("DeleteFundsRealignment", "FundsRealignment")',
+                url: '@Url.Action("DeleteSubAllotmentRealignment", "SubAllotment_Realignment")',
                 headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
                 data: { data: ajax_data },
                 success: function (result) {
@@ -252,7 +253,7 @@
             CHECK_FIRST_ROW = true;
             console.log(row);
             console.log(column);
-            hot.setDataAtCell(row, 5, guid());
+            hot.setDataAtCell(row, 6, guid());
         },
         afterChange: function (changes, source) {
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
@@ -262,9 +263,9 @@
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if (col == 0) { //when choosing a dropdown in fundrealignment from
                     console.log("check the col 0");
-                    var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
-                    $.get('@Url.Action("fundSourceAmountRemainingBalance", "FundsRealignment")' + "?fundsource_amount_token=" + fundsource_amount_token,function(fundsource_amount_remaining_balance) {
-                        hot.setDataAtCell(row, 1, fundsource_amount_remaining_balance);
+                    var suballotment_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].suballotment_amount_token;
+                    $.get('@Url.Action("subAllotmentAmountRemainingBalance", "SubAllotment_Realignment")' + "?suballotment_amount_token=" + suballotment_amount_token, function (suballotment_amount_remaining_balance) {
+                        hot.setDataAtCell(row, 1, suballotment_amount_remaining_balance);
                         TRAP_THE_LOAD = true; //prevent to load 2 times
                     });
                 }
@@ -285,49 +286,51 @@
                         trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
                     }
                     else {
-                        var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
-                        $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id + "&fundsource_amount_token=" + fundsource_amount_token, function (result) {
+                        var suballotment_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].suballotment_amount_token;
+                        $.get('@Url.Action("realignmentRemaining", "SubAllotment_Realignment")' + "?sub_allotment_id=" + sub_allotment_id + "&suballotment_amount_token=" + suballotment_amount_token, function (result) {
                             displayTotalCalculation(result);
                             var post_remaining_balance = result.remaining_balance;
                             var post_realignment_amount = result.realignment_amount;
-                            var post_fundsource_amount_remaining = result.fundSourceAmounts[0].remaining_balance;
-                            var post_fundsource_amount_realignment = result.fundSourceAmounts[0].realignment_amount;
+                            var post_suballotment_amount_remaining = result.subAllotmentAmounts[0].remaining_balance;
+                            var post_suballotment_amount_realignment = result.subAllotmentAmounts[0].realignment_amount;
 
                             if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
                                 post_remaining_balance = post_remaining_balance + oldValue; //2000
                                 post_realignment_amount = post_realignment_amount - oldValue;
-                                post_fundsource_amount_remaining = post_fundsource_amount_remaining + oldValue;
-                                post_fundsource_amount_realignment = post_fundsource_amount_realignment - oldValue;
+                                post_suballotment_amount_remaining = post_suballotment_amount_remaining + oldValue;
+                                post_suballotment_amount_realignment = post_suballotment_amount_realignment - oldValue;
                             }
                             AMOUNT = newValue;
 
-                            if (AMOUNT > post_fundsource_amount_remaining) {
+                            if (AMOUNT > post_suballotment_amount_remaining) {
                                 trapTheCell(row, col, oldValue); //reset the realignment amount from the OLDVALUE,then dapat kani ang una mo display para makuha ang exact amount
-                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance");
+                                trapTheLoad(row, 1, result.subAllotmentAmounts[0].remaining_balance, "Insufficient SubAllotmentAmount Remaining Balance");
                             }
                             else if (AMOUNT > post_remaining_balance)
-                                trapTheLoad(row, col, oldValue, "Insufficient FundSource Remaning Balance Balance!");
+                                trapTheLoad(row, col, oldValue, "Insufficient SubAllotment Remaining Balance!");
                             else {
                                 //do the calculation
                                 console.log("do the calculation!");
                                 post_remaining_balance = post_remaining_balance - AMOUNT;
                                 post_realignment_amount = post_realignment_amount + AMOUNT;
-                                post_fundsource_amount_remaining = post_fundsource_amount_remaining - AMOUNT;
-                                post_fundsource_amount_realignment = post_fundsource_amount_realignment + AMOUNT;
+                                post_suballotment_amount_remaining = post_suballotment_amount_remaining - AMOUNT;
+                                post_suballotment_amount_realignment = post_suballotment_amount_realignment + AMOUNT;
+
+
                                 var calculated_amount_data = {
-                                    "fundsource_id": parseInt(fundsource_id),
+                                    "sub_allotment_id": parseInt(sub_allotment_id),
                                     "remaining_balance": post_remaining_balance,
                                     "realignment_amount": post_realignment_amount,
-                                    "fundsource_amount_remaining_balance" : post_fundsource_amount_remaining,
-                                    "fundsource_amount_realignment": post_fundsource_amount_realignment,
+                                    "suballotment_amount_remaining_balance": post_suballotment_amount_remaining,
+                                    "suballotment_amount_realignment": post_suballotment_amount_realignment,
                                     "realignment_token": hot.getDataAtCell(row, 5),
                                     "amount": AMOUNT,
-                                    "fundsource_amount_token": fundsource_amount_token
+                                    "suballotment_amount_token": suballotment_amount_token
                                 };
                                 //console.log(calculated_amount_data);
-                                var url = '@Url.Action("realignmentAmountSave", "FundsRealignment")'
+                                var url = '@Url.Action("realignmentAmountSave", "SubAllotment_Realignment")'
                                 $.post(url, calculated_amount_data, function (calculation) {
-                                    hot.setDataAtCell(row, 1, post_fundsource_amount_remaining);
+                                    hot.setDataAtCell(row, 1, post_suballotment_amount_remaining);
                                     TRAP_THE_LOAD = true; //prevent to load 2 times
                                     console.log(calculation);
                                     displayTotalCalculation(calculation);
@@ -351,20 +354,20 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
-                        Realignment_from: this[0] ? uacs_data_array[this[0]].FundSourceAmountId : "",
+                        Realignment_from: this[0] ? uacs_data_array[this[0]].SubAllotmentAmountId : "",
                         Realignment_to: this[2] ? uacs_data_array_2[this[2]].UacsId : "",
                         Realignment_amount: this[3],
-                        FundSourceId: fundsource_id,
+                        SubAllotmentId: sub_allotment_id,
                         token: this[5]
                     });
                 });
                 console.log(ajax_data);
-                ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundsRealignment", "FundsRealignment")');
+                ajaxServerRealignment(ajax_data, '@Url.Action("SaveSubAllotmentRealignment", "SubAllotment_Realignment")');
             }
 		},
         height: 'auto',
         hiddenColumns: {
-            columns: [4,5],
+            columns: [5,6],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only

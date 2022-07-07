@@ -1,0 +1,401 @@
+﻿@model fmis.Models.John.FundSource
+@using System.Text.Json;
+@using System.Globalization;
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<style>
+    .wtHider {
+        margin-bottom: 150px;
+    }
+</style>
+
+
+<input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.FundSourceAmounts)">
+<input type="hidden" class="transferedto" value="@JsonSerializer.Serialize(Model.FundTransferedTo)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(s => s.status == "activated"))">
+<input type="hidden" id="fundsource_id" value="@Model.FundSourceId" />
+
+<h3 class="grey lighter smaller">
+    Fund Source Transfered To
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.FundSourceTitle
+    </small>
+</h3>
+<hr />
+@*<a class="btn btn-primary btn-sm " asp-controller="FundSource" asp-action="Index" asp-route-id="@Model.FundSourceId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>*@
+<a class="btn btn-primary btn-sm " asp-controller="FundSource" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Fund Source</a>
+<br />
+<br />
+<div class="row  pull-left">
+    <div class="space-5"></div>
+
+    <div class="col-xs-12 infobox-container">
+        <div class="infobox infobox-green">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @Model.Beginning_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-orange2">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-bar-chart-o"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_realignment_amount" style="font-size:11pt; color:grey;">
+                    @Model.realignment_amount.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br />
+<div id="example" class="hot"></div>
+<br />
+<script>
+    var fundsource_id = $("#fundsource_id").val();
+
+    var CHECK_AFTER_ROW = false;
+    var CHECK_FIRST_ROW = false;
+    var TRAP_THE_LOAD = false;
+    var TRAP_THE_LOAD1 = false;
+    var AMOUNT = 0;
+
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function ajaxServerFundsRealignment(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                console.log(output);
+            }
+        });
+    }
+
+    //FUNDS REALIGNMENT FROM
+    var uacs = $.parseJSON($(".uacs_from").val());
+    var uacs_data_dropdown = [];
+    var uacs_data_array = [];
+    var get_account_title = [];
+    var uacs_counter = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Uacs.Account_title;
+        var json_data = new Object();
+        json_data.FundSourceAmountId = this.FundSourceAmountId;
+        json_data.fundsource_amount_token = this.fundsource_amount_token;
+        uacs_data_array[this.Uacs.Account_title] = json_data;
+        get_account_title[this.FundSourceAmountId] = this.Uacs.Account_title;
+        uacs_counter++;
+    });
+
+    //FUNDS REALIGNEMNT TO
+    var uacs = $.parseJSON($(".uacs").val());
+    var uacs_data_dropdown_2 = [];
+    var uacs_data_array_2 = [];
+    var get_account_title_2 = [];
+    var uacs_counter_2 = 0;
+    $.each(uacs, function () {
+        uacs_data_dropdown_2[uacs_counter_2] = this.Account_title;
+        var json_data_2 = new Object();
+        json_data_2.UacsId = this.UacsId;
+        uacs_data_array_2[this.Account_title] = json_data_2;
+        get_account_title_2[this.UacsId] = this.Account_title;
+        uacs_counter_2++;
+    });
+
+    var fundsource_amount = 0;
+    var transferedto = $.parseJSON($(".transferedto").val());
+    const data = [];
+    var counter = 0;
+    $.each(transferedto, function () {
+        data[counter] = [
+            get_account_title[this.FundSourceAmountId],
+            this.FundSourceAmount.remaining_balance,
+            get_account_title_2[this.Realignment_to],
+            this.Realignment_amount,
+            this.FundSourceId,
+            this.token]
+        counter++;
+        fundsource_amount += this.Realignment_amount;
+    })
+
+
+    $(".fundsource_amount").html(fundsource_amount);
+
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        colWidths: [300, 150, 300, 150, 300],
+        rowHeaders: true,
+        colHeaders: ['REALIGNMENT FROM','REMAINING BALANCE','TRANSFERED TO', 'AMOUNT', 'DESCRIPTION' ,'ID', 'TOKEN'],
+        columns: [
+            {
+                //REALIGNMENT FROM
+                type: 'dropdown',
+                source: uacs_data_dropdown
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+                readOnly: true
+            },
+            {
+                //REALIGNMENT TO
+                type: 'dropdown',
+                source: uacs_data_dropdown_2
+            },
+            {
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                    culture: 'en-Ph'
+                },
+            },
+            {
+                //REALIGNMENT TO
+                type: 'text',
+              
+            },
+            {
+                //HIDDEN ID
+            },
+            {
+                //HIDDEN TOKEN
+            },
+        ],
+        undo: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+			var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][5];
+			var first_column = selection[0][0];
+			var last_column = selection[0][2];
+			var many_token = [];
+			for (var j = first_column; j <= last_column; j++) {
+				many_token.push({
+                    many_token: holder_data[j][5]
+				});
+			}
+
+            var ajax_data = {
+                "fundsource_id": fundsource_id,
+				"single_token": single_token,
+				"many_token": many_token
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteFundsRealignment", "FundsRealignment")',
+                headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                data: { data: ajax_data },
+                success: function (result) {
+                    displayTotalCalculation(result);
+                }
+            });
+		},
+        afterUndo: function (index, column) {
+
+        },
+        afterCreateRow: function (row, column) {
+            CHECK_FIRST_ROW = true;
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 6, guid());
+        },
+        afterChange: function (changes, source) {
+            if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+                CHECK_AFTER_ROW = false;
+                return;
+            }
+            changes.forEach(([row, col, oldValue, newValue]) => {
+                if (col == 0) { //when choosing a dropdown in fundrealignment from
+                    console.log("check the col 0");
+                    var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
+                    $.get('@Url.Action("fundSourceAmountRemainingBalance", "FundsRealignment")' + "?fundsource_amount_token=" + fundsource_amount_token,function(fundsource_amount_remaining_balance) {
+                        hot.setDataAtCell(row, 1, fundsource_amount_remaining_balance);
+                        TRAP_THE_LOAD = true; //prevent to load 2 times
+                    });
+                }
+                else if (col == 2) {
+                    console.log("check the col 2");
+                    TRAP_THE_LOAD = false; //allow to save the col 2 in else
+                }
+                else if (col == 3) { //when inputting the realigmnent amount
+                    CHECK_FIRST_ROW = true;
+                    if (TRAP_THE_LOAD1) {
+                        TRAP_THE_LOAD1 = false;
+                        console.log("trap_the_load1");
+                        return;
+                    }
+                    else if (!hot.getDataAtCell(row, 0)) //trap if the uacs_from already selected
+                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT FROM'!");
+                    else if (!hot.getDataAtCell(row, 2)) { //trap if the uacs_to already selected
+                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
+                    }
+                    else {
+                        var fundsource_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].fundsource_amount_token;
+                        $.get('@Url.Action("realignmentRemaining", "FundsRealignment")' + "?fundsource_id=" + fundsource_id + "&fundsource_amount_token=" + fundsource_amount_token, function (result) {
+                            displayTotalCalculation(result);
+                            var post_remaining_balance = result.remaining_balance;
+                            var post_realignment_amount = result.realignment_amount;
+                            var post_fundsource_amount_remaining = result.fundSourceAmounts[0].remaining_balance;
+                            var post_fundsource_amount_realignment = result.fundSourceAmounts[0].realignment_amount;
+
+                            if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                                post_remaining_balance = post_remaining_balance + oldValue; //2000
+                                post_realignment_amount = post_realignment_amount - oldValue;
+                                post_fundsource_amount_remaining = post_fundsource_amount_remaining + oldValue;
+                                post_fundsource_amount_realignment = post_fundsource_amount_realignment - oldValue;
+                            }
+                            AMOUNT = newValue;
+
+                            if (AMOUNT > post_fundsource_amount_remaining) {
+                                trapTheCell(row, col, oldValue); //reset the realignment amount from the OLDVALUE,then dapat kani ang una mo display para makuha ang exact amount
+                                trapTheLoad(row, 1, result.fundSourceAmounts[0].remaining_balance, "Insufficient FundSourceAmount Remaining Balance");
+                            }
+                            else if (AMOUNT > post_remaining_balance)
+                                trapTheLoad(row, col, oldValue, "Insufficient FundSource Remaning Balance Balance!");
+                            else {
+                                //do the calculation
+                                console.log("do the calculation!");
+                                post_remaining_balance = post_remaining_balance - AMOUNT;
+                                post_realignment_amount = post_realignment_amount + AMOUNT;
+                                post_fundsource_amount_remaining = post_fundsource_amount_remaining - AMOUNT;
+                                post_fundsource_amount_realignment = post_fundsource_amount_realignment + AMOUNT;
+                                var calculated_amount_data = {
+                                    "fundsource_id": parseInt(fundsource_id),
+                                    "remaining_balance": post_remaining_balance,
+                                    "realignment_amount": post_realignment_amount,
+                                    "fundsource_amount_remaining_balance" : post_fundsource_amount_remaining,
+                                    "fundsource_amount_realignment": post_fundsource_amount_realignment,
+                                    "realignment_token": hot.getDataAtCell(row, 5),
+                                    "amount": AMOUNT,
+                                    "fundsource_amount_token": fundsource_amount_token
+                                };
+                                //console.log(calculated_amount_data);
+                                var url = '@Url.Action("realignmentAmountSave", "FundsRealignment")'
+                                $.post(url, calculated_amount_data, function (calculation) {
+                                    hot.setDataAtCell(row, 1, post_fundsource_amount_remaining);
+                                    TRAP_THE_LOAD = true; //prevent to load 2 times
+                                    console.log(calculation);
+                                    displayTotalCalculation(calculation);
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            if (CHECK_FIRST_ROW) {
+                CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
+                console.log("check first row!");
+            }
+            else if (TRAP_THE_LOAD) {
+                console.log("TRAP_THE_LOAD");
+                TRAP_THE_LOAD = false;
+            }
+            else {
+                console.log("else");
+                var ajax_data = [];
+                $.each(hot.getSourceData(), function () {
+                    ajax_data.push({
+                        Realignment_from: this[0] ? uacs_data_array[this[0]].FundSourceAmountId : "",
+                        Realignment_to: this[2] ? uacs_data_array_2[this[2]].UacsId : "",
+                        Realignment_amount: this[3],
+                        FundSourceId: fundsource_id,
+                        token: this[5]
+                    });
+                });
+                console.log(ajax_data);
+                ajaxServerFundsRealignment(ajax_data, '@Url.Action("SaveFundTransferedTo", "FundTransferedTo")');
+            }
+		},
+        height: 'auto',
+        hiddenColumns: {
+            columns: [5,6],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    });
+    var tableData = JSON.stringify(hot.getSourceData());
+
+    function trapTheCell(row, col, oldValue) {
+        TRAP_THE_LOAD1 = true; //trap so that can't save in DB
+        TRAP_THE_LOAD = true; //trap so that can't save in DB
+        hot.setDataAtCell(row, col, oldValue);
+    }
+
+    function trapTheLoad(row, col, oldValue, trap_message) {
+        Lobibox.alert("error", {
+            msg: trap_message,
+            sound: false,
+        });
+        TRAP_THE_LOAD1 = true; //trap so that can't save in DB
+        TRAP_THE_LOAD = true; //trap so that can't save in DB
+        trapTheCell(row, col, oldValue)
+        return;
+    }
+
+    function displayTotalCalculation(calculation) {
+        $("#total_remaining_balance").html(parseFloat(calculation.remaining_balance).toFixed(2));
+        $("#total_realignment_amount").html(parseFloat(calculation.realignment_amount).toFixed(2));
+    }
+</script>
+

@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace fmis.Models.Carlo
 {
-    public class TransferedTo  : BaseEntityTimeStramp
+    public class SubTransferedTo : BaseEntityTimeStramp
     {
         public int Id { get; set; }
-        public int? FundSourceAmountId { get; set; } //realignment from
+        public int? SubAllotmentAmountId { get; set; } //realignment from
         public int transferedTo { get; set; }
         public decimal Realignment_amount { get; set; }
         public string Description { get; set; }
         public string status { get; set; }
         public string token { get; set; }
-        public int? FundSourceId { get; set; }
+        public int? SubAllotmentId { get; set; }
         [JsonIgnore]
-        public FundSource FundSource { get; set; }
-        public FundSourceAmount FundSourceAmount { get; set; }
+        public SubAllotment SubAllotment { get; set; }
+        public Suballotment_amount Suballotment_amount { get; set; }
 
     }
 }
