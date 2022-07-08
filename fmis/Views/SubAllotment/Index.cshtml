@@ -59,22 +59,22 @@
 
 @if (Model.SubAllotment.Count() > 0)
 {
-    <h3 class="grey lighter smaller">
-        Sub Allotment
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.Yearly_reference.YearlyReference
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.SubAllotment.FirstOrDefault().Appropriation.AppropriationSource
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.SubAllotment.FirstOrDefault().AllotmentClass.Allotment_Class
-        </small>
+<h3 class="grey lighter smaller">
+    Sub Allotment Advice (SAA)
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.Yearly_reference.YearlyReference
+    </small>
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.SubAllotment.FirstOrDefault().Appropriation.AppropriationSource
+    </small>
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.SubAllotment.FirstOrDefault().AllotmentClass.Allotment_Class
+    </small>
 
-    </h3>
+</h3>
 }
 <hr />
 <div class="row  pull-left">
@@ -245,9 +245,7 @@
                     </td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-
                         <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
-
                         <div class="checkbox">
                             <label>
                                 <input name="form-field-checkbox" type="checkbox" @check class="ace">
@@ -256,7 +254,7 @@
                         </div>
                     </td>
                     <td>
-                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA-Realignment</a>
+                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Realignment</a>
                     </td>
                     <td>
                         <center>
