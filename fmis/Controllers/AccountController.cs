@@ -73,7 +73,7 @@ namespace fmis.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            ViewData["Year"] = _context.Yearly_reference.ToList();
+            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x=>x.YearlyReference).ToList();
             if (!User.Identity.IsAuthenticated)
             {
                 return View();

@@ -197,7 +197,7 @@
                             }
                             <b class="blue">@sub_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                             
-                            @if(appropriation.AppropriationSource == "CONAP" && item.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId))
+                            @if(appropriation.AppropriationSource == "CURRENT" && item.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId))
                             {
                                 var check = item.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId && x.IsAddToNextAllotment == true)? "checked" : "";
                                 <div class="checkbox">

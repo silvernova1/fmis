@@ -216,14 +216,7 @@
                 </th>
                 <th>
                     Obligated Amount
-                @*</th>
-                @if (@Model.SubAllotment.FirstOrDefault().AppropriationId == 2)
-                {
-                    <th>
-                        Added to @ViewBag.result Allotment
-                    </th>
-                }*@
-
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -278,12 +271,6 @@
                             <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
-                    @*@if (@Model.SubAllotment.FirstOrDefault().AppropriationId == 2)
-                {
-                    <td>
-                        @Html.CheckBoxFor(m => @item.IsAddToNextAllotment, new { @disabled = "disabled" })
-                    </td>
-                }*@
                 </tr>
             }  
         </tbody>

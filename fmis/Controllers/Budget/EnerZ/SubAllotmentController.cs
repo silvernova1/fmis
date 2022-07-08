@@ -102,13 +102,15 @@ namespace fmis.Controllers
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
             Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
             var suballotmentsLastYr = await _MyDbContext.SubAllotment
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                 .Include(x=>x.RespoCenter)
                 .Include(x=>x.prexc)
                 .Include(x=>x.Appropriation)
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
             Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
+
+            //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
