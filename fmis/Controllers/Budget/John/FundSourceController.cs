@@ -80,6 +80,11 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
+            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
+
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
@@ -93,6 +98,16 @@ namespace fmis.Controllers.Budget.John
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
+            var fundsourcesLastYr = await _MyDbContext.FundSources
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Include(x => x.RespoCenter)
+                .Include(x => x.Prexc)
+                .Include(x => x.Appropriation)
+                .Include(x => x.AllotmentClass)
+                .ToListAsync();
+
+            budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
+
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -103,6 +118,20 @@ namespace fmis.Controllers.Budget.John
             }
 
             return View(budget_allotment);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CheckNextYear(int fundsourceId, bool addToNext)
+        {
+            var fundsources = await _MyDbContext.FundSources.FindAsync(fundsourceId);
+
+            fundsources.IsAddToNextAllotment = addToNext;
+
+            _MyDbContext.Update(fundsources);
+            await _MyDbContext.SaveChangesAsync();
+
+
+            return Ok(await _MyDbContext.SaveChangesAsync());
         }
 
 
