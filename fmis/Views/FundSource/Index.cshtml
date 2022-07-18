@@ -57,22 +57,22 @@
 
 @if (Model.FundSources.Count() > 0)
 {
-    <h3 class="grey lighter smaller">
-        Fund Source
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.Yearly_reference.YearlyReference
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSources.FirstOrDefault().Appropriation.AppropriationSource
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class
-        </small>
+<h3 class="grey lighter smaller">
+    General Appropriations Act (GAA)
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.Yearly_reference.YearlyReference
+    </small>
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.FundSources.FirstOrDefault().Appropriation.AppropriationSource
+    </small>
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class
+    </small>
 
-    </h3>
+</h3>
 }
 <hr />
 <div class="row  pull-left">
@@ -156,7 +156,7 @@
 
     <span class="pull-right">
         <button type="button" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked();">
-            View All
+           View All
         </button>
         <input type="search" placeholder="Enter keyword..." class="form-group" name="search" id="search" value="@ViewBag.Search" style="width: 340px;" />
         <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
@@ -241,7 +241,7 @@
                         </div>
                     </td>
                     <td>
-                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> GAA Realignment</a>
                     </td>
                     <td>
                         <center>

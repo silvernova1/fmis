@@ -112,9 +112,9 @@
                         Allotment Class
                     </th>
                     <th>
-                        For Fund Source
+                        For GAA
                     </th>
-                    <th>For Sub-Allotment CY: @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference) </th>
+                    <th>For SAA CY: @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference) </th>
                 </tr>
                 @foreach (var allotment_class in ViewBag.AllotmentClass)
                 {
@@ -132,7 +132,7 @@
                         </td>
                         <td>
                             <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
-                                <i class="ace-icon fa fa-arrow-right"></i>Fund Source
+                                <i class="ace-icon fa fa-arrow-right"></i>GAA
                             </a>
                             <br />
                             <span class="grey">(BB): </span>
@@ -175,7 +175,7 @@
                         </td>
                         <td>
                             <a class="btn btn-sm btn-default" asp-controller="SubAllotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
-                                <i class="ace-icon fa fa-plus"></i>Sub-Allotment
+                                <i class="ace-icon fa fa-plus"></i>SAA
                             </a>
                             <br />
                             <span class="grey">(BB): </span>
