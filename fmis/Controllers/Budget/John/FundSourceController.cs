@@ -316,7 +316,6 @@ namespace fmis.Controllers.Budget.John
 
         }
 
-
         private void PopulateFundDropDownList()
         {
             var departmentsQuery = from d in _MyDbContext.Fund
@@ -331,12 +330,7 @@ namespace fmis.Controllers.Budget.John
                                        "FundId",
                                        "FundDescription",
                                        null);
-
         }
-
-
-
- 
 
         // POST: FundSource/Delete/5
         [HttpPost]

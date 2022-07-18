@@ -52,13 +52,10 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
 
-
-
             string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
-
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
@@ -67,8 +64,6 @@ namespace fmis.Controllers
             .Where(x=>x.YearlyReferenceId == YearlyRefId)
             .AsNoTracking()
             .ToListAsync();
-
-            
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
@@ -82,7 +77,7 @@ namespace fmis.Controllers
 
             suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
-            budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
             return View(budget_allotment);
         }
 
@@ -112,8 +107,7 @@ namespace fmis.Controllers
                                               }),
                                        "PrexcId",
                                        "prexc",
-                                       null);
-
+                                       null);                    
         }
 
         private void PopulatePsDropDownList()
