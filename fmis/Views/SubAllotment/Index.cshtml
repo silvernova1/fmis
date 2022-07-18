@@ -241,7 +241,7 @@
                         <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
                         <div class="checkbox">
                             <label>
-                                <input name="form-field-checkbox" type="checkbox" @check class="ace">
+                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.SubAllotmentId')">
                                 <span class="lbl">Set Next Year</span>
                             </label>
                         </div>

@@ -75,9 +75,16 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
+            var fundsourcesLastYr = await _context.FundSources
+                .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Include(x => x.AllotmentClass)
+                .ToListAsync();
+
             suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
+            fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
             //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+
             return View(budget_allotment);
         }
 
@@ -325,6 +332,21 @@ namespace fmis.Controllers
 
             return Ok(_context.SaveChangesAsync());
         }
+
+        [HttpPost]
+        public async Task<ActionResult> FundCheckNextYear(int allotmentClassId, int appropriationId, int budgetAllotmentId, bool addToNext)
+        {
+            var fundSources = await _context.FundSources.Where(x => x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationId && x.BudgetAllotmentId == budgetAllotmentId).ToListAsync();
+
+            fundSources.ForEach(x => x.IsAddToNextAllotment = addToNext);
+
+            _context.UpdateRange(fundSources);
+            await _context.SaveChangesAsync();
+
+
+            return Ok(_context.SaveChangesAsync());
+        }
+
         /*[HttpPost]
         public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
         {

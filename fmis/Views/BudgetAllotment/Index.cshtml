@@ -162,6 +162,16 @@
                                 total_obligated_amount += fund_obligated_amount;
                             }
                             <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                            @if(appropriation.AppropriationSource == "CURRENT" && item.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId))
+                            {
+                                var check = item.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId && x.IsAddToNextAllotment == true)? "checked" : "";
+                                <div class="checkbox">
+								    <label>
+									    <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="FundSetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@item.BudgetAllotmentId');">
+									    <span class="lbl">Set Next Year</span>
+								    </label>
+							    </div>
+                            }
                         </td>
                         <td>
                             <a class="btn btn-sm btn-default" asp-controller="SubAllotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
@@ -227,6 +237,21 @@
         console.log(set);
         $.ajax({
             url: '@Url.Action("CheckNextYear","BudgetAllotment")',
+            data:{
+                allotmentClassId: allotmentClassId,
+                appropriationId: appropriationId,
+                budgetAllotmentId: budgetAllotmentId,
+                addToNext: set
+            },
+            async: true,
+            method: 'POST'
+        })
+    }
+
+    function FundSetNextYear(set, allotmentClassId, appropriationId, budgetAllotmentId){
+        console.log(set);
+        $.ajax({
+            url: '@Url.Action("FundCheckNextYear","BudgetAllotment")',
             data:{
                 allotmentClassId: allotmentClassId,
                 appropriationId: appropriationId,

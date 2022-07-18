@@ -218,6 +218,7 @@
         <tbody>
             @foreach (var item in Model.FundSources.OrderByDescending(x=>x.CreatedAt))
             {
+                var check = item.IsAddToNextAllotment ? "checked" : "";
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Prexc.pap_title)
@@ -231,6 +232,13 @@
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
                         <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                <span class="lbl">Set Next Year</span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> GAA Realignment</a>
@@ -275,6 +283,21 @@ else
     function viewAllClicked() {
         $('#search').val('');
         $('#search_form').submit();
+    }
+
+    function AddNextYr(set, fundsourceId){
+        $.ajax({
+            url: '@Url.Action("CheckNextYear","FundSource")',
+            data: {
+                fundsourceId: fundsourceId,
+                addToNext: set
+            },
+            async: true,
+            method: 'POST',
+            success: function(result){
+                console.log(result);
+            }
+        })
     }
 
      function createFundSource(BudgetAllotmentId) {

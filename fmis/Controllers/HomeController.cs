@@ -68,7 +68,7 @@ namespace fmis.Controllers
             }*/
 
             var suballotmentsLastYr = _MyDbCOntext.SubAllotment
-            .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+            .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
             .Include(x => x.AllotmentClass).Sum(x => x.Beginning_balance);
 
             var ObligationAmount = _MyDbCOntext.ObligationAmount;
@@ -121,9 +121,6 @@ namespace fmis.Controllers
             var rled_res = balance == 0 ? 0 : rled / balance * 100;
             ViewBag.RLED = String.Format("{0:0.##}", rled_res);
 
-            
-
-            //return Json(suballotmentsLastYr);
 
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Beginning_balance) + suballotmentsLastYr;
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
