@@ -61,14 +61,16 @@ namespace fmis.Controllers.Budget.Carlo
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.Budget_allotment)
                             .Include(x => x.SubTransferedTo.Where(w => w.status == "activated"))
-                                .ThenInclude(x => x.Suballotment_amount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
+
             var from_uacs = await _MyDbContext.Suballotment_amount
                             .Where(x => x.SubAllotmentId == sub_allotment_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
-            SubAllotment.Uacs = await _MyDbContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
+            //SubAllotment.Uacs = await _MyDbContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId) && p.uacs_type == SubAllotment.AllotmentClassId).AsNoTracking().ToListAsync();
+
+            SubAllotment.Uacs = await _MyDbContext.Uacs.Where(x =>  x.uacs_type == SubAllotment.AllotmentClassId).ToListAsync();
 
             return View("~/Views/SubTransferedTo/Index.cshtml", SubAllotment);
         }

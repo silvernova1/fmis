@@ -18,7 +18,7 @@ namespace fmis.Models.Carlo
         public int? FundSourceId { get; set; }
         [JsonIgnore]
         public FundSource FundSource { get; set; }
-        public FundSourceAmount FundSourceAmount { get; set; }
+     
 
     }
 }

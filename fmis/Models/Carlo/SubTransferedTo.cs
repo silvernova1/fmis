@@ -18,7 +18,6 @@ namespace fmis.Models.Carlo
         public int? SubAllotmentId { get; set; }
         [JsonIgnore]
         public SubAllotment SubAllotment { get; set; }
-        public Suballotment_amount Suballotment_amount { get; set; }
 
     }
 }

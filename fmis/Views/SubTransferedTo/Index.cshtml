@@ -21,7 +21,7 @@
 </style>
 
 <input type="hidden" class="subtransferedto" value="@JsonSerializer.Serialize(Model.SubTransferedTo)">
-<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.uacs_type == @Model.SubAllotmentId))">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.status == "activated"))">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
 
 <h3 class="grey lighter smaller">
@@ -32,7 +32,7 @@
     </small>
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Sub Allotment</a>
+<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to SAA</a>
 <br />
 <br />
 <div id="example" class="hot"></div>
@@ -159,6 +159,7 @@
                 type: 'POST',
                 url: '@Url.Action("DeleteSubTransferedTo", "SubTransferedTo")',
                 headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                data: { data: ajax_data },
             });
 		},
         afterUndo: function (index, column) {

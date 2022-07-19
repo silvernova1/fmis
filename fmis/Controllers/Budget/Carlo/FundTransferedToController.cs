@@ -24,7 +24,7 @@ namespace fmis.Controllers.Budget.Carlo
         public FundTransferedToController(MyDbContext MyDbContext)
         {
             _MyDbContext = MyDbContext;
-        }
+        } 
 
         public class FundTransferedToData
         {
@@ -48,9 +48,7 @@ namespace fmis.Controllers.Budget.Carlo
             public string single_token { get; set; }
             public List<ManyId> many_token { get; set; }
         }
-
-
-        public async Task <IActionResult> Index(int fundsource_id, int AllotmentClassId)
+        public async Task <IActionResult> Index(int fundsource_id)
         {
 
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
@@ -59,16 +57,18 @@ namespace fmis.Controllers.Budget.Carlo
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
                             .Include(x => x.FundTransferedTo.Where(w => w.status == "activated"))
-                                .ThenInclude(x => x.FundSourceAmount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
 
-
             var from_uacs = await _MyDbContext.FundSourceAmount
-                       .Where(x => x.FundSourceId == fundsource_id)
-                       .Select(x => x.UacsId)
-                       .ToArrayAsync();
-            FundSource.Uacs = await _MyDbContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
+                .Where(x => x.FundSourceId == fundsource_id)
+                .Select(x => x.UacsId)
+                .ToArrayAsync();
+
+            //FundSource.Uacs = await _MyDbContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId) && p.uacs_type == FundSource.AllotmentClassId).AsNoTracking().ToListAsync();
+
+            FundSource.Uacs = await _MyDbContext.Uacs.Where(x => x.uacs_type == FundSource.AllotmentClassId).ToListAsync();
+
 
 
             return View("~/Views/FundTransferedTo/Index.cshtml", FundSource);
