@@ -20,71 +20,20 @@
     }
 </style>
 
-<input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts.Where(x=>x.SubAllotmentId == @Model.SubAllotmentId))">
-<input type="hidden" class="subtransferedto" value="@JsonSerializer.Serialize(Model.SubTransferedTo.Where(x=>x.SubAllotmentId == @Model.SubAllotmentId))">
-<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.uacs_type == @Model.SubAllotmentId))">
+<input type="hidden" class="subtransferedto" value="@JsonSerializer.Serialize(Model.SubTransferedTo)">
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.status == "activated"))">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
 
 <h3 class="grey lighter smaller">
-    (SAA) Transfered To
+    Sub Transfered To
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
         @Model.Suballotment_title
     </small>
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to Sub Allotment</a>
+<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to SAA</a>
 <br />
-<br />
-<div class="row  pull-left">
-    <div class="space-5"></div>
-
-    <div class="col-xs-12 infobox-container">
-        <div class="infobox infobox-green">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.Beginning_balance.ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-orange2">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" id="total_realignment_amount" style="font-size:11pt; color:grey;">
-                    @Model.realignment_amount.ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                    @Model.Remaining_balance.ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-<br>
-<br>
-<br>
 <br />
 <div id="example" class="hot"></div>
 <br />
@@ -106,7 +55,7 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    function ajaxServerRealignment(ajax_data, url) {
+    function ajaxServerSubTransferedTo(ajax_data, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -118,23 +67,8 @@
         });
     }
 
-    //FUNDS REALIGNMENT FROM
-    var uacs = $.parseJSON($(".uacs_from").val());
-    var uacs_data_dropdown = [];
-    var uacs_data_array = [];
-    var get_account_title = [];
-    var uacs_counter = 0;
-    $.each(uacs, function () {
-        uacs_data_dropdown[uacs_counter] = this.Uacs.Account_title;
-        var json_data = new Object();
-        json_data.SubAllotmentAmountId = this.SubAllotmentAmountId;
-        json_data.suballotment_amount_token = this.suballotment_amount_token;
-        uacs_data_array[this.Uacs.Account_title] = json_data;
-        get_account_title[this.SubAllotmentAmountId] = this.Uacs.Account_title;
-        uacs_counter++;
-    });
 
-    //FUNDS REALIGNEMNT TO
+    //UACS
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown_2 = [];
     var uacs_data_array_2 = [];
@@ -155,10 +89,9 @@
     var counter = 0;
     $.each(subtransferedto, function () {
         data[counter] = [
-            get_account_title[this.SubAllotmentAmountId],
-            this.SubAllotmentAmount.remaining_balance,
-            get_account_title_2[this.Realignment_to],
-            this.Realignment_amount,
+            get_account_title_2[this.SubAllotmentAmountId],
+            this.Particulars,
+            this.Amount,
             this.SubAllotmentId,
             this.token]
         counter++;
@@ -171,40 +104,26 @@
     const container = document.getElementById('example');
     const hot = new Handsontable(container, {
         data: data,
-        colWidths: [300, 150, 300, 150, 300],
+        colWidths: [400, 400, 200],
         rowHeaders: true,
-        colHeaders: ['REALIGNMENT FROM','REMAINING BALANCE','TRANSFERED TO', 'AMOUNT', 'DESCRIPTION' ,'ID', 'TOKEN'],
+        colHeaders: ['UACS', 'PARTICULARS', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
-            {
-                //REALIGNMENT FROM
-                type: 'dropdown',
-                source: uacs_data_dropdown
-            },
-            {
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0,0.00',
-                    culture: 'en-Ph'
-                },
-                readOnly: true
-            },
             {
                 //REALIGNMENT TO
                 type: 'dropdown',
                 source: uacs_data_dropdown_2
             },
             {
+                type: 'text'
+            },
+            {
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
                     culture: 'en-Ph'
                 },
             },
-            {
-                //REALIGNMENT TO
-                type: 'text',
-               
-            },
+
             {
                 //HIDDEN ID
             },
@@ -220,13 +139,13 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
 			var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][5];
+            var single_token = holder_data[selection[0][0]][4];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-                    many_token: holder_data[j][5]
+                    many_token: holder_data[j][4]
 				});
 			}
 
@@ -238,12 +157,9 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("DeleteSubAllotmentRealignment", "SubAllotment_Realignment")',
+                url: '@Url.Action("DeleteSubTransferedTo", "SubTransferedTo")',
                 headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
                 data: { data: ajax_data },
-                success: function (result) {
-                    displayTotalCalculation(result);
-                }
             });
 		},
         afterUndo: function (index, column) {
@@ -253,94 +169,13 @@
             CHECK_FIRST_ROW = true;
             console.log(row);
             console.log(column);
-            hot.setDataAtCell(row, 6, guid());
+            hot.setDataAtCell(row, 4, guid());
         },
         afterChange: function (changes, source) {
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 CHECK_AFTER_ROW = false;
                 return;
             }
-            changes.forEach(([row, col, oldValue, newValue]) => {
-                if (col == 0) { //when choosing a dropdown in fundrealignment from
-                    console.log("check the col 0");
-                    var suballotment_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].suballotment_amount_token;
-                    $.get('@Url.Action("subAllotmentAmountRemainingBalance", "SubAllotment_Realignment")' + "?suballotment_amount_token=" + suballotment_amount_token, function (suballotment_amount_remaining_balance) {
-                        hot.setDataAtCell(row, 1, suballotment_amount_remaining_balance);
-                        TRAP_THE_LOAD = true; //prevent to load 2 times
-                    });
-                }
-                else if (col == 2) {
-                    console.log("check the col 2");
-                    TRAP_THE_LOAD = false; //allow to save the col 2 in else
-                }
-                else if (col == 3) { //when inputting the realigmnent amount
-                    CHECK_FIRST_ROW = true;
-                    if (TRAP_THE_LOAD1) {
-                        TRAP_THE_LOAD1 = false;
-                        console.log("trap_the_load1");
-                        return;
-                    }
-                    else if (!hot.getDataAtCell(row, 0)) //trap if the uacs_from already selected
-                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT FROM'!");
-                    else if (!hot.getDataAtCell(row, 2)) { //trap if the uacs_to already selected
-                        trapTheLoad(row, col, oldValue, "Please Select the 'REALIGNMENT TO'!");
-                    }
-                    else {
-                        var suballotment_amount_token = uacs_data_array[hot.getDataAtCell(row, 0)].suballotment_amount_token;
-                        $.get('@Url.Action("realignmentRemaining", "SubAllotment_Realignment")' + "?sub_allotment_id=" + sub_allotment_id + "&suballotment_amount_token=" + suballotment_amount_token, function (result) {
-                            displayTotalCalculation(result);
-                            var post_remaining_balance = result.remaining_balance;
-                            var post_realignment_amount = result.realignment_amount;
-                            var post_suballotment_amount_remaining = result.subAllotmentAmounts[0].remaining_balance;
-                            var post_suballotment_amount_realignment = result.subAllotmentAmounts[0].realignment_amount;
-
-                            if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
-                                post_remaining_balance = post_remaining_balance + oldValue; //2000
-                                post_realignment_amount = post_realignment_amount - oldValue;
-                                post_suballotment_amount_remaining = post_suballotment_amount_remaining + oldValue;
-                                post_suballotment_amount_realignment = post_suballotment_amount_realignment - oldValue;
-                            }
-                            AMOUNT = newValue;
-
-                            if (AMOUNT > post_suballotment_amount_remaining) {
-                                trapTheCell(row, col, oldValue); //reset the realignment amount from the OLDVALUE,then dapat kani ang una mo display para makuha ang exact amount
-                                trapTheLoad(row, 1, result.subAllotmentAmounts[0].remaining_balance, "Insufficient SubAllotmentAmount Remaining Balance");
-                            }
-                            else if (AMOUNT > post_remaining_balance)
-                                trapTheLoad(row, col, oldValue, "Insufficient SubAllotment Remaining Balance!");
-                            else {
-                                //do the calculation
-                                console.log("do the calculation!");
-                                post_remaining_balance = post_remaining_balance - AMOUNT;
-                                post_realignment_amount = post_realignment_amount + AMOUNT;
-                                post_suballotment_amount_remaining = post_suballotment_amount_remaining - AMOUNT;
-                                post_suballotment_amount_realignment = post_suballotment_amount_realignment + AMOUNT;
-
-
-                                var calculated_amount_data = {
-                                    "sub_allotment_id": parseInt(sub_allotment_id),
-                                    "remaining_balance": post_remaining_balance,
-                                    "realignment_amount": post_realignment_amount,
-                                    "suballotment_amount_remaining_balance": post_suballotment_amount_remaining,
-                                    "suballotment_amount_realignment": post_suballotment_amount_realignment,
-                                    "realignment_token": hot.getDataAtCell(row, 5),
-                                    "amount": AMOUNT,
-                                    "suballotment_amount_token": suballotment_amount_token
-                                };
-                                //console.log(calculated_amount_data);
-                                var url = '@Url.Action("realignmentAmountSave", "SubAllotment_Realignment")'
-                                $.post(url, calculated_amount_data, function (calculation) {
-                                    hot.setDataAtCell(row, 1, post_suballotment_amount_remaining);
-                                    TRAP_THE_LOAD = true; //prevent to load 2 times
-                                    console.log(calculation);
-                                    displayTotalCalculation(calculation);
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-
             if (CHECK_FIRST_ROW) {
                 CHECK_FIRST_ROW = false; //TRAP THE DOUBLE LOAD IN FIRST ROW
                 console.log("check first row!");
@@ -354,20 +189,20 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     ajax_data.push({
-                        Realignment_from: this[0] ? uacs_data_array[this[0]].SubAllotmentAmountId : "",
-                        Realignment_to: this[2] ? uacs_data_array_2[this[2]].UacsId : "",
-                        Realignment_amount: this[3],
+                        Realignment_to: this[0] ? uacs_data_array_2[this[0]].UacsId : "",
+                        Particulars: this[1],
+                        Amount: this[2],
                         SubAllotmentId: sub_allotment_id,
-                        token: this[5]
+                        token: this[4]
                     });
                 });
                 console.log(ajax_data);
-                ajaxServerRealignment(ajax_data, '@Url.Action("SaveSubAllotmentRealignment", "SubAllotment_Realignment")');
+                ajaxServerSubTransferedTo(ajax_data, '@Url.Action("SaveSubTransferedTo", "SubTransferedTo")');
             }
 		},
         height: 'auto',
         hiddenColumns: {
-            columns: [5,6],
+            columns: [3,4],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
@@ -391,9 +226,6 @@
         return;
     }
 
-    function displayTotalCalculation(calculation) {
-        $("#total_remaining_balance").html(parseFloat(calculation.remaining_balance).toFixed(2));
-        $("#total_realignment_amount").html(parseFloat(calculation.realignment_amount).toFixed(2));
-    }
+
 </script>
 
