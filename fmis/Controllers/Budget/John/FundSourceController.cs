@@ -268,9 +268,11 @@ namespace fmis.Controllers.Budget.John
             fundsource_data.RespoId = fundSource.RespoId;
             fundsource_data.Beginning_balance = beginning_balance;
             fundsource_data.Remaining_balance = remaining_balance;
+            fundsource_data.Original = fundSource.Original;
+            fundsource_data.Breakdown = fundSource.Breakdown;
 
-            _FundSourceContext.Update(fundsource_data);
-            await _FundSourceContext.SaveChangesAsync();
+            _MyDbContext.Update(fundsource_data);
+            await _MyDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index", "FundSource", new
             {
