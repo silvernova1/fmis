@@ -167,7 +167,7 @@
                                 var check = item.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId && x.IsAddToNextAllotment == true)? "checked" : "";
                                 <div class="checkbox">
 								    <label>
-									    <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="FundSetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@item.BudgetAllotmentId');">
+									    <input name="form-field-checkbox" type="checkbox"  class="ace" @check onclick="FundSetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@item.BudgetAllotmentId');">
 									    <span class="lbl">Set Next Year</span>
 								    </label>
 							    </div>
@@ -231,7 +231,7 @@
     $("#total_obligated_amount").html("@total_obligated_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_realignment_amount").html("@total_realignment_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
-    @* $("#total_utilized_amount").html("@total_utilized_amount.ToString("C", new CultureInfo("en-PH"))");*@
+  
 
     function SetNextYear(set, allotmentClassId, appropriationId, budgetAllotmentId){
         console.log(set);

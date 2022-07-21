@@ -276,9 +276,8 @@ namespace fmis.Controllers
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
-                else
+                else 
                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
-
                 retObligation.Add(obligation);
             }
             return Json(retObligation.FirstOrDefault());

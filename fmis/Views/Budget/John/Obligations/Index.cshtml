@@ -1038,13 +1038,16 @@
 
                     ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
                         .then(data => {
-                            console.log(data.fundSource.allotmentClassId);
+                            console.log(data);
                             console.log(hot.getDataAtCell(row, 51));
+                            if (!hot.getDataAtCell(row, 11))
+                                hot.setDataAtCell(row, 11, data.id);
                             if (data.source_type == 'fund_source')
                                 hot.setDataAtCell(row, 51, data.fundSource.allotmentClassId)
-                            else
+                            else if (data.source_type == 'sub_allotment')
                                 hot.setDataAtCell(row, 51, data.subAllotment.allotmentClassId)
-                        }); //HERE
+                        });
+                    //HERE
                     @*$.ajax({
                         url: '@Url.Action("GetObligation","Obligations")',
                         data: {
@@ -1057,8 +1060,6 @@
                             }
                         },
                     });*@
-
-
                     return;
                 }
 				else if (col >= 14 && col <= 50)
@@ -1078,10 +1079,11 @@
                             Expense_code: hot.getDataAtCell(row, col),
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
-                        console.log("number"); //expense code
+                        console.log(ajax_data); //expense code
+
                         ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
                             .then(data => {
-                                //console.log(data);
+                                console.log(data);
                             })
                             .catch(data => {
                                 alert(data.responseJSON.error_message);

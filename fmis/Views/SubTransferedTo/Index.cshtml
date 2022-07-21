@@ -67,7 +67,6 @@
         });
     }
 
-
     //UACS
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown_2 = [];
@@ -123,7 +122,6 @@
                     culture: 'en-Ph'
                 },
             },
-
             {
                 //HIDDEN ID
             },
@@ -214,7 +212,6 @@
         TRAP_THE_LOAD = true; //trap so that can't save in DB
         hot.setDataAtCell(row, col, oldValue);
     }
-
     function trapTheLoad(row, col, oldValue, trap_message) {
         Lobibox.alert("error", {
             msg: trap_message,
@@ -225,7 +222,5 @@
         trapTheCell(row, col, oldValue)
         return;
     }
-
-
 </script>
 
