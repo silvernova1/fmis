@@ -20,6 +20,8 @@ namespace fmis.Models
         public string Description { get; set; }
         public string Suballotment_code { get; set; }
         public bool IsAddToNextAllotment { get; set; }
+        public bool Original { get; set; }
+        public bool Breakdown { get; set; }
         public string PapType { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]

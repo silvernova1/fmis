@@ -67,6 +67,8 @@
                     <label>PAP Type: </label>
                     <input asp-for="PapType" id="pap_type" class="form-control" readonly />
                 </div>
+                @Html.CheckBox("Original", false)
+                <span class="lbl">Add to Original</span>
 
             </div>
             <div class="col-md-6">
@@ -84,6 +86,8 @@
                     <input asp-for="FundSourceTitleCode" id="pap_code1" class="form-control" readonly />
                     <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
                 </div>
+                @Html.CheckBox("Breakdown", false)
+                <span class="lbl">Add to Breakdown</span>
             </div>
         </div>
             <input type="hidden" id="FundSourceId" />
