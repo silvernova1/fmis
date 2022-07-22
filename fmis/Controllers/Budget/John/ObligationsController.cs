@@ -152,7 +152,7 @@ namespace fmis.Controllers
 
             var obligation = await _context
                                     .Obligation
-                                    .Where(x => x.status == "activated")
+                                    .Where(x => x.status == "activated").OrderBy(x => x.Ors_no)
                                     .Include(x => x.ObligationAmounts)
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
@@ -259,6 +259,7 @@ namespace fmis.Controllers
                 obligation.Particulars = item.Particulars;
                 obligation.Created_by = item.Created_by;
                 obligation.Gross = item.Gross;
+                obligation.Ors_no = item.Ors_no/*.Replace("#","")*/;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
@@ -266,13 +267,13 @@ namespace fmis.Controllers
                 //obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
                 //_context.Update(obligation);
                 //await _context.SaveChangesAsync();
-                if (string.IsNullOrEmpty(obligation.Ors_no)) //IF NOT EDIT
+                /*if (string.IsNullOrEmpty(obligation.Ors_no)) //IF NOT EDIT
                 {
                     var lastActOrs = await _context.Obligation.Where(x=>x.status == "activated" && x.Id != obligation.Id).OrderBy(x=>x.Id).LastOrDefaultAsync();
                     obligation.Ors_no = lastActOrs is null ? "0001" : SetORSNo(lastActOrs.Ors_no);
                 }
                 _context.Update(obligation);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();*/
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);

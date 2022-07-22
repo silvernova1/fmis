@@ -46,6 +46,8 @@
 <input type="hidden" class="obligation" value="@JsonConvert.SerializeObject(Model)">
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
+<input type="hidden" id="ors_handler" value="" />
+<input type="hidden" id="last_ors_handler" value="" />
 <h3 class="grey lighter smaller">
     (ORS) Obligation Request and Status
 </h3>
@@ -151,7 +153,9 @@
                 .substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	}
+    }
+
+
 
 
 	//SET AUTO DATE
@@ -241,12 +245,15 @@
     var obligation = $.parseJSON($(".obligation").val());
 	const data = [];
     var counter = 0;
+    var last_ors_handler;
     $.each(obligation, function () {
         var obligated_amount = 0;
 
         $.each(this.ObligationAmounts, function () {
             obligated_amount += this.Amount;
         });
+
+        last_ors_handler = this.Ors_no;
 
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
@@ -257,7 +264,7 @@
 			this.Payee, //5
 			this.Address, //6
             this.Particulars, //7
-            "# "+this.Ors_no, //8
+            @*"# "+*@this.Ors_no, //8
             this.Created_by, //9
             obligated_amount, //10
             this.Id, //11
@@ -916,8 +923,6 @@
 
                     }
                 },
-
-
             }
 
 		},
@@ -1035,7 +1040,6 @@
 							obligation_token: hot.getDataAtCell(row, 12)
 						}
 					);
-
                     ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
                         .then(data => {
                             console.log(data);
@@ -1181,7 +1185,6 @@
                 else {
                     CHECK_FIRST_ROW = true;
                 }
-
             });
             if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
@@ -1198,6 +1201,9 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     if (this[0]) {
+                        console.log("saba ka diha oy!");
+                        let Ors_no = this[8] ? this[8] : ""
+                        $("#ors_handler").val(Ors_no);
                         ajax_data.push(
                             {
                                 source_id: this[0] ? fund_sub_data_array[this[0]].source_id : 0,
@@ -1209,7 +1215,7 @@
                                 Payee: this[5] ? this[5] : "",
                                 Address: this[6] ? this[6] : "",
                                 Particulars: this[7] ? this[7] : "",
-                                Ors_no: this[8] ? this[8] : "",
+                                Ors_no: Ors_no,
                                 Created_by: this[9] ? this[9] : "",
                                 Gross: this[10] ? this[10] : "",
                                 obligation_token: this[12]
