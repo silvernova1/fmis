@@ -122,7 +122,7 @@ namespace fmis.Controllers
             ViewBag.RLED = String.Format("{0:0.##}", rled_res);
 
 
-            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Beginning_balance) + suballotmentsLastYr;
+            var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Beginning_balance) +  _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Beginning_balance) + _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
             ViewBag.Allotment = allotment.ToString("C", new CultureInfo("en-PH"));
 
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance);

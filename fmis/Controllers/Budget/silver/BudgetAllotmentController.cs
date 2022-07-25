@@ -71,19 +71,20 @@ namespace fmis.Controllers
             var allotmentClass_Id = _context.AllotmentClass.FirstOrDefault(x => x.Id == 3).Id;
 
             var suballotmentsLastYr = await _context.SubAllotment
-                .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
             var fundsourcesLastYr = await _context.FundSources
-                .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.AllotmentClass)
                 .ToListAsync();
 
             suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
             fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
-            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+            budget_allotment.FirstOrDefault().FundSources = budget_allotment.FirstOrDefault().FundSources.Concat(fundsourcesLastYr).ToList();
+            budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
 
             return View(budget_allotment);
         }
