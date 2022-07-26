@@ -56,6 +56,7 @@ namespace fmis.Controllers
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
+            ViewBag.Result = result;
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)

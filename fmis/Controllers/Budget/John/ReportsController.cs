@@ -656,6 +656,8 @@ namespace fmis.Controllers.Budget.John
                     .Include(budget_allotment => budget_allotment.FundSources)
                         .ThenInclude(a => a.Appropriation)
                     .Include(budget_allotment => budget_allotment.FundSources)
+                        .ThenInclude(x=>x.FundTransferedTo)
+                    .Include(budget_allotment => budget_allotment.FundSources)
                         .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
                             .ThenInclude(uacs => uacs.Uacs)
                     .Include(sub_allotment => sub_allotment.SubAllotment)
@@ -1024,15 +1026,17 @@ namespace fmis.Controllers.Budget.John
 
                             //TRANSFERED TO DATA
                             var transferTo = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundTransferedTo.Select(b => b.FundSourceAmountId).Contains(c.UacsId)).FirstOrDefault().UacsId;
-                            foreach (var transferedTo in _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId && x.Id == transferTo).ToList())
+                            foreach (var transferedTo in _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId/* && x.Id == transferTo*/).ToList())
                             {
                                 currentRow++;
                                 ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                                 ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Account_title.ToUpper().ToString();
 
                                 ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                 ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Expense_code;
 
                                 ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
@@ -1043,18 +1047,20 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 19).Value = "("+transferedTo.Amount+")";
+                                ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                ws.Cell(currentRow, 19).Value = "("+transferedTo.Amount.ToString("N", new CultureInfo("en-US")) +")";
 
                                 currentRow++;
                                 ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 4).Style.Alignment.Indent = 3;
+                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                //ws.Cell(currentRow, 4).Style.Alignment.Indent = 3;
                                 ws.Cell(currentRow, 4).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 4).Value = transferedTo.Particulars;
 
                                 ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                                 ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Expense_code;
 
                                 ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
@@ -1065,8 +1071,8 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 18).Value = "("+transferedTo.Amount+")";
+                                ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                ws.Cell(currentRow, 18).Value = "("+transferedTo.Amount.ToString("N", new CultureInfo("en-US"))+")";
 
 
                             }
@@ -1155,17 +1161,14 @@ namespace fmis.Controllers.Budget.John
                                                     status = o.status
                                                 }).ToList();
 
-                        var funds_filterTotal = (from f in _MyDbContext.FundSources
-                                                 join fa in _MyDbContext.FundSourceAmount
-                                                 on f.FundSourceId equals fa.FundSourceId
-                                                 join ft in _MyDbContext.FundTransferedTo
-                                                 on fa.FundSourceId equals ft.FundSourceId
-                                                 select new
-                                                 {
-                                                     FundSource_Id = f.FundSourceId,
-                                                     Uacs_UacsId = fa.UacsId,
-                                                     Uacs_FundSourceId = fa.FundSourceId,
-                                                 }).ToList();
+                        var subtotalTransferedTo = (from ft in _MyDbContext.FundTransferedTo
+                                                    join fa in _MyDbContext.FundSourceAmount
+                                                    on ft.FundSourceId equals fa.FundSourceId where ft.FundSourceAmountId == fa.UacsId
+                                                     select new
+                                                     {
+                                                        UacsId = fa.UacsId,
+                                                        FundSourceId = fa.FundSourceId,
+                                                     }).ToList();
 
                         var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                          join o in _MyDbContext.Obligation
@@ -1217,31 +1220,34 @@ namespace fmis.Controllers.Budget.John
                         }
 
 
-                        ws.Cell(currentRow, 18).Style.Font.SetBold();
-                        ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
-                        ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(currentRow, 18).Value = _MyDbContext.FundTransferedTo.Where(x=>x.FundSourceAmountId == fundSource.FundSourceAmounts.FirstOrDefault().UacsId && x.FundSourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.Amount);
-                        ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-                        if (string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
-                        {
-                            ws.Cell(currentRow, 19).Style.Font.SetBold();
-                            ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 19).Value = fundSource.Beginning_balance - _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundSource.FundSourceAmounts.FirstOrDefault().UacsId && x.FundSourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.Amount);
-                        }
-                        else
-                        {
-                            ws.Cell(currentRow, 19).Style.Font.SetBold();
-                            ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 19).Value = sub6 - _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundSource.FundSourceAmounts.FirstOrDefault().UacsId && x.FundSourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.Amount);
-                        }
+                            ws.Cell(currentRow, 18).Style.Font.SetBold();
+                            ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 18).Value = budget_allotments.FirstOrDefault().FundSources.FirstOrDefault().FundTransferedTo.Sum(x=>x.Amount);
+                            ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                            if (string.IsNullOrEmpty(fundSource.FundsRealignment?.Sum(x => x.Realignment_amount).ToString()))
+                            {
+                                ws.Cell(currentRow, 19).Style.Font.SetBold();
+                                ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                ws.Cell(currentRow, 19).Value = 0.00;
+                            }
+                            else
+                            {
+                                ws.Cell(currentRow, 19).Style.Font.SetBold();
+                                ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                ws.Cell(currentRow, 19).Value = sub6 - _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundSource.FundSourceAmounts.FirstOrDefault().UacsId && x.FundSourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.Amount);
+                            }
+
+                        
 
 
                         ws.Cell(currentRow, 20).Style.Font.SetBold();
@@ -1405,7 +1411,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 18).Style.Font.SetBold();
                         ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(currentRow, 18).Value = _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId ==  transferto_filter.Uacs_UacsId && x.FundSourceId == transferto_filter.Uacs_FundSourceId).Sum(x => x.Amount);
+                        ws.Cell(currentRow, 18).Value = _MyDbContext.FundTransferedTo.Sum(x => x.Amount);
                         ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -1415,7 +1421,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 19).Value = PsTotal - _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId ==  transferto_filter.Uacs_UacsId && x.FundSourceId == transferto_filter.Uacs_FundSourceId).Sum(x => x.Amount);
+                        ws.Cell(currentRow, 19).Value = PsTotal - _MyDbContext.FundTransferedTo.Sum(x => x.Amount);
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 20).Style.Font.SetBold();
