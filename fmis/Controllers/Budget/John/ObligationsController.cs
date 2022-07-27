@@ -226,7 +226,6 @@ namespace fmis.Controllers
             var dataListTable = dataListFromTable;
             return Json("Response, Data Received Successfully");
         }
-
         [HttpPost]
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
@@ -243,9 +242,9 @@ namespace fmis.Controllers
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
 
-                if(item.source_type.Equals("fund_source"))
+                if (item.source_type.Equals("fund_source"))
                     obligation.FundSourceId = item.source_id;
-                else if(item.source_type.Equals("sub_allotment"))
+                else if (item.source_type.Equals("sub_allotment"))
                     obligation.SubAllotmentId = item.source_id;
 
                 obligation.source_type = item.source_type;
@@ -263,26 +262,64 @@ namespace fmis.Controllers
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
-                //obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
-                //_context.Update(obligation);
-                //await _context.SaveChangesAsync();
-                /*if (string.IsNullOrEmpty(obligation.Ors_no)) //IF NOT EDIT
-                {
-                    var lastActOrs = await _context.Obligation.Where(x=>x.status == "activated" && x.Id != obligation.Id).OrderBy(x=>x.Id).LastOrDefaultAsync();
-                    obligation.Ors_no = lastActOrs is null ? "0001" : SetORSNo(lastActOrs.Ors_no);
-                }
-                _context.Update(obligation);
-                await _context.SaveChangesAsync();*/
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
-                else 
+                else
                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
             }
             return Json(retObligation.FirstOrDefault());
 
         }
+
+
+        /* [HttpPost]
+         public async Task<IActionResult> SaveObligation(SaveObligationModel obligations)
+         {
+             Console.WriteLine("Water " + JsonSerializer.Serialize(obligations));
+             var data_holder = _context.Obligation.Where(x=>x.status == "activated");
+             var retObligation = new List<Obligation>();
+             foreach (var item in obligations.Data)
+             {
+
+                 var obligation = new Obligation(); //CLEAR OBJECT
+
+                 if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
+                 {
+                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+                 }
+
+                 if(item.source_type.Equals("fund_source"))
+                     obligation.FundSourceId = item.source_id;
+                 else if(item.source_type.Equals("sub_allotment"))
+                     obligation.SubAllotmentId = item.source_id;
+
+                 obligation.source_type = item.source_type;
+                 obligation.Date = ToDateTime(item.Date);
+                 obligation.Dv = item.Dv;
+                 obligation.Pr_no = item.Pr_no;
+                 obligation.Po_no = item.Po_no;
+                 obligation.Payee = item.Payee;
+                 obligation.Address = item.Address;
+                 obligation.Particulars = item.Particulars;
+                 obligation.Created_by = item.Created_by;
+                 obligation.Gross = item.Gross;
+                 obligation.Ors_no = item.Ors_no*//*.Replace("#","")*//*.ToUpper();
+                 obligation.status = "activated";
+                 obligation.obligation_token = item.obligation_token;
+                 _context.Update(obligation);
+                 await _context.SaveChangesAsync();
+
+                 if (item.source_type == "fund_source")
+                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+                 else 
+                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+                 retObligation.Add(obligation);
+             }
+             return Json(retObligation.FirstOrDefault());
+
+         }*/
 
         public string SetORSNo(string lastORSNo)
         {
