@@ -58,6 +58,9 @@ namespace fmis.Controllers
             var result = res.Year.ToString();
             ViewBag.Result = result;
 
+            var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance);
+            ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
+
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
