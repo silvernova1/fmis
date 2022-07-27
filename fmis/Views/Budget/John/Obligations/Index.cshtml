@@ -40,7 +40,6 @@
         width: 16px;
         text-align: center;
     }
-
 </style>
 
 <input type="hidden" class="obligation" value="@JsonConvert.SerializeObject(Model)">
@@ -52,62 +51,45 @@
     (ORS) Obligation Request and Status
 </h3>
 <hr>
-<!--
+
 <div class="col-xs-12 ">
-    <div class="infobox infobox-green" style="margin-left: -10px">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-calculator"></i>
-        </div>
-        <div class="infobox-data">
-            <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color: grey;">
-                @{
-                    decimal? overall_beginning_balance = (Model.Sum(x => x.FundSource?.Beginning_balance) + Model.Sum(x => x.SubAllotment?.Beginning_balance));
-                }
-                @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
-            </span>
-
-            <div class="infobox-content">
-                <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+    @*  <div class="infobox infobox-green" style="margin-left: -10px">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
             </div>
-        </div>
-    </div>
-    <div class="infobox infobox-red" style="margin-left: -10px">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-calculator"></i>
-        </div>
-        <div class="infobox-data">
-            <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                @{
-                    decimal? overall_remaining_balance = (Model.Sum(x => x.FundSource?.Remaining_balance) + Model.Sum(x => x.SubAllotment?.Remaining_balance));
-                }
-                @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
-            </span>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color: grey;">
+                    @{
+                        decimal? overall_beginning_balance = (Model.Sum(x => x.FundSource?.Beginning_balance) + Model.Sum(x => x.SubAllotment?.Beginning_balance));
+                    }
+                    @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
+                </span>
 
-            <div class="infobox-content">
-                <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                <div class="infobox-content">
+                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="infobox infobox-orange2">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-bar-chart-o"></i>
-        </div>
-        <div class="infobox-data">
-
-            <span class="infobox-data-number" id="total_obligated_balance" style="font-size:11pt; color:grey;">
-                @{
-                    decimal? overall_obligated_balance = (Model.Sum(x => x.FundSource?.obligated_amount) + Model.Sum(x => x.SubAllotment?.obligated_amount));
-                }
-                @overall_obligated_balance?.ToString("C", new CultureInfo("en-PH"))
-            </span>
-
-            <div class="infobox-content">
-                <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+        </div>*@
+    @*    <div class="infobox infobox-red" style="margin-left: -10px">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
             </div>
-        </div>
-    </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+                    @{
+                        decimal? overall_remaining_balance = (Model.Sum(x => x.FundSource?.Remaining_balance) + Model.Sum(x => x.SubAllotment?.Remaining_balance));
+                    }
+                    @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
+                </span>
+
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                </div>
+            </div>
+        </div>*@
+
 </div>
--->
+<!---->
 
 <div class="controls">
     <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
@@ -116,6 +98,24 @@
 <div id="example" class="hot obligation_div"></div>
 <br />
 
+<div class="infobox infobox-orange2">
+    <div class="infobox-icon">
+        <i class="ace-icon fa fa-bar-chart-o"></i>
+    </div>
+    <div class="infobox-data">
+
+        <span class="infobox-data-number" id="total_obligated_balance" style="font-size:11pt; color:grey;">
+            @{
+                decimal? overall_obligated_balance = (Model.Sum(x => x.FundSource?.obligated_amount) + Model.Sum(x => x.SubAllotment?.obligated_amount));
+            }
+            @overall_obligated_balance?.ToString("C", new CultureInfo("en-PH"))
+        </span>
+
+        <div class="infobox-content">
+            <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
@@ -209,11 +209,14 @@
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
     function ajaxServer(ajax_data, url) {
+        var data = {
+            data: ajax_data
+        }
         return Promise.resolve($.ajax({
             type: 'POST',
             url: url,
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { data: ajax_data },
+            data: { obligations: data},
         }));
     }
 
@@ -403,7 +406,7 @@
 			{
 				//ORS NUMBER
 				type: 'text',
-      
+
 			},
 			{
                 //CREATED BY
@@ -1201,7 +1204,7 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     if (this[0]) {
-                        console.log("saba ka diha oy!");
+                       
                         let Ors_no = this[8] ? this[8] : ""
                         $("#ors_handler").val(Ors_no);
                         ajax_data.push(
