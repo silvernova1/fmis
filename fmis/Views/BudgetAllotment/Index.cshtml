@@ -75,7 +75,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FirstOrDefault().SubAllotment.Where(x=>x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))  
+                    @ViewBag.PreviousAllot
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right">@ViewBag.Result Remaining Balance</span>
