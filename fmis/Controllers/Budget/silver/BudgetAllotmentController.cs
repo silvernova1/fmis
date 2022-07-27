@@ -58,8 +58,7 @@ namespace fmis.Controllers
             var result = res.Year.ToString();
             ViewBag.Result = result;
 
-            var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
-            ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
+            
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
@@ -79,16 +78,31 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
-            var fundsourcesLastYr = await _context.FundSources
+            /*var fundsourcesLastYr = await _context.FundSources
                 .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.AllotmentClass)
-                .ToListAsync();
+                .ToListAsync();*/
 
             suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
-            fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
+            //fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
-            budget_allotment.FirstOrDefault().FundSources = budget_allotment.FirstOrDefault().FundSources.Concat(fundsourcesLastYr).ToList();
+            //budget_allotment.FirstOrDefault().FundSources = budget_allotment.FirstOrDefault().FundSources.Concat(fundsourcesLastYr).ToList();
             budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+
+            var CurrentYrAllotment_beginningBalance = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.Beginning_balance) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.Beginning_balance);
+            ViewBag.CurrentYrAllotment_beginningBalance = CurrentYrAllotment_beginningBalance.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_remainingBalance = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.Remaining_balance) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.Remaining_balance);
+            ViewBag.CurrentYrAllotment_remainingBalance = CurrentYrAllotment_remainingBalance.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_realignmentAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount);
+            ViewBag.CurrentYrAllotment_realignmentAmount = CurrentYrAllotment_realignmentAmount.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_obligatedAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount);
+            ViewBag.CurrentYrAllotment_obligatedAmount = CurrentYrAllotment_obligatedAmount.ToString("C", new CultureInfo("en-PH"));
+
+            var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
+            ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
 
             return View(budget_allotment);
         }

@@ -27,7 +27,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" @*id="total_beginning_balance"*@ style="font-size:11pt; color:grey;">
-                    @Model.FirstOrDefault().SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))  
+                    @*@Model.FirstOrDefault().SubAllotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))  *@
+                    @ViewBag.CurrentYrAllotment_beginningbalance
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -40,7 +41,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" @*id="total_remaining_balance"*@ style="font-size:11pt; color: grey;">
-                    @Model.FirstOrDefault().SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH")) 
+                    @*@Model.FirstOrDefault().SubAllotment.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_remainingBalance
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -52,7 +54,9 @@
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_realignment_amount" style="font-size:11pt; color:grey;"></span>
+                <span class="infobox-data-number" @*id="total_realignment_amount"*@ style="font-size:11pt; color:grey;">
+                    @ViewBag.CurrentYrAllotment_realignmentAmount
+                </span>
                 <div class="infobox-content">
                     <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
                 </div>
@@ -63,22 +67,24 @@
                 <i class="ace-icon fa fa-bar-chart-o"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;"></span>
+                <span class="infobox-data-number" @*id="total_obligated_amount"*@ style="font-size:11pt; color:grey;">
+                    @ViewBag.CurrentYrAllotment_obligatedAmount
+                </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-green">
+        <div class="infobox infobox-red" style="width:270px">
             <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
+                <i class="ace-icon fa fa-calculator"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                <span class="infobox-data-number" @*id="total_remaining_balance"*@ style="font-size:11pt; color: grey;">
                     @ViewBag.PreviousAllot
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-success arrowed-in arrowed-in-right">@ViewBag.Result Remaining Balance</span>
+                    <span class="label label-danger arrowed-in arrowed-in-right"> @ViewBag.Result CONAP Remaining Balance </span>
                 </div>
             </div>
         </div>
