@@ -11078,6 +11078,25 @@ namespace fmis.Controllers.Budget.John
                                                              appropriationID = f.AppropriationId
                                                          }).ToList();
 
+                var fortheMonthTotalinTotalCONAPGrandSaa = (from oa in _MyDbContext.ObligationAmount
+                                                         join o in _MyDbContext.Obligation
+                                                         on oa.ObligationId equals o.Id
+                                                         join f in _MyDbContext.FundSources
+                                                         on o.FundSourceId equals f.FundSourceId
+                                                         where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                                         select new
+                                                         {
+                                                             amount = oa.Amount,
+                                                             uacsId = oa.UacsId,
+                                                             sourceId = o.SubAllotmentId,
+                                                             date = o.Date,
+                                                             status = o.status,
+                                                             allotmentClassID = f.AllotmentClassId,
+                                                             appropriationID = f.AppropriationId
+                                                         }).ToList();
+
+
+
                 var asAtTotalinTotalCONAPGrand = (from oa in _MyDbContext.ObligationAmount
                                                   join o in _MyDbContext.Obligation
                                                   on oa.ObligationId equals o.Id

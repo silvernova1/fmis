@@ -28,7 +28,7 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 
-//SAMPLE IGNORE
+//SAMPLE
 
 namespace fmis.Controllers
 {
@@ -227,16 +227,10 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
-   /*     public class SaveObligationModel
-        {
-            public List<ObligationData> Data { get;set; }
-        }*/
-
         [HttpPost]
-        public async Task<IActionResult> SaveObligationSecond(List<ObligationData> data)
+        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
-
-            var data_holder = _context.Obligation.Where(x => x.status == "activated");
+            var data_holder = _context.Obligation.Where(x=>x.status == "activated");
             var retObligation = new List<Obligation>();
 
             foreach (var item in data)
@@ -264,12 +258,11 @@ namespace fmis.Controllers
                 obligation.Particulars = item.Particulars;
                 obligation.Created_by = item.Created_by;
                 obligation.Gross = item.Gross;
-                obligation.Ors_no = item.Ors_no/*.Replace("#","")*/.ToUpper();
+                obligation.Ors_no = item.Ors_no/*.Replace("#","")*/;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
-                
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
