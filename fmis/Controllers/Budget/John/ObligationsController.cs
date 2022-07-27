@@ -227,13 +227,18 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
+        public class SaveObligationModel
         {
-            var water = HttpContext;
+            public List<ObligationData> Data { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveObligation(SaveObligationModel obligations)
+        {
+            Console.WriteLine("Water " + JsonSerializer.Serialize(obligations));
             var data_holder = _MyDbContext.Obligation.Where(x=>x.status == "activated");
             var retObligation = new List<Obligation>();
-            foreach (var item in data)
+            foreach (var item in obligations.Data)
             {
 
                 var obligation = new Obligation(); //CLEAR OBJECT
