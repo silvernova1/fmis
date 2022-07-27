@@ -232,7 +232,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var fundsourcess = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
-                .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
+                .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated").OrderBy( x=> x.UacsId))
                 .FirstOrDefault();
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id).FirstOrDefault();

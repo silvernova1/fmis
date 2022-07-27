@@ -204,7 +204,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var suballotment = _MyDbContext.SubAllotment?.Where(x => x.SubAllotmentId == sub_allotment_id)
-                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated")).Include(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
+                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated").OrderBy(x => x.UacsId)).Include(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
                 .FirstOrDefault();
 
             ViewBag.AllotmentClassId = AllotmentClassId;

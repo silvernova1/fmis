@@ -259,7 +259,7 @@ namespace fmis.Controllers
                 obligation.Particulars = item.Particulars;
                 obligation.Created_by = item.Created_by;
                 obligation.Gross = item.Gross;
-                obligation.Ors_no = item.Ors_no/*.Replace("#","")*/;
+                obligation.Ors_no = item.Ors_no/*.Replace("#","")*/.ToUpper();
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
