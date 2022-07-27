@@ -230,10 +230,9 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
-
+            var water = HttpContext;
             var data_holder = _MyDbContext.Obligation.Where(x=>x.status == "activated");
             var retObligation = new List<Obligation>();
-
             foreach (var item in data)
             {
 
