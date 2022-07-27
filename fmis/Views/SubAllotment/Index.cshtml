@@ -259,9 +259,12 @@
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
                         </td>
                     }
+                    else
+                    {
                     <td>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
+                    }
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
