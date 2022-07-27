@@ -227,10 +227,10 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
-        public class SaveObligationModel
+   /*     public class SaveObligationModel
         {
             public List<ObligationData> Data { get;set; }
-        }
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> SaveObligationSecond(List<ObligationData> data)
