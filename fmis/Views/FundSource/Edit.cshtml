@@ -201,8 +201,10 @@
         colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                type: 'autocomplete',
+                source: uacs_data_dropdown,
+                strict: true,
+                allowInvalid: false
             },
             {
                 type: 'numeric',

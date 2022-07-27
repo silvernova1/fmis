@@ -98,7 +98,7 @@
 <div id="example" class="hot obligation_div"></div>
 <br />
 
-<div class="infobox infobox-orange2">
+<div class="infobox infobox-blue2 pull-right">
     <div class="infobox-icon">
         <i class="ace-icon fa fa-bar-chart-o"></i>
     </div>
@@ -112,7 +112,7 @@
         </span>
 
         <div class="infobox-content">
-            <span class="label label-warning arrowed-in arrowed-in-right"> Obligated Amount </span>
+            <span class="label label-info arrowed-in arrowed-in-right"> Obligated Amount </span>
         </div>
     </div>
 </div>
@@ -154,9 +154,6 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
-
-
 
 	//SET AUTO DATE
     var today = new Date();
@@ -216,7 +213,7 @@
             type: 'POST',
             url: url,
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { obligations: data},
+            data: { data: ajax_data},
         }));
     }
 
@@ -1038,12 +1035,12 @@
 							Address: hot.getDataAtCell(row, 6),
 							Particulars: hot.getDataAtCell(row, 7),
 							Ors_no: hot.getDataAtCell(row, 8),
-							Created_by: hot.getDataAtCell(row, 9),
+							Created_by: 0,//hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
 							obligation_token: hot.getDataAtCell(row, 12)
 						}
 					);
-                    ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
+                    ajaxServer(ajax_data, '@Url.Action("SaveObligationSecond", "Obligations")')
                         .then(data => {
                             console.log(data);
                             console.log(hot.getDataAtCell(row, 51));
@@ -1219,7 +1216,7 @@
                                 Address: this[6] ? this[6] : "",
                                 Particulars: this[7] ? this[7] : "",
                                 Ors_no: Ors_no,
-                                Created_by: this[9] ? this[9] : "",
+                                Created_by: 0 @*this[9] ? this[9] : ""*@,
                                 Gross: this[10] ? this[10] : "",
                                 obligation_token: this[12]
                             }
@@ -1227,7 +1224,7 @@
                     }
                 });
                 console.log(ajax_data);
-                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+                ajaxServer(ajax_data, '@Url.Action("SaveObligationSecond", "Obligations")');
             }
 		},
 		hiddenColumns: {

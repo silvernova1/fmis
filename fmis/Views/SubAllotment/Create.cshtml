@@ -234,9 +234,10 @@
         colHeaders: ['EXPENSES', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
-                type: 'dropdown',
+                type: 'autocomplete',
                 source: uacs_data_dropdown,
-                allowEmpty: true,
+                strict: true,
+                allowInvalid: false
             },
             {
                 type: 'numeric',
