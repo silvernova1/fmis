@@ -87,7 +87,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                    @*@Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_beginningbalance
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
@@ -100,7 +101,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                    @*@Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_remainingbalance
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
@@ -113,36 +115,24 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                    @*@Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_obligatedAmount
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-green">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-money"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.SubAllotment.Where(x=>x.IsAddToNextAllotment == true).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-success arrowed-in arrowed-in-right"> Breakdown Balance </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-red">
+        <div class="infobox infobox-red" style="width:250px">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.SubAllotment.Where(x=>x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                    @ViewBag.LastYrAllotment_remainingbalance
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right">Breakdown Remaining Balance </span>
+                    <span class="label label-danger arrowed-in arrowed-in-right">CONAP Remaining Balance </span>
                 </div>
             </div>
         </div>
