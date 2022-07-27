@@ -231,7 +231,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
 
-            var data_holder = _context.Obligation.Where(x=>x.status == "activated");
+            var data_holder = _MyDbContext.Obligation.Where(x=>x.status == "activated");
             var retObligation = new List<Obligation>();
 
             foreach (var item in data)
@@ -262,18 +262,8 @@ namespace fmis.Controllers
                 obligation.Ors_no = item.Ors_no/*.Replace("#","")*/.ToUpper();
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-                _context.Update(obligation);
-                await _context.SaveChangesAsync();
-                //obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
-                //_context.Update(obligation);
-                //await _context.SaveChangesAsync();
-                /*if (string.IsNullOrEmpty(obligation.Ors_no)) //IF NOT EDIT
-                {
-                    var lastActOrs = await _context.Obligation.Where(x=>x.status == "activated" && x.Id != obligation.Id).OrderBy(x=>x.Id).LastOrDefaultAsync();
-                    obligation.Ors_no = lastActOrs is null ? "0001" : SetORSNo(lastActOrs.Ors_no);
-                }
-                _context.Update(obligation);
-                await _context.SaveChangesAsync();*/
+                _MyDbContext.Update(obligation);
+                await _MyDbContext.SaveChangesAsync();
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
