@@ -19,6 +19,7 @@ namespace fmis.Models.Accounting
         public string Particulars { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N}")]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Amount { get; set; }
 
         [ForeignKey("FundClusterId")]

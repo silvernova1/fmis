@@ -12,7 +12,7 @@ using fmis.Data.John;
 using fmis.Models;
 using fmis.Models.Carlo;
 using Microsoft.EntityFrameworkCore;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers.Budget.Carlo
 {
@@ -30,6 +30,7 @@ namespace fmis.Controllers.Budget.Carlo
         {
             public int Realignment_to { get; set; }
             public string Particulars { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
