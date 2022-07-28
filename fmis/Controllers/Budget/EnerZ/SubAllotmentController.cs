@@ -19,6 +19,7 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 
@@ -48,6 +49,7 @@ namespace fmis.Controllers
         {
             public int Id { get; set; }
             public int UacsId { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             public string suballotment_amount_token { get; set; }
             public string suballotment_token { get; set; }

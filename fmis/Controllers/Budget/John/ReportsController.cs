@@ -852,21 +852,21 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                            if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                            if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated").Any())
                             {
                                 //REALIGNMENT AMOUNT
                                 ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 17).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId).FirstOrDefault()?.Realignment_amount + ")";
+                                ws.Cell(currentRow, 17).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.status == "activated").FirstOrDefault()?.Realignment_amount + ")";
                                 ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
-                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId &&x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId &&x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated").Any())
                             {
                                 //REALIGNMENT AMOUNT
                                 ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 17).Value = _MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).FirstOrDefault().Realignment_amount;
+                                ws.Cell(currentRow, 17).Value = _MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.status == "activated").FirstOrDefault().Realignment_amount;
                                 ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
@@ -1036,7 +1036,7 @@ namespace fmis.Controllers.Budget.John
 
                                 ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Expense_code;
 
                                 ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
@@ -1047,20 +1047,20 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 ws.Cell(currentRow, 19).Value = "("+transferedTo.Amount.ToString("N", new CultureInfo("en-US")) +")";
 
                                 currentRow++;
                                 ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 //ws.Cell(currentRow, 4).Style.Alignment.Indent = 3;
                                 ws.Cell(currentRow, 4).Style.Font.SetItalic();
                                 ws.Cell(currentRow, 4).Value = transferedTo.Particulars;
 
                                 ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Expense_code;
 
                                 ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
@@ -1079,7 +1079,7 @@ namespace fmis.Controllers.Budget.John
 
                             //REALIGNMENT DATA
                             var data = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundSourceAmount.Select(b => b.UacsId).Contains(c.UacsId)).FirstOrDefault().UacsId;
-                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.Realignment_to == data).ToList())
+                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.Realignment_to == data && x.status == "activated").ToList())
                             {
                                 currentRow++;
                                 Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
@@ -1224,7 +1224,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 18).Style.Font.SetBold();
                             ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 18).Value = budget_allotments.FirstOrDefault().FundSources.FirstOrDefault().FundTransferedTo.Sum(x=>x.Amount);
+                            ws.Cell(currentRow, 18).Value = fundSource.FundTransferedTo.Sum(x => x.Amount);
                             ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -1235,8 +1235,8 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 19).Value = 0.00;
-                            }
+                                ws.Cell(currentRow, 19).Value = fundSource.Beginning_balance - fundSource.FundTransferedTo.Sum(x => x.Amount);
+                        }
                             else
                             {
                                 ws.Cell(currentRow, 19).Style.Font.SetBold();
@@ -1244,8 +1244,8 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 19).Value = sub6 - _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundSource.FundSourceAmounts.FirstOrDefault().UacsId && x.FundSourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.Amount);
-                            }
+                                ws.Cell(currentRow, 19).Value = sub6 - fundSource.FundTransferedTo.Sum(x => x.Amount);
+                        }
 
                         
 
@@ -2603,21 +2603,21 @@ namespace fmis.Controllers.Budget.John
                                     }
 
 
-                                    if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                                    if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated").Any())
                                     {
                                         //REALIGNMENT AMOUNT
                                         ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 17).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId).FirstOrDefault()?.Realignment_amount + ")";
+                                        ws.Cell(currentRow, 17).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.status == "activated").FirstOrDefault()?.Realignment_amount + ")";
                                         ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
-                                    else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                                    else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated").Any())
                                     {
                                         //REALIGNMENT AMOUNT
                                         ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                                         ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                                        ws.Cell(currentRow, 17).Value = _MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId).FirstOrDefault().Realignment_amount;
+                                        ws.Cell(currentRow, 17).Value = _MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.status == "activated").FirstOrDefault().Realignment_amount;
                                         ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
                                         ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                     }
@@ -11081,8 +11081,8 @@ namespace fmis.Controllers.Budget.John
                 var fortheMonthTotalinTotalCONAPGrandSaa = (from oa in _MyDbContext.ObligationAmount
                                                          join o in _MyDbContext.Obligation
                                                          on oa.ObligationId equals o.Id
-                                                         join f in _MyDbContext.FundSources
-                                                         on o.FundSourceId equals f.FundSourceId
+                                                         join s in _MyDbContext.SubAllotment
+                                                         on o.SubAllotmentId equals s.SubAllotmentId
                                                          where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                                                          select new
                                                          {
@@ -11091,11 +11091,9 @@ namespace fmis.Controllers.Budget.John
                                                              sourceId = o.SubAllotmentId,
                                                              date = o.Date,
                                                              status = o.status,
-                                                             allotmentClassID = f.AllotmentClassId,
-                                                             appropriationID = f.AppropriationId
+                                                             allotmentClassID = s.AllotmentClassId,
+                                                             appropriationID = s.AppropriationId
                                                          }).ToList();
-
-
 
                 var asAtTotalinTotalCONAPGrand = (from oa in _MyDbContext.ObligationAmount
                                                   join o in _MyDbContext.Obligation
@@ -11114,7 +11112,8 @@ namespace fmis.Controllers.Budget.John
                                                   }).ToList();
 
                 var ConapTotalGrand = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
-                var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2 && x.status == "activated").Sum(x => x.amount);
+                var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2 && x.status == "activated").Sum(x => x.amount)
+                                              + fortheMonthTotalinTotalCONAPGrandSaa.Where(x=>x.appropriationID == 1 && x.status == "activated").Sum(x=>x.amount) + fortheMonthTotalinTotalCONAPGrandSaa.Where(x => x.appropriationID == 2 && x.status == "activated").Sum(x => x.amount);
                 var ConapApproAsatGrand = asAtTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + asAtTotalinTotalPS.Where(x => x.appropriationID == 2).Sum(x => x.amount);
                 ws.Cell(currentRow, 20).Style.Font.SetBold();
                 ws.Cell(currentRow, 20).Style.Font.FontSize = 12;

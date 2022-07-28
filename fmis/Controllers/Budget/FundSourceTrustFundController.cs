@@ -19,6 +19,7 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers.Budget
 {
@@ -38,6 +39,7 @@ namespace fmis.Controllers.Budget
         {
             public int FundSourceTrustFundId { get; set; }
             public int UacsTrustFundId { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             public int Id { get; set; }
             public string FundSourceAmountTokenTrustFund { get; set; }
