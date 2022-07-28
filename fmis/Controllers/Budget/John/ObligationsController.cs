@@ -228,7 +228,7 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
+        public async Task<IActionResult> SaveObligationSecond(List<ObligationData> data)
         {
             var data_holder = _context.Obligation.Where(x=>x.status == "activated");
             var retObligation = new List<Obligation>();
