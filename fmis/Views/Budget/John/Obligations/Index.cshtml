@@ -98,7 +98,7 @@
 <div id="example" class="hot obligation_div"></div>
 <br />
 
-<div class="infobox infobox-blue2 pull-right">
+<div class="infobox infobox-blue2 pull-right" style="width: 230px">
     <div class="infobox-icon">
         <i class="ace-icon fa fa-bar-chart-o"></i>
     </div>
@@ -112,7 +112,7 @@
         </span>
 
         <div class="infobox-content">
-            <span class="label label-info arrowed-in arrowed-in-right"> Obligated Amount </span>
+            <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
         </div>
     </div>
 </div>
@@ -154,6 +154,7 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
+
 
 	//SET AUTO DATE
     var today = new Date();
@@ -206,9 +207,6 @@
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
     function ajaxServer(ajax_data, url) {
-        var data = {
-            data: ajax_data
-        }
         return Promise.resolve($.ajax({
             type: 'POST',
             url: url,
@@ -216,6 +214,8 @@
             data: { data: ajax_data},
         }));
     }
+
+
 
     function isNumeric(o) {
         if (!o || typeof o !== 'string') {
@@ -909,14 +909,7 @@
 					}
                 },
 
-                "row_below": {
-                    @*callback: function (changes, options) {
-                        hot.alter('insert_row', options[0].end.row + 1);
-                        var above = hot.getDataAtCell(options[0].end.row, 8)
-                        hot.setDataAtCell(options[0].end.row + 1, 8, above+'a')
-                    }*@
-                },
-                "remove_row": {}, "row_above": {}, "copy": {},
+                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
                 "created": {
                     name: 'CREATED BY',
                     callback: function (changes, options) {
@@ -1201,7 +1194,7 @@
                 var ajax_data = [];
                 $.each(hot.getSourceData(), function () {
                     if (this[0]) {
-                       
+
                         let Ors_no = this[8] ? this[8] : ""
                         $("#ors_handler").val(Ors_no);
                         ajax_data.push(
@@ -1232,7 +1225,6 @@
 		},
         licenseKey: 'non-commercial-and-evaluation',
     });
-
 
 
 	var tableData = JSON.stringify(hot.getSourceData());
