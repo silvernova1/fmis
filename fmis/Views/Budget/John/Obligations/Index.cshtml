@@ -206,13 +206,26 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
-    function ajaxServer(ajax_data, url) {
+@*    function ajaxServer(ajax_data, url) {
         return Promise.resolve($.ajax({
             type: 'POST',
             url: url,
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
             data: { data: ajax_data},
         }));
+    }*@
+
+
+    function ajaxServer(ajax_data, url) {
+		$.ajax({
+			type: 'POST',
+			url: url,
+			headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+			data: { data: ajax_data },
+			success: function (output) {
+				//console.log(output);
+			}
+		});
     }
 
 
