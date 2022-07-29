@@ -11048,7 +11048,7 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(currentRow, 18).Style.Font.SetBold();
                 ws.Cell(currentRow, 18).Style.Font.FontSize = 12;
                 ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
-                ws.Cell(currentRow, 18).Value = "0.00";
+                ws.Cell(currentRow, 18).Value = _MyDbContext.FundTransferedTo.Sum(x=>x.Amount).ToString("N", new CultureInfo("en-US"));
                 ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -11191,4 +11191,4 @@ namespace fmis.Controllers.Budget.John
 
     }
 }
-//JOHNS UPDATE
+//CODE ENDS HERE - JOHN

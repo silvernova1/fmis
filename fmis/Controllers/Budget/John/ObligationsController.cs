@@ -169,7 +169,9 @@ namespace fmis.Controllers
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            //return Json(obligation);
+            var totalObligated = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
+            ViewBag.totalObligatedAmount = totalObligated.ToString("N", new CultureInfo("en-US"));
+
             return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
         }
 
@@ -197,12 +199,13 @@ namespace fmis.Controllers
                 obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
             }
 
-          /*  if (obligation.source_type == "fund_source")
-                obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
-            else if (obligation.source_type == "sub_allotment")
-                obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
+            /*  if (obligation.source_type == "fund_source")
+                  obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
+              else if (obligation.source_type == "sub_allotment")
+                  obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
 
             /*return Json(obligation);*/
+
             return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
         }
 
