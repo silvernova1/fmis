@@ -240,7 +240,6 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-
                 var obligation = new Obligation(); //CLEAR OBJECT
 
                 if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
