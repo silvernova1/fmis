@@ -104,11 +104,8 @@
     </div>
     <div class="infobox-data">
 
-        <span class="infobox-data-number" id="total_obligated_balance" style="font-size:11pt; color:grey;">
-            @{
-                decimal? overall_obligated_balance = (Model.Sum(x => x.FundSource?.obligated_amount) + Model.Sum(x => x.SubAllotment?.obligated_amount));
-            }
-            @overall_obligated_balance?.ToString("C", new CultureInfo("en-PH"))
+        <span class="infobox-data-number" @*id="total_obligated_balance"*@ style="font-size:11pt; color:grey;">
+            @ViewBag.totalObligatedAmount
         </span>
 
         <div class="infobox-content">

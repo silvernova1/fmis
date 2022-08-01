@@ -50,27 +50,18 @@ namespace fmis.Controllers
         {
             public int obligation_id { get; set; }
             public string obligation_token { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal beginning_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
         }
 
         public class GetObligatedAndRemaining
         {
-            [Column(TypeName = "decimal(18,4)")]
             public decimal beginning_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal? overall_beginning_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal? overall_remaining_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal? overall_obligated_balance { get; set; }
         }
 
@@ -79,7 +70,6 @@ namespace fmis.Controllers
             public int ObligationId { get; set; }
             public int UacsId { get; set; }
             public string Expense_code { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             /* public float Total_disbursement { get; set; }
              public float Total_net_amount { get; set; }
@@ -105,9 +95,7 @@ namespace fmis.Controllers
 
         public class SourceRemainingAndObligated
         {
-            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
-            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
         }
 
