@@ -147,7 +147,6 @@ namespace fmis.Controllers
                 var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
                 var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
 
-
                 obligation_amount.ObligationId = obligation.Id;
                 obligation_amount.UacsId = uacs.UacsId;
                 if (item.Expense_code != "")
