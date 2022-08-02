@@ -203,29 +203,17 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
-@*    function ajaxServer(ajax_data, url) {
-        return Promise.resolve($.ajax({
-            type: 'POST',
-            url: url,
-            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { data: ajax_data},
-        }));
-    }*@
-
-
     function ajaxServer(ajax_data, url) {
-		$.ajax({
-			type: 'POST',
-			url: url,
-			headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-			data: { data: ajax_data },
-			success: function (output) {
-				//console.log(output);
-			}
-		});
-    }
-
-
+		    $.ajax({
+			    type: 'POST',
+			    url: url,
+			    headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+			    data: { data: ajax_data },
+			    success: function (output) {
+                    console.log(output);
+			    }
+		    });
+        }
 
     function isNumeric(o) {
         if (!o || typeof o !== 'string') {
@@ -1038,12 +1026,12 @@
 							Address: hot.getDataAtCell(row, 6),
 							Particulars: hot.getDataAtCell(row, 7),
 							Ors_no: hot.getDataAtCell(row, 8),
-							Created_by: 0,//hot.getDataAtCell(row, 9),
+							Created_by: hot.getDataAtCell(row, 9),
 							Gross: hot.getDataAtCell(row, 10),
 							obligation_token: hot.getDataAtCell(row, 12)
 						}
 					);
-                    ajaxServer(ajax_data, '@Url.Action("SaveObligationSecond", "Obligations")')
+                    ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
                         .then(data => {
                             console.log(data);
                             console.log(hot.getDataAtCell(row, 51));
@@ -1199,35 +1187,40 @@
                 console.log("TRAP_LOAD3");
                 return;
             }
-			else if (CHECK_FIRST_ROW) {
-                console.log("else");
-                var ajax_data = [];
-                $.each(hot.getSourceData(), function () {
-                    if (this[0]) {
+            else if (CHECK_FIRST_ROW) {
 
-                        let Ors_no = this[8] ? this[8] : ""
+                let rows = [...new Set(changes.map(item => item[0]))];
+
+                console.log(rows);
+                var ajax_data = [];
+                $.each(rows, function () {
+                    let row = this;
+                    if (hot.getDataAtCell(row, 0)) {
+
+                        let Ors_no = hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : ""
                         $("#ors_handler").val(Ors_no);
                         ajax_data.push(
                             {
-                                source_id: this[0] ? fund_sub_data_array[this[0]].source_id : 0,
-                                source_type: this[0] ? fund_sub_data_array[this[0]].source_type : 0,
-                                Date: this[1] ? this[1] : "",
-                                Dv: this[2] ? this[2] : "",
-                                Pr_no: this[3] ? this[3] : "",
-                                Po_no: this[4] ? this[4] : "",
-                                Payee: this[5] ? this[5] : "",
-                                Address: this[6] ? this[6] : "",
-                                Particulars: this[7] ? this[7] : "",
+                                source_id: hot.getDataAtCell(row, 0) ? fund_sub_data_array[hot.getDataAtCell(row, 0)].source_id : 0,
+                                source_type: hot.getDataAtCell(row, 0) ? fund_sub_data_array[hot.getDataAtCell(row, 0)].source_type : 0,
+                                Date: hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "",
+                                Dv: hot.getDataAtCell(row, 2) ? hot.getDataAtCell(row, 2) : "",
+                                Pr_no: hot.getDataAtCell(row, 3) ? hot.getDataAtCell(row, 3) : "",
+                                Po_no: hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "",
+                                Payee: hot.getDataAtCell(row, 5) ? hot.getDataAtCell(row, 5) : "",
+                                Address: hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "",
+                                Particulars: hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "",
                                 Ors_no: Ors_no,
-                                Created_by: 0 @*this[9] ? this[9] : ""*@,
-                                Gross: this[10] ? this[10] : "",
-                                obligation_token: this[12]
+                                Created_by: hot.getDataAtCell(row, 9) ? hot.getDataAtCell(row, 9) : 0,
+                                Gross: hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "",
+                                obligation_token: hot.getDataAtCell(row, 12)
                             }
                         );
                     }
                 });
                 console.log(ajax_data);
-                ajaxServer(ajax_data, '@Url.Action("SaveObligationSecond", "Obligations")');
+                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
+
             }
 		},
 		hiddenColumns: {
