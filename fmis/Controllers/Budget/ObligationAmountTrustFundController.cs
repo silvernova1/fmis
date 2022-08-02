@@ -18,9 +18,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationAmountTrustFundController : Controller
     {
-
 
         private readonly MyDbContext _MyDbContext;
         private ObligationTrustFund ObligationTrustFund;

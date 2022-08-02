@@ -15,9 +15,11 @@ using fmis.Models.John;
 using System.Globalization;
 using fmis.Models.silver;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class BudgetAllotmentTrustFundController : Controller
     {
         private readonly MyDbContext _context;

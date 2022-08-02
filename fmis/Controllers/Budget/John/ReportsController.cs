@@ -22,9 +22,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.John
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ReportsController : Controller
     {
         private readonly MyDbContext _MyDbContext;

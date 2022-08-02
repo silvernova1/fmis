@@ -18,6 +18,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationAmountController : Controller
     {
         private readonly ObligationAmountContext _context;

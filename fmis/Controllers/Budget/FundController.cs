@@ -7,9 +7,11 @@ using fmis.Data;
 using fmis.Filters;
 using Microsoft.EntityFrameworkCore;
 using fmis.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundController : Controller
     {
         private readonly FundContext _fundContext;

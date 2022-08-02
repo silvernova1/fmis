@@ -9,9 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using fmis.Data;
 using fmis.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.Carlo
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class SaobController : Controller
     {
         private readonly MyDbContext _context;

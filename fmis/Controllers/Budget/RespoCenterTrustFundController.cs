@@ -7,9 +7,11 @@ using fmis.Filters;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class RespoCenterTrustFundController : Controller
     {
         private readonly RespoCenterTrustFundContext _context;
@@ -19,8 +21,6 @@ namespace fmis.Controllers.Budget
             _context = context;
             _MyDbcontext = MyDbcontext;
         }
-
-
 
 
         public async Task<IActionResult> Index()

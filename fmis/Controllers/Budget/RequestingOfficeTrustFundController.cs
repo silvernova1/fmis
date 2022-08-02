@@ -7,9 +7,11 @@ using fmis.Filters;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class RequestingOfficeTrustFundController : Controller
     {
         private readonly RequestingOfficeTrustFundContext _context;
@@ -20,16 +22,11 @@ namespace fmis.Controllers.Budget
             _MyDbcontext = MyDbcontext;
         }
 
-
-
-
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "requestinghead_fund", "");
             return View(await _context.RequestingOfficeTrustFund.ToListAsync());
         }
-
-
 
         // GET: Appropriations/Create
         public IActionResult Create()

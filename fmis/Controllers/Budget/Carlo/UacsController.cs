@@ -17,7 +17,7 @@ using fmis.Filters;
 
 namespace fmis.Controllers
 {
-
+    [Authorize(Policy = "BudgetAdmin")]
     public class UacsController : Controller
     {
         private readonly UacsContext _context;

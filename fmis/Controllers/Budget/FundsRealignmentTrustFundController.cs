@@ -12,9 +12,11 @@ using fmis.Data.John;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.Carlo
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundsRealignmentTrustFundController : Controller
     {
 
