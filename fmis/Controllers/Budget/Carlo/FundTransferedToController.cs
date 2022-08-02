@@ -13,9 +13,11 @@ using fmis.Models;
 using fmis.Models.Carlo;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.Carlo
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundTransferedToController : Controller
     {
         private readonly MyDbContext _MyDbContext;

@@ -10,9 +10,11 @@ using fmis.Models;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class AppropriationsController : Controller
     {
         private readonly AppropriationContext _context;

@@ -9,9 +9,11 @@ using fmis.Data;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class Ors_headController : Controller
     {
         private readonly Ors_headContext _context;

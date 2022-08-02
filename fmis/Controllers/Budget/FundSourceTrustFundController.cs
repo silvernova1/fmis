@@ -20,9 +20,11 @@ using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundSourceTrustFundController : Controller
     {
         private readonly MyDbContext _MyDbContext;

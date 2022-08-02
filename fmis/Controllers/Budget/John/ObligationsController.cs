@@ -33,6 +33,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;

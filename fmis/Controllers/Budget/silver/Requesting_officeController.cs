@@ -10,9 +10,11 @@ using fmis.Data.silver;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using fmis.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.silver
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class Requesting_officeController : Controller
     {
         private readonly RequestingOfficeContext _context;

@@ -12,7 +12,7 @@ using fmis.Filters;
 
 namespace fmis.Controllers.Budget.John
 {
-
+    [Authorize(Policy = "BudgetAdmin")]
     public class AllotmentClassesController : Controller
     {
         private readonly AllotmentClassContext _context;

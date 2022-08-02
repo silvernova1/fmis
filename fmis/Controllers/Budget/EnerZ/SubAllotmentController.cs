@@ -20,10 +20,11 @@ using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
-
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class SubAllotmentController : Controller
     {
         private readonly SubAllotmentContext _context;

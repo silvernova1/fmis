@@ -251,7 +251,7 @@
                 </ul>
             </li>
 
-            <li class="@if (ViewBag.filter.main == "upload_document")
+         @*   <li class="@if (ViewBag.filter.main == "upload_document")
                 @Html.Raw("active open")">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-upload"></i>
@@ -274,7 +274,7 @@
                     </li>
 
                 </ul>
-            </li>
+            </li>*@
             <li class="@if (ViewBag.filter.main == "budget_report")
                 @Html.Raw("active open")">
                 <a href="#" class="dropdown-toggle">
@@ -289,7 +289,7 @@
                 <ul class="submenu">
                     <li class="@if (ViewBag.filter.sub == "saob")
                 @Html.Raw("active")">
-                        <a asp-area="" asp-controller="Reports" asp-action="DownloadSaob">
+                        <a asp-controller="Reports" asp-action="DownloadSaob">
                             <i class="menu-icon fa fa-caret-right"></i>
                             SAOB
                         </a>

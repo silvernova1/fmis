@@ -21,9 +21,11 @@ using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.John
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundSourceController : Controller
     {
         private readonly FundSourceContext _FundSourceContext;

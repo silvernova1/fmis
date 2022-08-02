@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "BudgetAdmin")]
     public class BudgetAllotmentController : Controller
     {
         private readonly MyDbContext _context;
