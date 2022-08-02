@@ -90,7 +90,7 @@ namespace fmis.Controllers
             public string Address { get; set; }
             public string Particulars { get; set; }
             public string Ors_no { get; set; }
-            public float Gross { get; set; }
+            public float? Gross { get; set; }
             public int Created_by { get; set; }
             public string obligation_token { get; set; }
             public string status { get; set; }
@@ -261,7 +261,7 @@ namespace fmis.Controllers
                 obligation.Address = item.Address;
                 obligation.Particulars = item.Particulars;
                 obligation.Created_by = item.Created_by;
-                obligation.Gross = item.Gross;
+                obligation.Gross = (float)item?.Gross;
                 obligation.Ors_no = item.Ors_no/*.Replace("#","")*/;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
