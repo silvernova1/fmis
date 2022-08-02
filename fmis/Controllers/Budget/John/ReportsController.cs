@@ -38,7 +38,7 @@ namespace fmis.Controllers.Budget.John
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "allotmentclass", "");
+            ViewBag.filter = new FilterSidebar("budget_report", "saob", "");
             return View(await _MyDbContext.FundSources.ToListAsync());
         }
 
@@ -11807,7 +11807,7 @@ namespace fmis.Controllers.Budget.John
 
         public IActionResult DownloadSaob()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            ViewBag.filter = new FilterSidebar("budget_report", "saob", "");
             PopulatePrexcsDropDownList();
             return View();
         }
@@ -11817,7 +11817,7 @@ namespace fmis.Controllers.Budget.John
 
         private void PopulatePrexcsDropDownList(object selectedDepartment = null)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+            ViewBag.filter = new FilterSidebar("budget_report", "saob", "");
             var departmentsQuery = from d in _MyDbContext.Prexc
                                    orderby d.pap_title
                                    select d;

@@ -12,9 +12,11 @@ using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
 
 using fmis.Data.Accounting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Accounting
 {
+    [Authorize(Policy = "AccountingAdmin")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
