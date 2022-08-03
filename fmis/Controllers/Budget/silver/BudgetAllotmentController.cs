@@ -78,6 +78,9 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
+<<<<<<< HEAD
+            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+=======
             /*var fundsourcesLastYr = await _context.FundSources
                 .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.AllotmentClass)
@@ -104,6 +107,7 @@ namespace fmis.Controllers
             var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
             ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
 
+>>>>>>> b02c5ef2bf92de9c1311cca0a60959b9833bf30a
             return View(budget_allotment);
         }
 

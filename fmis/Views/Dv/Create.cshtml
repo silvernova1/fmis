@@ -1,5 +1,4 @@
 ﻿@model fmis.Models.Accounting.Dv;
-
 @*@model IEnumerable<fmis.Models.Accounting.Dv>;*@
 <style>
     input::-webkit-outer-spin-button,
@@ -17,7 +16,7 @@
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Disbursement Voucher</h3></center>
 <hr />
-<div class="container" style="height: 350px;" >
+<div class="container" style="height: 350px;">
     <form asp-action="Create">
         <div class="col-md-4" style="margin-left: 50px;">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -58,7 +57,7 @@
             </div>
             <div class="form-group">
                 <h5>Amount: </h5>
-                <input asp-for="Amount" type="text" class="form-control"  onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);"  placeholder="0.00"  />
+                <input asp-for="Amount" type="text" class="form-control" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin-top: 41px">
