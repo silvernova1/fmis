@@ -204,6 +204,14 @@ namespace fmis.Controllers
             return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
         }
 
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public IActionResult openCreatedBy()
+        {
+           
+            return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml", obligation);
+        }
+
         // GET: Obligations/Create
         public IActionResult Create()
         {

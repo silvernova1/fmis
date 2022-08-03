@@ -78,7 +78,7 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
-            budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
             return View(budget_allotment);
         }
 

@@ -4,7 +4,9 @@
     ViewData["Title"] = "IndexOfPayment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
+<script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
+<script src="~/assets/plugin/daterangepicker/daterangepicker.js"></script>
 
 <style>
     .select2 {
@@ -42,8 +44,11 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>DV #:</label>
+                <input type="hidden" asp-for="DvId" id="dvid"/>
                 @Html.DropDownList("DvId", null, " - Select Dv No - ", htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
             </div>
+
+
         </div>
         <div class="col-md-3">
             <div class="form-group">
@@ -85,35 +90,41 @@
                 <input asp-for="Invoice" type="text" class="form-control" />
             </div>
         </div>
-        <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+        <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
             <div class="form-group">
                 <label>PERIOD COVERED:</label>
-                <input type="date" asp-for="PeriodCover" class="form-control">
+                <input type="date" asp-for="PeriodCovered" class="form-control js-daterangepicker">
+            </div>
+        </div>
+        <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+            <div class="form-group">
+                <label>PERIOD COVER:</label>
+                <input type="text" asp-for="PeriodCover" class="form-control ">
             </div>
         </div>
         <div>
             <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                 <div class="form-group">
                     <label>S.O #:</label>
-                    <input id="so" class="form-control" />
+                    <input type="text" asp-for="SO" class="form-control" />
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                 <div class="form-group">
                     <label>TRAVEL PERIOD:</label>
-                    <input id="travel" class="form-control" />
+                    <input type="text" asp-for="TravelPeriod" class="form-control js-daterangepicker">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
                 <div class="form-group">
                     <label>ACCOUNT #:</label>
-                    <input id="account" class="form-control" />
+                    <input type="text" asp-for="AccountNum" class="form-control" />
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
                 <div class="form-group">
                     <label># OF BILLING: (FIRST, SECOND):</label>
-                    <input asp-for="NumOfBill" id="billings" class="form-control" />
+                    <input type="text" asp-for="NumOfBill" class="form-control" />
                 </div>
             </div>
         </div>
@@ -128,7 +139,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input asp-for="GrossAmount" class="form-control" type="number" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input asp-for="GrossAmount" class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -143,7 +154,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control"  type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -158,23 +169,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control"  type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -190,7 +185,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -206,7 +201,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -222,7 +217,23 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <select asp-items="ViewBag.DeductionId" class="form-control select2">
+                    <option> - Select Deduction - </option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -237,7 +248,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
             </div>
         </div>
     </div>
@@ -250,7 +261,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
             </div>
         </div>
     </div>
@@ -264,15 +275,15 @@
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
+                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
             </div>
             <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
         </div>
     </div>
     @*
         <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
-  @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
-*@
+    @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
+    *@
 
 </form>
 
@@ -289,52 +300,63 @@
             $('#hidden-panel' + i).hide();
         }
     });
+
     // dummy/live
 
-
-@*    $("#CategoryId").on('change', function () {
-
+    @* $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
         if (value == 36) {
             $("#hidden-panel1").show();
             $("#hidden-panel5").show();
-            categ.push('2', '6', '7', '8', '9', '10');
+            categ.push('2', '4', '6', '7', '8', '9', '10');
         } else if (value == 37) {
             $("#hidden-panel2").show();
-            categ.push('1', '5', '6', '7', '8', '9', '10');
+            categ.push('1', '4', '5', '6', '7', '8', '9', '10');
         } else if (value == 38) {
             $("#hidden-panel2").show();
             $("#hidden-panel10").show();
-            categ.push('1', '5', '6', '7', '8', '9');
+            categ.push('1', '4', '5', '6', '7', '8', '9');
+        } else if (value == 40) {
+            $("#hidden-panel4").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '2', '5', '6', '7', '8', '9');
         } else if (value == 45 || value == 52) {
-            $("#hidden-panel8").show();
             $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '10', '6', '9');
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '9');
+        } else if (value == 54) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '9');
         } else if (value == 46 || value == 47) {
             $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '8', '6', '9', '10');
-        } else if (value == 48) {
-            $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
+            categ.push('1', '2', '4', '5', '8', '6', '9', '10');
+        } else if (value == 53 || value == 62) {
+            categ.push('1', '4', '5', '2', '6', '7', '8', '9', '10');
         } else if (value == 49 || value == 50 || value == 51) {
             $("#hidden-panel6").show();
             $("#hidden-panel9").show();
-            categ.push('1', '5', '2', '7', '8', '10');
-        } else if ((value >= 39 && value <= 44) || (value >= 55 && value <= 68 && value != 62)) {
+            categ.push('1', '4', '5', '2', '7', '8', '10');
+        } else if (value == 39 || value == 48 || (value >= 57 && value <= 61) || (value >= 65 && value <= 68)) {
+            $("#hidden-panel4").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10', '6');
+        } else if ((value >= 41 && value <= 45) || value == 55 || (value >= 49 && value <= 52) || (value >= 63 && value <= 64)) {
             $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
-        } else if (value == 53 || value == 54 || value == 62) {
-            categ.push('1', '2', '5', '6', '7', '8', '9', '10');
+            categ.push('1', '4', '5', '2', '7', '8', '9', '10');
+        } else if (value == 53 || value == 62) {
+            categ.push('1', '2', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 54) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '7', '9');
         }
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
     });*@
 
-
     //local
+
     $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
@@ -342,33 +364,45 @@
         if (value == 1) {
             $("#hidden-panel1").show();
             $("#hidden-panel5").show();
-            categ.push('2', '6', '7', '8', '9', '10');
+            categ.push('2', '4', '6', '7', '8', '9', '10');
         } else if (value == 2) {
             $("#hidden-panel2").show();
-            categ.push('1', '5', '6', '7', '8', '9', '10');
+            categ.push('1', '4', '5', '6', '7', '8', '9', '10');
         } else if (value == 3) {
             $("#hidden-panel2").show();
             $("#hidden-panel10").show();
-            categ.push('1', '5', '6', '7', '8', '9');
+            categ.push('1', '4', '5', '6', '7', '8', '9');
+        } else if (value == 5) {
+            $("#hidden-panel4").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '2', '5', '6', '7', '8', '9');
         } else if (value == 10 || value == 17) {
-            $("#hidden-panel8").show();
             $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '10', '6', '9');
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '9');
+        } else if (value == 19) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '9');
         } else if (value == 11 || value == 12) {
             $("#hidden-panel7").show();
-            categ.push('1', '2', '5', '8', '6', '9', '10');
-        } else if (value == 13) {
-            $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
+            categ.push('1', '2', '4', '5', '8', '6', '9', '10');
+        } else if (value == 18 || value == 27) {
+            categ.push('1', '4', '5', '2', '6', '7', '8', '9', '10');
         } else if (value == 14 || value == 15 || value == 16) {
             $("#hidden-panel6").show();
             $("#hidden-panel9").show();
-            categ.push('1', '5', '2', '7', '8', '10');
-        } else if ((value >= 4 && value <= 9) || (value >= 20 && value <= 33 && value != 27)) {
+            categ.push('1', '4', '5', '2', '7', '8', '10');
+        } else if (value == 4 || value == 13 || (value >= 22 && value <= 26) || (value >= 30 && value <= 33)) {
+            $("#hidden-panel4").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10', '6');
+        } else if ((value >= 6 && value <= 10) || value == 20 || (value >= 14 && value <= 17) || (value >= 28 && value <= 29)) {
             $("#hidden-panel6").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10');
-        } else if (value == 18 || value == 19 || value == 27) {
-            categ.push('1', '2', '5', '6', '7', '8', '9', '10');
+            categ.push('1', '4', '5', '2', '7', '8', '9', '10');
+        } else if (value == 18 || value == 27) {
+            categ.push('1', '2', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 19) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '7', '9');
         }
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
@@ -389,6 +423,7 @@
         get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $('#dvid').val(selected_val);
         $.ajax({
             type: "POST",
             url: '@Url.Action("selectAT", "DV")',

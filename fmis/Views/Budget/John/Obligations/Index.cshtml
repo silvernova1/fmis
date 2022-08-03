@@ -114,7 +114,6 @@
 <div id="example" class="hot obligation_div"></div>
 <br />
 
-
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
         <div class="modal-content">
@@ -132,6 +131,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="CreatedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="width:40%;">
+        <div class="modal-content">
+            <h3 style="margin-left:20px;" class="grey lighter smaller-150">
+                Created 
+                (Obligation)
+            </h3>
+            <div class="modal-body CreatedByContent">
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
+                    Close <i class="ace-icon fa fa-close"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 	//SET OBLIGATION TOKEN
@@ -396,7 +412,7 @@
 			{
 				//ORS NUMBER
 				type: 'text',
-      
+
 			},
 			{
                 //CREATED BY
@@ -899,15 +915,48 @@
 								}, 500);
 							}
 						});
-					}
-                },
+                    }
+               @* },
 
                 "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
                 "created": {
                     name: 'CREATED BY',
                     callback: function (changes, options) {
 
+                    }*@
+
+                  },
+
+                // dri ta mag sugod
+
+                "row_below": { }, "remove_row": { }, "row_above": { }, "copy": { },
+                "created": {
+                    name: 'CREATED BY',
+                    callback: function (key, options) {
+                        var selection = this.getSelected();
+                        var holder_data = this.getData();
+                        var holder_id = holder_data[selection[0][0]][11];
+                        var obligation_token = holder_data[selection[0][0]][12];
+                        $("#CreatedModal").modal('show');
+                        $.ajax({
+                            type: 'GET',
+                            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+                            url: '@Url.Action("openCreatedBy", "Obligations")',
+                            data: {
+                                id: holder_id,
+                                obligation_token: obligation_token
+                            },
+                            success: function (output) {
+                                setTimeout(function () {
+                                    $(".CreatedByContent").html(output);
+                                }, 500);
+                            }
+                        });
+
                     }
+
+
+
                 },
 
 

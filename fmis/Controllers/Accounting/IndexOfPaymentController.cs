@@ -33,16 +33,11 @@ namespace fmis.Controllers.Accounting
         }
         //COMMENT
         [Route("Accounting/IndexOfPayment")]
-        public async Task<IActionResult> Index(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
+        public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            PopulateIndexOfPaymentDropDownList();
-            PopulatePayeeDropDownList();
-            PopulateDeductionDropDownList();
-            PopulateDvDropDownList();
-
-            return View(await _MyDbContext.Category.ToListAsync());
+            return View(await _MyDbContext.Indexofpayment.Include(x => x.Dv).Include(x => x.Category).ToListAsync());
         }
 
 
@@ -116,6 +111,7 @@ namespace fmis.Controllers.Accounting
 
         }
         // GET: Create
+        [Route("Accounting/IndexOfPayment/Create")]
         public IActionResult Create(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
@@ -128,25 +124,24 @@ namespace fmis.Controllers.Accounting
             PopulateDeductionDropDownList();
             PopulateDvDropDownList();
 
-            /* ViewBag.IndexOfPaymentId = IndexOfPaymentId;*/
-
-            return View(); //open create
+            return View();
         }
         // POST: Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
+        [Route("Accounting/IndexOfPayment/Create")]
         public IActionResult Create(IndexOfPayment indexOfPayment)
         {
+            /*return Json(indexOfPayment);*/
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            var cat_desc = _MyDbContext.Category.Where(f => f.CategoryId == indexOfPayment.CategoryId).FirstOrDefault().CategoryDescription;
+            //var cat_desc = _MyDbContext.Category.Where(f => f.CategoryId == indexOfPayment.CategoryId).FirstOrDefault().CategoryDescription;
 
-            indexOfPayment.CategoryDescription = cat_desc;
+            //indexOfPayment.CategoryDescription = cat_desc;
 
             _IndexofpaymentContext.Add(indexOfPayment);
             _IndexofpaymentContext.SaveChanges();
