@@ -50,6 +50,46 @@ namespace fmis.Controllers
 
             return Ok(user);
         }
+
+        public async Task<ActionResult> CreateBudget2()
+        {
+            var user = new FmisUser()
+            {
+                Id = 0,
+                Username = "doh7budget2",
+                Email = "doh7budget@gmail.com",
+                Role = "budget_admin"
+            };
+
+            user.Password = _userService.HashPassword(user, "doh7budget2");
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+        public async Task<ActionResult> CreateBudget3()
+        {
+            var user = new FmisUser()
+            {
+                Id = 0,
+                Username = "doh7budget3",
+                Email = "doh7budget@gmail.com",
+                Role = "budget_admin"
+            };
+
+            user.Password = _userService.HashPassword(user, "doh7budget3");
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+
+
+
         public async Task<ActionResult> CreateAccounting()
         {
             var user = new FmisUser()
