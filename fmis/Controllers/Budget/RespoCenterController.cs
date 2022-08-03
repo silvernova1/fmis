@@ -7,9 +7,11 @@ using fmis.Filters;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class RespoCenterController : Controller
     {
         private readonly RespoCenterContext _context;

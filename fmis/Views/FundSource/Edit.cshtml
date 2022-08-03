@@ -60,6 +60,8 @@
                 <label>PAP Type: </label>
                 <input asp-for="PapType" id="pap_type" class="form-control" readonly />
             </div>
+            @Html.CheckBoxFor(x => x.Original, new { @class = "custom-checkbox" })
+            <span class="lbl">Add to Original</span>
         </div>
         <div class="col-md-6">
             <div class="form-group">
@@ -76,6 +78,9 @@
                 <input asp-for="FundSourceTitleCode" id="pap_code1" class="form-control" readonly />
                 <span asp-validation-for="FundSourceTitleCode" class="text-danger"></span>
             </div>
+
+            @Html.CheckBoxFor(x => x.Breakdown, new { @class = "custom-checkbox" })
+            <span class="lbl">Add to Breakdown</span>
 
         </div>
     </div>
@@ -196,8 +201,10 @@
         colHeaders: ['EXPENSE TITLE', 'AMOUNT', 'ID', 'TOKEN'],
         columns: [
             {
-                type: 'dropdown',
-                source: uacs_data_dropdown
+                type: 'autocomplete',
+                source: uacs_data_dropdown,
+                strict: true,
+                allowInvalid: false
             },
             {
                 type: 'numeric',

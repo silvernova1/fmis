@@ -2,6 +2,7 @@
 using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.silver;
+using fmis.Models.Carlo;
 using fmis.Models.Accounting;
 using System;
 using fmis.Models.Budget;
@@ -72,6 +73,8 @@ namespace fmis.Data
         public DbSet<Dv> Dv { get; set; }
         public DbSet<FundCluster> FundCluster { get; set; }
         public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
+        public DbSet<FundTransferedTo> FundTransferedTo { get; set; }
+        public DbSet<SubTransferedTo> SubTransferedTo { get; set; }
 
 
 

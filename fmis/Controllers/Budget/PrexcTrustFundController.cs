@@ -8,9 +8,11 @@ using fmis.Filters;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using fmis.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class PrexcTrustFundController : Controller
     {
         private readonly PrexcTrustFundContext _context;

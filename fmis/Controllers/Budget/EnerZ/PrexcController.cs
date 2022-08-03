@@ -17,6 +17,7 @@ using fmis.Filters;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class PrexcController : Controller
     {
         private readonly PrexcContext _context;

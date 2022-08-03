@@ -13,8 +13,11 @@ namespace fmis.Models
         [Key]
         public int SubAllotmentAmountId { get; set; }
         public int UacsId { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal beginning_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal remaining_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal realignment_amount { get; set; }
         public string status { get; set; }
         public string suballotment_amount_token { get; set; }

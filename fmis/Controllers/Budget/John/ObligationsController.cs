@@ -27,11 +27,13 @@ using Image = iTextSharp.text.Image;
 using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
-//SAMPLE IGNORE
+//SAMPLE
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
@@ -76,21 +78,22 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
-            public int source_id { get; set; }
+            public int source_id { get; set; } //
             public string source_title { get; set; }
             public string source_type { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal source_balance { get; set; }
-            public string Date { get; set; }
-            public string Dv { get; set; }
-            public string Pr_no { get; set; }
-            public string Po_no { get; set; }
-            public string Payee { get; set; }
-            public string Address { get; set; }
-            public string Particulars { get; set; }
+            public string Date { get; set; } //
+            public string Dv { get; set; } //
+            public string Pr_no { get; set; } //
+            public string Po_no { get; set; } //
+            public string Payee { get; set; } //
+            public string Address { get; set; } //
+            public string Particulars { get; set; } //
             public string Ors_no { get; set; }
-            public float Gross { get; set; }
-            public int Created_by { get; set; }
-            public string obligation_token { get; set; }
+            public float Gross { get; set; } //
+            public int Created_by { get; set; } //
+            public string obligation_token { get; set; } //
             public string status { get; set; }
         }
 
@@ -152,7 +155,7 @@ namespace fmis.Controllers
 
             var obligation = await _context
                                     .Obligation
-                                    .Where(x => x.status == "activated")
+                                    .Where(x => x.status == "activated").OrderBy(x => x.Ors_no)
                                     .Include(x => x.ObligationAmounts)
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
@@ -160,14 +163,16 @@ namespace fmis.Controllers
                                     .AsNoTracking()
                                     .ToListAsync();
 
-            var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
+            var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.Original != true).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
                                     .Concat(from y in _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
 
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data.ToList());
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            //return Json(obligation);
+            var totalObligated = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
+            ViewBag.totalObligatedAmount = totalObligated.ToString("N", new CultureInfo("en-US"));
+
             return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
         }
 
@@ -195,12 +200,13 @@ namespace fmis.Controllers
                 obligation.Uacs = await _UacsContext.Uacs.AsNoTracking().ToListAsync();
             }
 
-          /*  if (obligation.source_type == "fund_source")
-                obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
-            else if (obligation.source_type == "sub_allotment")
-                obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
+            /*  if (obligation.source_type == "fund_source")
+                  obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
+              else if (obligation.source_type == "sub_allotment")
+                  obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
 
             /*return Json(obligation);*/
+
             return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
         }
 
@@ -239,12 +245,11 @@ namespace fmis.Controllers
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
 
-            var data_holder = _context.Obligation.Where(x=>x.status == "activated");
+            var data_holder = _context.Obligation.Where(x => x.status == "activated");
             var retObligation = new List<Obligation>();
 
             foreach (var item in data)
             {
-
                 var obligation = new Obligation(); //CLEAR OBJECT
 
                 if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
@@ -252,9 +257,9 @@ namespace fmis.Controllers
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
 
-                if(item.source_type.Equals("fund_source"))
+                if (item.source_type.Equals("fund_source"))
                     obligation.FundSourceId = item.source_id;
-                else if(item.source_type.Equals("sub_allotment"))
+                else if (item.source_type.Equals("sub_allotment"))
                     obligation.SubAllotmentId = item.source_id;
 
                 obligation.source_type = item.source_type;
@@ -267,18 +272,9 @@ namespace fmis.Controllers
                 obligation.Particulars = item.Particulars;
                 obligation.Created_by = item.Created_by;
                 obligation.Gross = item.Gross;
+                obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-                _context.Update(obligation);
-                await _context.SaveChangesAsync();
-                //obligation.Ors_no = obligation.Id.ToString().PadLeft(4, '0');
-                //_context.Update(obligation);
-                //await _context.SaveChangesAsync();
-                if (string.IsNullOrEmpty(obligation.Ors_no)) //IF NOT EDIT
-                {
-                    var lastActOrs = await _context.Obligation.Where(x=>x.status == "activated" && x.Id != obligation.Id).OrderBy(x=>x.Id).LastOrDefaultAsync();
-                    obligation.Ors_no = lastActOrs is null ? "0001" : SetORSNo(lastActOrs.Ors_no);
-                }
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
 
@@ -286,12 +282,12 @@ namespace fmis.Controllers
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
                 else
                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
-
                 retObligation.Add(obligation);
             }
             return Json(retObligation.FirstOrDefault());
 
         }
+
 
         public string SetORSNo(string lastORSNo)
         {

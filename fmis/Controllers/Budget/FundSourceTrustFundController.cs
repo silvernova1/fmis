@@ -19,9 +19,12 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundSourceTrustFundController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -38,6 +41,7 @@ namespace fmis.Controllers.Budget
         {
             public int FundSourceTrustFundId { get; set; }
             public int UacsTrustFundId { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             public int Id { get; set; }
             public string FundSourceAmountTokenTrustFund { get; set; }

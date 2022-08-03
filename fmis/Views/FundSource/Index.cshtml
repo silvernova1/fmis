@@ -57,22 +57,22 @@
 
 @if (Model.FundSources.Count() > 0)
 {
-    <h3 class="grey lighter smaller">
-        Fund Source
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.Yearly_reference.YearlyReference
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSources.FirstOrDefault().Appropriation.AppropriationSource
-        </small>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            @Model.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class
-        </small>
+<h3 class="grey lighter smaller">
+    General Appropriations Act (GAA)
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.Yearly_reference.YearlyReference
+    </small>
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.FundSources.FirstOrDefault().Appropriation.AppropriationSource
+    </small>
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        @Model.FundSources.FirstOrDefault().AllotmentClass.Allotment_Class
+    </small>
 
-    </h3>
+</h3>
 }
 <hr />
 <div class="row  pull-left">
@@ -149,17 +149,16 @@
     </div>
 </div>
 
-<form method="get" asp-action="Index" asp-controller="FundSource">
+<form method="get" asp-action="Index" asp-controller="FundSource" id="search_form">
     <input type="hidden" name="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
     <input type="hidden" name="AppropriationId" value="@ViewBag.AppropriationId" />
     <input type="hidden" name="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
 
     <span class="pull-right">
-        <input type="hidden" name="viewAllBtn" id="viewAllValue" value="" />
-        <button type="submit" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked()">
-            View All
+        <button type="button" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked();">
+           View All
         </button>
-        <input type="search" placeholder="Enter keyword..." class="form-group" name="search" style="width: 340px;" />
+        <input type="search" placeholder="Enter keyword..." class="form-group" name="search" id="search" value="@ViewBag.Search" style="width: 340px;" />
         <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
             <i class="ace-icon fa fa-search "></i> Search
         </button>
@@ -196,7 +195,10 @@
                     Actions
                 </th>
                 <th>
-                    Funds Source (Realignment)
+                    GAA (Realignment)
+                </th>
+                <th>
+                    GAA Transfered To
                 </th>
                 <th>
                     Beginning Balance
@@ -214,55 +216,9 @@
             </tr>
         </thead>
         <tbody>
-
-            @if (ViewData["search"].ToString() != null && ViewData["search"].ToString() != "")
+            @foreach (var item in Model.FundSources.OrderByDescending(x=>x.CreatedAt))
             {
-                @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
-                {
-                    @if (item.FundSourceTitle.Contains(ViewData["search"].ToString()) || item.RespoCenter.Respo.Contains(ViewData["search"].ToString()))
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Prexc.pap_title)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                            </td>
-                            <td>
-                                @item.RespoCenter.Respo
-                            </td>
-                            <td>
-                                <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                                <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
-                            </td>
-                            <td>
-                                <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
-                            </td>
-
-                            <td>
-                                <b class="green">
-                                    <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                                </b>
-                            </td>
-                            <td>
-                                <b class="red">
-                                    <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                                </b>
-                            </td>
-                            <td>
-                                <b class="blue">
-                                    <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                                </b>
-                            </td>
-                        </tr>
-                    }
-                }
-
-            }
-            else
-            {
-                @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
-                {
+                var check = item.IsAddToNextAllotment ? "checked" : "";
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Prexc.pap_title)
@@ -270,18 +226,30 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.FundSourceTitle)
                     </td>
-
                     <td>
                         @item.RespoCenter.Respo
                     </td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
-                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.BudgetAllotmentId" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                <span class="lbl">Set Next Year</span>
+                            </label>
+                        </div>
                     </td>
                     <td>
-                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> Funds Realignment</a>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> GAA Realignment</a>
                     </td>
-
+                    <td>
+                        <center>
+                            <a asp-controller="FundTransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                            </a>
+                        </center>
+                    </td>
                     <td>
                         <b class="green">
                             <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
@@ -297,9 +265,7 @@
                             <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
-
                 </tr>
-                }
             }
         </tbody>
     </table>
@@ -315,7 +281,23 @@ else
 <script>
 
     function viewAllClicked() {
-        $('viewAllValue').val(true);
+        $('#search').val('');
+        $('#search_form').submit();
+    }
+
+    function AddNextYr(set, fundsourceId){
+        $.ajax({
+            url: '@Url.Action("CheckNextYear","FundSource")',
+            data: {
+                fundsourceId: fundsourceId,
+                addToNext: set
+            },
+            async: true,
+            method: 'POST',
+            success: function(result){
+                console.log(result);
+            }
+        })
     }
 
      function createFundSource(BudgetAllotmentId) {

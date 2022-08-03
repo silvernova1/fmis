@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using fmis.Data;
 using fmis.Models;
 using fmis.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class Yearly_referenceController : Controller
     {
         private readonly Yearly_referenceContext _context;

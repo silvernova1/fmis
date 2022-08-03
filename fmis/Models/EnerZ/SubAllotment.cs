@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using fmis.Models;
 using fmis.Models.John;
 using fmis.Models.silver;
+using fmis.Models.Carlo;
 
 namespace fmis.Models
 {
@@ -19,6 +20,8 @@ namespace fmis.Models
         public string Description { get; set; }
         public string Suballotment_code { get; set; }
         public bool IsAddToNextAllotment { get; set; }
+        public bool Original { get; set; }
+        public bool Breakdown { get; set; }
         public string PapType { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
@@ -46,16 +49,22 @@ namespace fmis.Models
         [JsonIgnore]
         public Fund Fund { get; set; }
 
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Remaining_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Beginning_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal obligated_amount { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal utilized_amount { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public int? BudgetAllotmentId { get; set; }
         public BudgetAllotment Budget_allotment { get; set; }
         public ICollection<Suballotment_amount> SubAllotmentAmounts { get; set; }
         public ICollection<SubAllotment_Realignment> SubAllotmentRealignment { get; set; }
+        public ICollection<SubTransferedTo> SubTransferedTo { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
     }
 

@@ -11,7 +11,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-<div class="container">
+<!--<div class="container">
     <div class="row">
         <div class="col-md-3">
             <h3>SAOB Reports</h3>
@@ -21,9 +21,9 @@
                     <tr>
                         <td>Format</td>
                         <td>
-                            <select name="format" class="form-control" readonly="readonly" tabindex="-1" aria-disabled="true">
-                                @*<option value="pdf">PDF</option>*@
-                                <option value="excel">EXCEL</option>
+                            <select name="format" class="form-control" readonly="readonly" tabindex="-1" aria-disabled="true">-->
+@*<option value="pdf">PDF</option>*@
+<!--<option value="excel">EXCEL</option>
                             </select>
                         </td>
                     </tr>
@@ -35,54 +35,99 @@
                         <td>Date To</td>
                         <td><input type="date" name="date_to" class="form-control" /></td>
                     </tr>
-                    <tr>
+                    <tr >
                         <td></td>
-                        <td><button type="submit" class="btn btn-success btn-lg"> <span class="glyphicon glyphicon-print"></span> Print</button></td>
+                        <td> <button type="submit" class="btn btn-success btn-sm"> <span class="glyphicon glyphicon-print"></span> Print</button></td>
                     </tr>
                 </table>
             </form>
         </div>
     </div>
+</div>-->
+
+<div class="space space-10"></div>
+<div class="col-md-3" style="margin-left: 25px">
+    <div class="widget-box">
+        <div class="widget-header">
+            <h4 class="widget-title">Saob Reports</h4>
+            <span class="widget-toolbar">
+                <a href="#" data-action="collapse">
+                    <i class="ace-icon fa fa-chevron-up"></i>
+                </a>
+            </span>
+        </div>
+        <div class="widget-body">
+            <div class="widget-main">
+                <form action="@Url.Action("Export","Reports")" method="post">
+                    @Html.AntiForgeryToken()
+                    <label>Format: </label>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <select name="format" class="form-control"  tabindex="-1" aria-disabled="true" disabled>
+                                <option value="excel">EXCEL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space space-8"></div>
+
+                    <label>Date From: </label>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div>
+                                <input class="form-control" type="date" name="date_from" data-date-format="dd-mm-yyyy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space space-8"></div>
+                    <label>Date To: </label>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div>
+                                <input class="form-control" type="date" name="date_to" data-date-format="dd-mm-yyyy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space space-8"></div>
+
+                    <div class="row">
+                        <div class="" >
+                            <div class="col-xs-12 col-sm-12" >
+                                  <button type="submit" class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-print"></span> Print</button>
+                            </div>
+                        </div>
+                    </div>
+
+                  
+
+                </form>
+                    
+            </div>
+    
+
+        </div>
+
+    </div>
 </div>
 
+
+
+
+
+
 @*<div class="container">
-        <div class="row">&nbsp;</div>
         <div class="row">
-            <div class="col-2">User</div>
-            <div class="col-4"><input type="text" id="userInput" /></div>
-        </div>
-        <div class="row">
-            <div class="col-2">Message</div>
-            <div class="col-4"><input type="text" id="messageInput" /></div>
-        </div>
-        <div class="row">&nbsp;</div>
-        <div class="row">
-            <div class="col-6">
-                <input type="button" id="sendButton" value="Send Message" />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Add previous conap to the current allotment?</label>
+                    @Html.DropDownList("Conap", null, htmlAttributes: new { @class = "js-example-basic-multiple form-control", @multiple = "multiple" })
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <ul id="messagesList"></ul>
         </div>
     </div>*@
-
-
-
-@*<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>Add previous conap to the current allotment?</label>
-                @Html.DropDownList("Conap", null, htmlAttributes: new { @class = "js-example-basic-multiple form-control", @multiple = "multiple" })
-            </div>
-        </div>
-    </div>
-</div>*@
 

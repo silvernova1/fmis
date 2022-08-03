@@ -26,7 +26,9 @@
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color:grey;"> </span>
+                <span class="infobox-data-number" @*id="total_beginning_balance"*@ style="font-size:11pt; color:grey;">
+                    @Model.FirstOrDefault().SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))  
+                </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
                 </div>
@@ -37,7 +39,9 @@
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;"> </span>
+                <span class="infobox-data-number" @*id="total_remaining_balance"*@ style="font-size:11pt; color: grey;">
+                    @Model.FirstOrDefault().SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH")) 
+                </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
                 </div>
@@ -62,6 +66,19 @@
                 <span class="infobox-data-number" id="total_obligated_amount" style="font-size:11pt; color:grey;"></span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+        <div class="infobox infobox-red" style="width: 230px">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    @ViewBag.PreviousAllot
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right">@ViewBag.Result Remaining Balance</span>
                 </div>
             </div>
         </div>
@@ -112,9 +129,9 @@
                         Allotment Class
                     </th>
                     <th>
-                        For Fund Source
+                        For GAA
                     </th>
-                    <th>For Sub-Allotment CY: @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference) </th>
+                    <th>For SAA CY: @Html.DisplayFor(modelItem => item.Yearly_reference.YearlyReference) </th>
                 </tr>
                 @foreach (var allotment_class in ViewBag.AllotmentClass)
                 {
@@ -132,7 +149,7 @@
                         </td>
                         <td>
                             <a class="btn btn-sm btn-default" asp-controller="FundSource" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
-                                <i class="ace-icon fa fa-arrow-right"></i>Fund Source
+                                <i class="ace-icon fa fa-arrow-right"></i>GAA
                             </a>
                             <br />
                             <span class="grey">(BB): </span>
@@ -162,10 +179,20 @@
                                 total_obligated_amount += fund_obligated_amount;
                             }
                             <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                            @if(@*appropriation.AppropriationSource == "CURRENT" && *@item.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId))
+                            {
+                                var check = item.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId && x.IsAddToNextAllotment == true)? "checked" : "";
+                                <div class="checkbox">
+								    <label>
+									    <input name="form-field-checkbox" type="checkbox"  class="ace" @check onclick="FundSetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@item.BudgetAllotmentId');">
+									    <span class="lbl">Set Next Year</span>
+								    </label>
+							    </div>
+                            }
                         </td>
                         <td>
                             <a class="btn btn-sm btn-default" asp-controller="SubAllotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@item.BudgetAllotmentId">
-                                <i class="ace-icon fa fa-plus"></i>Sub-Allotment
+                                <i class="ace-icon fa fa-plus"></i>SAA
                             </a>
                             <br />
                             <span class="grey">(BB): </span>
@@ -197,7 +224,7 @@
                             }
                             <b class="blue">@sub_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                             
-                            @if(appropriation.AppropriationSource == "CONAP" && item.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId))
+                            @if(@*appropriation.AppropriationSource == "CURRENT" && *@item.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId))
                             {
                                 var check = item.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == item.BudgetAllotmentId && x.IsAddToNextAllotment == true)? "checked" : "";
                                 <div class="checkbox">
@@ -221,12 +248,27 @@
     $("#total_obligated_amount").html("@total_obligated_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_realignment_amount").html("@total_realignment_amount.ToString("C", new CultureInfo("en-PH"))");
     $("#total_remaining_balance").html("@total_remaining_balance.ToString("C", new CultureInfo("en-PH"))");
-    @* $("#total_utilized_amount").html("@total_utilized_amount.ToString("C", new CultureInfo("en-PH"))");*@
+  
 
     function SetNextYear(set, allotmentClassId, appropriationId, budgetAllotmentId){
         console.log(set);
         $.ajax({
             url: '@Url.Action("CheckNextYear","BudgetAllotment")',
+            data:{
+                allotmentClassId: allotmentClassId,
+                appropriationId: appropriationId,
+                budgetAllotmentId: budgetAllotmentId,
+                addToNext: set
+            },
+            async: true,
+            method: 'POST'
+        })
+    }
+
+    function FundSetNextYear(set, allotmentClassId, appropriationId, budgetAllotmentId){
+        console.log(set);
+        $.ajax({
+            url: '@Url.Action("FundCheckNextYear","BudgetAllotment")',
             data:{
                 allotmentClassId: allotmentClassId,
                 appropriationId: appropriationId,

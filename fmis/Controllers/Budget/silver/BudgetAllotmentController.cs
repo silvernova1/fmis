@@ -15,9 +15,11 @@ using fmis.Models.John;
 using System.Globalization;
 using fmis.Models.silver;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class BudgetAllotmentController : Controller
     {
         private readonly MyDbContext _context;
@@ -50,13 +52,13 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
             ViewBag.layout = "_Layout";
 
-
-
             string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
+            ViewBag.Result = result;
 
+            
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
@@ -65,8 +67,6 @@ namespace fmis.Controllers
             .Where(x=>x.YearlyReferenceId == YearlyRefId)
             .AsNoTracking()
             .ToListAsync();
-
-            
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
@@ -78,7 +78,36 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
+<<<<<<< HEAD
             //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+=======
+            /*var fundsourcesLastYr = await _context.FundSources
+                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Include(x => x.AllotmentClass)
+                .ToListAsync();*/
+
+            suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
+            //fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
+
+            //budget_allotment.FirstOrDefault().FundSources = budget_allotment.FirstOrDefault().FundSources.Concat(fundsourcesLastYr).ToList();
+            budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+
+            var CurrentYrAllotment_beginningBalance = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.Beginning_balance) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.Beginning_balance);
+            ViewBag.CurrentYrAllotment_beginningBalance = CurrentYrAllotment_beginningBalance.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_remainingBalance = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.Remaining_balance) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.Remaining_balance);
+            ViewBag.CurrentYrAllotment_remainingBalance = CurrentYrAllotment_remainingBalance.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_realignmentAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount);
+            ViewBag.CurrentYrAllotment_realignmentAmount = CurrentYrAllotment_realignmentAmount.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_obligatedAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount);
+            ViewBag.CurrentYrAllotment_obligatedAmount = CurrentYrAllotment_obligatedAmount.ToString("C", new CultureInfo("en-PH"));
+
+            var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
+            ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
+
+>>>>>>> b02c5ef2bf92de9c1311cca0a60959b9833bf30a
             return View(budget_allotment);
         }
 
@@ -108,8 +137,7 @@ namespace fmis.Controllers
                                               }),
                                        "PrexcId",
                                        "prexc",
-                                       null);
-
+                                       null);                    
         }
 
         private void PopulatePsDropDownList()
@@ -327,6 +355,21 @@ namespace fmis.Controllers
 
             return Ok(_context.SaveChangesAsync());
         }
+
+        [HttpPost]
+        public async Task<ActionResult> FundCheckNextYear(int allotmentClassId, int appropriationId, int budgetAllotmentId, bool addToNext)
+        {
+            var fundSources = await _context.FundSources.Where(x => x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationId && x.BudgetAllotmentId == budgetAllotmentId).ToListAsync();
+
+            fundSources.ForEach(x => x.IsAddToNextAllotment = addToNext);
+
+            _context.UpdateRange(fundSources);
+            await _context.SaveChangesAsync();
+
+
+            return Ok(_context.SaveChangesAsync());
+        }
+
         /*[HttpPost]
         public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
         {

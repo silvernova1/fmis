@@ -11,9 +11,12 @@ using fmis.Data;
 using fmis.Data.John;
 using fmis.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.Carlo
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundsRealignmentController : Controller
     {
         private readonly FundsRealignmentContext _context;
@@ -38,6 +41,7 @@ namespace fmis.Controllers.Budget.Carlo
         {
             public int Realignment_from { get; set; }
             public int Realignment_to { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Realignment_amount { get; set; }
             public string status { get; set; }
             public int Id { get; set; }
@@ -48,10 +52,15 @@ namespace fmis.Controllers.Budget.Carlo
         public class FundRealingmentSaveAmount
         {
             public int fundsource_id { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal realignment_amount { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal fundsource_amount_remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal fundsource_amount_realignment { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal amount { get; set; }
             public string realignment_token { get; set; }
             public string fundsource_amount_token { get; set; }
@@ -71,7 +80,9 @@ namespace fmis.Controllers.Budget.Carlo
 
         public class GetRemainingAndRealignment
         {
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal realignment_amount { get; set; }
         }
 

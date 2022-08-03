@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using fmis.Models;
+using fmis.Models.Carlo;
 using fmis.Models.Budget;
 using fmis.Models.silver;
 
@@ -17,6 +18,9 @@ namespace fmis.Models.John
         public int FundSourceId { get; set; }
         public string FundSourceTitle { get; set; }
         public string FundSourceTitleCode { get; set; }
+        public bool IsAddToNextAllotment { get; set; }
+        public bool Original { get; set; }
+        public bool Breakdown { get; set; }
         public string PapType { get; set; }
         [ForeignKey("RespoCenter")]
         public int RespoId { get; set; }
@@ -38,16 +42,22 @@ namespace fmis.Models.John
         public int FundId { get; set; }
         [JsonIgnore]
         public Fund Fund { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Beginning_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Remaining_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal obligated_amount { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal utilized_amount { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public int? BudgetAllotmentId { get; set; }
         public BudgetAllotment BudgetAllotment { get; set; }
         public ICollection<FundSourceAmount> FundSourceAmounts { get; set; }
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
+        public ICollection<FundTransferedTo> FundTransferedTo { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
 
     }

@@ -44,9 +44,13 @@ namespace fmis.Models
         [JsonIgnore]
         public Fund Fund { get; set; }
 
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Beginning_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Remaining_balance { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal obligated_amount { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal realignment_amount { get; set; }
         public string token { get; set; }
         public int? BudgetAllotmentTrustFundId { get; set; }

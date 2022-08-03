@@ -19,10 +19,12 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
-
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class SubAllotmentController : Controller
     {
         private readonly SubAllotmentContext _context;
@@ -48,6 +50,7 @@ namespace fmis.Controllers
         {
             public int Id { get; set; }
             public int UacsId { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             public string suballotment_amount_token { get; set; }
             public string suballotment_token { get; set; }
@@ -74,7 +77,7 @@ namespace fmis.Controllers
         #endregion
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, Boolean viewAllBtn)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search)
         {
           
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
@@ -82,22 +85,13 @@ namespace fmis.Controllers
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
-            ViewData["search"] = "";
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                ViewData["search"] = search.ToUpper();
-            }
-
-            if(viewAllBtn == true)
-            {
-                ViewData["search"] = "";
-            }
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
+            ViewBag.LastYr = result;
+            ViewBag.CurrentYr = year;
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
@@ -120,9 +114,32 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
             Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
+            //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
+
+            //var CurrentYrAllotment_beginningbalance = await _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.Budget_allotment.Yearly_reference.YearlyReference == year).ToListAsync();
+            ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
+
+            //var CurrentYrAllotment_remainingbalance = await _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.Budget_allotment.Yearly_reference.YearlyReference == year).ToListAsync();
+            ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+
+            //var CurrentYrAllotment_obligatedAmount = await _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.Budget_allotment.Yearly_reference.YearlyReference == year).ToListAsync();
+            ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
+
+            //var LastYrAllotment_remainingbalance = await _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.IsAddToNextAllotment == true).ToListAsync();
+            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.Trim();
+                ViewBag.Search = search;
+                budget_allotment.SubAllotment = budget_allotment.SubAllotment
+                    .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
             return View(budget_allotment);
         }
 
@@ -203,7 +220,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
             var suballotment = _MyDbContext.SubAllotment?.Where(x => x.SubAllotmentId == sub_allotment_id)
-                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated")).Include(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
+                .Include(x => x.SubAllotmentAmounts.Where(x => x.status == "activated").OrderBy(x => x.UacsId)).Include(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
                 .FirstOrDefault();
 
             ViewBag.AllotmentClassId = AllotmentClassId;

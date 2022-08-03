@@ -14,9 +14,11 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationAmountController : Controller
     {
         private readonly ObligationAmountContext _context;
@@ -38,8 +40,11 @@ namespace fmis.Controllers
             public int obligation_id { get; set; }
             public string obligation_token { get; set; }
             public string obligation_amount_token { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal amount { get; set; }
         }
 
@@ -47,19 +52,28 @@ namespace fmis.Controllers
         {
             public int obligation_id { get; set; }
             public string obligation_token { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal beginning_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
         }
 
         public class GetObligatedAndRemaining
         {
+            [Column(TypeName = "decimal(18,4)")]
             public decimal beginning_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
-            public decimal ?overall_beginning_balance { get; set; }
-            public decimal ?overall_remaining_balance { get; set; }
-            public decimal ?overall_obligated_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
+            public decimal? overall_beginning_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
+            public decimal? overall_remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
+            public decimal? overall_obligated_balance { get; set; }
         }
 
         public class ObligationAmountData
@@ -67,6 +81,7 @@ namespace fmis.Controllers
             public int ObligationId { get; set; }
             public int UacsId { get; set; }
             public string Expense_code { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             /* public float Total_disbursement { get; set; }
              public float Total_net_amount { get; set; }
@@ -92,7 +107,9 @@ namespace fmis.Controllers
 
         public class SourceRemainingAndObligated
         {
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
         }
 
@@ -108,18 +125,19 @@ namespace fmis.Controllers
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
 
-       
+            Console.WriteLine(JsonSerializer.Serialize(currentObligation));
+
             if (currentObligation.source_type == "fund_source")
             {
-                if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == data.First().Expense_code)) 
-                    return BadRequest(new { error_message = "INVALID EXPENSE CODE"});
+                if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == data.First().Expense_code))
+                    return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
             }
             else if (currentObligation.source_type == "sub_allotment")
             {
                 if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == data.First().Expense_code))
                     return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
             }
-                
+
 
             foreach (var item in data)
             {
@@ -129,7 +147,6 @@ namespace fmis.Controllers
 
                 var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
                 var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
-
 
                 obligation_amount.ObligationId = obligation.Id;
                 obligation_amount.UacsId = uacs.UacsId;

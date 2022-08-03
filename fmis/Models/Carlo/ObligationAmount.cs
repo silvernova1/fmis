@@ -14,6 +14,7 @@ namespace fmis.Models
         public int ObligationId { get; set; }
         public int UacsId { get; set; }
         public Int64 Expense_code { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Amount { get; set; }
         public float Total_disbursement { get; set; }
         public float Total_net_amount { get; set; }

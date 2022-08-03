@@ -10,8 +10,11 @@ using fmis.Models;
 using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
 namespace fmis.Controllers.Accounting
 {
+    [Authorize(Policy = "AccountingAdmin")]
     public class CategoryController : Controller
     {
         private readonly MyDbContext _MyDbContext;

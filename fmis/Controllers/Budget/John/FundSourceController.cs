@@ -20,9 +20,12 @@ using iTextSharp.tool.xml;
 using System.Globalization;
 using fmis.Filters;
 using fmis.Models.silver;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Budget.John
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class FundSourceController : Controller
     {
         private readonly FundSourceContext _FundSourceContext;
@@ -48,6 +51,7 @@ namespace fmis.Controllers.Budget.John
         {
             public int FundSourceId { get; set; }
             public int UacsId { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
             public int Id { get; set; }
             public string fundsource_amount_token { get; set; }
@@ -73,24 +77,17 @@ namespace fmis.Controllers.Budget.John
         }
         #endregion
 
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, Boolean viewAllBtn)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
-            ViewData["search"] = "";
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                ViewData["search"] = search.ToUpper();
-            }
-
-            if (viewAllBtn == true)
-            {
-                ViewData["search"] = "";
-            }
+            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
 
             var budget_allotment = await _MyDbContext.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
@@ -105,7 +102,40 @@ namespace fmis.Controllers.Budget.John
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
+            var fundsourcesLastYr = await _MyDbContext.FundSources
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Include(x => x.RespoCenter)
+                .Include(x => x.Prexc)
+                .Include(x => x.Appropriation)
+                .Include(x => x.AllotmentClass)
+                .ToListAsync();
+
+            budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.Trim();
+                ViewBag.Search = search;
+                budget_allotment.FundSources = budget_allotment.FundSources
+                    .Where(x => x.FundSourceTitle.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.Prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
             return View(budget_allotment);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CheckNextYear(int fundsourceId, bool addToNext)
+        {
+            var fundsources = await _MyDbContext.FundSources.FindAsync(fundsourceId);
+
+            fundsources.IsAddToNextAllotment = addToNext;
+
+            _MyDbContext.Update(fundsources);
+            await _MyDbContext.SaveChangesAsync();
+
+
+            return Ok(await _MyDbContext.SaveChangesAsync());
         }
 
 
@@ -180,8 +210,6 @@ namespace fmis.Controllers.Budget.John
                 return View();
             }*/
 
-
-
             return RedirectToAction("Index", "FundSource", new
             {
                 AllotmentClassId = fundSource.AllotmentClassId,
@@ -208,7 +236,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             var fundsourcess = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
-                .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated"))
+                .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated").OrderBy( x=> x.UacsId))
                 .FirstOrDefault();
 
             var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id).FirstOrDefault();
@@ -244,9 +272,11 @@ namespace fmis.Controllers.Budget.John
             fundsource_data.RespoId = fundSource.RespoId;
             fundsource_data.Beginning_balance = beginning_balance;
             fundsource_data.Remaining_balance = remaining_balance;
+            fundsource_data.Original = fundSource.Original;
+            fundsource_data.Breakdown = fundSource.Breakdown;
 
-            _FundSourceContext.Update(fundsource_data);
-            await _FundSourceContext.SaveChangesAsync();
+            _MyDbContext.Update(fundsource_data);
+            await _MyDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index", "FundSource", new
             {
@@ -321,7 +351,6 @@ namespace fmis.Controllers.Budget.John
 
         }
 
-
         private void PopulateFundDropDownList()
         {
             var departmentsQuery = from d in _MyDbContext.Fund
@@ -336,12 +365,7 @@ namespace fmis.Controllers.Budget.John
                                        "FundId",
                                        "FundDescription",
                                        null);
-
         }
-
-
-
- 
 
         // POST: FundSource/Delete/5
         [HttpPost]

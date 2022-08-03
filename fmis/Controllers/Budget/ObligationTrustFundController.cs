@@ -27,9 +27,11 @@ using Image = iTextSharp.text.Image;
 using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationTrustFundController : Controller
     {
       
@@ -73,6 +75,7 @@ namespace fmis.Controllers
             public int source_id { get; set; }
             public string source_title { get; set; }
             public string source_type { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal source_balance { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }

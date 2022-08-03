@@ -34,6 +34,7 @@ using iTextSharp.text.pdf.draw;
 
 namespace fmis.Controllers.Accounting
 {
+    [Authorize(Policy = "AccountingAdmin")]
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;

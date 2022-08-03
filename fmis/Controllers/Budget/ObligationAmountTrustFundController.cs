@@ -14,12 +14,13 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using Rotativa.AspNetCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Controllers
 {
+    [Authorize(Policy = "BudgetAdmin")]
     public class ObligationAmountTrustFundController : Controller
     {
-
 
         private readonly MyDbContext _MyDbContext;
         private ObligationTrustFund ObligationTrustFund;
@@ -37,8 +38,11 @@ namespace fmis.Controllers
             public int obligation_id { get; set; }
             public string obligation_token { get; set; }
             public string obligation_amount_token { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal remaining_balance { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal obligated_amount { get; set; }
+            [Column(TypeName = "decimal(18,4)")]
             public decimal amount { get; set; }
         }
 
