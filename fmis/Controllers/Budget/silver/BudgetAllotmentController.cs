@@ -78,6 +78,9 @@ namespace fmis.Controllers
                 .Include(x=>x.AllotmentClass)
                 .ToListAsync();
 
+
+            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+
             /*var fundsourcesLastYr = await _context.FundSources
                 .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.AllotmentClass)
