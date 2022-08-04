@@ -1,0 +1,35 @@
+﻿@model fmis.Models.Obligation
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using System.Text.Json;
+@using System.Globalization;
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+
+<style>
+    .wtHider {
+        margin-bottom: 100px;
+    }
+</style>
+
+<table>
+    <tr>
+        <th>Created By:</th>
+    </tr>
+    <tr>
+        <td>
+        nahi the great
+        </td>
+    </tr>
+
+</table>
+
+
+
+
+
