@@ -203,8 +203,8 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
-    function ajaxServer(ajax_data, url) {
-		    $.ajax({
+   @* function ajaxServer(ajax_data, url) {
+		    return $.ajax({
 			    type: 'POST',
 			    url: url,
 			    headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
@@ -213,7 +213,15 @@
                     console.log(output);
 			    }
 		    });
-        }
+        }*@
+     function ajaxServer(ajax_data, url) {
+        return Promise.resolve($.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data},
+        }));
+    }
 
     function isNumeric(o) {
         if (!o || typeof o !== 'string') {
