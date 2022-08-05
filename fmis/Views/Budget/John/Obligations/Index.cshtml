@@ -115,6 +115,7 @@
     </div>
 </div>
 
+>>>>>>> b02c5ef2bf92de9c1311cca0a60959b9833bf30a
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
         <div class="modal-content">
@@ -221,7 +222,21 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
+<<<<<<< HEAD
 
+=======
+   @* function ajaxServer(ajax_data, url) {
+		    return $.ajax({
+			    type: 'POST',
+			    url: url,
+			    headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+			    data: { data: ajax_data },
+			    success: function (output) {
+                    console.log(output);
+			    }
+		    });
+        }*@
+>>>>>>> 9c4b4060ced50957a14a2a6ced91b90bd2b81d47
      function ajaxServer(ajax_data, url) {
         return Promise.resolve($.ajax({
             type: 'POST',
@@ -956,7 +971,14 @@
                                 }, 500);
                             }
                         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9c4b4060ced50957a14a2a6ced91b90bd2b81d47
                     }
+
+
+
                 },
             }
 
