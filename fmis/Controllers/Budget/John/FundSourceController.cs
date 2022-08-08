@@ -103,7 +103,7 @@ namespace fmis.Controllers.Budget.John
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
             var fundsourcesLastYr = await _MyDbContext.FundSources
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.RespoCenter)
                 .Include(x => x.Prexc)
                 .Include(x => x.Appropriation)
@@ -111,6 +111,12 @@ namespace fmis.Controllers.Budget.John
                 .ToListAsync();
 
             budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
+
+            ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+
 
 
             if (!string.IsNullOrEmpty(search))

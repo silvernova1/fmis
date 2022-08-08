@@ -85,7 +85,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSources.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                    @*@Model.FundSources.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_beginningbalance
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> ALLOTMENT </span>
@@ -98,29 +99,16 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @Model.FundSources.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                    @*@Model.FundSources.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_obligatedAmount
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> OBLIGATED </span>
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @Model.FundSources.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right">  BALANCE </span>
-                </div>
-            </div>
         </div>
-
     </div>
-</div>
 <br />
 <br />
 <br />

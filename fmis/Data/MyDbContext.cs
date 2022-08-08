@@ -95,6 +95,7 @@ namespace fmis.Data
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
             modelBuilder.Entity<AllotmentClass>().ToTable("AllotmentClass");
+
             //PAP SEEDER
             modelBuilder.Entity<PapType>().HasData(new PapType { PapTypeID = 1, PapTypeName = "GAS" },
                                                             new PapType { PapTypeID = 2, PapTypeName = "STO" },
