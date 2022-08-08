@@ -86,23 +86,28 @@ namespace fmis.Controllers.Budget.Carlo
             public decimal realignment_amount { get; set; }
         }
 
-        public async Task<IActionResult> Index(int fundsource_id)
+        public async Task<IActionResult> Index(int fundsource_id, int AllotmentClassId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+        
 
             FundSource = await _allContext.FundSources
                             .Include(x => x.FundSourceAmounts)
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
-                            .Include(x => x.FundsRealignment./*Where(x=>x.FundSourceId == fundsource_id)*/Where(w => w.status == "activated"))
+                            .Include(x => x.FundsRealignment/*Where(x=>x.FundSourceId == fundsource_id)*/.Where(w => w.status == "activated"))
                                 .ThenInclude(x => x.FundSourceAmount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.FundSourceId == fundsource_id);
+
             var from_uacs = await _FAContext.FundSourceAmount
                             .Where(x => x.FundSourceId == fundsource_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
+
             FundSource.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
+
 
             //return Json(FundSource);
             return View("~/Views/Carlo/FundsRealignment/Index.cshtml", FundSource);

@@ -91,21 +91,7 @@
                     @ViewBag.CurrentYrAllotment_beginningbalance
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
-                </div>
-            </div>
-        </div>
-        <div class="infobox infobox-red">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @*@Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))*@
-                    @ViewBag.CurrentYrAllotment_remainingbalance
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+                    <span class="label label-success arrowed-in arrowed-in-right">  ALLOTMENT </span>
                 </div>
             </div>
         </div>
@@ -119,11 +105,26 @@
                     @ViewBag.CurrentYrAllotment_obligatedAmount
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-primary arrowed-in arrowed-in-right"> Obligated Amount </span>
+                    <span class="label label-primary arrowed-in arrowed-in-right"> OBLIGATED </span>
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-red" style="width:250px">
+        <div class="infobox infobox-red">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-calculator"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color: grey;">
+                    @*@Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))*@
+                    @ViewBag.CurrentYrAllotment_remainingbalance
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-danger arrowed-in arrowed-in-right"> BALANCE </span>
+                </div>
+            </div>
+        </div>
+
+        @* <div class="infobox infobox-red" style="width:250px">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
@@ -135,7 +136,7 @@
                     <span class="label label-danger arrowed-in arrowed-in-right">CONAP Remaining Balance </span>
                 </div>
             </div>
-        </div>
+        </div>*@
     </div>
 </div>
 <br />
@@ -202,11 +203,11 @@
 {
     <table class="table">
         <thead>
-            <tr >
+            <tr>
                 <th style="width: 250px">
                     Pap Title
                 </th>
-                <th >
+                <th>
                     Sub Allotment Title
                 </th>
                 <th style="width: 250px">
@@ -225,78 +226,80 @@
                     SAA Transfered To
                 </th>
                 <th>
-                    Beginning Balance
+                    ALLOTMENT
                 </th>
                 <th>
-                    Remaining Balance
+                    OBLIGATED
                 </th>
                 <th>
-                    Obligated Amount
+                    BALANCE
                 </th>
+
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.SubAllotment.OrderByDescending(x => x.CreatedAt))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.prexc.pap_title)
-                    </td>
-                    @if(item.IsAddToNextAllotment == true)
-                    {
-                        <td style='color:darkkhaki'>
-                        @Html.DisplayFor(modelItem => item.Suballotment_title)
-                        </td>
-                    }
-                    else
-                    {
-                    <td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.prexc.pap_title)
+                </td>
+                @if (item.IsAddToNextAllotment == true)
+                {
+                    <td style='color:darkkhaki'>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
-                    }
+                }
+                else
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Description)
+                        @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
-                    <td>
-                        @item.RespoCenter.Respo
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-                        <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
-                        <div class="checkbox">
-                            <label>
-                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.SubAllotmentId')">
-                                <span class="lbl">Set Next Year</span>
-                            </label>
-                        </div>
-                    </td>
-                    <td>
-                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Realignment</a>
-                    </td>
-                    <td>
-                        <center>
-                            <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs">
-                                <span class="glyphicon glyphicon-share-alt"></span>
-                            </a>
-                        </center>
-                    </td>
-                    <td>
-                        <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="red">
-                            <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                    <td>
-                        <b class="blue">
-                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
-                        </b>
-                    </td>
-                </tr>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @item.RespoCenter.Respo
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
+                    <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                    <div class="checkbox">
+                        <label>
+                            <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.SubAllotmentId')">
+                            <span class="lbl">Set Next Year</span>
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Realignment</a>
+                </td>
+                <td>
+                    <center>
+                        <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs">
+                            <span class="glyphicon glyphicon-share-alt"></span>
+                        </a>
+                    </center>
+                </td>
+                <td>
+                    <b class="green">
+                        <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="blue">
+                        <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+                <td>
+                    <b class="red">
+                        <span>@item.Remaining_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                    </b>
+                </td>
+
+            </tr>
             }  
         </tbody>
     </table>
