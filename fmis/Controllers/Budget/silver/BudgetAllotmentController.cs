@@ -64,6 +64,7 @@ namespace fmis.Controllers
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment)
+                .ThenInclude(x=>x.Appropriation)
             .Where(x=>x.YearlyReferenceId == YearlyRefId)
             .AsNoTracking()
             .ToListAsync();
@@ -79,23 +80,29 @@ namespace fmis.Controllers
                 .ToListAsync();
 
 
-            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
-
-            /*var fundsourcesLastYr = await _context.FundSources
-                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
-                .Include(x => x.AllotmentClass)
-                .ToListAsync();*/
-
-            suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
-            //fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
-
-            //budget_allotment.FirstOrDefault().FundSources = budget_allotment.FirstOrDefault().FundSources.Concat(fundsourcesLastYr).ToList();
             budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
 
-            var CurrentYrAllotment_beginningBalance = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.Beginning_balance) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.Beginning_balance);
-            ViewBag.CurrentYrAllotment_beginningBalance = CurrentYrAllotment_beginningBalance.ToString("C", new CultureInfo("en-PH"));
+            var fundsourcesLastYr = await _context.FundSources
+                .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Include(x => x.AllotmentClass)
+                .ToListAsync();
 
-            var CurrentYrAllotment_remainingBalance = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.Remaining_balance) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.Remaining_balance);
+            suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
+            fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
+
+            budget_allotment.FirstOrDefault().FundSources = budget_allotment.FirstOrDefault().FundSources.Concat(fundsourcesLastYr).ToList();
+            //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
+
+            var CurrentYrAllotment_beginningBalance = _context.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Beginning_balance) +
+                                                      _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance) +
+                                                      _context.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Beginning_balance) +
+                                                      _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
+            @ViewBag.CurrentYrAllotment_beginningBalance = CurrentYrAllotment_beginningBalance.ToString("C", new CultureInfo("en-PH"));
+
+            var CurrentYrAllotment_remainingBalance = _context.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) +
+                                                      /*_context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) +*/
+                                                      _context.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance)
+                                                      /*_context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance)*/;
             ViewBag.CurrentYrAllotment_remainingBalance = CurrentYrAllotment_remainingBalance.ToString("C", new CultureInfo("en-PH"));
 
             var CurrentYrAllotment_realignmentAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount);
@@ -106,6 +113,9 @@ namespace fmis.Controllers
 
             var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
             ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
+
+            var previousAllotConapSaa =  _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance);
+            ViewBag.previousAllotConap = previousAllotConapSaa.ToString("C", new CultureInfo("en-PH"));
 
             return View(budget_allotment);
         }
