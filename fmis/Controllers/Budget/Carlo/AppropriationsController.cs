@@ -46,7 +46,7 @@ namespace fmis.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(appropriation);
-                appropriation.CreatedBy = Username;
+                //appropriation.CreatedBy = Username;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
