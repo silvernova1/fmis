@@ -77,14 +77,14 @@ namespace fmis.Controllers
         #endregion
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, bool lastYear = false)
         {
           
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
-
+            ViewBag.LastYear = lastYear;
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
@@ -105,7 +105,7 @@ namespace fmis.Controllers
             .Include(x => x.Yearly_reference)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
-            Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
+            //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
             var suballotmentsLastYr = await _MyDbContext.SubAllotment
                 .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                 .Include(x=>x.RespoCenter)
@@ -115,10 +115,10 @@ namespace fmis.Controllers
                 .Include(x=>x.Budget_allotment)
                     .ThenInclude(x=>x.Yearly_reference)
                 .ToListAsync();
-            Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
+            //Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
             //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
-            //budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
+            budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
 
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
