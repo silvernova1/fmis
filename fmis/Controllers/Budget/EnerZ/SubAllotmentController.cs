@@ -112,23 +112,18 @@ namespace fmis.Controllers
                 .Include(x=>x.prexc)
                 .Include(x=>x.Appropriation)
                 .Include(x=>x.AllotmentClass)
+                .Include(x=>x.Budget_allotment)
+                    .ThenInclude(x=>x.Yearly_reference)
                 .ToListAsync();
             Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
             //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
-            budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
+            //budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
 
-            //var CurrentYrAllotment_beginningbalance = await _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.Budget_allotment.Yearly_reference.YearlyReference == year).ToListAsync();
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
-
-            //var CurrentYrAllotment_remainingbalance = await _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.Budget_allotment.Yearly_reference.YearlyReference == year).ToListAsync();
             ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
-
-            //var CurrentYrAllotment_obligatedAmount = await _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.Budget_allotment.Yearly_reference.YearlyReference == year).ToListAsync();
             ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
-
-            //var LastYrAllotment_remainingbalance = await _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.IsAddToNextAllotment == true).ToListAsync();
             ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
 

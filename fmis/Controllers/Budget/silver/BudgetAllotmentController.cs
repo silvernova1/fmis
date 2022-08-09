@@ -69,8 +69,8 @@ namespace fmis.Controllers
             .AsNoTracking()
             .ToListAsync();
 
-            ViewBag.AllotmentClass = await _context.AllotmentClass.AsNoTracking().ToListAsync();
-            ViewBag.AppropriationSource = await _context.Appropriation.AsNoTracking().ToListAsync();
+            ViewBag.AllotmentClass = await _context.AllotmentClass.Include(x=>x.BudgetAllotments).AsNoTracking().ToListAsync();
+            ViewBag.AppropriationSource = await _context.Appropriation.Include(x => x.BudgetAllotments).AsNoTracking().ToListAsync();
 
             var allotmentClass_Id = _context.AllotmentClass.FirstOrDefault(x => x.Id == 3).Id;
 

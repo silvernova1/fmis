@@ -86,7 +86,7 @@ namespace fmis.Data
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<FmisUser>().ToTable("FMISUser");
+            modelBuilder.Entity<FmisUser>().ToTable("FmisUser");
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
             modelBuilder.Entity<FundSourceAmount>().ToTable("FundSourceAmount");
