@@ -108,6 +108,7 @@ namespace fmis.Controllers.Budget.John
                 .Include(x => x.Prexc)
                 .Include(x => x.Appropriation)
                 .Include(x => x.AllotmentClass)
+                .Include(x=>x.BudgetAllotment).ThenInclude(x=>x.Yearly_reference)
                 .ToListAsync();
 
             budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();

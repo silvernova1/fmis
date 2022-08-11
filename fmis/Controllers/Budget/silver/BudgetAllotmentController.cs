@@ -99,15 +99,20 @@ namespace fmis.Controllers
             ViewBag.CurrentYrAllotment_beginningBalance = CurrentYrAllotment_beginningBalance.ToString("C", new CultureInfo("en-PH"));
 
             var CurrentYrAllotment_remainingBalance = _context.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Remaining_balance) +
-                                                      /*_context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) +*/
-                                                      _context.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance)
-                                                      /*_context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance)*/;
+                                                      _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) +
+                                                      _context.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(s => s.Remaining_balance) +
+                                                      _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
             ViewBag.CurrentYrAllotment_remainingBalance = CurrentYrAllotment_remainingBalance.ToString("C", new CultureInfo("en-PH"));
 
             var CurrentYrAllotment_realignmentAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.realignment_amount);
             ViewBag.CurrentYrAllotment_realignmentAmount = CurrentYrAllotment_realignmentAmount.ToString("C", new CultureInfo("en-PH"));
 
-            var CurrentYrAllotment_obligatedAmount = _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount) + _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount);
+            var CurrentYrAllotment_obligatedAmount = _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount)
+                                                   + _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)
+                                                   + _context.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year).Sum(x => x.obligated_amount)
+                                                   + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount);
+
+
             ViewBag.CurrentYrAllotment_obligatedAmount = CurrentYrAllotment_obligatedAmount.ToString("C", new CultureInfo("en-PH"));
 
             var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);

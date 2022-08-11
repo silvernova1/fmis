@@ -60,17 +60,6 @@
                 </div>
             </div>
         </div>
-       @* <div class="infobox infobox-orange2">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-bar-chart-o"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" id="total_realignment_amount" style="font-size:11pt; color:grey;"></span>
-                <div class="infobox-content">
-                    <span class="label label-warning arrowed-in arrowed-in-right"> Realignment Amount </span>
-                </div>
-            </div>
-        </div>*@
         <div class="infobox infobox-red">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
@@ -276,6 +265,13 @@
                         <b class="green">@sub_beginning_balanceConap.Value.ToString("C", new CultureInfo("en-PH"))</b>
                         <br />
 
+                        <span class="grey">(OBLIGATED): </span>
+                        @{
+                            var sub_obligated_amountConap = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear)?.Sum(x => x.obligated_amount);
+                            //total_obligated_amount += sub_obligated_amountConap;
+                        }
+                        <b class="blue">@sub_obligated_amountConap.Value.ToString("C", new CultureInfo("en-PH"))</b>
+                        <br />
                         <span class="grey">(BALANCE): </span>
                         @{
                             var sub_remaining_balanceConap  = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear)?.Sum(x => x.Remaining_balance);
@@ -289,12 +285,7 @@
                             total_realignment_amount += sub_realignment_amountConap ;
                         }
                         <b class="orange">@sub_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>*@
-                        <span class="grey">(OBLIGATED): </span>
-                        @{
-                            var sub_obligated_amountConap = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear)?.Sum(x => x.obligated_amount);
-                            //total_obligated_amount += sub_obligated_amountConap;
-                        }
-                        <b class="blue">@sub_obligated_amountConap.Value.ToString("C", new CultureInfo("en-PH"))</b>
+                        
                             
                         @if(@*appropriation.AppropriationSource == "CURRENT" && *@Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
                         {

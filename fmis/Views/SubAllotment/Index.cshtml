@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var lastYear = int.Parse(User.FindFirstValue("YearlyRef")) - 1;
     var items = Model.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == User.FindFirstValue("YearlyRef"));
+    var TotalAllotment = Model.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == User.FindFirstValue("YearlyRef")).Sum(x=>x.Beginning_balance);
     if (ViewBag.LastYear)
     {
         items = Model.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString());
@@ -93,7 +94,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @items.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                    @items.Sum(x=>x.Beginning_balance).ToString("#,##0.00")
                     @*@ViewBag.CurrentYrAllotment_beginningbalance*@
                 </span>
                 <div class="infobox-content">
@@ -251,7 +252,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.prexc.pap_title)
                 </td>
-                @if (item.IsAddToNextAllotment == true)
+                <td>
+                        @Html.DisplayFor(modelItem => item.Suballotment_title)
+                </td>
+                @*@if (item.IsAddToNextAllotment == true)
                 {
                     <td style='color:darkkhaki'>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
@@ -262,7 +266,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
-                }
+                }*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
