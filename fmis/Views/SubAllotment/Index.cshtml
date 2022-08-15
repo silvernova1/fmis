@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "SubAllotment";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var lastYear = int.Parse(User.FindFirstValue("YearlyRef")) - 1;
+    var items = Model.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == User.FindFirstValue("YearlyRef"));
+    var TotalAllotment = Model.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == User.FindFirstValue("YearlyRef")).Sum(x=>x.Beginning_balance);
+    if (ViewBag.LastYear)
+    {
+        items = Model.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString());
+    }
 }
 
 <style type="text/css">
@@ -87,8 +94,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @*@Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))*@
-                    @ViewBag.CurrentYrAllotment_beginningbalance
+                    @items.Sum(x=>x.Beginning_balance).ToString("#,##0.00")
+                    @*@ViewBag.CurrentYrAllotment_beginningbalance*@
                 </span>
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right">  ALLOTMENT </span>
@@ -101,8 +108,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    @*@Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))*@
-                    @ViewBag.CurrentYrAllotment_obligatedAmount
+                    @items.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                    @*@ViewBag.CurrentYrAllotment_obligatedAmount*@
                 </span>
                 <div class="infobox-content">
                     <span class="label label-primary arrowed-in arrowed-in-right"> OBLIGATED </span>
@@ -115,8 +122,8 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
-                    @*@Model.SubAllotment.Where(x=>x.IsAddToNextAllotment != true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))*@
-                    @ViewBag.CurrentYrAllotment_remainingbalance
+                    @items.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
+                    @*@ViewBag.CurrentYrAllotment_remainingbalance*@
                 </span>
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> BALANCE </span>
@@ -226,26 +233,29 @@
                     SAA Transfered To
                 </th>
                 <th>
-                    ALLOTMENT
+                    ALLOTMENT<br>@items.Sum(x=>x.Beginning_balance).ToString("#,##0.00")
                 </th>
                 <th>
-                    OBLIGATED
+                    OBLIGATED<br>@items.Sum(x=>x.obligated_amount).ToString("#,##0.00")
                 </th>
                 <th>
-                    BALANCE
+                    BALANCE<br>@items.Sum(x=>x.Remaining_balance).ToString("#,##0.00")
                 </th>
 
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.SubAllotment.OrderByDescending(x => x.CreatedAt))
+            @foreach (var item in items.OrderByDescending(x => x.CreatedAt))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.prexc.pap_title)
                 </td>
-                @if (item.IsAddToNextAllotment == true)
+                <td>
+                        @Html.DisplayFor(modelItem => item.Suballotment_title)
+                </td>
+                @*@if (item.IsAddToNextAllotment == true)
                 {
                     <td style='color:darkkhaki'>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
@@ -256,7 +266,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Suballotment_title)
                     </td>
-                }
+                }*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>

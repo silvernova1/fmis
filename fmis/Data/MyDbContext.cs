@@ -87,7 +87,7 @@ namespace fmis.Data
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<FmisUser>().ToTable("FMISUser");
+            modelBuilder.Entity<FmisUser>().ToTable("FmisUser");
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");
             modelBuilder.Entity<FundSource>().ToTable("FundSource");
             modelBuilder.Entity<FundSourceAmount>().ToTable("FundSourceAmount");
@@ -96,6 +96,7 @@ namespace fmis.Data
             modelBuilder.Entity<Yearly_reference>().ToTable("Yearly_reference");
             modelBuilder.Entity<SubAllotment_Realignment>().ToTable("SubAllotment_Realignment");
             modelBuilder.Entity<AllotmentClass>().ToTable("AllotmentClass");
+
             //PAP SEEDER
             modelBuilder.Entity<PapType>().HasData(new PapType { PapTypeID = 1, PapTypeName = "GAS" },
                                                             new PapType { PapTypeID = 2, PapTypeName = "STO" },
