@@ -18,6 +18,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -26,14 +27,14 @@ namespace fmis.Controllers
     {
         private readonly IUserService _userService;
         private readonly MyDbContext _context;
-
+        
         public AccountController(MyDbContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;
         }
 
-        #region CREATE ACCOUNT
+        /*#region CREATE ACCOUNT
         public async Task<ActionResult> CreateBudget()
         {
             var user = new FmisUser()
@@ -88,9 +89,6 @@ namespace fmis.Controllers
             return Ok(user);
         }
 
-
-
-
         public async Task<ActionResult> CreateAccounting()
         {
             var user = new FmisUser()
@@ -108,7 +106,28 @@ namespace fmis.Controllers
 
             return Ok(user);
         }
-        #endregion
+        #endregion*/
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+
+            ViewBag.filter = new FilterSidebar("user_main", "user_sub");
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Account/CreateUser.cshtml");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(FmisUser fmisUser)
+        {
+            fmisUser.Password = _userService.HashPassword(fmisUser, fmisUser.Password);
+            _context.Add(fmisUser);
+            _context.SaveChanges();
+            ViewBag.filter = new FilterSidebar("user_main", "user_sub");
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Account/CreateUser.cshtml");
+        }
 
         #region LOGIN
         [HttpGet]
@@ -209,7 +228,7 @@ namespace fmis.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),                
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.Email, user.Email),

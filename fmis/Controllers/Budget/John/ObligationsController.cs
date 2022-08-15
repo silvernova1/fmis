@@ -61,7 +61,7 @@ namespace fmis.Controllers
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
         }
-        
+
         public DateTime CheckExcelDate(string excel_data)
         {
             string dateString = @"d/M/yyyy";
@@ -159,7 +159,7 @@ namespace fmis.Controllers
                                     .Include(x => x.ObligationAmounts)
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
-                                    .Where(x=>x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId)
+                                    .Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId)
                                     .AsNoTracking()
                                     .ToListAsync();
 
@@ -214,7 +214,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult openCreatedBy()
         {
-           
+
             return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml", obligation);
         }
 
@@ -293,7 +293,7 @@ namespace fmis.Controllers
         {
             var no = int.Parse(lastORSNo.Substring(0, 4)) + 1;
 
-            return no.ToString().PadLeft(4,'0');
+            return no.ToString().PadLeft(4, '0');
         }
 
         // POST: Obligations/Create
@@ -1015,5 +1015,5 @@ namespace fmis.Controllers
             }
         }
 
-        }
+    }
 }

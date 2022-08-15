@@ -1,0 +1,67 @@
+﻿@model fmis.Models.UserModels.FmisUser
+
+@{
+    ViewData["Title"] = "Create";
+
+}
+<Style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        margin: 0;
+    }
+</Style>
+<h3 class="grey lighter smaller">
+   Create User
+</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" value="" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" value="" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" value=""/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <input type="hidden" asp-for="Role" id="role" />
+            <select class="form-control" id="dropdown">
+                <option value=""> Select...</option>
+                @if (User.FindFirstValue(ClaimTypes.Role) == "budget_admin")
+                {
+                    <option value="budget_admin">Budget (Admin)</option>
+                    <option value="budget_user">Budget (User)</option>
+                }
+                @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+                {
+                <option value="accounting_admin">Accounting (Admin)</option>
+                <option value="accounting_user">Accounting (User)</option>
+                }
+            </select>
+            </div>
+            <div class="btn-group">
+                <input type="submit" value="Create" class="btn btn-success btn-sm" id="submitBtn" onclick="ResetValues()" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function ResetValues() {
+        $('#role').val($("#dropdown").val());
+        $('#dropdown').val('');
+    }
+</script>
