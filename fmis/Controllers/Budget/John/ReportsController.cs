@@ -9460,7 +9460,7 @@ namespace fmis.Controllers.Budget.John
                                                                 AppropriationId = s.AppropriationId,
                                                                 AllotmentClassId = s.AllotmentClassId
                                                             }).ToList();
-                                var TransferedtoSubtotalAmount = _MyDbContext.SubTransferedTo.Where(x => x.SubAllotmentId == TransferedtoSubtotal.FirstOrDefault().SubAllotmentId && x.SubAllotmentAmountId == TransferedtoSubtotal.FirstOrDefault().UacsId && x.SubAllotment.IsAddToNextAllotment == true  && x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Amount);
+                                var TransferedtoSubtotalAmount = _MyDbContext.SubAllotment.FirstOrDefault().SubTransferedTo.Where(x => x.SubAllotmentId == TransferedtoSubtotal.FirstOrDefault().SubAllotmentId && x.SubAllotmentAmountId == TransferedtoSubtotal.FirstOrDefault().UacsId && x.SubAllotment.IsAddToNextAllotment == true  && x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Amount);
                                 var xy = TransferedtoSubtotal.Where(x => x.UacsId == _MyDbContext.Suballotment_amount.FirstOrDefault().UacsId && x.SubAllotmentId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.AppropriationId == 2 && x.AllotmentClassId == 3 && x.IsSet == true).Sum(x=>x.SubTotal);
 
                                     ws.Cell(currentRow, 18).Style.Font.SetBold();

@@ -27,7 +27,6 @@
         margin-bottom: 20px;
     }
 
-
     .htAutocompleteArrow {
         cursor: pointer;
     }
@@ -64,7 +63,6 @@
                     }
                     @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
                 </span>
-
                 <div class="infobox-content">
                     <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
                 </div>
@@ -81,7 +79,6 @@
                     }
                     @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
                 </span>
-
                 <div class="infobox-content">
                     <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
                 </div>
@@ -133,7 +130,7 @@
     <div class="modal-dialog modal-sm" style="width:40%;">
         <div class="modal-content">
             <h3 style="margin-left:20px;" class="grey lighter smaller-150">
-                Created 
+                Created
                 (Obligation)
             </h3>
             <div class="modal-body CreatedByContent">
@@ -157,7 +154,6 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
     let ObligationAmountToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -166,8 +162,6 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-
-
 	//SET AUTO DATE
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -176,7 +170,6 @@
 	today = mm + '/' + dd + '/' + yyyy;
 	//SET AUTO ADDRESS
 	var Address = "CEBU CITY"
-
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
         filtersPlugin.removeConditions(colIndex);
@@ -204,21 +197,18 @@
             TH.appendChild(getInitializedElements(col));
         }
     };
-
 	var SOURCE_TYPE= "";
 	var CHECK_AFTER_ROW = false; //goods
 	var CHECK_FIRST_ROW = false;
     @*var CHECK_FIRST_ROW1 = false;*@
     var AMOUNT = 0;
     var INSUFFICIENT_AMOUNT1 = false;
-
     var TRAP_LOAD = 0;
     var TRAP_LOAD2 = false;
     var TRAP_LOAD3 = false;
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
-
      function ajaxServer(ajax_data, url) {
         return Promise.resolve($.ajax({
             type: 'POST',
@@ -227,7 +217,6 @@
             data: { data: ajax_data},
         }));
     }
-
     function isNumeric(o) {
         if (!o || typeof o !== 'string') {
             // Should not be given anything but strings.
@@ -235,7 +224,6 @@
         }
         return o.length <= 15 && o.indexOf('e+') < 0 && o.indexOf('E+') < 0 && !isNaN(o) && isFinite(o);
     }
-
 	var fund_sub_data_dropdown = [];
 	var fund_sub_data_array = [];
 	var get_fund_sub = [];
@@ -251,21 +239,16 @@
         get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
 		fund_sub_counter++;
 	});
-
-
     var obligation = $.parseJSON($(".obligation").val());
 	const data = [];
     var counter = 0;
     var last_ors_handler;
     $.each(obligation, function () {
         var obligated_amount = 0;
-
         $.each(this.ObligationAmounts, function () {
             obligated_amount += this.Amount;
         });
-
         last_ors_handler = this.Ors_no;
-
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
             moment(this.Date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
@@ -281,13 +264,11 @@
             this.Id, //11
             this.obligation_token, //12
         ];
-
         $.each(this.ObligationAmounts, function () {
             data[counter].push(this.obligation_amount_token);
             data[counter].push(this.Expense_code);
             data[counter].push(this.Amount);
         });
-
         for (var i = this.ObligationAmounts.length; i < 12; i++) {
             data[counter].push(ObligationAmountToken()); //obligation amount token
             data[counter].push("");  // expense code
@@ -301,7 +282,6 @@
             data[counter].push(this.SubAllotment ? this.SubAllotment.Beginning_balance : 0);
             data[counter].push(this.SubAllotment ? this.SubAllotment.Remaining_balance : 0);
         }
-
         if (this.source_type == "fund_source") {
             data[counter].push(this.FundSource.AllotmentClassId)
         }
@@ -310,7 +290,6 @@
         }
 		counter++;
     });
-
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown = [];
     var uacs_data_array = [];
@@ -322,10 +301,8 @@
 		uacs_data_array[this.Expense_code] = json_data;
         uacs_counter++;
     });
-
 	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
-
 	const hot = new Handsontable(container, {
         data: data,
 		rowHeaders: true,
@@ -377,8 +354,6 @@
 				//FUNDSOURCE&SUBALLOTMENT
 				type: 'dropdown',
                 source: fund_sub_data_dropdown,
-
-
 			},
 			{
 				//DATE
@@ -414,7 +389,6 @@
 			{
 				//ORS NUMBER
 				type: 'text',
-
 			},
 			{
                 //CREATED BY
@@ -592,7 +566,6 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 6
             },
@@ -717,7 +690,6 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 10
             },
@@ -749,7 +721,6 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 11
             },
@@ -781,7 +752,6 @@
                     pattern: '0,0.00',
                 }
             },
-
             {
                 //OBLIGATION_AMOUNT_TOKEN 12
             },
@@ -917,20 +887,12 @@
 							}
 						});
                     }
-               @* },
+                },
 
-                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
-                "created": {
-                    name: 'CREATED BY',
-                    callback: function (changes, options) {
-
-                    }*@
-
-                  },
 
                 "row_below": { }, "remove_row": { }, "row_above": { }, "copy": { },
                 "created": {
-                    name: 'CREATED BY',
+                    name: 'Created By',
                     callback: function (key, options) {
                         var selection = this.getSelected();
                         var holder_data = this.getData();
@@ -951,11 +913,9 @@
                                 }, 500);
                             }
                         });
-
                     }
                 },
             }
-
 		},
 		beforeRemoveRow: function (index, column) {
 			var selection = this.getSelected();
@@ -986,13 +946,10 @@
                 for (var i = 0; i < 10; i++) {
                     TRAP_LOAD = 24; //mo load siya ka 15 tungud sa hot.setDataAtCell
                     hot.setDataAtCell(row+i, 12, ObligationToken()); //OBLIGATION TOKEN
-
                     hot.setDataAtCell(row+i, 1, today); //SET DATE AND TODAY
                     hot.setDataAtCell(row+i, 6, Address); //SET ADDRESS
-
                     let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
                     hot.setDataAtCell(row+i, 8, (above_ors).toString().padStart(4, '0'));
-
                     hot.setDataAtCell(row+i, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
                     hot.setDataAtCell(row+i, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
                     hot.setDataAtCell(row+i, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
@@ -1010,13 +967,10 @@
             else {
                 TRAP_LOAD = 10; //mo load siya ka 15 tungud sa hot.setDataAtCell
                 hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
-
                 hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
                 hot.setDataAtCell(row, 6, Address); //SET ADDRESS
-
                 let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
                 hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
-
                 hot.setDataAtCell(row, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
                 hot.setDataAtCell(row, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
                 hot.setDataAtCell(row, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
@@ -1042,7 +996,6 @@
                 console.log(TRAP_LOAD);
                 return;
             }
-
             changes.forEach(([row, col, oldValue, newValue]) => {
                 if(!hot.getDataAtCell(row, 0)) {
                     TRAP_LOAD3 = true;
@@ -1103,7 +1056,6 @@
                 {
 					TRAP_LOAD2 = true;
                     var ajax_data = [];
-
                     if (!hot.getDataAtCell(row, col)) {
                         console.log("NULL DATA");
                         return;
@@ -1117,7 +1069,6 @@
                             Amount: hot.getDataAtCell(row, col + 1),
                         });
                         console.log(ajax_data); //expense code
-
                         ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
                             .then(data => {
                                 console.log(data);
@@ -1158,7 +1109,6 @@
                             Amount: hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col),
                         });
                         console.log("string"); //amount
-
                         var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
                         var post_calculation_data = {
                             "obligation_id": 0,
@@ -1167,19 +1117,16 @@
                         $.post(url, post_calculation_data, function (result) {
                             var post_remaining_balance = result.remaining_balance;
                             var post_obligated_amount = result.obligated_amount;
-
                             if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
                                 oldValue = oldValue.toString().includes(",") ? parseFloat(oldValue.replace(/,/g, '')) : oldValue;
                                 post_remaining_balance = post_remaining_balance + oldValue; //2000
                                 post_obligated_amount = post_obligated_amount - oldValue;
                             }
-
                             AMOUNT = newValue.toString().includes(",") ? parseFloat(newValue.replace(/,/g, '')) : newValue;
                             console.log("newValue : " + newValue);
                             console.log("oldValue : " + oldValue);
                             console.log("AMOUNT : " + AMOUNT);
                             console.log("post_remaining_balance : " + post_remaining_balance);
-
                             if (AMOUNT > post_remaining_balance)
                             {
                                 console.log("trap the insuficient amount");
@@ -1213,7 +1160,6 @@
                             }
                         });
                     }
-
                 }
                 else {
                     CHECK_FIRST_ROW = true;
@@ -1230,15 +1176,12 @@
                 return;
             }
             else if (CHECK_FIRST_ROW) {
-
                 let rows = [...new Set(changes.map(item => item[0]))];
-
                 console.log(rows);
                 var ajax_data = [];
                 $.each(rows, function () {
                     let row = this;
                     if (hot.getDataAtCell(row, 0)) {
-
                         let Ors_no = hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : ""
                         $("#ors_handler").val(Ors_no);
                         ajax_data.push(
@@ -1262,7 +1205,6 @@
                 });
                 console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
-
             }
 		},
 		hiddenColumns: {
@@ -1270,13 +1212,9 @@
 		},
         licenseKey: 'non-commercial-and-evaluation',
     });
-
-
 	var tableData = JSON.stringify(hot.getSourceData());
 @*	console.log(hot.getSourceData());*@
-
     const exportPlugin = hot.getPlugin('exportFile');
-
     button.addEventListener('click', () => {
         exportPlugin.downloadFile('csv', {
             bom: false,
@@ -1289,10 +1227,8 @@
             mimeType: 'text/csv',
             rowDelimiter: '\r\n',
             rowHeaders: true,
-
         });
     });
-
     function trapTheInsuficientAmount(row, col, oldValue) {
         Lobibox.alert("error", {
             msg: "Insufficient  Balance!",
@@ -1301,15 +1237,12 @@
         INSUFFICIENT_AMOUNT1 = true; //trap so that can't save in DB
         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
     }
-
     function displayTheCalculation(result) {
         $("#total_beginning_balance").html(parseFloat(result.overall_beginning_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         $("#total_remaining_balance").html(parseFloat(result.overall_remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         $("#total_obligated_balance").html(parseFloat(result.overall_obligated_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     }
 
-
-
-
     console.log(hot.getSourceData());
 </script>
+Footer
