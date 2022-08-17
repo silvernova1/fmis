@@ -1,5 +1,4 @@
-﻿
-using fmis.Data;
+﻿using fmis.Data;
 using fmis.Models;
 using fmis.Models.UserModels;
 using fmis.Models.Budget;
@@ -48,48 +47,8 @@ namespace fmis.Controllers
 
             _context.Add(user);
             await _context.SaveChangesAsync();
-
             return Ok(user);
         }
-
-        public async Task<ActionResult> CreateBudget2()
-        {
-            var user = new FmisUser()
-            {
-                Id = 0,
-                Username = "doh7budget2",
-                Email = "doh7budget@gmail.com",
-                Role = "budget_admin"
-            };
-
-            user.Password = _userService.HashPassword(user, "doh7budget2");
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
-        }
-
-        public async Task<ActionResult> CreateBudget3()
-        {
-            var user = new FmisUser()
-            {
-                Id = 0,
-                Username = "doh7budget3",
-                Email = "doh7budget@gmail.com",
-                Role = "budget_admin"
-            };
-
-            user.Password = _userService.HashPassword(user, "doh7budget3");
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
-        }
-
-
-
 
         public async Task<ActionResult> CreateAccounting()
         {
@@ -108,13 +67,15 @@ namespace fmis.Controllers
 
             return Ok(user);
         }
+
+
         #endregion
 
         #region LOGIN
         [HttpGet]
         public IActionResult Login()
         {
-            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x=>x.YearlyReference).ToList();
+            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x => x.YearlyReference).ToList();
             if (!User.Identity.IsAuthenticated)
             {
                 return View();
@@ -222,5 +183,6 @@ namespace fmis.Controllers
             await HttpContext.SignInAsync(principal, properties);
         }
         #endregion
+
     }
 }
