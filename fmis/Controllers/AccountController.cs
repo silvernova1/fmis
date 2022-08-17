@@ -1,5 +1,4 @@
-﻿
-using fmis.Data;
+﻿using fmis.Data;
 using fmis.Models;
 using fmis.Models.UserModels;
 using fmis.Models.Budget;
@@ -49,10 +48,11 @@ namespace fmis.Controllers
 
             _context.Add(user);
             await _context.SaveChangesAsync();
-
             return Ok(user);
         }
 
+<<<<<<< HEAD
+=======
         public async Task<ActionResult> CreateBudget2()
         {
             var user = new FmisUser()
@@ -89,6 +89,7 @@ namespace fmis.Controllers
             return Ok(user);
         }
 
+>>>>>>> 4ee93a580779d93da9b625c82be221e6b76fabfa
         public async Task<ActionResult> CreateAccounting()
         {
             var user = new FmisUser()
@@ -106,6 +107,11 @@ namespace fmis.Controllers
 
             return Ok(user);
         }
+<<<<<<< HEAD
+
+
+        #endregion
+=======
         #endregion*/
 
         [HttpGet]
@@ -129,11 +135,12 @@ namespace fmis.Controllers
             return View("~/Views/Account/CreateUser.cshtml");
         }
 
+
         #region LOGIN
         [HttpGet]
         public IActionResult Login()
         {
-            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x=>x.YearlyReference).ToList();
+            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x => x.YearlyReference).ToList();
             if (!User.Identity.IsAuthenticated)
             {
                 return View();
@@ -241,5 +248,6 @@ namespace fmis.Controllers
             await HttpContext.SignInAsync(principal, properties);
         }
         #endregion
+
     }
 }

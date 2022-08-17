@@ -171,7 +171,7 @@ namespace fmis.Controllers
             ViewBag.uacs = uacs_data;
 
             var totalObligated = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
-            ViewBag.totalObligatedAmount = totalObligated.ToString("N", new CultureInfo("en-US"));
+            ViewBag.totalObligatedAmount = totalObligated.ToString("##,#00.00");
 
             return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
         }

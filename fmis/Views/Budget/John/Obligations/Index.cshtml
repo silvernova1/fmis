@@ -100,11 +100,9 @@
         <i class="ace-icon fa fa-bar-chart-o"></i>
     </div>
     <div class="infobox-data">
-
-        <span class="infobox-data-number" @*id="total_obligated_amount"*@ style="font-size:11pt; color:grey;">
-            @ViewBag.totalObligatedAmount
+        <span class="infobox-data-number" @*id="total_obligated_balance"*@ style="font-size:11pt; color:grey;">
+            ₱@ViewBag.totalObligatedAmount
         </span>
-
         <div class="infobox-content">
             <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
         </div>
@@ -891,7 +889,7 @@
                     }
                 },
 
-                // dri ta mag sugod
+
                 "row_below": { }, "remove_row": { }, "row_above": { }, "copy": { },
                 "created": {
                     name: 'Created By',
@@ -939,7 +937,9 @@
 		},
 		afterUndo: function (index, column) {
         },
-		afterCreateRow: function (row, column) {
+        afterCreateRow: function (row, column) {
+
+
             //CHECK_AFTER_ROW = true;
             @*if (SET_10_ROW) {
                 SET_10_ROW = false;
@@ -1242,6 +1242,7 @@
         $("#total_remaining_balance").html(parseFloat(result.overall_remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         $("#total_obligated_balance").html(parseFloat(result.overall_obligated_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     }
+
     console.log(hot.getSourceData());
 </script>
 Footer

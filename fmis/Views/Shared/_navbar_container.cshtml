@@ -1,21 +1,115 @@
-﻿<div id="navbar" class="navbar navbar-default ace-save-state">
-    <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+﻿<style>
+        /* IPHONE SE */
+        @@media (min-width: 375px) and (max-width: 667px) {
+            .img-responsive {
+              
+            
+            }
+        }
 
+        /* SAMSUNG S8+  */
+        @@media (min-width: 360px) and (max-width: 740px) {
+            .img-responsive {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                width: 90%;
+                margin-left: 15px;
+            }
+        }
 
-        <span class="sr-only">Toggle sidebar</span>
+        /* IPAD AIR  */
+        @@media (min-width: 820px) and (max-width: 1180px) {
+            .img-responsive {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                margin-right: 30px
+                
+            }
+        }
 
-        <span class="icon-bar"></span>
+        /* IPAD MINI  */
+        @@media (min-width: 768px) and (max-width: 1024px) {
+            .img-responsive {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                width: 90%;
+                
+            }
+        }
 
-        <span class="icon-bar"></span>
+        /* GALXY FOLD  */
+        @@media (min-width: 280px) and (max-width: 653px) {
+            .img-responsive {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                width: 90%;
+                margin-left: 15px;
+            }
+        }
 
-        <span class="icon-bar"></span>
+        /* SAMSUNG GALAXY  A51/71  */
+        @@media (min-width: 412px) and (max-width: 914px) {
+            .img-responsive {
+              
+            }
+        }
 
-    </button>
-    <div class="navbar-container ace-save-state" id="navbar-container">
-        <div class="navbar-header">
-            <a asp-controller="Home" asp-action="Index" class="navbar-brand">
-                <img src="~/assets/images/fmis-banner.png" style="position:center" class="img-responsive" />
-            </a>
+        /*  NEST  HUB  */
+        @@media (min-width: 1024px) and (max-width: 600px) {
+            .img-responsive {
+                
+            }
+        }
+
+        /*  NEST  HUB MAX */
+        @@media (min-width: 1280px) and (max-width: 800px) {
+            .img-responsive {
+                
+            }
+        }
+    </style>
+
+@*    <div id="navbar" class="navbar navbar-default ace-save-state">
+
+        <button type="button" class="btn_navbar navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+        <div class="navbar-container ace-save-state" id="navbar-container">
+            <div class="navbar-header">
+                <img src="~/assets/images/fmis-banner.png" class="img-responsive" />
+            </div>
         </div>
-    </div><!-- /.navbar-container -->
-</div>
+    </div>
+*@
+
+    <div class="row">
+        <div id="navbar" class="navbar navbar-default ace-save-state">
+            <div class="col-xs-1">
+                <div>
+                    <button type="button" class="btn_navbar navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+
+                        <span class="sr-only">Toggle sidebar</span>
+
+                        <span class="icon-bar"></span>
+
+                        <span class="icon-bar"></span>
+
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+            </div>
+                    <div class="navbar-container ace-save-state" id="navbar-container">
+                    <div class="navbar-header">
+                        <img src="~/assets/images/fmis-banner-3.png" class="img-responsive"  />
+                    </div>
+             </div>
+        </div>
+    </div>
+

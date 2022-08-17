@@ -4,10 +4,80 @@
 @model fmis.ViewModel.DashboardVM
 
 
+
+
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+<!-- #region MEDIA QUERY  -->
+<style>
+    /* IPHONE SE */
+    @@media (min-width: 375px) and (max-width: 667px) {
+
+   
+    }
+
+    /* IPHONE XR */
+    @@media (min-width: 414px) and (max-width: 896px) {
+    }
+
+    /* IPHONE 12 PRO */
+    @@media (min-width: 390px) and (max-width: 844px) {
+    }
+
+
+    /* PIXEL 5 */
+    @@media (min-width: 393px) and (max-width: 851px) {
+    }
+
+    /* SAMSUNG S8+  */
+    @@media (min-width: 360px) and (max-width: 740px) {
+    }
+
+    /* SAMSUNG GALAXY S20 ULTRA  */
+    @@media (min-width: 412px) and (max-width: 915px) {
+    }
+
+    /* IPAD AIR  */
+    @@media (min-width: 820px) and (max-width: 1180px) {
+        .obligated_disbursed {
+            font-size: 10pt;
+        }
+    }
+
+    /* IPAD MINI  */
+    @@media (min-width: 768px) and (max-width: 1024px) {
+    }
+
+    /* SURFACE PRO 7  */
+    @@media (min-width: 912px) and (max-width: 1368px) {
+    }
+
+    /* SURFACE DUO  */
+    @@media (min-width: 540px) and (max-width: 720px) {
+    }
+
+    /* GALXY FOLD  */
+    @@media (min-width: 280px) and (max-width: 653px) {
+    }
+
+    /* SAMSUNG GALAXY  A51/71  */
+    @@media (min-width: 412px) and (max-width: 914px) {
+    }
+
+    /*  NEST  HUB  */
+    @@media (min-width: 1024px) and (max-width: 600px) {
+    }
+
+    /*  NEST  HUB MAX */
+    @@media (min-width: 1280px) and (max-width: 800px) {
+    }
+</style>
+<!-- #endregion -->
+
 
 <div class="page-header">
     <h1>
@@ -18,159 +88,166 @@
         </small>
     </h1>
 </div><!-- /.page-header -->
-<div class="col-sm-6">
-    <div class="widget-box" style="height: 215px;">
-        <div class="widget-header">
-            <h4 class="widget-title">BUDGET UTILIZATION REPORT</h4>
+
+<div class="col-xs-12">
+    <div class="col-sm-6">
+        <div class="widget-box" style="height: 215px;">
+            <div class="widget-header">
+                <h4 class="widget-title">BUDGET UTILIZATION REPORT</h4>
+            </div>
+            <div class="widget-body">
+                <div class="widget-main no-padding">
+                    <form>
+                        <!-- <legend>Form</legend> -->
+                        <fieldset>
+                            <div class="alert alert-block alert-warning">
+                                <center><label style="font-size: 20pt;" class="allotment">@ViewBag.Allotment</label></center>
+                            </div>
+                            <center><h4>(ALLOTMENT)</h4> </center>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="widget-body">
-            <div class="widget-main no-padding">
+    </div>
+    <div class="col-sm-3">
+        <div class="obligated widget-box" style="height: 215px;">
+            <div class="widget-header">
+                <h5 class="obligated_disbursed">OBLIGATED & DISBURSED</h5>
+            </div>
+            <div class="widget-body">
+                <br>
                 <form>
                     <!-- <legend>Form</legend> -->
                     <fieldset>
-                        <div class="alert alert-block alert-warning">
-                            <center><label style="font-size: 25pt;">@ViewBag.Allotment</label></center>
+                        <div class="">
+                            <center>
+                                <h5>OBLIGATED</h5>
+                                <label style="font-weight:bold;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label>
+                            </center>
                         </div>
-                        <center><h4>(ALLOTMENT)</h4> </center>
+                    </fieldset>
+                    <fieldset>
+                        <div>
+                            <center>
+                                <h5>DISBURSED</h5> 
+                               <label style="font-weight:bold;">₱0.00</label>
+                            </center>
+                        </div>
                     </fieldset>
                 </form>
             </div>
         </div>
     </div>
-</div>
-<div class="col-sm-3">
-    <div class="widget-box">
-        <div class="widget-header">
-            <h5 class="widget-title">OBLIGATED & DISBURSED</h5>
-        </div>
+    <div class="col-sm-3">
+        <div class="obligated widget-box" style="height: 215px;">
+            <div class="widget-header">
+                <h5 class="obligated_disbursed">BALANCE & UPAID OBLIGATIONS</h5>
+            </div>
+            <div class="widget-body">
+                <br>
+                <form>
+                    <!-- <legend>Form</legend> -->
+                    <fieldset>
+                        <div class="">
+                            <center>
+                                <h5>BALANCE</h5> 
+                                <label style="font-weight:bold;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label>
+                            </center>
 
-        <div class="widget-body">
-            <br>
-            <form>
-                <!-- <legend>Form</legend> -->
-                <fieldset>
-                    <div class="">
-                        <center><h5>OBLIGATED</h5> </center>
-                        <center><label style="font-size: 18pt;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label></center>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="">
+                            <center>
+                                <h5>UNPAID OBLIGATIONS</h5> 
+                                <label style="font-weight:bold;">₱0.00</label>
+                            </center>
 
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div>
-                        <center><h5>DISBURSED</h5> </center>
-                        <center><label style="font-size: 18pt;">₱0.00</label></center>
-
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="col-sm-3">
-    <div class="widget-box">
-        <div class="widget-header">
-            <h5 class="widget-title">BALANCE & UPAID OBLIGATIONS</h5>
-        </div>
-        <div class="widget-body">
-            <br>
-            <form>
-                <!-- <legend>Form</legend> -->
-                <fieldset>
-                    <div class="">
-                        <center><h5>BALANCE</h5> </center>
-                        <center><label style="font-size: 18pt;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label></center>
-
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div class="">
-                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
-                        <center><label style="font-size: 18pt;">₱0.00</label></center>
-
-                    </div>
-                </fieldset>
-            </form>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-<div class="vspace-12-sm"></div>
-<div class="col-sm-4" style="margin-top: 15px;">
-    <div class="widget-box">
-        <div class="widget-header widget-header-flat widget-header-small">
-            <h5 class="widget-title">
-                CUMULATIVE UTILIZATION
-            </h5>
-            <div class="widget-toolbar no-border">
-                <div class="inline dropdown-hover">
+    <div class="vspace-12-sm"></div>
+    <div class="col-sm-4" style="margin-top: 15px;">
+        <div class="widget-box">
+            <div class="widget-header widget-header-flat widget-header-small">
+                <h5 class="widget-title">
+                    CUMULATIVE UTILIZATION
+                </h5>
+                <div class="widget-toolbar no-border">
+                    <div class="inline dropdown-hover">
+                    </div>
                 </div>
             </div>
+            <div class="widget-body">
+                <div class="widget-main">
+                    <div id="cumulative-piechart-placeholder" style=" margin-top: 20px;"></div>
+                </div><!-- /.widget-main -->
+            </div><!-- /.widget-body -->
         </div>
-        <div class="widget-body">
-            <div class="widget-main">
-                <div id="cumulative-piechart-placeholder" style=" margin-top: 20px;"></div>
-            </div><!-- /.widget-main -->
-        </div><!-- /.widget-body -->
-    </div>
-</div><!-- /.col -->
+    </div><!-- /.col -->
 
-<div class="col-sm-4" style="margin-top: 15px;">
-    <div class="widget-box">
-        <div class="widget-header widget-header-flat widget-header-small">
-            <h5 class="widget-title">
-                OBLIGATED
-            </h5>
-            <div class="widget-toolbar no-border">
-                <div class="inline dropdown-hover">
+    <div class="col-sm-4" style="margin-top: 15px;">
+        <div class="widget-box">
+            <div class="widget-header widget-header-flat widget-header-small">
+                <h5 class="widget-title">
+                    OBLIGATED
+                </h5>
+                <div class="widget-toolbar no-border">
+                    <div class="inline dropdown-hover">
+                    </div>
                 </div>
             </div>
+            <div class="widget-body">
+                <div class="widget-main">
+                    <div id="obligated-piechart-placeholder" style=" margin-top: 20px;"></div>
+                </div><!-- /.widget-main -->
+            </div><!-- /.widget-body -->
+        </div><!-- /.widget-box -->
+    </div><!-- /.col -->
+    <div class="col-sm-4">
+        <h3 class="header smaller  black">DIVISION</h3>
+
+        <div class="row">
+            <div class="col-xs-9">
+                <h5>RD/ARD</h5>
+                <div class="progress progress-mini">
+                    <div class="progress-bar progress-bar-success" style="width: @ViewBag.RDARD%;"></div>
+                </div>
+                <h5>LHSD</h5>
+                <div class="progress progress-mini">
+                    <div class="progress-bar progress-bar-info" style="width: @ViewBag.LHSD%;"></div>
+                </div>
+                <h5>MSD</h5>
+                <div class="progress progress-mini">
+                    <div class="progress-bar progress-bar-warning" style="width: @ViewBag.MSD%;"></div>
+                </div>
+                <h5>RLED</h5>
+                <div class="progress progress-mini">
+                    <div class="progress-bar progress-bar-danger" style="width: @ViewBag.RLED%;"></div>
+                </div>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.col -->
+
+    <div class="col-sm-4">
+
+
+    </div><!-- /.col -->
+
+    <div class="col-sm-4">
+        <h3 class="header smaller  black">ALLOTMENT CLASS</h3>
+
+        <div class="row">
+            <div class="col-6">
+                <ul id="messagesList"></ul>
+            </div>
         </div>
-        <div class="widget-body">
-            <div class="widget-main">
-                <div id="obligated-piechart-placeholder" style=" margin-top: 20px;"></div>
-            </div><!-- /.widget-main -->
-        </div><!-- /.widget-body -->
-    </div><!-- /.widget-box -->
-</div><!-- /.col -->
-<div class="col-sm-4">
-    <h3 class="header smaller  black">DIVISION</h3>
 
-    <div class="row">
-        <div class="col-xs-9">
-            <h5>RD/ARD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: @ViewBag.RDARD%;"></div>
-            </div>
-            <h5>LHSD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-info" style="width: @ViewBag.LHSD%;"></div>
-            </div>
-            <h5>MSD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-warning" style="width: @ViewBag.MSD%;"></div>
-            </div>
-            <h5>RLED</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-danger" style="width: @ViewBag.RLED%;"></div>
-            </div>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div><!-- /.col -->
-
-<div class="col-sm-4">
-
-
-</div><!-- /.col -->
-
-<div class="col-sm-4">
-    <h3 class="header smaller  black">ALLOTMENT CLASS</h3>
-
-    <div class="row">
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-
-    <div class="row">
+        <div class="row">
             <div class="col-xs-9">
                 <h5>PS</h5>
                 <div class="progress progress-striped active">
@@ -195,39 +272,40 @@
                     <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
                 </div>
             </div>
+        </div>
     </div>
+
+
+    @*<div class="col-sm-4">
+            <h3 class="header smaller  black">SECTION</h3>
+
+            <div class="row">
+                <div class="col-xs-9">
+                    <h5>RD/ARD</h5>
+                    <div class="progress progress-mini">
+                        <div class="progress-bar progress-bar-success" style="width: 25%;"></div>
+                    </div>
+                    <h5>HHRDU</h5>
+                    <div class="progress progress-mini">
+                        <div class="progress-bar progress-bar-info" style="width: 35%;"></div>
+                    </div>
+                    <h5>INFRA</h5>
+                    <div class="progress progress-mini">
+                        <div class="progress-bar progress-bar-warning" style="width: 45%;"></div>
+                    </div>
+                    <h5>HPCU</h5>
+                    <div class="progress progress-mini">
+                        <div class="progress-bar progress-bar-danger" style="width: 55%;"></div>
+                    </div>
+                    <h5>FHS</h5>
+                    <div class="progress progress-mini">
+                        <div class="progress-bar progress-bar-success" style="width: 65%;"></div>
+                    </div>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div>*@<!-- /.col -->
+    <div class="hr hr32 hr-dotted"></div>
 </div>
-
-
-@*<div class="col-sm-4">
-    <h3 class="header smaller  black">SECTION</h3>
-
-    <div class="row">
-        <div class="col-xs-9">
-            <h5>RD/ARD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: 25%;"></div>
-            </div>
-            <h5>HHRDU</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-info" style="width: 35%;"></div>
-            </div>
-            <h5>INFRA</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-warning" style="width: 45%;"></div>
-            </div>
-            <h5>HPCU</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-danger" style="width: 55%;"></div>
-            </div>
-            <h5>FHS</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: 65%;"></div>
-            </div>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div>*@<!-- /.col -->
-<div class="hr hr32 hr-dotted"></div>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
