@@ -95,19 +95,37 @@
 <div id="example" class="hot obligation_div"></div>
 <br />
 
-<div class="infobox infobox-blue2 pull-right" style="width: 230px">
+<!--<div class="infobox infobox-blue2 pull-right" style="width: 230px">
     <div class="infobox-icon">
         <i class="ace-icon fa fa-bar-chart-o"></i>
     </div>
     <div class="infobox-data">
-        <span class="infobox-data-number" @*id="total_obligated_balance"*@ style="font-size:11pt; color:grey;">
+        <span class="infobox-data-number"-->
+@* id="total_obligated_balance"*@
+<!--style="font-size:11pt; color:grey;">
             ₱@ViewBag.totalObligatedAmount
         </span>
         <div class="infobox-content">
             <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
         </div>
     </div>
+</div>-->
+
+
+<div class="infobox infobox-green pull-right">
+    <div class="infobox-icon">
+        <i class="ace-icon fa fa-money"></i>
+    </div>
+    <div class="infobox-data">
+        <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+            <span id="sub_total_amt">₱0.00</span>
+        </span>
+        <div class="infobox-content">
+            <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
+        </div>
+    </div>
 </div>
+
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:90%;">
@@ -145,6 +163,13 @@
 </div>
 
 <script>
+
+    let str = "\u20B1"
+
+    const exp_code = [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47];
+    const amounts = [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
+    const tokens = [16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49];
+
 	//SET OBLIGATION TOKEN
     let ObligationToken = () => {
         let s4 = () => {
@@ -243,11 +268,14 @@
 	const data = [];
     var counter = 0;
     var last_ors_handler;
+    var total_obligation = 0;
     $.each(obligation, function () {
         var obligated_amount = 0;
         $.each(this.ObligationAmounts, function () {
             obligated_amount += this.Amount;
         });
+        total_obligation += obligated_amount;
+
         last_ors_handler = this.Ors_no;
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
@@ -290,6 +318,8 @@
         }
 		counter++;
     });
+
+    $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown = [];
     var uacs_data_array = [];
@@ -303,6 +333,7 @@
     });
 	const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
+    var setter = false;
 	const hot = new Handsontable(container, {
         data: data,
 		rowHeaders: true,
@@ -400,17 +431,21 @@
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
-				},
+                },
                 readOnly: true,
+
 			},
 			{
 				//HIDDEN ID
+                readOnly: true
 			},
 			{
 				//HIDDEN OBLIGATION TOKEN
+                readOnly: true
 			},
             {
                 //OBLIGATION_AMOUNT_TOKEN 1
+                readOnly : true
             },
             {
                 //OBLIGATION EXPENSE CODE 1
@@ -444,6 +479,7 @@
             },
             {
                 //OBLIGATION_AMOUNT_TOKEN 2
+                readOnly: true
             },
             {
                 //OBLIGATION EXPENSE CODE 2
@@ -889,7 +925,6 @@
                     }
                 },
 
-
                 "row_below": { }, "remove_row": { }, "row_above": { }, "copy": { },
                 "created": {
                     name: 'Created By',
@@ -933,57 +968,19 @@
 				"single_token": single_token,
 				"many_token": many_token
 			};
-			ajaxServer(ajax_data,'@Url.Action("DeleteObligation", "Obligations")');
+            ajaxServer(ajax_data, '@Url.Action("DeleteObligation", "Obligations")');
 		},
 		afterUndo: function (index, column) {
         },
-        afterCreateRow: function (row, column) {
-
-
-            //CHECK_AFTER_ROW = true;
-            @*if (SET_10_ROW) {
-                SET_10_ROW = false;
-                for (var i = 0; i < 10; i++) {
-                    TRAP_LOAD = 24; //mo load siya ka 15 tungud sa hot.setDataAtCell
-                    hot.setDataAtCell(row+i, 12, ObligationToken()); //OBLIGATION TOKEN
-                    hot.setDataAtCell(row+i, 1, today); //SET DATE AND TODAY
-                    hot.setDataAtCell(row+i, 6, Address); //SET ADDRESS
-                    let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
-                    hot.setDataAtCell(row+i, 8, (above_ors).toString().padStart(4, '0'));
-                    hot.setDataAtCell(row+i, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
-                    hot.setDataAtCell(row+i, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
-                    hot.setDataAtCell(row+i, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
-                    hot.setDataAtCell(row+i, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
-                    hot.setDataAtCell(row+i, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
-                    hot.setDataAtCell(row+i, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
-                    hot.setDataAtCell(row+i, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
-                    hot.setDataAtCell(row+i, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
-                    hot.setDataAtCell(row+i, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
-                    hot.setDataAtCell(row+i, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
-                    hot.setDataAtCell(row+i, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
-                    hot.setDataAtCell(row+i, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
-                }
+        afterFilter: function () {
+            var total_obligation = 0;
+            for (var i = 0; i < hot.countRows(); i++) {
+                total_obligation += +hot.getDataAtCell(i, 10);
             }
-            else {
-                TRAP_LOAD = 10; //mo load siya ka 15 tungud sa hot.setDataAtCell
-                hot.setDataAtCell(row, 12, ObligationToken()); //OBLIGATION TOKEN
-                hot.setDataAtCell(row, 1, today); //SET DATE AND TODAY
-                hot.setDataAtCell(row, 6, Address); //SET ADDRESS
-                let above_ors = +hot.getDataAtCell(row - 1, 8) + 1;
-                hot.setDataAtCell(row, 8, (above_ors).toString().padStart(4, '0'));
-                hot.setDataAtCell(row, 13, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 1
-                hot.setDataAtCell(row, 16, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 2
-                hot.setDataAtCell(row, 19, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 3
-                hot.setDataAtCell(row, 22, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 4
-                hot.setDataAtCell(row, 25, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 5
-                hot.setDataAtCell(row, 28, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 6
-                hot.setDataAtCell(row, 31, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 7
-                hot.setDataAtCell(row, 34, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 8
-                hot.setDataAtCell(row, 37, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 9
-                hot.setDataAtCell(row, 40, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 10
-                hot.setDataAtCell(row, 43, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 11
-                hot.setDataAtCell(row, 46, ObligationAmountToken()); //OBLIGATION AMOUNT TOKEN 12
-            }*@
+            $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        },
+        afterCreateRow: function (row, column) {
+            //CHECK_AFTER_ROW = true;
 		},
         afterChange: function (changes, source) {
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
@@ -996,7 +993,9 @@
                 console.log(TRAP_LOAD);
                 return;
             }
+
             changes.forEach(([row, col, oldValue, newValue]) => {
+                console.log(CHECK_FIRST_ROW, row, col);
                 if(!hot.getDataAtCell(row, 0)) {
                     TRAP_LOAD3 = true;
                     Lobibox.alert("error", {
@@ -1052,122 +1051,142 @@
                     });*@
                     return;
                 }
-				else if (col >= 14 && col <= 50)
-                {
-					TRAP_LOAD2 = true;
+                else if (exp_code.includes(col)) {
+                    TRAP_LOAD2 = true;
                     var ajax_data = [];
+                    ajax_data.push({
+                        obligationId: hot.getDataAtCell(row, 11),
+                        obligation_token: hot.getDataAtCell(row, 12),
+                        obligation_amount_token: hot.getDataAtCell(row, col - 1),
+                        Expense_code: hot.getDataAtCell(row, col),
+                        Amount: hot.getDataAtCell(row, col + 1),
+                    });
+
+                    console.log(ajax_data); //expense code
+                    ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
+                        .then(data => {
+                            console.log(data);
+                            TRAP_LOAD4 = false;
+                            //if delete expense code
+                            /*if (!ajax_data.Expense_code) {
+                                //hot.setDataAtCell(row, col - 1, "");
+                                //hot.setDataAtCell(row, col + 1, "");
+                            }*/
+                        })
+                        .catch(data => {
+                            alert(data.responseJSON.error_message);
+                            //hot.setDataAtCell(row, col, [0]);
+                        });
+                }
+                else if (amounts.includes(col)) {
+                    TRAP_LOAD2 = true;
+                    var ajax_data = [];
+                    AMOUNT = 0;
+                    var amount = 0;
+                    @*if (!hot.getDataAtCell(row, col - 1) || !hot.getDataAtCell(row, col - 2)) {
+                        Lobibox.alert("error", {
+                            msg: "Please select expense code first!",
+                            sound: false,
+                        });
+                        TRAP_LOAD4 = false;
+                        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
+                        return;
+                    }*@
                     if (!hot.getDataAtCell(row, col)) {
-                        console.log("NULL DATA");
+                        //return;
+                    }
+                    else if (isNaN(parseFloat(hot.getDataAtCell(row, col).toString())) && !hot.getDataAtCell(row, col).toString().includes(",") && !hot.getDataAtCell(row, col - 2)) {
+                        TRAP_LOAD4 = true;
+                        Lobibox.alert("error", {
+                            msg: "INVALID AMOUNT!",
+                            sound: false,
+                        });
+                        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
                         return;
                     }
-                    else if (isNumeric(hot.getDataAtCell(row, col))) {
-                        ajax_data.push({
-                            obligationId: hot.getDataAtCell(row, 11),
-                            obligation_token: hot.getDataAtCell(row, 12),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 1),
-                            Expense_code: hot.getDataAtCell(row, col),
-                            Amount: hot.getDataAtCell(row, col + 1),
-                        });
-                        console.log(ajax_data); //expense code
-                        ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
-                            .then(data => {
-                                console.log(data);
-                            })
-                            .catch(data => {
-                                alert(data.responseJSON.error_message);
-                                hot.setDataAtCell(row, col, '');
-                            });
+                    else if (TRAP_LOAD4) {
+                        TRAP_LOAD4 = false;
+                        console.log("TRAP_LOAD4");
+                        return;
                     }
-                    else
-                    {
-                        if (!hot.getDataAtCell(row, col - 1)) {
-                            Lobibox.alert("error", {
-                                msg: "Please select expense code first!",
-                                sound: false,
-                            });
-                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
-                            return;
+                    try {
+                        amount = hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col);
+                    }
+                    catch { }
+
+                    ajax_data.push({
+                        obligation_token: hot.getDataAtCell(row, 12),
+                        obligation_amount_token: hot.getDataAtCell(row, col - 2),
+                        Expense_code: hot.getDataAtCell(row, col - 1),
+                        Amount: amount//hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col),
+                    });
+                    console.log("string"); //amount
+                    var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
+                    var post_calculation_data = {
+                        "obligation_id": 0,
+                        "obligation_token": hot.getDataAtCell(row, 12)
+                    };
+                    console.log(post_calculation_data);
+                    $.post(url, post_calculation_data, function (result) {
+                        console.log(result);
+                        var post_remaining_balance = result.remaining_balance;
+                        var post_obligated_amount = result.obligated_amount;
+                        if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
+                            oldValue = oldValue.toString().includes(",") ? parseFloat(oldValue.replace(/,/g, '')) : oldValue;
+                            post_remaining_balance = post_remaining_balance + oldValue; //2000
+                            post_obligated_amount = post_obligated_amount - oldValue;
                         }
-                        else if (isNaN(parseFloat(hot.getDataAtCell(row, col).toString())) && !hot.getDataAtCell(row, col).toString().includes(",")) {
-                            TRAP_LOAD4 = true;
-                            Lobibox.alert("error", {
-                                msg: "INVALID AMOUNT!",
-                                sound: false,
-                            });
-                            hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
-                            return;
-                        }
-                        else if (TRAP_LOAD4) {
-                            TRAP_LOAD4 = false;
-                            console.log("TRAP_LOAD4");
-                            return;
-                        }
-                        ajax_data.push({
-                            obligation_token: hot.getDataAtCell(row, 12),
-                            obligation_amount_token: hot.getDataAtCell(row, col - 2),
-                            Expense_code: hot.getDataAtCell(row, col - 1),
-                            Amount: hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col),
-                        });
-                        console.log("string"); //amount
-                        var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
-                        var post_calculation_data = {
-                            "obligation_id": 0,
-                            "obligation_token": hot.getDataAtCell(row, 12)
-                        };
-                        $.post(url, post_calculation_data, function (result) {
-                            var post_remaining_balance = result.remaining_balance;
-                            var post_obligated_amount = result.obligated_amount;
-                            if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
-                                oldValue = oldValue.toString().includes(",") ? parseFloat(oldValue.replace(/,/g, '')) : oldValue;
-                                post_remaining_balance = post_remaining_balance + oldValue; //2000
-                                post_obligated_amount = post_obligated_amount - oldValue;
-                            }
+                        try {
                             AMOUNT = newValue.toString().includes(",") ? parseFloat(newValue.replace(/,/g, '')) : newValue;
-                            console.log("newValue : " + newValue);
-                            console.log("oldValue : " + oldValue);
-                            console.log("AMOUNT : " + AMOUNT);
-                            console.log("post_remaining_balance : " + post_remaining_balance);
-                            if (AMOUNT > post_remaining_balance)
-                            {
-                                console.log("trap the insuficient amount");
-                                trapTheInsuficientAmount(row, col, oldValue); //trap the insuficient amount
-                            }
-                            else if (INSUFFICIENT_AMOUNT1) {
-                                console.log("trap INSUFFICIENT_AMOUNT1");
-                                INSUFFICIENT_AMOUNT1 = false;
-                            }
-                            else {
-                                //do the calculalation
-                                console.log("do the calculation!");
-                                post_remaining_balance = post_remaining_balance - AMOUNT;
-                                post_obligated_amount = post_obligated_amount + AMOUNT;
-                                var calculated_amount_data = {
-                                    "obligation_id": 0,
-                                    "obligation_token": hot.getDataAtCell(row, 12),
-                                    "obligation_amount_token": ajax_data[0].obligation_amount_token,
-                                    "remaining_balance": post_remaining_balance,
-                                    "obligated_amount": post_obligated_amount,
-                                    "amount": AMOUNT
-                                };
-                                console.log(calculated_amount_data);
-                                var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")';
-                                $.post(url, calculated_amount_data, function (result) {
-                                    TRAP_LOAD = 2;
-                                    hot.setDataAtCell(row, 50, result.remaining_balance);
-                                    hot.setDataAtCell(row, 10, result.obligated_amount);
-                                    displayTheCalculation(result);
-                                });
-                            }
-                        });
-                    }
+                        }
+                        catch {}
+                        console.log("newValue : " + newValue);
+                        console.log("oldValue : " + oldValue);
+                        console.log("AMOUNT : " + AMOUNT);
+                        console.log("post_remaining_balance : " + post_remaining_balance);
+                        if (AMOUNT > post_remaining_balance)
+                        {
+                            console.log("trap the insuficient amount");
+                            trapTheInsuficientAmount(row, col, oldValue); //trap the insuficient amount
+                        }
+                        else if (INSUFFICIENT_AMOUNT1) {
+                            console.log("trap INSUFFICIENT_AMOUNT1");
+                            INSUFFICIENT_AMOUNT1 = false;
+                        }
+                        else {
+                            //do the calculalation
+                            console.log("do the calculation!");
+                            post_remaining_balance = post_remaining_balance - AMOUNT;
+                            post_obligated_amount = post_obligated_amount + AMOUNT;
+                            var calculated_amount_data = {
+                                "obligation_id": 0,
+                                "obligation_token": hot.getDataAtCell(row, 12),
+                                "obligation_amount_token": ajax_data[0].obligation_amount_token,
+                                "remaining_balance": post_remaining_balance,
+                                "obligated_amount": post_obligated_amount,
+                                "amount": AMOUNT
+                            };
+                            console.log(calculated_amount_data);
+                            var url = '@Url.Action("calculateObligatedAmount", "ObligationAmount")';
+                            $.post(url, calculated_amount_data, function (result) {
+                                console.log(result);
+                                TRAP_LOAD = 2;
+                                hot.setDataAtCell(row, 50, result.remaining_balance);
+                                hot.setDataAtCell(row, 10, result.obligated_amount);
+                                displayTheCalculation(result);
+                            });
+                        }
+                    });
+
                 }
                 else {
                     CHECK_FIRST_ROW = true;
                 }
             });
+            console.log("CHECK FIRST ROW HERE! " + CHECK_FIRST_ROW);
             if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
-                console.log("TRAP_LOAD2");
+                console.log("TRAP_LOAD2"); //diri
                 return;
             }
             else if (TRAP_LOAD3) {
@@ -1175,9 +1194,9 @@
                 console.log("TRAP_LOAD3");
                 return;
             }
-            else if (CHECK_FIRST_ROW) {
+            if (CHECK_FIRST_ROW) {
                 let rows = [...new Set(changes.map(item => item[0]))];
-                console.log(rows);
+                
                 var ajax_data = [];
                 $.each(rows, function () {
                     let row = this;
@@ -1245,4 +1264,3 @@
 
     console.log(hot.getSourceData());
 </script>
-Footer
