@@ -35,18 +35,79 @@
     </div><!-- /.sidebar-shortcuts -->
 
 
-    <ul class="nav nav-list" style="top: 0px;">
+    <ul class="nav nav-list">
         @if (User.FindFirstValue(ClaimTypes.Role) == "budget_admin" || User.FindFirstValue(ClaimTypes.Role) == "budget_user")
         {
 
             <li class="
-            @if (@ViewBag.filter_sidebar == "dashboard")
+            @if (@ViewBag.filter.main == "dashboard")
                 @Html.Raw("active")
             ">
                 <a asp-area="" asp-controller="Home" asp-action="Dashboard">
                     <i class="menu-icon fa fa-tachometer"></i>
-                    <span class="menu-text">Dashboard</span>
+                    <span class="menu-text">Dashboard</span> 
                 </a>
+            
+            </li>
+
+            <li class="
+            @if (@ViewBag.filter.main == "dashboard")
+                @Html.Raw("")
+            ">
+                <a class="dropdown-toggle">
+                    <i class="menu-icon fa fa-filter"></i>
+                    <span class="menu-text">Filter</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub == "")
+                @Html.Raw("active")">
+                        <a asp-controller="" asp-action="">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Division
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub == "")
+                @Html.Raw("active")">
+                        <a asp-controller="" asp-action="">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Section
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub == "")
+                @Html.Raw("active")">
+                        <a asp-controller="" asp-action="">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Downloadable Forms
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub == "")
+                @Html.Raw("active")">
+                        <a asp-controller="" asp-action="">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Monthly Rate
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub == "")
+                @Html.Raw("active")">
+                        <a asp-controller="" asp-action="">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Per Uacs
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
             </li>
 
             <li class="@if (ViewBag.filter.main == "master_data")

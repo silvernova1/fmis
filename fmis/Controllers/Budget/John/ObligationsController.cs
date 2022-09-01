@@ -156,7 +156,7 @@ namespace fmis.Controllers
             var obligation = await _context
                                     .Obligation
                                     .Where(x => x.status == "activated").OrderBy(x => x.Ors_no)
-                                    .Include(x => x.ObligationAmounts)
+                                    .Include(x => x.ObligationAmounts.Where(x => x.status =="activated"))
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
                                     .Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId)
