@@ -112,7 +112,7 @@
 </div>-->
 
 
-<div class="infobox infobox-green pull-right">
+<div class="infobox infobox-blue2 pull-right" style="width: 230px">
     <div class="infobox-icon">
         <i class="ace-icon fa fa-money"></i>
     </div>
@@ -121,7 +121,7 @@
             <span id="sub_total_amt">₱0.00</span>
         </span>
         <div class="infobox-content">
-            <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
+            <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
         </div>
     </div>
 </div>
@@ -320,6 +320,7 @@
     });
 
     $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+
     var uacs = $.parseJSON($(".uacs").val());
     var uacs_data_dropdown = [];
     var uacs_data_array = [];
@@ -1077,6 +1078,7 @@
                             alert(data.responseJSON.error_message);
                             //hot.setDataAtCell(row, col, [0]);
                         });
+                  
                 }
                 else if (amounts.includes(col)) {
                     TRAP_LOAD2 = true;
