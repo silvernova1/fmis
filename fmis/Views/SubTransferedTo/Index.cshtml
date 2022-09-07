@@ -14,6 +14,7 @@
     }
 }
 
+
 <style>
     .wtHider {
         margin-bottom: 150px;
@@ -32,7 +33,9 @@
     </small>
 </h3>
 <hr />
-<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to SAA</a>
+@*<a class="btn btn-primary btn-sm " asp-controller="SubAllotment" asp-action="Index" asp-route-AllotmentClassId="@Model.AllotmentClassId" asp-route-AppropriationId="@Model.AppropriationId" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId"><span class="glyphicon glyphicon-arrow-left"></span> Back to SAA</a>
+*@
+<a class="btn btn-primary btn-sm" href='javascript:history.go(-1)'><span class="glyphicon glyphicon-arrow-left"></span> Back to SAA</a>
 <br />
 <br />
 <div id="example" class="hot"></div>

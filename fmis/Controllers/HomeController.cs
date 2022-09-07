@@ -79,10 +79,11 @@ namespace fmis.Controllers
             dashboard.FundSources = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).ToList();
             dashboard.Sub_allotments = _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId).ToList();
             dashboard.AllotmentClasses = _MyDbCOntext.AllotmentClass.Where(x => x.Id == YearlyRefId).ToList();
+            dashboard.RespoCenters = _MyDbCOntext.RespoCenter.ToList();
 
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance)
                         + _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance)
-                        + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance)/* + suballotmentsLastYr;*/
+                        + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance)
                         + _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
 
             ViewBag.Balance = balance;
@@ -135,7 +136,7 @@ namespace fmis.Controllers
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance);
 
             var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount)
-                          +  _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)
+                          /*+  _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)*/
                           +  _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.obligated_amount)
                           +  _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount);
 
@@ -161,6 +162,10 @@ namespace fmis.Controllers
             List<AllotmentClass> allotmentClasses = (from allotmentclass in _MyDbCOntext.AllotmentClass
                                                      select allotmentclass).ToList();
             ViewBag.progress = 0.36 * 100;
+
+            var respo = _MyDbCOntext.Budget_allotments.Include(x=>x.FundSources).ThenInclude(x=>x.RespoCenter).ToList();
+
+            ViewBag.respo = respo;
 
 
 

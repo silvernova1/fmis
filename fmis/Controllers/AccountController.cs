@@ -1,5 +1,4 @@
-﻿
-using fmis.Data;
+﻿using fmis.Data;
 using fmis.Models;
 using fmis.Models.UserModels;
 using fmis.Models.Budget;
@@ -18,6 +17,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using fmis.Filters;
 
 namespace fmis.Controllers
 {
@@ -26,14 +26,14 @@ namespace fmis.Controllers
     {
         private readonly IUserService _userService;
         private readonly MyDbContext _context;
-
+        
         public AccountController(MyDbContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;
         }
 
-        #region CREATE ACCOUNT
+        /*#region CREATE ACCOUNT
         public async Task<ActionResult> CreateBudget()
         {
             var user = new FmisUser()
@@ -48,10 +48,11 @@ namespace fmis.Controllers
 
             _context.Add(user);
             await _context.SaveChangesAsync();
-
             return Ok(user);
         }
 
+<<<<<<< HEAD
+=======
         public async Task<ActionResult> CreateBudget2()
         {
             var user = new FmisUser()
@@ -88,9 +89,7 @@ namespace fmis.Controllers
             return Ok(user);
         }
 
-
-
-
+>>>>>>> 4ee93a580779d93da9b625c82be221e6b76fabfa
         public async Task<ActionResult> CreateAccounting()
         {
             var user = new FmisUser()
@@ -108,13 +107,40 @@ namespace fmis.Controllers
 
             return Ok(user);
         }
+<<<<<<< HEAD
+
+
         #endregion
+=======
+        #endregion*/
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+
+            ViewBag.filter = new FilterSidebar("user_main", "user_sub");
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Account/CreateUser.cshtml");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(FmisUser fmisUser)
+        {
+            fmisUser.Password = _userService.HashPassword(fmisUser, fmisUser.Password);
+            _context.Add(fmisUser);
+            _context.SaveChanges();
+            ViewBag.filter = new FilterSidebar("user_main", "user_sub");
+            ViewBag.layout = "_Layout";
+            return View("~/Views/Account/CreateUser.cshtml");
+        }
+
 
         #region LOGIN
         [HttpGet]
         public IActionResult Login()
         {
-            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x=>x.YearlyReference).ToList();
+            ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x => x.YearlyReference).ToList();
             if (!User.Identity.IsAuthenticated)
             {
                 return View();
@@ -209,7 +235,7 @@ namespace fmis.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),                
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.Email, user.Email),
@@ -222,5 +248,6 @@ namespace fmis.Controllers
             await HttpContext.SignInAsync(principal, properties);
         }
         #endregion
+
     }
 }

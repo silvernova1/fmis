@@ -75,6 +75,7 @@ namespace fmis.Data
         public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
         public DbSet<FundTransferedTo> FundTransferedTo { get; set; }
         public DbSet<SubTransferedTo> SubTransferedTo { get; set; }
+      
 
 
 

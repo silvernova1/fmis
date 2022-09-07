@@ -6,15 +6,17 @@
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
 
+
+
 <div class="row">
-    <div class="col-12">
-        <div class="card " id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
+    <div class="col-xs-12">
+        <div class="card" id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
             <br>
             <center>
                 <h6>Sign in to start your session.</h6>
                 <img src="~/portfolio_bootstrap/img/about/doh.png" alt="" height="100" width="100">
             </center>
-            <div class="card-body">
+            <div class="card-body ">
                 <section>
                     <form id="account" asp-action="Login" method="post">
                         <div asp-validation-summary="All" class="text-danger"></div>
@@ -55,3 +57,4 @@
         </div>
     </div>
 </div>
+

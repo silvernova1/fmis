@@ -185,6 +185,7 @@ namespace fmis
                 options.AddPolicy("BudgetUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_user"));
                 options.AddPolicy("AccountingAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("AccountingUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_user"));
+
             });
             services.Configure<CookiePolicyOptions>(options =>
             {

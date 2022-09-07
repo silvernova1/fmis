@@ -4,266 +4,369 @@
 @model fmis.ViewModel.DashboardVM
 
 
+
+
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var perObligated = ViewBag.Obligated / ViewBag.Balance;
 }
 
+
+
 <div class="page-header">
-    <h1>
-        <bold>Dashboard</bold>
-        <small>
-            <i class="ace-icon fa fa-angle-double-right"></i>
-            overview &amp; stats
-        </small>
-    </h1>
+    <div class="alert alert-block alert-success">
+        BUDGET UTILIZATION DASHBOARD
+    </div>
 </div><!-- /.page-header -->
-<div class="col-sm-6">
-    <div class="widget-box" style="height: 215px;">
-        <div class="widget-header">
-            <h4 class="widget-title">BUDGET UTILIZATION REPORT</h4>
+
+<div class="row">
+    <center>
+        @*   <div class="col-xs-12">
+
+            <div class="col-xs-4">
+                <input class="form-control" style="width: 350px; " type="date" name="date_from" data-date-format="dd-mm-yyyy">
+            </div>
+            <div class="col-xs-4">
+                <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
+            </div>
+            <div class="col-xs-4">
+                <h2 class="grey lighter"> As of December 16, 1969 </h2>
+            </div>
+
+        </div>*@
+        <div class="input-group" style="width: 350px" ;>
+            <input class="form-control " type="date" id="form-field-mask-1">
+            <span class="input-group-btn">
+                <button class="btn btn-sm btn-default" type="button">
+                    <i class="ace-icon fa fa-filter bigger-110"></i>
+                    Filter
+                </button>
+            </span>
+
         </div>
-        <div class="widget-body">
-            <div class="widget-main no-padding">
-                <form>
-                    <!-- <legend>Form</legend> -->
-                    <fieldset>
-                        <div class="alert alert-block alert-warning">
-                            <center><label style="font-size: 25pt;">@ViewBag.Allotment</label></center>
+        <h2 class="grey lighter"> As of December 01, 2022 </h2>
+    </center>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+
+        <div class="row">
+
+            <div class="space-6"></div>
+
+            <div class="col-xs-12 infobox-container">
+                <div class="col-sm-3">
+                    <div class="infobox infobox-green" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon fa fa-cogs"></i>
                         </div>
-                        <center><h4>(ALLOTMENT)</h4> </center>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-sm-3">
-    <div class="widget-box">
-        <div class="widget-header">
-            <h5 class="widget-title">OBLIGATED & DISBURSED</h5>
-        </div>
 
-        <div class="widget-body">
-            <br>
-            <form>
-                <!-- <legend>Form</legend> -->
-                <fieldset>
-                    <div class="">
-                        <center><h5>OBLIGATED</h5> </center>
-                        <center><label style="font-size: 18pt;">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</label></center>
-
+                        <div class="infobox-data">
+                            <span class="infobox-data-number" >@ViewBag.Allotment</span>
+                            <div class="infobox-content">(ALLOTMENTS)</div>
+                        </div>
                     </div>
-                </fieldset>
-                <fieldset>
-                    <div>
-                        <center><h5>DISBURSED</h5> </center>
-                        <center><label style="font-size: 18pt;">₱0.00</label></center>
+                </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-blue" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon  fa fa-check-square-o"></i>
+                        </div>
 
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</span>
+                            <div class="infobox-content">(OBLIGATED)</div>
+                        </div>
                     </div>
-                </fieldset>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="col-sm-3">
-    <div class="widget-box">
-        <div class="widget-header">
-            <h5 class="widget-title">BALANCE & UPAID OBLIGATIONS</h5>
-        </div>
-        <div class="widget-body">
-            <br>
-            <form>
-                <!-- <legend>Form</legend> -->
-                <fieldset>
-                    <div class="">
-                        <center><h5>BALANCE</h5> </center>
-                        <center><label style="font-size: 18pt;">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</label></center>
+                </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-pink" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon fa fa-pencil-square-o"></i>
+                        </div>
 
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">₱0.00</span>
+                            <div class="infobox-content">(DISBURSED)</div>
+                        </div>
                     </div>
-                </fieldset>
-                <fieldset>
-                    <div class="">
-                        <center><h5>UNPAID OBLIGATIONS</h5> </center>
-                        <center><label style="font-size: 18pt;">₱0.00</label></center>
+                </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-red" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon  fa fa-bar-chart-o"></i>
+                        </div>
 
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</span>
+                            <div class="infobox-content">(BALANCE)</div>
+                        </div>
                     </div>
-                </fieldset>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="vspace-12-sm"></div>
-<div class="col-sm-4" style="margin-top: 15px;">
-    <div class="widget-box">
-        <div class="widget-header widget-header-flat widget-header-small">
-            <h5 class="widget-title">
-                CUMULATIVE UTILIZATION
-            </h5>
-            <div class="widget-toolbar no-border">
-                <div class="inline dropdown-hover">
+                </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-orange2" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon fa fa-envelope"></i>
+                        </div>
+
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">₱0.00</span>
+                            <div class="infobox-content">(UNPAID OBLIGATION)</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="widget-body">
-            <div class="widget-main">
-                <div id="cumulative-piechart-placeholder" style=" margin-top: 20px;"></div>
-            </div><!-- /.widget-main -->
-        </div><!-- /.widget-body -->
-    </div>
-</div><!-- /.col -->
+            <div class="vspace-12-sm"></div>
+        </div><!-- /.row -->
 
-<div class="col-sm-4" style="margin-top: 15px;">
-    <div class="widget-box">
-        <div class="widget-header widget-header-flat widget-header-small">
-            <h5 class="widget-title">
-                OBLIGATED
-            </h5>
-            <div class="widget-toolbar no-border">
-                <div class="inline dropdown-hover">
+        <div class="hr hr32 hr-dotted"></div>
+        <div class="row">
+            <div class="space-6"></div>
+            <!-- #OVERALL CUMMULATIVE UTILIZATION -->
+            <div class="vspace-12-sm"></div>
+            <div class="col-sm-3">
+                <div class="widget-box">
+                    <div class="widget-header widget-header-flat widget-header-small" >
+
+                        <div class="widget-box transparent">
+                            <div class="widget-header widget-header-flat">
+                                <h4 class="widget-title lighter">
+                                    <i class="ace-icon fa fa-signal"></i>
+                                    OVERALL CUMULATIVE UTULIZATION
+                                </h4>
+                            </div>
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <div id="piechart-placeholder" hidden></div>
+                                    <center>
+                                        <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", @perObligated)%" data-size="180" data-color="#1261A0">
+                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span></div>
+                                        <h4 class="grey lighter">OBLIGATED @String.Format("{0:0.00}", @perObligated)%</h4>
+                                    </center>
+                                    <div class="vspace-24-sm"></div>
+                                </div><!-- /.widget-main -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="widget-body">
-            <div class="widget-main">
-                <div id="obligated-piechart-placeholder" style=" margin-top: 20px;"></div>
-            </div><!-- /.widget-main -->
-        </div><!-- /.widget-body -->
-    </div><!-- /.widget-box -->
-</div><!-- /.col -->
-<div class="col-sm-4">
-    <h3 class="header smaller  black">DIVISION</h3>
+            <!-- #end -->
+            <!-- #OBLIGATION VS DISBURSEMENT -->
+            <div class="col-sm-3">
+                <div class="widget-box">
+                    <div class="widget-header widget-header-flat widget-header-small" >
 
-    <div class="row">
-        <div class="col-xs-9">
-            <h5>RD/ARD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: @ViewBag.RDARD%;"></div>
-            </div>
-            <h5>LHSD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-info" style="width: @ViewBag.LHSD%;"></div>
-            </div>
-            <h5>MSD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-warning" style="width: @ViewBag.MSD%;"></div>
-            </div>
-            <h5>RLED</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-danger" style="width: @ViewBag.RLED%;"></div>
-            </div>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div><!-- /.col -->
+                        <div class="widget-box transparent">
+                            <div class="widget-header widget-header-flat">
+                                <h4 class="widget-title lighter">
+                                    <i class="ace-icon fa fa-signal"></i>
+                                    OBLIGATION VS DISBURSEMENT
+                                </h4>
 
-<div class="col-sm-4">
+                            </div>
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <div id="obligated-piechart-placeholder" hidden></div>
+                                    <center>
+                                        <div class="easy-pie-chart percentage" data-percent="0" data-size="180" data-color="#006400">
+                                            <span class="percent" style="font-size: 30pt; color: #006400; ">0%</span>
 
+                                        </div>
+                                        <h4 class="grey lighter"> UNPAID OBLIGATION & 0DISBURSED </h4>
+                                    </center>
 
-</div><!-- /.col -->
-
-<div class="col-sm-4">
-    <h3 class="header smaller  black">ALLOTMENT CLASS</h3>
-
-    <div class="row">
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-
-    <div class="row">
-            <div class="col-xs-9">
-                <h5>PS</h5>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-danger" style="width: 10%;" data-toggle="tooltip" title="DISBURSED"></div>
-                    <div class="progress-bar progress-bar-warning" style="width: @ViewBag.PSObligation%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
-                    <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
+                                </div><!-- /.widget-main -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-9">
-                <h5>MOOE</h5>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                    <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                    <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
+
+            <!-- #end -->
+            <!-- #ALLOTMENT CLASS -->
+
+            <div class="col-sm-3">
+                <div class="widget-box" >
+
+                    <div class="widget-header widget-header-flat widget-header-small" style="height:288px;">
+
+                        <div class="widget-box transparent">
+                            <div class="widget-header widget-header-flat">
+                                <h4 class="widget-title lighter">
+                                    <i class="ace-icon fa fa-signal"></i>
+                                    ALLOTMENT CLASS (Breakdown)
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <h5>PS</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-9">
+                                    <h5>MOOE</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-9">
+                                    <h5>CO</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.widget-box -->
+            </div><!-- /.col -->
+            <!-- #end -->
+            <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
+            <div class="vspace-12-sm"></div>
+            <div class="col-sm-3">
+                <div class="widget-box">
+                    <div class="widget-header widget-header-flat widget-header-small">
+
+                        <div class="widget-box transparent">
+                            <div class="widget-header widget-header-flat">
+                                <h4 class="widget-title lighter">
+                                    <i class="ace-icon fa fa-signal"></i>
+                                    MONTHLY OBLIGATION (Disbursement)
+                                </h4>
+                            </div>
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <div id="sales-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-9">
-                <h5>CO</h5>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-danger" style="width: 33.3%;" data-toggle="tooltip" title="DISBURSED"></div>
-                    <div class="progress-bar progress-bar-warning" style="width: 33.3%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                    <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
-                </div>
-            </div>
-    </div>
-</div>
+            <!-- #end -->
+
+        </div><!-- /.row -->
+
+        <div class="hr hr32 hr-dotted"></div>
 
 
-@*<div class="col-sm-4">
-    <h3 class="header smaller  black">SECTION</h3>
+        <div class="page-header">
+            <h1>
+                UTILIZATION
+                <small>
+                    <i class="ace-icon fa fa-angle-double-right"></i>
+                    BY DIVISION
+                </small>
+            </h1>
+        </div><!-- /.page-header -->
+        <div class="row">
+            <div class="col-xs-12">
+                <!-- PAGE CONTENT BEGINS -->
+                <div class="row">
+                    <div class="col-xs-12">
+                    <div class="table-responsive">
+                        <table id="simple-table" class="table  table-bordered table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>DIVISION</th>
+                                    <th>ALLOTMENT</th>
+                                    <th>OBLIGATED</th>
+                                    <th>% OF OBLIGATION</th>
+                                    <th>UNOBLIGATED BALANCE</th>
+                                    <th>DISBURSED</th>
+                                    <th>% OF DISBURSEMENT</th>
+                                    <th>UNPAID OBLIGATION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-    <div class="row">
-        <div class="col-xs-9">
-            <h5>RD/ARD</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: 25%;"></div>
-            </div>
-            <h5>HHRDU</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-info" style="width: 35%;"></div>
-            </div>
-            <h5>INFRA</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-warning" style="width: 45%;"></div>
-            </div>
-            <h5>HPCU</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-danger" style="width: 55%;"></div>
-            </div>
-            <h5>FHS</h5>
-            <div class="progress progress-mini">
-                <div class="progress-bar progress-bar-success" style="width: 65%;"></div>
-            </div>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div>*@<!-- /.col -->
-<div class="hr hr32 hr-dotted"></div>
+                                @foreach (var item in Model.RespoCenters)
+                                {
+                                    var currentYear = User.FindFirstValue("YearlyRef");
+                                    var lastYear = (int.Parse(User.FindFirstValue("YearlyRef")) - 1).ToString();
 
-<!-- inline scripts related to this page -->
+                                    var allotments = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.Beginning_balance)
+                                                   + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.Beginning_balance)
+                                                   + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance)
+                                                   + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance);
+
+                                    var obligated = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.obligated_amount)
+                                                  + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.obligated_amount)
+                                                  + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount)
+                                                  + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount);
+
+                                    var unobligated = allotments - (Math.Abs(obligated));
+
+                                    var percentage = obligated / allotments * 100;
+                                    var positiveValue = Math.Abs(percentage);
+
+
+                                <tr>
+                                    <td> @item.Respo</td>
+                                    <td> @allotments.ToString("C", new CultureInfo("en-PH"))</td>
+                                    <td> @Math.Abs(obligated).ToString("C", new CultureInfo("en-PH")) </td>
+                                    <td> @String.Format("{0:0.00}", positiveValue)% </td>
+                                    <td> @unobligated.ToString("C", new CultureInfo("en-PH"))</td>
+                                    <td> 0.00 </td>
+                                    <td> 0.00 </td>
+                                    <td> 0.00 </td>
+                                </tr>
+                                }
+                                @*<tr>
+            <td> LHSD </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+        </tr>
+        <tr>
+            <td> MSD </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+        </tr>
+        <tr>
+            <td> RLED </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+            <td> XX </td>
+        </tr>*@
+                            </tbody>
+                        </table>
+                        </div>
+                    </div><!-- /.span -->
+                </div><!-- /.row -->
+                <!-- PAGE CONTENT ENDS -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+
 <script type="text/javascript">
-
-@*    $(".progress-bar-danger").animate({
-                width: "25%",
-
-            }, 2500);
-           var interval = setInterval(function () {
-        $('.progress-bar-danger').html("25%");
-
-    }, 5000);
-
-    $(".progress-bar-warning").animate({
-                width: "25%",
-
-            }, 2500);
-           var interval = setInterval(function () {
-        $('.progress-bar-warning').html("25%");
-
-    }, 5000);
-
-    $(".bg-info").animate({
-                width: "@ViewBag.AllotmentBalance%",
-
-            }, 2500);
-           var interval = setInterval(function () {
-        $('.bg-info').html("@ViewBag.AllotmentBalance%");
-
-    }, 5000);*@
-
-
-
-
-    $('[data-toggle="tooltip"]').tooltip();
-
     jQuery(function ($) {
         $('.easy-pie-chart.percentage').each(function () {
             var $box = $(this).closest('.infobox');
@@ -281,9 +384,6 @@
             });
         })
 
-        @*var dashboard_report = @Html.Raw(Json.Serialize(Model))
-        console.log(dashboard_report);*@
-
         $('.sparkline').each(function () {
             var $box = $(this).closest('.infobox');
             var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
@@ -297,23 +397,15 @@
         });
 
 
-
-
         //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
         //but sometimes it brings up errors with normal resize event handlers
         $.resize.throttleWindow = false;
 
-        var placeholder = $('#cumulative-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
+        var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
-
-            { label: "BALANCE", data: @ViewBag.Balance, color: "#68BC31" },
-            { label: "OBLIGATED", data: @ViewBag.Obligated, color: "#2091CF" },
-
-
-        ];
-
-
-
+             { label: "BALANCE", data: @ViewBag.Balance, color: "#68BC31" },
+             { label: "OBLIGATED", data: @ViewBag.Obligated, color: "#2091CF" },
+        ]
         function drawPieChart(placeholder, data, position) {
             $.plot(placeholder, data, {
                 series: {
@@ -349,6 +441,7 @@
         we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
         so that's not needed actually.
         */
+
         placeholder.data('chart', data);
         placeholder.data('draw', drawPieChart);
 
@@ -374,15 +467,13 @@
 
 
 
-
-
         var placeholder_2 = $('#obligated-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
             { label: "UNPAID OBLIGATIONS", data: 1, color: "#FEE074" },
-                { label: "DISBURSED", data: 1, color: "#DA5430" },
-            @*{ label: "ad campaigns", data: 8.2, color: "#AF4E96" },
+            { label: "DISBURSED", data: 1, color: "#DA5430" },
+            @* { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
             { label: "direct traffic", data: 18.6, color: "#DA5430" },
-            { label: "other", data: 10, color: "#FEE074" }*@
+            { label: "other", data: 10, color: "#FEE074" } *@
         ]
 
 
@@ -419,33 +510,13 @@
         }
         drawPieChart_2(placeholder_2, data);
 
-        /**
-        we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
-        so that's not needed actually.
-        */
-        placeholder_2.data('chart', data);
-        placeholder_2.data('draw', drawPieChart_2);
+
 
         /////////////////////////////////////
         $(document).one('ajaxloadstart.page', function (e) {
             $tooltip.remove();
         });
 
-
-        placeholder_2.on('plothover', function (event, pos, item) {
-            if (item) {
-                if (previousPoint != item.seriesIndex) {
-                    previousPoint = item.seriesIndex;
-                    var tip = item.series['label'] + " : " + item.series['percent'] + '%';
-                    $tooltip.show().children(0).text(tip);
-                }
-                $tooltip.css({ top: pos.pageY + 10, left: pos.pageX + 10 });
-            } else {
-                $tooltip.hide();
-                previousPoint = null;
-            }
-
-        });
 
 
 
@@ -558,4 +629,3 @@
 
     })
 </script>
-
