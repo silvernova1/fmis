@@ -83,7 +83,7 @@ namespace fmis.Controllers
 
             var balance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance)
                         + _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance)
-                        + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance)/* + suballotmentsLastYr;*/
+                        + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance)
                         + _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
 
             ViewBag.Balance = balance;
@@ -136,9 +136,9 @@ namespace fmis.Controllers
             var allotmentbalance = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.Remaining_balance) + _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.Remaining_balance);
 
             var obligated = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount)
-                          +  _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)
+                          /*+  _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)*/
                           +  _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.obligated_amount)
-                          +  _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount);
+                          /*+  _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)*/;
             ViewBag.Obligated = obligated;
 
 
