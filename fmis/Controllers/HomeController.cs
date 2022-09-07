@@ -138,7 +138,24 @@ namespace fmis.Controllers
                           +  _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount)
                           +  _MyDbCOntext.SubAllotment.Where(s => s.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(s => s.obligated_amount)
                           +  _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.obligated_amount);
-            ViewBag.Obligated = obligated;
+
+            var obligatedAmount = (from oa in _MyDbCOntext.ObligationAmount
+                                   join o in _MyDbCOntext.Obligation
+                                   on oa.ObligationId equals o.Id
+                                   join f in _MyDbCOntext.FundSources
+                                   on o.FundSourceId equals f.FundSourceId
+                                   join b in _MyDbCOntext.Budget_allotments
+                                   on f.BudgetAllotmentId equals b.BudgetAllotmentId
+                                   join y in _MyDbCOntext.Yearly_reference
+                                   on b.YearlyReferenceId equals y.YearlyReferenceId
+                                   select new
+                                   {
+                                       obligationamount = oa.Amount,
+                                       YearlyRefId = y.YearlyReferenceId
+                                   }).ToList();
+
+
+            ViewBag.Obligated = obligatedAmount.Where(x => x.YearlyRefId == YearlyRefId).Sum(x => x.obligationamount);
 
 
             List<AllotmentClass> allotmentClasses = (from allotmentclass in _MyDbCOntext.AllotmentClass
