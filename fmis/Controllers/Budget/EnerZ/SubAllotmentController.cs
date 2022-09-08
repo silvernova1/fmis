@@ -126,14 +126,22 @@ namespace fmis.Controllers
             ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
             ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
-
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search) && lastYear == true)
             {
+
                 search = search.Trim();
                 ViewBag.Search = search;
                 budget_allotment.SubAllotment = budget_allotment.SubAllotment
-                    .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                    .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) && x.IsAddToNextAllotment == true || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
+            else if (!string.IsNullOrEmpty(search))
+                {
+                    search = search.Trim();
+                    ViewBag.Search = search;
+                    budget_allotment.SubAllotment = budget_allotment.SubAllotment
+                        .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                }
+            
 
             return View(budget_allotment);
         }
