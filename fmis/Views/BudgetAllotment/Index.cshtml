@@ -194,15 +194,15 @@
 
 
                         @if (@*appropriation.AppropriationSource == "CURRENT" && *@Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
-{
-var check = Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.IsAddToNextAllotment == true) ? "checked" : "";
-<div class="checkbox">
-    <label>
-        <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="FundSetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@Model.BudgetAllotmentId');">
-        <span class="lbl">Set Next Year</span>
-    </label>
-</div>
-}
+                        {
+                        var check = Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.IsAddToNextAllotment == true) ? "checked" : "";
+                        <div class="checkbox">
+                            <label>
+                                <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="FundSetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@Model.BudgetAllotmentId');">
+                                <span class="lbl">Set Next Year</span>
+                            </label>
+                        </div>
+                        }
                     </td>
                     <td>
                         <a class="btn btn-sm btn-default" asp-controller="SubAllotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId">
@@ -239,15 +239,15 @@ var check = Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id 
 
 
                         @if (@*appropriation.AppropriationSource == "CURRENT" && *@Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
-{
-var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.IsAddToNextAllotment == true) ? "checked" : "";
-<div class="checkbox">
-    <label>
-        <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="SetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@Model.BudgetAllotmentId');">
-        <span class="lbl">Set Next Year</span>
-    </label>
-</div>
-}
+                        {
+                        var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.IsAddToNextAllotment == true) ? "checked" : "";
+                        <div class="checkbox">
+                            <label>
+                                <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="SetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@Model.BudgetAllotmentId');">
+                                <span class="lbl">Set Next Year</span>
+                            </label>
+                        </div>
+                        }
                     </td>
                     @if (appropriation.AppropriationSource == "CONAP")
                     {
@@ -287,15 +287,15 @@ var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id
 
 
                             @if (@*appropriation.AppropriationSource == "CURRENT" && *@Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
-            {
-            var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true) ? "checked" : "";
-            <div class="checkbox">
-                <label>
-                    <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="SetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@Model.BudgetAllotmentId');">
-                    <span class="lbl">Set Next Year</span>
-                </label>
-            </div>
-            }
+                            {
+                            var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true) ? "checked" : "";
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" class="ace" @check onclick="SetNextYear(this.checked, '@allotment_class.Id', '@appropriation.AppropriationId', '@Model.BudgetAllotmentId');">
+                                    <span class="lbl">Set Next Year</span>
+                                </label>
+                            </div>
+                            }
                         </td>
                     }
 
