@@ -274,6 +274,7 @@
         $.each(this.ObligationAmounts, function () {
             obligated_amount += this.Amount;
         });
+
         total_obligation += obligated_amount;
 
         last_ors_handler = this.Ors_no;
@@ -951,6 +952,17 @@
                         });
                     }
                 },
+
+                   "empty": {
+                    name: 'Empty Row',
+                    callback: function (key, options) {
+                        hot.setDataAtCell(row, '')
+
+                    }
+                },
+
+
+
             }
 		},
 		beforeRemoveRow: function (index, column) {
@@ -984,7 +996,16 @@
             //CHECK_AFTER_ROW = true;
 		},
         afterChange: function (changes, source) {
-            if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
+            //var updatedHot = this.getData();
+            var total_obligation = 0;
+            $.each(this.getData(), function () {
+                console.log(this[10]);
+                total_obligation += this[10];
+            });
+            $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+            console.log(total_obligation); //expense code
+
+        if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 console.log("first trap");
 				CHECK_AFTER_ROW = false;
 				return;
@@ -1005,27 +1026,28 @@
                     });
                     return;
                 }
-                else if (col == 0) {
-                    CHECK_FIRST_ROW1 = true;
-                    console.log("col 0");
-					var ajax_data = [];
-					ajax_data.push(
-						{
-							source_id: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_id,
-							source_type: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_type,
-							Date: hot.getDataAtCell(row, 1),
-							Dv: hot.getDataAtCell(row, 2),
-							Pr_no: hot.getDataAtCell(row, 3),
-							Po_no: hot.getDataAtCell(row, 4),
-							Payee: hot.getDataAtCell(row, 5),
-							Address: hot.getDataAtCell(row, 6),
-							Particulars: hot.getDataAtCell(row, 7),
-							Ors_no: hot.getDataAtCell(row, 8),
-							Created_by: hot.getDataAtCell(row, 9),
-							Gross: hot.getDataAtCell(row, 10),
-							obligation_token: hot.getDataAtCell(row, 12)
-						}
-					);
+                  else if (col == 0) {
+                        CHECK_FIRST_ROW1 = true;
+                        console.log("col 0");
+                        var ajax_data = [];
+                        ajax_data.push(
+                            {
+                                source_id: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_id,
+                                source_type: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_type,
+                                Date: hot.getDataAtCell(row, 1),
+                                Dv: hot.getDataAtCell(row, 2),
+                                Pr_no: hot.getDataAtCell(row, 3),
+                                Po_no: hot.getDataAtCell(row, 4),
+                                Payee: hot.getDataAtCell(row, 5),
+                                Address: hot.getDataAtCell(row, 6),
+                                Particulars: hot.getDataAtCell(row, 7),
+                                Ors_no: hot.getDataAtCell(row, 8),
+                                Created_by: hot.getDataAtCell(row, 9),
+                                Gross: hot.getDataAtCell(row, 10),
+                                obligation_token: hot.getDataAtCell(row, 12)
+                            }
+                        );
+
                     ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
                         .then(data => {
                             console.log(data);
@@ -1038,20 +1060,9 @@
                                 hot.setDataAtCell(row, 51, data.subAllotment.allotmentClassId)
                         });
                     //HERE
-                    @*$.ajax({
-                        url: '@Url.Action("GetObligation","Obligations")',
-                        data: {
-                            title: hot.getDataAtCell(row, 0)
-                        },
-                        method: 'GET',
-                        success: function (result, text, jqsumting) {
-                            if (jqsumting.status == 200) {
-                                console.log(result);
-                            }
-                        },
-                    });*@
                     return;
                 }
+
                 else if (exp_code.includes(col)) {
                     TRAP_LOAD2 = true;
                     var ajax_data = [];
@@ -1063,28 +1074,24 @@
                         Amount: hot.getDataAtCell(row, col + 1),
                     });
 
-                    console.log(ajax_data); //expense code
+
                     ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
                         .then(data => {
                             console.log(data);
                             TRAP_LOAD4 = false;
-                            //if delete expense code
-                            /*if (!ajax_data.Expense_code) {
-                                //hot.setDataAtCell(row, col - 1, "");
-                                //hot.setDataAtCell(row, col + 1, "");
-                            }*/
                         })
                         .catch(data => {
                             alert(data.responseJSON.error_message);
-                            //hot.setDataAtCell(row, col, [0]);
                         });
-                  
+
+
                 }
                 else if (amounts.includes(col)) {
                     TRAP_LOAD2 = true;
                     var ajax_data = [];
                     AMOUNT = 0;
                     var amount = 0;
+
                     @*if (!hot.getDataAtCell(row, col - 1) || !hot.getDataAtCell(row, col - 2)) {
                         Lobibox.alert("error", {
                             msg: "Please select expense code first!",
@@ -1094,6 +1101,8 @@
                         hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
                         return;
                     }*@
+
+
                     if (!hot.getDataAtCell(row, col)) {
                         //return;
                     }
@@ -1122,6 +1131,8 @@
                         Expense_code: hot.getDataAtCell(row, col - 1),
                         Amount: amount//hot.getDataAtCell(row, col).toString().includes(",") ? parseFloat(hot.getDataAtCell(row, col).replace(/,/g, '')) : hot.getDataAtCell(row, col),
                     });
+
+
                     console.log("string"); //amount
                     var url = '@Url.Action("getRemainigAndObligated", "ObligationAmount")';
                     var post_calculation_data = {
@@ -1174,9 +1185,11 @@
                                 console.log(result);
                                 TRAP_LOAD = 2;
                                 hot.setDataAtCell(row, 50, result.remaining_balance);
-                                hot.setDataAtCell(row, 10, result.obligated_amount);
+                               hot.setDataAtCell(row, 10, result.obligated_amount);
                                 displayTheCalculation(result);
                             });
+
+                            console.log(this);
                         }
                     });
 
@@ -1188,7 +1201,7 @@
             console.log("CHECK FIRST ROW HERE! " + CHECK_FIRST_ROW);
             if (TRAP_LOAD2) {
                 TRAP_LOAD2 = false;
-                console.log("TRAP_LOAD2"); //diri
+                console.log("TRAP_LOAD2");
                 return;
             }
             else if (TRAP_LOAD3) {
@@ -1198,7 +1211,7 @@
             }
             if (CHECK_FIRST_ROW) {
                 let rows = [...new Set(changes.map(item => item[0]))];
-                
+
                 var ajax_data = [];
                 $.each(rows, function () {
                     let row = this;
@@ -1227,6 +1240,9 @@
                 console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
             }
+
+
+
 		},
 		hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
