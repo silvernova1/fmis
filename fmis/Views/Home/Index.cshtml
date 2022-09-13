@@ -93,61 +93,88 @@
             </select>
         </div>
         <div class="col-sm-2">
-             <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
+                <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
+               
         </div>
         <div class="col-sm-2">
-            <h4 class="grey lighter pull-left" > As of December 01, 2022 </h4>
+             <h4 class="grey lighter "> As of December 25, 2022 </h4>
         </div>
-  </div>
+        </div>
 </div>
 <hr />
 <div class="row">
     <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
         <div class="row">
-            <div class="col-xs-12 infobox-container">
-                <div class="infobox infobox-green">
-                    <div class="infobox-data">
-                        <span class="infobox-data-number">@ViewBag.Allotment</span>
-                        <div class="infobox-content">ALLOTMENTS</div>
+
+            <div class="space-6"></div>
+
+            <div class="col-sm-12 infobox-container">
+                <div class="col-sm-3">
+                    <div class="infobox infobox-green" style="width: 320px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon fa fa-cogs"></i>
+                        </div>
+
+                        <div class="infobox-data">
+                            <span class="infobox-data-number" style="font-size: 18pt">@ViewBag.Allotment</span>
+                            <div class="infobox-content">(ALLOTMENTS)</div>
+                        </div>
                     </div>
                 </div>
-                <div class="infobox infobox-blue">
+                <div class="col-sm-2">
+                    <div class="infobox infobox-blue" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon  fa fa-check-square-o"></i>
+                        </div>
 
-                    <div class="infobox-data">
-                        <span class="infobox-data-number">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</span>
-                        <div class="infobox-content">OBLIGATED</div>
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</span>
+                            <div class="infobox-content">(OBLIGATED)</div>
+                        </div>
                     </div>
                 </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-pink" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon fa fa-pencil-square-o"></i>
+                        </div>
 
-                <div class="infobox infobox-pink">
-                    <div class="infobox-data">
-                        <span class="infobox-data-number">₱0.00</span>
-                        <div class="infobox-content">DISBURSED</div>
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">₱0.00</span>
+                            <div class="infobox-content">(DISBURSED)</div>
+                        </div>
                     </div>
                 </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-red" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon  fa fa-bar-chart-o"></i>
+                        </div>
 
-                <div class="infobox infobox-red">
-                    <div class="infobox-data">
-                        <span class="infobox-data-number">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</span>
-                        <div class="infobox-content">BALANCE</div>
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</span>
+                            <div class="infobox-content">(BALANCE)</div>
+                        </div>
                     </div>
                 </div>
+                <div class="col-sm-2">
+                    <div class="infobox infobox-orange2" style="width: 270px;">
+                        <div class="infobox-icon">
+                            <i class="ace-icon fa fa-envelope"></i>
+                        </div>
 
-                <div class="infobox infobox-orange2">
-                    <div class="infobox-data">
-                        <span class="infobox-data-number">₱0.00</span>
-                        <div class="infobox-content">UNPAID OBLIGATIONS</div>
+                        <div class="infobox-data">
+                            <span class="infobox-data-number">₱0.00</span>
+                            <div class="infobox-content">(UNPAID OBLIGATION)</div>
+                        </div>
                     </div>
-
-
                 </div>
-
-                <div class="vspace-12-sm"></div>
             </div>
-
-
+            <div class="vspace-12-sm"></div>
         </div><!-- /.row -->
+
+        <div class="hr hr32 hr-dotted"></div>
 
         <div class="hr hr32 hr-dotted"></div>
         <div class="row">
@@ -168,7 +195,8 @@
                                     <div id="piechart-placeholder" hidden></div>
                                     <center>
                                         <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", @perObligated)%" data-size="180" data-color="#1261A0">
-                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span></div>
+                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span>
+                                        </div>
                                         <h4 class="grey lighter">OBLIGATED @String.Format("{0:0.00}", @perObligated)%</h4>
                                     </center>
                                     <div class="vspace-24-sm"></div>
@@ -214,9 +242,9 @@
             <!-- #ALLOTMENT CLASS -->
 
             <div class="col-sm-3 ">
-                <div class="widget-box allotmentclass" style="height: 280px;">
+                <div class="widget-box allotmentclass" >
 
-                    <div class="widget-header widget-header-flat widget-header-small">
+                    <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
 
                         <div class="widget-box transparent allotmentclass1">
                             <div class="widget-header widget-header-flat">
@@ -227,25 +255,25 @@
                             </div>
                             <div class="widget-body">
                                 <div class="widget-main">
-                                        <h5>PS</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 10%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: @ViewBag.PSObligation%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
-                                        </div>
-                                        <h5>MOOE</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
-                                        </div>
-                                 
-                                        <h5>CO</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 33.3%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 33.3%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
-                                        </div>
+                                    <h5>PS</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 10%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: @ViewBag.PSObligation%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
+                                    </div>
+                                    <h5>MOOE</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
+                                    </div>
+
+                                    <h5>CO</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 33.3%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 33.3%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
+                                    </div>
                                 </div><!-- /.widget-main -->
                             </div>
                         </div>
@@ -296,63 +324,56 @@
                 <!-- PAGE CONTENT BEGINS -->
                 <div class="row">
                     <div class="col-xs-12">
-                    <div class="table-responsive">
-                        <table id="simple-table" class="table  table-bordered table-hover" >
-                            <thead>
-                                <tr>
-                                    <th>DIVISION</th>
-                                    <th>ALLOTMENT</th>
-                                    <th>OBLIGATED</th>
-                                    <th>% OF OBLIGATION</th>
-                                    <th>UNOBLIGATED BALANCE</th>
-                                    <th>DISBURSED</th>
-                                    <th>% OF DISBURSEMENT</th>
-                                    <th>UNPAID OBLIGATION</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td> RD </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                </tr>
-                                <tr>
-                                    <td> LHSD </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                </tr>
-                                <tr>
-                                    <td> MSD </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                </tr>
-                                <tr>
-                                    <td> RLED </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                    <td> XX </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table id="simple-table" class="table  table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>DIVISION</th>
+                                        <th>ALLOTMENT</th>
+                                        <th>OBLIGATED</th>
+                                        <th>% OF OBLIGATION</th>
+                                        <th>UNOBLIGATED BALANCE</th>
+                                        <th>DISBURSED</th>
+                                        <th>% OF DISBURSEMENT</th>
+                                        <th>UNPAID OBLIGATION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model.RespoCenters)
+                                    {
+                                        var currentYear = User.FindFirstValue("YearlyRef");
+                                        var lastYear = (int.Parse(User.FindFirstValue("YearlyRef")) - 1).ToString();
+
+                                        var allotments = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.Beginning_balance)
+                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.Beginning_balance)
+                                                       + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance)
+                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance);
+
+                                        var obligated = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.obligated_amount)
+                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.obligated_amount)
+                                                      + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount)
+                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount);
+
+                                        var unobligated = allotments - (Math.Abs(obligated));
+
+                                        var percentage = obligated / allotments * 100;
+                                        var positiveValue = Math.Abs(percentage);
+
+
+                                        <tr>
+                                            <td> @item.Respo</td>
+                                            <td> @allotments.ToString("C", new CultureInfo("en-PH"))</td>
+                                            <td> @Math.Abs(obligated).ToString("C", new CultureInfo("en-PH")) </td>
+                                            <td> @String.Format("{0:0.00}", positiveValue)% </td>
+                                            <td> @unobligated.ToString("C", new CultureInfo("en-PH"))</td>
+                                            <td> 0.00 </td>
+                                            <td> 0.00 </td>
+                                            <td> 0.00 </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div><!-- /.span -->
                 </div><!-- /.row -->
