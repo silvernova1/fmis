@@ -37,16 +37,37 @@
 
         </div>*@
         <div class="input-group" style="width: 350px" ;>
-            <input class="form-control " type="date" id="form-field-mask-1">
-            <span class="input-group-btn">
-                <button class="btn btn-sm btn-default" type="button">
-                    <i class="ace-icon fa fa-filter bigger-110"></i>
-                    Filter
-                </button>
-            </span>
-
+            <form action="@Url.Action("Dashboard","Home")" method="post">
+                @Html.AntiForgeryToken()
+                <div class="space space-8"></div>
+                <label>Date From: </label>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div>
+                            <input class="form-control" type="date" name="date_from" data-date-format="dd-mm-yyyy">
+                        </div>
+                    </div>
+                </div>
+                <div class="space space-8"></div>
+                <label>Date To: </label>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div>
+                            <input class="form-control" type="date" name="date_to" data-date-format="dd-mm-yyyy">
+                        </div>
+                    </div>
+                </div>
+                <div class="space space-8"></div>
+                <div class="row">
+                    <div class="">
+                        <div class="col-xs-12 col-sm-12">
+                            <button type="submit" class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-download-alt"></span>Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-        <h2 class="grey lighter"> As of December 01, 2022 </h2>
+        <h2 class="grey lighter"> As of @ViewBag.date2</h2>
     </center>
 </div>
 

@@ -1,0 +1,94 @@
+﻿
+@model IEnumerable<fmis.Models.Sections>
+
+@{
+    ViewData["Title"] = "Section";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--EDIT MODAL-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<h3 class="grey lighter smaller">
+    Sections
+</h3>
+<hr>
+<p>
+    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-striped" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                Section Name
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Section Head
+            </th>
+            <th>
+                Division
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SectionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SectionHead)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RespoCenter.Respo)
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.SectionId">
+                    <i class="ace-icon fa fa-edit"></i>Edit
+                </a> |
+                <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Sections",new { id = @item.SectionId })" onclick="return confirm('Do you want to delete this Section?');">
+                    <i class="ace-icon fa fa-trash"></i>Delete
+                </a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

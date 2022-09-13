@@ -13,5 +13,6 @@ namespace fmis.Models
         public string RespoCode { get; set; }
         public string RespoHead { get; set; }
         public string RespoHeadPosition { get; set; }
+        public ICollection<Sections> Sections { get; set; }
     }
 }
