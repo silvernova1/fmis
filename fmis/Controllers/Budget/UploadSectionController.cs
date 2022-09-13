@@ -133,7 +133,7 @@ namespace fmis.Controllers
 
                     if (!string.IsNullOrWhiteSpace(section.Description))
                     {
-                        this.Context.Section.Add(section);
+                        //this.Context.Section.Add(section);
                         this.Context.SaveChanges();
                     }
 

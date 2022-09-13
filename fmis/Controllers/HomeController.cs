@@ -32,6 +32,7 @@ namespace fmis.Controllers
             _MyDbCOntext = context;
         }
 
+        public IEnumerable<Obligation> obligations {get; set;}
 
         public IActionResult Index()
         {
@@ -45,27 +46,57 @@ namespace fmis.Controllers
 
         #endregion
 
-        public IActionResult Dashboard(int? post_yearly_reference)
+        public IActionResult Dashboard(string date_from, string date_to)
         {
             //const string yearly_reference = "YearlyRefId";
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
 
+            DateTime date1 = Convert.ToDateTime(date_from);
+            DateTime date2 = Convert.ToDateTime(date_to);
+            DateTime datefilter = Convert.ToDateTime(date_to);
+            String date3 = datefilter.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture);
+
+            date1.ToString("yyyy-MM-dd 00:00:00");
+            date2.ToString("yyyy-MM-dd 23:59:59");
+            ViewBag.date1 = date1;
+            DateTime dateTimeNow = date2;
+            DateTime dateTomorrow = dateTimeNow.Date.AddDays(1);
+            /*var lastDayOfMonth = DateTime.DaysInMonth(date1.Year, date1.Month);*/
+
+
+            //LASTDAY OF THE MONTH
+            var firstDayOfMonth = new DateTime(date2.Year, date2.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            DateTime lastday = Convert.ToDateTime(lastDayOfMonth);
+            lastday.ToString("yyyy-MM-dd 23:59:59");
+            ViewBag.lastday = lastday;
+            ViewBag.firstDayOfMonth = firstDayOfMonth;
+
+
             string year = _MyDbCOntext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
-
-            /*int id = YearlyRefId;
-            if (post_yearly_reference != null)
-            {
-                id = YearlyRefId;
-            }
-            else
-            {
-                id = YearlyRefId;
-            }*/
+            ViewBag.date2 = date2.ToString("MMMM dd, yyyy");
+            var obligationsFilter = (from oa in _MyDbCOntext.ObligationAmount
+                                                  join o in _MyDbCOntext.Obligation
+                                                  on oa.ObligationId equals o.Id
+                                                  join f in _MyDbCOntext.FundSources
+                                                  on o.FundSourceId equals f.FundSourceId
+                                                  where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                                  select new
+                                                  {
+                                                      amount = oa.Amount,
+                                                      uacsId = oa.UacsId,
+                                                      sourceId = o.FundSourceId,
+                                                      sourceType = o.source_type,
+                                                      date = o.Date,
+                                                      status = o.status,
+                                                      allotmentClassID = f.AllotmentClassId,
+                                                      appropriationID = f.AppropriationId
+                                                  }).ToList();
 
             var suballotmentsLastYr = _MyDbCOntext.SubAllotment
             .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
@@ -149,6 +180,7 @@ namespace fmis.Controllers
                                    on f.BudgetAllotmentId equals b.BudgetAllotmentId
                                    join y in _MyDbCOntext.Yearly_reference
                                    on b.YearlyReferenceId equals y.YearlyReferenceId
+                                   where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                                    select new
                                    {
                                        obligationamount = oa.Amount,
@@ -166,7 +198,6 @@ namespace fmis.Controllers
             var respo = _MyDbCOntext.Budget_allotments.Include(x=>x.FundSources).ThenInclude(x=>x.RespoCenter).ToList();
 
             ViewBag.respo = respo;
-
 
 
 

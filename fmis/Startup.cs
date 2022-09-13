@@ -149,6 +149,8 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("FundClusterContext")));
             services.AddDbContext<InOfPayDeductionContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
+            services.AddDbContext<SectionsContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("SectionsContext")));
             #endregion
 
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
