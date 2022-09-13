@@ -42,6 +42,7 @@
 </style>
 
 <input type="hidden" class="obligation" value="@JsonConvert.SerializeObject(Model)">
+<input type="hidden" id="current_user" value="@ViewBag.current_user"/>
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
 <input type="hidden" id="ors_handler" value="" />
@@ -132,8 +133,7 @@
     <div class="modal-dialog modal-sm" style="width:40%;">
         <div class="modal-content">
             <h3 style="margin-left:20px;" class="grey lighter smaller-150">
-                Created
-                (Obligation)
+                Obligation (Created By)
             </h3>
             <div class="modal-body CreatedByContent">
             </div>
@@ -211,6 +211,7 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
+
      function ajaxServer(ajax_data, url) {
         return Promise.resolve($.ajax({
             type: 'POST',
@@ -242,6 +243,7 @@
 		fund_sub_counter++;
 	});
     var obligation = $.parseJSON($(".obligation").val());
+    var current_user = $('#current_user').val();
 	const data = [];
     var counter = 0;
     var last_ors_handler;
@@ -250,6 +252,11 @@
         $.each(this.ObligationAmounts, function () {
             obligated_amount += this.Amount;
         });
+        created_by = this.CreatedBy;
+        if (!created_by || created_by === '' || created_by === "NULL") {
+            created_by = current_user;
+        }
+        
         last_ors_handler = this.Ors_no;
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
@@ -261,7 +268,8 @@
 			this.Address, //6
             this.Particulars, //7
             this.Ors_no, //8
-            this.Created_by, //9
+            @*this.CreatedBy, //9*@
+            created_by,
             obligated_amount, //10
             this.Id, //11
             this.obligation_token, //12
@@ -889,8 +897,13 @@
 							}
 						});
                     }
-                },
-
+               @* },
+                "row_below": {}, "remove_row": {}, "row_above": {}, "copy": {},
+                "created": {
+                    name: 'CREATED BY',
+                    callback: function (changes, options) {
+                    }*@
+                  },
                 // dri ta mag sugod
                 "row_below": { }, "remove_row": { }, "row_above": { }, "copy": { },
                 "created": {
@@ -1208,7 +1221,7 @@
             }
 		},
 		hiddenColumns: {
-            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
+            columns: [ 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
 		},
         licenseKey: 'non-commercial-and-evaluation',
     });

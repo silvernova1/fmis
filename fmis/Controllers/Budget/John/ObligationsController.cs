@@ -28,6 +28,7 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
 
 //SAMPLE
 
@@ -152,6 +153,7 @@ namespace fmis.Controllers
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation", "");
+            ViewBag.current_user = User.FindFirstValue(ClaimTypes.Name);
 
             var obligation = await _context
                                     .Obligation
@@ -212,10 +214,19 @@ namespace fmis.Controllers
 
         [HttpGet]
         [ValidateAntiForgeryToken]
-        public IActionResult openCreatedBy()
+        public async Task<IActionResult> openCreatedByAsync(int id, string obligation_token)
         {
+            var obligation = (from o in _MyDbContext.Obligation
+                              join u in _MyDbContext.FmisUsers
+                              on o.CreatedBy equals u.Username
+                              select new
+                              {
+                                  user = u.Username,
+                                  Id = o.Id
+                              }).ToList();
 
-            return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml", obligation);
+            return Json(obligation.Where(x=>x.Id == id).FirstOrDefault().user);
+           // return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml"); 
         }
 
         // GET: Obligations/Create
@@ -288,7 +299,6 @@ namespace fmis.Controllers
 
         }
 
-
         public string SetORSNo(string lastORSNo)
         {
             var no = int.Parse(lastORSNo.Substring(0, 4)) + 1;
@@ -301,10 +311,10 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,CreatedBy,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 _context.Add(obligation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -318,7 +328,7 @@ namespace fmis.Controllers
 
         {
             var p = ObligationsInput;
-            return null;
+            return null; 
         }
 
         // GET: Obligations/Edit/5

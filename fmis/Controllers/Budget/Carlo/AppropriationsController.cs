@@ -74,7 +74,7 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit( Appropriation appropriation)
         {
-
+           
             var appro = await _context.Appropriation.Where(x => x.AppropriationId == appropriation.AppropriationId).AsNoTracking().FirstOrDefaultAsync();
             appro.AppropriationSource = appropriation.AppropriationSource;
          
@@ -85,7 +85,6 @@ namespace fmis.Controllers
             return RedirectToAction("Index");
         }
 
-      
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
@@ -94,7 +93,6 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
 
         private bool AppropriationExists(int id)
         {

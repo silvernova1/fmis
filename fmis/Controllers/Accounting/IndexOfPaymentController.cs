@@ -148,6 +148,7 @@ namespace fmis.Controllers.Accounting
             _IndexofpaymentContext.Add(indexOfPayment);
             _IndexofpaymentContext.SaveChanges();
             return RedirectToAction(nameof(Index));
+
         }
     }
 }
