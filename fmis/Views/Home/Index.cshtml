@@ -93,12 +93,13 @@
             </select>
         </div>
         <div class="col-sm-2">
+            <div style="display: flex; justify-content: space-between;">
                 <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
-               
-        </div>
-        <div class="col-sm-2">
-             <h4 class="grey lighter "> As of December 25, 2022 </h4>
-        </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <h4 class="grey lighter" style="margin-left: -150px;"> As of December 25, 2022 </h4>
+            </div>
         </div>
 </div>
 <hr />
@@ -556,9 +557,9 @@
 
         var sales_charts = $('#sales-charts').css({ 'width': '100%', 'height': '220px' });
         $.plot("#sales-charts", [
-            { label: "Domains", data: d1 },
-            { label: "Hosting", data: d2 },
-            { label: "Services", data: d3 }
+            { label: "Allotment", data: d1 },
+            { label: "Obligated", data: d2 },
+            { label: "Disbursed", data: d3 }
         ], {
             hoverable: true,
             shadowSize: 0,
