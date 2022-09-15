@@ -7,9 +7,52 @@
 }
 
 
+<style>
+    /* IPHONE SE */
+    @@media (min-width: 375px) and (max-width: 667px) {
+        .signin {
+            width: 25%;
+            margin-left: -110px;
+        }
+
+        .card {
+            width: 100px
+        }
+
+    }
+
+    /* IPHONE XR */
+    @@media (min-width: 414px) and (max-width: 896px) {
+        .signin {
+            width: 25%;
+            margin-left: -100px;
+        }
+    }
+
+
+    /* IPAD AIR  */
+    @@media (min-width: 820px) and (max-width: 1180px) {
+        .signin {
+            margin-left: -50px;
+        }
+    }
+
+    /* IPAD MINI  */
+    @@media (min-width: 768px) and (max-width: 1024px) {
+        .signin {
+            margin-left: -50px;
+        }
+    }
+
+
+
+
+
+</style>
+
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 signin">
         <div class="card" id="login" style="width:25rem; height: 35rem; margin-left: 25%; border-width: 2px;">
             <br>
             <center>

@@ -3,9 +3,6 @@
 @using fmis.Models.John
 @model fmis.ViewModel.DashboardVM
 
-
-
-
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,44 +12,113 @@
 
 
 <style>
+
+
+    /* IPHONE SE */
+    @@media (min-width: 375px) and (max-width: 667px) {
+        .filter {
+            margin-top: 10px;
+        }
+
+        .datefrom {
+            width: 258px;
+        }
+        .dateto {
+            width: 258px;
+            margin-bottom: 10px;
+        }
+        .tdatefrom {
+            font-size: 7pt;
+            margin-top: 15px;
+        }
+
+        .tdateto {
+            font-size: 7pt;
+            margin-top: 15px;
+        }
+
+    }
+
+    /* IPHONE XR */
+    @@media (min-width: 414px) and (max-width: 896px) {
+        .tdatefrom, .tdateto {
+            font-size: 11pt;
+            margin-top: 10px;
+        }
+    }
+
+    /* IPHONE 12 PRO */
+    @@media (min-width: 390px) and (max-width: 844px) {
+        .tdatefrom, .tdateto {
+            font-size: 9pt;
+        }
+
+    }
+
     /* IPAD AIR  */
     @@media (min-width: 820px) and (max-width: 1180px) {
-        .obligated {
-            height: 400px;
+        .dfrom, .dto {
+            width: 50%;
+            margin-bottom: 10px;
         }
 
-        .obligated1 {
-            height: 391px;
+        .appr, .allot {
+            width: 50%;
         }
 
-        .disbursed {
-            height: 400px;
+        .tdatefrom, .tdateto {
+            margin-top: -2px;
         }
 
-        .disbursed1 {
-            height: 391px;
+        .filter {
+            margin-top: 10px;
         }
 
-        .allotmentclass {
-            height: 400px;
+        .asofd{
+            width: 50%;
+            margin-top: 5px;
         }
 
-        .allotmentclass1 {
-            height: 391px;
+        .allotmentclass, .obligated, .disbursed, .balance, .upaid, 
+        .overallobligated, .updisbursed, .acprogress, .monthly {
+            width: 50%;
         }
 
-        .monthly {
-            height: 400px;
-        }
-
-        .monthly1 {
-            height: 391px;
-        }
     }
 
     /* IPAD MINI  */
     @@media (min-width: 768px) and (max-width: 1024px) {
+        .dfrom, .dto {
+            width: 50%;
+            margin-bottom: 10px;
+        }
+
+        .appr, .allot {
+            width: 50%;
+        }
+
+        .tdatefrom, .tdateto {
+            margin-top: -2px;
+        }
+
+        .filter {
+            margin-top: 10px;
+        }
+
+        .asofd {
+            width: 50%;
+            margin-top: 5px;
+        }
+
+        .allotmentclass, .obligated, .disbursed, .balance, .upaid,
+        .overallobligated, .updisbursed, .acprogress, .monthly {
+            width: 50%;
+        }
     }
+
+
+
+
 </style>
 
 
@@ -63,28 +129,27 @@
 </div><!-- /.page-header -->
 
 <div class="row">
-
-    <div class="col-xs-12">
-        <div class="col-sm-2">
+    <div class="col-xs-12 upper">
+        <div class="col-sm-2 dfrom">
             <div style="display: flex; justify-content: space-between;">
-                <span>Date From: </span>
-                <input type="date" class="form-control" />
+                <span class="tdatefrom">Date From: </span>
+                <input type="date" class="form-control datefrom" />
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 dto" >
             <div style="display: flex; justify-content: space-between;">
-                <span>Date To: </span>
-                <input type="date" class="form-control" />
+                <span class="tdateto">Date To: </span>
+                <input type="date"  class="form-control dateto" />
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 appr">
             <select class="form-control">
                 <option value=""> SELECT APPROPRIATION</option>
                 <option> CURRENT</option>
                 <option> CONAP</option>
             </select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 allot">
             <select class="form-control">
                 <option value=""> SELECT ALLOTMENT CLASS</option>
                 <option> PS</option>
@@ -92,13 +157,13 @@
                 <option> CO</option>
             </select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 bfilter">
             <div style="display: flex; justify-content: space-between;">
-                <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
+                <button type="submit" class="btn btn-success btn-sm filter"> <span class="glyphicon glyphicon-filter"></span> Filter </button>
                 </div>
             </div>
-            <div class="col-sm-2">
-                <h4 class="grey lighter" style="margin-left: -150px;"> As of December 25, 2022 </h4>
+            <div class="col-sm-2 asofd">
+                <h4 class="asof grey lighter" > As of December 25, 2022 </h4>
             </div>
         </div>
 </div>
@@ -111,60 +176,40 @@
             <div class="space-6"></div>
 
             <div class="col-sm-12 infobox-container">
-                <div class="col-sm-3">
-                    <div class="infobox infobox-green" style="width: 320px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon fa fa-cogs"></i>
-                        </div>
-
+                <div class="col-sm-3 allotmentclass">
+                    <div class="infobox infobox-green" style="width: 270px;">
                         <div class="infobox-data">
                             <span class="infobox-data-number" style="font-size: 18pt">@ViewBag.Allotment</span>
                             <div class="infobox-content">(ALLOTMENTS)</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 obligated">
                     <div class="infobox infobox-blue" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon  fa fa-check-square-o"></i>
-                        </div>
-
                         <div class="infobox-data">
                             <span class="infobox-data-number">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</span>
                             <div class="infobox-content">(OBLIGATED)</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 disbursed">
                     <div class="infobox infobox-pink" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon fa fa-pencil-square-o"></i>
-                        </div>
-
                         <div class="infobox-data">
                             <span class="infobox-data-number">₱0.00</span>
                             <div class="infobox-content">(DISBURSED)</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 balance">
                     <div class="infobox infobox-red" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon  fa fa-bar-chart-o"></i>
-                        </div>
-
                         <div class="infobox-data">
                             <span class="infobox-data-number">@ViewBag.Balance.ToString("C", new CultureInfo("en-PH"))</span>
                             <div class="infobox-content">(BALANCE)</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 upaid">
                     <div class="infobox infobox-orange2" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon fa fa-envelope"></i>
-                        </div>
-
                         <div class="infobox-data">
                             <span class="infobox-data-number">₱0.00</span>
                             <div class="infobox-content">(UNPAID OBLIGATION)</div>
@@ -174,17 +219,14 @@
             </div>
             <div class="vspace-12-sm"></div>
         </div><!-- /.row -->
-
-        <div class="hr hr32 hr-dotted"></div>
-
         <div class="hr hr32 hr-dotted"></div>
         <div class="row">
             <!-- #OVERALL CUMMULATIVE UTILIZATION -->
             <div class="vspace-12-sm"></div>
-            <div class="col-sm-3 ">
-                <div class="widget-box obligated">
+            <div class="col-sm-3 overallobligated">
+                <div class="widget-box ">
                     <div class="widget-header widget-header-flat widget-header-small">
-                        <div class="widget-box transparent obligated1">
+                        <div class="widget-box transparent">
                             <div class="widget-header widget-header-flat">
                                 <h4 class="widget-title lighter">
                                     <i class="ace-icon fa fa-signal"></i>
@@ -198,7 +240,7 @@
                                         <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", @perObligated)%" data-size="180" data-color="#1261A0">
                                             <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span>
                                         </div>
-                                        <h4 class="grey lighter">OBLIGATED @String.Format("{0:0.00}", @perObligated)%</h4>
+                                        <h4 class="grey lighter">OBLIGATED </h4>
                                     </center>
                                     <div class="vspace-24-sm"></div>
                                 </div><!-- /.widget-main -->
@@ -209,8 +251,8 @@
             </div>
             <!-- #end -->
             <!-- #OBLIGATION VS DISBURSEMENT -->
-            <div class="col-sm-3 ">
-                <div class="widget-box disbursed">
+            <div class="col-sm-3 updisbursed">
+                <div class="widget-box">
                     <div class="widget-header widget-header-flat widget-header-small">
 
                         <div class="widget-box transparent disbursed1">
@@ -242,11 +284,9 @@
             <!-- #end -->
             <!-- #ALLOTMENT CLASS -->
 
-            <div class="col-sm-3 ">
-                <div class="widget-box allotmentclass" >
-
+            <div class="col-sm-3 acprogress">
+                <div class="widget-box" >
                     <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
-
                         <div class="widget-box transparent allotmentclass1">
                             <div class="widget-header widget-header-flat">
                                 <h4 class="widget-title lighter">
@@ -284,8 +324,8 @@
             <!-- #end -->
             <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
             <div class="vspace-12-sm"></div>
-            <div class="col-sm-3 ">
-                <div class="widget-box monthly">
+            <div class="col-sm-3 monthly">
+                <div class="widget-box">
                     <div class="widget-header widget-header-flat widget-header-small">
 
                         <div class="widget-box transparent monthly1">

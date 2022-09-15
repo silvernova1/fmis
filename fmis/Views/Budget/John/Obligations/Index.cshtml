@@ -960,9 +960,6 @@
 
                     }
                 },
-
-
-
             }
 		},
 		beforeRemoveRow: function (index, column) {
@@ -980,9 +977,17 @@
 			var ajax_data = {
 				"single_token": single_token,
 				"many_token": many_token
-			};
+            };
+         
             ajaxServer(ajax_data, '@Url.Action("DeleteObligation", "Obligations")');
-		},
+        },
+        afterRemoveRow: function () {
+            var total_obligation = 0;
+            $.each(this.getData(), function () {
+                total_obligation += this[10];
+            });
+            $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        },
 		afterUndo: function (index, column) {
         },
         afterFilter: function () {
@@ -996,14 +1001,11 @@
             //CHECK_AFTER_ROW = true;
 		},
         afterChange: function (changes, source) {
-            //var updatedHot = this.getData();
             var total_obligation = 0;
             $.each(this.getData(), function () {
-                console.log(this[10]);
-                total_obligation += this[10];
+               total_obligation += this[10];
             });
             $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
-            console.log(total_obligation); //expense code
 
         if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 console.log("first trap");
@@ -1020,10 +1022,10 @@
                 console.log(CHECK_FIRST_ROW, row, col);
                 if(!hot.getDataAtCell(row, 0)) {
                     TRAP_LOAD3 = true;
-                    Lobibox.alert("error", {
+                   @* Lobibox.alert("error", {
                         msg: "Please select FUND SOURCE & SAA first!",
                         sound: false,
-                    });
+                    });*@
                     return;
                 }
                   else if (col == 0) {
@@ -1074,7 +1076,6 @@
                         Amount: hot.getDataAtCell(row, col + 1),
                     });
 
-
                     ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
                         .then(data => {
                             console.log(data);
@@ -1083,8 +1084,6 @@
                         .catch(data => {
                             alert(data.responseJSON.error_message);
                         });
-
-
                 }
                 else if (amounts.includes(col)) {
                     TRAP_LOAD2 = true;
