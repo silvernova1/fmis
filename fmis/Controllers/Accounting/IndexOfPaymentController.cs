@@ -136,7 +136,6 @@ namespace fmis.Controllers.Accounting
         [Route("Accounting/IndexOfPayment/Create")]
         public IActionResult Create(IndexOfPayment indexOfPayment)
         {
-            /*return Json(indexOfPayment);*/
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");

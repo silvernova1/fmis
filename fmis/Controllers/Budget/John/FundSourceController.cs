@@ -161,13 +161,19 @@ namespace fmis.Controllers.Budget.John
 
             PopulatePrexcsDropDownList();
             PopulateRespoDropDownList();
+            PopulateSectionsDropDownList();
             PopulateFundDropDownList();
 
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
             return View(); //open create
         }
-
+        public IActionResult GetSectionsList(int RespoId)
+        {
+            List<Sections> selectList = _MyDbContext.Sections.Where(x => x.RespoId == RespoId).ToList();
+            ViewBag.Slist = new SelectList(selectList, "SectionId, SectionName");
+            return PartialView("DisplaySections");
+        }
         // POST: FundSource/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -354,6 +360,19 @@ namespace fmis.Controllers.Budget.John
                                               }),
                                      "RespoId",
                                      "respo",
+                                     null);
+
+        }
+        private void PopulateSectionsDropDownList()
+        {
+            ViewBag.SectionsId = new SelectList((from s in _MyDbContext.Sections.ToList()
+                                              select new
+                                              {
+                                                  SectionId = s.SectionId,
+                                                  SectionName = s.SectionName
+                                              }),
+                                     "SectionId",
+                                     "SectionName",
                                      null);
 
         }

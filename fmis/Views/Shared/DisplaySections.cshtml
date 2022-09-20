@@ -1,0 +1,13 @@
+﻿@model fmis.Models.Sections
+
+<option value="">
+    -- Select Section --
+</option>
+
+@if (ViewBag.Slist != null)
+{
+    foreach(var item in ViewBag.Slist)
+    { 
+        <option value="@item.Value">@item.Text</option>
+    }
+}
