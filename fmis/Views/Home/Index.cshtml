@@ -107,35 +107,20 @@
                         <div class="infobox-content">ALLOTMENTS</div>
                     </div>
                 </div>
-                <div class="col-sm-2">
-                    <div class="infobox infobox-blue" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon  fa fa-check-square-o"></i>
-                        </div>
+                <div class="infobox infobox-blue">
 
-                        <div class="infobox-data">
-                            <span class="infobox-data-number">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</span>
-                            <div class="infobox-content">(OBLIGATED)</div>
-                        </div>
+                    <div class="infobox-data">
+                        <span class="infobox-data-number">@ViewBag.Obligated.ToString("C", new CultureInfo("en-PH"))</span>
+                        <div class="infobox-content">OBLIGATED</div>
                     </div>
                 </div>
-                <div class="col-sm-2">
-                    <div class="infobox infobox-pink" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon fa fa-pencil-square-o"></i>
-                        </div>
 
-                        <div class="infobox-data">
-                            <span class="infobox-data-number">₱0.00</span>
-                            <div class="infobox-content">(DISBURSED)</div>
-                        </div>
+                <div class="infobox infobox-pink">
+                    <div class="infobox-data">
+                        <span class="infobox-data-number">₱0.00</span>
+                        <div class="infobox-content">DISBURSED</div>
                     </div>
                 </div>
-                <div class="col-sm-2">
-                    <div class="infobox infobox-red" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon  fa fa-bar-chart-o"></i>
-                        </div>
 
                 <div class="infobox infobox-red">
                     <div class="infobox-data">
@@ -143,23 +128,21 @@
                         <div class="infobox-content">BALANCE</div>
                     </div>
                 </div>
-                <div class="col-sm-2">
-                    <div class="infobox infobox-orange2" style="width: 270px;">
-                        <div class="infobox-icon">
-                            <i class="ace-icon fa fa-envelope"></i>
-                        </div>
 
-                        <div class="infobox-data">
-                            <span class="infobox-data-number">₱0.00</span>
-                            <div class="infobox-content">(UNPAID OBLIGATION)</div>
-                        </div>
+                <div class="infobox infobox-orange2">
+                    <div class="infobox-data">
+                        <span class="infobox-data-number">₱0.00</span>
+                        <div class="infobox-content">UNPAID OBLIGATIONS</div>
                     </div>
-                </div>
-            </div>
-            <div class="vspace-12-sm"></div>
-        </div><!-- /.row -->
 
-        <div class="hr hr32 hr-dotted"></div>
+
+                </div>
+
+                <div class="vspace-12-sm"></div>
+            </div>
+
+
+        </div><!-- /.row -->
 
         <div class="hr hr32 hr-dotted"></div>
         <div class="row">
@@ -227,9 +210,9 @@
             <!-- #ALLOTMENT CLASS -->
 
             <div class="col-sm-3 ">
-                <div class="widget-box allotmentclass" >
+                <div class="widget-box allotmentclass" style="height: 280px;">
 
-                    <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
+                    <div class="widget-header widget-header-flat widget-header-small">
 
                         <div class="widget-box transparent allotmentclass1">
                             <div class="widget-header widget-header-flat">
@@ -240,25 +223,25 @@
                             </div>
                             <div class="widget-body">
                                 <div class="widget-main">
-                                        <h5>PS</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
-                                        </div>
-                                        <h5>MOOE</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
-                                        </div>
-                                 
-                                        <h5>CO</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
-                                        </div>
+                                    <h5>PS</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
+                                    </div>
+                                    <h5>MOOE</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
+                                    </div>
+
+                                    <h5>CO</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
+                                    </div>
                                 </div><!-- /.widget-main -->
                             </div>
                         </div>
@@ -364,8 +347,8 @@
                 <!-- PAGE CONTENT ENDS -->
             </div><!-- /.col -->
         </div><!-- /.row -->
-     </div>
     </div>
+</div>
 <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script>
 window.onload = function () {
@@ -612,9 +595,9 @@ function toggleDataSeries(e) {
 
         var sales_charts = $('#sales-charts').css({ 'width': '100%', 'height': '220px' });
         $.plot("#sales-charts", [
-            { label: "Allotment", data: d1 },
-            { label: "Obligated", data: d2 },
-            { label: "Disbursed", data: d3 }
+            { label: "Domains", data: d1 },
+            { label: "Hosting", data: d2 },
+            { label: "Services", data: d3 }
         ], {
             hoverable: true,
             shadowSize: 0,
