@@ -303,7 +303,7 @@
 
     // dummy/live
 
-    @* $("#CategoryId").on('change', function () {
+     $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
@@ -353,11 +353,11 @@
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
-    });*@
+    });
 
     //local
 
-    $("#CategoryId").on('change', function () {
+   @* $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
@@ -407,7 +407,7 @@
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });
-    });
+    });*@
 
     $(document).ready(function () {
         $('.filter').change(function () {

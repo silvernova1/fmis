@@ -17,5 +17,6 @@ namespace fmis.Data
         }
 
         public DbSet<fmis.Models.RespoCenter> RespoCenter { get; set; }
+        public DbSet<fmis.Models.Sections> Sections { get; set; }
     }
 }

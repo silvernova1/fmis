@@ -29,7 +29,7 @@ namespace fmis.Data
 
         public DbSet<FmisUser> FmisUsers { get; set; }
         public DbSet<Account> Account { get; set; }
-        public DbSet<Section> Section { get; set; }
+        public DbSet<Sections> Sections { get; set; }
         public DbSet<Division> Division { get; set; }
         public DbSet<Personal_Information> Personal_Information { get; set; }
         public DbSet<BudgetAllotment> Budget_allotments { get; set; }
