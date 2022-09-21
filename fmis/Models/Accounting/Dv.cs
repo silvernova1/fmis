@@ -12,7 +12,7 @@ namespace fmis.Models.Accounting
     {
         public int DvId { get; set; }
         public string DvNo { get; set; }
-        public string Payee { get; set; }
+        //public string Payee { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
@@ -26,5 +26,10 @@ namespace fmis.Models.Accounting
         public int FundClusterId { get; set; }
         [JsonIgnore]
         public FundCluster FundCluster { get; set; }
+
+        [ForeignKey("PayeeId")]
+        public int PayeeId { get; set; }
+        [JsonIgnore]
+        public Payee Payee { get; set; }
     }
 }
