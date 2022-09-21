@@ -44,7 +44,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>DV #:</label>
-                <input type="hidden" asp-for="DvId" id="dvid"/>
+                <input type="hidden" asp-for="DvId" id="dvid" />
                 @Html.DropDownList("DvId", null, " - Select Dv No - ", htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
             </div>
 
@@ -99,9 +99,10 @@
         <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
             <div class="form-group">
                 <label>PERIOD COVER:</label>
-                <input type="text" asp-for="PeriodCover" class="form-control ">
+                <input type="text" name="date" asp-for="PeriodCover" class="form-control ">
             </div>
         </div>
+
         <div>
             <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                 <div class="form-group">
@@ -280,6 +281,8 @@
             <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
         </div>
     </div>
+
+
     @*
         <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
     @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
@@ -461,4 +464,30 @@
         }
         return true;
     }
+
+</script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script>
+    $(function () {
+        $('input[name="date"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
 </script>

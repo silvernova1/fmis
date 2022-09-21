@@ -7,6 +7,20 @@
 }
 
 
+<style>
+    .hr {
+        border: 1px solid black;
+    }
+
+    #nav {
+        font-size: 12pt;
+    }
+
+    .pbutton {
+        margin-left: 3px;
+    }
+</style>
+
 <!-- CREATE MODAL -->
 <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -45,7 +59,7 @@
     </a>
 </div>
 <br />
-<table class="table table-striped" style="width: 900px">
+<table class="table table-striped" style="width: 900px" id="data">
     <thead>
         <tr>
             <th>
@@ -77,3 +91,29 @@
         }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        $('#data').after('<div id="nav"></div>');
+        var rowsShown = 10;
+        var rowsTotal = $('#data tbody tr').length;
+        var numPages = rowsTotal / rowsShown;
+        for (i = 0; i < numPages; i++) {
+            var pageNum = i + 1;
+            $('#nav').append('<a href="#" class="pbutton btn-sm btn-info"  rel="' + i + '">' + pageNum + '</a>');
+        }
+        $('#data tbody tr').hide();
+        $('#data tbody tr').slice(0, rowsShown).show();
+        $('#nav a:first').addClass('active');
+        $('#nav a').bind('click', function () {
+
+            $('#nav a').removeClass('active');
+            $(this).addClass('active');
+            var currPage = $(this).attr('rel');
+            var startItem = currPage * rowsShown;
+            var endItem = startItem + rowsShown;
+            $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
+                css('display', 'table-row').animate({ opacity: 1 }, 300);
+        });
+    });
+</script>
