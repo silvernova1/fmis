@@ -79,7 +79,7 @@ namespace fmis.Controllers
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
-            ViewBag.date2 = date2.ToString("MMMM dd, yyyy");
+            ViewBag.date2 = date2/*.ToString("MMMM dd, yyyy")*/;
             var obligationsFilter = (from oa in _MyDbCOntext.ObligationAmount
                                                   join o in _MyDbCOntext.Obligation
                                                   on oa.ObligationId equals o.Id
@@ -100,6 +100,8 @@ namespace fmis.Controllers
 
             var allotmentClassId = fundSource.AllotmentClassId;
             var appropriationSourceId = fundSource.AppropriationId;
+            ViewBag.allotmentClassId = allotmentClassId;
+            ViewBag.appropriationSourceId = appropriationSourceId;
             var suballotmentsLastYr = _MyDbCOntext.SubAllotment
             .Where(x => x.AppropriationId == 1 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
             .Include(x => x.AllotmentClass).Sum(x => x.Beginning_balance);
@@ -233,23 +235,24 @@ namespace fmis.Controllers
 
             var allotment = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId).Sum(x => x.Beginning_balance)
                             + _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId).Sum(x => x.Remaining_balance)
-                            +_MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId/* && x.Date >= date1 && x.Date <= date2*/).Sum(s => s.Beginning_balance)
-                            + _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId/* && x.Date >= date1 && x.Date <= date2*/).Sum(x => x.Remaining_balance);
+                            +_MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId && x.Date >= date1 && x.Date <= date2).Sum(s => s.Beginning_balance)
+                            + _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId && x.Date >= date1 && x.Date <= date2).Sum(x => x.Remaining_balance);
 
             ViewBag.Allotment = allotment;
+
+            var filerobligationsTotal = filterObligationsFs.Where(x => x.budgetallotmentId == YearlyRefId && x.appropriationID == appropriationSourceId && x.allotmentClassID == allotmentClassId).Sum(x => x.amount) 
+                                        + filterObligationsSa.Where(x => x.budgetallotmentId == YearlyRefId && x.appropriationID == appropriationSourceId && x.allotmentClassID == allotmentClassId).Sum(x => x.amount);
+
+            ViewBag.Obligated = filerobligationsTotal;
+
+            
 
             var filteredBalances = _MyDbCOntext.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId).Sum(x => x.Remaining_balance)
                             + _MyDbCOntext.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId).Sum(x => x.Remaining_balance)
                             + _MyDbCOntext.SubAllotment.Where(x => x.BudgetAllotmentId == YearlyRefId && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId && x.Date >= date1 && x.Date <= date2).Sum(s => s.Remaining_balance)
                             + _MyDbCOntext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationSourceId && x.Date >= date1 && x.Date <= date2).Sum(x => x.Remaining_balance);
 
-            ViewBag.filteredBalances = filteredBalances;
-
-            var filerobligationsTotal = filterObligationsFs.Where(x => x.budgetallotmentId == YearlyRefId && x.appropriationID == appropriationSourceId && x.allotmentClassID == allotmentClassId).Sum(x => x.amount) + filterObligationsSa.Where(x => x.budgetallotmentId == YearlyRefId && x.appropriationID == appropriationSourceId && x.allotmentClassID == allotmentClassId).Sum(x => x.amount);
-
-            ViewBag.Obligated = filerobligationsTotal;
-                //obligatedAmount.Where(x => x.YearlyRefId == YearlyRefId && x.appropriationID == appropriationSourceId && x.allotmentClassID == allotmentClassId).Sum(x => x.obligationamount);
-
+            ViewBag.filteredBalances = allotment - filerobligationsTotal;
 
             List<AllotmentClass> allotmentClasses = (from allotmentclass in _MyDbCOntext.AllotmentClass
                                                      select allotmentclass).ToList();
