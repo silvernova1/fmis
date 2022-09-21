@@ -6,6 +6,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Views\NewFolder1\**" />
+	  <Compile Remove="Views\NewFolder\**" />
+	  <Content Remove="Views\NewFolder1\**" />
+	  <Content Remove="Views\NewFolder\**" />
+	  <EmbeddedResource Remove="Views\NewFolder1\**" />
+	  <EmbeddedResource Remove="Views\NewFolder\**" />
+	  <None Remove="Views\NewFolder1\**" />
+	  <None Remove="Views\NewFolder\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Remove="wwwroot\assets\js\jquery.signalR-2.4.1.min.js" />
 	</ItemGroup>
 
@@ -66,8 +77,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="ViewBag\" />
-		<Folder Include="Views\NewFolder1\" />
-		<Folder Include="Views\NewFolder\" />
 		<Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
 		<Folder Include="wwwroot\Rotativa\" />
 	</ItemGroup>
