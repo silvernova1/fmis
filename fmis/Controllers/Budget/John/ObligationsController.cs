@@ -268,7 +268,7 @@ namespace fmis.Controllers
             {
                 var obligation = new Obligation(); //CLEAR OBJECT
 
-                if (await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync() != null) //CHECK IF EXIST
+                if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
                 {
                     obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
@@ -300,6 +300,8 @@ namespace fmis.Controllers
                 else
                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
+
+                Console.WriteLine(@"saved obligation {0}", item.source_id);
             }
             return Json(retObligation.FirstOrDefault());
 
@@ -377,13 +379,17 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteObligation(DeleteData data)
         {
+
+            foreach (var many in data.many_token)
+                setUpDeleteData(many.many_token);
+            /*
             if (data.many_token.Count > 1)
             {
                 foreach (var many in data.many_token)
                     setUpDeleteData(many.many_token);
             }
             else
-                setUpDeleteData(data.single_token);
+                setUpDeleteData(data.single_token);*/
 
             return Json(data);
         }
@@ -391,7 +397,7 @@ namespace fmis.Controllers
         public void setUpDeleteData(string obligation_token)
         {
             var obligation = new Obligation(); //CLEAR OBJECT
-            obligation = _context.Obligation.Where(s => s.obligation_token == obligation_token).FirstOrDefault();
+            obligation = _context.Obligation.Where(s => s.obligation_token == obligation_token && s.status != "deactivated").AsNoTracking().FirstOrDefault();
             if (obligation is not null)
             {
                 obligation.status = "deactivated";

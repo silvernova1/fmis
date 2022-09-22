@@ -1,36 +1,56 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace fmis.Models.Accounting
+
+namespace fmis.Models.Accounting 
 {
     public class IndexOfPayment : BaseEntityTimeStramp
     {
         public int IndexOfPaymentId { get; set; }
-        public int DeductionId { get; set; }
-        public DateTime DvDate { get; set; }
+        public string AccountNumber { get; set; }
+        public int NumberOfBill { get; set; }
+        public float GrossAmount { get; set; }
+        public float TotalDeduction { get; set; }
+        public float NetAmount { get; set; }
         public string Particulars { get; set; }
-        public string PO { get; set; }
+        public string PoNumber { get; set; }
         public int ProjectId { get; set; }
-        public string Invoice { get; set; }
+        public string InvoiceNumber { get; set; }
+        public int SoNumber { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime DvDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime PeriodCover { get; set; }
-        public string PeriodCovered { get; set; }
-        public int SO { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime PeriodCoverFromTo { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public string TravelPeriod { get; set; }
-        public int AccountNum { get; set; }
-        public int NumOfBill { get; set; }
-        public int GrossAmount { get; set; }
-        public int TotalDeduction { get; set; }
-        public int NetAmount { get; set; }
-        public int DvId { get; set; }
-        [ForeignKey("Category")]
+
+ 
+
+
+        [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }
         [JsonIgnore]
         public Category Category { get; set; }
+
+        [ForeignKey("DeductionId")]
+        public int DeductionId { get; set; }
         [JsonIgnore]
-        public Dv Dv { get; set; }
+        public Deduction Deduction { get; set; }
+  
     }
 }

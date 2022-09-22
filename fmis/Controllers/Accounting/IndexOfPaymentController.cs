@@ -39,7 +39,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            return View(await _MyDbContext.Indexofpayment.Include(x => x.Dv).Include(x => x.Category).ToListAsync());
+            return View(await _MyDbContext.Indexofpayment.Include(x => x.DvDate).Include(x => x.Category).ToListAsync());
         }
 
 

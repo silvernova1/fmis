@@ -20,10 +20,19 @@
 </style>
 
 <!-- CREATE MODAL -->
-<div class="modal fade " id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+@*<div class="modal fade " role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
 
+        </div>
+    </div>
+</div>*@
+
+
+<div class="modal fade bd-example-modal-lg" id="CreateModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            ...
         </div>
     </div>
 </div>
@@ -81,63 +90,85 @@
                 Fund Cluster
             </th>
             <th>
-                Dv #
+                Dv Date
             </th>
             <th>
-                Date
+                Dv #
             </th>
             <th>
                 Payee
             </th>
             <th>
+                Responsibility Center
+            </th>
+            <th>
                 Particulars
             </th>
             <th>
-                Amount
+                Gross Amount
+            </th>
+            <th>
+                Deductions
+            </th>
+            <th>
+                Total Deductions
+            </th>
+            <th>
+                Net Amount
             </th>
             <th>
                 Action
             </th>
-
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @item.FundCluster?.FundClusterDescription
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DvNo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Payee)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Particulars)
-                </td>
-                <td>
-                    <span>&#8369;@Html.DisplayFor(modelItem => item.Amount)</span>
-                </td>
+        <tr>
+            <td>
+                @item.FundCluster?.FundClusterDescription
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DvNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Payee)
+            </td>
+            <td>
+                RESPO CENTER
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Particulars)
+            </td>
+            <td>
+                GROSS AMOUNT
+            </td>
+            <td>
+                DEDUCTIONS
+            </td>
+            <td>
+                TOTAL DEDUCTIONS
+            </td>
+            <td>
+                NET AMOUNT
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId">
+                    <i class="ace-icon fa fa-edit"></i>
+                </a>
+                <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","DV",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Dv?');">
+                    <i class="ace-icon fa fa-trash"></i>
+                </a>
+                <a class="btn btn-xs btn-success" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })">
+                    <i class="ace-icon fa fa-file-pdf-o"></i>
+                </a>
 
-                <td>
-                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId">
-                        <i class="ace-icon fa fa-edit"></i>
-                    </a>
-                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","DV",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Dv?');">
-                        <i class="ace-icon fa fa-trash"></i>
-                    </a>
-                    <a class="btn btn-xs btn-success" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })">
-                        <i class="ace-icon fa fa-file-pdf-o"></i>
-                    </a>
 
-
-                </td>
-            </tr>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
