@@ -125,15 +125,12 @@ namespace fmis.Controllers
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
 
-            Console.WriteLine("HERE 1 " + JsonSerializer.Serialize(data));
-
          
             foreach (var item in data)
             {
                 var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
                 if (await data_holder.AsNoTracking().AnyAsync(s => s.obligation_amount_token == item.obligation_amount_token)) //CHECK IF EXIST
                     obligation_amount = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item.obligation_amount_token);
-                Console.WriteLine("HERE 2 " + JsonSerializer.Serialize(obligation_amount));
                 if (obligation_amount.Id != 0 && string.IsNullOrEmpty(item.Expense_code))
                 {
                     obligation_amount.status = "deactivated";
@@ -168,6 +165,7 @@ namespace fmis.Controllers
                 utilized_amount += item.Amount;
 
                 _context.ObligationAmount.Update(obligation_amount);
+                Console.WriteLine(@"saved Obligation amount {0}", obligation_amount.Expense_code);
                 await _context.SaveChangesAsync();
             }
 

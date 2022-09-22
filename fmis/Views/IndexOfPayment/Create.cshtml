@@ -44,7 +44,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>DV #:</label>
-                <input type="hidden" asp-for="DvId" id="dvid" />
+                <input type="hidden" @*asp-for="Dv" *@id="dvid" />
                 @Html.DropDownList("DvId", null, " - Select Dv No - ", htmlAttributes: new { @class = "select2 form-select2", @id = "ddlBranches", onchange = "return get_sbu(this)" })
             </div>
 
@@ -75,7 +75,7 @@
         <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
             <div class="form-group">
                 <label>PO #:</label>
-                <input asp-for="PO" type="text" class="form-control" />
+                <input asp-for="PoNumber" type="text" class="form-control" />
             </div>
         </div>
         <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
@@ -87,13 +87,13 @@
         <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
             <div class="form-group">
                 <label>INVOICE #:</label>
-                <input asp-for="Invoice" type="text" class="form-control" />
+                <input asp-for="InvoiceNumber" type="text" class="form-control" />
             </div>
         </div>
         <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
             <div class="form-group">
                 <label>PERIOD COVERED:</label>
-                <input type="date" asp-for="PeriodCovered" class="form-control js-daterangepicker">
+                <input type="date"@* asp-for="PeriodCovered"*@ class="form-control js-daterangepicker">
             </div>
         </div>
         <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
@@ -107,25 +107,25 @@
             <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                 <div class="form-group">
                     <label>S.O #:</label>
-                    <input type="text" asp-for="SO" class="form-control" />
+                    <input type="text" asp-for="SoNumber" class="form-control" />
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                 <div class="form-group">
                     <label>TRAVEL PERIOD:</label>
-                    <input type="text" asp-for="TravelPeriod" class="form-control js-daterangepicker">
+                    <input type="text"  name="date" asp-for="TravelPeriod" class="form-control js-daterangepicker">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
                 <div class="form-group">
                     <label>ACCOUNT #:</label>
-                    <input type="text" asp-for="AccountNum" class="form-control" />
+                    <input type="text" asp-for="AccountNumber" class="form-control" />
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
                 <div class="form-group">
                     <label># OF BILLING: (FIRST, SECOND):</label>
-                    <input type="text" asp-for="NumOfBill" class="form-control" />
+                    <input type="text" asp-for="NumberOfBill" class="form-control" />
                 </div>
             </div>
         </div>

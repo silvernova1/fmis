@@ -71,6 +71,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             PopulateFundClusterDropDownList();
+            PopulatePayeeDropDownList();
             return View();
         }
 
@@ -154,9 +155,7 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateFundClusterDropDownList()
         {
-            var departmentsQuery = from d in _MyDbContext.FundCluster
-                                   orderby d.FundClusterDescription
-                                   select d;
+           
             ViewBag.FundClusterId = new SelectList((from s in _MyDbContext.FundCluster.ToList()
                                                     select new
                                                     {
@@ -168,6 +167,39 @@ namespace fmis.Controllers.Accounting
                                        null);
 
         }
+
+
+
+        private void PopulatePayeeDropDownList()
+        {
+
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+            ViewBag.PayeeId = new SelectList((from s in _MyDbContext.Payee.ToList()
+                                                    select new
+                                                    {
+                                                        PayeeId = s.PayeeId,
+                                                        PayeeDescription = s.PayeeDescription
+                                                    }),
+                                       "PayeeId",
+                                       "PayeeDescription",
+                                       null);
+
+        }
+
+        private void PopulateRespoDropDownList()
+        {
+            ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
+                                              select new
+                                              {
+                                                  RespoId = s.RespoId,
+                                                  respo = s.Respo
+                                              }),
+                                     "RespoId",
+                                     "respo",
+                                     null);
+
+        }
+
 
         public PdfPCell getCell(String text, int alignment)
         {
@@ -203,7 +235,7 @@ namespace fmis.Controllers.Accounting
                                        dvDate = dv.Date,
                                        dvParticulars = dv.Particulars,
                                        dvPayee = dv.Payee,
-                                       dvAmount = dv.Amount
+                                       dvAmount = dv.NetAmount
                                    }).ToList();
 
                 

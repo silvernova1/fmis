@@ -12,19 +12,35 @@ namespace fmis.Models.Accounting
     {
         public int DvId { get; set; }
         public string DvNo { get; set; }
-        public string Payee { get; set; }
+        public float GrossAmount { get; set; }
+        public float TotalDeduction { get; set; }
+        public float NetAmount { get; set; }
+        public string Particulars { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
-        public string Particulars { get; set; }
-
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N}")]
-        [Column(TypeName = "decimal(18,4)")]
-        public decimal Amount { get; set; }
 
         [ForeignKey("FundClusterId")]
         public int FundClusterId { get; set; }
         [JsonIgnore]
         public FundCluster FundCluster { get; set; }
+
+        [ForeignKey("PayeeId")]
+        public int PayeeId { get; set; }
+        [JsonIgnore]
+        public Payee Payee { get; set; }
+
+        [ForeignKey("RespoCenterId")]
+        public int RespoCenterId { get; set; }
+        [JsonIgnore]
+        public RespoCenter RespoCenter { get; set; }
+
+        [ForeignKey("DeductionId")]
+        public int DeductionId { get; set; }
+        [JsonIgnore]
+        public Deduction Deduction { get; set; }
+
+    
     }
 }
