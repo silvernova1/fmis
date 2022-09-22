@@ -1,0 +1,37 @@
+﻿@model fmis.Models.Accounting.Assignee;
+
+
+
+
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3 class="grey lighter smaller">Create Assignee</h3></center>
+<hr />
+<div class="container">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <h5>Description: </h5>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <h5>Full Name: </h5>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <h5>Designation: </h5>
+                <input asp-for="Designation" class="form-control" />
+                <span asp-validation-for="Designation" class="text-danger"></span>
+            </div>
+            <div class="form-group pull-right">
+                <input type="submit" value="Create" class="btn btn-success btn-sm" />  <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

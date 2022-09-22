@@ -72,6 +72,10 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             PopulateFundClusterDropDownList();
             PopulatePayeeDropDownList();
+            PopulateRespoDropDownList();
+            PopulateAssigneeDropDownList();
+            PopulateDeductionDropDownList();
+
             return View();
         }
 
@@ -200,6 +204,34 @@ namespace fmis.Controllers.Accounting
 
         }
 
+
+        private void PopulateAssigneeDropDownList()
+        {
+            ViewBag.AssigneeId = new SelectList((from s in _MyDbContext.Assignee.ToList()
+                                              select new
+                                              {
+                                                  AssigneeId = s.AssigneeId,
+                                                  Description = s.Description
+                                              }),
+                                     "AssigneeId",
+                                     "Description",
+                                     null);
+
+        }
+
+        private void PopulateDeductionDropDownList()
+        {
+            ViewBag.DeductionId = new SelectList((from s in _MyDbContext.Deduction.ToList()
+                                                 select new
+                                                 {
+                                                     DeductionId = s.DeductionId,
+                                                     DeductionDescription = s.DeductionDescription
+                                                 }),
+                                     "DeductionId",
+                                     "DeductionDescription",
+                                     null);
+
+        }
 
         public PdfPCell getCell(String text, int alignment)
         {

@@ -17,6 +17,7 @@ namespace fmis.Models.Accounting
         public float NetAmount { get; set; }
         public string Particulars { get; set; }
 
+
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
@@ -41,6 +42,11 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Deduction Deduction { get; set; }
 
-    
+        [ForeignKey("AssigneeId")]
+        public int AssigneeId { get; set; }
+        [JsonIgnore]
+        public Assignee Assignee { get; set; }
+
+
     }
 }

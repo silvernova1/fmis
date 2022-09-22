@@ -74,21 +74,13 @@
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
                     <label>Responsibility Center: </label>
-                    <select class="form-control">
-                        <option>MSD</option>
-                        <option>LHSD</option>
-                        <option>RD/ARD</option>
-                        <option>RLED</option>
-                    </select>
+                    <select class="form-control" asp-for="RespoCenterId" asp-items="ViewBag.RespoId"></select>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label>Select Options: </label>
-                    <select class="form-control">
-                        <option>TEV</option>
-                        <option>ALL OTHERS</option>
-                    </select>
+                    <select class="form-control" asp-for="AssigneeId" asp-items="ViewBag.AssigneeId"></select>
                 </div>
             </div>
         </div>
