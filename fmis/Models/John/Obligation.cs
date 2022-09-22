@@ -37,6 +37,7 @@ namespace fmis.Models
         public float Gross { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public decimal remaining_balance { get; set; }
+        public DateTime yearAdded { get; set; }
         public int Created_by { get; set; }
         public string status { get; set; }
         public string obligation_token { get; set; }
