@@ -41,6 +41,6 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Deduction Deduction { get; set; }
 
-    
+
     }
 }

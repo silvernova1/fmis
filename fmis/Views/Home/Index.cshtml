@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @using System.Globalization;
 @using fmis.Models.John
 @model fmis.ViewModel.DashboardVM
@@ -10,7 +10,7 @@
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var perObligated = ViewBag.Obligated / ViewBag.Balance;
+    var perObligated = ViewBag.Allotment / ViewBag.Balance;
 }
 
 
@@ -89,9 +89,6 @@
             <div class="col-sm-2">
                 <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
             </div>
-            <div class="col-sm-2">
-                <h4 class="grey lighter pull-left"> As of @ViewBag.date2 </h4>
-            </div>
         </div>
     </form>
 </div>
@@ -134,10 +131,10 @@
                         <span class="infobox-data-number">₱0.00</span>
                         <div class="infobox-content">UNPAID OBLIGATIONS</div>
                     </div>
-
-
                 </div>
-
+                <div class="mx-auto">
+                    <h4 class="grey lighter text-center"> As of @ViewBag.date2 </h4>
+                </div>
                 <div class="vspace-12-sm"></div>
             </div>
 
@@ -162,9 +159,8 @@
                                 <div class="widget-main">
                                     <div id="piechart-placeholder" hidden></div>
                                     <center>
-                                        <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", @perObligated)%" data-size="180" data-color="#1261A0">
-                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span>
-                                        </div>
+                                        <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", ViewBag.filteredBalances)%" data-size="180" data-color="#1261A0">
+                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span></div>
                                         <h4 class="grey lighter">OBLIGATED @String.Format("{0:0.00}", @perObligated)%</h4>
                                     </center>
                                     <div class="vspace-24-sm"></div>
@@ -223,25 +219,25 @@
                             </div>
                             <div class="widget-body">
                                 <div class="widget-main">
-                                    <h5>PS</h5>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
-                                        <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
-                                    </div>
-                                    <h5>MOOE</h5>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                        <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
-                                    </div>
-
-                                    <h5>CO</h5>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                        <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
-                                    </div>
+                                        <h5>PS</h5>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
+                                            <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
+                                        </div>
+                                        <h5>MOOE</h5>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                            <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
+                                        </div>
+                                 
+                                        <h5>CO</h5>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                            <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
+                                        </div>
                                 </div><!-- /.widget-main -->
                             </div>
                         </div>
@@ -251,7 +247,7 @@
             <!-- #end -->
             <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
             <div class="vspace-12-sm"></div>
-            <div class="col-sm-3 ">
+            @*<div class="col-sm-3 ">
                 <div class="widget-box monthly">
                     <div class="widget-header widget-header-flat widget-header-small">
 
@@ -269,7 +265,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>*@
             <!-- #end -->
 
         </div><!-- /.row -->
@@ -312,27 +308,29 @@
                                         var currentYear = User.FindFirstValue("YearlyRef");
                                         var lastYear = (int.Parse(User.FindFirstValue("YearlyRef")) - 1).ToString();
 
-                                        var allotments = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.Beginning_balance)
-                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.Beginning_balance)
-                                                       + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance)
-                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance);
+                                        var allotments = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Beginning_balance)
+                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Beginning_balance)
+                                                       + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Remaining_balance)
+                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Remaining_balance);
 
-                                        var obligated = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.obligated_amount)
-                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear).Sum(x => x.obligated_amount)
-                                                      + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount)
-                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount);
+                                        var obligated = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
+                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
+                                                      + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
+                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount);
+
+
 
                                         var unobligated = allotments - (Math.Abs(obligated));
 
-                                        var percentage = obligated / allotments * 100;
-                                        var positiveValue = Math.Abs(percentage);
+                                        @*var percentage = obligated / allotments * 100;
+                                        var positiveValue = Math.Abs(percentage);*@
 
 
                                         <tr>
                                             <td> @item.Respo</td>
                                             <td style="text-align:right"> @allotments.ToString("##,#00.00")</td>
                                             <td style="text-align:right"> @Math.Abs(obligated).ToString("##,#00.00") </td>
-                                            <td style="text-align:center"> @String.Format("{0:0.00}", positiveValue)% </td>
+                                            <td style="text-align:center"> @*@String.Format("{0:0.00}", positiveValue)%*@ </td>
                                             <td style="text-align:right"> @unobligated.ToString("##,#00.00")</td>
                                             <td> 0.00 </td>
                                             <td> 0.00 </td>
@@ -347,8 +345,8 @@
                 <!-- PAGE CONTENT ENDS -->
             </div><!-- /.col -->
         </div><!-- /.row -->
+     </div>
     </div>
-</div>
 <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script>
 window.onload = function () {
