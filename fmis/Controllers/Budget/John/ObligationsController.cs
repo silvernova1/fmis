@@ -155,16 +155,19 @@ namespace fmis.Controllers
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var yearAdded = int.Parse(year);
             var res = next_year.AddYears(-1);
             var lastYr = res.Year.ToString();
 
+
+
             var obligation = await _context
                                     .Obligation
-                                    .Where(x => x.status == "activated").OrderBy(x => x.Ors_no)
-                                    .Include(x => x.ObligationAmounts.Where(x => x.status =="activated"))
+                                    .Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded).OrderBy(x => x.Ors_no)
+                                    .Include(x => x.ObligationAmounts.Where(x => x.status == "activated"))
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
-                                    .Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId || x.FundSource.BudgetAllotment.Yearly_reference.YearlyReference == lastYr || x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == lastYr)
+                                    //.Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId/* || x.FundSource.BudgetAllotment.Yearly_reference.YearlyReference == lastYr || x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == lastYr*/)
                                     .AsNoTracking()
                                     .ToListAsync();
 
@@ -253,7 +256,11 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
-
+            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            next_year.ToString("yyyy-MM-dd 00:00:00");
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
             var retObligation = new List<Obligation>();
 
@@ -280,6 +287,7 @@ namespace fmis.Controllers
                 obligation.Address = item.Address;
                 obligation.Particulars = item.Particulars;
                 obligation.Created_by = item.Created_by;
+                obligation.yearAdded = next_year;
                 obligation.Gross = item.Gross;
                 obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
