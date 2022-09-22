@@ -620,6 +620,15 @@
                         <b class="arrow"></b>
                     </li>
 
+                    <li class="@if(ViewBag.filter.sub == "assignee")
+                    @Html.Raw("active")">
+                        <a asp-area="" asp-controller="Assignee" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Assignee
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
                     <li class="@if(ViewBag.filter.sub == "index_of_payment")
                     @Html.Raw("active")">
                         <a asp-area="" asp-controller="IndexOfPayment" asp-action="Index">
