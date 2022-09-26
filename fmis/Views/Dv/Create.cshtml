@@ -93,7 +93,29 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" type="number" asp-for="GrossAmount" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                @Html.DropDownList("DeductionId", null, " - Select Deduc - ", htmlAttributes: new { @class = "select2 form-control" })
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="number" asp-for="DeducAmount1" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                @Html.DropDownList("DeductionId", null, " - Select Deduc - ", htmlAttributes: new { @class = "select2 form-control" })
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="number" asp-for="DeducAmount2" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -106,7 +128,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" type="number" asp-for="DeducAmount3" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -119,7 +141,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" type="number" asp-for="DeducAmount4" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -132,7 +154,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" type="number" asp-for="DeducAmount5" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -145,7 +167,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" type="number" asp-for="DeducAmount6" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -158,33 +180,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" type="number" asp-for="DeducAmount7" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>

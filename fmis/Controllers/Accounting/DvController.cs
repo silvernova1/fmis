@@ -57,7 +57,7 @@ namespace fmis.Controllers.Accounting
             {
                 dv = dv.Where(s => s.DvNo!.Contains(searchString));
             }
-            return View(await dv.Include(x=>x.FundCluster).ToListAsync());
+            return View(await dv.Include(x => x.Payee).Include(x => x.RespoCenter).Include(x => x.FundCluster).Include(x => x.Deduction).ToListAsync());
         }
 
         [HttpPost]
@@ -85,6 +85,8 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
+            dv.TotalDeduction = dv.DeducAmount1 + dv.DeducAmount2 + dv.DeducAmount3 + dv.DeducAmount4 + dv.DeducAmount5 + dv.DeducAmount6 + dv.DeducAmount7;
+            dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             if (ModelState.IsValid)
             {
                 _MyDbContext.Add(dv);
@@ -259,6 +261,10 @@ namespace fmis.Controllers.Accounting
                 var fundCluster = (from dv in _MyDbContext.Dv
                                    join fc in _MyDbContext.FundCluster
                                    on dv.FundClusterId equals fc.FundClusterId
+                                   join r in _MyDbContext.RespoCenter
+                                   on dv.RespoCenterId equals r.RespoId
+                                   join a in _MyDbContext.Assignee
+                                   on dv.AssigneeId equals a.AssigneeId
                                    where dv.DvId == id
                                    select new
                                    {
@@ -267,7 +273,11 @@ namespace fmis.Controllers.Accounting
                                        dvDate = dv.Date,
                                        dvParticulars = dv.Particulars,
                                        dvPayee = dv.Payee,
-                                       dvAmount = dv.NetAmount
+                                       dvAmount = dv.NetAmount,
+                                       respo = r.RespoHead,
+                                       assigneeDvId = dv.AssigneeId,
+                                       assigneeName = a.FullName,
+                                       assigneeDesignation = a.Designation
                                    }).ToList();
 
                 
@@ -568,11 +578,11 @@ namespace fmis.Controllers.Accounting
                     table_row_8.DefaultCell.FixedHeight = 200f;
                     table_row_8.WidthPercentage = 100f;
                     table_row_8.SetWidths(tbt_ro8_width);
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n" + "                                                            " + "______________________________________________" + "                                                                  \n\n" + "                                                           " + "" + "Printed Name, Designation and Signature of Supervisor", arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n" + fundCluster.FirstOrDefault().respo + "\n" + "______________________________________________" + "\n\n" + "" + "Printed Name, Designation and Signature of Supervisor", arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 80f,
-                        HorizontalAlignment = Element.ALIGN_LEFT
+                        HorizontalAlignment = Element.ALIGN_CENTER
                     });
                     doc.Add(table_row_8);
 
@@ -758,7 +768,7 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         FixedHeight = 25f
                     });
-                    table_row_18.AddCell(new PdfPCell(new Paragraph("______________________________________________\n " + "Head, Accounting Unit/ Authorized Representative", arial_font_8))
+                    table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeName+ "\n " + "Head, Accounting Unit/ Authorized Representative", arial_font_8))
                     {
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE,

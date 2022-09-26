@@ -15,12 +15,15 @@ namespace fmis.Models.Accounting
         public float GrossAmount { get; set; }
         public float TotalDeduction { get; set; }
         public float NetAmount { get; set; }
+        public float DeducAmount1 { get; set; }
+        public float DeducAmount2 { get; set; }
+        public float DeducAmount3 { get; set; }
+        public float DeducAmount4 { get; set; }
+        public float DeducAmount5 { get; set; }
+        public float DeducAmount6 { get; set; }
+        public float DeducAmount7 { get; set; }
         public string Particulars { get; set; }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 47ef77797eafc615613dd23258f02bdaaa268e4f
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
@@ -45,14 +48,11 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Deduction Deduction { get; set; }
 
-<<<<<<< HEAD
         [ForeignKey("AssigneeId")]
         public int AssigneeId { get; set; }
         [JsonIgnore]
         public Assignee Assignee { get; set; }
 
-=======
->>>>>>> 47ef77797eafc615613dd23258f02bdaaa268e4f
 
     }
 }
