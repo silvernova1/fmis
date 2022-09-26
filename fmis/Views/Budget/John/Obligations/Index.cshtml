@@ -1062,7 +1062,7 @@
                             Payee: hot.getDataAtCell(row, 5),
                             Address: hot.getDataAtCell(row, 6),
                             Particulars: hot.getDataAtCell(row, 7),
-                            Ors_no: hot.getDataAtCell(row, 8),
+                            Ors_no: hot.getDataAtCell(row, 8) ? Ors_no : hot.getDataAtCell(row, 8) ,
 
                             //Ors_no_temp: hot.getDataAtCell(row-1, 8),
 
@@ -1093,16 +1093,7 @@
                     return;
                 }
 
-                if (hot.getDataAtCell(row, 8) == hot.getDataAtCell(row, 8)) {
-                      
-                        Lobibox.alert("error", {
-                            msg: "DUPLICATE ORS NUMBER!",
-                            sound: false,
-                        });
-                       
-                        return;
-                    }
-
+            
                 else if (exp_code.includes(col)) {
                     console.log('expense codes' + col);
                     TRAP_LOAD2 = true;

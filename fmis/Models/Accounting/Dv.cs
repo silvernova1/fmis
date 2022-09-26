@@ -15,9 +15,14 @@ namespace fmis.Models.Accounting
         public float GrossAmount { get; set; }
         public float TotalDeduction { get; set; }
         public float NetAmount { get; set; }
+        public float DeducAmount1 { get; set; }
+        public float DeducAmount2 { get; set; }
+        public float DeducAmount3 { get; set; }
+        public float DeducAmount4 { get; set; }
+        public float DeducAmount5 { get; set; }
+        public float DeducAmount6 { get; set; }
+        public float DeducAmount7 { get; set; }
         public string Particulars { get; set; }
-
-
 
 
         [DataType(DataType.Date)]
@@ -49,7 +54,6 @@ namespace fmis.Models.Accounting
         public int AssigneeId { get; set; }
         [JsonIgnore]
         public Assignee Assignee { get; set; }
-
 
 
     }
