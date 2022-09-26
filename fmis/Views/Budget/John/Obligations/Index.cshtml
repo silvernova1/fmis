@@ -293,6 +293,9 @@
             this.Id, //11
             this.obligation_token, //12
         ];
+   @*     if (!this.Ors_no && data[counter-1][8]) {
+            last_ors_handler = data[counter - 1][8];
+        }*@
         $.each(this.ObligationAmounts, function () {
             data[counter].push(this.obligation_amount_token);
             data[counter].push(this.Expense_code);
@@ -320,6 +323,9 @@
 		counter++;
     });
 
+    @*console.log(last_ors_handler);
+    console.log(data[counter-2][8]);*@
+
     $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
 
     var uacs = $.parseJSON($(".uacs").val());
@@ -344,6 +350,15 @@
         height: '800px',
         fixedColumnsLeft: 5,
         manualRowResize: true,
+        @*cells: function (row, col, prop) {
+            var cellProperties = {};
+            if (col == 8) {
+            }
+            cellProperties.type = {
+                renderer: negativeValueRenderer
+            }
+            return cellProperties;
+        },*@
         afterGetColHeader: addInput,
         beforeOnCellMouseDown(event, coords) {
             // Deselect the column after clicking on input.
@@ -365,7 +380,7 @@
             100, 100, 100,
             100, 100, 100,
             100, 100,
-            150, 150, 10
+            150, 150, 10, 100
         ],
         colHeaders: ['FUND SOURCE', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
             'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
@@ -380,7 +395,7 @@
             'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
             'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
             'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
-            'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE'
+            'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE', 'ORS NUMBER TEMP',
         ],
         columns: [
             {
@@ -837,6 +852,10 @@
             },
             {
                 type: 'text'
+            },
+            {
+                //ORS NUMBER TEMP
+                type: 'text'
             }
         ],
         search: {
@@ -980,6 +999,13 @@
             console.log(ajax_data);
             ajaxServer(ajax_data, '@Url.Action("DeleteObligation", "Obligations")');
         },
+        afterRemoveRow: function () {
+            var total_obligation = 0;
+            $.each(this.getData(), function () {
+                total_obligation += this[10];
+            });
+            $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        },
         afterUndo: function (index, column) {
         },
         afterFilter: function () {
@@ -1037,6 +1063,9 @@
                             Address: hot.getDataAtCell(row, 6),
                             Particulars: hot.getDataAtCell(row, 7),
                             Ors_no: hot.getDataAtCell(row, 8),
+
+                            //Ors_no_temp: hot.getDataAtCell(row-1, 8),
+
                             Created_by: hot.getDataAtCell(row, 9),
                             Gross: hot.getDataAtCell(row, 10),
                             obligation_token: hot.getDataAtCell(row, 12)
@@ -1064,6 +1093,16 @@
                     return;
                 }
 
+                if (hot.getDataAtCell(row, 8) == hot.getDataAtCell(row, 8)) {
+                      
+                        Lobibox.alert("error", {
+                            msg: "DUPLICATE ORS NUMBER!",
+                            sound: false,
+                        });
+                       
+                        return;
+                    }
+
                 else if (exp_code.includes(col)) {
                     console.log('expense codes' + col);
                     TRAP_LOAD2 = true;
@@ -1085,7 +1124,6 @@
                         .catch(data => {
                             alert(data.responseJSON.error_message);
                         });
-
 
                 }
                 else if (amounts.includes(col)) {
@@ -1221,7 +1259,7 @@
                 $.each(rows, function () {
                     let row = this;
                     if (hot.getDataAtCell(row, 0)) {
-                        let Ors_no = hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : ""
+                        let Ors_no = hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "" 
                         $("#ors_handler").val(Ors_no);
                         ajax_data.push(
                             {
@@ -1235,13 +1273,16 @@
                                 Address: hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "",
                                 Particulars: hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "",
                                 Ors_no: Ors_no,
+                                //Ors_no_temp: hot.getDataAtCell(row-1, 8) ? hot.getDataAtCell(row-1, 8) : "",
                                 Created_by: hot.getDataAtCell(row, 9) ? hot.getDataAtCell(row, 9) : 0,
                                 Gross: hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "",
                                 obligation_token: hot.getDataAtCell(row, 12)
                             }
                         );
+                        colorRow(row, 8);
                     }
                 });
+                console.log(hot.getSourceData());
                 console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")');
                 CHECK_FIRST_ROW = false;
@@ -1282,6 +1323,31 @@
         $("#total_remaining_balance").html(parseFloat(result.overall_remaining_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         $("#total_obligated_balance").html(parseFloat(result.overall_obligated_balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     }
-
+    function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.TextCell.renderer.apply(this, arguments);
+        if (value.includes('H')) { //if row contains negative number
+            td.className = 'white'; //add class "negative"
+        }
+        else {
+            td.className = '';
+        }
+    }
     console.log(hot.getSourceData());
+
+    function colorRow(rowChange, colChange) {
+        console.log(rowChange, colChange);
+        hot.updateSettings({
+            cells(row, col, prop) {
+                const cellMeta = {
+                    ...prop
+                };
+                //console.log(cellMeta);
+                if (row === rowChange && col === colChange) {
+                    cellMeta.className = 'white';
+                }
+
+                return cellMeta;
+            }
+        });
+    }
 </script>
