@@ -50,14 +50,20 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             ViewData["GetDvNo"] = searchString;
 
-            var dv = from m in _MyDbContext.Dv
-                     select m;
+            var dv = await _MyDbContext.Dv
+                .Include(x => x.RespoCenter)
+                .Include(x => x.FundCluster)
+                .Include(x => x.Assignee)
+                .Include(x => x.Payee)
+                .Include(x => x.dvDeductions).ThenInclude(x=>x.Deduction)
+                .AsNoTracking()
+                .ToListAsync();
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                dv = dv.Where(s => s.DvNo!.Contains(searchString));
+                dv = dv.Where(s => s.DvNo!.Contains(searchString)).ToList();
             }
-            return View(await dv.Include(x => x.Payee).Include(x => x.RespoCenter).Include(x => x.FundCluster).Include(x => x.Deduction).ToListAsync());
+            return View(dv);
         }
 
         [HttpPost]
@@ -76,19 +82,25 @@ namespace fmis.Controllers.Accounting
             PopulateAssigneeDropDownList();
             PopulateDeductionDropDownList();
 
-            return View();
+            Dv newDv = new() { dvDeductions = new List<DvDeduction>(7)};
+            for (int x = 0; x < 7; x++)
+            {
+                newDv.dvDeductions.Add(new DvDeduction());
+            }
+            return View(newDv);
         }
 
+        //hello to the world
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Dv dv)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-
-            dv.TotalDeduction = dv.DeducAmount1 + dv.DeducAmount2 + dv.DeducAmount3 + dv.DeducAmount4 + dv.DeducAmount5 + dv.DeducAmount6 + dv.DeducAmount7;
+            dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
             dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             if (ModelState.IsValid)
             {
+                dv.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
                 _MyDbContext.Add(dv);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -145,11 +157,19 @@ namespace fmis.Controllers.Accounting
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var dvs = await _MyDbContext.Dv.Where(p => p.DvId == ID).FirstOrDefaultAsync();
+            var dvs = await _MyDbContext.Dv.Where(p => p.DvId == ID)
+                .Include(x => x.RespoCenter)
+                .Include(x => x.FundCluster)
+                .Include(x => x.Assignee)
+                 .Include(x => x.Payee)
+                  .Include(x => x.dvDeductions).ThenInclude(x => x.Deduction)
+                .FirstOrDefaultAsync();
             _MyDbContext.Dv.Remove(dvs);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+
+
 
         public IActionResult selectAT(int id)
         {

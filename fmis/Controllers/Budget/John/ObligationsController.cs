@@ -91,6 +91,7 @@ namespace fmis.Controllers
             public string Address { get; set; } //
             public string Particulars { get; set; } //
             public string Ors_no { get; set; }
+            //public string Ors_no_temp { get; set; }
             public float Gross { get; set; } //
             public int Created_by { get; set; } //
             public string obligation_token { get; set; } //
@@ -160,16 +161,20 @@ namespace fmis.Controllers
             var lastYr = res.Year.ToString();
 
 
-
             var obligation = await _context
                                     .Obligation
-                                    .Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded).OrderBy(x => x.Ors_no)
+                                   .Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded)//.OrderBy(x => x.Ors_no == "" ? x.Ors_no_Temp : x.Ors_no)
+                                   //.Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded).OrderBy(x => x.Ors_no)
                                     .Include(x => x.ObligationAmounts.Where(x => x.status == "activated"))
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
-                                    //.Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId/* || x.FundSource.BudgetAllotment.Yearly_reference.YearlyReference == lastYr || x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == lastYr*/)
                                     .AsNoTracking()
                                     .ToListAsync();
+
+            obligation.ForEach(x =>
+            {
+                x.Ors_no_Temp = string.IsNullOrEmpty(x.Ors_no_Temp) ? x.Ors_no : x.Ors_no_Temp;
+            });
 
 
 
@@ -185,7 +190,7 @@ namespace fmis.Controllers
             var totalObligated = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
             ViewBag.totalObligatedAmount = totalObligated.ToString("##,#00.00");
 
-            return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
+            return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation.OrderBy(x=>x.Ors_no_Temp));
         }
 
         [HttpGet]
@@ -263,14 +268,18 @@ namespace fmis.Controllers
             var result = res.Year.ToString();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
             var retObligation = new List<Obligation>();
+            //string[] alphabet = { "a", "b", "c", "d" };
+            //var alphabet_counter = 0;
+            char c1 = 'A';
 
             foreach (var item in data)
             {
                 var obligation = new Obligation(); //CLEAR OBJECT
 
+                
                 if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
                 {
-                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token /*&& s.Ors_no == obligation.Ors_no*/).FirstOrDefaultAsync();
                 }
 
                 if (item.source_type.Equals("fund_source"))
@@ -289,11 +298,29 @@ namespace fmis.Controllers
                 obligation.Created_by = item.Created_by;
                 obligation.yearAdded = next_year;
                 obligation.Gross = item.Gross;
+
+
+                if (obligation.Id != 0) {
+                    var previous_ors = new Obligation();
+                    previous_ors = await _MyDbContext.Obligation
+                        .Where(x=>x.status == "activated" && x.Id != obligation.Id && !string.IsNullOrEmpty(x.Ors_no))
+                        .OrderByDescending(x=> x.Id)
+                        .FirstOrDefaultAsync();
+                    if (string.IsNullOrEmpty(item.Ors_no) && !string.IsNullOrEmpty(previous_ors.Ors_no))
+                    {
+                        obligation.Ors_no_Temp = previous_ors.Ors_no + "-" + c1;
+                        c1++;
+                    }
+                }
+
+      
                 obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
+
+
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
-                await _context.SaveChangesAsync();
+                var water = await _context.SaveChangesAsync();
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
@@ -301,7 +328,7 @@ namespace fmis.Controllers
                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
 
-                Console.WriteLine(@"saved obligation {0}", item.source_id);
+              
             }
             return Json(retObligation.FirstOrDefault());
 

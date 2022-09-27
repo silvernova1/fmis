@@ -49,7 +49,6 @@
             height: 391px;
         }
     }
-
     /* IPAD MINI  */
     @@media (min-width: 768px) and (max-width: 1024px) {
     }
@@ -160,7 +159,8 @@
                                     <div id="piechart-placeholder" hidden></div>
                                     <center>
                                         <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", ViewBag.filteredBalances)%" data-size="180" data-color="#1261A0">
-                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span></div>
+                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span>
+                                        </div>
                                         <h4 class="grey lighter">OBLIGATED @String.Format("{0:0.00}", @perObligated)%</h4>
                                     </center>
                                     <div class="vspace-24-sm"></div>
@@ -206,9 +206,9 @@
             <!-- #ALLOTMENT CLASS -->
 
             <div class="col-sm-3 ">
-                <div class="widget-box allotmentclass" style="height: 280px;">
+                <div class="widget-box allotmentclass" >
 
-                    <div class="widget-header widget-header-flat widget-header-small">
+                    <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
 
                         <div class="widget-box transparent allotmentclass1">
                             <div class="widget-header widget-header-flat">
@@ -219,25 +219,25 @@
                             </div>
                             <div class="widget-body">
                                 <div class="widget-main">
-                                        <h5>PS</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
-                                        </div>
-                                        <h5>MOOE</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
-                                        </div>
-                                 
-                                        <h5>CO</h5>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                            <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                            <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
-                                        </div>
+                                    <h5>PS</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
+                                    </div>
+                                    <h5>MOOE</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
+                                    </div>
+
+                                    <h5>CO</h5>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
+                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
+                                        <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
+                                    </div>
                                 </div><!-- /.widget-main -->
                             </div>
                         </div>
@@ -248,24 +248,22 @@
             <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
             <div class="vspace-12-sm"></div>
             @*<div class="col-sm-3 ">
-                <div class="widget-box monthly">
-                    <div class="widget-header widget-header-flat widget-header-small">
-
-                        <div class="widget-box transparent monthly1">
-                            <div class="widget-header widget-header-flat">
-                                <h4 class="widget-title lighter">
-                                    <i class="ace-icon fa fa-signal"></i>
-                                    MONTHLY OBLIGATION (Disbursement)
-                                </h4>
-
-                            </div>
-                            <div class="widget-body">
-                                <div id="chartContainer" style="height: 270px; width: 100%;"></div>
+                    <div class="widget-box monthly">
+                        <div class="widget-header widget-header-flat widget-header-small">
+                            <div class="widget-box transparent monthly1">
+                                <div class="widget-header widget-header-flat">
+                                    <h4 class="widget-title lighter">
+                                        <i class="ace-icon fa fa-signal"></i>
+                                        MONTHLY OBLIGATION (Disbursement)
+                                    </h4>
+                                </div>
+                                <div class="widget-body">
+                                    <div id="chartContainer" style="height: 270px; width: 100%;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>*@
+                </div>*@
             <!-- #end -->
 
         </div><!-- /.row -->
@@ -323,7 +321,7 @@
                                         var unobligated = allotments - (Math.Abs(obligated));
 
                                         @*var percentage = obligated / allotments * 100;
-                                        var positiveValue = Math.Abs(percentage);*@
+                                            var positiveValue = Math.Abs(percentage);*@
 
 
                                         <tr>
@@ -345,12 +343,11 @@
                 <!-- PAGE CONTENT ENDS -->
             </div><!-- /.col -->
         </div><!-- /.row -->
-     </div>
     </div>
+</div>
 <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script>
 window.onload = function () {
-
 var chart = new CanvasJS.Chart("chartContainer", {
 	animationEnabled: true,
 	theme: "light2",
@@ -398,18 +395,14 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		}*@]
 });
 chart.render();
-
 function addSymbols(e) {
 	var suffixes = ["", "K", "M", "B"];
 	var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
-
 	if (order > suffixes.length - 1)
 		order = suffixes.length - 1;
-
 	var suffix = suffixes[order];
 	return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
 }
-
 function toggleDataSeries(e) {
 	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
 		e.dataSeries.visible = false;
@@ -418,7 +411,6 @@ function toggleDataSeries(e) {
 	}
 	e.chart.render();
 }
-
 }
 </script>
 <script type="text/javascript">
@@ -438,7 +430,6 @@ function toggleDataSeries(e) {
                 size: size
             });
         })
-
         $('.sparkline').each(function () {
             var $box = $(this).closest('.infobox');
             var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
@@ -450,12 +441,9 @@ function toggleDataSeries(e) {
                     chartRangeMin: $(this).data('min') || 0
                 });
         });
-
-
         //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
         //but sometimes it brings up errors with normal resize event handlers
         $.resize.throttleWindow = false;
-
         var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
              { label: "BALANCE", data: @ViewBag.Balance, color: "#68BC31" },
@@ -491,20 +479,15 @@ function toggleDataSeries(e) {
             })
         }
         drawPieChart(placeholder, data);
-
         /**
         we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
         so that's not needed actually.
         */
-
         placeholder.data('chart', data);
         placeholder.data('draw', drawPieChart);
-
-
         //pie chart tooltip example
         var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
         var previousPoint = null;
-
         placeholder.on('plothover', function (event, pos, item) {
             if (item) {
                 if (previousPoint != item.seriesIndex) {
@@ -517,11 +500,7 @@ function toggleDataSeries(e) {
                 $tooltip.hide();
                 previousPoint = null;
             }
-
         });
-
-
-
         var placeholder_2 = $('#obligated-piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
             { label: "UNPAID OBLIGATIONS", data: 1, color: "#FEE074" },
@@ -530,10 +509,6 @@ function toggleDataSeries(e) {
             { label: "direct traffic", data: 18.6, color: "#DA5430" },
             { label: "other", data: 10, color: "#FEE074" } *@
         ]
-
-
-
-
         function drawPieChart_2(placeholder_2, data, position) {
             $.plot(placeholder_2, data, {
                 series: {
@@ -564,33 +539,22 @@ function toggleDataSeries(e) {
             })
         }
         drawPieChart_2(placeholder_2, data);
-
-
-
         /////////////////////////////////////
         $(document).one('ajaxloadstart.page', function (e) {
             $tooltip.remove();
         });
-
-
-
-
         var d1 = [];
         for (var i = 0; i < Math.PI * 2; i += 0.5) {
             d1.push([i, Math.sin(i)]);
         }
-
         var d2 = [];
         for (var i = 0; i < Math.PI * 2; i += 0.5) {
             d2.push([i, Math.cos(i)]);
         }
-
         var d3 = [];
         for (var i = 0; i < Math.PI * 2; i += 0.2) {
             d3.push([i, Math.tan(i)]);
         }
-
-
         var sales_charts = $('#sales-charts').css({ 'width': '100%', 'height': '220px' });
         $.plot("#sales-charts", [
             { label: "Domains", data: d1 },
@@ -618,28 +582,20 @@ function toggleDataSeries(e) {
                 borderColor: '#555'
             }
         });
-
-
         $('#recent-box [data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
         function tooltip_placement(context, source) {
             var $source = $(source);
             var $parent = $source.closest('.tab-content')
             var off1 = $parent.offset();
             var w1 = $parent.width();
-
             var off2 = $source.offset();
             //var w2 = $source.width();
-
             if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
             return 'left';
         }
-
-
         $('.dialogs,.comments').ace_scroll({
             size: 300
         });
-
-
         //Android's default browser somehow is confused when tapping on label which will lead to dragging the task
         //so disable dragging when clicking on label
         var agent = navigator.userAgent.toLowerCase();
@@ -651,7 +607,6 @@ function toggleDataSeries(e) {
                 if (label == e.target || $.contains(label, e.target)) e.stopImmediatePropagation();
             });
         }
-
         $('#tasks').sortable({
             opacity: 0.8,
             revert: true,
@@ -670,20 +625,15 @@ function toggleDataSeries(e) {
             if (this.checked) $(this).closest('li').addClass('selected');
             else $(this).closest('li').removeClass('selected');
         });
-
-
         //show the dropdowns on top or bottom depending on window height and menu position
         $('#task-tab .dropdown-hover').on('mouseenter', function (e) {
             var offset = $(this).offset();
-
             var $w = $(window)
             if (offset.top > $w.scrollTop() + $w.innerHeight() - 100)
                 $(this).addClass('dropup');
             else $(this).removeClass('dropup');
         });
-
     })
-
          // datepicker plugin
         //link
         $('.date-picker').datepicker({
@@ -694,11 +644,8 @@ function toggleDataSeries(e) {
             .next().on(ace.click_event, function () {
                 $(this).prev().focus();
             });
-
         //or change it into a date range picker
         $('.input-daterange').datepicker({ autoclose: true });
-
-
         //to translate the daterange picker, please copy the "examples/daterange-fr.js" contents here before initialization
         $('input[name=date-range-picker]').daterangepicker({
             'applyClass': 'btn-sm btn-success',
