@@ -14,9 +14,14 @@ namespace fmis.Models.Accounting
         public int IndexOfPaymentId { get; set; }
         public string AccountNumber { get; set; }
         public int NumberOfBill { get; set; }
-        public float GrossAmount { get; set; }
-        public float TotalDeduction { get; set; }
-        public float NetAmount { get; set; }
+
+
+        public List<IndexDeduction> IndexDeductions { get; set; }
+
+        public double GrossAmount { get; set; }
+        public double TotalDeduction { get; set; }
+        public double NetAmount { get; set; }
+
         public string Particulars { get; set; }
         public string PoNumber { get; set; }
         public int ProjectId { get; set; }
@@ -39,7 +44,6 @@ namespace fmis.Models.Accounting
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public string TravelPeriod { get; set; }
 
- 
 
 
         [ForeignKey("CategoryId")]

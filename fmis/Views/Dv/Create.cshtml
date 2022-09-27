@@ -93,94 +93,98 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" asp-for="GrossAmount" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()"/>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
-                @Html.DropDownList("DeductionId", null, " - Select Deduc - ", htmlAttributes: new { @class = "select2 form-control" })
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount1" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                @Html.DropDownList("DeductionId", null, " - Select Deduc - ", htmlAttributes: new { @class = "select2 form-control" })
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount2" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
                 </select>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount3" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[1].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[2].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[3].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[4].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[5].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
 
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[6].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
                 </select>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount4" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount5" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount6" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="number" asp-for="DeducAmount7" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -193,7 +197,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" id="total_deduction" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly/>
                 </div>
             </div>
         </div>
@@ -206,7 +210,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control" id="net_amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly/>
                 </div>
             </div>
         </div>
@@ -216,223 +220,11 @@
                 <input type="submit" value="Create" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" data-dismiss="modal">Back to List</a>
             </div>
         </div>
-
-      
-
     </form>
-  @*  <form asp-action="Create">
-        <div class="col-md-4" style="margin-left: 50px;">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <h5>Fund Cluster: </h5>
-                @Html.DropDownList("FundClusterId", null, " - Select FundCluster - ", htmlAttributes: new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <h5>Dv Type: </h5>
-                <select class="form-control" id="dv_type" required>
-                    <option value="">Select Dv Type</option>
-                    <option value="S">SUPPLIER / CONTRACTOR</option>
-                    <option value="T">INDIVIDUAL CLAIM / PAYROLL</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <h5>Dv #: </h5>
-                <input asp-for="DvNo" type="text" id="dv_no" class="form-control" readonly />
-                <span asp-validation-for="DvNo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <h5>Particulars:  </h5>
-                <input asp-for="Particulars" type="text" class="form-control" value="To payment of" />
-                <span asp-validation-for="Particulars" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <h5>Amount: </h5>
-                <input asp-for="Amount" type="text" class="form-control" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-
-         
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 120px">
-                <label style="font-weight:bold;">GROSS AMOUNT: </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input  class="form-control" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-   
-
- 
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-  
-
-
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-
-
-
-    
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-  
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <select asp-items="ViewBag.DeductionId" class="form-control select2">
-                    <option> - Select Deduction - </option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
-            </div>
-        </div>
-
-
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 115px">
-                <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
-            </div>
-        </div>
-
-
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 120px">
-                <label style="font-weight:bold;">NET AMOUNT: </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
-            </div>
-            <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
-        </div>
-
-
-        </div>
-        <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <h5>Date: </h5>
-                <input asp-for="Date" type="date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <h5>Payee: </h5>
-                @Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control" })
-            </div>
-            <div class="form-group">
-                <label>Responsibility Center: </label>
-                <select class="form-control">
-                    <option>MSD</option>
-                    <option>LHSD</option>
-                    <option>RD/ARD</option>
-                    <option>RLED</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>TEV /  ALL OTHERS </label>
-                <select class="form-control">
-                    <option>TEV</option>
-                    <option>ALL OTHERS</option>
-                </select>
-            </div>
-     
-            <div class="form-group" style="margin-top: 41px">
-               
-            </div>
-            <br />
-            <br />
-        </div>
-    </form>*@
 </div>
 
 
 <script>
-
-
     $(document).ready(function () {
         $('.select2').select2();
 
@@ -475,7 +267,27 @@
         return true;
     }
 
+    function submitDeduction(parentDiv) {
+        let dvDeduction = $(parentDiv).find('select');
+        let dvDedectionAmt = $(parentDiv).find('input');
+        if (dvDeduction.val() && dvDedectionAmt.val()) {
+            console.log(dvDeduction.val(), dvDedectionAmt.val());
+        }
+        computeNetAmount();
 
+    }
+
+    function computeNetAmount() {
+        let amounts = $('.deduction_amount');
+        let gross_amount = +$('#gross_amount').val();
+        let total = 0;
+        $(amounts).each(function (index, value) {
+            total += +value.value;
+        });
+
+        $('#total_deduction').val(total);
+        $('#net_amount').val(gross_amount - total);
+    }
   
 </script>
 

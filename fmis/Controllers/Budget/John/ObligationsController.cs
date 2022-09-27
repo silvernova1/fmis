@@ -279,7 +279,7 @@ namespace fmis.Controllers
                 
                 if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
                 {
-                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token && s.Ors_no == obligation.Ors_no).FirstOrDefaultAsync();
+                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token /*&& s.Ors_no == obligation.Ors_no*/).FirstOrDefaultAsync();
                 }
 
                 if (item.source_type.Equals("fund_source"))

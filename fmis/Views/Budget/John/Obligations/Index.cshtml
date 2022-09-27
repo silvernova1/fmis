@@ -1047,6 +1047,8 @@
                     });
                     return;
                 }
+
+
                 else if (col == 0) {
                     CHECK_FIRST_ROW1 = true;
                     console.log("col 0");
@@ -1062,14 +1064,14 @@
                             Payee: hot.getDataAtCell(row, 5),
                             Address: hot.getDataAtCell(row, 6),
                             Particulars: hot.getDataAtCell(row, 7),
-                            Ors_no: hot.getDataAtCell(row, 8) ? Ors_no : hot.getDataAtCell(row, 8) ,
-
+                            Ors_no: hot.getDataAtCell(row, 8),
                             //Ors_no_temp: hot.getDataAtCell(row-1, 8),
-
                             Created_by: hot.getDataAtCell(row, 9),
                             Gross: hot.getDataAtCell(row, 10),
                             obligation_token: hot.getDataAtCell(row, 12)
+                            
                         }
+
                     );
 
                     ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
@@ -1093,7 +1095,6 @@
                     return;
                 }
 
-            
                 else if (exp_code.includes(col)) {
                     console.log('expense codes' + col);
                     TRAP_LOAD2 = true;
