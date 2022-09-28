@@ -15,7 +15,6 @@ namespace fmis.Data.Accounting
            : base(options)
         {
         }
-        public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
         public override int SaveChanges()
         {
             AddTimestamps();

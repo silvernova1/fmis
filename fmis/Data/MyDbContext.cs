@@ -72,7 +72,6 @@ namespace fmis.Data
         public DbSet<Deduction> Deduction { get; set; }
         public DbSet<Dv> Dv { get; set; }
         public DbSet<FundCluster> FundCluster { get; set; }
-        public DbSet<InOfPayDeduction> InOfPayDeduction { get; set; }
         public DbSet<FundTransferedTo> FundTransferedTo { get; set; }
         public DbSet<SubTransferedTo> SubTransferedTo { get; set; }
         //public DbSet<SectionsContext> Sections { get; set; }

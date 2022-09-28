@@ -16,7 +16,7 @@ namespace fmis.Models.Accounting
         public int NumberOfBill { get; set; }
 
 
-        public List<IndexDeduction> IndexDeductions { get; set; }
+        public List<IndexDeduction> indexDeductions { get; set; }
 
         public double GrossAmount { get; set; }
         public double TotalDeduction { get; set; }
@@ -51,10 +51,11 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Category Category { get; set; }
 
-        [ForeignKey("DeductionId")]
-        public int DeductionId { get; set; }
+        [ForeignKey("DvId")]
+        public int DvId { get; set; }
         [JsonIgnore]
-        public Deduction Deduction { get; set; }
-  
+        public Dv Dv { get; set; }
+
+
     }
 }

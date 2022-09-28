@@ -39,78 +39,12 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            return View(/*await _MyDbContext.Indexofpayment.Include(x => x.Category).ToListAsync()*/);
-        }
-
-
-        private void PopulateIndexOfPaymentDropDownList()
-        {
-            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
-            ViewBag.CategoryId = new SelectList((from s in _MyDbContext.Category.ToList()
-                                                 select new
-                                                 {
-                                                     CategoryId = s.CategoryId,
-                                                     CategotyDescription = s.CategoryDescription,
-
-                                                 }),
-                                       "CategoryId",
-                                       "CategotyDescription",
-                                       null);
-
-        }
-
-        private void PopulatePayeeDropDownList()
-        {
-            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
-            ViewBag.PayeeId = new SelectList((from s in _MyDbContext.Payee.ToList()
-                                              select new
-                                              {
-                                                  PayeeId = s.PayeeId,
-                                                  PayeeDescription = s.PayeeDescription,
-
-                                              }),
-                                       "PayeeId",
-                                       "PayeeDescription",
-                                       null);
-
-        }
-
-        private void PopulateDeductionDropDownList()
-        {
-            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
-            ViewBag.DeductionId = new SelectList((from s in _MyDbContext.Deduction.ToList()
-                                                  select new
-                                                  {
-                                                      DeductionId = s.DeductionId,
-                                                      DeductionDescription = s.DeductionDescription,
-
-                                                  }),
-                                       "DeductionId",
-                                       "DeductionDescription",
-                                       null);
-
-        }
-
-        private void PopulateDvDropDownList()
-        {
-            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
-            ViewBag.DvId = new SelectList((from s in _MyDbContext.Dv.ToList()
-                                           select new
-                                           {
-                                               DvId = s.DvId,
-                                               DvNo = s.DvNo,
-                                               Payee = s.Payee,
-
-                                           }),
-                                       "DvId",
-                                       "DvNo",
-                                       "Payee",
-                                       null);
-
+            return View(await _MyDbContext.Indexofpayment
+                .Include(x => x.Category)
+                .Include(x=>x.Dv)
+                    .ThenInclude(x=>x.Payee)
+                .Include(x=>x.indexDeductions)
+                    .ThenInclude(x=>x.Deduction).ToListAsync());
         }
         // GET: Create
         [Route("Accounting/IndexOfPayment/Create")]
@@ -121,12 +55,18 @@ namespace fmis.Controllers.Accounting
             ViewBag.DeductionId = DeductionId;
             ViewBag.DvId = DvId;
 
-            PopulateIndexOfPaymentDropDownList();
-            PopulatePayeeDropDownList();
-            PopulateDeductionDropDownList();
-            PopulateDvDropDownList();
 
-            return View();
+
+            PopulateCategoryDropDownList();
+            PopulateDvDropDownList();
+            PopulateDeductionDropDownList();
+
+            IndexOfPayment newDv = new() { indexDeductions = new List<IndexDeduction>(7) };
+            for (int x = 0; x < 7; x++)
+            {
+                newDv.indexDeductions.Add(new IndexDeduction());
+            }
+            return View(newDv);
         }
         // POST: Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -134,19 +74,43 @@ namespace fmis.Controllers.Accounting
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Accounting/IndexOfPayment/Create")]
-        public IActionResult Create(IndexOfPayment indexOfPayment)
+        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+            indexOfPayment.TotalDeduction = indexOfPayment.indexDeductions.Sum(x => x.Amount);
+            indexOfPayment.NetAmount = indexOfPayment.GrossAmount - indexOfPayment.TotalDeduction;
+            if (ModelState.IsValid)
+            {
+                indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
+                _MyDbContext.Add(indexOfPayment);
+                await _MyDbContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(indexOfPayment);
+        }
 
-            //var cat_desc = _MyDbContext.Category.Where(f => f.CategoryId == indexOfPayment.CategoryId).FirstOrDefault().CategoryDescription;
-
-            //indexOfPayment.CategoryDescription = cat_desc;
-
-            _IndexofpaymentContext.Add(indexOfPayment);
-            _IndexofpaymentContext.SaveChanges();
-            return RedirectToAction(nameof(Index));
+        private void PopulateCategoryDropDownList(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Category
+                              orderby d.CategoryId
+                              select d;
+            ViewBag.CategoryId = new SelectList(Query, "CategoryId", "CategoryDescription", selected);
+        }
+        private void PopulateDvDropDownList(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Dv
+                        orderby d.DvId
+                        select d;
+            ViewBag.DvId = new SelectList(Query, "DvId", "DvNo", selected);
+        }
+        private void PopulateDeductionDropDownList(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Deduction
+                        orderby d.DeductionId
+                        select d;
+            ViewBag.DeductionId = new SelectList(Query, "DeductionId", "DeductionDescription", selected);
         }
     }
 }
