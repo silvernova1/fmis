@@ -28,6 +28,7 @@ using Grpc.Core;
 using fmis.ViewModel;
 using fmis.DataHealpers;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
 
 //SAMPLE
 
@@ -91,9 +92,8 @@ namespace fmis.Controllers
             public string Address { get; set; } //
             public string Particulars { get; set; } //
             public string Ors_no { get; set; }
-            //public string Ors_no_temp { get; set; }
             public float Gross { get; set; } //
-            public int Created_by { get; set; } //
+            public string Created_by { get; set; } //
             public string obligation_token { get; set; } //
             public string status { get; set; }
         }
@@ -153,6 +153,7 @@ namespace fmis.Controllers
         {
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("ors", "obligation", "");
+            ViewBag.current_user = User.FindFirstValue(ClaimTypes.Name);
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
@@ -160,21 +161,15 @@ namespace fmis.Controllers
             var res = next_year.AddYears(-1);
             var lastYr = res.Year.ToString();
 
-
             var obligation = await _context
                                     .Obligation
-                                   .Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded)//.OrderBy(x => x.Ors_no == "" ? x.Ors_no_Temp : x.Ors_no)
-                                   //.Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded).OrderBy(x => x.Ors_no)
+                                    .Where(x => x.status == "activated" && x.yearAdded.Year == yearAdded).OrderBy(x => x.Ors_no)
                                     .Include(x => x.ObligationAmounts.Where(x => x.status == "activated"))
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
+                                    //.Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId/* || x.FundSource.BudgetAllotment.Yearly_reference.YearlyReference == lastYr || x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == lastYr*/)
                                     .AsNoTracking()
                                     .ToListAsync();
-
-            obligation.ForEach(x =>
-            {
-                x.Ors_no_Temp = string.IsNullOrEmpty(x.Ors_no_Temp) ? x.Ors_no : x.Ors_no_Temp;
-            });
 
 
 
@@ -190,7 +185,7 @@ namespace fmis.Controllers
             var totalObligated = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
             ViewBag.totalObligatedAmount = totalObligated.ToString("##,#00.00");
 
-            return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation.OrderBy(x=>x.Ors_no_Temp));
+            return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
         }
 
         [HttpGet]
@@ -227,12 +222,22 @@ namespace fmis.Controllers
             return View("~/Views/Budget/John/Obligations/ObligationAmount.cshtml", obligation);
         }
 
+
         [HttpGet]
         [ValidateAntiForgeryToken]
-        public IActionResult openCreatedBy()
+        public async Task<IActionResult> openCreatedByAsync(int id, string obligation_token)
         {
+            var obligation = (from o in _MyDbContext.Obligation
+                              join u in _MyDbContext.FmisUsers
+                              on o.Created_by equals u.Username
+                              select new
+                              {
+                                  user = u.Username,
+                                  Id = o.Id
+                              }).ToList();
 
-            return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml", obligation);
+            return Json(obligation.Where(x => x.Id == id).FirstOrDefault().user);
+            // return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml"); 
         }
 
         // GET: Obligations/Create
@@ -268,18 +273,14 @@ namespace fmis.Controllers
             var result = res.Year.ToString();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
             var retObligation = new List<Obligation>();
-            //string[] alphabet = { "a", "b", "c", "d" };
-            //var alphabet_counter = 0;
-            char c1 = 'A';
 
             foreach (var item in data)
             {
                 var obligation = new Obligation(); //CLEAR OBJECT
 
-                
                 if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
                 {
-                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token /*&& s.Ors_no == obligation.Ors_no*/).FirstOrDefaultAsync();
+                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
                 }
 
                 if (item.source_type.Equals("fund_source"))
@@ -298,29 +299,11 @@ namespace fmis.Controllers
                 obligation.Created_by = item.Created_by;
                 obligation.yearAdded = next_year;
                 obligation.Gross = item.Gross;
-
-
-                if (obligation.Id != 0) {
-                    var previous_ors = new Obligation();
-                    previous_ors = await _MyDbContext.Obligation
-                        .Where(x=>x.status == "activated" && x.Id != obligation.Id && !string.IsNullOrEmpty(x.Ors_no))
-                        .OrderByDescending(x=> x.Id)
-                        .FirstOrDefaultAsync();
-                    if (string.IsNullOrEmpty(item.Ors_no) && !string.IsNullOrEmpty(previous_ors.Ors_no))
-                    {
-                        obligation.Ors_no_Temp = previous_ors.Ors_no + "-" + c1;
-                        c1++;
-                    }
-                }
-
-      
                 obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
-
-
                 obligation.obligation_token = item.obligation_token;
                 _context.Update(obligation);
-                var water = await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 if (item.source_type == "fund_source")
                     obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
@@ -328,12 +311,11 @@ namespace fmis.Controllers
                     obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
 
-              
+                Console.WriteLine(@"saved obligation {0}", item.source_id);
             }
             return Json(retObligation.FirstOrDefault());
 
         }
-
 
         public string SetORSNo(string lastORSNo)
         {
@@ -347,10 +329,10 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,CreatedBy,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 _context.Add(obligation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -364,7 +346,7 @@ namespace fmis.Controllers
 
         {
             var p = ObligationsInput;
-            return null;
+            return null; 
         }
 
         // GET: Obligations/Edit/5
@@ -872,7 +854,7 @@ namespace fmis.Controllers
                     }
                     else
                     {
-                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
+                        //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE TEST CHANGES
                         table_row_8.AddCell(new PdfPCell(new Paragraph(saasignatory.FirstOrDefault()?.respoHead, new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
                         table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name", new Font(Font.FontFamily.HELVETICA, 6f, Font.NORMAL))));
                         table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", new Font(Font.FontFamily.HELVETICA, 7f, Font.BOLD))) { HorizontalAlignment = Element.ALIGN_CENTER });
