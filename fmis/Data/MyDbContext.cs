@@ -122,6 +122,27 @@ namespace fmis.Data
                                                        new RespoCenter { RespoId = 2, Respo = "LHSD", RespoCode = "13-001-03-0007-2022-002", RespoHead = "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS", RespoHeadPosition = "CHIEF - LOCAL HEALTH SUPPORT DIVISION" },
                                                        new RespoCenter { RespoId = 3, Respo = "RD/ARD", RespoCode = "13-001-03-0007-2022-003", RespoHead = "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", RespoHeadPosition = "DIRECTOR III" },
                                                        new RespoCenter { RespoId = 4, Respo = "RLED", RespoCode = "13-001-03-0007-2022-004", RespoHead = "SOPHIA M. MANCAO, MD, DPSP", RespoHeadPosition = "CHIEF - Regulation of Regional Health Facilities and Services" });
+
+            modelBuilder.Entity<FundSource>().HasData(new FundSource { FundSourceId = 51, FundSourceTitle = "CANCELLED", RespoId = 1, PrexcId = 1, AllotmentClassId = 1, 
+                                                                       AppropriationId =1, FundId =1, Beginning_balance = (decimal)0.00, Remaining_balance = (decimal)0.00, obligated_amount = (decimal)0.00, utilized_amount = (decimal)0.00, realignment_amount = (decimal)0.00, IsAddToNextAllotment = false, Original = false, Breakdown = false});
+            modelBuilder.Entity<SubAllotment>().HasData(new SubAllotment
+            {
+                SubAllotmentId = 138,
+                Suballotment_title = "CANCELLED",
+                RespoId = 1,
+                prexcId = 1,
+                AllotmentClassId = 1,
+                AppropriationId = 1,
+                FundId = 1,
+                Beginning_balance = (decimal)0.00,
+                Remaining_balance = (decimal)0.00,
+                obligated_amount = (decimal)0.00,
+                utilized_amount = (decimal)0.00,
+                realignment_amount = (decimal)0.00,
+                IsAddToNextAllotment = false,
+                Original = false,
+                Breakdown = false
+            });
         }
 
 
