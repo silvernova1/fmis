@@ -1,9 +1,4 @@
 ﻿@model fmis.Models.Accounting.IndexOfPayment
-
-@{
-    ViewData["Title"] = "IndexOfPayment";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 <link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
 <script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
 <script src="~/assets/plugin/daterangepicker/daterangepicker.js"></script>
@@ -23,250 +18,249 @@
         -moz-appearance: textfield;
     }
 </style>
-
-
-<h3 class="grey lighter smaller">
-    Index of Payment
-</h3>
-<hr>
-<form asp-action="Create">
-    <div class="row">
-        <div class="col-md-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId"> </select>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-group">
-                <label asp-for="Dv" class="control-label"></label>
-                <select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId"> </select>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>PAYEE :</label>
-                <input id="payee" class="form-control" readonly />
-            </div>
-        </div>
-        <div>
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3 class="grey lighter smaller">Index of Payment</h3></center>
+<hr />
+<div class="container" style="height: 810px;">
+    <form asp-action="Create" style="position:center;">
+        <div class="row">
             <div class="col-md-3">
-                <label>DV DATE:</label>
-                <input type="date" asp-for="DvDate" class="form-control">
-                <span class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>PARTICULARS:</label>
-                <input asp-for="Particulars" class="form-control" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
-            <div class="form-group">
-                <label>PO #:</label>
-                <input asp-for="PoNumber" type="text" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
-            <div class="form-group">
-                <label>PROJECT ID:</label>
-                <input asp-for="ProjectId" id="pi" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
-            <div class="form-group">
-                <label>INVOICE #:</label>
-                <input asp-for="InvoiceNumber" type="text" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
-            <div class="form-group">
-                <label>PERIOD COVERED:</label>
-                <input type="date"  asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">
-            </div>
-        </div>
-        <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
-            <div class="form-group">
-                <label>PERIOD COVER:</label>
-                <input type="text" name="date" asp-for="PeriodCover" class="form-control ">
-            </div>
-        </div>
-
-        <div>
-            <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label>S.O #:</label>
-                    <input type="text" asp-for="SoNumber" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
-                <div class="form-group">
-                    <label>TRAVEL PERIOD:</label>
-                    <input type="text" name="date" asp-for="TravelPeriod" class="form-control js-daterangepicker">
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
-                <div class="form-group">
-                    <label>ACCOUNT #:</label>
-                    <input type="text" asp-for="AccountNumber" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
-                <div class="form-group">
-                    <label># OF BILLING: (FIRST, SECOND):</label>
-                    <input type="text" asp-for="NumberOfBill" class="form-control" />
+                    <label asp-for="Category" class="control-label"></label>
+                    <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId"> </select>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="Dv" class="control-label"></label>
+                    <select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId"> </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>PAYEE :</label>
+                    <input id="payee" class="form-control" readonly />
+                </div>
+            </div>
+            <div>
+                <div class="col-md-3">
+                    <label>DV DATE:</label>
+                    <input type="date" asp-for="DvDate" class="form-control">
+                    <span class="text-danger"></span>
+                </div>
+            </div>
 
-    <br />
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 120px">
-                <label style="font-weight:bold;">GROSS AMOUNT: </label>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>PARTICULARS:</label>
+                    <input asp-for="Particulars" class="form-control" />
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+        <div class="row">
+            <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
+                <div class="form-group">
+                    <label>PO #:</label>
+                    <input asp-for="PoNumber" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
+                <div class="form-group">
+                    <label>PROJECT ID:</label>
+                    <input asp-for="ProjectId" id="pi" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
+                <div class="form-group">
+                    <label>INVOICE #:</label>
+                    <input asp-for="InvoiceNumber" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
+                <div class="form-group">
+                    <label>PERIOD COVERED:</label>
+                    <input type="date" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+                <div class="form-group">
+                    <label>PERIOD COVER:</label>
+                    <input type="text" name="date" asp-for="PeriodCover" class="form-control ">
+                </div>
+            </div>
+
+            <div>
+                <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
+                    <div class="form-group">
+                        <label>S.O #:</label>
+                        <input type="text" asp-for="SoNumber" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
+                    <div class="form-group">
+                        <label>TRAVEL PERIOD:</label>
+                        <input type="text" name="date" asp-for="TravelPeriod" class="form-control js-daterangepicker">
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
+                    <div class="form-group">
+                        <label>ACCOUNT #:</label>
+                        <input type="text" asp-for="AccountNumber" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
+                    <div class="form-group">
+                        <label># OF BILLING: (FIRST, SECOND):</label>
+                        <input type="text" asp-for="NumberOfBill" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12" onchange="submitDeduction(this);">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <br />
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group" style="margin-left: 120px">
+                    <label style="font-weight:bold;">GROSS AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12" onchange="submitDeduction(this);">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12" onchange="submitDeduction(this);">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12" onchange="submitDeduction(this);">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12" onchange="submitDeduction(this);">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12" onchange="submitDeduction(this);">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12">
-        <div class="col-md-2" style="width: 250px;">
-            <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
-                <option value=""> - Select Deduction - </option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 115px">
-                <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
+
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group" style="margin-left: 115px">
+                    <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
+                </div>
             </div>
         </div>
-    </div>
 
 
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group" style="margin-left: 120px">
-                <label style="font-weight:bold;">NET AMOUNT: </label>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group" style="margin-left: 120px">
+                    <label style="font-weight:bold;">NET AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
+                </div>
+                <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <input class="form-control" type="text" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" readonly />
-            </div>
-            <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
-        </div>
-    </div>
 
 
-    @*
-        <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
-    @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
-    *@
+        @*
+            <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
+        @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
+        *@
 
-</form>
+    </form>
+</div>
 
 <br />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

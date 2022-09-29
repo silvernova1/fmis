@@ -88,7 +88,7 @@ namespace fmis.Controllers.Accounting
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(indexOfPayment);
+            return View();
         }
 
         private void PopulateCategoryDropDownList(object selected = null)
