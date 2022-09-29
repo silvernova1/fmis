@@ -41,10 +41,10 @@ namespace fmis.Controllers.Accounting
 
             return View(await _MyDbContext.Indexofpayment
                 .Include(x => x.Category)
-                .Include(x=>x.Dv)
-                    .ThenInclude(x=>x.Payee)
-                .Include(x=>x.indexDeductions)
-                    .ThenInclude(x=>x.Deduction).ToListAsync());
+                .Include(x => x.Dv)
+                    .ThenInclude(x => x.Payee)
+                .Include(x => x.indexDeductions)
+                    .ThenInclude(x => x.Deduction).ToListAsync());
         }
         // GET: Create
         [Route("Accounting/IndexOfPayment/Create")]
@@ -94,8 +94,8 @@ namespace fmis.Controllers.Accounting
         private void PopulateCategoryDropDownList(object selected = null)
         {
             var Query = from d in _MyDbContext.Category
-                              orderby d.CategoryId
-                              select d;
+                        orderby d.CategoryId
+                        select d;
             ViewBag.CategoryId = new SelectList(Query, "CategoryId", "CategoryDescription", selected);
         }
         private void PopulateDvDropDownList(object selected = null)

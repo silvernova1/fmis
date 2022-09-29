@@ -234,7 +234,6 @@ namespace fmis.Controllers
                               {
                                   user = u.Username,
                                   Id = o.Id
-
                               }).ToList();
 
             return Json(obligation.Where(x => x.Id == id).FirstOrDefault().user);
@@ -330,10 +329,10 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
+        public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,CreatedBy,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 _context.Add(obligation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -347,7 +346,7 @@ namespace fmis.Controllers
 
         {
             var p = ObligationsInput;
-            return null;
+            return null; 
         }
 
         // GET: Obligations/Edit/5
