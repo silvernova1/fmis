@@ -76,6 +76,7 @@ namespace fmis.Data
         public DbSet<SubTransferedTo> SubTransferedTo { get; set; }
         //public DbSet<SectionsContext> Sections { get; set; }
         public DbSet<Assignee> Assignee { get; set; }
+        public DbSet<IndexDeduction> IndexDeduction { get; set; }
 
 
 
