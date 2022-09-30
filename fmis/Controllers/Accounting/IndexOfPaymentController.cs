@@ -47,15 +47,12 @@ namespace fmis.Controllers.Accounting
                     .ThenInclude(x => x.Deduction).ToListAsync());
         }
         // GET: Create
-        [Route("Accounting/IndexOfPayment/Create")]
         public IActionResult Create(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
             ViewBag.CategoryId = CategoryId;
             ViewBag.DeductionId = DeductionId;
             ViewBag.DvId = DvId;
-
-
 
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();
@@ -73,7 +70,7 @@ namespace fmis.Controllers.Accounting
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Accounting/IndexOfPayment/Create")]
+
         public async Task<IActionResult> Create(IndexOfPayment indexOfPayment)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
@@ -88,7 +85,7 @@ namespace fmis.Controllers.Accounting
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            return View(indexOfPayment);
         }
 
         private void PopulateCategoryDropDownList(object selected = null)
