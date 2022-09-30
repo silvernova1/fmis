@@ -15,10 +15,12 @@ namespace fmis.Controllers
     public class FundController : Controller
     {
         private readonly FundContext _fundContext;
+        private readonly MyDbContext _MyDbContext;
 
-        public FundController(FundContext fundContext)
+        public FundController(FundContext fundContext, MyDbContext MyDbContext)
         {
             _fundContext = fundContext;
+            _MyDbContext = MyDbContext;
         }
 
         public async  Task<IActionResult> Index()
@@ -78,16 +80,18 @@ namespace fmis.Controllers
             return View(fund);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Fund fund)
         {
 
-            var funD = await _fundContext.Fund.Where(x => x.FundId == fund.FundId).AsNoTracking().FirstOrDefaultAsync();
-            funD.Fund_description = funD.Fund_description;
 
+            var funds = await _fundContext.Fund.Where(x => x.FundId == fund.FundId).AsNoTracking().FirstOrDefaultAsync();
+            funds.Fund_code_conap = fund.Fund_code_conap;
+            funds.Fund_code_current = fund.Fund_code_current;
+            funds.Fund_description = fund.Fund_description;
 
-            _fundContext.Update(funD);
+            _fundContext.Update(funds);
             await _fundContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -95,7 +99,7 @@ namespace fmis.Controllers
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var fund = await _fundContext.Fund.Where(p => p.FundId == ID).FirstOrDefaultAsync();
+            var fund = await _fundContext.Fund.Include(x=>x.Sub_Allotments).ThenInclude(x=>x.SubAllotmentAmounts).Where(p => p.FundId == ID).FirstOrDefaultAsync();
             _fundContext.Fund.Remove(fund);
             await _fundContext.SaveChangesAsync();
             return RedirectToAction("Index");
