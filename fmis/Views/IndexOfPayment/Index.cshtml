@@ -19,13 +19,13 @@
     }
 </style>
 
-<div class="modal fade bd-example-modal-lg" id="CreateModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+@*<div class="modal fade bd-example-modal-lg" id="CreateModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             ...
         </div>
     </div>
-</div>
+</div>*@
 
 
 <!--EDIT MODAL-->
@@ -47,12 +47,12 @@
 </div>
 
 <h3 class="grey lighter smaller">
-    Index of Payment
+    Index of Payment 432423423423423
 </h3>
 <hr>
 <div class="form-group form-inline" style="margin-bottom: 10px;">
 
-    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+    <a asp-action="Create" class="btn btn-success btn-sm">
         <i class="ace-icon fa fa-plus "></i>Create New
     </a>
 </div>
@@ -60,7 +60,8 @@
 <table class="table table-striped" id="data">
     <thead>
         <tr>
-            <th> Category </th>
+          
+            <th> Category  1231231231232</th>
             <th> Dv # </th>
             <th> Payee </th>
             <th> Date </th>
@@ -128,9 +129,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.AccountNumber)
             </td>
-            <td>@item.GrossAmount</td>
+            <td> ₱@item.GrossAmount.ToString("##,##0.00")</td>
             <td>
-                <select class="form-control">
+                <select class="form-control" style="width: 350px;">
                     @foreach (var itemdeduct in item.indexDeductions)
                 {
                         <option>
@@ -139,8 +140,8 @@
                 }
                 </select>
             </td>
-            <td>@item.TotalDeduction</td>
-            <td>@item.NetAmount</td>
+            <td>₱@item.TotalDeduction.ToString("##,##0.00")</td>
+            <td>₱@item.NetAmount.ToString("##,##0.00")</td>
             <td>
                 @*   <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.CategoryId">
                         <i class="ace-icon fa fa-edit"></i>
