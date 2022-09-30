@@ -26,10 +26,10 @@ namespace fmis.Models.John
         public int RespoId { get; set; }
         [JsonIgnore]
         public RespoCenter RespoCenter { get; set; }
-        [ForeignKey("Sections")]
+        /*[ForeignKey("Sections")]
         public int SectionId { get; set; }
         [JsonIgnore]
-        public Sections Sections { get; set; }
+        public Sections Sections { get; set; }*/
         [ForeignKey("Prexc")]
         public int PrexcId { get; set; }
         [JsonIgnore]

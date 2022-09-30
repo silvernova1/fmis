@@ -76,10 +76,10 @@
                     <label>Responsibility Center: </label>
                     <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
                 </div>
-                <div class="form-group">
+                @*<div class="form-group">
                     <label>Sections: </label>
                     @Html.DropDownListFor(x=>x.SectionId, new SelectList(""), "--Select Section--", new { @class = "form-control"})
-                </div>
+                </div>*@
                 <div class="form-group">
                     <label>FundSource Title:</label>
                     <input asp-for="FundSourceTitle" class="form-control" name="FundSourceTitle" onchange="CheckFundSourceTitle(this);" required />

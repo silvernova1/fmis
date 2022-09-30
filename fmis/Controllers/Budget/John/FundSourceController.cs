@@ -103,13 +103,14 @@ namespace fmis.Controllers.Budget.John
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
 
             var fundsourcesLastYr = await _MyDbContext.FundSources
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.RespoCenter)
                 .Include(x => x.Prexc)
                 .Include(x => x.Appropriation)
                 .Include(x => x.AllotmentClass)
                 .Include(x=>x.BudgetAllotment).ThenInclude(x=>x.Yearly_reference)
                 .ToListAsync();
+            fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
             budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
 
