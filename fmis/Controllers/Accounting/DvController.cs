@@ -59,10 +59,13 @@ namespace fmis.Controllers.Accounting
                 .AsNoTracking()
                 .ToListAsync();
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                dv = dv.Where(s => s.DvNo!.Contains(searchString)).ToList();
+                searchString = searchString.Trim();
+                ViewBag.Search = searchString;
+                dv = dv.Where(x => x.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Payee.PayeeDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
+
             return View(dv);
         }
 
@@ -110,12 +113,24 @@ namespace fmis.Controllers.Accounting
 
         public async Task<IActionResult> GetLatestDvType(string type)
         {
+
+            string currentMonth = DateTime.Now.Month.ToString();
+
             var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
             var dvCtr = "0001";
             var dvNo = $"{type}00-{dvCtr}";
             if (latest == null) return Ok(dvNo);
             dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1])+1:0000}";
-            dvNo = $"{type}00-{dvCtr}";
+
+            if(currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+            {
+                dvNo = $"{type}{currentMonth}-{dvCtr}";
+            } else
+            {
+                dvNo = $"{type}0{currentMonth}-{dvCtr}";
+            }
+             
+
             return Ok(dvNo);
         }
 

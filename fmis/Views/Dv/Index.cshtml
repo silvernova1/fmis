@@ -1,4 +1,4 @@
-﻿@model IEnumerable<fmis.Models.Accounting.Dv>
+﻿ @model IEnumerable<fmis.Models.Accounting.Dv>
 @using System.Globalization;
 @{
     ViewData["Title"] = "DV";
@@ -56,7 +56,8 @@
 </div>
 
 <h3 class="grey lighter smaller">
-    DV # & PAYEE
+    DV # & PAYEE 12312312indexOfPayment
+    qweqweqweqweqweqweqw
 </h3>
 <hr>
 
@@ -71,7 +72,7 @@
     </div>
     <div class="col-md-4">
         <form method="get" asp-action="Index" asp-controller="Dv">
-            <input type="search" placeholder="S00-0001" value="@ViewData["GetDvNo"]" class="form-group" name="searchString" style="width: 340px;" />
+            <input type="search" class="form-group" name="searchString"  value="@ViewBag.Search" style="width: 340px;" />
             @*    <button type="submit" class="btn btn-xs btn-primary "> Search </button>*@
 
             <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
@@ -134,17 +135,17 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.DvNo)
                 </td>
-                <td>
+                <td style="width: 50px;">
                     @Html.DisplayFor(modelItem => item.Payee.PayeeDescription)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.RespoCenter.Respo)
                 </td>
-                <td>
+                <td style="width: 200px;">
                     @Html.DisplayFor(modelItem => item.Particulars)
                 </td>
                 <td>
-                    ₱@Html.DisplayFor(modelItem => item.GrossAmount)
+                    ₱@item.GrossAmount.ToString("##,##0.00")
                 </td>
                 <td>
                     <select class="form-control">
@@ -155,10 +156,10 @@
                     </select>
                 </td>
                 <td>
-                    ₱@Html.DisplayFor(modelItem => item.TotalDeduction)
+                    ₱@item.TotalDeduction.ToString("##,##0.00")
                 </td>
                 <td>
-                    ₱@Html.DisplayFor(modelItem => item.NetAmount)
+                    ₱@item.NetAmount.ToString("##,##0.00")
                 </td>
                 <td>
                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId">
