@@ -153,15 +153,9 @@ namespace fmis.Controllers.Accounting
             return RedirectToAction("Index");
         }
 
-        [HttpPost, ActionName("Delete")]
-        [Route("Accounting/Dv/Payee")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> Delete(String id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Int32 ID = Convert.ToInt32(id);
             var dvs = await _MyDbContext.Dv
                 .Include(x => x.RespoCenter)
                 .Include(x => x.FundCluster)
@@ -169,8 +163,9 @@ namespace fmis.Controllers.Accounting
                  .Include(x => x.Payee)
                   .Include(x => x.dvDeductions).ThenInclude(x => x.Deduction)
                   .AsNoTracking()
-                .FirstOrDefaultAsync(x=>x.DvId == id);
+                .FirstOrDefaultAsync(x => x.DvId == ID);
             _MyDbContext.Dv.Remove(dvs);
+            await _MyDbContext.SaveChangesAsync();
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
