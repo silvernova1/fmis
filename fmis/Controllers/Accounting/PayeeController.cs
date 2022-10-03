@@ -11,6 +11,7 @@ using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace fmis.Controllers.Accounting
 {
@@ -24,10 +25,32 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
+        public class PayeeData
+        {
+            public int PayeeId { get; set; }
+            public string PayeeDescription { get; set; }
+            public string token { get; set; }
+        }
+
+        public class Many
+        {
+            public string many_token { get; set; }
+        }
+
+        public class DeleteData
+        {
+            public string single_token { get; set; }
+            public List<Many> many_token { get; set; }
+        }
+
         public async Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "");
-            return View(await _MyDbContext.Payee.ToListAsync());
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated").ToListAsync());
+            ViewBag.temp = json;
+            //return View(await _MyDbContext.Payee.ToListAsync());
+            return View("~/Views/Payee/Index.cshtml");
         }
 
         // GET: Category/Create
@@ -88,6 +111,66 @@ namespace fmis.Controllers.Accounting
             _MyDbContext.Payee.Remove(payee);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SavePayee(List<PayeeData> data)
+        {
+            var data_holder = this._MyDbContext.Payee;
+
+            foreach (var item in data)
+            {
+                if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
+                {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().PayeeDescription = item.PayeeDescription;
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
+
+                    this._MyDbContext.SaveChanges();
+                }
+                else  //save
+                {
+                    var payee = new Payee(); //clear object
+                    payee.PayeeDescription = item.PayeeDescription;
+                    payee.status = "activated";
+                    payee.token = item.token;
+
+                    this._MyDbContext.Payee.Update(payee);
+                    this._MyDbContext.SaveChanges();
+                }
+            }
+
+            return Json(data);
+        }
+
+
+        // POST: Uacs/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePayee(DeleteData data)
+        {
+            if (data.many_token.Count > 1)
+            {
+                var data_holder = this._MyDbContext.Payee;
+                foreach (var many in data.many_token)
+                {
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().status = "deactivated";
+                    data_holder.Where(s => s.token == many.many_token).FirstOrDefault().token = many.many_token;
+                    await _MyDbContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var data_holder = this._MyDbContext.Payee;
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
+                data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
+
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return Json(data);
         }
 
 

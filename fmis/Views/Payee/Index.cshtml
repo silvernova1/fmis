@@ -1,107 +1,187 @@
-﻿
-@model IEnumerable<fmis.Models.Accounting.Payee>
+﻿@model IEnumerable<fmis.Models.Accounting.Payee>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Payee";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 
-<!-- CREATE MODAL -->
-<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+<style>
+    .filterHeader {
+        color: black;
+    }
 
-        </div>
-    </div>
-</div>
+    input {
+        width: 750px;
+    }
+</style>
 
-<!--EDIT MODAL-->
-<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-
-        </div>
-    </div>
-</div>
-
-<!--DELETE MODAL-->
-<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-
-        </div>
-    </div>
-</div>
-
+<input type="hidden" class="payee" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
     Payee
 </h3>
 <hr>
-<p>
-    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </a>
-</p>
 <br />
-<table class="table table-striped" style="width: 900px" id="data">
-    <thead>
-        <tr>
-            <th>
-                Payee Description
-            </th>
-            <th>
-                Action
-            </th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PayeeDescription)
-                </td>
-
-                <td>
-                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.PayeeId">
-                        <i class="ace-icon fa fa-edit"></i>
-                    </a>
-                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Payee",new { id = @item.PayeeId })" onclick="return confirm('Do you want to delete this Payee?');">
-                        <i class="ace-icon fa fa-trash"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
+<div id="example" class="hot"></div>
+<br />
 
 
 <script>
-        $(document).ready(function () {
-            $('#data').after('<div id="nav"></div>');
-        var rowsShown = 20;
-        var rowsTotal = $('#data tbody tr').length;
-        var numPages = rowsTotal / rowsShown;
-        for (i = 0; i < numPages; i++) {
-            var pageNum = i + 1;
-        $('#nav').append('<a href="#" class="pbutton btn-sm btn-info" rel="' + i + '">' + pageNum + '</a>');
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
         }
-        $('#data tbody tr').hide();
-        $('#data tbody tr').slice(0, rowsShown).show();
-        $('#nav a:first').addClass('active');
-        $('#nav a').bind('click', function () {
-
-            $('#nav a').removeClass('active');
-        $(this).addClass('active');
-        var currPage = $(this).attr('rel');
-        var startItem = currPage * rowsShown;
-        var endItem = startItem + rowsShown;
-        $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
-        css('display', 'table-row').animate({opacity: 1 }, 300);
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+    const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
+        const filtersPlugin = hot.getPlugin('filters');
+        filtersPlugin.removeConditions(colIndex);
+        filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
+        filtersPlugin.filter();
+    }, 100);
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFn(colIndex, event);
         });
+    };
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+    const div = document.createElement('div');
+    const input = document.createElement('input');
+        div.className = 'filterHeader';
+        addEventListeners(input, colIndex);
+        div.appendChild(input);
+        return div;
+    };
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+    function ajaxServer(ajax_data, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
+            data: { data: ajax_data },
+            success: function (output) {
+                $('#loading_modal').modal('hide');
+                console.log(output);
+            }
+        });
+    }
+    var payee = $.parseJSON($(".payee").val());
+    const data = [];
+    var counter = 0;
+    $.each(payee, function () {
+        data[counter] = [this.PayeeDescription, this.Id, this.token]
+        counter++;
     });
-</script>
+    const searchField = document.querySelector('#search_field2');
+    const button = document.querySelector('#export-file');
+    const container = document.getElementById('example');
+    const hot = new Handsontable(container, {
+        data: data,
+        colWidths: [600, 500],
+        colHeaders: ['PAYEE NAME', 'ID', 'TOKEN'],
+        columns: [
+            {
+            },
+            {
+               //HIDDEN ID
+            },
+            {
+               //HIDDEN TOKEN
+            },
+      
+        ],
+        rowHeaders: true,
+        undo: true,
+        search: {
+            searchResultClass: 'search-result-custom'
+        },
+        contextMenu: ['row_above', 'row_below', 'remove_row'],
+        beforeRemoveRow: function (index, column) {
+            var selection = this.getSelected();
+            var holder_data = this.getData();
+            var single_token = holder_data[selection[0][0]][2];
+            var first_column = selection[0][0];
+            var last_column = selection[0][2];
+            var many_token = [];
+            for (var j = first_column; j <= last_column; j++) {
+                many_token.push({
+                    many_token: holder_data[j][2]
+                })
+            }
+            if (single_token) {
+                var ajax_data = {
+                    "single_token": single_token,
+                    "many_token": many_token
+                };
+                console.log(ajax_data);
+                ajaxServer(ajax_data,'@Url.Action("DeletePayee", "Payee")');
+            }
+        },
+        afterUndo: function (index, column) {
+        },
+        afterCreateRow: function (row, column) {
+            console.log(row);
+            console.log(column);
+            hot.setDataAtCell(row, 2, guid());
+        },
+        afterChange: function (changes, source) {
+            if (source === 'loadData') {
+                return;
+            }
+            console.log(changes);
+            var ajax_data = [];
+            $.each(hot.getSourceData(), function () {
+                ajax_data.push(
+                    {
+                        PayeeDescription: this[0] ? this[0] : " ",
+                        Id: this[1] ? this[1] : " ",
+                        token: this[2]
+                     
+                    }
+                );
+            });
+            ajaxServer(ajax_data, '@Url.Action("SavePayee", "Payee")');
+        },
+        height: 'auto',
+        className: 'as-you-type-demo',
+        filters: true,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
+        hiddenColumns: {
+            columns: [1,2],
+            indicators: true
+        },
+        licenseKey: 'non-commercial-and-evaluation',
+    });
 
+    var tableData = JSON.stringify(hot.getSourceData());
+    @*console.log(hot.getSourceData());*@
+
+
+</script>
