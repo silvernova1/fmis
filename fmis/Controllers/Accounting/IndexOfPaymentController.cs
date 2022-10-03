@@ -47,6 +47,7 @@ namespace fmis.Controllers.Accounting
                     .ThenInclude(x => x.Deduction).ToListAsync());
         }
         // GET: Create
+
         public IActionResult Create(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
@@ -70,7 +71,6 @@ namespace fmis.Controllers.Accounting
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> Create(IndexOfPayment indexOfPayment)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
