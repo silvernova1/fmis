@@ -42,8 +42,7 @@ namespace fmis.Models.Accounting
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        public string TravelPeriod { get; set; }
-
+        public DateTime TravelPeriod { get; set; }
 
 
         [ForeignKey("CategoryId")]

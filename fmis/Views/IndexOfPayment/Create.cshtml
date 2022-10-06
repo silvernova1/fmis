@@ -1,6 +1,8 @@
 ﻿@model fmis.Models.Accounting.IndexOfPayment
 
-
+<link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
+<script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
+<script src="~/assets/plugin/daterangepicker/daterangepicker.js"></script>
 <style>
     .select2 {
         width: 100% !important;
@@ -26,7 +28,9 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Category" class="control-label"></label>
-                    <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId"> </select>
+                    <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
+                        <option> - Select Category - </option>
+                    </select>
                 </div>
             </div>
 
@@ -34,7 +38,9 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Dv" class="control-label"></label>
-                        <select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId"> </select>
+                        <select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
+                            <option> - Select Dv # - </option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -70,7 +76,7 @@
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <input asp-for="ProjectId" id="pi" class="form-control" />
+                    <input asp-for="ProjectId" class="form-control" />
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
@@ -81,14 +87,14 @@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
-                    <label>PERIOD COVERED:</label>
+                    <label>FROM TO:</label>
                     <input type="date" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
                     <label>PERIOD COVER:</label>
-                    <input type="text" name="date" asp-for="PeriodCover" class="form-control ">
+                    <input type="date" name="date" asp-for="PeriodCover" class="form-control ">
                 </div>
             </div>
 
@@ -141,7 +147,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -154,7 +160,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -167,7 +173,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -180,7 +186,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -193,7 +199,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -206,7 +212,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -219,11 +225,10 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="number" onkeypress="return isNumber(event)" onkeyup="javascript:this.value=Comma(this.value);" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
-
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group" style="margin-left: 80px; margin-top: 5px;">
@@ -255,7 +260,7 @@
 
 
         @*
-        <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
+            <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
         @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
         *@
 
@@ -307,6 +312,7 @@
         if (value == 36) {
             $("#hidden-panel1").show();
             $("#hidden-panel5").show();
+            $("#hidden-panel4").hide();
             categ.push('2', '4', '6', '7', '8', '9', '10');
         } else if (value == 37) {
             $("#hidden-panel2").show();

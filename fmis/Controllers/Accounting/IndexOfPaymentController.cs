@@ -48,9 +48,10 @@ namespace fmis.Controllers.Accounting
         }
         // GET: Create
 
-        public IActionResult Create(int CategoryId, int DeductionId, int DvId, int IndexOfPaymentId)
+        public IActionResult Create(int CategoryId, int DeductionId, int DvId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+
             ViewBag.CategoryId = CategoryId;
             ViewBag.DeductionId = DeductionId;
             ViewBag.DvId = DvId;
