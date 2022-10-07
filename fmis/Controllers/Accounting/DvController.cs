@@ -310,8 +310,10 @@ namespace fmis.Controllers.Accounting
                 var fundCluster = (from dv in _MyDbContext.Dv
                                    join fc in _MyDbContext.FundCluster
                                    on dv.FundClusterId equals fc.FundClusterId
+
                                    join r in _MyDbContext.RespoCenter
                                    on dv.RespoCenterId equals r.RespoId
+
                                    join a in _MyDbContext.Assignee
                                    on dv.AssigneeId equals a.AssigneeId
                                    where dv.DvId == id
@@ -321,18 +323,40 @@ namespace fmis.Controllers.Accounting
                                        dvNo = dv.DvNo,
                                        dvDate = dv.Date,
                                        dvParticulars = dv.Particulars,
-                                       dvPayee = dv.Payee,
-                                       dvAmount = dv.NetAmount,
+                                       dvPayee = dv.Payee.PayeeDescription,
+                                       dvAmountNet = dv.NetAmount,
                                        respo = r.RespoHead,
                                        respoHeadPosition = r.RespoHeadPosition,
                                        assigneeDvId = dv.AssigneeId,
                                        assigneeName = a.FullName,
                                        assigneeDesignation = a.Designation
                                    }).ToList();
+/*
+                string grossAmount = "";
+                string deductions = "";
+                string netAmount = "";
 
-                
+                var dvs = (from dv in _MyDbContext.Dv
+                              join DvDeduction in _MyDbContext.Dv
+                              on dv.DvId equals DvDeduction.DvId
 
-                    Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
+                              select new
+                              {
+                                  grossAmount = dv.GrossAmount,
+                                  deductions = dv.TotalDeduction,
+                                  netAmount = dv.TotalDeduction,
+                              }).ToList();
+
+                foreach (var u in dvs)
+                {
+                    grossAmount += u.grossAmount.ToString("C", new CultureInfo("en-PH")) + "\n";
+                    deductions += u.deductions.ToString("C", new CultureInfo("en-PH")) + "\n";
+                    netAmount += u.netAmount.ToString("C", new CultureInfo("en-PH")) + "\n";
+                }*/
+
+
+
+                Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
 
                     header_text.Font = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
                     header_text.Alignment = Element.ALIGN_CENTER;
@@ -582,8 +606,8 @@ namespace fmis.Controllers.Accounting
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_TOP });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("___________________" +
-                        "" + "\n" + "\n" + fundCluster.FirstOrDefault().dvAmount.ToString("##,#00.00"), arial_font_9))
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("" + "___________________" +
+                        "" + "\n" + "" + fundCluster.FirstOrDefault().dvAmountNet.ToString("##,#00.00"), arial_font_9))
                     {
                         Border = 13,
                         FixedHeight = 100f,
@@ -628,20 +652,20 @@ namespace fmis.Controllers.Accounting
                     table_row_8.DefaultCell.FixedHeight = 200f;
                     table_row_8.WidthPercentage = 100f;
                     table_row_8.SetWidths(tbt_ro8_width);
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n" + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        HorizontalAlignment = Element.ALIGN_LEFT,
+                    }); 
 
-
-                    });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name, Designation and Signature of Supervisor", arial_font_9b))
+              
+                table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
                     {
                         FixedHeight = 20f,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        HorizontalAlignment = Element.ALIGN_LEFT,
 
                     });
                 doc.Add(table_row_8);

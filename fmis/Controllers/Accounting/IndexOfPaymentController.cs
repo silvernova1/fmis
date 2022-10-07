@@ -45,6 +45,8 @@ namespace fmis.Controllers.Accounting
                     .ThenInclude(x => x.Payee)
                 .Include(x => x.indexDeductions)
                     .ThenInclude(x => x.Deduction).ToListAsync());
+
+
         }
         // GET: Create
 
