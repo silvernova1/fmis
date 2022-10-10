@@ -49,7 +49,6 @@
                         <input id="payee" class="form-control" readonly />
                     </div>
                 </div>
-
             </div>
             <div>
                 <div class="col-md-3">
@@ -58,7 +57,6 @@
                     <span class="text-danger"></span>
                 </div>
             </div>
-
             <div class="col-md-3">
                 <div class="form-group">
                     <label>PARTICULARS:</label>
@@ -94,7 +92,7 @@
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
                     <label>FROM TO</label>
-                    <input type="text" name="date" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">
+                    <input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">
                 </div>
             </div>
 
@@ -108,7 +106,7 @@
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                     <div class="form-group">
                         <label>TRAVEL PERIOD:</label>
-                        <input type="text" name="date" asp-for="TravelPeriod" class="form-control js-daterangepicker">
+                        <input type="text" name="date_range" asp-for="TravelPeriod" class="form-control js-daterangepicker">
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
@@ -242,8 +240,6 @@
             </div>
         </div>
 
-
-
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
@@ -257,19 +253,9 @@
                 <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
             </div>
         </div>
-
-
-        @*
-            <a class="btn btn-success btn-sm"> <i class="ace-icon fa fa-arrow-right"></i> Submit </a>*@
-        @*  <input type="submit" id="btnsubmit" value="Create" class="btn btn-success btn-sm " />
-        *@
-
     </form>
 </div>
 
-<br />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script>
 
     $('.select2').select2();
@@ -303,8 +289,7 @@
         $('#net_amount').val(gross_amount - total);
     }
 
-    // dummy/live
-
+    
      $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
@@ -357,6 +342,76 @@
             $('#hidden-panel' + i).hide();
         });
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // dummy/live
+@*
+     $("#CategoryId").on('change', function () {
+        var value = $(this).val();
+        console.log(value);
+        const categ = [];
+        if (value == 36) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel5").show();
+            $("#hidden-panel4").hide();
+            categ.push('2', '4', '6', '7', '8', '9', '10');
+        } else if (value == 37) {
+            $("#hidden-panel2").show();
+            categ.push('1', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 38) {
+            $("#hidden-panel2").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '4', '5', '6', '7', '8', '9');
+        } else if (value == 40) {
+            $("#hidden-panel4").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '2', '5', '6', '7', '8', '9');
+        } else if (value == 45 || value == 52) {
+            $("#hidden-panel7").show();
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '9');
+        } else if (value == 54) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '9');
+        } else if (value == 46 || value == 47) {
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '4', '5', '8', '6', '9', '10');
+        } else if (value == 53 || value == 62) {
+            categ.push('1', '4', '5', '2', '6', '7', '8', '9', '10');
+        } else if (value == 49 || value == 50 || value == 51) {
+            $("#hidden-panel6").show();
+            $("#hidden-panel9").show();
+            categ.push('1', '4', '5', '2', '7', '8', '10');
+        } else if (value == 39 || value == 48 || (value >= 57 && value <= 61) || (value >= 65 && value <= 68)) {
+            $("#hidden-panel4").show();
+            categ.push('1', '5', '2', '7', '8', '9', '10', '6');
+        } else if ((value >= 41 && value <= 45) || value == 55 || (value >= 49 && value <= 52) || (value >= 63 && value <= 64)) {
+            $("#hidden-panel6").show();
+            categ.push('1', '4', '5', '2', '7', '8', '9', '10');
+        } else if (value == 53 || value == 62) {
+            categ.push('1', '2', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 54) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '4', '5', '10', '6', '7', '9');
+        }
+        categ.forEach(function (i) {
+            $('#hidden-panel' + i).hide();
+        });
+    });*@
 
     //local
 
@@ -465,29 +520,23 @@
         return true;
     }
 
-</script>
-
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script>
     $(function () {
-        $('input[name="date"]').daterangepicker({
+        $('input[name="date_range"]').daterangepicker({
             autoUpdateInput: false,
             locale: {
                 cancelLabel: 'Clear'
             }
         });
-        $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+        $('input[name="date_range"]').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             var data = {
                 date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
             };
         });
 
-        $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+        $('input[name="date_range"]').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
     });
+
 </script>

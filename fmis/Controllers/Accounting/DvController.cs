@@ -324,36 +324,15 @@ namespace fmis.Controllers.Accounting
                                        dvDate = dv.Date,
                                        dvParticulars = dv.Particulars,
                                        dvPayee = dv.Payee.PayeeDescription,
-                                       dvAmountNet = dv.NetAmount,
+                                       dvGrossAmount = dv.GrossAmount,
+                                       dvTotalDeductions = dv.TotalDeduction,
+                                       dvNetAmount = dv.NetAmount,
                                        respo = r.RespoHead,
                                        respoHeadPosition = r.RespoHeadPosition,
                                        assigneeDvId = dv.AssigneeId,
                                        assigneeName = a.FullName,
                                        assigneeDesignation = a.Designation
                                    }).ToList();
-/*
-                string grossAmount = "";
-                string deductions = "";
-                string netAmount = "";
-
-                var dvs = (from dv in _MyDbContext.Dv
-                              join DvDeduction in _MyDbContext.Dv
-                              on dv.DvId equals DvDeduction.DvId
-
-                              select new
-                              {
-                                  grossAmount = dv.GrossAmount,
-                                  deductions = dv.TotalDeduction,
-                                  netAmount = dv.TotalDeduction,
-                              }).ToList();
-
-                foreach (var u in dvs)
-                {
-                    grossAmount += u.grossAmount.ToString("C", new CultureInfo("en-PH")) + "\n";
-                    deductions += u.deductions.ToString("C", new CultureInfo("en-PH")) + "\n";
-                    netAmount += u.netAmount.ToString("C", new CultureInfo("en-PH")) + "\n";
-                }*/
-
 
 
                 Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
@@ -606,8 +585,10 @@ namespace fmis.Controllers.Accounting
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_TOP });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("" + "___________________" +
-                        "" + "\n" + "" + fundCluster.FirstOrDefault().dvAmountNet.ToString("##,#00.00"), arial_font_9))
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("" + 
+                        "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n" +
+                        fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n"+ 
+                        fundCluster.FirstOrDefault().dvNetAmount.ToString("##,#00.00"), arial_font_9))
                     {
                         Border = 13,
                         FixedHeight = 100f,
