@@ -93,6 +93,12 @@ namespace fmis.Controllers.Accounting
             return View(newDv);
         }
 
+        public IActionResult selectP(int id)
+        {
+            var branches = _MyDbContext.Payee.ToList();
+            return Json(branches.Where(x => x.PayeeId == id).ToList());
+        }
+
         //hello to the world
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -188,10 +194,12 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.RespoCenter)
                 .Include(x => x.FundCluster)
                 .Include(x => x.Assignee)
-                 .Include(x => x.Payee)
-                  .Include(x => x.dvDeductions).ThenInclude(x => x.Deduction)
-                  .AsNoTracking()
+                .Include(x => x.Payee)
+                .Include(x => x.dvDeductions)
+                    .ThenInclude(x => x.Deduction)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.DvId == ID);
+
             _MyDbContext.Dv.Remove(dvs);
             await _MyDbContext.SaveChangesAsync();
             await _MyDbContext.SaveChangesAsync();

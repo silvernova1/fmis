@@ -34,6 +34,8 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Payee Payee { get; set; }
 
+        public string PayeeDesc { get; set; }
+
         [ForeignKey("RespoCenterId")]
         public int RespoCenterId { get; set; }
         [JsonIgnore]
