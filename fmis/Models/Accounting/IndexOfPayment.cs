@@ -34,8 +34,7 @@ namespace fmis.Models.Accounting
         [DataType(DataType.Date)]
         public DateTime PeriodCover { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime PeriodCoverFromTo { get; set; }
+        public string date { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime TravelPeriod { get; set; }
