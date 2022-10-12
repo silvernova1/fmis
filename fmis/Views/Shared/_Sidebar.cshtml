@@ -292,7 +292,6 @@
                 </a>
 
                 <b class="arrow"></b>
-
                 <ul class="submenu">
                     <li class="@if (ViewBag.filter.sub == "obligation")
                 @Html.Raw("active")">
@@ -303,6 +302,17 @@
 
                         <b class="arrow"></b>
                     </li>
+
+                    <li class="@if (ViewBag.filter.sub == "upload")
+                @Html.Raw("active")">
+                        <a asp-controller="Obligations" asp-action="UploadObligation">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Upload Obligation (ORS)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
                 </ul>
             </li>
 

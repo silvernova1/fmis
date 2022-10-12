@@ -231,8 +231,6 @@ namespace fmis.Controllers.Accounting
 
         }
 
-
-
         private void PopulatePayeeDropDownList()
         {
 

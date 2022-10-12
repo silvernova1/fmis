@@ -15,7 +15,6 @@ namespace fmis.Models.Accounting
         public string AccountNumber { get; set; }
         public int NumberOfBill { get; set; }
 
-
         public List<IndexDeduction> indexDeductions { get; set; }
 
         public double GrossAmount { get; set; }
@@ -38,7 +37,6 @@ namespace fmis.Models.Accounting
 
         [DataType(DataType.Date)]
         public DateTime TravelPeriod { get; set; }
-
 
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }

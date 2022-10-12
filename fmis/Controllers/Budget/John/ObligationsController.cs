@@ -29,6 +29,10 @@ using fmis.ViewModel;
 using fmis.DataHealpers;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
+using System.Text;
+using System.Diagnostics;
 
 //SAMPLE
 
@@ -79,22 +83,22 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
-            public int source_id { get; set; } //
+            public int source_id { get; set; } 
             public string source_title { get; set; }
             public string source_type { get; set; }
             [Column(TypeName = "decimal(18,4)")]
             public decimal source_balance { get; set; }
-            public string Date { get; set; } //
-            public string Dv { get; set; } //
-            public string Pr_no { get; set; } //
-            public string Po_no { get; set; } //
-            public string Payee { get; set; } //
-            public string Address { get; set; } //
-            public string Particulars { get; set; } //
+            public string Date { get; set; } 
+            public string Dv { get; set; } 
+            public string Pr_no { get; set; } 
+            public string Po_no { get; set; } 
+            public string Payee { get; set; } 
+            public string Address { get; set; } 
+            public string Particulars { get; set; } 
             public string Ors_no { get; set; }
-            public float Gross { get; set; } //
-            public string Created_by { get; set; } //
-            public string obligation_token { get; set; } //
+            public float Gross { get; set; } 
+            public string Created_by { get; set; } 
+            public string obligation_token { get; set; } 
             public string status { get; set; }
         }
 
@@ -167,7 +171,6 @@ namespace fmis.Controllers
                                     .Include(x => x.ObligationAmounts.Where(x => x.status == "activated"))
                                     .Include(x => x.FundSource)
                                     .Include(x => x.SubAllotment)
-                                    //.Where(x => x.FundSource.BudgetAllotment.YearlyReferenceId == YearlyRefId || x.SubAllotment.Budget_allotment.YearlyReferenceId == YearlyRefId/* || x.FundSource.BudgetAllotment.Yearly_reference.YearlyReference == lastYr || x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == lastYr*/)
                                     .AsNoTracking()
                                     .ToListAsync();
 
@@ -263,7 +266,127 @@ namespace fmis.Controllers
             return Json("Response, Data Received Successfully");
         }
 
+        public IActionResult UploadObligation()
+        {
+            ViewBag.filter = new FilterSidebar("ors", "upload", "");
+            return View("~/Views/Budget/John/Obligations/UploadObligation.cshtml");
+        }
+
+        private DateTime ToDateTime(string dateString, string format)
+        {
+            if (!string.IsNullOrEmpty(dateString))
+            {
+                if (DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                {
+                    return result;
+                }
+            }
+            return default;
+        }
+
+        private int ToInt(string item)
+        {
+            if (!string.IsNullOrEmpty(item))
+            {
+                if (int.TryParse(item, out int result))
+                {
+                    return result;
+                }
+            }
+            return 0;
+        }
+
         [HttpPost]
+        public async Task<ActionResult> ImportObligations()
+        {
+            IFormFile excelfile = Request.Form.Files[0];
+            string sWebRootFolder = Directory.GetCurrentDirectory() + @"\UploadFile";
+            if (!Directory.Exists(sWebRootFolder)) Directory.CreateDirectory(sWebRootFolder);
+            string sFileName = $"{Guid.NewGuid()}.xlsx";
+            Stopwatch timer = new();
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var personal_informations = new List<Personal_Information>();
+            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+            {
+                excelfile.CopyTo(fs);
+                fs.Flush();
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                StringBuilder sb = new StringBuilder();
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                int rowCount = worksheet.Dimension.Rows;
+                int ColCount = worksheet.Dimension.Columns;
+                List<Obligation> obligations = new();
+                timer.Start();
+                for (int row = 3; row <= rowCount; row++)
+                {
+                    if (!string.IsNullOrEmpty(worksheet.Cells[row, 9].Text))
+                    {
+                        var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "";
+                        var fundSrcId = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceTitle == fundSrcTxt)?.FundSourceId;
+                        var subAlltId = _MyDbContext.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
+
+                        List<ObligationAmount> OAs = new();
+
+
+                        string obligationToken = Guid.NewGuid().ToString();
+
+                        int start = 14;
+                        for (int x = 0; x < 12; x++)
+                        {
+                            if (!string.IsNullOrEmpty(worksheet.Cells[row, start].Text))
+                            {
+                                Console.WriteLine(worksheet.Cells[row, start].Text);
+                                var uacs = _MyDbContext.Uacs.FirstOrDefault(x => x.Expense_code == worksheet.Cells[row, start].Text).UacsId;
+                                var amount = worksheet.Cells[row, (start + 1)].Value?.ToString();
+                                OAs.Add(new ObligationAmount()
+                                {
+                                    UacsId = uacs,
+                                    Amount = ToInt(amount),
+                                    obligation_token = obligationToken,
+                                    obligation_amount_token = Guid.NewGuid().ToString(),
+                                    Expense_code = long.Parse(worksheet.Cells[row, start].Text),
+                                    status = "activated",
+                                });
+                            }
+                            start += 2;
+                        }
+                        obligations.Add(new Obligation()
+                        {
+                            FundSourceId = fundSrcId is not null? fundSrcId : subAlltId is null? 51 : null,
+                            SubAllotmentId = subAlltId,
+                            source_type = fundSrcId is not null ? "fund_source" : subAlltId is null ? "fund_source" : "sub_allotment",
+                            obligation_token = obligationToken,
+                            status = "activated",
+                            yearAdded = DateTime.Now,
+                            Date = ToDateTime(worksheet.Cells[row, 3].Text, "MM/dd/yy"),
+                            Dv = worksheet.Cells[row, 4].Text,
+                            Po_no = worksheet.Cells[row, 5].Text,
+                            Pr_no = worksheet.Cells[row, 6].Text,
+                            Payee = worksheet.Cells[row, 7].Text,
+                            Address = worksheet.Cells[row, 8].Text,
+                            Particulars = worksheet.Cells[row, 9].Text,
+                            Ors_no = worksheet.Cells[row, 11].Text,
+                            ObligationAmounts = OAs
+                        });
+                    }
+                    //if (row == 1000) break;
+                }
+                timer.Stop();
+
+                Console.WriteLine("ellapsed: " + timer.ElapsedMilliseconds + "ms");
+                await _MyDbContext.AddRangeAsync(obligations);
+                var water = await _MyDbContext.SaveChangesAsync();
+                Console.WriteLine(water);
+                var test = sb.ToString();
+                return Ok();
+                //return Content(sb.ToString());
+            }
+        }
+
+        [HttpPost]
+        [RequestSizeLimit(1073741824)]
         public async Task<IActionResult> SaveObligation(List<ObligationData> data)
         {
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
@@ -274,19 +397,20 @@ namespace fmis.Controllers
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
             var retObligation = new List<Obligation>();
 
+            
             foreach (var item in data)
             {
-                var obligation = new Obligation(); //CLEAR OBJECT
+               var obligation = new Obligation(); //CLEAR OBJECT
 
-                if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
-                {
-                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
-                }
+               if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
+               {
+                   obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+               }
 
-                if (item.source_type.Equals("fund_source"))
-                    obligation.FundSourceId = item.source_id;
-                else if (item.source_type.Equals("sub_allotment"))
-                    obligation.SubAllotmentId = item.source_id;
+               if (item.source_type.Equals("fund_source"))
+                   obligation.FundSourceId = item.source_id;
+              else if (item.source_type.Equals("sub_allotment"))
+                   obligation.SubAllotmentId = item.source_id;
 
                 obligation.source_type = item.source_type;
                 obligation.Date = ToDateTime(item.Date);
@@ -302,19 +426,18 @@ namespace fmis.Controllers
                 obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-                _context.Update(obligation);
+               _context.Update(obligation);
                 await _context.SaveChangesAsync();
 
                 if (item.source_type == "fund_source")
-                    obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
-                else
-                    obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+                   obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+               else
+                   obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
 
                 Console.WriteLine(@"saved obligation {0}", item.source_id);
             }
             return Json(retObligation.FirstOrDefault());
-
         }
 
         public string SetORSNo(string lastORSNo)
