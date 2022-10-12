@@ -33,21 +33,40 @@ namespace fmis.Controllers.Accounting
             _DvContext = dvContext;
             _IndexofpaymentContext = indexofpaymentContext;
         }
-        //COMMENT
+
+        
+
         [Route("Accounting/IndexOfPayment")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            return View(await _MyDbContext.Indexofpayment
+            var indexData = await _MyDbContext.Indexofpayment
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
                     .ThenInclude(x => x.Payee)
                 .Include(x => x.indexDeductions)
-                    .ThenInclude(x => x.Deduction).ToListAsync());
+                    .ThenInclude(x=>x.Deduction)
+                .ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.Trim();
+                ViewBag.Search = searchString;
+                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.PayeeDesc.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
+            return View(indexData);
 
 
         }
+
+        public IActionResult selectAT(int id)
+        {
+            var branches = _MyDbContext.Dv.Include(x=>x.Payee).ToList();
+            return Json(branches.Where(x => x.DvId == id).ToList());
+        }
+
         // GET: Create
 
         public IActionResult Create(int CategoryId, int DeductionId, int DvId)
@@ -89,6 +108,22 @@ namespace fmis.Controllers.Accounting
                 return RedirectToAction(nameof(Index));
             }
             return View(indexOfPayment);
+        }
+
+        public async Task<ActionResult> Delete(String id)
+        {
+            Int32 ID = Convert.ToInt32(id);
+            var dvs = await _MyDbContext.Indexofpayment
+                .Include(x => x.Category)
+                .Include(x => x.Dv)
+                    .ThenInclude(x => x.Payee)
+                .Include(x => x.indexDeductions)
+                    .ThenInclude(x => x.Deduction)
+                .FirstOrDefaultAsync(x => x.IndexOfPaymentId == ID);
+
+            _MyDbContext.Indexofpayment.Remove(dvs);
+            await _MyDbContext.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         private void PopulateCategoryDropDownList(object selected = null)

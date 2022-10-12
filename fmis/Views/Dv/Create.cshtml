@@ -17,7 +17,6 @@
     .select2 {
         width: 100% !important;
     }
-
 </style>
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
@@ -57,13 +56,22 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <h5>Payee: </h5>
-                    @Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control" })
+                    @Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)"})
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="form-group">
                     <h5>Particulars:  </h5>
                     <input asp-for="Particulars" type="text" class="form-control" value="To payment of" />
+                    <span asp-validation-for="Particulars" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="payee" class="col-md-4" style="display: none;">
+                <div class="form-group">
+                    <h5>Payee Description:  </h5>
+                    <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control"/>
                     <span asp-validation-for="Particulars" class="text-danger"></span>
                 </div>
             </div>
@@ -222,8 +230,46 @@
     </form>
 </div>
 
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#FundCluster').change(function () {
+        var ddlValue = $(this).val();
+
+        alert(ddlValue);
+
+        if (ddlValue = 10)
+        {
+            $('#payee').hide();
+        }
+        else
+        {
+            $('#payee').hide();
+        }
+    });
+});
+</script>
 
 <script>
+
+    get_sbu();
+
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectP", "Dv")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#payeeDescription').val(data[0].payeeDescription);
+                }
+                else {
+                    $('#payeeDescription').val('');
+                }
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('.select2').select2();
 
