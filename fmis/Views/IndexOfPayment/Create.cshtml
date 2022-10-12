@@ -38,7 +38,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Dv" class="control-label"></label>
-                        <select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
+                        <select class="form-control select2" asp-for="DvId"  asp-items="ViewBag.DvId">
                             <option> - Select Dv # - </option>
                         </select>
                     </div>
@@ -46,14 +46,14 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>PAYEE :</label>
-                        <input id="payee" class="form-control" readonly />
+                        <input id="pap_code1"  class="form-control" readonly />
                     </div>
                 </div>
             </div>
             <div>
                 <div class="col-md-3">
                     <label>DV DATE:</label>
-                    <input type="date" asp-for="DvDate" class="form-control">
+                    <input type="date" asp-for="DvDate"  class="form-control">
                     <span class="text-danger"></span>
                 </div>
             </div>
@@ -86,7 +86,7 @@
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
                     <label>PERDOD COVER</label>
-                    <input type="date" asp-for="PeriodCover" class="form-control ">
+                    <input type="date" asp-for="PeriodCover"  class="form-control ">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
@@ -106,7 +106,7 @@
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                     <div class="form-group">
                         <label>TRAVEL PERIOD:</label>
-                        <input type="text" name="date_range" asp-for="TravelPeriod" class="form-control js-daterangepicker">
+                        <input type="text" name="date_range" asp-for="TravelPeriod"  class="form-control js-daterangepicker">
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
@@ -123,7 +123,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" style="margin-top: 40px;">
             <div class="col-md-2" style="width: 250px; ">
                 <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
@@ -136,7 +135,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
@@ -289,7 +287,7 @@
         $('#net_amount').val(gross_amount - total);
     }
 
-    
+
      $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
@@ -342,20 +340,6 @@
             $('#hidden-panel' + i).hide();
         });
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // dummy/live
@@ -538,5 +522,9 @@
             $(this).val('');
         });
     });
+
+
+
+
 
 </script>
