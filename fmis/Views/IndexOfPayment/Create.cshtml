@@ -38,15 +38,22 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Dv" class="control-label"></label>
-                        <select class="form-control select2" asp-for="DvId"  asp-items="ViewBag.DvId">
+
+                        @*<select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
+
                             <option> - Select Dv # - </option>
-                        </select>
+                        </select>*@
+                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                        @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
+                            <br /><span style="color:red;">Name already exist.</span>
+                        }
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>PAYEE :</label>
-                        <input id="pap_code1"  class="form-control" readonly />
+
+                        <input id="payeeDesc" class="form-control" readonly />
                     </div>
                 </div>
             </div>
@@ -92,7 +99,8 @@
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
                     <label>FROM TO</label>
-                    <input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">
+                    @*<input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">*@
+                    <input type="text" class="form-control" asp-for="date" name="date" />
                 </div>
             </div>
 
@@ -254,6 +262,32 @@
     </form>
 </div>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<script>
+        $(function () {
+            $('input[name="date"]').daterangepicker({
+                autoUpdateInput: false,
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
+            $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+                var data = {
+                    date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+                };
+            });
+
+            $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+        });
+    </script>
+
 <script>
 
     $('.select2').select2();
@@ -264,6 +298,28 @@
             $('#hidden-panel' + i).hide();
         }
     });
+
+    $(document).ready(function () {
+        $('.prexcDropdown').select2();
+    });
+    get_sbu();
+
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "IndexOfPayment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#payeeDesc').val(data[0].payeeDesc);
+                }
+                else {
+                    $('#payeeDesc').val('');
+                }
+            }
+        });
+    }
 
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
@@ -462,24 +518,6 @@
             });
         });
     });
-        get_sbu();
-    function get_sbu() {
-        var selected_val = $('#ddlBranches').find(":selected").attr('value');
-        $('#dvid').val(selected_val);
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("selectAT", "DV")',
-            data: "id=" + selected_val,
-            success: function (data) {
-                if (data.length > 0) {
-                    $('#payee').val(data[0].payee);
-                }
-                else {
-                    $('#payee').val('');
-                }
-            }
-        });
-    }
 
     function Comma(Num) { //function to add commas to textboxes
         Num += '';
