@@ -41,7 +41,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            var indexData = await _MyDbContext.Indexofpayment
+            /*var indexData = await _MyDbContext.Indexofpayment
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
                     .ThenInclude(x => x.Payee)
@@ -54,9 +54,24 @@ namespace fmis.Controllers.Accounting
                 searchString = searchString.Trim();
                 ViewBag.Search = searchString;
                 indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.PayeeDesc.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }*/
+
+            var indexData = from c in _MyDbContext.Indexofpayment
+                            .Include(x=>x.Category) 
+                            .Include(x=>x.Dv)
+                                .ThenInclude(x=>x.Payee)
+                            .Include(x=>x.indexDeductions)
+                                .ThenInclude(x=>x.Deduction)
+                            select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString) || x.Dv.DvNo.Contains(searchString) || x.Dv.PayeeDesc.Contains(searchString));
             }
 
-            return View(indexData);
+
+
+            return View(await indexData.ToListAsync());
 
 
         }
@@ -147,29 +162,6 @@ namespace fmis.Controllers.Accounting
                         orderby d.DeductionId
                         select d;
             ViewBag.DeductionId = new SelectList(Query, "DeductionId", "DeductionDescription", selected);
-        }
-
-
-        public async Task<ActionResult> Delete(String id)
-        {
-            Int32 ID = Convert.ToInt32(id);
-            var IndexOfPayment = await _MyDbContext.Indexofpayment
-                .Include(x => x.Category)
-                .Include(x => x.Dv)
-                 .ThenInclude(x => x.Payee)
-                  .Include(x => x.indexDeductions).ThenInclude(x => x.Deduction)
-                 
-                .FirstOrDefaultAsync(x => x.IndexOfPaymentId == ID);
-            _MyDbContext.Indexofpayment.Remove(IndexOfPayment);
-            await _MyDbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        //POST
-        public IActionResult selectAT(int id)
-        {
-            var branches = _MyDbContext.Payee.ToList();
-            return Json(branches.Where(x => x.PayeeId == id).ToList());
         }
 
     }
