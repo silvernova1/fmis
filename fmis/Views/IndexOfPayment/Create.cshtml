@@ -44,6 +44,9 @@
                             <option> - Select Dv # - </option>
                         </select>*@
                         @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                        @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
+                            <br /><span style="color:red;">Name already exist.</span>
+                        }
                     </div>
                 </div>
                 <div class="col-md-3">
