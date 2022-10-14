@@ -51,17 +51,17 @@
             </li>
 
             <li class="
-            @if (@ViewBag.filter.main == "dashboard")
-                @Html.Raw("")
-            ">
-                <a class="dropdown-toggle">
+                    @if (@ViewBag.filter.main == "dashboard")
+                        @Html.Raw("")
+                    ">
+            @*    <a class="dropdown-toggle">
                     <i class="menu-icon fa fa-filter"></i>
                     <span class="menu-text">Filter</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
-                <b class="arrow"></b>
+                <b class="arrow"></b>*@
 
-                <ul class="submenu">
+               @* <ul class="submenu">
                     <li class="@if (ViewBag.filter.sub == "")
                 @Html.Raw("active")">
                         <a asp-controller="" asp-action="">
@@ -107,7 +107,7 @@
 
                         <b class="arrow"></b>
                     </li>
-                </ul>
+                </ul>*@
             </li>
 
             <li class="@if (ViewBag.filter.main == "master_data")
@@ -307,7 +307,7 @@
                 @Html.Raw("active")">
                         <a asp-controller="Obligations" asp-action="UploadObligation">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            Upload Obligation (ORS)
+                            Upload (ORS)
                         </a>
 
                         <b class="arrow"></b>
@@ -629,6 +629,16 @@
                         </a>
                         <b class="arrow"></b>
                     </li>
+
+                    <li class="@if(ViewBag.filter.sub == "UploadPayee")
+                    @Html.Raw("active")">
+                        <a asp-area="" asp-controller="Payee" asp-action="UploadPayee">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Upload Payee
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
 
                     <li class="@if(ViewBag.filter.sub == "assignee")
                     @Html.Raw("active")">

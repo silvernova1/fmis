@@ -22,7 +22,7 @@
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Disbursement Voucher</h3></center>
 <hr />
-<div class="container" style="height: 810px;">
+<div class="container" style="height: 840px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
@@ -60,10 +60,10 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="form-group">
                     <h5>Particulars:  </h5>
-                    <input asp-for="Particulars" type="text" class="form-control" value="To payment of" />
+                    <textarea asp-for="Particulars" class="form-control" style="height: 70px;"> </textarea>
                     <span asp-validation-for="Particulars" class="text-danger"></span>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                 <div class="form-group">
                     <h5>Payee Description:  </h5>
                     <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control"/>
-                    <span asp-validation-for="Particulars" class="text-danger"></span>
+                    <span asp-validation-for="PayeeDesc" class="text-danger"></span>
                 </div>
             </div>
         </div>

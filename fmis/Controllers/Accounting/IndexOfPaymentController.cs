@@ -150,27 +150,7 @@ namespace fmis.Controllers.Accounting
         }
 
 
-        public async Task<ActionResult> Delete(String id)
-        {
-            Int32 ID = Convert.ToInt32(id);
-            var IndexOfPayment = await _MyDbContext.Indexofpayment
-                .Include(x => x.Category)
-                .Include(x => x.Dv)
-                 .ThenInclude(x => x.Payee)
-                  .Include(x => x.indexDeductions).ThenInclude(x => x.Deduction)
-                 
-                .FirstOrDefaultAsync(x => x.IndexOfPaymentId == ID);
-            _MyDbContext.Indexofpayment.Remove(IndexOfPayment);
-            await _MyDbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        //POST
-        public IActionResult selectAT(int id)
-        {
-            var branches = _MyDbContext.Payee.ToList();
-            return Json(branches.Where(x => x.PayeeId == id).ToList());
-        }
+     
 
     }
 }
