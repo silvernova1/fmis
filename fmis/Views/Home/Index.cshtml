@@ -161,7 +161,7 @@
                                         <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", ViewBag.filteredBalances)%" data-size="180" data-color="#1261A0">
                                             <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span>
                                         </div>
-                                        <h4 class="grey lighter">OBLIGATED @String.Format("{0:0.00}", @perObligated)%</h4>
+                                        <h4 class="grey lighter">OBLIGATED @*@String.Format("{0:0.00}", @perObligated)%*@</h4>
                                     </center>
                                     <div class="vspace-24-sm"></div>
                                 </div><!-- /.widget-main -->
@@ -189,7 +189,7 @@
                                     <div id="obligated-piechart-placeholder" hidden></div>
                                     <center>
                                         <div class="easy-pie-chart percentage" data-percent="0" data-size="180" data-color="#006400">
-                                            <span class="percent" style="font-size: 30pt; color: #006400; ">0%</span>
+                                            <span class="percent" style="font-size: 30pt; color: #006400; ">0.00%</span>
 
                                         </div>
                                         <h4 class="grey lighter"> UNPAID OBLIGATION & DISBURSED </h4>

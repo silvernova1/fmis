@@ -26,7 +26,7 @@
 
 <input type="hidden" class="payee" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-    Payee
+    List of Payee
 </h3>
 <hr>
 <br />
@@ -35,6 +35,9 @@
 
 
 <script>
+
+
+
     let guid = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -89,7 +92,7 @@
     const data = [];
     var counter = 0;
     $.each(payee, function () {
-        data[counter] = [this.PayeeDescription, this.Id, this.token]
+        data[counter] = [this.PayeeDescription, this.TinNo, this.Id, this.token]
         counter++;
     });
     const searchField = document.querySelector('#search_field2');
@@ -98,8 +101,10 @@
     const hot = new Handsontable(container, {
         data: data,
         colWidths: [600, 500],
-        colHeaders: ['PAYEE NAME', 'ID', 'TOKEN'],
+        colHeaders: ['PAYEE NAME','TIN NUMBER', 'ID', 'TOKEN'],
         columns: [
+            {
+            },
             {
             },
             {
@@ -108,7 +113,6 @@
             {
                //HIDDEN TOKEN
             },
-      
         ],
         rowHeaders: true,
         undo: true,
@@ -119,13 +123,13 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
             var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][2];
+            var single_token = holder_data[selection[0][0]][3];
             var first_column = selection[0][0];
             var last_column = selection[0][2];
             var many_token = [];
             for (var j = first_column; j <= last_column; j++) {
                 many_token.push({
-                    many_token: holder_data[j][2]
+                    many_token: holder_data[j][3]
                 })
             }
             if (single_token) {
@@ -134,7 +138,7 @@
                     "many_token": many_token
                 };
                 console.log(ajax_data);
-                ajaxServer(ajax_data,'@Url.Action("DeletePayee", "Payee")');
+                ajaxServer(ajax_data,'@Url.Action("DeletePayees", "Payee")');
             }
         },
         afterUndo: function (index, column) {
@@ -142,7 +146,7 @@
         afterCreateRow: function (row, column) {
             console.log(row);
             console.log(column);
-            hot.setDataAtCell(row, 2, guid());
+            hot.setDataAtCell(row, 3, guid());
         },
         afterChange: function (changes, source) {
             if (source === 'loadData') {
@@ -154,13 +158,16 @@
                 ajax_data.push(
                     {
                         PayeeDescription: this[0] ? this[0] : " ",
-                        Id: this[1] ? this[1] : " ",
-                        token: this[2]
+                        TinNo: this[1] ? this[1] : " ",
+                        Id: this[2] ? this[2] : " ",
+                        token: this[3]
                      
                     }
+
                 );
             });
             ajaxServer(ajax_data, '@Url.Action("SavePayee", "Payee")');
+          
         },
         height: 'auto',
         className: 'as-you-type-demo',
@@ -174,7 +181,7 @@
             }
         },
         hiddenColumns: {
-            columns: [1,2],
+            columns: [2,3],
             indicators: true
         },
         licenseKey: 'non-commercial-and-evaluation',

@@ -328,10 +328,7 @@ namespace fmis.Controllers
                         var subAlltId = _MyDbContext.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
 
                         List<ObligationAmount> OAs = new();
-
-
                         string obligationToken = Guid.NewGuid().ToString();
-
                         int start = 14;
                         for (int x = 0; x < 12; x++)
                         {
