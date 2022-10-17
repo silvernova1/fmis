@@ -63,7 +63,7 @@
             <div class="col-md-5">
                 <div class="form-group">
                     <h5>Particulars:  </h5>
-                    <textarea asp-for="Particulars" class="form-control" style="height: 70px;"> </textarea>
+                    <textarea asp-for="Particulars" class="form-control" id="textarea" type="text" style="height: 70px;"> </textarea>
                     <span asp-validation-for="Particulars" class="text-danger"></span>
                 </div>
             </div>
@@ -333,7 +333,8 @@ $(document).ready(function () {
         $('#total_deduction').val(total);
         $('#net_amount').val(gross_amount - total);
     }
-  
+
+    document.getElementById("textarea").value = "To payment of";
 </script>
 
 
