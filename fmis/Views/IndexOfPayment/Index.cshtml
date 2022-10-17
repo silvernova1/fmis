@@ -62,24 +62,27 @@
 *@
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-1">
         <div class="form-group form-inline" style="margin-bottom: 10px;">
             <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
                 <i class="ace-icon fa fa-plus "></i>Create New
             </a> 
         </div>
-        @if(Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
-            {
-                <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
-                    <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
-                        <a class="btn btn-success btn-sm" onclick="document.getElementById('myform').submit()">
-                        <i class="ace-icon fa fa-download"></i>Download
-                        </a>
-                    <noscript>
-                        <input type="submit" value="Submit form!" />
-                    </noscript>
-                </form>
-            }
+       
+    </div>
+    <div class="col-md-7">
+        @if (Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
+        {
+            <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
+                <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
+                <a class="btn btn-primary btn-sm" onclick="document.getElementById('myform').submit()">
+                    <i class="ace-icon fa fa-download"></i>Download
+                </a>
+                <noscript>
+                    <input type="submit" value="Submit form!" />
+                </noscript>
+            </form>
+        }
     </div>
     <div class="col-md-4">
         <form id="search_form">

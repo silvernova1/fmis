@@ -103,6 +103,7 @@ namespace fmis.Controllers.Accounting
                 {
                     payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
                 }
+                    
                     payee.PayeeId = item.PayeeId;
                     payee.PayeeDescription = item.PayeeDescription;
                     payee.TinNo = item.TinNo;
@@ -143,14 +144,11 @@ namespace fmis.Controllers.Accounting
             return Json(data);
         }
 
-
-
         public IActionResult UploadPayee()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "UploadPayee", "");
             return View("~/Views/Payee/UploadPayee.cshtml");
         }
-
 
         [HttpPost]
         public async Task<ActionResult> ImportPayee()
