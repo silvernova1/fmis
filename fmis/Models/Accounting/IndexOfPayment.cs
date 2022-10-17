@@ -27,16 +27,15 @@ namespace fmis.Models.Accounting
         public string InvoiceNumber { get; set; }
         public int SoNumber { get; set; }
 
-        [DataType(DataType.Date)]
+
         public DateTime DvDate { get; set; }
 
-        [DataType(DataType.Date)]
+
         public DateTime PeriodCover { get; set; }
 
         public string date { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime TravelPeriod { get; set; }
+        public string travel_period { get; set; }
 
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }

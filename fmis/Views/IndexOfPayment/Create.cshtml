@@ -92,7 +92,7 @@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
-                    <label>PERDOD COVER</label>
+                    <label>PERIOD COVER</label>
                     <input type="date" asp-for="PeriodCover"  class="form-control ">
                 </div>
             </div>
@@ -114,7 +114,7 @@
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                     <div class="form-group">
                         <label>TRAVEL PERIOD:</label>
-                        <input type="text" name="date_range" asp-for="TravelPeriod"  class="form-control js-daterangepicker">
+                        <input type="text" name="travel_period" asp-for="travel_period"  class="form-control">
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
@@ -286,6 +286,26 @@
                 $(this).val('');
             });
         });
+
+        $(function () {
+            $('input[name="travel_period"]').daterangepicker({
+                autoUpdateInput: false,
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
+            $('input[name="travel_period"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+                var data = {
+                    travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+                };
+            });
+
+            $('input[name="travel_period"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+        });
+
     </script>
 
 <script>
@@ -541,25 +561,6 @@
         }
         return true;
     }
-
-    $(function () {
-        $('input[name="date_range"]').daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
-            }
-        });
-        $('input[name="date_range"]').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-            var data = {
-                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-            };
-        });
-
-        $('input[name="date_range"]').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-    });
 
 
 
