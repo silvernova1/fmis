@@ -173,10 +173,6 @@ namespace fmis.Controllers.Accounting
             return RedirectToAction("Index");
         }
 
-
-
-
-
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
@@ -438,10 +434,6 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(currentRow, 16).Style.Font.FontName = "Calibri Light";
                     ws.Cell(currentRow, 16).Value = "asdasd";
                     ws.Cell(currentRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
-
-
-
-
 
                     currentRow++;
                 }

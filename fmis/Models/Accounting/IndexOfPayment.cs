@@ -27,8 +27,10 @@ namespace fmis.Models.Accounting
         public string InvoiceNumber { get; set; }
         public int SoNumber { get; set; }
 
-        public DateTime DvDate { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime DvDate { get; set; }
 
         public DateTime PeriodCover { get; set; }
 
