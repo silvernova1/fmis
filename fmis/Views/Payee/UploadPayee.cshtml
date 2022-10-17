@@ -1,22 +1,24 @@
 ﻿
 @{
-    ViewData["Title"] = "Upload Obligation";
+    ViewData["Title"] = "Upload Payee";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
 
+
+
 <div class="widget-box col-md-2" style="margin-top: 50px; margin-left: 20px;">
     <div class="widget-header">
-        <i class="fa fa-upload"></i><h4 class="widget-title"> Upload Obligation </h4>
+        <i class="fa fa-upload"></i><h4 class="widget-title"> Upload Payee </h4>
 
     </div>
     <br />
     <div class="widget-body">
         <div class="widget-main">
-
+ 
             <div>
-                <form asp-action="ImportObligations"
+                <form asp-action="ImportPayee"
                       enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
                       method="post">
                     <dl>
@@ -27,7 +29,7 @@
                         </dd>
                     </dl>
 
-                    <input class="btn btn-success btn-sm" type="submit" value="Upload" />
+                  <input class="btn btn-success btn-sm" type="submit" value="Upload" />
 
                     <div style="margin-top:15px">
                         <output name="result"></output>
@@ -35,36 +37,14 @@
                 </form>
             </div>
 
-
+           
         </div>
     </div>
 </div>
 
 
 
-@*<h2>UploadObligation</h2>
 
-<div>
-    <form asp-action="ImportObligations"
-          enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
-          method="post">
-        <dl>
-            <dt>
-                <label for="FileUpload_FormFile">File</label>
-            </dt>
-            <dd>
-                <input id="FileUpload_FormFile" type="file"
-                       name="FileUpload.FormFile" />
-            </dd>
-        </dl>
-
-        <input class="btn" type="submit" value="Upload" />
-
-        <div style="margin-top:15px">
-            <output name="result"></output>
-        </div>
-    </form>
-</div>*@
 <script>
     async function AJAXSubmit(oFormElement) {
         var resultElement = oFormElement.elements.namedItem("result");
@@ -80,7 +60,7 @@
                 window.location.href = '/';
             }*@
 
-            resultElement.value = 'Result: ' + response.status + ' | ' +
+            resultElement.value = 'Result: ' @*+ response.status *@+ ' Success!! ' +
                 response.statusText;
             return false;
         } catch (error) {

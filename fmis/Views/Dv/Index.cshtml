@@ -56,7 +56,7 @@
 </div>
 
 <h3 class="grey lighter smaller">
-    DV # & PAYEE  
+    Disbursement Voucher
 </h3>
 <hr>
 
@@ -76,7 +76,7 @@
         </form>
     </div>
 </div>
-
+<br />
 <div class="table-responsive">
     <table class="table table-striped" @*style="width: 960px"*@ id="data">
         <thead>
@@ -94,7 +94,7 @@
                     Payee
                 </th>
                 <th>
-                    Responsibility Center
+                    Respo Center
                 </th>
                 <th>
                     Particulars
@@ -135,7 +135,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.RespoCenter.Respo)
                     </td>
-                    <td style="width: 200px;">
+                    <td style="width: 300px;">
                         @Html.DisplayFor(modelItem => item.Particulars)
                     </td>
                     <td>

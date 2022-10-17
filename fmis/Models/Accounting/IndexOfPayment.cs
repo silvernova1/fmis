@@ -27,7 +27,6 @@ namespace fmis.Models.Accounting
         public string InvoiceNumber { get; set; }
         public int SoNumber { get; set; }
 
-
         public DateTime DvDate { get; set; }
 
 

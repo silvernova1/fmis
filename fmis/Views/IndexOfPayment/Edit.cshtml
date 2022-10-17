@@ -19,10 +19,10 @@
     }
 </style>
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
+<center><h3 class="grey lighter smaller">Update Index of Payment </h3></center>
 <hr />
 <div class="container" style="height: 810px;">
-    <form asp-action="Create" style="position:center;">
+    <form asp-action="Edit" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -41,10 +41,11 @@
 
                         @*<select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
 
-                            <option> - Select Dv # - </option>
-                        </select>*@
+                                <option> - Select Dv # - </option>
+                            </select>*@
                         @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
-                        @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
+                        @if (ViewBag.Message != null && ViewBag.Message == "Exist")
+                        {
                             <br /><span style="color:red;">Name already exist.</span>
                         }
                     </div>
@@ -60,7 +61,7 @@
             <div>
                 <div class="col-md-3">
                     <label>DV DATE:</label>
-                    <input type="date" asp-for="DvDate"   class="form-control">
+                    <input type="date" asp-for="DvDate" class="form-control">
                     <span class="text-danger"></span>
                 </div>
             </div>
@@ -81,7 +82,7 @@
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <input asp-for="ProjectId"  class="form-control" />
+                    <input asp-for="ProjectId" class="form-control" />
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
@@ -92,8 +93,8 @@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
-                    <label>PERIOD COVER</label>
-                    <input type="date" asp-for="PeriodCover"  class="form-control ">
+                    <label>PERDOD COVER</label>
+                    <input type="date" asp-for="PeriodCover" class="form-control ">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
@@ -114,7 +115,7 @@
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                     <div class="form-group">
                         <label>TRAVEL PERIOD:</label>
-                        <input type="text" name="travel_period" asp-for="travel_period"  class="form-control">
+                        <input type="text" name="date_range" asp-for="TravelPeriod" class="form-control js-daterangepicker">
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
@@ -263,9 +264,9 @@
 </div>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 <script>
         $(function () {
@@ -286,27 +287,7 @@
                 $(this).val('');
             });
         });
-
-        $(function () {
-            $('input[name="travel_period"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-            $('input[name="travel_period"]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                var data = {
-                    travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-                };
-            });
-
-            $('input[name="travel_period"]').on('cancel.daterangepicker', function (ev, picker) {
-                $(this).val('');
-            });
-        });
-
-    </script>
+</script>
 
 <script>
 
@@ -561,6 +542,25 @@
         }
         return true;
     }
+
+    $(function () {
+        $('input[name="date_range"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date_range"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="date_range"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
 
 
 

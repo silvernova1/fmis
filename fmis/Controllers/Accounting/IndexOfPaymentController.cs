@@ -42,7 +42,6 @@ namespace fmis.Controllers.Accounting
             _IndexofpaymentContext = indexofpaymentContext;
         }
 
-        
 
         [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index(string searchString)
@@ -65,11 +64,11 @@ namespace fmis.Controllers.Accounting
             }*/
 
             var indexData = from c in _MyDbContext.Indexofpayment
-                            .Include(x=>x.Category) 
-                            .Include(x=>x.Dv)
-                                .ThenInclude(x=>x.Payee)
-                            .Include(x=>x.indexDeductions)
-                                .ThenInclude(x=>x.Deduction)
+                            .Include(x => x.Category)
+                            .Include(x => x.Dv)
+                                .ThenInclude(x => x.Payee)
+                            .Include(x => x.indexDeductions)
+                                .ThenInclude(x => x.Deduction)
                             select c;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -90,7 +89,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult selectAT(int id)
         {
-            var branches = _MyDbContext.Dv.Include(x=>x.Payee).ToList();
+            var branches = _MyDbContext.Dv.Include(x => x.Payee).ToList();
             return Json(branches.Where(x => x.DvId == id).ToList());
         }
 
@@ -137,6 +136,46 @@ namespace fmis.Controllers.Accounting
             }
             return View(indexOfPayment);
         }
+
+        // GET: Categoty/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+            PopulateCategoryDropDownList();
+            PopulateDvDropDownList();
+            PopulateDeductionDropDownList();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var Index = await _MyDbContext.Indexofpayment.FindAsync(id);
+            if (Index == null)
+            {
+                return NotFound();
+            }
+            return View(Index);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(IndexOfPayment index)
+        {
+
+            var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).AsNoTracking().FirstOrDefaultAsync();
+
+            PopulateCategoryDropDownList();
+            PopulateDvDropDownList();
+            PopulateDeductionDropDownList();
+
+            _MyDbContext.Update(indexes);
+            await _MyDbContext.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+
+
+
 
         public async Task<ActionResult> Delete(String id)
         {
