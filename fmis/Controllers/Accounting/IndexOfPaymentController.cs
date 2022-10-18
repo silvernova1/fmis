@@ -409,16 +409,6 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(currentRow, 15).Value = item.GrossAmount;
                     ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                    ws.Cell(currentRow, 16).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 16).Style.Font.FontName = "Calibri Light";
-                    ws.Cell(currentRow, 16).Value = item.indexDeductions.FirstOrDefault().Deduction.DeductionDescription + "--" + item.indexDeductions.FirstOrDefault().Amount;
-                    ws.Cell(currentRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-                    /*ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
-                    ws.Cell(currentRow, 17).Value = item.indexDeductions.FirstOrDefault().Amount;
-                    ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
-
                     ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
                     ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
                     ws.Cell(currentRow, 17).Value = item.TotalDeduction;
@@ -428,22 +418,17 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
                     ws.Cell(currentRow, 18).Value = item.NetAmount;
                     ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    foreach (var deduction in item.indexDeductions)
+                    {
+                        ws.Cell(currentRow, 16).Style.Font.FontSize = 10;
+                        ws.Cell(currentRow, 16).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(currentRow, 16).Value = deduction.Deduction.DeductionDescription + "--" + deduction.Amount;
+                        ws.Cell(currentRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        currentRow++;
+                    }
+                    //currentRow++;
 
-                    /*ws.Cell(currentRow, 16).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 16).Style.Font.FontName = "Calibri Light";
-                    ws.Cell(currentRow, 16).Value = item.indexDeductions;
-                    ws.Cell(currentRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
-
-                    /*ws.Cell(currentRow, 16).Style.Font.FontSize = 10;
-                    ws.Cell(currentRow, 16).Style.Font.FontName = "Calibri Light";
-                    ws.Cell(currentRow, 16).Value = "asdasd";
-                    ws.Cell(currentRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
-
-
-
-
-
-                    currentRow++;
+                    
                 }
 
 
