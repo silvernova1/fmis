@@ -13,7 +13,7 @@ namespace fmis.Models.Accounting
     {
         public int IndexOfPaymentId { get; set; }
         public string AccountNumber { get; set; }
-        public int NumberOfBill { get; set; }
+        public int? NumberOfBill { get; set; }
 
         public List<IndexDeduction> indexDeductions { get; set; }
 
@@ -23,16 +23,13 @@ namespace fmis.Models.Accounting
 
         public string Particulars { get; set; }
         public string PoNumber { get; set; }
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
         public string InvoiceNumber { get; set; }
-        public int SoNumber { get; set; }
+        public int? SoNumber { get; set; }
 
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime DvDate { get; set; }
 
-        public DateTime PeriodCover { get; set; }
+        public DateTime? PeriodCover { get; set; }
 
         public string date { get; set; }
 

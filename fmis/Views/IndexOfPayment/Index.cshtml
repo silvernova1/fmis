@@ -191,36 +191,58 @@
     </tbody>
 </table>
 
-<div class="row">
+@if(ViewBag.searchString == null)
+{
+    <div class="row">
     <div class="pull-right">
         <div class="infobox infobox-green">
             <div class="infobox-data">
-                <span class="infobox-data-number">100.00</span>
+                <span class="infobox-data-number">₱@ViewBag.grossTotal.ToString("##,##0.00")</span>
                 <div class="infobox-content">GROSS AMOUNT</div>
             </div>
         </div>
-
-
         <div class="infobox infobox-red">
             <div class="infobox-data">
-                <span class="infobox-data-number">300.00</span>
+                <span class="infobox-data-number">₱@ViewBag.totalDeductionTotal.ToString("##,##0.00")</span>
                 <div class="infobox-content">TOTAL DEDUCTIONS</div>
             </div>
         </div>
-
         <div class="infobox infobox-orange2">
             <div class="infobox-data">
-                <span class="infobox-data-number">₱500.00</span>
+                <span class="infobox-data-number">₱@ViewBag.netTotal.ToString("##,##0.00")</span>
                 <div class="infobox-content">NET AMOUNT</div>
             </div>
         </div>
-
         <div class="vspace-12-sm"></div>
     </div>
-
-
-</div><!-- /.row -->
-
+</div>
+}
+else
+{
+    <div class="row">
+    <div class="pull-right">
+        <div class="infobox infobox-green">
+            <div class="infobox-data">
+                <span class="infobox-data-number">₱@ViewBag.gross.ToString("##,##0.00")</span>
+                <div class="infobox-content">GROSS AMOUNT</div>
+            </div>
+        </div>
+        <div class="infobox infobox-red">
+            <div class="infobox-data">
+                <span class="infobox-data-number">₱@ViewBag.totalDeduction.ToString("##,##0.00")</span>
+                <div class="infobox-content">TOTAL DEDUCTIONS</div>
+            </div>
+        </div>
+        <div class="infobox infobox-orange2">
+            <div class="infobox-data">
+                <span class="infobox-data-number">₱@ViewBag.net.ToString("##,##0.00")</span>
+                <div class="infobox-content">NET AMOUNT</div>
+            </div>
+        </div>
+        <div class="vspace-12-sm"></div>
+    </div>
+</div>
+}
 
 <script>
     $(document).ready(function () {
