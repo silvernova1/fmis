@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<fmis.Models.Accounting.IndexOfPayment>
-
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -55,35 +54,38 @@
 
 @*<div class="form-group form-inline" style="margin-bottom: 10px;">
 
-    <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </a>
-</div>
+        <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+            <i class="ace-icon fa fa-plus "></i>Create New
+        </a>
+    </div>
 *@
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-1">
         <div class="form-group form-inline" style="margin-bottom: 10px;">
             <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
                 <i class="ace-icon fa fa-plus "></i>Create New
-            </a> 
+            </a>
         </div>
-        @if(Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
-            {
-                <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
-                    <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
-                        <a class="btn btn-success btn-sm" onclick="document.getElementById('myform').submit()">
-                        <i class="ace-icon fa fa-download"></i>Download
-                        </a>
-                    <noscript>
-                        <input type="submit" value="Submit form!" />
-                    </noscript>
-                </form>
-            }
+
+    </div>
+    <div class="col-md-7">
+        @if (Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
+        {
+            <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
+                <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
+                <a class="btn btn-primary btn-sm" onclick="document.getElementById('myform').submit()">
+                    <i class="ace-icon fa fa-download"></i>Download
+                </a>
+                <noscript>
+                    <input type="submit" value="Submit form!" />
+                </noscript>
+            </form>
+        }
     </div>
     <div class="col-md-4">
         <form id="search_form">
-            <input type="search" class="form-group" name="searchString" style="width: 340px;" id="search"/>
+            <input type="search" class="form-group" name="searchString" style="width: 340px;" id="search" />
             <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
                 <i class="ace-icon fa fa-search "></i> Search
             </button> <button class="btn btn-sm btn-outline-success my-2 my-sm-0" style="margin-bottom: 3px;" type="button" onclick="viewAllClicked();">View All</button>
@@ -91,8 +93,8 @@
         </form>
     </div>
 
-    
-        
+
+
 </div>
 <br />
 <table class="table table-striped" id="data">
@@ -120,74 +122,104 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model) 
+        @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                 @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dv.DvNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DvDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Particulars)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PoNumber)
-            </td>
-            <td>
-                 @Html.DisplayFor(modelItem => item.InvoiceNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfBill)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PeriodCover)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.travel_period)
-            </td>
-            <td>
-                 @Html.DisplayFor(modelItem => item.SoNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountNumber)
-            </td>
-            <td> ₱@item.GrossAmount.ToString("##,##0.00")</td>
-            <td>
-                <select class="form-control" style="width: 320px;">
-                @foreach (var deduction in item.indexDeductions)
-                  {
-                   <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
-                  }
-                </select>
-            </td>
-            <td>₱@item.TotalDeduction.ToString("##,##0.00")</td>
-            <td>₱@item.NetAmount.ToString("##,##0.00")</td>
-            <td>
-                @*  <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","IndexOfPayment",new { id = item.IndexOfPaymentId })" onclick="return confirm('Do you want to delete this Item?');">
-                    <i class="ace-icon fa fa-trash"></i>
-                </a>*@
-                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.IndexOfPaymentId">
-                    <i class="ace-icon fa fa-edit"></i>
-                </a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dv.DvNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DvDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Particulars)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PoNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberOfBill)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PeriodCover)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.travel_period)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountNumber)
+                </td>
+                <td> ₱@item.GrossAmount.ToString("##,##0.00")</td>
+                <td>
+                    <select class="form-control" style="width: 320px;">
+                        @foreach (var deduction in item.indexDeductions)
+                        {
+                            <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                        }
+                    </select>
+                </td>
+                <td>₱@item.TotalDeduction.ToString("##,##0.00")</td>
+                <td>₱@item.NetAmount.ToString("##,##0.00")</td>
+                <td>
+                    @*  <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","IndexOfPayment",new { id = item.IndexOfPaymentId })" onclick="return confirm('Do you want to delete this Item?');">
+                            <i class="ace-icon fa fa-trash"></i>
+                        </a>*@
+                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.IndexOfPaymentId">
+                        <i class="ace-icon fa fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
+<div class="row">
+    <div class="pull-right">
+        <div class="infobox infobox-green">
+            <div class="infobox-data">
+                <span class="infobox-data-number">100.00</span>
+                <div class="infobox-content">GROSS AMOUNT</div>
+            </div>
+        </div>
+
+
+        <div class="infobox infobox-red">
+            <div class="infobox-data">
+                <span class="infobox-data-number">300.00</span>
+                <div class="infobox-content">TOTAL DEDUCTIONS</div>
+            </div>
+        </div>
+
+        <div class="infobox infobox-orange2">
+            <div class="infobox-data">
+                <span class="infobox-data-number">₱500.00</span>
+                <div class="infobox-content">NET AMOUNT</div>
+            </div>
+        </div>
+
+        <div class="vspace-12-sm"></div>
+    </div>
+
+
+</div><!-- /.row -->
 
 
 <script>

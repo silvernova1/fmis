@@ -391,10 +391,11 @@ namespace fmis.Controllers
             next_year.ToString("yyyy-MM-dd 00:00:00");
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
+
+
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
             var retObligation = new List<Obligation>();
 
-            
             foreach (var item in data)
             {
                var obligation = new Obligation(); //CLEAR OBJECT
@@ -406,7 +407,7 @@ namespace fmis.Controllers
 
                if (item.source_type.Equals("fund_source"))
                    obligation.FundSourceId = item.source_id;
-              else if (item.source_type.Equals("sub_allotment"))
+               else if (item.source_type.Equals("sub_allotment"))
                    obligation.SubAllotmentId = item.source_id;
 
                 obligation.source_type = item.source_type;
