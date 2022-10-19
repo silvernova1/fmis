@@ -78,11 +78,11 @@ namespace fmis.Controllers.Accounting
 
 
             //with filter
-            var grossAmount = _MyDbContext.Indexofpayment.Where(x=>x.Dv.DvNo == searchString).Sum(x => x.GrossAmount);
+            var grossAmount = _MyDbContext.Indexofpayment.Where(x=>x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.GrossAmount);
             ViewBag.gross = grossAmount;
-            var totalDeduction = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.TotalDeduction);
+            var totalDeduction = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.TotalDeduction);
             ViewBag.totalDeduction = totalDeduction;
-            var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.NetAmount);
+            var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
 
 
@@ -154,12 +154,8 @@ namespace fmis.Controllers.Accounting
                 return NotFound();
             }
 
-            IndexOfPayment Index = await _MyDbContext.Indexofpayment
-                            .Include(x => x.Category)
-                            .Include(x => x.Dv)
-                                .ThenInclude(x => x.Payee)
-                            .Include(x => x.indexDeductions)
-                                .ThenInclude(x => x.Deduction).Where(x => x.IndexOfPaymentId == id).SingleAsync();
+            IndexOfPayment Index = await _MyDbContext.Indexofpayment.FindAsync(id);
+                            
 
 
 
