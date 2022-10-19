@@ -48,7 +48,6 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-            ViewData["GetDvNo"] = searchString;
 
             var dv = await _MyDbContext.Dv
                 .Include(x => x.RespoCenter)
@@ -61,19 +60,33 @@ namespace fmis.Controllers.Accounting
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                searchString = searchString.Trim();
-                ViewBag.Search = searchString;
-                dv = dv.Where(x => x.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Payee.PayeeDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                dv = dv.Where(x => x.DvNo.Contains(searchString) || x.RespoCenter.Respo.Contains(searchString) || x.Payee.PayeeDescription.Contains(searchString)).ToList();
             }
 
-            return View(dv);
+            ViewBag.Dv = dv.Where(x => x.DvNo.Contains(searchString));
+            ViewBag.indexDv = dv;
+            ViewBag.indexPayee = dv.Where(x => x.Payee.PayeeDescription.Contains(searchString));
+            ViewBag.searchString = searchString;
+
+            //no filter
+            var grossAmountTotal = _MyDbContext.Dv.Sum(x => x.GrossAmount);
+            ViewBag.grossTotal = grossAmountTotal;
+            var totalDeductionTotal = _MyDbContext.Dv.Sum(x => x.TotalDeduction);
+            ViewBag.totalDeductionTotal = totalDeductionTotal;
+            var netAmountTotal = _MyDbContext.Dv.Sum(x => x.NetAmount);
+            ViewBag.netTotal = netAmountTotal;
+
+            //with filter
+            var grossAmount = _MyDbContext.Dv.Where(x=>x.DvNo == searchString || x.RespoCenter.Respo == searchString || x.Payee.PayeeDescription == searchString).Sum(x => x.GrossAmount);
+            ViewBag.gross = grossAmount;
+            var totalDeduction = _MyDbContext.Dv.Where(x=>x.DvNo == searchString || x.RespoCenter.Respo == searchString || x.Payee.PayeeDescription == searchString).Sum(x => x.TotalDeduction);
+            ViewBag.totalDeduction = totalDeduction;
+            var netAmount = _MyDbContext.Dv.Where(x => x.DvNo == searchString || x.RespoCenter.Respo == searchString || x.Payee.PayeeDescription == searchString).Sum(x => x.NetAmount);
+            ViewBag.net = netAmount;
+
+            return View(dv.ToList());
         }
 
-        [HttpPost]
-        public string Index(string searchString, bool notUsed)
-        {
-            return "From [HttpPost]Index: filter on " + searchString;
-        }
 
         // GET: Category/Create
         public IActionResult Create()
