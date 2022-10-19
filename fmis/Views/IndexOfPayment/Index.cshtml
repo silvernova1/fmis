@@ -282,5 +282,15 @@ else
 
     });
 
+    $("a[data-target=#EditModal]").click(function(ev) {
+        ev.preventDefault();
+        var target = $(this).attr("href");
+    
+        // load the url and show modal on success
+        $("#EditModal .modal-body").load(target, function() { 
+             $("#EditModal").modal("show"); 
+        });
+    });
+
 
 </script>
