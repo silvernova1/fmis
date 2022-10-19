@@ -193,6 +193,16 @@ namespace fmis.Controllers.Accounting
 
             var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).AsNoTracking().FirstOrDefaultAsync();
 
+            IndexDeduction id = new IndexDeduction
+            {DeductionId = index.indexDeductions.FirstOrDefault().DeductionId,
+            Amount = index.indexDeductions.FirstOrDefault().Amount};
+
+            _MyDbContext.IndexDeduction.Add(id);
+            _MyDbContext.IndexDeduction.Attach(id);
+
+
+            
+
 
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();

@@ -69,7 +69,10 @@
         </div>
     </div>
     <div class="col-md-7">
-        @if (Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
+        @if (Model != null)
+        {
+        }
+        else if(Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
         {
             <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
                 <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
@@ -93,7 +96,9 @@
     </div>
 </div>
 <br />
-<table class="table table-striped" id="data">
+@if(Model.Count()>0)
+{
+    <table class="table table-striped" id="data">
     <thead>
         <tr>
             <th> Category </th>
@@ -186,6 +191,14 @@
         }
     </tbody>
 </table>
+}
+else
+{
+    <div class="alert alert-block alert-danger">
+        <i class="ace-icon fa fa-warning red"></i>
+        No Records found
+    </div>
+}
 
 @if (ViewBag.searchString == null)
 {
@@ -271,16 +284,6 @@ else
     }
 
 
-
-    $("a[data-target=#EditModal]").click(function(ev) {
-        ev.preventDefault();
-        var target = $(this).attr("href");
-    
-        // load the url and show modal on success
-        $("#EditModal .modal-body").load(target, function() { 
-             $("#EditModal").modal("show"); 
-        });
-    });
 
 
 </script>
