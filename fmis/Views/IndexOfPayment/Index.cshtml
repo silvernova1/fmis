@@ -29,7 +29,8 @@
 
 
 <!--EDIT MODAL-->
-<div class="modal fade" id="EditModal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+<div class="modal fade" id="EditModal" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
@@ -186,36 +187,58 @@
     </tbody>
 </table>
 
-<div class="row">
-    <div class="pull-right">
-        <div class="infobox infobox-green">
-            <div class="infobox-data">
-                <span class="infobox-data-number">100.00</span>
-                <div class="infobox-content">GROSS AMOUNT</div>
+@if (ViewBag.searchString == null)
+{
+    <div class="row">
+        <div class="pull-right">
+            <div class="infobox infobox-green">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@ViewBag.grossTotal.ToString("##,##0.00")</span>
+                    <div class="infobox-content">GROSS AMOUNT</div>
+                </div>
             </div>
-        </div>
-
-
-        <div class="infobox infobox-red">
-            <div class="infobox-data">
-                <span class="infobox-data-number">300.00</span>
-                <div class="infobox-content">TOTAL DEDUCTIONS</div>
+            <div class="infobox infobox-red">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@ViewBag.totalDeductionTotal.ToString("##,##0.00")</span>
+                    <div class="infobox-content">TOTAL DEDUCTIONS</div>
+                </div>
             </div>
-        </div>
-
-        <div class="infobox infobox-orange2">
-            <div class="infobox-data">
-                <span class="infobox-data-number">₱500.00</span>
-                <div class="infobox-content">NET AMOUNT</div>
+            <div class="infobox infobox-orange2">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@ViewBag.netTotal.ToString("##,##0.00")</span>
+                    <div class="infobox-content">NET AMOUNT</div>
+                </div>
             </div>
+            <div class="vspace-12-sm"></div>
         </div>
-
-        <div class="vspace-12-sm"></div>
     </div>
-
-
-</div><!-- /.row -->
-
+}
+else
+{
+    <div class="row">
+        <div class="pull-right">
+            <div class="infobox infobox-green">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@ViewBag.gross.ToString("##,##0.00")</span>
+                    <div class="infobox-content">GROSS AMOUNT</div>
+                </div>
+            </div>
+            <div class="infobox infobox-red">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@ViewBag.totalDeduction.ToString("##,##0.00")</span>
+                    <div class="infobox-content">TOTAL DEDUCTIONS</div>
+                </div>
+            </div>
+            <div class="infobox infobox-orange2">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@ViewBag.net.ToString("##,##0.00")</span>
+                    <div class="infobox-content">NET AMOUNT</div>
+                </div>
+            </div>
+            <div class="vspace-12-sm"></div>
+        </div>
+    </div>
+}
 
 <script>
     $(document).ready(function () {

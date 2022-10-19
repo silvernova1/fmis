@@ -119,7 +119,6 @@ namespace fmis.Controllers.Accounting
             return Json(retPayee.FirstOrDefault());
         }
 
-
         public void setUpDeleteData(string token)
         {
             var payee = new Payee(); //CLEAR OBJECT
