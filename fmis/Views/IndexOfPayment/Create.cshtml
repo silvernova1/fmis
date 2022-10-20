@@ -21,7 +21,7 @@
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 810px;">
+<div class="container" style="height: 840px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
@@ -64,10 +64,10 @@
                     <span class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>PARTICULARS:</label>
-                    <input asp-for="Particulars" class="form-control" />
+                    <textarea asp-for="Particulars" id="textarea" style="height: 70px;" class="form-control"></textarea>
                 </div>
             </div>
         </div>
@@ -267,48 +267,48 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-<script>
-        $(function () {
-            $('input[name="date"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-            $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                var data = {
-                    date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-                };
-            });
 
-            $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
-                $(this).val('');
-            });
-        });
-
-        $(function () {
-            $('input[name="travel_period"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-            $('input[name="travel_period"]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                var data = {
-                    travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-                };
-            });
-
-            $('input[name="travel_period"]').on('cancel.daterangepicker', function (ev, picker) {
-                $(this).val('');
-            });
-        });
-
-    </script>
 
 <script>
+
+    $(function () {
+        $('input[name="date"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+
+    $(function () {
+        $('input[name="travel_period"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="travel_period"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="travel_period"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+
 
     $('.select2').select2();
     $("#CategoryId").val(36);
@@ -540,7 +540,7 @@
     });
 
 
-
+    document.getElementById("textarea").value = "To payment of";
 
 
 
