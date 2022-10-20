@@ -51,15 +51,6 @@
 </h3>
 <hr>
 
-
-@*<div class="form-group form-inline" style="margin-bottom: 10px;">
-
-        <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
-            <i class="ace-icon fa fa-plus "></i>Create New
-        </a>
-    </div>
-*@
-
 <div class="row">
     <div class="col-md-1">
         <div class="form-group form-inline" style="margin-bottom: 10px;">
@@ -67,13 +58,12 @@
                 <i class="ace-icon fa fa-plus "></i>Create New
             </a>
         </div>
-
     </div>
     <div class="col-md-7">
-        @if (Model != null)
+        @if(Model != null)
         {
         }
-        else if(Model.FirstOrDefault().Category.CategoryDescription == ViewBag.searchString || Model.FirstOrDefault().Dv.DvNo == ViewBag.searchString || Model.FirstOrDefault().Dv.PayeeDesc == ViewBag.searchString)
+        @if(Model.Where(x=>x.Category.CategoryDescription == ViewBag.searchString).Any() || Model.Where(x=>x.Dv.DvNo == ViewBag.searchString).Any() || Model.Where(x=>x.Dv.PayeeDesc == ViewBag.searchString).Any())
         {
             <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
                 <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
