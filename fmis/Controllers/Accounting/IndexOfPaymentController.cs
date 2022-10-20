@@ -49,21 +49,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
-            /*var indexData = await _MyDbContext.Indexofpayment
-                .Include(x => x.Category)
-                .Include(x => x.Dv)
-                    .ThenInclude(x => x.Payee)
-                .Include(x => x.indexDeductions)
-                    .ThenInclude(x=>x.Deduction)
-                .ToListAsync();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.Trim();
-                ViewBag.Search = searchString;
-                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.PayeeDesc.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            }*/
-
+        
             var indexData = from c in _MyDbContext.Indexofpayment
                             .Include(x => x.Category)
                             .Include(x => x.Dv)
@@ -91,7 +77,6 @@ namespace fmis.Controllers.Accounting
             ViewBag.totalDeductionTotal = totalDeductionTotal;
             var netAmountTotal = _MyDbContext.Indexofpayment.Sum(x => x.NetAmount);
             ViewBag.netTotal = netAmountTotal;
-
 
 
             //with filter
