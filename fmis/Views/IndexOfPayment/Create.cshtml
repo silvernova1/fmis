@@ -43,7 +43,7 @@
 
                             <option> - Select Dv # - </option>
                         </select>*@
-                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control",    @id = "ddlBranches", onchange = "return get_sbu(this)" })
                         @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
                             <br /><span style="color:red;">Name already exist.</span>
                         }
@@ -59,8 +59,8 @@
             </div>
             <div>
                 <div class="col-md-3">
-                    <label>DV DATE:</label>
-                    <input type="date" asp-for="DvDate"   class="form-control">
+                    <label>DATE:</label>
+                    <input asp-for="DvDate"  onchange="getFormattedDate" class="form-control">
                     <span class="text-danger"></span>
                 </div>
             </div>
@@ -279,9 +279,9 @@
             }
         });
         $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
             var data = {
-                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+                date: picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY')
             };
         });
 
@@ -539,9 +539,19 @@
         });
     });
 
-
     document.getElementById("textarea").value = "To payment of";
 
 
+    function getFormattedDate(date) {
+        var year = date.getFullYear();
+
+        var month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+
+        var day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+
+        return month + '/' + day + '/' + year;
+    }
 
 </script>
