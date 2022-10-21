@@ -124,7 +124,8 @@
                         @item.FundCluster?.FundClusterDescription
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Date)
+                       @* @Html.DisplayFor(modelItem => item.Date)*@
+                         @item.Date.ToString("dd/MM/yyyy")
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DvNo)

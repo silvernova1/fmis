@@ -43,7 +43,7 @@
 
                             <option> - Select Dv # - </option>
                         </select>*@
-                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
+                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control",    @id = "ddlBranches", onchange = "return get_sbu(this)" })
                         @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
                             <br /><span style="color:red;">Name already exist.</span>
                         }
@@ -59,8 +59,8 @@
             </div>
             <div>
                 <div class="col-md-3">
-                    <label>DV DATE:</label>
-                    <input type="date" asp-for="DvDate"   class="form-control">
+                    <label>DATE:</label>
+                    <input asp-for="DvDate"  onchange="getFormattedDate" class="form-control">
                     <span class="text-danger"></span>
                 </div>
             </div>
@@ -93,12 +93,12 @@
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
                     <label>PERIOD COVER</label>
-                    <input type="date" asp-for="PeriodCover"  asp-format="{0:dd/MM/yyyy HH:mm}" class="form-control ">
+                    <input type="date" asp-for="PeriodCover"   class="date-picker form-control">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
-                    <label>FROM TO</label>
+                    <label>FROM-TO</label>
                     @*<input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">*@
                     <input type="text" class="form-control" asp-for="date" name="date" />
                 </div>
@@ -151,7 +151,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount"  placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -279,9 +279,9 @@
             }
         });
         $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
             var data = {
-                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+                date: picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY')
             };
         });
 
@@ -311,13 +311,6 @@
 
 
     $('.select2').select2();
-    $("#CategoryId").val(36);
-    $("#CategoryId").trigger("click");
-    $(document).ready(function () {
-        for (i = 1; i <= 10; i++) {
-            $('#hidden-panel' + i).hide();
-        }
-    });
 
     $(document).ready(function () {
         $('.prexcDropdown').select2();
@@ -364,168 +357,71 @@
     }
 
 
-     $("#CategoryId").on('change', function () {
-        var value = $(this).val();
-        console.log(value);
-        const categ = [];
-        if (value == 36) {
-            $("#hidden-panel1").show();
-            $("#hidden-panel5").show();
-            $("#hidden-panel4").hide();
-            categ.push('2', '4', '6', '7', '8', '9', '10');
-        } else if (value == 37) {
-            $("#hidden-panel2").show();
-            categ.push('1', '4', '5', '6', '7', '8', '9', '10');
-        } else if (value == 38) {
-            $("#hidden-panel2").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '4', '5', '6', '7', '8', '9');
-        } else if (value == 40) {
-            $("#hidden-panel4").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '2', '5', '6', '7', '8', '9');
-        } else if (value == 45 || value == 52) {
-            $("#hidden-panel7").show();
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '9');
-        } else if (value == 54) {
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '9');
-        } else if (value == 46 || value == 47) {
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '4', '5', '8', '6', '9', '10');
-        } else if (value == 53 || value == 62) {
-            categ.push('1', '4', '5', '2', '6', '7', '8', '9', '10');
-        } else if (value == 49 || value == 50 || value == 51) {
-            $("#hidden-panel6").show();
-            $("#hidden-panel9").show();
-            categ.push('1', '4', '5', '2', '7', '8', '10');
-        } else if (value == 39 || value == 48 || (value >= 57 && value <= 61) || (value >= 65 && value <= 68)) {
-            $("#hidden-panel4").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10', '6');
-        } else if ((value >= 41 && value <= 45) || value == 55 || (value >= 49 && value <= 52) || (value >= 63 && value <= 64)) {
-            $("#hidden-panel6").show();
-            categ.push('1', '4', '5', '2', '7', '8', '9', '10');
-        } else if (value == 53 || value == 62) {
-            categ.push('1', '2', '4', '5', '6', '7', '8', '9', '10');
-        } else if (value == 54) {
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '7', '9');
-        }
-        categ.forEach(function (i) {
+    $("#CategoryId").trigger("click");
+    $(document).ready(function () {
+        for (i = 1; i <= 10; i++) {
             $('#hidden-panel' + i).hide();
-        });
+        }
     });
 
-
-    // dummy/live
-@*
      $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
-        if (value == 36) {
-            $("#hidden-panel1").show();
-            $("#hidden-panel5").show();
-            $("#hidden-panel4").hide();
-            categ.push('2', '4', '6', '7', '8', '9', '10');
-        } else if (value == 37) {
-            $("#hidden-panel2").show();
-            categ.push('1', '4', '5', '6', '7', '8', '9', '10');
-        } else if (value == 38) {
-            $("#hidden-panel2").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '4', '5', '6', '7', '8', '9');
-        } else if (value == 40) {
-            $("#hidden-panel4").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '2', '5', '6', '7', '8', '9');
-        } else if (value == 45 || value == 52) {
-            $("#hidden-panel7").show();
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '9');
-        } else if (value == 54) {
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '9');
-        } else if (value == 46 || value == 47) {
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '4', '5', '8', '6', '9', '10');
-        } else if (value == 53 || value == 62) {
-            categ.push('1', '4', '5', '2', '6', '7', '8', '9', '10');
-        } else if (value == 49 || value == 50 || value == 51) {
-            $("#hidden-panel6").show();
-            $("#hidden-panel9").show();
-            categ.push('1', '4', '5', '2', '7', '8', '10');
-        } else if (value == 39 || value == 48 || (value >= 57 && value <= 61) || (value >= 65 && value <= 68)) {
-            $("#hidden-panel4").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10', '6');
-        } else if ((value >= 41 && value <= 45) || value == 55 || (value >= 49 && value <= 52) || (value >= 63 && value <= 64)) {
-            $("#hidden-panel6").show();
-            categ.push('1', '4', '5', '2', '7', '8', '9', '10');
-        } else if (value == 53 || value == 62) {
-            categ.push('1', '2', '4', '5', '6', '7', '8', '9', '10');
-        } else if (value == 54) {
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '7', '9');
-        }
-        categ.forEach(function (i) {
-            $('#hidden-panel' + i).hide();
-        });
-    });*@
+         if (value == 1) {
+             $("#hidden-panel1").show();
+             $("#hidden-panel5").show();
+             categ.push('2', '3', '4', '6', '7', '8', '9', '10');
+         } else if (value == 2 || value == 3) {
+             $("#hidden-panel1").show();
+             $("#hidden-panel4").show();
+             categ.push('2', '5', '6', '7', '8', '9', '10');
+         } else if (value == 4 ) {
+             $("#hidden-panel1").show();
+             categ.push('2', '4', '5', '6', '7', '8', '9', '10');
+         } else if (value == 5) {
+             $("#hidden-panel2").show();
+             $("#hidden-panel10").show();
+             categ.push('1', '3', '4', '5', '6', '7', '8', '9');
+         } else if (value == 6 || value == 15 || value == 23 || value == 24 ||
+             value == 25 || value == 26 || value == 27 || value == 28 ||
+             value == 32 || value == 33 || value == 34 || value == 35) {
+             $("#hidden-panel4").show();
+             categ.push('1', '2', '3', '5', '6', '7', '8', '9', '10');
+         } else if (value == 7) {
+             $("#hidden-panel4").show();
+             $("#hidden-panel10").show();
+             categ.push('1', '2', '3', '5', '6', '7', '8', '9');
 
-    //local
+         } else if (value == 8 || value == 9 || value == 10 || value == 11 ||
+             value == 22 || value == 30 || value == 31) {
+             $("#hidden-panel6").show();
+             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
+         } else if (value == 12 || value == 19) {
+             $("#hidden-panel8").show();
+             $("#hidden-panel7").show();
+             categ.push('1', '2', '3', '4', '5', '6', '9', '10');
 
-   @* $("#CategoryId").on('change', function () {
-        var value = $(this).val();
-        console.log(value);
-        const categ = [];
-        if (value == 1) {
-            $("#hidden-panel1").show();
-            $("#hidden-panel5").show();
-            categ.push('2', '4', '6', '7', '8', '9', '10');
-        } else if (value == 2) {
-            $("#hidden-panel2").show();
-            categ.push('1', '4', '5', '6', '7', '8', '9', '10');
-        } else if (value == 3) {
-            $("#hidden-panel2").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '4', '5', '6', '7', '8', '9');
-        } else if (value == 5) {
-            $("#hidden-panel4").show();
-            $("#hidden-panel10").show();
-            categ.push('1', '2', '5', '6', '7', '8', '9');
-        } else if (value == 10 || value == 17) {
-            $("#hidden-panel7").show();
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '9');
-        } else if (value == 19) {
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '9');
-        } else if (value == 11 || value == 12) {
-            $("#hidden-panel7").show();
-            categ.push('1', '2', '4', '5', '8', '6', '9', '10');
-        } else if (value == 18 || value == 27) {
-            categ.push('1', '4', '5', '2', '6', '7', '8', '9', '10');
-        } else if (value == 14 || value == 15 || value == 16) {
-            $("#hidden-panel6").show();
-            $("#hidden-panel9").show();
-            categ.push('1', '4', '5', '2', '7', '8', '10');
-        } else if (value == 4 || value == 13 || (value >= 22 && value <= 26) || (value >= 30 && value <= 33)) {
-            $("#hidden-panel4").show();
-            categ.push('1', '5', '2', '7', '8', '9', '10', '6');
-        } else if ((value >= 6 && value <= 10) || value == 20 || (value >= 14 && value <= 17) || (value >= 28 && value <= 29)) {
-            $("#hidden-panel6").show();
-            categ.push('1', '4', '5', '2', '7', '8', '9', '10');
-        } else if (value == 18 || value == 27) {
-            categ.push('1', '2', '4', '5', '6', '7', '8', '9', '10');
-        } else if (value == 19) {
-            $("#hidden-panel8").show();
-            categ.push('1', '2', '4', '5', '10', '6', '7', '9');
-        }
-        categ.forEach(function (i) {
-            $('#hidden-panel' + i).hide();
-        });
-    });*@
+         } else if (value == 13 || value == 14) {
+             $("#hidden-panel7").show();
+             categ.push('1', '2', '3', '4', '5', '6', '8', '9', '10');
+
+         } else if (value == 16 || value == 17 || value == 18) {
+             $("#hidden-panel6").show();
+             $("#hidden-panel9").show();
+             categ.push('1', '2', '3', '4', '5', '8', '10');
+         } else if (value == 20 || value == 29) {
+             categ.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+
+         } else if (value == 21) {
+             $("#hidden-panel8").show();
+             categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
+         }
+             categ.forEach(function (i) {
+                 $('#hidden-panel' + i).hide();
+             });
+         });
+
 
     $(document).ready(function () {
         $('.filter').change(function () {
@@ -539,9 +435,32 @@
         });
     });
 
-
     document.getElementById("textarea").value = "To payment of";
 
 
+    $(function () {
+        $('.date-picker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM yy',
+            onClose: function (dateText, inst) {
+                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+            }
+        });
+    });
 
+
+    function Comma(Num) { //function to add commas to textboxes
+        Num += '';
+        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
+        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
+        x = Num.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1))
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        return x1 + x2;
+    }
 </script>

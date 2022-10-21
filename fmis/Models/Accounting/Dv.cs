@@ -19,9 +19,8 @@ namespace fmis.Models.Accounting
         public List<DvDeduction> dvDeductions { get; set; }
         public string Particulars { get; set; }
 
-
         [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime Date { get; set; }
 
         [ForeignKey("FundClusterId")]

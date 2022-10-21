@@ -137,7 +137,6 @@
                     "single_token": single_token,
                     "many_token": many_token
                 };
-                console.log(ajax_data);
                 ajaxServer(ajax_data,'@Url.Action("DeletePayees", "Payee")');
             }
         },
@@ -152,20 +151,16 @@
             if (source === 'loadData') {
                 return;
             }
-            console.log(changes);
-            var ajax_data = [];
-            $.each(hot.getSourceData(), function () {
-                ajax_data.push(
-                    {
-                        PayeeDescription: this[0] ? this[0] : " ",
-                        TinNo: this[1] ? this[1] : " ",
-                        Id: this[2] ? this[2] : " ",
-                        token: this[3]
-                     
-                    }
 
-                );
-            });
+            var ajax_data = [];
+            ajax_data.push(
+                {
+                    PayeeDescription: hot.getDataAtCell(changes[0][0], 0),
+                    TinNo: hot.getDataAtCell(changes[0][0], 1),
+                    token: hot.getDataAtCell(changes[0][0], 3)
+                });
+
+            console.log(ajax_data);
             ajaxServer(ajax_data, '@Url.Action("SavePayee", "Payee")');
           
         },
