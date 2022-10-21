@@ -31,7 +31,7 @@ namespace fmis.Models.Accounting
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime DvDate { get; set; }
 
-        public DateTime? PeriodCover { get; set; }
+        public string PeriodCover { get; set; }
 
         public string date { get; set; }
 
