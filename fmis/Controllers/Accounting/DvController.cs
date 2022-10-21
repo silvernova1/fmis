@@ -343,6 +343,7 @@ namespace fmis.Controllers.Accounting
                                        dvDate = dv.Date,
                                        dvParticulars = dv.Particulars,
                                        dvPayee = dv.Payee.PayeeDescription,
+                                       dvTinNo = dv.Payee.TinNo,
                                        dvGrossAmount = dv.GrossAmount,
                                        dvTotalDeductions = dv.TotalDeduction,
                                        dvNetAmount = dv.NetAmount,
@@ -536,7 +537,7 @@ namespace fmis.Controllers.Accounting
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         PaddingLeft = 10,
                     });
-                    table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:", arial_font_9))
+                    table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster.FirstOrDefault().dvTinNo.ToString(), arial_font_9))
                     {
                         HorizontalAlignment = Element.ALIGN_LEFT,
                         FixedHeight = 25,

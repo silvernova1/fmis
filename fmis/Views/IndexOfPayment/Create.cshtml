@@ -511,9 +511,12 @@
         });
     }
 
+
+
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
         let dvDedectionAmt = $(parentDiv).find('input');
+
         if (dvDeduction.val() && dvDedectionAmt.val()) {
             console.log(dvDeduction.val(), dvDedectionAmt.val());
         }
@@ -628,16 +631,4 @@
     });
 
 
-    function Comma(Num) { //function to add commas to textboxes
-        Num += '';
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        x = Num.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1))
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        return x1 + x2;
-    }
 </script>
