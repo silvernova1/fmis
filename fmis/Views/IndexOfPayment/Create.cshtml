@@ -45,7 +45,7 @@
                         </select>*@
                         @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
                         @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
-                            <br /><span style="color:red;">Name already exist.</span>
+                            <br /><span style="color:red;">Already exist.</span>
                         }
                     </div>
                 </div>
@@ -60,14 +60,14 @@
             <div>
                 <div class="col-md-3">
                     <label>DV DATE:</label>
-                    <input type="date" asp-for="DvDate"   class="form-control">
+                    <input type="date" asp-for="DvDate" id="date" class="form-control">
                     <span class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>PARTICULARS:</label>
-                    <textarea asp-for="Particulars" id="textarea" style="height: 70px;" class="form-control"></textarea>
+                    <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control"></textarea>
                 </div>
             </div>
         </div>
@@ -75,32 +75,61 @@
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <input asp-for="PoNumber" type="text" class="form-control" />
+                    <input asp-for="PoNumber" id="poNumber" type="text" class="form-control" onchange="DataCheck()" />
+                </div>
+                <div class="row">
+                <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                    <p id="Status" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <input asp-for="ProjectId"  class="form-control" />
+                    <input asp-for="ProjectId" id="project"  class="form-control" onchange="ProjectCheck()"/>
+                </div>
+                <div class="row">
+                <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                    <p id="ProjectCheck" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
                 <div class="form-group">
                     <label>INVOICE #:</label>
-                    <input asp-for="InvoiceNumber" type="text" class="form-control" />
+                    <input asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" />
+                </div>
+                <div class="row">
+                <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                    <p id="InvoiceCheck" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
                     <label>PERIOD COVER</label>
-                    <input type="date" asp-for="PeriodCover"  asp-format="{0:dd/MM/yyyy HH:mm}" class="form-control ">
+                    <input type="month" asp-for="PeriodCover" id="periodCover" class="form-control" onchange="PeriodCheck()">
+                </div>
+                <div class="row">
+                <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                    <p id="PeriodCheck" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
-                    <label>FROM TO</label>
-                    @*<input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">*@
-                    <input type="text" class="form-control" asp-for="date" name="date" />
+                    <label>Period Covered From To</label>
+                    <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()"/>
+                </div>
+                <div class="row">
+                <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                    <p id="FromToCheck" />
+                    </div>
                 </div>
             </div>
 
@@ -108,7 +137,13 @@
                 <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                     <div class="form-group">
                         <label>S.O #:</label>
-                        <input type="text" asp-for="SoNumber" class="form-control" />
+                        <input type="text" asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()"/>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                        <p id="SoCheck" />
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
@@ -120,7 +155,13 @@
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
                     <div class="form-group">
                         <label>ACCOUNT #:</label>
-                        <input type="text" asp-for="AccountNumber" class="form-control" />
+                        <input type="text" asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()"/>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                        <p id="AccNoCheck" />
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
@@ -268,9 +309,142 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 
-
 <script>
+    //po number
+    function DataCheck() {
+        $("#Status").html("Checking...");
+        $.post("@Url.Action("CheckifExist", "IndexOfPayment")",
+            {
+                userdata: $("#poNumber").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#Status").html('<font color="Green">Po Number is available</font>');
+                $("#poNumber").css("border-color", "Green");
 
+            }
+            else {
+                $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
+                $("#poNumber").css("border-color", "Red");
+            }
+        });
+    }
+    //invoice number
+    function InvoiceCheck() {
+        $("#InvoiceCheck").html("Checking...");
+        $.post("@Url.Action("CheckInvoiceExist", "IndexOfPayment")",
+            {
+                invoice: $("#invoice").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#InvoiceCheck").html('<font color="Green">Invoice Number is available</font>');
+                $("#invoice").css("border-color", "Green");
+
+            }
+            else {
+                $("#InvoiceCheck").html('<font color="Red">Invoice Number Already Exist!</font>');
+                $("#invoice").css("border-color", "Red");
+            }
+        });
+    }
+    //period cover
+    function PeriodCheck() {
+        $("#PeriodCheck").html("Checking...");
+        $.post("@Url.Action("CheckPeriodExist", "IndexOfPayment")",
+            {
+                periodCover: $("#periodCover").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#PeriodCheck").html('<font color="Green">Available</font>');
+                $("#periodCover").css("border-color", "Green");
+
+            }
+            else {
+                $("#PeriodCheck").html('<font color="Red">Already Exist!</font>');
+                $("#periodCover").css("border-color", "Red");
+            }
+        });
+    }
+    //project id
+    function ProjectCheck() {
+        $("#ProjectCheck").html("Checking...");
+        $.post("@Url.Action("CheckProjectExist", "IndexOfPayment")",
+            {
+                project: $("#project").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#ProjectCheck").html('<font color="Green">Available</font>');
+                $("#project").css("border-color", "Green");
+
+            }
+            else {
+                $("#ProjectCheck").html('<font color="Red">Already Exist!</font>');
+                $("#project").css("border-color", "Red");
+            }
+        });
+    }
+    //from to
+    function FromToCheck() {
+        $("#FromToCheck").html("Checking...");
+        $.post("@Url.Action("CheckFromToExist", "IndexOfPayment")",
+            {
+                fromTo: $("#fromTo").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#FromToCheck").html('<font color="Green">Available</font>');
+                $("#fromTo").css("border-color", "Green");
+
+            }
+            else {
+                $("#FromToCheck").html('<font color="Red">Already Exist!</font>');
+                $("#fromTo").css("border-color", "Red");
+            }
+        });
+    }
+    //So
+    function SoCheck() {
+        $("#SoCheck").html("Checking...");
+        $.post("@Url.Action("CheckSoExist", "IndexOfPayment")",
+            {
+                so: $("#so").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#SoCheck").html('<font color="Green">Available</font>');
+                $("#so").css("border-color", "Green");
+
+            }
+            else {
+                $("#SoCheck").html('<font color="Red">Already Exist!</font>');
+                $("#so").css("border-color", "Red");
+            }
+        });
+    }
+    //Account Number
+    function AccNoCheck() {
+        $("#AccNoCheck").html("Checking...");
+        $.post("@Url.Action("CheckAccNoExist", "IndexOfPayment")",
+            {
+                accNo: $("#accNo").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#AccNoCheck").html('<font color="Green">Available</font>');
+                $("#accNo").css("border-color", "Green");
+
+            }
+            else {
+                $("#AccNoCheck").html('<font color="Red">Already Exist!</font>');
+                $("#accNo").css("border-color", "Red");
+            }
+        });
+    }
+</script>
+<script>
     $(function () {
         $('input[name="date"]').daterangepicker({
             autoUpdateInput: false,
@@ -333,9 +507,12 @@
             success: function (data) {
                 if (data.length > 0) {
                     $('#payeeDesc').val(data[0].payeeDesc);
+                    $('#particulars').val(data[0].particulars);
+                    $('#date').val(data[0].date);
                 }
                 else {
                     $('#payeeDesc').val('');
+                    $('#particulars').val('');
                 }
             }
         });

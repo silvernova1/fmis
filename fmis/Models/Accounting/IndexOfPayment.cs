@@ -29,7 +29,7 @@ namespace fmis.Models.Accounting
 
         public DateTime DvDate { get; set; }
 
-        public DateTime? PeriodCover { get; set; }
+        public string PeriodCover { get; set; }
 
         public string date { get; set; }
 
