@@ -58,6 +58,8 @@ namespace fmis.Controllers.Accounting
                                 .ThenInclude(x => x.Deduction)
                             select c;
 
+            bool check = indexData.Any(a => a == null);
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString) || x.Dv.DvNo.Contains(searchString) || x.Dv.PayeeDesc.Contains(searchString));
@@ -78,11 +80,11 @@ namespace fmis.Controllers.Accounting
 
 
             //with filter
-            var grossAmount = _MyDbContext.Indexofpayment.Where(x=>x.Dv.DvNo == searchString).Sum(x => x.GrossAmount);
+            var grossAmount = _MyDbContext.Indexofpayment.Where(x=>x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.GrossAmount);
             ViewBag.gross = grossAmount;
-            var totalDeduction = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.TotalDeduction);
+            var totalDeduction = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.TotalDeduction);
             ViewBag.totalDeduction = totalDeduction;
-            var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.NetAmount);
+            var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
 
 
@@ -154,12 +156,8 @@ namespace fmis.Controllers.Accounting
                 return NotFound();
             }
 
-            IndexOfPayment Index = await _MyDbContext.Indexofpayment
-                            .Include(x => x.Category)
-                            .Include(x => x.Dv)
-                                .ThenInclude(x => x.Payee)
-                            .Include(x => x.indexDeductions)
-                                .ThenInclude(x => x.Deduction).Where(x => x.IndexOfPaymentId == id).SingleAsync();
+            IndexOfPayment Index = await _MyDbContext.Indexofpayment.FindAsync(id);
+                            
 
 
 
@@ -196,6 +194,16 @@ namespace fmis.Controllers.Accounting
         {
 
             var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).AsNoTracking().FirstOrDefaultAsync();
+
+            IndexDeduction id = new IndexDeduction
+            {DeductionId = index.indexDeductions.FirstOrDefault().DeductionId,
+            Amount = index.indexDeductions.FirstOrDefault().Amount};
+
+            _MyDbContext.IndexDeduction.Add(id);
+            _MyDbContext.IndexDeduction.Attach(id);
+
+
+            
 
 
             PopulateCategoryDropDownList();
@@ -276,62 +284,74 @@ namespace fmis.Controllers.Accounting
                 ws.Cell("A1").Style.Font.FontSize = 10;
                 ws.Cell("A1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("A1").Value = "Category";
+                ws.Cell("A1").Style.Font.SetBold();
                 ws.Columns(1, 2).Width = 15;
                 ws.Cell("A1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("B1").Style.Font.FontSize = 10;
                 ws.Cell("B1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("B1").Value = "Dv #";
+                ws.Cell("B1").Style.Font.SetBold();
                 ws.Cell("B1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("C1").Style.Font.FontSize = 10;
                 ws.Cell("C1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("C1").Value = "Payee";
+                ws.Cell("C1").Style.Font.SetBold();
                 ws.Cell("C1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("D1").Style.Font.FontSize = 10;
                 ws.Cell("D1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("D1").Value = "Date";
+                ws.Cell("D1").Style.Font.SetBold();
                 ws.Cell("D1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("E1").Style.Font.FontSize = 10;
                 ws.Cell("E1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("E1").Value = "Particulars";
+                ws.Cell("E1").Style.Font.SetBold();
                 ws.Cell("E1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("F1").Style.Font.FontSize = 10;
                 ws.Cell("F1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("F1").Value = "PO #";
+                ws.Cell("F1").Style.Font.SetBold();
                 ws.Cell("F1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("G1").Style.Font.FontSize = 10;
                 ws.Cell("G1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("G1").Value = "Invoice #";
+                ws.Cell("G1").Style.Font.SetBold();
                 ws.Cell("G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("H1").Style.Font.FontSize = 10;
                 ws.Cell("H1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("H1").Value = "Project Id";
+                ws.Cell("H1").Style.Font.SetBold();
                 ws.Cell("H1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("I1").Style.Font.FontSize = 10;
                 ws.Cell("I1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("I1").Value = "# of Billing";
+                ws.Cell("I1").Style.Font.SetBold();
                 ws.Cell("I1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("J1").Style.Font.FontSize = 10;
                 ws.Cell("J1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("J1").Value = "Period Covered";
+                ws.Cell("J1").Style.Font.SetBold();
                 ws.Cell("J1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("K1").Style.Font.FontSize = 10;
                 ws.Cell("K1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("K1").Value = "From-To";
+                ws.Cell("K1").Style.Font.SetBold();
                 ws.Cell("K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("L1").Style.Font.FontSize = 10;
                 ws.Cell("L1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("L1").Value = "Travel Period";
+                ws.Cell("L1").Style.Font.SetBold();
                 ws.Cell("L1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("M1").Style.Font.FontSize = 10;
@@ -342,26 +362,31 @@ namespace fmis.Controllers.Accounting
                 ws.Cell("N1").Style.Font.FontSize = 10;
                 ws.Cell("N1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("N1").Value = "Account #";
+                ws.Cell("N1").Style.Font.SetBold();
                 ws.Cell("N1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("O1").Style.Font.FontSize = 10;
                 ws.Cell("O1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("O1").Value = "Deduction";
+                ws.Cell("O1").Style.Font.SetBold();
                 ws.Cell("O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("P1").Style.Font.FontSize = 10;
                 ws.Cell("P1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("P1").Value = "Gross Amount";
+                ws.Cell("P1").Style.Font.SetBold();
                 ws.Cell("P1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("Q1").Style.Font.FontSize = 10;
                 ws.Cell("Q1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("Q1").Value = "Total Deductions";
+                ws.Cell("Q1").Style.Font.SetBold();
                 ws.Cell("Q1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("R1").Style.Font.FontSize = 10;
                 ws.Cell("R1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("R1").Value = "Net Amount";
+                ws.Cell("R1").Style.Font.SetBold();
                 ws.Cell("R1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 foreach (var item in indexData)
