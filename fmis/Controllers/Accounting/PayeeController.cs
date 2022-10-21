@@ -48,9 +48,14 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
+        public class PayeeDatas
+        {
+            public List<PayeeData> Payees { get; set; }
+        }
+
         public class PayeeData
         {
-            public int PayeeId { get; set; }
+            public int Id { get; set; }
             public string PayeeDescription { get; set; }
             public string TinNo { get; set; }
             public string token { get; set; }
@@ -74,6 +79,7 @@ namespace fmis.Controllers.Accounting
             var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated").OrderBy(x=> x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
             //return View(await _MyDbContext.Payee.ToListAsync());
+
             return View("~/Views/Payee/Index.cshtml");
         }
 
@@ -92,10 +98,8 @@ namespace fmis.Controllers.Accounting
         [RequestSizeLimit(1073741824)]
         public async Task <IActionResult> SavePayee(List<PayeeData> data)
         {
-
             var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
-            var retPayee = new List<Payee>();
-
+        
             foreach (var item in data)
             {
                 var payee = new Payee();
@@ -103,20 +107,16 @@ namespace fmis.Controllers.Accounting
                 {
                     payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
                 }
-                    
-                    payee.PayeeId = item.PayeeId;
-                    payee.PayeeDescription = item.PayeeDescription;
-                    payee.TinNo = item.TinNo;
-                    payee.status = "activated";
-                    payee.token = item.token;
+                payee.PayeeDescription = item.PayeeDescription;
+                payee.TinNo = item.TinNo;
+                payee.status = "activated";
+                payee.token = item.token;
 
-                    _MyDbContext.Payee.Update(payee);
-                    await _MyDbContext.SaveChangesAsync();
-
-                retPayee.Add(payee);
+                _MyDbContext.Payee.Update(payee);
+                await _MyDbContext.SaveChangesAsync();
             }
-
-            return Json(retPayee.FirstOrDefault());
+    
+            return Ok();
         }
 
         public void setUpDeleteData(string token)
