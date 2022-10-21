@@ -431,6 +431,7 @@ namespace fmis.Controllers.Accounting
                 ws.Cell("G1").Style.Font.FontSize = 10;
                 ws.Cell("G1").Style.Font.FontName = "Calibri Light";
                 ws.Cell("G1").Value = "Invoice #";
+                ws.Cell("G1").Style.Font.SetBold();
                 ws.Cell("G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell("H1").Style.Font.FontSize = 10;
