@@ -99,7 +99,7 @@
         var numPages = rowsTotal / rowsShown;
         for (i = 0; i < numPages; i++) {
             var pageNum = i + 1;
-            $('#nav').append('<a href="#" class="pbutton btn-sm btn-info"  rel="' + i + '">' + pageNum + '</a>');
+            $('#nav').append('<a href="#" class="pbutton btn-xs btn-info"  rel="' + i + '">' + pageNum + '</a>');
         }
         $('#data tbody tr').hide();
         $('#data tbody tr').slice(0, rowsShown).show();

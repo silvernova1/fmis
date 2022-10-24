@@ -103,7 +103,7 @@
             <th> Invoice #  </th>
             <th> Project Id </th>
             <th> # of Billing </th>
-            <th> Period Covered </th>
+            <th> Period Cover </th>
             <th> From-To </th>
             <th> Travel Period </th>
             <th> SO # </th>
@@ -129,8 +129,8 @@
                     @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
                 </td>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.DvDate)*@
-                    @item.DvDate.ToString("dd/MM/yyyy")
+                    @Html.DisplayFor(modelItem => item.DvDate)
+                   @* @item.DvDate.ToString("dd/MM/yyyy")*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Particulars)
@@ -148,9 +148,7 @@
                     @Html.DisplayFor(modelItem => item.NumberOfBill)
                 </td>
                 <td>
-
                     @Html.DisplayFor(modelItem => item.PeriodCover)
-
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.date)
@@ -248,12 +246,12 @@ else
 <script>
     $(document).ready(function () {
         $('#data').after('<div id="nav"></div>');
-        var rowsShown = 20;
+        var rowsShown = 10;
         var rowsTotal = $('#data tbody tr').length;
         var numPages = rowsTotal / rowsShown;
         for (i = 0; i < numPages; i++) {
             var pageNum = i + 1;
-            $('#nav').append('<a href="#" class="pbutton btn-sm btn-info"  rel="' + i + '">' + pageNum + '</a>');
+            $('#nav').append('<a href="#" class="pbutton btn-xs btn-info"  rel="' + i + '">' + pageNum + '</a>');
         }
         $('#data tbody tr').hide();
         $('#data tbody tr').slice(0, rowsShown).show();
@@ -267,6 +265,10 @@ else
             var endItem = startItem + rowsShown;
             $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
                 css('display', 'table-row').animate({ opacity: 1 }, 300);
+        });
+
+        $('#EditModal').on('hide.bs.modal', function () {
+            $(this).find('.modal-content').empty();
         });
     });
 

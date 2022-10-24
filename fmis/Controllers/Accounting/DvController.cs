@@ -60,7 +60,7 @@ namespace fmis.Controllers.Accounting
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                dv = dv.Where(x => x.DvNo.Contains(searchString) || x.RespoCenter.Respo.Contains(searchString) || x.Payee.PayeeDescription.Contains(searchString)).ToList();
+                dv = dv.Where(x => x.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Payee.PayeeDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
 
             ViewBag.Dv = dv.Where(x => x.DvNo.Contains(searchString));

@@ -16,54 +16,209 @@
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Edit Disbursement Voucher </h3></center>
 <hr />
-<div class="container" style="height: 350px;">
-    <form asp-action="Edit">
-        <div class="col-md-4" style="margin-left: 50px;">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DvId" />
-            <div class="form-group">
-                <h5>Fund Cluster: </h5>
-                @Html.DropDownList("FundClusterId", null, htmlAttributes: new { @class = "form-control" })
+<div class="container" style="height: 840px;">
+    <form asp-action="Edit" style="position:center;">
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <h5>Fund Cluster: </h5>
+                    @Html.DropDownList("FundClusterId", null, " - FundCluster - ", htmlAttributes: new { @class = "form-control" })
+                </div>
             </div>
-            <div class="form-group">
+            <div class="1stcol col-md-2">
+                <div class="form-group">
+                    <h5>Dv Date: </h5>
+                    <input asp-for="Date" type="date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2" style="width: 250px;">
                 <h5>Dv Type: </h5>
                 <select class="form-control" id="dv_type" required>
                     <option value="">Select Dv Type</option>
-                    <option value="S">SUPPLIER</option>
-                    <option value="T">REGULAR</option>
+                    <option value="S">SUPPLIER / CONTRACTOR</option>
+                    <option value="T">INDIVIDUAL CLAIM / PAYROLL</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="1stcol col-md-2">
                 <h5>Dv #: </h5>
                 <input asp-for="DvNo" type="text" id="dv_no" class="form-control" readonly />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <h5>Particulars:  </h5>
-                <input asp-for="Particulars" type="text" class="form-control" />
-                <span asp-validation-for="Particulars" class="text-danger"></span>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>PAYEE :</label>
+                    <input id="payeeDesc" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="form-group">
+                    <h5>Particulars:  </h5>
+                    <textarea asp-for="Particulars" class="form-control" id="textarea" type="text" style="height: 70px;"> </textarea>
+                    <span asp-validation-for="Particulars" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="payee" class="col-md-4" style="display: none;">
+                <div class="form-group">
+                    <h5>Payee Description:  </h5>
+                    <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control" />
+                    <span asp-validation-for="PayeeDesc" class="text-danger"></span>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <h5>Date: </h5>
-                <input asp-for="Date" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label>Responsibility Center: </label>
+                    <select class="form-control" asp-for="RespoCenterId" asp-items="ViewBag.RespoId"></select>
+                </div>
             </div>
-            <div class="form-group">
-                <h5>Payee: </h5>
-                <input asp-for="Payee" class="form-control" />
-                <span asp-validation-for="Payee" class="text-danger"></span>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Select Options: </label>
+                    <select class="form-control" asp-for="AssigneeId" asp-items="ViewBag.AssigneeId"></select>
+                </div>
             </div>
-            <div class="form-group">
-                <h5>Amount: </h5>
-                <input asp-for="NetAmount" type="text" class="form-control" onkeypress="return isNumber(event)"  onkeyup = "javascript:this.value=Comma(this.value);" />
-                <span asp-validation-for="NetAmount" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-12" style="margin-top: 20px">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">GROSS AMOUNT: </label>
+                </div>
             </div>
-            <br />
-            <div class="form-group" style="margin-top: 8px" >
-                <input type="submit" value="Save" class="btn btn-success btn-sm" />  <a class="btn btn-default btn-sm" data-dismiss="modal">Back to List</a>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[1].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[2].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[3].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[4].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[5].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[6].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="number" placeholder="0.00" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">TOTAL  DEDUCTIONS: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="total_deduction" type="number" placeholder="0.00" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">NET AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="net_amount" type="number" placeholder="0.00" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="margin-left: 260px;">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" data-dismiss="modal">Back to List</a>
             </div>
         </div>
     </form>
