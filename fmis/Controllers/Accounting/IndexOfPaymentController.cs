@@ -22,6 +22,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using MySqlX.XDevAPI.Common;
 using Sitecore.FakeDb;
+using System.Text.Json;
 
 namespace fmis.Controllers.Accounting
 {
@@ -71,12 +72,12 @@ namespace fmis.Controllers.Accounting
                             .Include(x => x.indexDeductions)
                                 .ThenInclude(x => x.Deduction)
                             select c;
-
+                
             bool check = indexData.Any(a => a == null);
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString) || x.Dv.DvNo.Contains(searchString) || x.Dv.PayeeDesc.Contains(searchString));
+                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.PayeeDesc.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
             }
 
             ViewBag.indexCategory = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString));
@@ -93,7 +94,6 @@ namespace fmis.Controllers.Accounting
             ViewBag.netTotal = netAmountTotal;
 
 
-
             //with filter
             var grossAmount = _MyDbContext.Indexofpayment.Where(x=>x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.GrossAmount);
             ViewBag.gross = grossAmount;
@@ -103,9 +103,7 @@ namespace fmis.Controllers.Accounting
             ViewBag.net = netAmount;
 
 
-
             return View(await indexData.ToListAsync());
-
 
         }
 
@@ -256,8 +254,8 @@ namespace fmis.Controllers.Accounting
         // GET: Categoty/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            Console.WriteLine(id);
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-            PopulateCategoryDropDownList();
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
             if (id == null)
@@ -265,19 +263,28 @@ namespace fmis.Controllers.Accounting
                 return NotFound();
             }
 
-            IndexOfPayment Index = await _MyDbContext.Indexofpayment.FindAsync(id);
-                            
+            IndexOfPayment index = await _MyDbContext.Indexofpayment
+                .Include(x => x.indexDeductions).ThenInclude(x => x.Deduction)
+                .Include(x => x.Category)
+                .Include(x => x.Dv)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.IndexOfPaymentId == id);
 
+            PopulateCategoryDropDownList(index.CategoryId);
+            var deductionArr = new List<IndexDeduction>(index.indexDeductions.AsEnumerable());
+            for (int x = 0; x < 7 - index.indexDeductions.Count; x++)
+            {
+                deductionArr.Add(new IndexDeduction());
+            }
 
+            index.indexDeductions = deductionArr;
 
-
-
-            if (Index == null)
+            if (index == null)
             {
                 return NotFound();
             }
             /*PopulateAssignedIndexDeductionData(Index);*/
-            return View(Index);
+            return View(index);
         }
 
 
@@ -301,19 +308,16 @@ namespace fmis.Controllers.Accounting
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IndexOfPayment index)
         {
+            var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).FirstOrDefaultAsync();
 
-            var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).AsNoTracking().FirstOrDefaultAsync();
-
-            IndexDeduction id = new IndexDeduction
-            {DeductionId = index.indexDeductions.FirstOrDefault().DeductionId,
-            Amount = index.indexDeductions.FirstOrDefault().Amount};
-
-            _MyDbContext.IndexDeduction.Add(id);
-            _MyDbContext.IndexDeduction.Attach(id);
-
-
-            
-
+            indexes.CategoryId = index.CategoryId == 0 ? indexes.CategoryId : index.CategoryId;
+            indexes.DvId = index.DvId;
+            indexes.date = index.date;
+            indexes.Particulars = index.Particulars;
+            indexes.GrossAmount = index.GrossAmount;
+            indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
+            indexes.TotalDeduction = index.TotalDeduction;
+            indexes.NetAmount = index.indexDeductions.Sum(x => x.Amount);
 
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();

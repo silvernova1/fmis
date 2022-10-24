@@ -21,13 +21,13 @@
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 840px;">
+<div class="container" style="height: 860px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Category" class="control-label"></label>
+                    <label>Category: </label>
                     <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
                         <option> - Select Category - </option>
                     </select>
@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label asp-for="Dv" class="control-label"></label>
+                        <label >Dv: </label>
 
                         @*<select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
 
@@ -51,22 +51,21 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label>PAYEE :</label>
-
+                        <label>Payee:</label>
                         <input id="payeeDesc" class="form-control" readonly />
                     </div>
                 </div>
             </div>
             <div>
                 <div class="col-md-3">
-                    <label>DATE:</label>
-                    <input asp-for="DvDate"  onchange="getFormattedDate" class="form-control">
+                    <label>Date: </label>
+                    <input asp-for="DvDate" type="date"  onchange="getFormattedDate" class="form-control">
                     <span class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>PARTICULARS:</label>
+                    <label>Particulars: </label>
                     <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control"></textarea>
                 </div>
             </div>
@@ -110,7 +109,7 @@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
-                    <label>PERIOD COVER</label>
+                    <label>Period Cover:</label>
                     <input type="month" asp-for="PeriodCover" id="periodCover" class="form-control" onchange="PeriodCheck()">
                 </div>
                 <div class="row">
@@ -122,7 +121,7 @@
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
-                    <label>Period Covered From To</label>
+                    <label>Period Covered From-To:</label>
                     <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()"/>
                 </div>
                 <div class="row">
@@ -303,10 +302,6 @@
     </form>
 </div>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 
 <script>
@@ -512,7 +507,6 @@
     }
 
 
-
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
         let dvDedectionAmt = $(parentDiv).find('input');
@@ -563,7 +557,7 @@
              $("#hidden-panel2").show();
              $("#hidden-panel10").show();
              categ.push('1', '3', '4', '5', '6', '7', '8', '9');
-         } else if (value == 6 || value == 15 || value == 23 || value == 24 ||
+         } else if (value == 6 || value == 15  || value == 24 ||
              value == 25 || value == 26 || value == 27 || value == 28 ||
              value == 32 || value == 33 || value == 34 || value == 35) {
              $("#hidden-panel4").show();
@@ -596,6 +590,10 @@
          } else if (value == 21) {
              $("#hidden-panel8").show();
              categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
+         }
+         else if (value == 23) {
+             $("#hidden-panel6").show();
+             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
          }
              categ.forEach(function (i) {
                  $('#hidden-panel' + i).hide();
