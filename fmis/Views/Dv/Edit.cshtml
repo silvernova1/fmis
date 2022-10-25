@@ -1,6 +1,5 @@
 ﻿@model fmis.Models.Accounting.Dv;
 
-
 <style>
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -11,31 +10,38 @@
     input[type=number] {
         -moz-appearance: textfield;
     }
+
+    .select2 {
+        width: 100% !important;
+    }
 </style>
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3 class="grey lighter smaller">Edit Disbursement Voucher </h3></center>
+<center><h3 class="grey lighter smaller">Update Disbursement Voucher </h3></center>
 <hr />
 <div class="container" style="height: 840px;">
     <form asp-action="Edit" style="position:center;">
+        <input asp-for="DvId" type="hidden" />
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
                     <h5>Fund Cluster: </h5>
-                    @Html.DropDownList("FundClusterId", null, " - FundCluster - ", htmlAttributes: new { @class = "form-control" })
+                    <select class="form-control select2" asp-for="FundClusterId" asp-items="ViewBag.FundClusterId">
+                        <option value=""> - Select Category - </option>
+                    </select>
                 </div>
             </div>
-            <div class="1stcol col-md-2">
+            <div class="col-md-2">
                 <div class="form-group">
                     <h5>Dv Date: </h5>
-                    <input asp-for="Date" type="date" class="form-control" />
+                    <input asp-for="Date"  type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-2" style="width: 250px;">
                 <h5>Dv Type: </h5>
                 <select class="form-control" id="dv_type" required>
-                    <option value="">Select Dv Type</option>
+                    <option value="0">Select Dv Type</option>
                     <option value="S">SUPPLIER / CONTRACTOR</option>
                     <option value="T">INDIVIDUAL CLAIM / PAYROLL</option>
                 </select>
@@ -49,8 +55,10 @@
         <div class="col-md-12">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>PAYEE :</label>
-                    <input id="payeeDesc" class="form-control" readonly />
+                    <h5>PAYEE: </h5>
+                    <select class="form-control select2" asp-for="PayeeId" asp-items="ViewBag.PayeeId">
+                        <option value=""> - Select Payee - </option>
+                    </select>
                 </div>
             </div>
 
@@ -81,7 +89,9 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label>Select Options: </label>
-                    <select class="form-control" asp-for="AssigneeId" asp-items="ViewBag.AssigneeId"></select>
+                    <select class="form-control " asp-for="AssigneeId" asp-items="ViewBag.AssigneeId">
+                        <option value=""> - Select Assignee - </option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -99,96 +109,41 @@
             </div>
         </div>
 
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="number" placeholder="0.00" />
+        @for (int x = 0; x < Model.dvDeductions.Count; x++)
+        {
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <input asp-for="dvDeductions[x].DvDeductionId" type="hidden" />
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-for="dvDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input asp-for="dvDeductions[x].Amount" class="form-control deduction_amount" placeholder="0.00" />
+                    </div>
                 </div>
             </div>
-        </div>
+        }
 
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[1].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="number" placeholder="0.00" />
+        @for (int x = 0; x < Model.dvDeductions.Count - 7; x++)
+        {
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-for="dvDeductions[x+Model.dvDeductions.Count]" asp-items="ViewBag.DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" placeholder="0.00" />
+                    </div>
                 </div>
             </div>
-        </div>
+        }
 
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[2].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="number" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[3].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="number" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[4].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="number" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[5].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="number" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[6].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="number" placeholder="0.00" />
-                </div>
-            </div>
-        </div>
 
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
@@ -198,7 +153,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="total_deduction" type="number" placeholder="0.00" readonly />
+                    <input class="form-control" id="total_deduction" type="number" asp-for="TotalDeduction" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
@@ -211,14 +166,14 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="net_amount" type="number" placeholder="0.00" readonly />
+                    <input class="form-control" id="net_amount" value="@Model.NetAmount" type="number" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
 
         <div class="col-md-12" style="margin-left: 260px;">
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" data-dismiss="modal">Back to List</a>
+                <input type="submit" value="Create" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
             </div>
         </div>
     </form>
@@ -231,6 +186,9 @@
 
 <script>
 
+
+
+    $('.select2').select2();
      $('#dv_type').on('change', function () {
             var type = $(this).val();
             $.ajax({
@@ -246,26 +204,28 @@
             })
      });
 
-    function Comma(Num) { //function to add commas to textboxes
-        Num += '';
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        x = Num.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1))
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        return x1 + x2;
+
+    function submitDeduction(parentDiv) {
+        let dvDeduction = $(parentDiv).find('select');
+        let dvDedectionAmt = $(parentDiv).find('input');
+        if (dvDeduction.val() && dvDedectionAmt.val()) {
+            console.log(dvDeduction.val(), dvDedectionAmt.val());
+        }
+        computeNetAmount();
+
     }
 
-    function isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            return false;
-        }
-        return true;
+    function computeNetAmount() {
+        let amounts = $('.deduction_amount');
+        let gross_amount = +$('#gross_amount').val();
+        let total = 0;
+        $(amounts).each(function (index, value) {
+            total += +value.value;
+        });
+
+        $('#total_deduction').val(total);
+        $('#net_amount').val(gross_amount - total);
     }
+
 
 </script>
