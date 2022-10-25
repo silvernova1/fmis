@@ -35,6 +35,7 @@ namespace fmis.Controllers.Accounting
         public IActionResult Create()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "deduction", "");
+            TempData["AlertMessage"] = "Successfully Created";
             return View();
         }
 

@@ -44,7 +44,7 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
         }
 
-        [Route("Accounting/Dv/Payee")]
+        [Route("Accounting/DisbursementVoucher")]
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
@@ -171,13 +171,33 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Edit(int? id)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-            PopulateFundClusterDropDownList();
+            PopulatePayeeDropDownList();
+            PopulateRespoDropDownList();
+            PopulateAssigneeDropDownList();
+            PopulateDeductionDropDownList();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var dv = await _MyDbContext.Dv.FindAsync(id);
+            Dv dv = await _MyDbContext.Dv
+                .Include(x => x.dvDeductions).ThenInclude(x => x.Deduction)
+                .Include(x => x.FundCluster)
+                .Include(x => x.Payee)
+                .Include(x => x.RespoCenter)
+                .Include(x => x.Assignee)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.DvId == id);
+            PopulateFundClusterDropDownList(dv.DvId);
+            var deductionArr = new List<DvDeduction>(dv.dvDeductions.AsEnumerable());
+            for (int x = 0; x < 7 - dv.dvDeductions.Count; x++)
+            {
+                deductionArr.Add(new DvDeduction());
+            }
+
+            dv.dvDeductions = deductionArr;
+
             if (dv == null)
             {
                 return NotFound();
@@ -189,13 +209,28 @@ namespace fmis.Controllers.Accounting
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Dv dv)
         {
+            var dvs = await _MyDbContext.Dv.Where(x => x.DvId == dv.DvId).FirstOrDefaultAsync();
 
-            var dvs = await _MyDbContext.Dv.Where(x => x.DvId == dv.DvId).AsNoTracking().FirstOrDefaultAsync();
+            dvs.DvId = dv.DvId == 0 ? dvs.DvId : dv.DvId;
+            dvs.FundClusterId = dv.FundClusterId;
+            dvs.RespoCenterId = dv.RespoCenterId;
+            dvs.Particulars = dv.Particulars;
+            dvs.Date = dv.Date;
             dvs.DvNo = dv.DvNo;
+            dvs.AssigneeId = dv.AssigneeId;
+            dvs.PayeeId = dv.PayeeId;
+            dvs.GrossAmount = dv.GrossAmount;
+            dvs.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != null).ToList();
+            dvs.TotalDeduction = dv.TotalDeduction;
+            dvs.NetAmount = dvs.GrossAmount - dv.dvDeductions.Sum(x => x.Amount);
 
             PopulateFundClusterDropDownList();
+            PopulatePayeeDropDownList();
+            PopulateRespoDropDownList();
+            PopulateAssigneeDropDownList();
+            PopulateDeductionDropDownList();
 
-            _MyDbContext.Update(dv);
+            _MyDbContext.Update(dvs);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -228,80 +263,50 @@ namespace fmis.Controllers.Accounting
         }
 
 
-
-        private void PopulateFundClusterDropDownList()
+        private void PopulateFundClusterDropDownList(object selected = null)
         {
-           
-            ViewBag.FundClusterId = new SelectList((from s in _MyDbContext.FundCluster.ToList()
-                                                    select new
-                                                    {
-                                                        FundCluster = s.FundClusterId,
-                                                        FundClusterDescription = s.FundClusterDescription
-                                                    }),
-                                       "FundCluster",
-                                       "FundClusterDescription",
-                                       null);
-
+            var Query = from d in _MyDbContext.FundCluster
+                        orderby d.FundClusterId
+                        select d;
+            ViewBag.FundClusterId = new SelectList(Query, "FundClusterId", "FundClusterDescription", selected);
         }
 
-        private void PopulatePayeeDropDownList()
+        private void PopulateRespoDropDownList(object selected = null)
         {
-
-            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-            ViewBag.PayeeId = new SelectList((from s in _MyDbContext.Payee.ToList()
-                                                    select new
-                                                    {
-                                                        PayeeId = s.PayeeId,
-                                                        PayeeDescription = s.PayeeDescription
-                                                    }),
-                                       "PayeeId",
-                                       "PayeeDescription",
-                                       null);
-
-        }
-
-        private void PopulateRespoDropDownList()
-        {
-            ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
-                                              select new
-                                              {
-                                                  RespoId = s.RespoId,
-                                                  respo = s.Respo
-                                              }),
-                                     "RespoId",
-                                     "respo",
-                                     null);
-
+            var Query = from d in _MyDbContext.RespoCenter
+                        orderby d.RespoId
+                        select d;
+            ViewBag.RespoId = new SelectList(Query, "RespoId", "Respo", selected);
         }
 
 
-        private void PopulateAssigneeDropDownList()
+        private void PopulateDeductionDropDownList(object selected = null)
         {
-            ViewBag.AssigneeId = new SelectList((from s in _MyDbContext.Assignee.ToList()
-                                              select new
-                                              {
-                                                  AssigneeId = s.AssigneeId,
-                                                  Description = s.Description
-                                              }),
-                                     "AssigneeId",
-                                     "Description",
-                                     null);
-
+            var Query = from d in _MyDbContext.Deduction
+                        orderby d.DeductionId
+                        select d;
+            ViewBag.DeductionId = new SelectList(Query, "DeductionId", "DeductionDescription", selected);
         }
 
-        private void PopulateDeductionDropDownList()
+        private void PopulatePayeeDropDownList(object selected = null)
         {
-            ViewBag.DeductionId = new SelectList((from s in _MyDbContext.Deduction.ToList()
-                                                 select new
-                                                 {
-                                                     DeductionId = s.DeductionId,
-                                                     DeductionDescription = s.DeductionDescription
-                                                 }),
-                                     "DeductionId",
-                                     "DeductionDescription",
-                                     null);
-
+            var Query = from d in _MyDbContext.Payee
+                        orderby d.PayeeId
+                        select d;
+            ViewBag.PayeeId = new SelectList(Query, "PayeeId", "PayeeDescription", selected);
         }
+
+
+        private void PopulateAssigneeDropDownList(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Assignee
+                        orderby d.AssigneeId
+                        select d;
+            ViewBag.AssigneeId = new SelectList(Query, "AssigneeId", "Description", selected);
+        }
+
+
+
 
         public PdfPCell getCell(String text, int alignment)
         {

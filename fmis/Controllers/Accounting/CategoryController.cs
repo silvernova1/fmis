@@ -60,12 +60,8 @@ namespace fmis.Controllers.Accounting
             {
                 return NotFound();
             }
+            Category category = await _MyDbContext.Category.FirstOrDefaultAsync(x => x.CategoryId == id); ;
 
-            var category = await _MyDbContext.Category.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             return View(category);
         }
 
