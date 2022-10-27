@@ -77,6 +77,7 @@ namespace fmis.Data
         //public DbSet<SectionsContext> Sections { get; set; }
         public DbSet<Assignee> Assignee { get; set; }
         public DbSet<IndexDeduction> IndexDeduction { get; set; }
+        public DbSet<BillNumber> BillNumber { get; set; }
 
 
 

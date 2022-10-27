@@ -18,7 +18,6 @@
         -moz-appearance: textfield;
     }
 </style>
-<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Update Index of Payment </h3></center>
 <hr />
 <div class="container" style="height: 810px;">
@@ -127,7 +126,13 @@
                 <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
                     <div class="form-group">
                         <label># OF BILLING: (FIRST, SECOND):</label>
-                        <input type="text" asp-for="NumberOfBill" class="form-control" />
+                        <input type="text" asp-for="NumberOfBill" id="billnumber" class="form-control" onchange="billNumberCheck()" />
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="Status" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -201,7 +206,7 @@
                 <div class="form-group">
                     <input class="form-control" type="text" value="@Model.NetAmount" id="net_amount" placeholder="0.00" readonly />
                 </div>
-                <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
+                <input type="submit" id="btnsubmit" value="Submit" class="btn btn-xs btn-success " />
                 <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
             </div>
         </div>
@@ -230,6 +235,26 @@
 </script>
 
 <script>
+
+    //bill number
+    function billNumberCheck() {
+        $("#Status").html("Checking...");
+        $.post("@Url.Action("CheckBillNumberExist", "IndexOfPayment")",
+            {
+                billnumber: $("#billnumber").val()
+            },
+            function (data) {
+                if (data == 0) {
+                    $("#Status").html('<font color="Green">Bill Number is available</font>');
+                    $("#billnumber").css("border-color", "Green");
+
+                }
+                else {
+                    $("#Status").html('<font color="Red">Bill Number Already Exist!</font>');
+                    $("#billnumber").css("border-color", "Red");
+                }
+            });
+    }
 
     $('.select2').select2();
     $("#CategoryId").val(36);

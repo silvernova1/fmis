@@ -13,7 +13,8 @@ namespace fmis.Models.Accounting
     {
         public int IndexOfPaymentId { get; set; }
         public string AccountNumber { get; set; }
-        public int? NumberOfBill { get; set; }
+       public int? NumberOfBill { get; set; }
+        public ICollection<BillNumber> BillNumbers { get; set; }
         public List<IndexDeduction> indexDeductions { get; set; }
         public double GrossAmount { get; set; }
         public double TotalDeduction { get; set; }
