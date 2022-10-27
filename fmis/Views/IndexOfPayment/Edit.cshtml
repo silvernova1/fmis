@@ -126,7 +126,7 @@
                 <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
                     <div class="form-group">
                         <label># OF BILLING: (FIRST, SECOND):</label>
-                        <input type="text" asp-for="NumberOfBill" id="billnumber" class="form-control" onchange="billNumberCheck()" />
+                        <input type="text" asp-for="NumberOfBill" id="billnumber" class="form-control" onchange="billNumberCheck()" value="@Model?.BillNumbers?.OrderByDescending(x=>x.Id)?.FirstOrDefault()?.NumberOfBilling" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
