@@ -21,7 +21,10 @@
                 <span asp-validation-for="DeductionDescription" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Create"  class="btn btn-success btn-sm"  /> | <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
+                <input type="submit" value="Create"   class="submit btn btn-success btn-sm"  
+                 onclick="notify()"; 
+                /> 
+                <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
@@ -30,3 +33,11 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    $(".submit").click(function () {
+        Lobibox.notify('success', {
+            msg: 'Deduction Successfully Added!'
+        });
+    });
+</script>
