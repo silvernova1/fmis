@@ -64,7 +64,7 @@ namespace fmis.Controllers.Accounting
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.PayeeDesc.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString) || x.Dv.DvNo.Contains(searchString) || x.Dv.PayeeDesc.Contains(searchString));
             }
 
             ViewBag.indexCategory = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString));
@@ -293,13 +293,26 @@ namespace fmis.Controllers.Accounting
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IndexOfPayment index)
         {
-            var indexes = await _MyDbContext.Indexofpayment.Include(x=>x.BillNumbers).Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).FirstOrDefaultAsync();
+            var indexes = await _MyDbContext.Indexofpayment
+                .Include(x=>x.Dv)
+                .Include(x=>x.BillNumbers)
+                .Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId)
+                .FirstOrDefaultAsync();
 
             indexes.CategoryId = index.CategoryId == 0 ? indexes.CategoryId : index.CategoryId;
             indexes.DvId = index.DvId;
-            indexes.date = index.date;
-            indexes.NumberOfBill = index.NumberOfBill;
+            //indexes.Dv.PayeeDesc = index.Dv.PayeeDesc;
+            indexes.DvDate = index.DvDate;
             indexes.Particulars = index.Particulars;
+            indexes.PoNumber = index.PoNumber;
+            indexes.InvoiceNumber = index.InvoiceNumber;
+            indexes.ProjectId = index.ProjectId;
+            //indexes.NumberOfBill = index.NumberOfBill;            
+            indexes.PeriodCover = index.PeriodCover;            
+            indexes.date = index.date;
+            indexes.travel_period = index.travel_period;
+            indexes.SoNumber = index.SoNumber;
+            indexes.AccountNumber = index.AccountNumber;
             indexes.GrossAmount = index.GrossAmount;
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
             indexes.TotalDeduction = index.TotalDeduction;

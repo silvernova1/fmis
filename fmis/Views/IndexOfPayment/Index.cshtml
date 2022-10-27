@@ -149,11 +149,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.NumberOfBill),
 
-                            @foreach (var billNumber in item.BillNumbers)
+                            @*@foreach (var billNumber in item.BillNumbers)
                             {
                                 @billNumber.NumberOfBilling
-                            }
-
+                                @string.Join(billNumber.NumberOfBilling, ",").ToArray()
+                            }*@
+                            @String.Join(", ", item.BillNumbers.Select(p => p.NumberOfBilling).ToArray())
                         </td>
                 }
                 else
