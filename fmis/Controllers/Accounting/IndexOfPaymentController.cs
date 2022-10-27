@@ -237,6 +237,20 @@ namespace fmis.Controllers.Accounting
             }
         }
 
+        public JsonResult CheckBillNumberExist(int billnumber)
+        {
+            var data = _MyDbContext.BillNumber.Where(x => x.NumberOfBilling == billnumber).SingleOrDefault();
+
+            if (data != null)
+            {
+                return Json(1);
+            }
+            else
+            {
+                return Json(0);
+            }
+        }
+
         // GET: Categoty/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -253,6 +267,7 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.indexDeductions).ThenInclude(x => x.Deduction)
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
+                .Include(x=>x.BillNumbers)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == id);
 
@@ -277,16 +292,24 @@ namespace fmis.Controllers.Accounting
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IndexOfPayment index)
         {
-            var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).FirstOrDefaultAsync();
+            var indexes = await _MyDbContext.Indexofpayment.Include(x=>x.BillNumbers).Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).FirstOrDefaultAsync();
 
             indexes.CategoryId = index.CategoryId == 0 ? indexes.CategoryId : index.CategoryId;
             indexes.DvId = index.DvId;
             indexes.date = index.date;
+            indexes.NumberOfBill = index.NumberOfBill;
             indexes.Particulars = index.Particulars;
             indexes.GrossAmount = index.GrossAmount;
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
             indexes.TotalDeduction = index.TotalDeduction;
             indexes.NetAmount = index.indexDeductions.Sum(x => x.Amount);
+
+            var newBillNumber = new BillNumber
+                {
+                    IndexOfPaymentId = index.IndexOfPaymentId,
+                    NumberOfBilling = index.NumberOfBill
+                };
+            indexes.BillNumbers.Add(newBillNumber);
 
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();
