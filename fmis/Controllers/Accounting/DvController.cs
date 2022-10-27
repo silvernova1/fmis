@@ -607,16 +607,16 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_ro6_width = { 20, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" + 
-                        "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n" +
-                        fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n"+ 
+                        "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n"+ 
                         fundCluster.FirstOrDefault().dvNetAmount.ToString("##,#00.00"), arial_font_9))
                     {
                         Border = 13,
-                        FixedHeight = 100f,
+                        FixedHeight = 140f,
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         VerticalAlignment = Element.ALIGN_TOP,
                         PaddingBottom = 7,
