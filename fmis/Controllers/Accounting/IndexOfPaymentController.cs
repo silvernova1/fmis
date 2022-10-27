@@ -57,6 +57,7 @@ namespace fmis.Controllers.Accounting
                                 .ThenInclude(x => x.Payee)
                             .Include(x => x.indexDeductions)
                                 .ThenInclude(x => x.Deduction)
+                            .Include(x=>x.BillNumbers)
                             select c;
                 
             bool check = indexData.Any(a => a == null);
