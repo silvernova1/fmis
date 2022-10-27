@@ -144,9 +144,24 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectId)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumberOfBill)
-                </td>
+                @if(item.BillNumbers.Any())
+                {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumberOfBill),
+
+                            @foreach (var billNumber in item.BillNumbers)
+                            {
+                                @billNumber.NumberOfBilling
+                            }
+
+                        </td>
+                }
+                else
+                {
+                    <td>
+                            @Html.DisplayFor(modelItem => item.NumberOfBill)
+                    </td>                   
+                }
                 <td>
                     @Html.DisplayFor(modelItem => item.PeriodCover)
                 </td>
