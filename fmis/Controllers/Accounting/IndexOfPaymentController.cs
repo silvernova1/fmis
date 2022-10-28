@@ -146,9 +146,9 @@ namespace fmis.Controllers.Accounting
             return View(indexOfPayment);
         }
 
-        public JsonResult CheckifExist(string userdata)
+        public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == userdata).SingleOrDefault();
+            var data = _MyDbContext.Indexofpayment.Where(x=>x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
 
             if (data != null)
             {
