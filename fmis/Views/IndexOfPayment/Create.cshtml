@@ -74,7 +74,7 @@
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <input asp-for="PoNumber" id="poNumber" type="text" class="form-control" onchange="DataCheck()" />
+                    <input asp-for="PoNumber" id="poNumber" type="text" class="form-control" onchange="DataCheck()" onfocus="this.value=''" />
                 </div>
                 <div class="row">
                 <label class="col-sm-2"></label>
@@ -306,11 +306,23 @@
 
 <script>
     //po number
+    var CategoryId;
+    var poNumber;
+
+    $("#CategoryId").on('change', function () {
+        CategoryId = $("#CategoryId").val();
+    });
+
+    $("#poNumber").on('change', function () {
+        poNumber = $("#poNumber").val();
+    });
+
     function DataCheck() {
         $("#Status").html("Checking...");
         $.post("@Url.Action("CheckifExist", "IndexOfPayment")",
             {
-                userdata: $("#poNumber").val()
+                CategoryId: $("#CategoryId").val(), poNumber: $("#poNumber").val()
+                
             },
         function (data) {
             if (data == 0) {
@@ -318,7 +330,7 @@
                 $("#poNumber").css("border-color", "Green");
 
             }
-            else {
+            else if(data == 1){
                 $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
                 $("#poNumber").css("border-color", "Red");
             }
