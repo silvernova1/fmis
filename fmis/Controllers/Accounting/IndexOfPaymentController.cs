@@ -316,7 +316,7 @@ namespace fmis.Controllers.Accounting
             indexes.GrossAmount = index.GrossAmount;
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
             indexes.TotalDeduction = index.TotalDeduction;
-            indexes.NetAmount = index.indexDeductions.Sum(x => x.Amount);
+            indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
 
             var newBillNumber = new BillNumber
                 {
