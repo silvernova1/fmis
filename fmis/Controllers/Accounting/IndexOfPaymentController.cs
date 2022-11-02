@@ -57,6 +57,7 @@ namespace fmis.Controllers.Accounting
                                 .ThenInclude(x => x.Payee)
                             .Include(x => x.indexDeductions)
                                 .ThenInclude(x => x.Deduction)
+                            .Include(x=>x.BillNumbers)
                             select c;
                 
             bool check = indexData.Any(a => a == null);
@@ -145,9 +146,9 @@ namespace fmis.Controllers.Accounting
             return View(indexOfPayment);
         }
 
-        public JsonResult CheckifExist(string userdata)
+        public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == userdata).SingleOrDefault();
+            var data = _MyDbContext.Indexofpayment.Where(x=>x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
 
             if (data != null)
             {
@@ -237,6 +238,20 @@ namespace fmis.Controllers.Accounting
             }
         }
 
+        public JsonResult CheckBillNumberExist(int billnumber)
+        {
+            var data = _MyDbContext.BillNumber.Where(x => x.NumberOfBilling == billnumber).SingleOrDefault();
+
+            if (data != null)
+            {
+                return Json(1);
+            }
+            else
+            {
+                return Json(0);
+            }
+        }
+
         // GET: Categoty/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -253,6 +268,7 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.indexDeductions).ThenInclude(x => x.Deduction)
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
+                .Include(x=>x.BillNumbers)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == id);
 
@@ -277,16 +293,37 @@ namespace fmis.Controllers.Accounting
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IndexOfPayment index)
         {
-            var indexes = await _MyDbContext.Indexofpayment.Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId).FirstOrDefaultAsync();
+            var indexes = await _MyDbContext.Indexofpayment
+                .Include(x=>x.Dv)
+                .Include(x=>x.BillNumbers)
+                .Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId)
+                .FirstOrDefaultAsync();
 
             indexes.CategoryId = index.CategoryId == 0 ? indexes.CategoryId : index.CategoryId;
             indexes.DvId = index.DvId;
-            indexes.date = index.date;
+            //indexes.Dv.PayeeDesc = index.Dv.PayeeDesc;
+            indexes.DvDate = index.DvDate;
             indexes.Particulars = index.Particulars;
+            indexes.PoNumber = index.PoNumber;
+            indexes.InvoiceNumber = index.InvoiceNumber;
+            indexes.ProjectId = index.ProjectId;
+            //indexes.NumberOfBill = index.NumberOfBill;            
+            indexes.PeriodCover = index.PeriodCover;            
+            indexes.date = index.date;
+            indexes.travel_period = index.travel_period;
+            indexes.SoNumber = index.SoNumber;
+            indexes.AccountNumber = index.AccountNumber;
             indexes.GrossAmount = index.GrossAmount;
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
             indexes.TotalDeduction = index.TotalDeduction;
-            indexes.NetAmount = index.indexDeductions.Sum(x => x.Amount);
+            indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
+
+            var newBillNumber = new BillNumber
+                {
+                    IndexOfPaymentId = index.IndexOfPaymentId,
+                    NumberOfBilling = index.NumberOfBill
+                };
+            indexes.BillNumbers.Add(newBillNumber);
 
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();
