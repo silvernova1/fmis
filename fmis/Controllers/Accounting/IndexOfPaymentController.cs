@@ -63,7 +63,7 @@ namespace fmis.Controllers.Accounting
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Dv.PayeeDesc.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+                indexData = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString) || x.Dv.DvNo.Contains(searchString) || x.Dv.PayeeDesc.Contains(searchString));
             }
 
             ViewBag.indexCategory = indexData.Where(x => x.Category.CategoryDescription.Contains(searchString));

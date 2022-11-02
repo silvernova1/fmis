@@ -45,6 +45,7 @@ namespace fmis.Controllers.Accounting
             if (ModelState.IsValid)
             {
                 _MyDbContext.Add(fundcluster);
+                await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -78,6 +79,7 @@ namespace fmis.Controllers.Accounting
             fund_cluster.FundClusterDescription = fundcluster.FundClusterDescription;
 
             _MyDbContext.Update(fund_cluster);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -87,6 +89,7 @@ namespace fmis.Controllers.Accounting
             Int32 ID = Convert.ToInt32(id);
             var fund_cluster = await _MyDbContext.FundCluster.Where(p => p.FundClusterId == ID).FirstOrDefaultAsync();
             _MyDbContext.FundCluster.Remove(fund_cluster);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

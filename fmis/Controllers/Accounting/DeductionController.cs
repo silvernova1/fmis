@@ -35,7 +35,6 @@ namespace fmis.Controllers.Accounting
         public IActionResult Create()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "deduction", "");
-            TempData["AlertMessage"] = "Successfully Created";
             return View();
         }
 
@@ -48,6 +47,7 @@ namespace fmis.Controllers.Accounting
             {
                 _MyDbContext.Add(deduction);
                 await _MyDbContext.SaveChangesAsync();
+                await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }
             return View(deduction);
@@ -79,6 +79,7 @@ namespace fmis.Controllers.Accounting
             deduct.DeductionDescription = deduction.DeductionDescription;
 
             _MyDbContext.Update(deduct);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -88,6 +89,7 @@ namespace fmis.Controllers.Accounting
             Int32 ID = Convert.ToInt32(id);
             var deduction = await _MyDbContext.Deduction.Where(p => p.DeductionId == ID).FirstOrDefaultAsync();
             _MyDbContext.Deduction.Remove(deduction);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

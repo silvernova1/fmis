@@ -12,21 +12,21 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <h5>Description: </h5>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" id="description" class="form-control" required />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <h5>Full Name: </h5>
-                <input asp-for="FullName" class="form-control" />
+                <input asp-for="FullName" id ="fullname" class="form-control" required/>
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <h5>Designation: </h5>
-                <input asp-for="Designation" class="form-control" />
+                <input asp-for="Designation" id="designation" class="form-control" required />
                 <span asp-validation-for="Designation" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Create" class="btn btn-success btn-sm" />  <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
+                <input type="submit" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-sm" />  <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
             </div>
         </form>
     </div>
@@ -35,3 +35,19 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function submiBtnClick() {
+        var description = document.getElementById("description").value;
+        var fullname = document.getElementById("fullname").value;
+        var designation = document.getElementById("designation").value;
+        if (description != '' && fullname != '' && designation != '') {
+            Lobibox.notify('success', {
+                msg: 'Assignee Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+</script>

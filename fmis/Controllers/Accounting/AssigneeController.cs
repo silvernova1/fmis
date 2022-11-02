@@ -44,6 +44,7 @@ namespace fmis.Controllers.Accounting
             if (ModelState.IsValid)
             {
                 _MyDbContext.Add(assignee);
+                await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -76,6 +77,7 @@ namespace fmis.Controllers.Accounting
             assign.Designation = assignee.Designation;
 
             _MyDbContext.Update(assign);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -86,6 +88,7 @@ namespace fmis.Controllers.Accounting
             Int32 ID = Convert.ToInt32(id);
             var assignee = await _MyDbContext.Assignee.Where(p => p.AssigneeId == ID).FirstOrDefaultAsync();
             _MyDbContext.Assignee.Remove(assignee);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

@@ -1,7 +1,7 @@
 ﻿@model fmis.Models.Accounting.Assignee;
 
 
-<center><h3 class="grey lighter smaller">Edit Payee </h3></center>
+<center><h3 class="grey lighter smaller">Update Assignee </h3></center>
 <hr />
 <div class="container">
     <div class="col-md-6">
@@ -10,21 +10,21 @@
             <input type="hidden" asp-for="AssigneeId" />
             <div class="form-group">
                 <h5> Description: </h5>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" id="description" class="form-control" required />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <h5> Full Name: </h5>
-                <input asp-for="FullName" class="form-control" />
+                <input asp-for="FullName" id="fullname" class="form-control" required/>
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <h5> Designation </h5>
-                <input asp-for="Designation" class="form-control" />
+                <input asp-for="Designation" id="designation" class="form-control" required />
                 <span asp-validation-for="Designation" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Save" class="btn btn-success btn-sm" /> <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
+                <input type="submit" value="Update" onclick="submiBtnClick()" class="btn btn-info btn-sm" /> <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
@@ -33,3 +33,19 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function submiBtnClick() {
+        var description = document.getElementById("description").value;
+        var fullname = document.getElementById("fullname").value;
+        var designation = document.getElementById("designation").value;
+        if (description != '' && fullname != '' && designation != '') {
+            Lobibox.notify('info', {
+                msg: 'Assignee Successfully Updated!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+</script>

@@ -103,6 +103,7 @@ namespace fmis.Controllers.Accounting
             {
                 newDv.dvDeductions.Add(new DvDeduction());
             }
+
             return View(newDv);
         }
 
@@ -126,6 +127,7 @@ namespace fmis.Controllers.Accounting
                     .ToList();
                 _MyDbContext.Add(dv);
                 await _MyDbContext.SaveChangesAsync();
+                await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }
             return View(dv);
@@ -231,6 +233,7 @@ namespace fmis.Controllers.Accounting
             PopulateDeductionDropDownList();
 
             _MyDbContext.Update(dvs);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -253,8 +256,6 @@ namespace fmis.Controllers.Accounting
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
-
 
         public IActionResult selectAT(int id)
         {
@@ -360,7 +361,7 @@ namespace fmis.Controllers.Accounting
                                    }).ToList();
 
 
-                Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
+                Paragraph header_text = new Paragraph("DISBURSEMENT VOUCHER");
 
                     header_text.Font = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
                     header_text.Alignment = Element.ALIGN_CENTER;
@@ -664,17 +665,17 @@ namespace fmis.Controllers.Accounting
                         FixedHeight = 50f,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT,
-                    }); 
-
-              
-                table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
-                    {
-                        FixedHeight = 20f,
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT,
-
                     });
-                doc.Add(table_row_8);
+
+
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
+                        {
+                            FixedHeight = 20f,
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT,
+
+                        });
+                    doc.Add(table_row_8);
 
                     var table_row_9 = new PdfPTable(1);
                     float[] tbt_ro9_width = { 10 };

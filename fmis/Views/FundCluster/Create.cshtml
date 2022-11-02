@@ -17,11 +17,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <h5>Fund Cluster Description: </h5>
-                <input asp-for="FundClusterDescription" class="form-control" />
+                <input asp-for="FundClusterDescription" id="description" class="form-control" required />
                 <span asp-validation-for="FundClusterDescription" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
+                <input type="submit" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-sm" />  <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
             </div>
         </form>
     </div>
@@ -30,3 +30,17 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+     function submiBtnClick() {
+        var fundclusterDescription = document.getElementById("description").value;
+         if (fundclusterDescription != '') {
+            Lobibox.notify('success', {
+                msg: 'Fund Cluster Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+</script>
