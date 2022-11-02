@@ -45,7 +45,9 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "category", "");
             if (ModelState.IsValid)
             {
+
                 _MyDbContext.Add(category);
+                await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -74,6 +76,7 @@ namespace fmis.Controllers.Accounting
             categ.CategoryDescription = category.CategoryDescription;
 
             _MyDbContext.Update(categ);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -83,6 +86,7 @@ namespace fmis.Controllers.Accounting
             Int32 ID = Convert.ToInt32(id);
             var category = await _MyDbContext.Category.Where(p => p.CategoryId == ID).FirstOrDefaultAsync();
             _MyDbContext.Category.Remove(category);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

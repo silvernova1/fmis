@@ -15,6 +15,8 @@
         width: 100% !important;
     }
 </style>
+
+
 <center><h3 class="grey lighter smaller">Update Disbursement Voucher </h3></center>
 <hr />
 <div class="container" style="height: 840px;">
@@ -63,7 +65,7 @@
             <div class="col-md-5">
                 <div class="form-group">
                     <h5>Particulars:  </h5>
-                    <textarea asp-for="Particulars" class="form-control" id="textarea" type="text" style="height: 70px;"> </textarea>
+                    <textarea asp-for="Particulars" class="form-control"  type="text" style="height: 70px;"> </textarea>
                     <span asp-validation-for="Particulars" class="text-danger"></span>
                 </div>
             </div>
@@ -225,5 +227,10 @@
         $('#net_amount').val(gross_amount - total);
     }
 
+    $(".submit").click(function () {
+        Lobibox.notify('info', {
+            msg: 'Disbursement Voucher Successfully Updated!',
 
+        });
+    });
 </script>
