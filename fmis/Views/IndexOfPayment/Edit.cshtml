@@ -241,12 +241,18 @@
 
 <script>
 
+    var CategoryId;
+
+    $("#CategoryId").on('change', function () {
+        CategoryId = $("#CategoryId").val();
+    });
+
     //bill number
     function billNumberCheck() {
         $("#Status").html("Checking...");
         $.post("@Url.Action("CheckBillNumberExist", "IndexOfPayment")",
             {
-                billnumber: $("#billnumber").val()
+                CategoryId: $("#CategoryId").val(), billnumber: $("#billnumber").val(), IndexOfPaymentId: $("#IndexOfPaymentId").val()
             },
             function (data) {
                 if (data == 0) {

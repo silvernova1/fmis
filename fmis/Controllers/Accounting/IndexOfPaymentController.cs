@@ -238,9 +238,9 @@ namespace fmis.Controllers.Accounting
             }
         }
 
-        public JsonResult CheckBillNumberExist(int billnumber)
+        public IActionResult CheckBillNumberExist(int billnumber, int IndexOfPaymentId)
         {
-            var data = _MyDbContext.BillNumber.Where(x => x.NumberOfBilling == billnumber).SingleOrDefault();
+            var data = _MyDbContext.BillNumber.Include(x=>x.IndexOfPayment).Where(x => x.NumberOfBilling == billnumber && x.IndexOfPaymentId == IndexOfPaymentId || x.IndexOfPayment.NumberOfBill == billnumber).FirstOrDefault();
 
             if (data != null)
             {
