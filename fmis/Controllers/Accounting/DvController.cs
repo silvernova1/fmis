@@ -656,6 +656,28 @@ namespace fmis.Controllers.Accounting
                     table_row_8.DefaultCell.FixedHeight = 200f;
                     table_row_8.WidthPercentage = 100f;
                     table_row_8.SetWidths(tbt_ro8_width);
+                if (fundCluster.FirstOrDefault().respo == "RAMIL R. ABREA, CPA, MBA")
+                {
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    {
+                        Border = 13,
+                        FixedHeight = 50f,
+                        VerticalAlignment = Element.ALIGN_MIDDLE,
+                        HorizontalAlignment = Element.ALIGN_LEFT,
+                    });
+                }
+                else if (fundCluster.FirstOrDefault().respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
+                {
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    {
+                        Border = 13,
+                        FixedHeight = 50f,
+                        VerticalAlignment = Element.ALIGN_MIDDLE,
+                        HorizontalAlignment = Element.ALIGN_LEFT,
+                    });
+                }
+                else
+                {
                     table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
                     {
                         Border = 13,
@@ -663,9 +685,9 @@ namespace fmis.Controllers.Accounting
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
+                }
 
-       
-                 table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
+                table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
                         {
                             FixedHeight = 20f,
                             VerticalAlignment = Element.ALIGN_MIDDLE,
