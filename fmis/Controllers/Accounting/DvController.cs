@@ -390,8 +390,7 @@ namespace fmis.Controllers.Accounting
                     Font arial_font_11 = FontFactory.GetFont("Times New Roman", 11, Font.NORMAL, BaseColor.BLACK);
                     Font arial_font_12 = FontFactory.GetFont("Times New Roman", 12, Font.BOLD, BaseColor.BLACK);
                     Font header = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
-
-
+    
                     var table2 = new PdfPTable(1);
                     table2.DefaultCell.Border = 0;
 
@@ -403,8 +402,6 @@ namespace fmis.Controllers.Accounting
                     var no_left_bor = new PdfPCell(table2);
                     no_left_bor.DisableBorderSide(4);
                     table.AddCell(no_left_bor);
-
-
 
                     var table3 = new PdfPTable(2);
                     float[] table3widths = { 6, 10 };
@@ -689,7 +686,6 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
                 }
-
 
                 table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
                         {
