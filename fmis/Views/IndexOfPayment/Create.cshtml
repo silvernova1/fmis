@@ -20,7 +20,6 @@
         -moz-appearance: textfield;
     }
 </style>
-<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
 <div class="container" style="height: 860px;">
@@ -30,7 +29,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label>Category: </label>
-                    <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
+                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" required>
                         <option> - Select Category - </option>
                     </select>
                 </div>
@@ -39,14 +38,10 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label >Dv: </label>
-
-                        @*<select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
-
-                            <option> - Select Dv # - </option>
-                        </select>*@
-                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control",    @id = "ddlBranches", onchange = "return get_sbu(this)" })
-                        @if(ViewBag.Message != null && ViewBag.Message == "Exist"){
+                        <label>Dv: </label>
+                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
+                        @if (ViewBag.Message != null && ViewBag.Message == "Exist")
+                        {
                             <br /><span style="color:red;">Already exist.</span>
                         }
                     </div>
@@ -61,14 +56,14 @@
             <div>
                 <div class="col-md-3">
                     <label>Date: </label>
-                    <input asp-for="DvDate" type="date"  onchange="getFormattedDate" class="form-control">
+                    <input asp-for="DvDate" type="date" onchange="getFormattedDate" class="form-control" id="dvDate" required >
                     <span class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Particulars: </label>
-                    <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control"></textarea>
+                    <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control" required></textarea>
                 </div>
             </div>
         </div>
@@ -79,21 +74,21 @@
                     <input asp-for="PoNumber" id="poNumber" type="text" class="form-control" onchange="DataCheck()" onfocus="this.value=''" />
                 </div>
                 <div class="row">
-                <label class="col-sm-2"></label>
+                    <label class="col-sm-2"></label>
                     <div class="col-sm-10">
-                    <p id="Status" />
+                        <p id="Status" />
                     </div>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <input asp-for="ProjectId" id="project"  class="form-control" onchange="ProjectCheck()"/>
+                    <input asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" />
                 </div>
                 <div class="row">
-                <label class="col-sm-2"></label>
+                    <label class="col-sm-2"></label>
                     <div class="col-sm-10">
-                    <p id="ProjectCheck" />
+                        <p id="ProjectCheck" />
                     </div>
                 </div>
             </div>
@@ -103,9 +98,9 @@
                     <input asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" />
                 </div>
                 <div class="row">
-                <label class="col-sm-2"></label>
+                    <label class="col-sm-2"></label>
                     <div class="col-sm-10">
-                    <p id="InvoiceCheck" />
+                        <p id="InvoiceCheck" />
                     </div>
                 </div>
             </div>
@@ -115,21 +110,21 @@
                     <input type="month" asp-for="PeriodCover" id="periodCover" class="form-control" onchange="PeriodCheck()">
                 </div>
                 <div class="row">
-                <label class="col-sm-2"></label>
+                    <label class="col-sm-2"></label>
                     <div class="col-sm-10">
-                    <p id="PeriodCheck" />
+                        <p id="PeriodCheck" />
                     </div>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
                     <label>Period Covered From-To:</label>
-                    <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()"/>
+                    <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()" />
                 </div>
                 <div class="row">
-                <label class="col-sm-2"></label>
+                    <label class="col-sm-2"></label>
                     <div class="col-sm-10">
-                    <p id="FromToCheck" />
+                        <p id="FromToCheck" />
                     </div>
                 </div>
             </div>
@@ -138,30 +133,30 @@
                 <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                     <div class="form-group">
                         <label>S.O #:</label>
-                        <input type="text" asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()"/>
+                        <input type="text" asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
                         <div class="col-sm-10">
-                        <p id="SoCheck" />
+                            <p id="SoCheck" />
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
                     <div class="form-group">
                         <label>TRAVEL PERIOD:</label>
-                        <input type="text" name="travel_period" asp-for="travel_period"  class="form-control">
+                        <input type="text" name="travel_period" asp-for="travel_period" class="form-control">
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
                     <div class="form-group">
                         <label>ACCOUNT #:</label>
-                        <input type="text" asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()"/>
+                        <input type="text" asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
                         <div class="col-sm-10">
-                        <p id="AccNoCheck" />
+                            <p id="AccNoCheck" />
                         </div>
                     </div>
                 </div>
@@ -193,11 +188,10 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" placeholder="0.00" />
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
@@ -210,7 +204,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
@@ -223,7 +216,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
@@ -236,7 +228,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
@@ -249,7 +240,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12" onchange="submitDeduction(this);">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
@@ -262,7 +252,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
@@ -287,7 +276,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
@@ -298,7 +286,7 @@
                 <div class="form-group">
                     <input class="form-control" type="text" id="net_amount" placeholder="0.00" readonly />
                 </div>
-                <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
+                <input type="submit" onclick="submiBtnClick()" value="Submit" class="btn btn-success btn-sm " /> <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
             </div>
         </div>
     </form>
@@ -324,7 +312,7 @@
         $.post("@Url.Action("CheckifExist", "IndexOfPayment")",
             {
                 CategoryId: $("#CategoryId").val(), poNumber: $("#poNumber").val()
-                
+
             },
         function (data) {
             if (data == 0) {
@@ -627,22 +615,23 @@
         });
     });
 
-    document.getElementById("textarea").value = "To payment of";
+  @*  document.getElementById("textarea").value = "To payment of";*@
 
 
-    $(function () {
-        $('.date-picker').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            showButtonPanel: true,
-            dateFormat: 'MM yy',
-            onClose: function (dateText, inst) {
-                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-            }
-        });
-    });
+    function submiBtnClick() {
+        var category = document.getElementsByClassName("category").value;
+        var dvNo = document.getElementById("ddlBranches").value;
+        var dvDate = document.getElementById("dvDate").value;
+        var particulars = document.getElementById("particulars").value;
 
-
-
+        if (category != '' && dvNo != '' && particulars != '' && dvDate != '') {
+            Lobibox.notify('success', {
+                msg: 'Index Of Payment Date Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
 
 </script>

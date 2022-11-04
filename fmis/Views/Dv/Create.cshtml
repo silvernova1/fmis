@@ -28,13 +28,13 @@
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
                     <h5>Fund Cluster: </h5>
-                    @Html.DropDownList("FundClusterId", null, " - FundCluster - ", htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownList("FundClusterId", null, " - FundCluster - ", htmlAttributes: new { @class = "form-control", @id = "fundCluster", @required ="required" })
                 </div>
             </div>
             <div class="1stcol col-md-2">
                 <div class="form-group">
                     <h5>Dv Date: </h5>
-                    <input asp-for="Date" type="date" class="form-control" />
+                    <input asp-for="Date" type="date" id="dvDate" class="form-control" required />
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
             </div>
@@ -56,14 +56,14 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <h5>Payee: </h5>
-                    @Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)"})
+                    @Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required ="required"})
                 </div>
             </div>
 
             <div class="col-md-5">
                 <div class="form-group">
                     <h5>Particulars:  </h5>
-                    <textarea asp-for="Particulars" class="form-control" id="textarea" type="text" style="height: 70px;"> </textarea>
+                    <textarea asp-for="Particulars" class="form-control" id="textarea" type="text" style="height: 70px;" required> </textarea>
                     <span asp-validation-for="Particulars" class="text-danger"></span>
                 </div>
             </div>
@@ -81,13 +81,17 @@
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
                     <label>Responsibility Center: </label>
-                    <select class="form-control" asp-for="RespoCenterId" asp-items="ViewBag.RespoId"></select>
+                    <select class="form-control" asp-for="RespoCenterId" id="respoCenter" asp-items="ViewBag.RespoId" required>
+                        <option value="">Select Respo Center </option>
+                    </select>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label>Select Options: </label>
-                    <select class="form-control" asp-for="AssigneeId" asp-items="ViewBag.AssigneeId"></select>
+                    <select class="form-control" asp-for="AssigneeId" id="selectOptions" asp-items="ViewBag.AssigneeId" required>
+                        <option value="">Select Options  </option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -224,30 +228,12 @@
 
         <div class="col-md-12" style="margin-left: 260px;">
             <div class="form-group">
-                <input type="submit" value="Create" class="submit btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                <input type="submit" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
             </div>
         </div>
     </form>
 </div>
 
-<script type="text/javascript">
-$(document).ready(function () {
-    $('#FundCluster').change(function () {
-        var ddlValue = $(this).val();
-
-        alert(ddlValue);
-
-        if (ddlValue = 10)
-        {
-            $('#payee').hide();
-        }
-        else
-        {
-            $('#payee').hide();
-        }
-    });
-});
-</script>
 
 <script>
 
@@ -271,6 +257,21 @@ $(document).ready(function () {
     }
 
     $(document).ready(function () {
+        $('#FundCluster').change(function () {
+            var ddlValue = $(this).val();
+
+            alert(ddlValue);
+
+            if (ddlValue = 10) {
+                $('#payee').hide();
+            }
+            else {
+                $('#payee').hide();
+            }
+        });
+    });
+
+    $(document).ready(function () {
         $('.select2').select2();
 
         $('#dv_type').on('change', function () {
@@ -290,27 +291,6 @@ $(document).ready(function () {
     });
 
 
-    function Comma(Num) { //function to add commas to textboxes
-        Num += '';
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-        x = Num.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1))
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        return x1 + x2;
-    }
-
-    function isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            return false;
-        }
-        return true;
-    }
 
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
@@ -335,33 +315,26 @@ $(document).ready(function () {
     }
 
     document.getElementById("textarea").value = "To payment of";
-@*
-    $(".submit").click(function () {
-        Lobibox.notify('success', {
-            msg: 'Disbursement Voucher Successfully Added!',
 
-        });
-    });*@
-
-@*
-    function SaveDeduction() {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("Create", "Deduction")',
-            data: JSON.stringify(parameters),
-            contentType: 'application/json;',
-            dataType: 'json',
-            success: function (output) {
-                Lobibox.notify("success", {
-                    msg: "Successfully Saved...",
-                    sound: false
-                });
-                console.log(output);
-            }
-        });
-    }*@
-
-           
+    function submiBtnClick() {
+        var fundCluster = document.getElementById("fundCluster").value;
+        var dvDate = document.getElementById("dvDate").value;
+        var dvType = document.getElementById("dv_type").value;
+        var payee = document.getElementById("ddlBranches").value;
+        var particulars = document.getElementById("textarea").value;
+        var respoCenter = document.getElementById("respoCenter").value;
+        var selectOptions = document.getElementById("selectOptions").value;
+            
+        if (fundCluster != '' && dvDate != '' && dvType != '' && payee != '' && particulars != ''
+            && respoCenter != '' && selectOptions != '' ) {
+            Lobibox.notify('success', {
+                msg: 'Disbursement Voucher Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
 
 
 </script>
