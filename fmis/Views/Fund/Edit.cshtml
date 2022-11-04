@@ -1,6 +1,5 @@
 ﻿@model fmis.Models.Fund
 
-<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Edit Fund Source </h3></center>
 <hr />
 <div class="container">
@@ -24,7 +23,7 @@
                 <span asp-validation-for="Fund_code_conap" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Save" class="btn btn-success btn-sm" /> | <a class="btn btn-default btn-sm" data-dismiss="modal">Back to List</a>
+                <input type="submit" value="Save" class="btn btn-success btn-sm" /> <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
