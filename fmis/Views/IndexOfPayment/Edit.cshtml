@@ -29,7 +29,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Category" class="control-label"></label>
-                    <select class="form-control select2" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
+                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" >
                         <option value=""> - Select Category - </option>
                     </select>
                 </div>
@@ -39,36 +39,29 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Dv" class="control-label"></label>
-
-                        @*<select class="form-control select2" asp-for="DvId" asp-items="ViewBag.DvId">
-
-                            <option> - Select Dv # - </option>
-                        </select>*@
-                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)" })
-                        @if (ViewBag.Message != null && ViewBag.Message == "Exist")
-                        {
-                            <br /><span style="color:red;">Name already exist.</span>
-                        }
+                        <select class="prexcDropdown form-control select2 category" asp-for="DvId"  id="ddlBranches" onchange="return get_sbu(this)" asp-items="ViewBag.DvId" required>
+                            <option value=""> - Select Dv - </option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>PAYEE :</label>
-                        <input id="payeeDesc" class="form-control" readonly />
+                        <input id="payeeDesc" class="form-control"  readonly />
                     </div>
                 </div>
             </div>
             <div>
                 <div class="col-md-3">
                     <label> DATE:</label>
-                    <input type="date" asp-for="DvDate" asp-format="{0:yyyy-MM-dd}" class="form-control">
+                    <input type="date" asp-for="DvDate" asp-format="{0:yyyy-MM-dd}" class="form-control" id="dvDate" required>
                     <span class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>PARTICULARS:</label>
-                    <textarea asp-for="Particulars" class="form-control" type="text" style="height: 70px;"> </textarea>
+                    <textarea asp-for="Particulars" class="form-control" type="text" style="height: 70px;" id="particulars" required> </textarea>
                 </div>
             </div>
         </div>
@@ -201,7 +194,7 @@
                 <div class="form-group">
                     <input class="form-control" type="text" value="@Model.NetAmount" id="net_amount" placeholder="0.00" readonly />
                 </div>
-                <input type="submit" id="btnsubmit" value="Submit" class="btn btn-success btn-sm " />
+                <input type="submit" onclick="submiBtnClick()" value="Submit" class="btn btn-success btn-sm " />
                 <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
             </div>
         </div>
@@ -379,6 +372,21 @@
     });
 
 
+    function submiBtnClick() {
+        var category = document.getElementsByClassName("category").value;
+        var dvNo = document.getElementById("ddlBranches").value;
+        var dvDate = document.getElementById("dvDate").value;
+        var particulars = document.getElementById("particulars").value;
 
+
+        if (category != '' && dvNo != '' && particulars != '' && dvDate != '') {
+            Lobibox.notify('info', {
+                msg: 'Index Of Payment Data Successfully Updated!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
 
 </script>

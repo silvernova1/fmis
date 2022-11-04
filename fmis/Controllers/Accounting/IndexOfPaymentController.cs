@@ -139,6 +139,7 @@ namespace fmis.Controllers.Accounting
             {
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
                 _MyDbContext.Add(indexOfPayment);
+                await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -281,7 +282,7 @@ namespace fmis.Controllers.Accounting
 
             indexes.CategoryId = index.CategoryId == 0 ? indexes.CategoryId : index.CategoryId;
             indexes.DvId = index.DvId;
-            indexes.date = index.date;
+            indexes.DvDate = index.DvDate;
             indexes.Particulars = index.Particulars;
             indexes.GrossAmount = index.GrossAmount;
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
@@ -293,6 +294,7 @@ namespace fmis.Controllers.Accounting
             PopulateDeductionDropDownList();
 
             _MyDbContext.Update(indexes);
+            await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -325,7 +327,8 @@ namespace fmis.Controllers.Accounting
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == ID);
 
             _MyDbContext.Indexofpayment.Remove(dvs);
-            await _MyDbContext.SaveChangesAsync();
+            await Task.Delay(500);
+            await _MyDbContext.SaveChangesAsync();  
             return RedirectToAction("Index");
         }
 
