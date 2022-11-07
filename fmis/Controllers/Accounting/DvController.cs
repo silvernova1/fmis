@@ -689,8 +689,6 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
                 }
-
-
                 table_row_8.AddCell(new PdfPCell(new Paragraph("                                                     Printed Name, Designation and Signature of Supervisor", arial_font_9b))
                         {
                             FixedHeight = 20f,
