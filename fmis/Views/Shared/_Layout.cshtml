@@ -140,7 +140,7 @@
                     @RenderBody()
                     <div class="modal" id="loading_modal" tabindex="-1" role="dialog">
                         <div class="modal-dialog" role="document">
-                            <center><img src="~/dummy/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
+                            <center><img src="~/assets/images/loading.gif" style="margin-left:20%;margin-top:30%;" class="msg-photo" alt="Alex's Avatar" /></center>
                         </div>
                     </div>
                 </div><!-- /.page-content -->
@@ -186,13 +186,13 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-@if (User.Identity.IsAuthenticated)
+@*@if (User.Identity.IsAuthenticated)
 {
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/js/signalRConnect.js" asp-append-version=true></script>
-}
+}*@
 <script type="text/javascript">
-    var loading = '<center><img src="/dummy/assets/images/loading1.gif"/></center>';
+    var loading = '<center><img src="/assets/images/loading1.gif"/></center>';
 
     function openNotification(element) {
         $("#openNotification").modal({ backdrop: 'static', keyboard: false });
