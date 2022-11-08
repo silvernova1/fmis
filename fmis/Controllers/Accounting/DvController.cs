@@ -358,7 +358,8 @@ namespace fmis.Controllers.Accounting
                                        respoHeadPosition = r.RespoHeadPosition,
                                        assigneeDvId = dv.AssigneeId,
                                        assigneeName = a.FullName,
-                                       assigneeDesignation = a.Designation
+                                       assigneeDesignation = a.Designation,
+                                       dvDeduction = dv.dvDeductions
                                    }).ToList();
 
 
@@ -600,13 +601,23 @@ namespace fmis.Controllers.Accounting
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         FixedHeight = 25
                     });
-                    doc.Add(table_row_5);
 
+                    var items = _MyDbContext.Dv.Include(x=>x.dvDeductions).ThenInclude(x=>x.Deduction).ToList();
+                    var deduct = "";
+                    foreach (var item in items)
+                    {
+                    foreach (var deductions in item.dvDeductions.ToList())
+                        {
+                        //return Json(item.dvDeductions.Select(x => x.Deduction.DeductionDescription).ToList());
+                        }
+                    }
+
+                    doc.Add(table_row_5);
                     var table_row_6 = new PdfPTable(4);
                     float[] tbt_ro6_width = { 20, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n" + deduct + "\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" + 
@@ -859,13 +870,27 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         FixedHeight = 20f
                     });
-                    table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respo, arial_font_8))
-                    {
-                        Border = 13,
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 20f
-                    });
+                        if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                        {
+                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respo, arial_font_8))
+                            table_row_17.AddCell(new PdfPCell(new Paragraph("SOPHIA M. MANCAO, MD, DPSP, RN-MAN", arial_font_8))
+                            {
+                                Border = 13,
+                                VerticalAlignment = Element.ALIGN_MIDDLE,
+                                HorizontalAlignment = Element.ALIGN_CENTER,
+                                FixedHeight = 20f
+                            });
+                        }
+                        else
+                        {
+                            table_row_17.AddCell(new PdfPCell(new Paragraph("JAIME S. BERNADAS, MD., MGM, C.ES.O III", arial_font_8))
+                            {
+                                Border = 13,
+                                VerticalAlignment = Element.ALIGN_MIDDLE,
+                                HorizontalAlignment = Element.ALIGN_CENTER,
+                                FixedHeight = 20f
+                            });
+                        }
                     doc.Add(table_row_17);
 
 
@@ -880,7 +905,6 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         FixedHeight = 25f
                     });
-
                     table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
                     {
                         Border = 13,
@@ -897,13 +921,26 @@ namespace fmis.Controllers.Accounting
                         FixedHeight = 25f,
                         
                     });
-                    table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respoHeadPosition + "\n"  + "Agency Head/Authorized Representative", arial_font_8))
+                    if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
                     {
-                        Border = 13,
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_CENTER,
-                        FixedHeight = 28f
-                    });
+                        table_row_18.AddCell(new PdfPCell(new Paragraph("DIRECTOR III" + "\n" + "Agency Head/Authorized Representative", arial_font_8))
+                        {
+                            Border = 13,
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_CENTER,
+                            FixedHeight = 28f
+                        });
+                    }
+                    else
+                    {
+                         table_row_18.AddCell(new PdfPCell(new Paragraph("DIRECTOR IV" + "\n" + "Agency Head/Authorized Representative", arial_font_8))
+                        {
+                            Border = 13,
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_CENTER,
+                            FixedHeight = 28f
+                        });
+                    }
                     doc.Add(table_row_18);
 
 
