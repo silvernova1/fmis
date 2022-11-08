@@ -621,14 +621,49 @@
                         <b class="arrow"></b>
                     </li>
 
-                    <li class="@if(ViewBag.filter.sub == "payee")
-                    @Html.Raw("active")">
-                        <a asp-area="" asp-controller="Payee" asp-action="Index">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Payee
+
+                    <li class="@if (ViewBag.filter.sub == "payee")
+                @Html.Raw("active open")">
+
+                        <a href="#" class="dropdown-toggle">
+                            <span class="menu-text"> List Of Payee </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
                         </a>
-                        <b class="arrow"></b>
+                        <ul class="submenu">
+                            <li class="@if (ViewBag.filter.sub2 == "individual")
+                     @Html.Raw("active")">
+                                <a asp-controller="Payee" asp-action="Individual">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    Individual
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="@if (ViewBag.filter.sub2 == "supplier")
+                     @Html.Raw("active")">
+                                <a asp-controller="Payee" asp-action="Supplier">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    Supplier/Contractor
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                
+                        </ul>
                     </li>
+
+
+
+
+
+
+                    @*  <li class="@if(ViewBag.filter.sub == "payee")
+        @Html.Raw("active")">
+            <a asp-area="" asp-controller="Payee" asp-action="Index">
+                <i class="menu-icon fa fa-caret-right"></i>
+                Payee
+            </a>
+            <b class="arrow"></b>
+        </li>*@
 
                     <li class="@if(ViewBag.filter.sub == "UploadPayee")
                     @Html.Raw("active")">

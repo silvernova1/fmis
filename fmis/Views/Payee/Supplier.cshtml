@@ -26,7 +26,7 @@
 
 <input type="hidden" class="payee" value="@ViewBag.temp">
 <h3 class="grey lighter smaller">
-    List of Payee
+    List of Payee Supplier/Contractor
 </h3>
 <hr>
 <br />
@@ -101,7 +101,7 @@
     const hot = new Handsontable(container, {
         data: data,
         colWidths: [600, 500],
-        colHeaders: ['PAYEE NAME','TIN NUMBER', 'ID', 'TOKEN'],
+        colHeaders: ['SUPPLIER/CONTRACTOR PAYEE','TIN NUMBER', 'ID', 'TOKEN'],
         columns: [
             {
             },
@@ -161,8 +161,8 @@
                 });
 
             console.log(ajax_data);
-            ajaxServer(ajax_data, '@Url.Action("SavePayee", "Payee")');
-          
+            ajaxServer(ajax_data, '@Url.Action("SaveSupplier", "Payee")');
+
         },
         height: 'auto',
         className: 'as-you-type-demo',
