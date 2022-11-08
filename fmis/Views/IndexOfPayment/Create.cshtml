@@ -286,7 +286,11 @@
                 <div class="form-group">
                     <input class="form-control" type="text" id="net_amount" placeholder="0.00" readonly />
                 </div>
-                <input type="submit" onclick="submiBtnClick()" value="Submit" class="btn btn-success btn-sm " /> <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
+            </div>
+            <div class="col-md-12" style="margin-left: 260px;">
+                <div class="form-group">
+                    <input type="submit" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                </div>
             </div>
         </div>
     </form>
@@ -295,6 +299,16 @@
 
 
 <script>
+    //prevent saving on enter
+    $(document).ready(function () {
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+
     //po number
     var CategoryId;
     var poNumber;
