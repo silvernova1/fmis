@@ -225,6 +225,7 @@ namespace fmis.Controllers.Accounting
             dvs.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != null).ToList();
             dvs.TotalDeduction = dv.TotalDeduction;
             dvs.NetAmount = dvs.GrossAmount - dv.dvDeductions.Sum(x => x.Amount);
+            dvs.DvType = dvs.DvType;
 
             PopulateFundClusterDropDownList();
             PopulatePayeeDropDownList();

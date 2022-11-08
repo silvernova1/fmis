@@ -72,31 +72,35 @@ namespace fmis.Controllers.Accounting
             public List<Many> many_token { get; set; }
         }
 
-        public async Task<IActionResult> Index()
+
+
+        public async Task<IActionResult> Individual()
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "payee", "");
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "individual");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated").OrderBy(x=> x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == 1).OrderBy(x=> x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
-            //return View(await _MyDbContext.Payee.ToListAsync());
 
-            return View("~/Views/Payee/Index.cshtml");
+            return View("~/Views/Payee/Individual.cshtml");
         }
 
 
-        public async Task<ActionResult> Delete(String id)
+        public async Task<IActionResult> Supplier()
         {
-            Int32 ID = Convert.ToInt32(id);
-            var payee = await _MyDbContext.Payee.Where(p => p.PayeeId == ID).FirstOrDefaultAsync();
-            _MyDbContext.Payee.Remove(payee);
-            await _MyDbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "supplier");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == 2).OrderBy(x => x.CreatedAt).ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Payee/Supplier.cshtml");
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [RequestSizeLimit(1073741824)]
-        public async Task <IActionResult> SavePayee(List<PayeeData> data)
+        public async Task <IActionResult> SaveIndividual(List<PayeeData> data)
         {
             var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
         
@@ -111,6 +115,7 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
+                payee.payee_type = 1;
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -118,6 +123,35 @@ namespace fmis.Controllers.Accounting
     
             return Ok();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(1073741824)]
+        public async Task<IActionResult> SaveSupplier(List<PayeeData> data)
+        {
+            var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
+
+            foreach (var item in data)
+            {
+                var payee = new Payee();
+                if (await data_holder.AnyAsync(s => s.token == item.token)) //CHECK IF EXIST
+                {
+                    payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
+                }
+                payee.PayeeDescription = item.PayeeDescription;
+                payee.TinNo = item.TinNo;
+                payee.status = "activated";
+                payee.token = item.token;
+                payee.payee_type = 2;
+
+                _MyDbContext.Payee.Update(payee);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+
 
         public void setUpDeleteData(string token)
         {
@@ -130,6 +164,8 @@ namespace fmis.Controllers.Accounting
                 _MyDbContext.SaveChanges();
             }
         }
+
+
 
         // POST: Obligations/Delete/5
         [HttpPost]
@@ -176,13 +212,16 @@ namespace fmis.Controllers.Accounting
                 for (int row = 1; row <= rowCount; row++)
                 {
                     string payeeToken = Guid.NewGuid().ToString();
+                    var payee_Type = worksheet.Cells[row, 3].Text;
                    
                           payee.Add(new Payee()
                           {
                                 PayeeDescription = worksheet.Cells[row, 1].Text,
                                 TinNo = worksheet.Cells[row, 2].Text,
+                                payee_type = Convert.ToInt32(payee_Type),
                                 token = payeeToken,
                                 status = "activated",
+                               
                           });
                     
                     //if (row == 1000) break;
