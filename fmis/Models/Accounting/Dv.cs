@@ -45,6 +45,8 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Assignee Assignee { get; set; }
 
+        public string DvType { get; set; }
+
 
     }
 }
