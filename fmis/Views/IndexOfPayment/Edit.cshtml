@@ -20,7 +20,7 @@
 </style>
 <center><h3 class="grey lighter smaller">Update Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 860px;">
+<div class="container" style="height: 885px;">
     <form asp-action="Edit" style="position:center;" method="post">
         <input asp-for="IndexOfPaymentId" type="hidden" />
         <div class="col-md-12">
@@ -28,7 +28,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Category" class="control-label"></label>
-                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" >
+                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
                         <option value=""> - Select Category - </option>
                     </select>
                 </div>
@@ -38,7 +38,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Dv" class="control-label"></label>
-                        <select class="prexcDropdown form-control select2 category" asp-for="DvId"  id="ddlBranches" onchange="return get_sbu(this)" asp-items="ViewBag.DvId" required>
+                        <select class="prexcDropdown form-control select2 category" asp-for="DvId" id="ddlBranches" onchange="return get_sbu(this)" asp-items="ViewBag.DvId" required>
                             <option value=""> - Select Dv - </option>
                         </select>
                     </div>
@@ -46,7 +46,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>PAYEE :</label>
-                        <input id="payeeDesc" class="form-control"  readonly />
+                        <input id="payeeDesc" class="form-control" readonly />
                     </div>
                 </div>
             </div>
@@ -65,6 +65,25 @@
             </div>
         </div>
         <div class="col-md-12">
+            <div class="col-md-3">
+                <select class="form-control category" required>
+                    <option> - Select Allotment Class - </option>
+                    <option> - PS - </option>
+                    <option> - MOOE - </option>
+                    <option> - CO - </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control category" required>
+                    <option> - Select ORS Number - </option>
+                    <option> - 123123-324 - </option>
+                    <option> - 232424-323 - </option>
+                    <option> - 11011-2324 - </option>
+                </select>
+            </div>
+        </div>
+        <br />
+        <div class="col-md-12" style="margin-top: 15px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
@@ -85,7 +104,7 @@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
-                    <label>PERDOD COVER</label>
+                    <label>PERIOD COVER</label>
                     <input type="date" asp-for="PeriodCover" class="form-control ">
                 </div>
             </div>
@@ -138,7 +157,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount.ToString("##,#00.00")" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
                 </div>
             </div>
         </div>
@@ -154,7 +173,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input asp-for="indexDeductions[x].Amount" class="form-control deduction_amount" placeholder="0.00" />
+                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" placeholder="0.00" />
                     </div>
                 </div>
             </div>
@@ -184,7 +203,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="text" id="total_deduction" asp-for="TotalDeduction" placeholder="0.00" readonly />
+                    <input class="form-control" type="text" id="total_deduction" value="@Model.TotalDeduction.ToString("##,#00.00")" asp-for="TotalDeduction" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
@@ -197,9 +216,9 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="text" value="@Model.NetAmount" id="net_amount" placeholder="0.00" readonly />
+                    <input class="form-control" type="text" value="@Model.NetAmount.ToString("##,#00.00")" id="net_amount" placeholder="0.00" readonly />
                 </div>
-                <input type="submit" onclick="submiBtnClick()" value="Submit" class="btn btn-success btn-sm " />
+                <input type="submit" onclick="submiBtnClick()" value="Submit" class="btn btn-success btn-xs " />
 
                 <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
             </div>
@@ -287,9 +306,35 @@
         });
     }
 
+    //adding comma after 3 digits
+    function updateTextView(_obj) {
+        var num = getNumber(_obj.val());
+        if (num == 0) {
+            _obj.val('');
+        } else {
+            _obj.val(num.toLocaleString());
+        }
+    }
+    function getNumber(_str) {
+        var arr = _str.split('');
+        var out = new Array();
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (isNaN(arr[cnt]) == false) {
+                out.push(arr[cnt]);
+            }
+        }
+        return Number(out.join(''));
+    }
+    $(document).ready(function () {
+        $('input[type=text]').on('keyup', function () {
+            updateTextView($(this));
+        });
+    });
+
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
         let dvDedectionAmt = $(parentDiv).find('input');
+
         if (dvDeduction.val() && dvDedectionAmt.val()) {
             console.log(dvDeduction.val(), dvDedectionAmt.val());
         }
@@ -299,14 +344,16 @@
 
     function computeNetAmount() {
         let amounts = $('.deduction_amount');
-        let gross_amount = +$('#gross_amount').val();
+        let gross_amount = +$('#gross_amount').val().replace(/,/g, '');
         let total = 0;
         $(amounts).each(function (index, value) {
-            total += +value.value;
+            total += +value.value.replace(/,/g, '');
         });
 
-        $('#total_deduction').val(total);
-        $('#net_amount').val(gross_amount - total);
+        var net = gross_amount - total;
+
+        $('#total_deduction').val(total.toLocaleString());
+        $('#net_amount').val(net.toLocaleString());
     }
 
 

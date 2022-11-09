@@ -1,7 +1,7 @@
 ﻿ @model IEnumerable<fmis.Models.Accounting.Dv>
 @using System.Globalization;
 @{
-    ViewData["Title"] = "DV";
+    ViewData["Title"] = "DisbursementVoucher";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -148,6 +148,7 @@
                         ₱@item.NetAmount.ToString("##,##0.00")
                     </td>
                     <td>
+
                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
                             <i class="ace-icon fa fa-edit"></i>
                         </a>
