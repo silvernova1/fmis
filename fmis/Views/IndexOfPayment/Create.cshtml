@@ -22,7 +22,7 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 860px;">
+<div class="container" style="height: 885px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
@@ -34,7 +34,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
@@ -68,6 +67,25 @@
             </div>
         </div>
         <div class="col-md-12">
+            <div class="col-md-3">
+                <select class="form-control category" required>
+                    <option> - Select Allotment Class - </option>
+                    <option> - PS - </option>
+                    <option> - MOOE - </option>
+                    <option> - CO - </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control category" required>
+                    <option> - Select ORS Number - </option>
+                    <option> - 123123-324 - </option>
+                    <option> - 232424-323 - </option>
+                    <option> - 11011-2324 - </option>
+                </select>
+            </div>
+        </div>
+        <br />
+        <div class="col-md-12" style="margin-top: 10px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
@@ -168,7 +186,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12" style="margin-top: 40px;">
+        <div class="col-md-12" style="margin-top: 20px;">
             <div class="col-md-2" style="width: 250px; ">
                 <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
                     <label style="font-weight:bold;">GROSS AMOUNT: </label>
