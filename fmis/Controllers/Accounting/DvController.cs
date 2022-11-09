@@ -133,6 +133,13 @@ namespace fmis.Controllers.Accounting
             return View(dv);
         }
 
+        public IActionResult GetPayee(string cid)
+        {
+            var payee_List = _MyDbContext.Payee.Where(x=>x.payee_type == cid).Select(c => new { Id = c.PayeeId, Name = c.PayeeDescription }).ToList();
+
+            return Json(payee_List);
+        }
+
         public async Task<IActionResult> GetLatestDvType(string type)
         {
 

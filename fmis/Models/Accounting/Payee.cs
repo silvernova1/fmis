@@ -12,6 +12,6 @@ namespace fmis.Models.Accounting
         public string TinNo { get; set; }
         public string token { get; set; }
         public string status { get; set; }
-        public int payee_type { get; set; }
+        public string payee_type { get; set; }
     }
 }

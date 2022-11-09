@@ -56,7 +56,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <h5>Payee: </h5>
-                    @Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required ="required"})
+                    @*@Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required ="required"})*@
+                    <select asp-for="PayeeId" class="form-control select2"></select>
                 </div>
             </div>
 
@@ -104,7 +105,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()"/>
+                    <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()"/>
                 </div>
             </div>
         </div>
@@ -117,7 +118,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="number"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -130,7 +131,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="number"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -143,7 +144,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="number"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -156,7 +157,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="number"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -169,7 +170,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="number"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -182,7 +183,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="number"  placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -195,7 +196,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="number" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -203,12 +204,12 @@
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
-                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">TOTAL  DEDUCTIONS: </label>
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">TOTAL DEDUCTIONS: </label>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="total_deduction" type="number"  placeholder="0.00" readonly/>
+                    <input class="form-control" id="total_deduction" type="text" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
@@ -221,7 +222,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="net_amount" type="number"  placeholder="0.00" readonly/>
+                    <input class="form-control" id="net_amount" type="text" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
@@ -237,8 +238,48 @@
 
 <script>
 
-    get_sbu();
+    //cascade dropdownlist
+    $(function () {
+        $("select#dv_type").change(function () {
+            var cid = $(this).val();
+            //alert(cid);
+            $("select#PayeeId").empty();
 
+            $.getJSON(`/Dv/GetPayee?cid=${cid}`, function (data) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+                    $("select#PayeeId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+        })
+    });
+
+    //adding comma after 3 digits
+    function updateTextView(_obj) {
+        var num = getNumber(_obj.val());
+        if (num == 0) {
+            _obj.val('');
+        } else {
+            _obj.val(num.toLocaleString());
+        }
+    }
+    function getNumber(_str) {
+        var arr = _str.split('');
+        var out = new Array();
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (isNaN(arr[cnt]) == false) {
+                out.push(arr[cnt]);
+            }
+        }
+        return Number(out.join(''));
+    }
+    $(document).ready(function () {
+        $('input[type=text]').on('keyup', function () {
+            updateTextView($(this));
+        });
+    });
+
+    get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
         $.ajax({
@@ -304,14 +345,19 @@
 
     function computeNetAmount() {
         let amounts = $('.deduction_amount');
-        let gross_amount = +$('#gross_amount').val();
+        let gross_amount = +$('#gross_amount').val().replace(/,/g, '');
         let total = 0;
         $(amounts).each(function (index, value) {
-            total += +value.value;
+            total += +value.value.replace(/,/g, '');
         });
 
-        $('#total_deduction').val(total);
-        $('#net_amount').val(gross_amount - total);
+        var net = gross_amount - total;
+
+        $('#total_deduction').val(total.toLocaleString());
+        $('#net_amount').val(net.toLocaleString());
+
+
+
     }
 
     document.getElementById("textarea").value = "To payment of";
