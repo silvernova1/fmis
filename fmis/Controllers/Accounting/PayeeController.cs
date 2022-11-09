@@ -78,7 +78,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "individual");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == 1).OrderBy(x=> x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "S").OrderBy(x=> x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/Individual.cshtml");
@@ -89,7 +89,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "supplier");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == 2).OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/Supplier.cshtml");
@@ -115,7 +115,7 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = 1;
+                payee.payee_type = "S";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -142,7 +142,7 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = 2;
+                payee.payee_type = "T";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -218,7 +218,7 @@ namespace fmis.Controllers.Accounting
                           {
                                 PayeeDescription = worksheet.Cells[row, 1].Text,
                                 TinNo = worksheet.Cells[row, 2].Text,
-                                payee_type = Convert.ToInt32(payee_Type),
+                                payee_type = payee_Type,
                                 token = payeeToken,
                                 status = "activated",
                                
