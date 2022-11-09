@@ -274,12 +274,11 @@
         var fundCluster = document.getElementById("fundCluster").value;
         var dvDate = document.getElementById("dvDate").value;
         var dvType = document.getElementById("dv_type").value;
-        var payee = document.getElementById("ddlBranches").value;
         var particulars = document.getElementById("textarea").value;
         var respoCenter = document.getElementById("respoCenter").value;
         var selectOptions = document.getElementById("selectOptions").value;
 
-        if (fundCluster != '' && dvDate != '' && dvType != '' && payee != '' && particulars != ''
+        if (fundCluster != '' && dvDate != '' && dvType != '' && particulars != ''
             && respoCenter != '' && selectOptions != '') {
             Lobibox.notify('info', {
                 msg: 'Disbursement Voucher Successfully Updated!',

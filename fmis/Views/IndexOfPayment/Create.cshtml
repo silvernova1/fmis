@@ -85,7 +85,7 @@
             </div>
         </div>
         <br />
-        <div class="col-md-12" style="margin-top: 10px;">
+        <div class="col-md-12" style="margin-top: 15px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
@@ -194,7 +194,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="number" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                    <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
                 </div>
             </div>
         </div>
@@ -206,7 +206,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -218,7 +218,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -230,7 +230,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -242,7 +242,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -254,7 +254,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -266,7 +266,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -278,7 +278,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text" placeholder="0.00" />
                 </div>
             </div>
         </div>
@@ -540,6 +540,30 @@
         });
     }
 
+    //adding comma after 3 digits
+    function updateTextView(_obj) {
+        var num = getNumber(_obj.val());
+        if (num == 0) {
+            _obj.val('');
+        } else {
+            _obj.val(num.toLocaleString());
+        }
+    }
+    function getNumber(_str) {
+        var arr = _str.split('');
+        var out = new Array();
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (isNaN(arr[cnt]) == false) {
+                out.push(arr[cnt]);
+            }
+        }
+        return Number(out.join(''));
+    }
+    $(document).ready(function () {
+        $('input[type=text]').on('keyup', function () {
+            updateTextView($(this));
+        });
+    });
 
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
@@ -554,14 +578,16 @@
 
     function computeNetAmount() {
         let amounts = $('.deduction_amount');
-        let gross_amount = +$('#gross_amount').val();
+        let gross_amount = +$('#gross_amount').val().replace(/,/g, '');
         let total = 0;
         $(amounts).each(function (index, value) {
-            total += +value.value;
+            total += +value.value.replace(/,/g, '');
         });
 
-        $('#total_deduction').val(total);
-        $('#net_amount').val(gross_amount - total);
+        var net = gross_amount - total;
+
+        $('#total_deduction').val(total.toLocaleString());
+        $('#net_amount').val(net.toLocaleString());
     }
 
 
@@ -648,6 +674,8 @@
     });
 
   @*  document.getElementById("textarea").value = "To payment of";*@
+
+
 
 
     function submiBtnClick() {
