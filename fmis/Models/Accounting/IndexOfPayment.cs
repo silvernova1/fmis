@@ -24,6 +24,12 @@ namespace fmis.Models.Accounting
         public int? ProjectId { get; set; }
         public string InvoiceNumber { get; set; }
         public int? SoNumber { get; set; }
+
+        [ForeignKey("ObligationId")]
+        public int ObligationId { get; set; }
+        [JsonIgnore]
+        public Obligation Obligation { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime DvDate { get; set; }
