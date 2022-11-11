@@ -130,7 +130,6 @@ namespace fmis.Controllers.Accounting
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
-            
 
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
             indexOfPayment.TotalDeduction = indexOfPayment.indexDeductions.Sum(x => x.Amount);
@@ -145,6 +144,40 @@ namespace fmis.Controllers.Accounting
                 return RedirectToAction(nameof(Index));
             }
             return View(indexOfPayment);
+        }
+
+        public IActionResult GetOrs(int cid)
+        {
+            /*var ors_List = (from o in _MyDbContext.Obligation
+                            join f in _MyDbContext.FundSources
+                            on o.FundSourceId equals f.FundSourceId
+                            where f.AllotmentClassId == cid
+                            select new
+                            {
+                                Id = o.Id,
+                                Name = o.Ors_no
+                            }).ToList();*/
+
+            var ors_List = (from fundsource in _MyDbContext.FundSources
+                              join obligation in _MyDbContext.Obligation
+                              on fundsource.FundSourceId equals obligation.FundSourceId
+                              join allotmentclass in _MyDbContext.AllotmentClass
+                              on fundsource.AllotmentClassId equals allotmentclass.Id
+                              join fund in _MyDbContext.Fund
+                              on fundsource.FundId equals fund.FundId
+                              where fundsource.AllotmentClassId == cid
+                              select new
+                              {
+                                  allotment = allotmentclass.Fund_Code,
+                                  fundCurrent = fund.Fund_code_current,
+                                  fundConap = fund.Fund_code_conap,
+                                  fundsource = fundsource.AppropriationId,
+                                  obligation = obligation.source_type,
+                                  Id = obligation.Id,
+                                  Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id
+                              }).ToList();
+
+            return Json(ors_List);
         }
 
         public IActionResult CheckifExist(int CategoryId, string poNumber)
