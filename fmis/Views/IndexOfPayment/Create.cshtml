@@ -55,7 +55,7 @@
             <div>
                 <div class="col-md-3">
                     <label>Date: </label>
-                    <input asp-for="DvDate" type="date" onchange="getFormattedDate" class="form-control" id="dvDate" required >
+                    <input asp-for="DvDate" type="date" class="form-control" id="dvDate" required >
                     <span class="text-danger"></span>
                 </div>
             </div>
@@ -68,20 +68,17 @@
         </div>
         <div class="col-md-12">
             <div class="col-md-3">
-                <select class="form-control category" required>
-                    <option> - Select Allotment Class - </option>
-                    <option> - PS - </option>
-                    <option> - MOOE - </option>
-                    <option> - CO - </option>
+                <select class="form-control category" id="allotmentClass_type" required>
+                    <option value=""> - Select Allotment Class - </option>
+                    <option value="1"> - PS - </option>
+                    <option value="2"> - MOOE - </option>
+                    <option value="3"> - CO - </option>
                 </select>
             </div>
             <div class="col-md-3">
-                <select class="form-control category" required>
-                    <option> - Select ORS Number - </option>
-                    <option> - 123123-324 - </option>
-                    <option> - 232424-323 - </option>
-                    <option> - 11011-2324 - </option>
-                </select>
+                <div class="form-group">
+                    <select asp-for="ObligationId" class="form-control select2"></select>
+                </div>
             </div>
         </div>
         <br />
@@ -317,6 +314,22 @@
 
 
 <script>
+
+    //cascade dropdownlist for allotment class
+    $(function () {
+        $("select#allotmentClass_type").change(function () {
+            var cid = $(this).val();
+            $("select#ObligationId").empty();
+
+            $.getJSON(`/IndexOfPayment/GetOrs?cid=${cid}`, function (data) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+                    $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+        })
+    });
+
     //prevent saving on enter
     $(document).ready(function () {
         $(window).keydown(function (event) {
