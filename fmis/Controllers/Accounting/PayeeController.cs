@@ -111,7 +111,7 @@ namespace fmis.Controllers.Accounting
                 {
                     payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
                 }
-                payee.PayeeDescription = item.PayeeDescription;
+                payee.PayeeDescription = item.PayeeDescription.ToUpper();
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
@@ -138,7 +138,7 @@ namespace fmis.Controllers.Accounting
                 {
                     payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
                 }
-                payee.PayeeDescription = item.PayeeDescription;
+                payee.PayeeDescription = item.PayeeDescription.ToUpper();
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
@@ -164,7 +164,6 @@ namespace fmis.Controllers.Accounting
                 _MyDbContext.SaveChanges();
             }
         }
-
 
 
         // POST: Obligations/Delete/5

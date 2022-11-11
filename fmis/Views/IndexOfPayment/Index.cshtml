@@ -260,6 +260,11 @@ else
     </div>
 }
 <script>
+
+    $(document).ready(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    });
+
     $(document).ready(function () {
         $('#data').after('<div id="nav"></div>');
         var rowsShown = 10;
