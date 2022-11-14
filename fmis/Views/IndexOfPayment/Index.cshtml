@@ -1,7 +1,29 @@
 ﻿@model IEnumerable<fmis.Models.Accounting.IndexOfPayment>
+@using fmis.Data;
+@inject MyDbContext _MyDbContext
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var ors_List = (from fundsource in _MyDbContext.FundSources
+                    join obligation in _MyDbContext.Obligation
+                    on fundsource.FundSourceId equals obligation.FundSourceId
+                    join allotmentclass in _MyDbContext.AllotmentClass
+                    on fundsource.AllotmentClassId equals allotmentclass.Id
+                    join fund in _MyDbContext.Fund
+                    on fundsource.FundId equals fund.FundId
+                    select new
+                    {
+                        /*allotment = allotmentclass.Fund_Code,
+                        fundCurrent = fund.Fund_code_current,
+                        fundConap = fund.Fund_code_conap,
+                        fundsource = fundsource.AppropriationId,
+                        obligation = obligation.source_type,*/
+                        Id = obligation.Id,
+                        Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id
+                    }).ToList();
 }
 
 
@@ -131,7 +153,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DvDate)
-                   @* @item.DvDate.ToString("dd/MM/yyyy")*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Particulars)
@@ -140,7 +161,7 @@
                     @Html.DisplayFor(modelItem => item.PoNumber)
                 </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ObligationId)
+                        @ors_List.Where(x=>x.Id == item.ObligationId).FirstOrDefault().Name
                     </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.InvoiceNumber)
