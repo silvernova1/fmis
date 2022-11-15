@@ -59,6 +59,8 @@ namespace fmis.Controllers.Accounting
                                 .ThenInclude(x => x.Deduction)
                             .Include(x=>x.BillNumbers)
                             select c;
+
+
                 
             bool check = indexData.Any(a => a == null);
 
@@ -79,7 +81,6 @@ namespace fmis.Controllers.Accounting
             ViewBag.totalDeductionTotal = totalDeductionTotal;
             var netAmountTotal = _MyDbContext.Indexofpayment.Sum(x => x.NetAmount);
             ViewBag.netTotal = netAmountTotal;
-
 
             //with filter
             var grossAmount = _MyDbContext.Indexofpayment.Where(x=>x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.GrossAmount);
