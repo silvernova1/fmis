@@ -1,7 +1,29 @@
 ﻿@model IEnumerable<fmis.Models.Accounting.IndexOfPayment>
+@using fmis.Data;
+@inject MyDbContext _MyDbContext
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var ors_List = (from fundsource in _MyDbContext.FundSources
+                    join obligation in _MyDbContext.Obligation
+                    on fundsource.FundSourceId equals obligation.FundSourceId
+                    join allotmentclass in _MyDbContext.AllotmentClass
+                    on fundsource.AllotmentClassId equals allotmentclass.Id
+                    join fund in _MyDbContext.Fund
+                    on fundsource.FundId equals fund.FundId
+                    select new
+                    {
+                        /*allotment = allotmentclass.Fund_Code,
+                        fundCurrent = fund.Fund_code_current,
+                        fundConap = fund.Fund_code_conap,
+                        fundsource = fundsource.AppropriationId,
+                        obligation = obligation.source_type,*/
+                        Id = obligation.Id,
+                        Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id
+                    }).ToList();
 }
 
 
@@ -90,118 +112,119 @@
 
 @if(Model.Count()>0)
 {
-    <table class="table table-striped" id="data">
-    <thead>
+    <div class="table-responsive">
+        <table class="table table-striped" id="data">
+            <thead>
 
-        <tr>
-            <th> Category </th>
-            <th> Dv # </th>
-            <th> Payee </th>
-            <th> Date </th>
-            <th> Particulars </th>
-            <th> PO #  </th>
-            <th> ORS #</th>
-            <th> Invoice #  </th>
-            <th> Project Id </th>
-            <th> # of Billing </th>
-            <th> Period Cover </th>
-            <th> From-To </th>
-            <th> Travel Period </th>
-            <th> SO # </th>
-            <th> Account # </th>
-            <th> Gross Amount </th>
-            <th> Deductions </th>
-            <th> Total Deductions </th>
-            <th> Net Amount </th>
-            <th> Action  </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dv.DvNo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DvDate)
-                   @* @item.DvDate.ToString("dd/MM/yyyy")*@
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Particulars)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PoNumber)
-                </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ObligationId)
-                    </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InvoiceNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProjectId)
-                </td>
-                @if(item.BillNumbers.Any())
+                <tr>
+                    <th> Category </th>
+                    <th> Dv # </th>
+                    <th> Payee </th>
+                    <th> Date </th>
+                    <th> Particulars </th>
+                    <th> PO #  </th>
+                    <th style="width:200px"> ORS #</th>
+                    <th> Invoice #  </th>
+                    <th> Project Id </th>
+                    <th> # of Billing </th>
+                    <th> Period Cover </th>
+                    <th> From-To </th>
+                    <th> Travel Period </th>
+                    <th> SO # </th>
+                    <th> Account # </th>
+                    <th> Gross Amount </th>
+                    <th> Deductions </th>
+                    <th> Total Deductions </th>
+                    <th> Net Amount </th>
+                    <th> Action  </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
+                    <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.NumberOfBill),
-
-                            @*@foreach (var billNumber in item.BillNumbers)
-                            {
-                                @billNumber.NumberOfBilling
-                                @string.Join(billNumber.NumberOfBilling, ",").ToArray()
-                            }*@
-                            @String.Join(", ", item.BillNumbers.Select(p => p.NumberOfBilling).ToArray())
+                            @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
                         </td>
-                }
-                else
-                {
-                    <td>
-                            @Html.DisplayFor(modelItem => item.NumberOfBill)
-                    </td>                   
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.PeriodCover)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.travel_period)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SoNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AccountNumber)
-                </td>
-                <td> ₱@item.GrossAmount.ToString("##,##0.00")</td>
-                <td>
-                    <select class="form-control" style="width: 320px;">
-                        @foreach (var deduction in item.indexDeductions)
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dv.DvNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DvDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Particulars)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PoNumber)
+                        </td>
+                        <td style="width:200px">
+                            @ors_List.Where(x=>x.Id == item.ObligationId).FirstOrDefault().Name
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InvoiceNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProjectId)
+                        </td>
+                        @if (item.BillNumbers.Any())
                         {
-                            <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberOfBill),
+
+                                @*@foreach (var billNumber in item.BillNumbers)
+                    {
+                    @billNumber.NumberOfBilling
+                    @string.Join(billNumber.NumberOfBilling, ",").ToArray()
+                    }*@
+                                @String.Join(", ", item.BillNumbers.Select(p => p.NumberOfBilling).ToArray())
+                            </td>
                         }
-                    </select>
-                </td>
-                <td>₱@item.TotalDeduction.ToString("##,##0.00")</td>
-                <td>₱@item.NetAmount.ToString("##,##0.00")</td>
-                <td>
-                    <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal"  asp-route-id="@item.IndexOfPaymentId"  data-bs-toggle="tooltip" title="Edit" >
-                        <i class="ace-icon fa fa-edit"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        else
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberOfBill)
+                            </td>
+                        }
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PeriodCover)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.travel_period)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccountNumber)
+                        </td>
+                        <td> ₱@item.GrossAmount.ToString("##,##0.00")</td>
+                        <td>
+                            <select class="form-control" style="width: 320px;">
+                                @foreach (var deduction in item.indexDeductions)
+                                {
+                                    <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                                }
+                            </select>
+                        </td>
+                        <td>₱@item.TotalDeduction.ToString("##,##0.00")</td>
+                        <td>₱@item.NetAmount.ToString("##,##0.00")</td>
+                        <td>
+                            <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.IndexOfPaymentId" data-bs-toggle="tooltip" title="Edit">
+                                <i class="ace-icon fa fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 else
 {
