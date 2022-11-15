@@ -178,7 +178,10 @@ namespace fmis.Controllers.Accounting
                                   Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id
                               }).ToList();
 
+
             return Json(ors_List);
+
+            
         }
 
         public IActionResult CheckifExist(int CategoryId, string poNumber)

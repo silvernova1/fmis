@@ -56,7 +56,6 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <h5>Payee: </h5>
-                    @*@Html.DropDownList("PayeeId", null, " - Select Payee - ", htmlAttributes: new { @class = "select2 form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required ="required"})*@
                     <select asp-for="PayeeId"  class="form-control select2"></select>
                 </div>
             </div>

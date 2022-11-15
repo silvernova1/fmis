@@ -37,8 +37,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label>Dv: </label>
-                        @Html.DropDownList("DvId", null, htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
+                        <label>Dv Number: </label>
+                        @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
                         @if (ViewBag.Message != null && ViewBag.Message == "Exist")
                         {
                             <br /><span style="color:red;">Already exist.</span>
@@ -70,9 +70,9 @@
             <div class="col-md-3">
                 <select class="form-control category" id="allotmentClass_type" required>
                     <option value=""> - Select Allotment Class - </option>
-                    <option value="1"> - PS - </option>
-                    <option value="2"> - MOOE - </option>
-                    <option value="3"> - CO - </option>
+                    <option value="1">  PS  </option>
+                    <option value="2">  MOOE  </option>
+                    <option value="3">  CO  </option>
                 </select>
             </div>
             <div class="col-md-3">

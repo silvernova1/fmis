@@ -113,9 +113,8 @@
 @if(Model.Count()>0)
 {
     <div class="table-responsive">
-        <table class="table table-striped" id="data">
+        <table class="table table-striped" id="data" >
             <thead>
-
                 <tr>
                     <th> Category </th>
                     <th> Dv # </th>
@@ -123,7 +122,7 @@
                     <th> Date </th>
                     <th> Particulars </th>
                     <th> PO #  </th>
-                    <th style="width:200px"> ORS #</th>
+                    <th> ORS #</th>
                     <th> Invoice #  </th>
                     <th> Project Id </th>
                     <th> # of Billing </th>
@@ -141,6 +140,7 @@
             </thead>
             <tbody>
                 @foreach (var item in Model)
+
                 {
                     <tr>
                         <td>
@@ -161,7 +161,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.PoNumber)
                         </td>
-                        <td style="width:200px">
+                        <td nowrap="nowrap">
                             @ors_List.Where(x=>x.Id == item.ObligationId).FirstOrDefault().Name
                         </td>
                         <td>
@@ -175,11 +175,6 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.NumberOfBill),
 
-                                @*@foreach (var billNumber in item.BillNumbers)
-                    {
-                    @billNumber.NumberOfBilling
-                    @string.Join(billNumber.NumberOfBilling, ",").ToArray()
-                    }*@
                                 @String.Join(", ", item.BillNumbers.Select(p => p.NumberOfBilling).ToArray())
                             </td>
                         }
@@ -287,6 +282,11 @@ else
     </div>
 }
 <script>
+
+    $(document).ready(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    });
+
     $(document).ready(function () {
         $('#data').after('<div id="nav"></div>');
         var rowsShown = 10;
