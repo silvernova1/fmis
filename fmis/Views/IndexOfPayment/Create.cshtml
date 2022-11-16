@@ -321,7 +321,8 @@
             var cid = $(this).val();
             $("select#ObligationId").empty();
 
-            $.getJSON(`/IndexOfPayment/GetOrs?cid=${cid}`, function (data) {
+            //$.getJSON(`/IndexOfPayment/GetOrs?cid=${cid}`, function (data) {
+            $.getJSON('@Url.Action("GetOrs", "IndexOfPayment")?cid=' + cid, function (data) {
                 //console.log(data);
                 $.each(data, function (i, item) {
                     $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
