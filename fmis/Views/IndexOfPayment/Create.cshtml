@@ -22,7 +22,7 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 885px;">
+<div class="container" style="height: 900px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
@@ -86,7 +86,7 @@
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <input asp-for="PoNumber" id="poNumber" type="text" class="form-control" onchange="DataCheck()" onfocus="this.value=''" />
+                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px"   />
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -98,7 +98,7 @@
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <input asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" />
+                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px" />
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -110,7 +110,7 @@
             <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
                 <div class="form-group">
                     <label>INVOICE #:</label>
-                    <input asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" />
+                    <textarea asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()"  style="resize: none; overflow: auto; height:35px" />
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -148,7 +148,7 @@
                 <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                     <div class="form-group">
                         <label>S.O #:</label>
-                        <input type="text" asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" />
+                        <textarea  asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
@@ -166,7 +166,7 @@
                 <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
                     <div class="form-group">
                         <label>ACCOUNT #:</label>
-                        <input type="text" asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" />
+                        <textarea  asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" style="resize: none; overflow: auto; height:35px" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
@@ -178,7 +178,7 @@
                 <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
                     <div class="form-group">
                         <label># OF BILLING: (FIRST, SECOND):</label>
-                        <input type="text" asp-for="NumberOfBill" class="form-control" />
+                        <textarea asp-for="NumberOfBill" class="form-control" style="resize: none; overflow: auto; height:35px" />
                     </div>
                 </div>
             </div>
@@ -572,11 +572,13 @@
         }
         return Number(out.join(''));
     }
+
     $(document).ready(function () {
         $('input[type=text]').on('keyup', function () {
             updateTextView($(this));
         });
     });
+
 
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');
@@ -586,7 +588,6 @@
             console.log(dvDeduction.val(), dvDedectionAmt.val());
         }
         computeNetAmount();
-
     }
 
     function computeNetAmount() {
@@ -602,7 +603,6 @@
         $('#total_deduction').val(total.toLocaleString());
         $('#net_amount').val(net.toLocaleString());
     }
-
 
     $("#CategoryId").trigger("click");
     $(document).ready(function () {
@@ -688,9 +688,6 @@
 
   @*  document.getElementById("textarea").value = "To payment of";*@
 
-
-
-
     function submiBtnClick() {
         var category = document.getElementsByClassName("category").value;
         var dvNo = document.getElementById("ddlBranches").value;
@@ -706,5 +703,7 @@
             return false;
         }
     }
+
+
 
 </script>

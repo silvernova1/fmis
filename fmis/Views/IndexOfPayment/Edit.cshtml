@@ -173,7 +173,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" placeholder="0.00" />
+                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" />
                     </div>
                 </div>
             </div>
@@ -189,7 +189,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control deduction_amount" placeholder="0.00" />
+                        <input class="form-control deduction_amount"  />
                     </div>
                 </div>
             </div>
@@ -203,7 +203,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" type="text" id="total_deduction" value="@Model.TotalDeduction.ToString("##,#00.00")" asp-for="TotalDeduction" placeholder="0.00" readonly />
+                    <input class="form-control" id="total_deduction" value="@Model.TotalDeduction.ToString("##,#00.00")" asp-for="TotalDeduction" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
