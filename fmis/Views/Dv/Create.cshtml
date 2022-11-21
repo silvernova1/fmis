@@ -28,7 +28,10 @@
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
                     <h5>Fund Cluster: </h5>
-                    @Html.DropDownList("FundClusterId", null, " - FundCluster - ", htmlAttributes: new { @class = "form-control", @id = "fundCluster", @required ="required" })
+                    <select class="form-control" asp-for="FundClusterId" asp-items="ViewBag.FundClusterId">
+                        <option value="">- FundCluster</option>
+                    </select>
+                    @*@Html.DropDownList("FundClusterId", ViewBag.FundClusterId, " - FundCluster - ", htmlAttributes: new { @class = "form-control", @id = "fundCluster", @required = "required" })*@
                 </div>
             </div>
             <div class="1stcol col-md-2">
@@ -104,7 +107,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount"  onchange="computeNetAmount()"/>
+                    <input class="form-control gross_amount" id="gross_amount" type="text" asp-for="GrossAmount" />
                 </div>
             </div>
         </div>
@@ -117,7 +120,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text"/>
                 </div>
             </div>
         </div>
@@ -130,7 +133,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="text"  />
                 </div>
             </div>
         </div>
@@ -143,7 +146,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="text"   />
                 </div>
             </div>
         </div>
@@ -156,7 +159,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="text"   />
                 </div>
             </div>
         </div>
@@ -169,7 +172,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="text"   />
                 </div>
             </div>
         </div>
@@ -182,7 +185,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="text" />
                 </div>
             </div>
         </div>
@@ -195,7 +198,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="text"   />
                 </div>
             </div>
         </div>
@@ -237,6 +240,8 @@
 
 <script>
 
+
+
     //cascade dropdownlist
     $(function () {
         $("select#dv_type").change(function () {
@@ -250,16 +255,28 @@
                     $("select#PayeeId").append(`<option value="${item.id}">${item.name}</option>`);
                 });
             });
+        });
+
+        $('input[type=text]').click(function () {
+            if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }).change(function () {
+            updateTextView($(this));
+        }).focusout(function () {
+            if (this.value === '') {
+                this.value = '0';
+            }
         })
     });
 
     //adding comma after 3 digits
     function updateTextView(_obj) {
-        var num = getNumber(_obj.val());
-        if (num == 0) {
-            _obj.val('');
+        var num = +_obj.val();
+        if (num == '') {
+            _obj.val('0');
         } else {
-            _obj.val(num.toLocaleString());
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
         }
     }
     function getNumber(_str) {
@@ -272,11 +289,6 @@
         }
         return Number(out.join(''));
     }
-    $(document).ready(function () {
-        $('input[type=text]').on('keyup', function () {
-            updateTextView($(this));
-        });
-    });
 
     get_sbu();
     function get_sbu() {
@@ -312,7 +324,6 @@
     });
 
     $(document).ready(function () {
-
         //Prevent users from submitting a form by hitting Enter
         $(window).keydown(function (event) {
             if (event.keyCode == 13) {
@@ -359,7 +370,6 @@
 
         $('#total_deduction').val(total.toLocaleString());
         $('#net_amount').val(net.toLocaleString());
-
     }
 
     document.getElementById("textarea").value = "To payment of";
@@ -382,6 +392,7 @@
             return false;
         }
     }
+
 
 </script>
 

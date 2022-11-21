@@ -104,7 +104,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount.ToString("##,#00.00")" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount.ToString("##,#00.00")" asp-for="GrossAmount" onchange="computeNetAmount()" />
                 </div>
             </div>
         </div>
@@ -191,7 +191,7 @@
         $("select#dv_type").change(function () {
             var cid = $(this).val();
             //alert(cid);
-                $("select#PayeeId").empty();
+            $("select#PayeeId").empty();
 
             $.getJSON(`/Dv/GetPayee?cid=${cid}`, function (data) {
                 //console.log(data);
@@ -199,19 +199,32 @@
                     $("select#PayeeId").append(`<option value="${item.id}">${item.name}</option>`);
                 });
             });
+        });
+
+        $('input[type=text]').click(function () {
+            if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }).change(function () {
+            updateTextView($(this));
+        }).focusout(function () {
+            if (this.value === '') {
+                this.value = '0';
+            }
         })
     });
 
 
     //adding comma after 3 digits
     function updateTextView(_obj) {
-        var num = getNumber(_obj.val());
+        var num = +_obj.val();
         if (num == 0) {
             _obj.val('');
         } else {
-            _obj.val(num.toLocaleString());
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
         }
     }
+
     function getNumber(_str) {
         var arr = _str.split('');
         var out = new Array();
@@ -222,11 +235,6 @@
         }
         return Number(out.join(''));
     }
-    $(document).ready(function () {
-        $('input[type=text]').on('keyup', function () {
-            updateTextView($(this));
-        });
-    });
 
 
     $('.select2').select2();

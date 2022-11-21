@@ -10,7 +10,7 @@ namespace fmis.Models.Accounting
     {
         [Key]
         public int DvDeductionId { get; set; }
-        public float Amount { get; set; }
+        public float Amount { get; set; }  
 
         public int? DeductionId { get; set; }
         public Deduction Deduction { get; set; }

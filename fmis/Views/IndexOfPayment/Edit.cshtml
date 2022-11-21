@@ -167,13 +167,13 @@
             <div class="col-md-12" onchange="submitDeduction(this);">
                 <input asp-for="indexDeductions[x].IndexDeductionId" type="hidden" />
                 <div class="col-md-2" style="width: 250px;">
-                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2">
+                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2" >
                         <option value=""> - Select Deduction - </option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" />
+                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" />
                     </div>
                 </div>
             </div>
@@ -304,15 +304,28 @@
                 }
             }
         });
+
+        $('input[type=text]').click(function () {
+            if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }).change(function () {
+            updateTextView($(this));
+        }).focusout(function () {
+            if (this.value === '') {
+                this.value = '0';
+            }
+        })
+
     }
 
     //adding comma after 3 digits
     function updateTextView(_obj) {
-        var num = getNumber(_obj.val());
+        var num = +_obj.val();
         if (num == 0) {
             _obj.val('');
         } else {
-            _obj.val(num.toLocaleString());
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
         }
     }
     function getNumber(_str) {
@@ -325,11 +338,7 @@
         }
         return Number(out.join(''));
     }
-    $(document).ready(function () {
-        $('input[type=text]').on('keyup', function () {
-            updateTextView($(this));
-        });
-    });
+
 
     function submitDeduction(parentDiv) {
         let dvDeduction = $(parentDiv).find('select');

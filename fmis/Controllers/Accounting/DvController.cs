@@ -121,6 +121,7 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
             dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
+            
             if (ModelState.IsValid)
             {
                 dv.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0)
@@ -231,7 +232,7 @@ namespace fmis.Controllers.Accounting
             dvs.GrossAmount = dv.GrossAmount;
             dvs.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != null).ToList();
             dvs.TotalDeduction = dv.TotalDeduction;
-            dvs.NetAmount = dvs.GrossAmount - dv.dvDeductions.Sum(x => x.Amount);
+            dvs.NetAmount = dvs.GrossAmount - (float)dv.dvDeductions.Sum(x => x.Amount);
             dvs.DvType = dvs.DvType;
 
             PopulateFundClusterDropDownList();
