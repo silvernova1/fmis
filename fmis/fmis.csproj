@@ -79,6 +79,12 @@
 	<ItemGroup>
 		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<None Include="wwwroot\assets\js\jquery.signalR-2.4.1.min.js" />
+		<None Include="wwwroot\assets\plugins\inputmask\bindings\inputmask.binding.js" />
+		<None Include="wwwroot\assets\plugins\inputmask\inputmask.es6.js" />
+		<None Include="wwwroot\assets\plugins\inputmask\inputmask.js" />
+		<None Include="wwwroot\assets\plugins\inputmask\inputmask.min.js" />
+		<None Include="wwwroot\assets\plugins\inputmask\jquery.inputmask.js" />
+		<None Include="wwwroot\assets\plugins\inputmask\jquery.inputmask.min.js" />
 		<None Include="wwwroot\assets\plugin\select2\js\i18n\af.js" />
 		<None Include="wwwroot\assets\plugin\select2\js\i18n\ar.js" />
 		<None Include="wwwroot\assets\plugin\select2\js\i18n\az.js" />

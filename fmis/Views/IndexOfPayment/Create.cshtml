@@ -203,7 +203,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text"  />
                 </div>
             </div>
         </div>
@@ -215,7 +215,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" />
                 </div>
             </div>
         </div>
@@ -227,7 +227,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text"  />
                 </div>
             </div>
         </div>
@@ -239,7 +239,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" />
                 </div>
             </div>
         </div>
@@ -251,7 +251,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" />
                 </div>
             </div>
         </div>
@@ -263,7 +263,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text"  />
                 </div>
             </div>
         </div>
@@ -275,7 +275,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text" placeholder="0.00" />
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text"  />
                 </div>
             </div>
         </div>
@@ -328,7 +328,21 @@
                     $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
                 });
             });
+
+        });
+
+        $('input[type=text]').click(function () {
+            if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }).change(function () {
+            updateTextView($(this));
+        }).focusout(function () {
+            if (this.value === '') {
+                this.value = '0';
+            }
         })
+
     });
 
     //prevent saving on enter
@@ -556,11 +570,11 @@
 
     //adding comma after 3 digits
     function updateTextView(_obj) {
-        var num = getNumber(_obj.val());
+        var num = +_obj.val();
         if (num == 0) {
             _obj.val('');
         } else {
-            _obj.val(num.toLocaleString());
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
         }
     }
     function getNumber(_str) {
@@ -573,12 +587,6 @@
         }
         return Number(out.join(''));
     }
-
-    $(document).ready(function () {
-        $('input[type=text]').on('keyup', function () {
-            updateTextView($(this));
-        });
-    });
 
 
     function submitDeduction(parentDiv) {
