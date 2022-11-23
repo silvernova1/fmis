@@ -340,7 +340,7 @@ namespace fmis.Controllers
                                 OAs.Add(new ObligationAmount()
                                 {
                                     UacsId = uacs,
-                                    Amount = ToInt(amount),
+                                    Amount = Convert.ToDecimal(amount),
                                     obligation_token = obligationToken,
                                     obligation_amount_token = Guid.NewGuid().ToString(),
                                     Expense_code = long.Parse(worksheet.Cells[row, start].Text),
