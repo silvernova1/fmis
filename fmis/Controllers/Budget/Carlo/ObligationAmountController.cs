@@ -125,7 +125,23 @@ namespace fmis.Controllers
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
 
-         
+            var obligated_amount = (from oa in _MyDbContext.ObligationAmount
+                                    join o in _MyDbContext.Obligation
+                                    on oa.ObligationId equals o.Id
+                                    join f in _MyDbContext.FundSources
+                                    on o.FundSourceId equals f.FundSourceId
+                                    select new
+                                    {
+                                        Amount = oa.Amount,
+                                        FundSourceId = o.FundSourceId,
+                                        AllotmentClassId = f.AllotmentClassId,
+                                        AppropriationId = f.AppropriationId,
+                                        BudgetAllotmentId = f.BudgetAllotmentId
+
+                                    }).ToList();
+            var fundsources = _MyDbContext.FundSources.ToList();
+
+
             foreach (var item in data)
             {
                 var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
