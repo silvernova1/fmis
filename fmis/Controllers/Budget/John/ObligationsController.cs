@@ -795,6 +795,9 @@ namespace fmis.Controllers
                     String uacs = "";
                     Double disbursements = 0.00;
 
+
+             
+
                     var fundsources = (from fundsource in _MyDbContext.FundSources
                                        join obligation in _MyDbContext.Obligation
                                        on fundsource.FundSourceId equals obligation.FundSourceId
@@ -807,9 +810,10 @@ namespace fmis.Controllers
                                        {
                                            pap = prexc.pap_code1,
                                            obligation_id = obligation.FundSourceId,
+                                           source_type = obligation.source_type,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
-                                           respo = respo.RespoCode,
+                                           respo = respo.RespoCode,                     
                                            signatory = respo.RespoHead,
                                            position = respo.RespoHeadPosition,
                                            particulars = obligation.Particulars
@@ -817,7 +821,7 @@ namespace fmis.Controllers
 
                     var saa = (from SAA in _MyDbContext.SubAllotment
                                join obligation in _MyDbContext.Obligation
-                               on SAA.SubAllotmentId equals obligation.FundSourceId
+                               on SAA.SubAllotmentId equals obligation.SubAllotmentId
                                join prexc in _MyDbContext.Prexc
                                on SAA.prexcId equals prexc.Id
                                join respo in _MyDbContext.RespoCenter
@@ -826,7 +830,8 @@ namespace fmis.Controllers
                                select new
                                {
                                    pap = prexc.pap_code1,
-                                   obligation_id = obligation.FundSourceId,
+                                   obligation_id = obligation.SubAllotmentId,
+                                   source_type = obligation.source_type,
                                    fundsource_id = SAA.SubAllotmentId,
                                    fundsource_code = SAA.Suballotment_title,
                                    respo = respo.RespoCode,
@@ -854,7 +859,16 @@ namespace fmis.Controllers
                         total_amt += u.amount;
                     }
 
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    if (fundsources.FirstOrDefault()?.source_type == "fund_source")
+                    {
+                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    }
+                    else if (saa.FirstOrDefault()?.source_type == "sub_allotment")
+                    {
+                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + saa.FirstOrDefault()?.fundsource_code + "\n\n" + saa.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    }
+
+                    //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, table_row_5_font)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
