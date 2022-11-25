@@ -217,7 +217,7 @@ else
 <p>
     <button type="button" asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
         <i class="ace-icon fa fa-plus "></i>Create New
-    </button> |
+    </button> 
     <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
@@ -254,13 +254,13 @@ else
                     SAA Transfered To
                 </th>
                 <th>
-                    ALLOTMENT<br>@items.Sum(x => x.Beginning_balance).ToString("#,##0.00")
+                    ALLOTMENT@*<br>@items.Sum(x => x.Beginning_balance).ToString("#,##0.00")*@
                 </th>
                 <th>
-                    OBLIGATED<br>@items.Sum(x => x.obligated_amount).ToString("#,##0.00")
+                    OBLIGATED@*<br>@items.Sum(x => x.obligated_amount).ToString("#,##0.00")*@
                 </th>
                 <th>
-                    BALANCE<br>@items.Sum(x => x.Remaining_balance).ToString("#,##0.00")
+                    BALANCE@*<br>@items.Sum(x => x.Remaining_balance).ToString("#,##0.00")*@
                 </th>
 
             </tr>
