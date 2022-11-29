@@ -132,35 +132,6 @@ namespace fmis.Controllers.Budget.John
                 fundSource = funds.FundSourceTitle;
             }
 
-            var obligated_amount = (from oa in _MyDbContext.ObligationAmount
-                                    join o in _MyDbContext.Obligation
-                                    on oa.ObligationId equals o.Id
-                                    join f in _MyDbContext.FundSources
-                                    on o.FundSourceId equals f.FundSourceId
-                                    where f.AllotmentClassId == AllotmentClassId && f.AppropriationId == AppropriationId && f.BudgetAllotmentId == BudgetAllotmentId
-                                    select new
-                                    {
-                                        Amount = oa.Amount,
-                                        FundSourceId = o.FundSourceId,
-                                        AllotmentClassId = f.AllotmentClassId,
-                                        AppropriationId = f.AppropriationId,
-                                        BudgetAllotmentId = f.BudgetAllotmentId
-
-                                    }).ToList();
-
-
-            var amount = 0.00;
-
-            foreach (var obligation in obligated_amount)
-            {
-                amount = (double)obligation.Amount;
-            }
-
-            ViewBag.amount = amount;
-
-            ViewBag.obligated_amount = obligated_amount.Where(x=>x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x=>x.Amount);
-
-
             if (!string.IsNullOrEmpty(search))
             {
                 search = search.Trim();
