@@ -247,7 +247,7 @@
                 var check = item.IsAddToNextAllotment ? "checked" : "";
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Prexc.pap_title)
+                        @Html.DisplayFor(modelItem => item.Prexc.pap_title) @item.FundSourceId
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FundSourceTitle)
