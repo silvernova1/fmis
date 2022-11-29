@@ -49,7 +49,7 @@ namespace fmis.Controllers.Budget.John
         #endregion
 
 
-        public IActionResult Export(string fn, string date_from, string date_to, int? post_yearly_reference)
+        public async Task<IActionResult> Export(string fn, string date_from, string date_to, int? post_yearly_reference)
         {
             int id = YearlyRefId;
             if (post_yearly_reference != null)
@@ -648,7 +648,7 @@ namespace fmis.Controllers.Budget.John
                 var result = res.Year.ToString();
 
 
-                var budget_allotments = _MyDbContext.Budget_allotments
+                var budget_allotments = await _MyDbContext.Budget_allotments
                     .Include(x => x.FundSources)
                         .ThenInclude(x => x.AllotmentClass)
                     .Include(x => x.FundSources)
@@ -661,7 +661,7 @@ namespace fmis.Controllers.Budget.John
                     .Include(x => x.SubAllotment)
                         .ThenInclude(x=>x.SubTransferedTo)
                     .Where(x => x.YearlyReferenceId == id)
-                        .AsQueryable();
+                        .ToListAsync();
 
                 //return Json(budget_allotments);
 

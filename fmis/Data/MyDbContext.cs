@@ -19,11 +19,14 @@ namespace fmis.Data
     {
         public MyDbContext()
         {
+            //this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
+            
         {
+            //this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
 
