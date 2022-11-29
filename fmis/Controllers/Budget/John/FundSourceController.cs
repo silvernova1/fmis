@@ -100,8 +100,14 @@ namespace fmis.Controllers.Budget.John
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.AllotmentClass)
             .Include(x => x.Yearly_reference)
+            //.Include(x => x.FundSources).ThenInclude(x=>x.ob).ThenInclude(x=>x.)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
+
+            budget_allotment.FundSources.ToList().ForEach(x =>
+            {
+                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.FundSourceId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+            });
 
             var fundsourcesLastYr = await _MyDbContext.FundSources
                 .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
