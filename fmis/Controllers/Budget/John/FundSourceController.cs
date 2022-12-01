@@ -106,7 +106,7 @@ namespace fmis.Controllers.Budget.John
 
             budget_allotment.FundSources.ToList().ForEach(x =>
             {
-                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.FundSourceId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.FundSourceId).Where(x => x.status == "activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
             });
 
             var fundsourcesLastYr = await _MyDbContext.FundSources
