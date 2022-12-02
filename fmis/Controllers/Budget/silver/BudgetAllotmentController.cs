@@ -16,6 +16,8 @@ using System.Globalization;
 using fmis.Models.silver;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using DocumentFormat.OpenXml.EMMA;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace fmis.Controllers
 {
@@ -59,13 +61,28 @@ namespace fmis.Controllers
             ViewBag.Result = result;
 
 
-
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
             .Include(x => x.SubAllotment).ThenInclude(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
             .Include(x => x.SubAllotment).ThenInclude(x => x.Appropriation)
             .FirstOrDefaultAsync(x => x.YearlyReferenceId == YearlyRefId);
+
+            budget_allotment.FundSources.ToList().ForEach(x =>
+            {
+                x.obligated_amount = _context.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.FundSourceId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+
+                x.obligated_amount =+ x.obligated_amount;
+                x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
+            });
+
+            budget_allotment.SubAllotment.ToList().ForEach(x =>
+            {
+                x.obligated_amount = _context.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.SubAllotmentId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+
+                x.obligated_amount = +x.obligated_amount;
+                x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
+            });
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.Include(x=>x.BudgetAllotments).AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.Include(x => x.BudgetAllotments).AsNoTracking().ToListAsync();

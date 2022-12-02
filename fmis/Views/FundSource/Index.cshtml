@@ -4,6 +4,7 @@
     ViewData["Title"] = "FundSource";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
+    var currentYear = User.FindFirstValue("YearlyRef");
     var lastYear = int.Parse(User.FindFirstValue("YearlyRef")) - 1;
     var items = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString());
     //if (ViewBag.LastYear)
@@ -248,10 +249,20 @@
                 var check = item.IsAddToNextAllotment ? "checked" : "";
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Prexc.pap_title) 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                        @Html.DisplayFor(modelItem => item.Prexc.pap_title)
                     </td>
+                    @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    {
+                        <td>
+                            CONAP @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                        </td>
+                    }
                     <td>
                         @item.RespoCenter.Respo
                     </td>
