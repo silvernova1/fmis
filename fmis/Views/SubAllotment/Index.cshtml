@@ -273,21 +273,18 @@ else
                     <td>
                         @Html.DisplayFor(modelItem => item.prexc.pap_title)
                     </td>
-                    <td>
-                        CONAP @item.Suballotment_title
-                    </td>
-                    @*@if (item.IsAddToNextAllotment == true)
-                        {
-                            <td style='color:darkkhaki'>
-                                @Html.DisplayFor(modelItem => item.Suballotment_title)
-                            </td>
-                        }
-                        else
-                        {
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Suballotment_title)
-                            </td>
-                        }*@
+                    @if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    {
+                        <td>
+                            CONAP @Html.DisplayFor(modelItem => item.Suballotment_title)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Suballotment_title)
+                        </td>
+                    }
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
