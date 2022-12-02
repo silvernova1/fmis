@@ -125,7 +125,7 @@ namespace fmis.Controllers
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
 
-         
+
             foreach (var item in data)
             {
                 var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
@@ -321,7 +321,7 @@ namespace fmis.Controllers
             {
                 foreach (var many in data.many_token)
                     SetUpDeleteDataCalculation(many.many_token, data.source_id, data.source_type);
-                   
+
             }
             else
                 SetUpDeleteDataCalculation(data.single_token, data.source_id, data.source_type);
@@ -330,7 +330,7 @@ namespace fmis.Controllers
             SourceRemainingAndObligated sourceRemainingObligated = new SourceRemainingAndObligated();
             sourceRemainingObligated.remaining_balance = REMAINING_BALANCE;
             sourceRemainingObligated.obligated_amount = OBLIGATED_AMOUNT;
-            
+
             return Json(sourceRemainingObligated);
         }
 

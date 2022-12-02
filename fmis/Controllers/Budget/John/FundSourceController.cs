@@ -22,6 +22,7 @@ using fmis.Filters;
 using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Authorization;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -125,7 +126,11 @@ namespace fmis.Controllers.Budget.John
             ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
             ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
-
+            var fundSource = "";
+            foreach(var funds in _MyDbContext.FundSources)
+            {
+                fundSource = funds.FundSourceTitle;
+            }
 
             if (!string.IsNullOrEmpty(search))
             {

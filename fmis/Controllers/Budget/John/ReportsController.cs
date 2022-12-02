@@ -49,7 +49,7 @@ namespace fmis.Controllers.Budget.John
         #endregion
 
 
-        public IActionResult Export(string fn, string date_from, string date_to, int? post_yearly_reference)
+        public async Task<IActionResult> Export(string fn, string date_from, string date_to, int? post_yearly_reference)
         {
             int id = YearlyRefId;
             if (post_yearly_reference != null)
@@ -640,19 +640,22 @@ namespace fmis.Controllers.Budget.John
                 var result = res.Year.ToString();
 
 
-                var budget_allotments = _MyDbContext.Budget_allotments
-                    .Include(budget_allotment => budget_allotment.FundSources)
-                        .ThenInclude(Allotment_class => Allotment_class.AllotmentClass)
-                    .Include(budget_allotment => budget_allotment.FundSources)
-                        .ThenInclude(a => a.Appropriation)
-                    .Include(budget_allotment => budget_allotment.FundSources)
+                var budget_allotments = await _MyDbContext.Budget_allotments
+                    .Include(x => x.FundSources)
+                        .ThenInclude(x => x.AllotmentClass)
+                    .Include(x => x.FundSources)
+                        .ThenInclude(x => x.Appropriation)
+                    .Include(x => x.FundSources)
                         .ThenInclude(x=>x.FundTransferedTo)
-                    .Include(budget_allotment => budget_allotment.FundSources)
-                        .ThenInclude(fundsource_amount => fundsource_amount.FundSourceAmounts)
-                            .ThenInclude(uacs => uacs.Uacs)
-                    .Include(sub_allotment => sub_allotment.SubAllotment)
+                    .Include(x => x.FundSources)
+                        .ThenInclude(x => x.FundSourceAmounts)
+                            .ThenInclude(x => x.Uacs)
+                    .Include(x => x.SubAllotment)
                         .ThenInclude(x=>x.SubTransferedTo)
-                    .Where(x => x.YearlyReferenceId == id).ToList();
+                    .Where(x => x.YearlyReferenceId == id)
+                        .ToListAsync();
+
+                //return Json(budget_allotments);
 
                 // var realignment_amount = 50;
 
@@ -8441,46 +8444,6 @@ namespace fmis.Controllers.Budget.John
 
                             }
 
-                            /*var fortheMonthTotalinTotalCoConap = (from oa in _MyDbContext.ObligationAmount
-                                                                  join o in _MyDbContext.Obligation
-                                                                  on oa.ObligationId equals o.Id
-                                                                  join f in _MyDbContext.FundSources
-                                                                  on o.FundSourceId equals f.FundSourceId
-                                                                  where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
-                                                                  select new
-                                                                  {
-                                                                      amount = oa.Amount,
-                                                                      uacsId = oa.UacsId,
-                                                                      sourceId = o.FundSourceId,
-                                                                      sourceType = o.source_type,
-                                                                      date = o.Date,
-                                                                      status = o.status,
-                                                                      allotmentClassID = f.AllotmentClassId,
-                                                                      appropriationID = f.AppropriationId
-                                                                  }).ToList();
-
-                            var asAtTotalinTotalCoConap = (from oa in _MyDbContext.ObligationAmount
-                                                           join o in _MyDbContext.Obligation
-                                                           on oa.ObligationId equals o.Id
-                                                           join f in _MyDbContext.FundSources
-                                                           on o.FundSourceId equals f.FundSourceId
-                                                           where o.Date >= date1 && o.Date <= date2
-                                                           select new
-                                                           {
-                                                               amount = oa.Amount,
-                                                               sourceId = o.FundSourceId,
-                                                               sourceType = o.source_type,
-                                                               uacsId = oa.UacsId,
-                                                               status = o.status,
-                                                               allotmentClassID = f.AllotmentClassId,
-                                                               appropriationID = f.AppropriationId
-                                                           }).ToList();
-
-
-                            var CoConapTotal = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.AllotmentClassId == 3).Sum(x => x.Beginning_balance);
-                            var unobligatedTotalinTotalCoConap = CoConapTotal - asAtTotalinTotalCoConap.Where(x => x.appropriationID == 2 && x.allotmentClassID == 3).Sum(x => x.amount);*/
-                            //var totalPercentPSConap = asAtTotalinTotalPSConap.Where(x => x.allotmentClassID == 1 && x.appropriationID == 2).Sum(x => x.amount) / PsConapTotal;
-
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 4;
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -9198,11 +9161,6 @@ namespace fmis.Controllers.Budget.John
                                         ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                         ws.Cell(currentRow, 18).Value = "("+transferToSaa.Amount.ToString("N", new CultureInfo("en-US"))+")";
                                     }
-                                    /*ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
-                                    ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 18).Value = "-";
-                                    ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
-                                    ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*/
 
                                     var CONAPSAAMOOEafterrealignment_amount = suballotment_amount.beginning_balance - suballotment_amount.realignment_amount;
                                     var CONAPSAAMOOEafterrealignment_amountadd = suballotment_amount.beginning_balance + _MyDbContext.SubAllotment_Realignment.FirstOrDefault(x => x.Realignment_to == suballotment_amount.UacsId && x.SubAllotmentId == suballotment_amount.SubAllotmentId)?.Realignment_amount;
@@ -9840,38 +9798,6 @@ namespace fmis.Controllers.Budget.John
                         }
                         //END TOTAL AUTO APPRO
 
-
-                        /*var fortheMonthTotalinTotalMOOE = (from oa in _MyDbContext.ObligationAmount
-                                                           join o in _MyDbContext.Obligation
-                                                           on oa.ObligationId equals o.Id
-                                                           join f in _MyDbContext.FundSources
-                                                           on o.FundSourceId equals f.FundSourceId
-                                                           where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
-                                                           select new
-                                                           {
-                                                               amount = oa.Amount,
-                                                               uacsId = oa.UacsId,
-                                                               sourceId = o.FundSourceId,
-                                                               date = o.Date,
-                                                               status = o.status,
-                                                               allotmentClassID = f.AllotmentClassId
-                                                           }).ToList();
-
-                        var asAtTotalinTotalMOOE = (from oa in _MyDbContext.ObligationAmount
-                                                    join o in _MyDbContext.Obligation
-                                                    on oa.ObligationId equals o.Id
-                                                    join f in _MyDbContext.FundSources
-                                                    on o.FundSourceId equals f.FundSourceId
-                                                    where o.Date >= date1 && o.Date <= date2
-                                                    select new
-                                                    {
-                                                        amount = oa.Amount,
-                                                        sourceId = o.FundSourceId,
-                                                        uacsId = oa.UacsId,
-                                                        status = o.status,
-                                                        allotmentClassID = f.AllotmentClassId
-                                                    }).ToList();*/
-
                         if (budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).Any())
                         {
 
@@ -10000,37 +9926,6 @@ namespace fmis.Controllers.Budget.John
 
 
                         //CO
-
-                        /*var fortheMonthTotalinTotalCO = (from oa in _MyDbContext.ObligationAmount
-                                                         join o in _MyDbContext.Obligation
-                                                         on oa.ObligationId equals o.Id
-                                                         join f in _MyDbContext.FundSources
-                                                         on o.FundSourceId equals f.FundSourceId
-                                                         where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
-                                                         select new
-                                                         {
-                                                             amount = oa.Amount,
-                                                             uacsId = oa.UacsId,
-                                                             sourceId = o.FundSourceId,
-                                                             date = o.Date,
-                                                             status = o.status,
-                                                             allotmentClassID = f.AllotmentClassId
-                                                         }).ToList();
-
-                        var asAtTotalinTotalCO = (from oa in _MyDbContext.ObligationAmount
-                                                  join o in _MyDbContext.Obligation
-                                                  on oa.ObligationId equals o.Id
-                                                  join f in _MyDbContext.FundSources
-                                                  on o.FundSourceId equals f.FundSourceId
-                                                  where o.Date >= date1 && o.Date <= date2
-                                                  select new
-                                                  {
-                                                      amount = oa.Amount,
-                                                      sourceId = o.FundSourceId,
-                                                      uacsId = oa.UacsId,
-                                                      status = o.status,
-                                                      allotmentClassID = f.AllotmentClassId
-                                                  }).ToList();*/
 
                         if (budget_allotment.FundSources.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1).Any())
                         {
@@ -11861,4 +11756,3 @@ namespace fmis.Controllers.Budget.John
 
     }
 }
-//CODE ENDS HERE - JOHN
