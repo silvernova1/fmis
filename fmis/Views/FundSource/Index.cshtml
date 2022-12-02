@@ -249,7 +249,7 @@
                 var check = item.IsAddToNextAllotment ? "checked" : "";
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Prexc.pap_title) @item.FundSourceId
+                        @Html.DisplayFor(modelItem => item.Prexc.pap_title)
                     </td>
                     @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {

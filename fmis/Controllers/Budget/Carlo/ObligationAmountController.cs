@@ -340,6 +340,7 @@ namespace fmis.Controllers
             obligation_amount = _context.ObligationAmount
                                 .Include(x => x.fundSource)
                                 .FirstOrDefault(x => x.obligation_amount_token == obligation_amount_token);
+
             obligation_amount.status = "deactivated";
             if (source_type == "fund_source")
             {
