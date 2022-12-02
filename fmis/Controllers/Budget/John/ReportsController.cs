@@ -212,8 +212,6 @@ namespace fmis.Controllers.Budget.John
                                            }).ToList();
 
 
-
-
             var CoConapTotal = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.AllotmentClassId == 3).Sum(x => x.Beginning_balance);
             var unobligatedTotalinTotalCoConap = CoConapTotal - asAtTotalinTotalCoConap.Where(x => x.appropriationID == 2 && x.allotmentClassID == 3).Sum(x => x.amount);
 
@@ -280,15 +278,10 @@ namespace fmis.Controllers.Budget.John
                                           allotmentClassID = f.AllotmentClassId
                                       }).ToList();
 
-
-
-
-
             DataTable dt = new DataTable("Saob Report");
 
             var ballots = from ballot in _MyDbContext.Budget_allotments.ToList()
                           select ballot;
-
 
 
             using (XLWorkbook wb = new XLWorkbook())
@@ -306,7 +299,6 @@ namespace fmis.Controllers.Budget.John
                 Double total = 0.00;
                 Double allotment_total = 0;
                 Double allotment_totalSaa = 0;
-
 
                 //PS SAA
                 var PsTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
