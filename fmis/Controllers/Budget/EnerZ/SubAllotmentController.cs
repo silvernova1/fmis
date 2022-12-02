@@ -89,8 +89,8 @@ namespace fmis.Controllers
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
-            var result = res.Year.ToString();
-            ViewBag.LastYr = result;
+            var last_year = res.Year.ToString();
+            ViewBag.LastYr = last_year;
             ViewBag.CurrentYr = year;
 
             var budget_allotment = await _MyDbContext.Budget_allotments
@@ -107,7 +107,7 @@ namespace fmis.Controllers
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
             //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
             var suballotmentsLastYr = await _MyDbContext.SubAllotment
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == last_year)
                 .Include(x=>x.RespoCenter)
                 .Include(x=>x.prexc)
                 .Include(x=>x.Appropriation)
@@ -118,13 +118,20 @@ namespace fmis.Controllers
             //Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
             //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
+            budget_allotment.SubAllotment.ToList().ForEach(x =>
+            {
+                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+
+                x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
+            });
+
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
 
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == last_year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             if (!string.IsNullOrEmpty(search) && lastYear == true)
             {
@@ -233,11 +240,6 @@ namespace fmis.Controllers
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-     /*       string year = suballotment.Budget_allotment.Yearly_reference.YearlyReference;
-            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
-            var res = next_year.AddYears(1);
-            var result = res.Year.ToString();
-            ViewBag.result = result;*/
 
             PopulatePrexcDropDownList(suballotment.prexcId);
             PopulateRespoDropDownList();
