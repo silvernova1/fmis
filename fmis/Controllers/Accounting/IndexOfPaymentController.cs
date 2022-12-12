@@ -149,15 +149,6 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult GetOrs(int cid)
         {
-            /*var ors_List = (from o in _MyDbContext.Obligation
-                            join f in _MyDbContext.FundSources
-                            on o.FundSourceId equals f.FundSourceId
-                            where f.AllotmentClassId == cid
-                            select new
-                            {
-                                Id = o.Id,
-                                Name = o.Ors_no
-                            }).ToList();*/
 
             var ors_List = (from fundsource in _MyDbContext.FundSources
                               join obligation in _MyDbContext.Obligation
@@ -347,7 +338,7 @@ namespace fmis.Controllers.Accounting
             indexes.PoNumber = index.PoNumber;
             indexes.InvoiceNumber = index.InvoiceNumber;
             indexes.ProjectId = index.ProjectId;
-            //indexes.NumberOfBill = index.NumberOfBill;            
+            indexes.NumberOfBill = index.NumberOfBill;            
             indexes.PeriodCover = index.PeriodCover;            
             indexes.date = index.date;
             indexes.travel_period = index.travel_period;
@@ -357,6 +348,7 @@ namespace fmis.Controllers.Accounting
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
             indexes.TotalDeduction = index.TotalDeduction;
             indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
+            indexes.ObligationId = index.ObligationId;
 
             var newBillNumber = new BillNumber
                 {
@@ -368,6 +360,8 @@ namespace fmis.Controllers.Accounting
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
+            PopulateOrsNoDownList();
+
 
             _MyDbContext.Update(indexes);
             await Task.Delay(500);
@@ -429,6 +423,18 @@ namespace fmis.Controllers.Accounting
                         select d;
             ViewBag.DeductionId = new SelectList(Query, "DeductionId", "DeductionDescription", selected);
         }
+
+        private void PopulateOrsNoDownList(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Indexofpayment
+                        orderby d.ObligationId
+                        select d;
+            ViewBag.ObligationId = new SelectList(Query, "IndexOfPaymentId", "ObligationId", selected);
+        }
+
+
+
+
 
         public IActionResult Export(string searchString)
         {
