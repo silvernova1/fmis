@@ -88,10 +88,10 @@ namespace fmis.Controllers.Budget.John
                         select new
                                 {
                                     AllotmentTitle = sub.Suballotment_title
-                                }).ToList();
+                                });
 
 
-            var dateTime = _MyDbContext.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow).Select(y => new { y.FundSourceTitle }).ToList();
+            var dateTime = _MyDbContext.FundSources.Where(x => x.CreatedAt >= date1 && x.CreatedAt <= dateTomorrow).Select(y => new { y.FundSourceTitle });
 
 
             var fortheMonthTotalinTotalPS = (from oa in _MyDbContext.ObligationAmount
@@ -111,7 +111,7 @@ namespace fmis.Controllers.Budget.John
                                                  allotmentClassID = f.AllotmentClassId,
                                                  appropriationID = f.AppropriationId,
                                                  fundSourceTitle = f.FundSourceTitle
-                                             }).ToList();
+                                             });
 
             var asAtTotalinTotalPS = (from oa in _MyDbContext.ObligationAmount
                                       join o in _MyDbContext.Obligation
@@ -130,7 +130,7 @@ namespace fmis.Controllers.Budget.John
                                           appropriationID = f.AppropriationId,
                                           fundSourceTitle = f.FundSourceTitle,
                                           fundSourceBudgetAllotmentId = f.BudgetAllotmentId
-                                      }).ToList();
+                                      });
             var PsTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION" && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
 
 
@@ -152,7 +152,7 @@ namespace fmis.Controllers.Budget.John
                                                       status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
-                                                  }).ToList();
+                                                  });
 
             var asAtTotalinTotalPSConap = (from oa in _MyDbContext.ObligationAmount
                                            join o in _MyDbContext.Obligation
@@ -169,7 +169,7 @@ namespace fmis.Controllers.Budget.John
                                                status = o.status,
                                                allotmentClassID = f.AllotmentClassId,
                                                appropriationID = f.AppropriationId
-                                           }).ToList();
+                                           });
 
 
             var PsConapTotal = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.AllotmentClassId == 1).Sum(x => x.Beginning_balance);
@@ -192,7 +192,7 @@ namespace fmis.Controllers.Budget.John
                                                       status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
-                                                  }).ToList();
+                                                  });
 
             var asAtTotalinTotalCoConap = (from oa in _MyDbContext.ObligationAmount
                                            join o in _MyDbContext.Obligation
@@ -209,7 +209,7 @@ namespace fmis.Controllers.Budget.John
                                                status = o.status,
                                                allotmentClassID = f.AllotmentClassId,
                                                appropriationID = f.AppropriationId
-                                           }).ToList();
+                                           });
 
 
 
@@ -232,7 +232,7 @@ namespace fmis.Controllers.Budget.John
                                                    date = o.Date,
                                                    status = o.status,
                                                    allotmentClassID = f.AllotmentClassId
-                                               }).ToList();
+                                               });
 
             var asAtTotalinTotalMOOE = (from oa in _MyDbContext.ObligationAmount
                                         join o in _MyDbContext.Obligation
@@ -247,7 +247,7 @@ namespace fmis.Controllers.Budget.John
                                             uacsId = oa.UacsId,
                                             status = o.status,
                                             allotmentClassID = f.AllotmentClassId
-                                        }).ToList();
+                                        });
 
             var fortheMonthTotalinTotalCO = (from oa in _MyDbContext.ObligationAmount
                                              join o in _MyDbContext.Obligation
@@ -263,7 +263,7 @@ namespace fmis.Controllers.Budget.John
                                                  date = o.Date,
                                                  status = o.status,
                                                  allotmentClassID = f.AllotmentClassId
-                                             }).ToList();
+                                             });
 
             var asAtTotalinTotalCO = (from oa in _MyDbContext.ObligationAmount
                                       join o in _MyDbContext.Obligation
@@ -278,7 +278,7 @@ namespace fmis.Controllers.Budget.John
                                           uacsId = oa.UacsId,
                                           status = o.status,
                                           allotmentClassID = f.AllotmentClassId
-                                      }).ToList();
+                                      });
 
 
 
@@ -652,6 +652,8 @@ namespace fmis.Controllers.Budget.John
                     .Include(x => x.FundSources)
                         .ThenInclude(x => x.AllotmentClass)
                     .Include(x => x.FundSources)
+                        .ThenInclude(x => x.Prexc)
+                    .Include(x => x.FundSources)
                         .ThenInclude(x => x.Appropriation)
                     .Include(x => x.FundSources)
                         .ThenInclude(x=>x.FundTransferedTo)
@@ -662,6 +664,12 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(x=>x.SubTransferedTo)
                     .Where(x => x.YearlyReferenceId == id)
                         .ToListAsync();
+
+
+
+
+
+
 
                 //return Json(budget_allotments);
 
@@ -751,9 +759,10 @@ namespace fmis.Controllers.Budget.John
 
                     foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION" && x.BudgetAllotmentId == id).ToList())
                     {
+
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                        ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -785,7 +794,7 @@ namespace fmis.Controllers.Budget.John
                                                    sourceId = o.FundSourceId,
                                                    status = o.status
 
-                                               }).ToList();
+                                               });
 
                             var fundsourceID = (from f in _MyDbContext.FundSources
                                                 join fa in _MyDbContext.FundSourceAmount
@@ -796,7 +805,7 @@ namespace fmis.Controllers.Budget.John
                                                     faId = f.FundSourceId,
                                                     faBeginningBalance = fa.beginning_balance,
                                                     uacsID = fa.UacsId
-                                                }).ToList();
+                                                });
 
                             var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                       join fa in _MyDbContext.FundSourceAmount
@@ -805,7 +814,7 @@ namespace fmis.Controllers.Budget.John
                                                       select new
                                                       {
                                                           faAmountId = fa.FundSourceId
-                                                      }).ToList();
+                                                      });
 
 
 
@@ -820,7 +829,7 @@ namespace fmis.Controllers.Budget.John
                                             uacsId = oa.UacsId,
                                             sourceId = o.FundSourceId,
                                             status = o.status
-                                        }).ToList();
+                                        });
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
@@ -828,11 +837,11 @@ namespace fmis.Controllers.Budget.John
 
                             ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                            ws.Cell(currentRow, 4).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
 
                             ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                            ws.Cell(currentRow, 12).Value = fundsource_amount.Uacs.Expense_code;
                             ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             if (fundsource_amount.beginning_balance != 0)
@@ -854,7 +863,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                            if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated").Any())
+                            if (_MyDbContext.FundsRealignment.Any(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated"))
                             {
                                 //REALIGNMENT AMOUNT
                                 ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
@@ -863,7 +872,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
-                            else if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId &&x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated").Any())
+                            else if (_MyDbContext.FundsRealignment.Any(x => x.Realignment_to == fundsource_amount.UacsId &&x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated"))
                             {
                                 //REALIGNMENT AMOUNT
                                 ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
@@ -1160,7 +1169,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.FundSourceId,
                                                     date = o.Date,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                         var subtotalTransferedTo = (from ft in _MyDbContext.FundTransferedTo
                                                     join fa in _MyDbContext.FundSourceAmount
@@ -1169,7 +1178,7 @@ namespace fmis.Controllers.Budget.John
                                                      {
                                                         UacsId = fa.UacsId,
                                                         FundSourceId = fa.FundSourceId,
-                                                     }).ToList();
+                                                     });
 
                         var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                          join o in _MyDbContext.Obligation
@@ -1181,10 +1190,10 @@ namespace fmis.Controllers.Budget.John
                                              sourceId = o.FundSourceId,
                                              uacsId = oa.UacsId,
                                              status = o.status
-                                         }).ToList();
+                                         });
 
                         var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount) + fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
-                        var sub9 = sub6 - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts?.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
+                        var sub9 = sub6 - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
                         ws.Cell(currentRow, 4).Style.Font.SetBold();
                         ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
@@ -1467,7 +1476,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                        ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                        ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                         ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                         ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -1497,7 +1506,7 @@ namespace fmis.Controllers.Budget.John
                                                    sourceId = o.FundSourceId,
                                                    status = o.status
 
-                                               }).ToList();
+                                               });
 
                             var fundsourceID = (from f in _MyDbContext.FundSources
                                                 join fa in _MyDbContext.FundSourceAmount
@@ -1506,7 +1515,7 @@ namespace fmis.Controllers.Budget.John
                                                 select new
                                                 {
                                                     faId = f.FundSourceId
-                                                }).ToList();
+                                                });
 
                             var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                       join fa in _MyDbContext.FundSourceAmount
@@ -1515,7 +1524,7 @@ namespace fmis.Controllers.Budget.John
                                                       select new
                                                       {
                                                           faAmountId = fa.FundSourceId
-                                                      }).ToList();
+                                                      });
 
 
 
@@ -1530,16 +1539,16 @@ namespace fmis.Controllers.Budget.John
                                             uacsId = oa.UacsId,
                                             sourceId = o.FundSourceId,
                                             status = o.status
-                                        }).ToList();
+                                        });
 
                             var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                             total = 0;
                             var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
-                            ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                            ws.Cell(currentRow, 1).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
                             ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-                            ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                            ws.Cell(currentRow, 2).Value = fundsource_amount.Uacs.Expense_code;
                             ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                             ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
@@ -1635,7 +1644,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.FundSourceId,
                                                     date = o.Date,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                         var funds_filterTotal = (from f in _MyDbContext.FundSources
                                                  join fa in _MyDbContext.FundSourceAmount
@@ -1643,7 +1652,7 @@ namespace fmis.Controllers.Budget.John
                                                  select new
                                                  {
                                                      Id = f.FundSourceId
-                                                 }).ToList();
+                                                 });
 
                         var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                          join o in _MyDbContext.Obligation
@@ -1655,7 +1664,7 @@ namespace fmis.Controllers.Budget.John
                                              sourceId = o.FundSourceId,
                                              uacsId = oa.UacsId,
                                              status = o.status
-                                         }).ToList();
+                                         });
 
                         ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -1834,7 +1843,7 @@ namespace fmis.Controllers.Budget.John
                     foreach (BudgetAllotment b in saa)
                     {
 
-                        if (_MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Any())
+                        if (_MyDbContext.SubAllotment.Any(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id))
                         {
                             ws.Cell(currentRow, 1).Style.Font.SetBold();
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
@@ -1898,7 +1907,7 @@ namespace fmis.Controllers.Budget.John
                                                        status = o.status,
                                                        allotmentClassID = f.AllotmentClassId
 
-                                                   }).ToList();
+                                                   });
 
                                 var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                     join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -1907,7 +1916,7 @@ namespace fmis.Controllers.Budget.John
                                                     select new
                                                     {
                                                         saId = Suballotment.SubAllotmentId
-                                                    }).ToList();
+                                                    });
 
                                 var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                           join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -1916,7 +1925,7 @@ namespace fmis.Controllers.Budget.John
                                                           select new
                                                           {
                                                               saAmountId = Suballotment_amount.SubAllotmentId
-                                                          }).ToList();
+                                                          });
 
                                 var asAt = (from oa in _MyDbContext.ObligationAmount
                                             join o in _MyDbContext.Obligation
@@ -1929,7 +1938,7 @@ namespace fmis.Controllers.Budget.John
                                                 sourceId = o.SubAllotmentId,
                                                 sourceType = o.source_type,
                                                 status = o.status
-                                            }).ToList();
+                                            });
 
                                 var SAAunobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -2229,7 +2238,7 @@ namespace fmis.Controllers.Budget.John
                                                         sourceType = o.source_type,
                                                         date = o.Date,
                                                         status = o.status
-                                                    }).ToList();
+                                                    });
 
                             var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                      join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -2237,7 +2246,7 @@ namespace fmis.Controllers.Budget.John
                                                      select new
                                                      {
                                                          Id = Suballotment.SubAllotmentId
-                                                     }).ToList();
+                                                     });
 
                             var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                              join o in _MyDbContext.Obligation
@@ -2250,7 +2259,7 @@ namespace fmis.Controllers.Budget.John
                                                  uacsId = oa.UacsId,
                                                  sourceType = o.source_type,
                                                  status = o.status
-                                             }).ToList();
+                                             });
 
 
                             ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -2357,7 +2366,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault()?.FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
+                            ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
                             ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -2509,7 +2518,7 @@ namespace fmis.Controllers.Budget.John
                             {
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                                ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                                 ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                                 ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                                 ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -2542,7 +2551,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            breakdown = fundSource.Breakdown
 
-                                                       }).ToList();
+                                                       });
 
                                     var fortheMonthWithBreakdown = (from oa in _MyDbContext.ObligationAmount
                                                                     join o in _MyDbContext.Obligation
@@ -2559,7 +2568,7 @@ namespace fmis.Controllers.Budget.John
                                                                         status = o.status,
                                                                         breakdown = fundSource.Breakdown
 
-                                                                    }).ToList();
+                                                                    });
 
                                     var fundsourceID = (from f in _MyDbContext.FundSources
                                                         join fa in _MyDbContext.FundSourceAmount
@@ -2568,7 +2577,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             faId = f.FundSourceId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                               join fa in _MyDbContext.FundSourceAmount
@@ -2577,7 +2586,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   faAmountId = fa.FundSourceId
-                                                              }).ToList();
+                                                              });
 
 
 
@@ -2592,7 +2601,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var asAtWithBreakdown = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -2606,7 +2615,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = fa.UacsId,
                                                     sourceId = fa.FundSourceId,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
                                     var unobligated_amountWithBreakdown = fundsource_amount.beginning_balance - asAtWithBreakdown.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
@@ -2616,11 +2625,11 @@ namespace fmis.Controllers.Budget.John
                                     var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
                                     ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 4).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
 
                                     ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                                    ws.Cell(currentRow, 12).Value = fundsource_amount.Uacs.Expense_code;
                                     ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                                     if (fundSource.Breakdown == true)
@@ -2980,7 +2989,7 @@ namespace fmis.Controllers.Budget.John
                                                             breakdown = fundSource.Breakdown,
                                                             original = fundSource.Original
 
-                                                        }).ToList();
+                                                        });
 
                                 var fortheMonthTotalWithBreakdown = (from oa in _MyDbContext.ObligationAmount
                                                         join o in _MyDbContext.Obligation
@@ -2998,7 +3007,7 @@ namespace fmis.Controllers.Budget.John
                                                             breakdown = fundSource.Breakdown,
                                                             original = fundSource.Original
 
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
                                                          join fa in _MyDbContext.FundSourceAmount
@@ -3006,7 +3015,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = f.FundSourceId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -3018,7 +3027,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 var asAtTotalWithBreakdown = (from oa in _MyDbContext.ObligationAmount
@@ -3033,7 +3042,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = fa.FundSourceId,
                                                      uacsId = fa.UacsId,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
                                 ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
@@ -3201,7 +3210,7 @@ namespace fmis.Controllers.Budget.John
                                                                        date = o.Date,
                                                                        status = o.status,
                                                                        allotmentClassID = f.AllotmentClassId
-                                                                   }).ToList();
+                                                                   });
 
                                 var asAtTotalinTotalMOOE = (from oa in _MyDbContext.ObligationAmount
                                                             join o in _MyDbContext.Obligation
@@ -3216,7 +3225,7 @@ namespace fmis.Controllers.Budget.John
                                                                 uacsId = oa.UacsId,
                                                                 status = o.status,
                                                                 allotmentClassID = f.AllotmentClassId
-                                                            }).ToList();*/
+                                                            });*/
 
                                 var MooeTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).Sum(x => x.Beginning_balance);
                                 var allotment_totalMOOE = +MooeTotal;
@@ -3381,7 +3390,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -3390,7 +3399,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -3399,7 +3408,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -3412,7 +3421,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -3711,7 +3720,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -3719,7 +3728,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -3732,7 +3741,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -3933,7 +3942,7 @@ namespace fmis.Controllers.Budget.John
                             {
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                                ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                                 ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                                 ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                                 ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -3965,7 +3974,7 @@ namespace fmis.Controllers.Budget.John
                                                            sourceId = o.FundSourceId,
                                                            status = o.status
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from f in _MyDbContext.FundSources
                                                         join fa in _MyDbContext.FundSourceAmount
@@ -3974,7 +3983,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             faId = f.FundSourceId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                               join fa in _MyDbContext.FundSourceAmount
@@ -3983,7 +3992,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   faAmountId = fa.FundSourceId
-                                                              }).ToList();
+                                                              });
 
 
 
@@ -3998,7 +4007,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
@@ -4008,12 +4017,12 @@ namespace fmis.Controllers.Budget.John
 
                                     ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 4).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
                                     ws.Cell(currentRow, 4).Style.Alignment.Indent = 3;
 
                                     ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                                    ws.Cell(currentRow, 12).Value = fundsource_amount.Uacs.Expense_code;
                                     ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
 
@@ -4294,7 +4303,7 @@ namespace fmis.Controllers.Budget.John
                                                             date = o.Date,
                                                             status = o.status
 
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
                                                          join fa in _MyDbContext.FundSourceAmount
@@ -4302,7 +4311,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = f.FundSourceId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -4314,7 +4323,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
                                 ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper();
@@ -4402,7 +4411,7 @@ namespace fmis.Controllers.Budget.John
                                                                  date = o.Date,
                                                                  status = o.status,
                                                                  allotmentClassID = f.AllotmentClassId
-                                                             }).ToList();
+                                                             });
 
                             var asAtTotalinTotalCO = (from oa in _MyDbContext.ObligationAmount
                                                       join o in _MyDbContext.Obligation
@@ -4417,7 +4426,7 @@ namespace fmis.Controllers.Budget.John
                                                           uacsId = oa.UacsId,
                                                           status = o.status,
                                                           allotmentClassID = f.AllotmentClassId
-                                                      }).ToList();*/
+                                                      });*/
 
                             var CoTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1).Sum(x => x.Beginning_balance);
                             var allotment_totalCO = +CoTotal;
@@ -4559,7 +4568,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -4568,7 +4577,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -4577,7 +4586,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -4590,7 +4599,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -4891,7 +4900,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -4899,7 +4908,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -4912,7 +4921,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -5149,7 +5158,7 @@ namespace fmis.Controllers.Budget.John
 
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                                ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                                 ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                                 ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                                 ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -5181,7 +5190,7 @@ namespace fmis.Controllers.Budget.John
                                                            sourceId = o.FundSourceId,
                                                            status = o.status
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from f in _MyDbContext.FundSources
                                                         join fa in _MyDbContext.FundSourceAmount
@@ -5190,7 +5199,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             faId = f.FundSourceId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                               join fa in _MyDbContext.FundSourceAmount
@@ -5199,7 +5208,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   faAmountId = fa.FundSourceId
-                                                              }).ToList();
+                                                              });
 
 
 
@@ -5214,7 +5223,7 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
@@ -5224,12 +5233,12 @@ namespace fmis.Controllers.Budget.John
 
                                     ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 4).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
                                     ws.Cell(currentRow, 4).Style.Alignment.Indent = 3;
 
                                     ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                     ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                                    ws.Cell(currentRow, 12).Value = fundsource_amount.Uacs.Expense_code;
                                     ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                                     if (fundsource_amount.beginning_balance != 0)
@@ -5505,7 +5514,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
                                                          join fa in _MyDbContext.FundSourceAmount
@@ -5513,7 +5522,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = f.FundSourceId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -5525,7 +5534,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -5773,7 +5782,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -5782,7 +5791,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -5791,7 +5800,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -5804,7 +5813,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -6053,7 +6062,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -6061,7 +6070,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -6074,7 +6083,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
@@ -6244,7 +6253,7 @@ namespace fmis.Controllers.Budget.John
 
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                            ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                             ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                             ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                             ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -6276,7 +6285,7 @@ namespace fmis.Controllers.Budget.John
                                                        sourceId = o.FundSourceId,
                                                        status = o.status
 
-                                                   }).ToList();
+                                                   });
 
                                 var fundsourceID = (from f in _MyDbContext.FundSources
                                                     join fa in _MyDbContext.FundSourceAmount
@@ -6285,7 +6294,7 @@ namespace fmis.Controllers.Budget.John
                                                     select new
                                                     {
                                                         faId = f.FundSourceId
-                                                    }).ToList();
+                                                    });
 
                                 var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                           join fa in _MyDbContext.FundSourceAmount
@@ -6294,7 +6303,7 @@ namespace fmis.Controllers.Budget.John
                                                           select new
                                                           {
                                                               faAmountId = fa.FundSourceId
-                                                          }).ToList();
+                                                          });
 
 
 
@@ -6309,7 +6318,7 @@ namespace fmis.Controllers.Budget.John
                                                 uacsId = oa.UacsId,
                                                 sourceId = o.FundSourceId,
                                                 status = o.status
-                                            }).ToList();
+                                            });
 
                                 var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
@@ -6319,11 +6328,11 @@ namespace fmis.Controllers.Budget.John
 
                                 ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                                ws.Cell(currentRow, 4).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
 
                                 ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                                ws.Cell(currentRow, 12).Value = fundsource_amount.Uacs.Expense_code;
                                 ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                                 if (fundsource_amount.beginning_balance != 0)
@@ -6599,7 +6608,7 @@ namespace fmis.Controllers.Budget.John
                                                         sourceId = o.FundSourceId,
                                                         date = o.Date,
                                                         status = o.status
-                                                    }).ToList();
+                                                    });
 
                             var funds_filterTotal = (from f in _MyDbContext.FundSources
                                                      join fa in _MyDbContext.FundSourceAmount
@@ -6607,7 +6616,7 @@ namespace fmis.Controllers.Budget.John
                                                      select new
                                                      {
                                                          Id = f.FundSourceId
-                                                     }).ToList();
+                                                     });
 
                             var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                              join o in _MyDbContext.Obligation
@@ -6619,7 +6628,7 @@ namespace fmis.Controllers.Budget.John
                                                  sourceId = o.FundSourceId,
                                                  uacsId = oa.UacsId,
                                                  status = o.status
-                                             }).ToList();
+                                             });
 
 
                             ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -6729,7 +6738,7 @@ namespace fmis.Controllers.Budget.John
                                                                     status = o.status,
                                                                     allotmentClassID = f.AllotmentClassId,
                                                                     appropriationID = f.AppropriationId
-                                                                }).ToList();
+                                                                });
 
                         var asAtTotalinTotalMooeConap = (from oa in _MyDbContext.ObligationAmount
                                                          join o in _MyDbContext.Obligation
@@ -6747,7 +6756,7 @@ namespace fmis.Controllers.Budget.John
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId,
                                                              fundSourceBudgetAllotmentId = f.BudgetAllotmentId
-                                                         }).ToList();
+                                                         });
 
 
                         var MooeConapTotal = _MyDbContext.FundSources.Where(x => x.AppropriationId == 2 && x.AllotmentClassId == 2 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
@@ -6917,7 +6926,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -6926,7 +6935,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -6935,7 +6944,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -6948,7 +6957,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -7238,7 +7247,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -7246,7 +7255,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -7259,7 +7268,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -7341,7 +7350,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault()?.FundSourceAmounts.FirstOrDefault()?.FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
+                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -7507,7 +7516,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -7516,7 +7525,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -7525,7 +7534,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -7538,7 +7547,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -7829,7 +7838,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -7837,7 +7846,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -7850,7 +7859,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -7932,7 +7941,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault()?.FundSourceAmounts.FirstOrDefault()?.FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
+                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -8047,7 +8056,7 @@ namespace fmis.Controllers.Budget.John
                             foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 2))
                             {
 
-                                ws.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == fundSource.PrexcId)?.pap_code1;
+                                ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
                                 ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
                                 ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                                 ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
@@ -8080,7 +8089,7 @@ namespace fmis.Controllers.Budget.John
                                                            sourceId = o.FundSourceId,
                                                            status = o.status
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from f in _MyDbContext.FundSources
                                                         join fa in _MyDbContext.FundSourceAmount
@@ -8089,7 +8098,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             faId = f.FundSourceId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from f in _MyDbContext.FundSources
                                                               join fa in _MyDbContext.FundSourceAmount
@@ -8098,7 +8107,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   faAmountId = fa.FundSourceId
-                                                              }).ToList();
+                                                              });
 
 
 
@@ -8113,16 +8122,16 @@ namespace fmis.Controllers.Budget.John
                                                     uacsId = oa.UacsId,
                                                     sourceId = o.FundSourceId,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
 
 
                                     total = 0;
                                     var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
-                                    ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 1).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
                                     ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-                                    ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == fundsource_amount.UacsId)?.Expense_code;
+                                    ws.Cell(currentRow, 2).Value = fundsource_amount.Uacs.Expense_code;
                                     ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                                     if (fundsource_amount.beginning_balance != 0)
@@ -8358,7 +8367,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceId = o.FundSourceId,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from f in _MyDbContext.FundSources
                                                          join fa in _MyDbContext.FundSourceAmount
@@ -8366,7 +8375,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = f.FundSourceId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -8378,7 +8387,7 @@ namespace fmis.Controllers.Budget.John
                                                      sourceId = o.FundSourceId,
                                                      uacsId = oa.UacsId,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
                                 //ws.Cell(currentRow, 1).Style.Font.FontName = "TAHOMA";
                                 //ws.Cell(currentRow, 1).Style.Font.FontSize = 9;
@@ -8586,7 +8595,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -8595,7 +8604,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -8604,7 +8613,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -8617,7 +8626,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -8798,7 +8807,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -8806,7 +8815,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -8819,7 +8828,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -9025,7 +9034,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId
 
-                                                       }).ToList();
+                                                       });
 
                                     var fundsourceID = (from Suballotment in _MyDbContext.SubAllotment
                                                         join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -9034,7 +9043,7 @@ namespace fmis.Controllers.Budget.John
                                                         select new
                                                         {
                                                             saId = Suballotment.SubAllotmentId
-                                                        }).ToList();
+                                                        });
 
                                     var fundsourceamountID = (from Suballotment in _MyDbContext.SubAllotment
                                                               join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -9043,7 +9052,7 @@ namespace fmis.Controllers.Budget.John
                                                               select new
                                                               {
                                                                   saAmountId = Suballotment_amount.SubAllotmentId
-                                                              }).ToList();
+                                                              });
 
                                     var asAt = (from oa in _MyDbContext.ObligationAmount
                                                 join o in _MyDbContext.Obligation
@@ -9056,7 +9065,7 @@ namespace fmis.Controllers.Budget.John
                                                     sourceId = o.SubAllotmentId,
                                                     sourceType = o.source_type,
                                                     status = o.status
-                                                }).ToList();
+                                                });
 
                                     var unobligated_amount = suballotment_amount.beginning_balance - asAt.Where(x => x.uacsId == suballotment_amount.UacsId && x.sourceId == suballotment_amount.SubAllotmentId && x.status == "activated" && x.sourceType == "sub_allotment").Sum(x => x.amount);
 
@@ -9343,7 +9352,7 @@ namespace fmis.Controllers.Budget.John
                                                             sourceType = o.source_type,
                                                             date = o.Date,
                                                             status = o.status
-                                                        }).ToList();
+                                                        });
 
                                 var funds_filterTotal = (from Suballotment in _MyDbContext.SubAllotment
                                                          join Suballotment_amount in _MyDbContext.Suballotment_amount
@@ -9351,7 +9360,7 @@ namespace fmis.Controllers.Budget.John
                                                          select new
                                                          {
                                                              Id = Suballotment.SubAllotmentId
-                                                         }).ToList();
+                                                         });
 
                                 var asAtTotal = (from oa in _MyDbContext.ObligationAmount
                                                  join o in _MyDbContext.Obligation
@@ -9364,7 +9373,7 @@ namespace fmis.Controllers.Budget.John
                                                      uacsId = oa.UacsId,
                                                      sourceType = o.source_type,
                                                      status = o.status
-                                                 }).ToList();
+                                                 });
 
 
                                 ws.Cell(currentRow, 4).Style.Font.SetBold();
@@ -9417,7 +9426,7 @@ namespace fmis.Controllers.Budget.John
                                                                 CurrentYr = s.Budget_allotment.Yearly_reference.YearlyReference,
                                                                 AppropriationId = s.AppropriationId,
                                                                 AllotmentClassId = s.AllotmentClassId
-                                                            }).ToList();
+                                                            });
                                 var TransferedtoSubtotalAmount = _MyDbContext.SubAllotment.FirstOrDefault().SubTransferedTo.Where(x => x.SubAllotmentId == TransferedtoSubtotal.FirstOrDefault().SubAllotmentId && x.SubAllotmentAmountId == TransferedtoSubtotal.FirstOrDefault().UacsId && x.SubAllotment.IsAddToNextAllotment == true  && x.SubAllotment.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Amount);
                                 var xy = TransferedtoSubtotal.Where(x => x.UacsId == _MyDbContext.Suballotment_amount.FirstOrDefault().UacsId && x.SubAllotmentId == _MyDbContext.Suballotment_amount.FirstOrDefault().SubAllotmentId && x.AppropriationId == 2 && x.AllotmentClassId == 3 && x.IsSet == true).Sum(x=>x.SubTotal);
 
@@ -9467,7 +9476,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 23).Style.Font.SetBold();
                                 ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault()?.FundSourceAmounts.FirstOrDefault()?.FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
+                                ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
                                 ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                                 ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -10503,7 +10512,7 @@ namespace fmis.Controllers.Budget.John
                                                                   status = o.status,
                                                                   allotmentClassID = f.AllotmentClassId,
                                                                   appropriationID = f.AppropriationId
-                                                              }).ToList();
+                                                              });
 
                         var asAtTotalinTotalCURRENT = (from oa in _MyDbContext.ObligationAmount
                                                        join o in _MyDbContext.Obligation
@@ -10519,7 +10528,7 @@ namespace fmis.Controllers.Budget.John
                                                            status = o.status,
                                                            allotmentClassID = f.AllotmentClassId,
                                                            appropriationID = f.AppropriationId
-                                                       }).ToList();
+                                                       });
 
                         var CurrentTotal = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
 
@@ -11473,7 +11482,7 @@ namespace fmis.Controllers.Budget.John
                                                                     status = o.status,
                                                                     allotmentClassID = f.AllotmentClassId,
                                                                     appropriationID = f.AppropriationId
-                                                                }).ToList();
+                                                                });
 
                             var asAtTotalinTotalCONAP = (from oa in _MyDbContext.ObligationAmount
                                                          join o in _MyDbContext.Obligation
@@ -11489,7 +11498,7 @@ namespace fmis.Controllers.Budget.John
                                                              status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId
-                                                         }).ToList();
+                                                         });
 
                             var ConapTotal = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
 
@@ -11649,7 +11658,7 @@ namespace fmis.Controllers.Budget.John
                                                              status = o.status,
                                                              allotmentClassID = f.AllotmentClassId,
                                                              appropriationID = f.AppropriationId
-                                                         }).ToList();
+                                                         });
 
                 var fortheMonthTotalinTotalCONAPGrandSaa = (from oa in _MyDbContext.ObligationAmount
                                                          join o in _MyDbContext.Obligation
@@ -11666,7 +11675,7 @@ namespace fmis.Controllers.Budget.John
                                                              status = o.status,
                                                              allotmentClassID = s.AllotmentClassId,
                                                              appropriationID = s.AppropriationId
-                                                         }).ToList();
+                                                         });
 
                 var asAtTotalinTotalCONAPGrand = (from oa in _MyDbContext.ObligationAmount
                                                   join o in _MyDbContext.Obligation
@@ -11682,7 +11691,7 @@ namespace fmis.Controllers.Budget.John
                                                       status = o.status,
                                                       allotmentClassID = f.AllotmentClassId,
                                                       appropriationID = f.AppropriationId
-                                                  }).ToList();
+                                                  });
 
                 var ConapTotalGrand = _MyDbContext.FundSources.Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Sum(x => x.Beginning_balance);
                 var ConapApproForthemonthGrand = fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 1 && x.status == "activated").Sum(x => x.amount) + fortheMonthTotalinTotalCONAPGrand.Where(x => x.appropriationID == 2 && x.status == "activated").Sum(x => x.amount)

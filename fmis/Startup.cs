@@ -79,8 +79,10 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("Yearly_referenceContext")));
             services.AddDbContext<AppropriationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AppropriationContext")));
+
             services.AddDbContext<MyDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MyDbContext")));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<FundSourceAmountContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("FundSourceAmountContext")));
