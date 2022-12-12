@@ -85,9 +85,7 @@ namespace fmis.Data
         public DbSet<Assignee> Assignee { get; set; }
         public DbSet<IndexDeduction> IndexDeduction { get; set; }
         public DbSet<BillNumber> BillNumber { get; set; }
-
-
-
+        public DbSet<SubNegative> SubNegative { get; set; }
 
 
 

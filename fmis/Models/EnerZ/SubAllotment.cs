@@ -65,6 +65,7 @@ namespace fmis.Models
         public ICollection<Suballotment_amount> SubAllotmentAmounts { get; set; }
         public ICollection<SubAllotment_Realignment> SubAllotmentRealignment { get; set; }
         public ICollection<SubTransferedTo> SubTransferedTo { get; set; }
+        public ICollection<SubNegative> SubNegative { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
     }
 
