@@ -19,14 +19,18 @@ namespace fmis.Data
     {
         public MyDbContext()
         {
-            //this.ChangeTracker.LazyLoadingEnabled = false;
+            //ChangeTracker.LazyLoadingEnabled = false;
+            //ChangeTracker.AutoDetectChangesEnabled = false;
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
             
         {
-            //this.ChangeTracker.LazyLoadingEnabled = false;
+            //ChangeTracker.LazyLoadingEnabled = false;
+            //ChangeTracker.AutoDetectChangesEnabled = false;
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
 
@@ -89,7 +93,6 @@ namespace fmis.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
 
             base.OnModelCreating(modelBuilder);
 

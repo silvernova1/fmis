@@ -61,6 +61,13 @@ namespace fmis.Controllers
             ViewBag.Result = result;
 
 
+            /*var budget_allotment = await _context.Budget_allotments
+            .Include(c => c.Yearly_reference)
+            .Include(x => x.FundSources)
+            .Include(x => x.SubAllotment)
+            .ThenInclude(x=>x.Appropriation)
+            .FirstOrDefaultAsync(x => x.YearlyReferenceId == YearlyRefId);*/
+
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
