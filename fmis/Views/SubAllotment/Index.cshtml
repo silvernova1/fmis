@@ -254,6 +254,9 @@ else
                     SAA Transfered To
                 </th>
                 <th>
+                    SAA Negative
+                </th>
+                <th>
                     ALLOTMENT@*<br>@items.Sum(x => x.Beginning_balance).ToString("#,##0.00")*@
                 </th>
                 <th>
@@ -307,6 +310,13 @@ else
                     <td>
                         <center>
                             <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                            </a>
+                        </center>
+                    </td>
+                    <td>
+                        <center>
+                            <a asp-controller="SubNegative" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-danger btn-xs">
                                 <span class="glyphicon glyphicon-share-alt"></span>
                             </a>
                         </center>
