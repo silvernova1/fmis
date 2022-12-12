@@ -75,7 +75,7 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-12">
                             <div>
-                                <input class="form-control" type="date" name="date_from" data-date-format="dd-mm-yyyy">
+                                <input class="form-control" type="date" name="date_from" id="dateFrom" data-date-format="dd-mm-yyyy" required>
                             </div>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-12">
                             <div>
-                                <input class="form-control" type="date" name="date_to" data-date-format="dd-mm-yyyy">
+                                <input class="form-control" type="date" name="date_to" id="dateTo" data-date-format="dd-mm-yyyy" required>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                     <div class="row">
                         <div class="" >
                             <div class="col-xs-12 col-sm-12" >
-                                  <button type="submit" class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+                                  <button type="submit" onclick="submiBtnClick()"  class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
                             </div>
                         </div>
                     </div>
@@ -114,3 +114,38 @@
         </div>
     </div>*@
 
+<script>
+
+
+    function submiBtnClick() {
+        var dateFrom = document.getElementById("dateFrom").value;
+        var dateTo = document.getElementById("dateTo").value;
+        if (dateFrom != '' && dateTo != '') {
+            Lobibox.progress({
+                title: 'Please wait',
+                label: 'Generating Saob Report...',
+                onShow: function ($this) {
+                    var i = 0;
+                    var inter = setInterval(function () {
+                        window.console.log(i);
+                        if (i > 100) {
+                            inter = clearInterval(inter);
+                        }
+                        i = i + 0.1;
+                        $this.setProgress(i);
+                    }, 10);
+                }
+            });
+        }
+        else {
+            return false;
+        }
+
+
+    }
+
+
+
+
+
+</script>

@@ -180,13 +180,8 @@ namespace fmis.Controllers.Budget.Carlo
         [ValidateAntiForgeryToken]
         public IActionResult DeleteFundsRealignment(DeleteData data)
         {
-            if (data.many_token.Count > 1)
-            {
-                foreach (var many in data.many_token)
-                    SetUpDeleteDataCalculation(many.many_token, data.fundsource_id);
-            }
-            else
-                SetUpDeleteDataCalculation(data.single_token, data.fundsource_id);
+            foreach (var many in data.many_token)
+                SetUpDeleteDataCalculation(many.many_token, data.fundsource_id);
 
             GetRemainingAndRealignment getRemainingAndRealignment = new();
             getRemainingAndRealignment.remaining_balance = REMAINING_BALANCE;
@@ -201,10 +196,13 @@ namespace fmis.Controllers.Budget.Carlo
                                 .Include(x => x.FundSource)
                                 .FirstOrDefault(x => x.token == funds_realignment_token);
             funds_realignment.status = "deactivated";
+
+            var fundSourceAmount = _allContext.FundSourceAmount.FirstOrDefault(x => x.FundSourceAmountId == funds_realignment.Realignment_to);
+            fundSourceAmount.realignment_amount = 0;
             //funds_realignment.FundSource = _FContext.FundSource.FirstOrDefault(x => x.FundSourceId == fundsource_id);
             funds_realignment.FundSource.Remaining_balance += funds_realignment.Realignment_amount;
             funds_realignment.FundSource.realignment_amount -= funds_realignment.Realignment_amount;
-
+            _context.Update(fundSourceAmount);
             _context.Update(funds_realignment);
             _context.SaveChanges();
 

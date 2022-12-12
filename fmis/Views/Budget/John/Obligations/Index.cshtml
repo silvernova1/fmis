@@ -308,17 +308,19 @@
         if (this.source_type == "fund_source") {
             data[counter].push(this.FundSource ? this.FundSource.Beginning_balance : 0);
             data[counter].push(this.FundSource ? this.FundSource.Remaining_balance : 0);
+            data[counter].push(this.FundSource.AllotmentClassId);
         }
         else if (this.source_type == "sub_allotment") {
             data[counter].push(this.SubAllotment ? this.SubAllotment.Beginning_balance : 0);
             data[counter].push(this.SubAllotment ? this.SubAllotment.Remaining_balance : 0);
+            data[counter].push(this.SubAllotment.AllotmentClassId);
         }
-        if (this.source_type == "fund_source") {
+        @*if (this.source_type == "fund_source") {
             data[counter].push(this.FundSource.AllotmentClassId)
         }
-        else if (this.source_type == "sub_allotment" && this.subAllotment) {
+        else if (this.source_type == "sub_allotment") {
             data[counter].push(this.SubAllotment.AllotmentClassId)
-        }
+        }*@
 		counter++;
     });
 
@@ -1066,7 +1068,7 @@
                     ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")')
                         .then(data => {
                             console.log(data);
-                            console.log(hot.getDataAtCell(row, 51));
+                            console.log(data.source_type);
                             if (!hot.getDataAtCell(row, 11)) {
                                 CHECK_FIRST_ROW = false;
                                 hot.setDataAtCell(row, 11, data.id);
@@ -1074,9 +1076,10 @@
                             if (data.source_type == 'fund_source') {
                                 CHECK_FIRST_ROW = false;
                                 hot.setDataAtCell(row, 51, data.fundSource.allotmentClassId)
-                            }
+                            } 
                             else if (data.source_type == 'sub_allotment') {
                                 CHECK_FIRST_ROW = false;
+                                console.log(data.subAllotment.allotmentClassId);
                                 hot.setDataAtCell(row, 51, data.subAllotment.allotmentClassId)
                             }
                         });
