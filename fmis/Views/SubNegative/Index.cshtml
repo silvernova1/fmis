@@ -135,13 +135,13 @@
         beforeRemoveRow: function (index, column) {
             var selection = this.getSelected();
 			var holder_data = this.getData();
-            var single_token = holder_data[selection[0][0]][4];
+            var single_token = holder_data[selection[0][0]][3];
 			var first_column = selection[0][0];
 			var last_column = selection[0][2];
 			var many_token = [];
 			for (var j = first_column; j <= last_column; j++) {
 				many_token.push({
-                    many_token: holder_data[j][4]
+                    many_token: holder_data[j][3]
 				});
 			}
 

@@ -86,7 +86,6 @@ namespace fmis.Controllers.Budget.Carlo
 
             foreach (var item in data)
             {
-
                 sub_negative = new SubNegative(); //CLEAR OBJECT
                 if (await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token) != null) //CHECK IF EXIST
                     sub_negative = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.token == item.token);
@@ -123,12 +122,12 @@ namespace fmis.Controllers.Budget.Carlo
                 var data_holder = this._MyDbContext.SubNegative;
                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().status = "deactivated";
                 data_holder.Where(s => s.token == data.single_token).FirstOrDefault().token = data.single_token;
-
                 await _MyDbContext.SaveChangesAsync();
             }
 
             return Json(data);
         }
+
 
     }
 }
