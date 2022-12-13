@@ -383,6 +383,12 @@ namespace fmis.Controllers.Budget.John
                 ws.Row(18).Hide();
 
                 // Merge a range
+
+                ws.Range("A14:W14").Style.Border.TopBorder = XLBorderStyleValues.Thick;
+                ws.Range("A19:W19").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                ws.Range("A20:W20").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+
+
                 ws.Cell(14, 1).Style.Font.SetBold();
                 ws.Cell(14, 1).Style.Font.FontSize = 10;
                 ws.Cell(14, 1).Style.Font.FontName = "Lucida Bright";
@@ -391,6 +397,8 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(14, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Cell(14, 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 ws.Range(ws.Cell(14, 1), ws.Cell(17, 11)).Merge();
+                ws.Cell(14, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                ws.Cell(17, 11).Style.Border.TopBorder = XLBorderStyleValues.Thin;
                 ws.Rows(14, 19).Height = 16;
                 ws.Columns(1, 11).Width = 3.1;
 
@@ -531,6 +539,10 @@ namespace fmis.Controllers.Budget.John
 
 
                 // Merge a range
+                ws.Cell(14, 23).Style.Border.RightBorder = XLBorderStyleValues.Thick;
+                ws.Cell(15, 23).Style.Border.RightBorder = XLBorderStyleValues.Thick;
+                ws.Cell(16, 23).Style.Border.RightBorder = XLBorderStyleValues.Thick;
+                ws.Cell(17, 23).Style.Border.RightBorder = XLBorderStyleValues.Thick;
                 ws.Cell(14, 23).Style.Font.SetBold();
                 ws.Cell(14, 23).Style.Font.FontSize = 10;
                 ws.Cell(14, 23).Style.Font.FontName = "Lucida Bright";
@@ -689,7 +701,6 @@ namespace fmis.Controllers.Budget.John
 
                 foreach (BudgetAllotment budget_allotment in budget_allotments)
                 {
-
                     ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
                     ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
                     ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#C4D79B");
@@ -11552,6 +11563,9 @@ namespace fmis.Controllers.Budget.John
                 var GrandTotalsRegular = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
                 var GrandTotalsSaa = _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
 
+
+
+                
                 ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
                 ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
                 ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#002060");
@@ -11580,6 +11594,10 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                 ws.Cell(currentRow, 1).Style.Font.FontColor = XLColor.White;
                 ws.Cell(currentRow, 1).Value = "GRAND TOTAL";
+                //ws.Range("A1488:W1488").Style.Border.TopBorder = XLBorderStyleValues.Double;
+                //ws.Range("A1488:W1488").Style.Border.RightBorder = XLBorderStyleValues.Double;
+                //ws.Range("A1488:W1488").Style.Border.LeftBorder = XLBorderStyleValues.Double;
+                ws.Range("A1488:W1488").Style.Border.BottomBorder = XLBorderStyleValues.Double;
 
 
 
