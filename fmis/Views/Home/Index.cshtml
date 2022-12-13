@@ -10,7 +10,7 @@
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var perObligated = ViewBag.Allotment / ViewBag.Balance;
+    //var perObligated = ViewBag.Allotment / ViewBag.Balance;
 }
 
 
@@ -159,7 +159,7 @@
                                     <div id="piechart-placeholder" hidden></div>
                                     <center>
                                         <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", ViewBag.filteredBalances)%" data-size="180" data-color="#1261A0">
-                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@String.Format("{0:0.00}", @perObligated)%</span>
+                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@*@String.Format("{0:0.00}", @perObligated)*@0.00%</span>
                                         </div>
                                         <h4 class="grey lighter">OBLIGATED @*@String.Format("{0:0.00}", @perObligated)%*@</h4>
                                     </center>
