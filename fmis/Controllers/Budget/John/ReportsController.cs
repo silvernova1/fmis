@@ -2526,7 +2526,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 1).Value = "Maintenance and Other Operating Expenses".ToUpper();
                             currentRow++;
 
-                            foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).ToList())
+                            foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.Breakdown == false).ToList())
                             {
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
@@ -2539,7 +2539,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 1).Style.Font.SetBold();
                                 ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
+                                ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();;
                                 currentRow++;
 
                                 foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.Where(x => x.status == "activated").ToList())
@@ -3239,7 +3239,7 @@ namespace fmis.Controllers.Budget.John
                                                                 allotmentClassID = f.AllotmentClassId
                                                             });*/
 
-                                var MooeTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).Sum(x => x.Beginning_balance);
+                                var MooeTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.Breakdown == false).Sum(x => x.Beginning_balance);
                                 var allotment_totalMOOE = +MooeTotal;
 
                                 ws.Cell(currentRow, 13).Style.Font.SetBold();
@@ -9830,7 +9830,7 @@ namespace fmis.Controllers.Budget.John
                         if (budget_allotment.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1).Any())
                         {
 
-                            var MooeTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                            var MooeTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == id && x.Breakdown == false).Sum(x => x.Beginning_balance);
                             var allotment_totalMOOE = +MooeTotal;
 
                             ws.Cell(currentRow, 3).Style.Font.FontSize = 10;
@@ -10426,7 +10426,7 @@ namespace fmis.Controllers.Budget.John
 
 
                         var TotalCA = _MyDbContext.FundSources.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
-                        var TotalCARegular = _MyDbContext.FundSources.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                        var TotalCARegular = _MyDbContext.FundSources.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id && x.Breakdown == false).Sum(x => x.Beginning_balance);
                         var TotalCASaa = _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
 
                         ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#B7DEE8");
@@ -11560,7 +11560,7 @@ namespace fmis.Controllers.Budget.John
                 }
 
                 var GrandTotals = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
-                var GrandTotalsRegular = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                var GrandTotalsRegular = _MyDbContext.FundSources.Where(x => x.BudgetAllotmentId == id && x.Breakdown == false).Sum(x => x.Beginning_balance);
                 var GrandTotalsSaa = _MyDbContext.SubAllotment.Where(x => x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance) + _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Beginning_balance);
 
 
