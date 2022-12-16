@@ -228,9 +228,9 @@ namespace fmis.Controllers
 
         [HttpGet]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> openCreatedByAsync(int id, string obligation_token)
+        public IActionResult openCreatedByAsync(int id, string obligation_token)
         {
-            var obligation = (from o in _MyDbContext.Obligation
+            var obligation = (from o in  _MyDbContext.Obligation
                               join u in _MyDbContext.FmisUsers
                               on o.Created_by equals u.Username
                               select new
@@ -240,7 +240,7 @@ namespace fmis.Controllers
                               }).ToList();
 
             return Json(obligation.Where(x => x.Id == id).FirstOrDefault().user);
-            // return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml"); 
+             //return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml"); 
         }
 
         // GET: Obligations/Create
@@ -359,8 +359,8 @@ namespace fmis.Controllers
                             yearAdded = DateTime.Now,
                             Date = ToDateTime(worksheet.Cells[row, 3].Text, "MM/dd/yy"),
                             Dv = worksheet.Cells[row, 4].Text,
-                            Po_no = worksheet.Cells[row, 5].Text,
-                            Pr_no = worksheet.Cells[row, 6].Text,
+                            Pr_no = worksheet.Cells[row, 5].Text,
+                            Po_no = worksheet.Cells[row, 6].Text,
                             Payee = worksheet.Cells[row, 7].Text,
                             Address = worksheet.Cells[row, 8].Text,
                             Particulars = worksheet.Cells[row, 9].Text,

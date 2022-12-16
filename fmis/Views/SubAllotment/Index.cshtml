@@ -317,8 +317,13 @@ else
                     <td>
                         <center>
                             <a asp-controller="SubNegative" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-danger btn-xs">
-                                <span class="glyphicon glyphicon-share-alt"></span>
+                                <span class="glyphicon glyphicon-share-alt"> </span>
                             </a>
+                            <br />
+                            <br />
+                            <b class="red">
+                                ₱@item.SubNegative.Where(x => x.SubAllotmentId == item.SubAllotmentId).Sum(x => x.Amount).ToString("##,##0.00")
+                            </b>
                         </center>
                     </td>
                     <td>
