@@ -103,6 +103,8 @@ namespace fmis.Controllers
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.AllotmentClass)
             .Include(x => x.Yearly_reference)
+            .Include(x => x.SubAllotment)
+            .ThenInclude(x => x.SubNegative)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
             //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
@@ -483,6 +485,24 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _context.SubAllotment.Any(e => e.SubAllotmentId == id);
         }
+
+
+/*        public IActionResult FilterByStatus(string status)
+        {
+            var filterSubTitle = _MyDbContext.SubAllotment();
+            if (status == "Active")
+            {
+                filterproducts = products.Where(p => p.Status == true).ToList();
+                return Json(filterproducts);
+            }
+            else if (status == "Deactivated")
+            {
+                filterproducts = products.Where(p => p.Status == false).ToList();
+                return Json(filterproducts);
+            }
+            return Json(filterproducts);
+        }
+*/
 
         #region COOKIES
 
