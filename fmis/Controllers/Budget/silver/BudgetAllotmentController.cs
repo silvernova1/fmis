@@ -84,6 +84,11 @@ namespace fmis.Controllers
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 
+            _context.FundSources.UpdateRange(budget_allotment.FundSources);
+            _context.SaveChanges();
+
+
+
             budget_allotment.SubAllotment.ToList().ForEach(x =>
             {
                 x.obligated_amount = _context.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
