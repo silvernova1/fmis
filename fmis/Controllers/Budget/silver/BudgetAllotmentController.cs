@@ -99,7 +99,7 @@ namespace fmis.Controllers
 
                 x.obligated_amount = +x.obligated_amount;
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
-                x.Beginning_balance = x.Beginning_balance - x.SubNegative.Where(x => x.SubAllotmentId == x.SubAllotmentId).Sum(x => x.Amount);
+                x.Beginning_balance = x.Beginning_balance - x.SubNegative.Where(x => x.SubAllotmentId == x.SubAllotmentId && x.status == "activated").Sum(x => x.Amount);
             });
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.Include(x=>x.BudgetAllotments).AsNoTracking().ToListAsync();
