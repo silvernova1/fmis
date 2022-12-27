@@ -99,8 +99,6 @@ namespace fmis.Controllers.Budget.John
                                              on oa.ObligationId equals o.Id
                                              join f in _MyDbContext.FundSources
                                              on o.FundSourceId equals f.FundSourceId
-                                             join s in _MyDbContext.SubAllotment
-                                             on o.SubAllotmentId equals s.SubAllotmentId
                                              where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                                              select new
                                              {
@@ -113,7 +111,7 @@ namespace fmis.Controllers.Budget.John
                                                  allotmentClassID = f.AllotmentClassId,
                                                  appropriationID = f.AppropriationId,
                                                  fundSourceTitle = f.FundSourceTitle,
-                                                 suballotmentTitle = s.Suballotment_title
+                                                 oaStatus = oa.status
                                              });
 
             var asAtTotalinTotalPS = (from oa in _MyDbContext.ObligationAmount
@@ -121,8 +119,6 @@ namespace fmis.Controllers.Budget.John
                                       on oa.ObligationId equals o.Id
                                       join f in _MyDbContext.FundSources
                                       on o.FundSourceId equals f.FundSourceId
-                                      join s in _MyDbContext.SubAllotment
-                                      on o.SubAllotmentId equals s.SubAllotmentId
                                       where o.Date >= date1 && o.Date <= date2
                                       select new
                                       {
@@ -134,10 +130,10 @@ namespace fmis.Controllers.Budget.John
                                           allotmentClassID = f.AllotmentClassId,
                                           appropriationID = f.AppropriationId,
                                           fundSourceTitle = f.FundSourceTitle,
-                                          fundSourceBudgetAllotmentId = f.BudgetAllotmentId,
-                                          suballotmentTitle = s.Suballotment_title
+                                          fundSourceBudgetAllotmentId = f.BudgetAllotmentId
                                       });
-            var PsTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION" && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+            var PsTotal = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id && !x.FundSourceTitle.Contains("RLIP")).Sum(x => x.Beginning_balance);
+            var PsTotalRlip = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id && x.FundSourceTitle.Contains("RLIP")).Sum(x => x.Beginning_balance);
 
 
 
@@ -776,7 +772,7 @@ namespace fmis.Controllers.Budget.John
 
                     //START PS LOOP
 
-                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle != "AUTOMATIC APPROPRIATION" && x.BudgetAllotmentId == id).ToList())
+                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id && !x.FundSourceTitle.Contains("RLIP")).OrderByDescending(x=>x.FundSourceTitle).ToList())
                     {
 
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
@@ -804,6 +800,8 @@ namespace fmis.Controllers.Budget.John
                             var fortheMonth = (from oa in _MyDbContext.ObligationAmount
                                                join o in _MyDbContext.Obligation
                                                on oa.ObligationId equals o.Id
+                                               join f in _MyDbContext.FundSources
+                                               on o.FundSourceId equals f.FundSourceId
                                                where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                                                select new
                                                {
@@ -811,8 +809,8 @@ namespace fmis.Controllers.Budget.John
                                                    uacsId = oa.UacsId,
                                                    date = o.Date,
                                                    sourceId = o.FundSourceId,
-                                                   status = o.status
-
+                                                   status = o.status,
+                                                   fundsourceTitle = f.FundSourceTitle
                                                });
 
                             var fundsourceID = (from f in _MyDbContext.FundSources
@@ -954,12 +952,12 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
 
-                            if (fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount) != 0)
+                            if (fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated" && !x.fundsourceTitle.Contains("RLIP")).Sum(x => x.amount) != 0)
                             {
                                 //OBLIGATED (FOR THE MONTH)
                                 ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 20).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                ws.Cell(currentRow, 20).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated" && !x.fundsourceTitle.Contains("RLIP")).Sum(x => x.amount);
                                 ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                                 ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             }
@@ -1212,6 +1210,22 @@ namespace fmis.Controllers.Budget.John
                                              status = o.status
                                          });
 
+                        var asAtTotalSaro = (from oa in _MyDbContext.ObligationAmount
+                                         join o in _MyDbContext.Obligation
+                                         on oa.ObligationId equals o.Id
+                                         join s in _MyDbContext.SubAllotment
+                                         on o.SubAllotmentId equals s.SubAllotmentId
+                                         where o.Date >= date1 && o.Date <= date2
+                                         select new
+                                         {
+                                             amount = oa.Amount,
+                                             sourceId = o.SubAllotmentId,
+                                             uacsId = oa.UacsId,
+                                             status = o.status,
+                                             appropriationId = s.AppropriationId,
+                                             suballotmentTitle = s.Suballotment_title
+                                         });
+
                         var sub6 = fundSource.Beginning_balance - fundSource.FundsRealignment?.Sum(x => x.Realignment_amount) + fundSource.FundsRealignment?.Sum(x => x.Realignment_amount);
                         var sub9 = sub6 - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
 
@@ -1459,7 +1473,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
+                        ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && !x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount);
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -1467,10 +1481,10 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
+                        ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && !x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
-                        var unobligatedTotalinTotalPS = PsTotal - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
+                        var unobligatedTotalinTotalPS = PsTotal - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && !x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount);
                         ws.Cell(currentRow, 22).Style.Font.SetBold();
                         ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -1479,7 +1493,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
 
                         //PERCENT OF UTILIZATION
-                        var totalPercentPS = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount) / allotment_total;
+                        var totalPercentPS = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && !x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount) / allotment_total;
                         ws.Cell(currentRow, 23).Value = totalPercentPS;
                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -1492,7 +1506,6 @@ namespace fmis.Controllers.Budget.John
                     }
 
                     //SARO START
-
                     if (_MyDbContext.SubAllotment.Any(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id && x.Suballotment_title.Contains("SARO")))
                     {
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
@@ -1596,19 +1609,19 @@ namespace fmis.Controllers.Budget.John
                                 //ORIGINAL IS ws.Cell(currentRow, 13)
                                 if (suballotment_amount.beginning_balance != 0)
                                 {
-                                    ws.Cell(currentRow, 14).Style.Font.FontSize = 10;
-                                    ws.Cell(currentRow, 14).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 14).Value = suballotment_amount.beginning_balance;
-                                    ws.Cell(currentRow, 14).Style.NumberFormat.Format = "#,##0.00";
-                                    ws.Cell(currentRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 13).Value = suballotment_amount.beginning_balance;
+                                    ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 else
                                 {
-                                    ws.Cell(currentRow, 14).Style.Font.FontSize = 10;
-                                    ws.Cell(currentRow, 14).Style.Font.FontName = "Calibri Light";
-                                    ws.Cell(currentRow, 14).Value = "-";
-                                    ws.Cell(currentRow, 14).Style.NumberFormat.Format = "#,##0.00";
-                                    ws.Cell(currentRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 13).Value = "-";
+                                    ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
 
                                 //REALIGNMENT SAA
@@ -1692,6 +1705,7 @@ namespace fmis.Controllers.Budget.John
                                 }
 
                                 var SAAafterrealignment_amount = suballotment_amount.beginning_balance - suballotment_amount.realignment_amount;
+                                var SaroPercentage= suballotment_amount.beginning_balance - suballotment_amount.realignment_amount;
                                 var SAAafterrealignment_amountadd = suballotment_amount.beginning_balance + _MyDbContext.SubAllotment_Realignment.FirstOrDefault(x => x.Realignment_to == suballotment_amount.UacsId && x.SubAllotmentId == suballotment_amount.SubAllotmentId)?.Realignment_amount;
                                 if (_MyDbContext.SubAllotment_Realignment.Where(x => x.SubAllotmentAmountId == suballotment_amount.SubAllotmentAmountId && x.SubAllotmentId == suballotment_amount.SubAllotmentId).Any() || afterrealignment_amount != 0)
                                 {
@@ -1859,6 +1873,7 @@ namespace fmis.Controllers.Budget.John
                                 total = (double)suballotment_amount.beginning_balance;
                             }
 
+
                             var fortheMonthTotal = (from oa in _MyDbContext.ObligationAmount
                                                     join o in _MyDbContext.Obligation
                                                     on oa.ObligationId equals o.Id
@@ -1900,18 +1915,36 @@ namespace fmis.Controllers.Budget.John
                                                  suballotmentTitle = s.Suballotment_title
                                              });
 
+                            var asAtTotalSaro = (from oa in _MyDbContext.ObligationAmount
+                                                 join o in _MyDbContext.Obligation
+                                                 on oa.ObligationId equals o.Id
+                                                 join s in _MyDbContext.SubAllotment
+                                                 on o.SubAllotmentId equals s.SubAllotmentId
+                                                 where o.Date >= date1 && o.Date <= date2
+                                                 select new
+                                                 {
+                                                     amount = oa.Amount,
+                                                     sourceId = o.SubAllotmentId,
+                                                     sourceType = o.source_type,
+                                                     uacsId = oa.UacsId,
+                                                     status = o.status,
+                                                     appropriationID = s.AppropriationId,
+                                                     fundSourceBudgetAllotmentId = s.BudgetAllotmentId,
+                                                     suballotmentTitle = s.Suballotment_title
+                                                 });
+
 
                             ws.Cell(currentRow, 4).Style.Font.SetBold();
                             ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
                             ws.Cell(currentRow, 4).Value = "SUBTOTAL " + subAllotment.Suballotment_title?.ToUpper();
 
-                            ws.Cell(currentRow, 14).Style.Font.SetBold();
-                            ws.Cell(currentRow, 14).Style.Font.FontSize = 10;
-                            ws.Cell(currentRow, 14).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 14).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 14).Value = subAllotment.Beginning_balance;
+                            ws.Cell(currentRow, 13).Style.Font.SetBold();
+                            ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 13).Value = subAllotment.Beginning_balance;
 
                             //REALIGNMENT SUBTOTAL
                             var SAArealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
@@ -2005,7 +2038,7 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Font.SetBold();
                             ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 23).Value = asAtTotal.Where(x => x.sourceId == budget_allotment.FundSources.FirstOrDefault().FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
+                            ws.Cell(currentRow, 23).Value = asAtTotalSaro.Where(x => x.sourceId == budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentAmounts.FirstOrDefault().SubAllotmentId && x.status == "activated").Sum(x => x.amount);
                             ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -2016,22 +2049,48 @@ namespace fmis.Controllers.Budget.John
                         }
 
                     }
-
-                    //TOTAL SARO
-                    if (_MyDbContext.SubAllotment.Any(x=>x.Suballotment_title.Contains("SARO")))
+                    //TOTAL SARO START
+                    if (_MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id && x.Suballotment_title.Contains("SARO")).Any())
                     {
-                        var transferto_filter = (from f in _MyDbContext.FundSources
-                                                 join fa in _MyDbContext.FundSourceAmount
-                                                 on f.FundSourceId equals fa.FundSourceId
-                                                 join ft in _MyDbContext.FundTransferedTo
-                                                 on fa.FundSourceId equals ft.FundSourceId
-                                                 select new
-                                                 {
-                                                     FundSource_Id = f.FundSourceId,
-                                                     Uacs_UacsId = fa.UacsId,
-                                                     Uacs_FundSourceId = fa.FundSourceId,
-                                                 }).FirstOrDefault();
-                        var saroTotal = _MyDbContext.SubAllotment.Where(x => x.Suballotment_title.Contains("SARO")).Sum(x=>x.Beginning_balance);
+
+                        var fortheMonthTotalSaro = (from oa in _MyDbContext.ObligationAmount
+                                                         join o in _MyDbContext.Obligation
+                                                         on oa.ObligationId equals o.Id
+                                                         join s in _MyDbContext.SubAllotment
+                                                         on o.SubAllotmentId equals s.SubAllotmentId
+                                                         where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                                         select new
+                                                         {
+                                                             amount = oa.Amount,
+                                                             uacsId = oa.UacsId,
+                                                             sourceId = o.FundSourceId,
+                                                             sourceType = o.source_type,
+                                                             date = o.Date,
+                                                             status = o.status,
+                                                             allotmentClassID = s.AllotmentClassId,
+                                                             appropriationID = s.AppropriationId,
+                                                             suballotmentTitle = s.Suballotment_title
+                                                         });
+
+                        var asAtTotalSaro = (from oa in _MyDbContext.ObligationAmount
+                                                  join o in _MyDbContext.Obligation
+                                                  on oa.ObligationId equals o.Id
+                                                  join s in _MyDbContext.SubAllotment
+                                                  on o.SubAllotmentId equals s.SubAllotmentId
+                                                  where o.Date >= date1 && o.Date <= date2
+                                                  select new
+                                                  {
+                                                      amount = oa.Amount,
+                                                      sourceId = o.SubAllotmentId,
+                                                      sourceType = o.source_type,
+                                                      uacsId = oa.UacsId,
+                                                      status = o.status,
+                                                      appropriationID = s.AppropriationId,
+                                                      fundSourceBudgetAllotmentId = s.BudgetAllotmentId,
+                                                      suballotmentTitle = s.Suballotment_title
+                                                  });
+
+                        var SaroTotal = _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.BudgetAllotmentId == id && x.Suballotment_title.Contains("SARO")).Sum(x => x.Beginning_balance);
 
                         ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
                         ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
@@ -2071,7 +2130,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 13).Value = saroTotal;
+                        ws.Cell(currentRow, 13).Value = SaroTotal;
 
                         //REALIGNMENT TOTAL
                         var realignment_total = budget_allotment.SubAllotment.FirstOrDefault()?.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault()?.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
@@ -2109,7 +2168,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 19).Value = saroTotal - _MyDbContext.SubTransferedTo.Where(x => x.SubAllotment.AllotmentClassId == 1 && x.SubAllotment.AppropriationId == 1 && x.SubAllotment.BudgetAllotmentId == id).Sum(x => x.Amount);
+                        ws.Cell(currentRow, 19).Value = SaroTotal - _MyDbContext.SubTransferedTo.Where(x => x.SubAllotment.AllotmentClassId == 1 && x.SubAllotment.AppropriationId == 1 && x.SubAllotment.BudgetAllotmentId == id).Sum(x => x.Amount);
 
                         //TOTAL - FOR THE MONTH
                         ws.Cell(currentRow, 20).Style.Font.SetBold();
@@ -2117,7 +2176,7 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount);
+                        ws.Cell(currentRow, 20).Value = fortheMonthTotalSaro.Where(x => x.appropriationID == 1 && x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount); 
 
                         //TOTAL - AS AT
                         ws.Cell(currentRow, 21).Style.Font.SetBold();
@@ -2125,19 +2184,19 @@ namespace fmis.Controllers.Budget.John
                         ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
                         ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x=>x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount);
+                        ws.Cell(currentRow, 21).Value = asAtTotalSaro.Where(x => x.appropriationID == 1 && x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount);
 
                         //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
-                        var unobligatedTotalinTotalSaro = saroTotal - asAtTotalinTotalPS.Where(x => x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount);
+                        var unobligatedTotalSaro = SaroTotal - asAtTotalSaro.Where(x => x.appropriationID == 1 && x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount);
                         ws.Cell(currentRow, 22).Style.Font.SetBold();
                         ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 22).Value = unobligatedTotalinTotalSaro;
+                        ws.Cell(currentRow, 22).Value = unobligatedTotalSaro;
                         ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
 
                         //PERCENT OF UTILIZATION
-                        var totalPercentSaro = (double)asAtTotalinTotalPS.Where(x => x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount) / (double) _MyDbContext.SubAllotment.Where(x=>x.Suballotment_title.Contains("SARO")).Sum(x=>x.Beginning_balance);
+                        var totalPercentSaro = (double)asAtTotalSaro.Where(x => x.appropriationID == 1 && x.suballotmentTitle.Contains("SARO")).Sum(x => x.amount) / (double)_MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.Suballotment_title.Contains("SARO")).Sum(x => x.Beginning_balance);
                         ws.Cell(currentRow, 23).Value = totalPercentSaro;
                         ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
                         ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -2148,370 +2207,598 @@ namespace fmis.Controllers.Budget.John
                         currentRow++;
                         //END PS LOOP
                     }
-
+                    //TOTAL SARO END
                     //SARO ENDS
 
 
-                    //START AUTOMATIC APPROPRIATION PS LOOP
-                    foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.FundSourceTitle == "AUTOMATIC APPROPRIATION").ToList())
+                    //START AUTOMATIC APPROPRIATION
+                    if (_MyDbContext.FundSources.Where(x=>x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id && x.FundSourceTitle.Contains("RLIP")).Any())
                     {
-
-
-
-                        ws.Cell(currentRow, 1).Value = fundSource.Prexc.pap_code1;
-                        ws.Cell(currentRow, 1).Style.NumberFormat.Format = "00";
-                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                        ws.Range(ws.Cell(currentRow, 1), ws.Cell(currentRow, 11)).Merge();
-                        currentRow++;
-
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = fundSource.FundSourceTitle.ToUpper().ToString();
-                        currentRow++;
-
-                        foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderByDescending(x => x.UacsId).Where(x => x.status == "activated").ToList())
-                        {
-                            var uacsID = from fa in _MyDbContext.FundSourceAmount
-                                         join u in _MyDbContext.Uacs
-                                         on fa.UacsId equals u.UacsId
-                                         select fa.UacsId;
-
-
-                            var fortheMonth = (from oa in _MyDbContext.ObligationAmount
-                                               join o in _MyDbContext.Obligation
-                                               on oa.ObligationId equals o.Id
-                                               where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
-                                               select new
-                                               {
-                                                   amount = oa.Amount,
-                                                   uacsId = oa.UacsId,
-                                                   date = o.Date,
-                                                   sourceId = o.FundSourceId,
-                                                   status = o.status
-
-                                               });
-
-                            var fundsourceID = (from f in _MyDbContext.FundSources
-                                                join fa in _MyDbContext.FundSourceAmount
-                                                on f.FundSourceId equals fa.FundSourceId
-                                                where f.FundSourceId == fa.FundSourceId
-                                                select new
-                                                {
-                                                    faId = f.FundSourceId
-                                                });
-
-                            var fundsourceamountID = (from f in _MyDbContext.FundSources
-                                                      join fa in _MyDbContext.FundSourceAmount
-                                                      on f.FundSourceId equals fa.FundSourceId
-                                                      where f.FundSourceId == fa.FundSourceId
-                                                      select new
-                                                      {
-                                                          faAmountId = fa.FundSourceId
-                                                      });
-
-
-
-
-                            var asAt = (from oa in _MyDbContext.ObligationAmount
-                                        join o in _MyDbContext.Obligation
-                                        on oa.ObligationId equals o.Id
-                                        where o.Date >= date1 && o.Date <= date2
-                                        select new
-                                        {
-                                            amount = oa.Amount,
-                                            uacsId = oa.UacsId,
-                                            sourceId = o.FundSourceId,
-                                            status = o.status
-                                        });
-
-                            var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
-
-
-                            total = 0;
-                            var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
-                            ws.Cell(currentRow, 1).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();
-                            ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-                            ws.Cell(currentRow, 2).Value = fundsource_amount.Uacs.Expense_code;
-                            ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-                            ws.Cell(currentRow, 3).Value = fundsource_amount.beginning_balance;
-                            ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            if (fundsource_amount.realignment_amount == 0)
-                            {
-                                //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = "-";
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            }
-                            else
-                            {
-                                //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = "(" + fundsource_amount.realignment_amount + ")";
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            }
-                            //TOTAL TRANSFER TO
-                            ws.Cell(currentRow, 5).Style.Font.SetBold();
-                            ws.Cell(currentRow, 5).Value = "-";
-                            ws.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            //TOTAL ADJUSTED ALLOTMENT
-                            ws.Cell(currentRow, 6).Value = afterrealignment_amount;
-                            ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            //OBLIGATED (FOR THE MONTH)
-                            ws.Cell(currentRow, 7).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
-                            ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            //OBLIGATED (AS AT)
-                            //ws.Cell(currentRow, 8).Value = asAt.FirstOrDefault(x => x.uacsId == fundsource_amount.UacsId)?.amount;
-                            ws.Cell(currentRow, 8).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
-                            ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            //UNOBLIGATED BALANCE OF ALLOTMENT
-                            ws.Cell(currentRow, 9).Value = unobligated_amount;
-                            ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                            //PERCENT OF UTILIZATION
-                            ws.Cell(currentRow, 10).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) / afterrealignment_amount;
-                            ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
-                            ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                            //REALIGNMENT DATA
-                            foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).ToList())
-                            //foreach(var realignment in fundsource_amount.FundSource.FundsRealignment)
-                            {
-
-
-
-
-                                currentRow++;
-                                Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
-                                ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper();
-                                ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-                                ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
-                                ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                                //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
-
-                                ws.Cell(currentRow, 3).Value = "#,##0.00";
-                                ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                                //REALIGNMENT AMOUNT
-                                ws.Cell(currentRow, 4).Value = fundsource_amount.realignment_amount;
-                                ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-
-                            }
-                            currentRow++;
-                            total = (double)fundsource_amount.beginning_balance;
-                        }
-
-                        var fortheMonthTotal = (from oa in _MyDbContext.ObligationAmount
-                                                join o in _MyDbContext.Obligation
-                                                on oa.ObligationId equals o.Id
-                                                where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
-                                                select new
-                                                {
-                                                    amount = oa.Amount,
-                                                    uacsId = oa.UacsId,
-                                                    sourceId = o.FundSourceId,
-                                                    date = o.Date,
-                                                    status = o.status
-                                                });
-
-                        var funds_filterTotal = (from f in _MyDbContext.FundSources
-                                                 join fa in _MyDbContext.FundSourceAmount
-                                                 on f.FundSourceId equals fa.FundSourceId
-                                                 select new
-                                                 {
-                                                     Id = f.FundSourceId
-                                                 });
-
-                        var asAtTotal = (from oa in _MyDbContext.ObligationAmount
-                                         join o in _MyDbContext.Obligation
-                                         on oa.ObligationId equals o.Id
-                                         where o.Date >= date1 && o.Date <= date2
-                                         select new
-                                         {
-                                             amount = oa.Amount,
-                                             sourceId = o.FundSourceId,
-                                             uacsId = oa.UacsId,
-                                             status = o.status
-                                         });
-
-                        ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
-                        ws.Cell(currentRow, 1).Style.Font.SetBold();
-                        ws.Cell(currentRow, 1).Value = "SUBTOTAL " + fundSource.FundSourceTitle.ToUpper()/* + " - " + budget_allotment.FundSources.FirstOrDefault().AllotmentClass.Account_Code*/;
-
-
-                        ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = fundSource.Beginning_balance;
-
-                        //REALIGNMENT TOTAL
-                        var realignment_total = budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount);
-                        if (realignment_total == null)
-                        {
-                            ws.Cell(currentRow, 4).Style.Font.SetBold();
-                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 4).Value = 0.00;
-                        }
-                        else
-                        {
-                            ws.Cell(currentRow, 4).Style.Font.SetBold();
-                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 4).Value = realignment_total;
-                        }
-                        //TOTAL TRANSFER TO
-                        ws.Cell(currentRow, 5).Style.Font.SetBold();
-                        ws.Cell(currentRow, 5).Value = "0.00";
-                        ws.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = fundSource.Beginning_balance;
-
-                        ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
-
-                        //AS AT TOTAL
-                        ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount);
-
-
-                        var unobligatedTotal = fundSource.Beginning_balance - asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId).Sum(x => x.amount);
-                        //SUBTOTAL UNOBLIGATED BALANCE OF ALLOTMENT
-                        ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotal;
-
-                        //PERCENT OF UTILIZATION
-                        ws.Cell(currentRow, 10).Value = asAtTotal.Where(x => x.sourceId == fundSource.FundSourceAmounts.FirstOrDefault().FundSourceId && x.status == "activated").Sum(x => x.amount) / fundSource.Beginning_balance;
-                        ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
-                        ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        var subAllotmentTotal = _MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1).Sum(x => x.Beginning_balance);
-
-                        allotment_total += (double)fundSource.Beginning_balance + (double)subAllotmentTotal;
-                        currentRow++;
-                    }
-
-                    if (_MyDbContext.FundSources.Where(x => x.FundSourceTitle == "AUTOMATIC APPROPRIATION").Any())
-                    {
-                        var PsTotalAP = _MyDbContext.FundSources.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.FundSourceTitle == "AUTOMATIC APPROPRIATION" && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
-                        ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
-                        ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
                         ws.Cell(currentRow, 1).Style.Font.SetBold();
                         ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 1).Value = "TOTAL AUTOMATIC APPROPRIATIONS";
-
-                        var PTCAP = budget_allotment.FundSources.FirstOrDefault().Beginning_balance;
-                        //var PsTotalCurrentAP = +(double)PTC;
-
-
-                        ws.Cell(currentRow, 3).Style.Font.SetBold();
-                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 3).Value = PsTotalAP;
-
-                        //REALIGNMENT TOTAL
-                        var realignment_total = budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount);
-                        if (realignment_total == null)
-                        {
-                            ws.Cell(currentRow, 4).Style.Font.SetBold();
-                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 4).Value = 0.00;
-                        }
-                        else
-                        {
-                            ws.Cell(currentRow, 4).Style.Font.SetBold();
-                            ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
-                            ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                            ws.Cell(currentRow, 4).Value = realignment_total;
-                        }
-                        //TOTAL TRANSFER TO
-                        ws.Cell(currentRow, 5).Style.Font.SetBold();
-                        ws.Cell(currentRow, 5).Value = "0.00";
-                        ws.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        //TOTAL - TOTAL AFTER REALIGNMENT
-                        ws.Cell(currentRow, 6).Style.Font.SetBold();
-                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 6).Value = PsTotalAP;
-
-                        //TOTAL - FOR THE MONTH
-                        ws.Cell(currentRow, 7).Style.Font.SetBold();
-                        ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 7).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
-
-                        //TOTAL - AS AT
-                        ws.Cell(currentRow, 8).Style.Font.SetBold();
-                        ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 8).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
-
-                        //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
-                        var unobligatedTotalinTotalPSAP = PsTotalAP - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount);
-                        ws.Cell(currentRow, 9).Style.Font.SetBold();
-                        ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ws.Cell(currentRow, 9).Value = unobligatedTotalinTotalPSAP;
-
-                        //PERCENT OF UTILIZATION
-                        var totalPercentPSAP = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceTitle == "AUTOMATIC APPROPRIATION").Sum(x => x.amount) / allotment_total;
-                        ws.Cell(currentRow, 10).Value = totalPercentPSAP;
-                        ws.Cell(currentRow, 10).Style.NumberFormat.Format = "0.00%";
-                        ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
+                        ws.Cell(currentRow, 1).Value = "AUTOMATIC APPROPRIATION";
                         currentRow++;
+
+                        foreach (FundSource fundSource in budget_allotment.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id && x.FundSourceTitle.Contains("RLIP")).OrderByDescending(x => x.FundSourceTitle).ToList())
+                        {
+                            ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 4).Value = fundSource.FundSourceTitle.ToUpper().ToString();
+
+                            foreach (FundSourceAmount fundsource_amount in fundSource.FundSourceAmounts.OrderBy(x => x.UacsId).Where(x => x.status == "activated").ToList())
+                            {
+                                var uacsID = from fa in _MyDbContext.FundSourceAmount
+                                             join u in _MyDbContext.Uacs
+                                             on fa.UacsId equals u.UacsId
+                                             select fa.UacsId;
+
+
+                                var fortheMonth = (from oa in _MyDbContext.ObligationAmount
+                                                   join o in _MyDbContext.Obligation
+                                                   on oa.ObligationId equals o.Id
+                                                   join f in _MyDbContext.FundSources
+                                                   on o.FundSourceId equals f.FundSourceId
+                                                   where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                                   select new
+                                                   {
+                                                       amount = oa.Amount,
+                                                       uacsId = oa.UacsId,
+                                                       date = o.Date,
+                                                       sourceId = o.FundSourceId,
+                                                       status = o.status,
+                                                       fundsourceTitle = f.FundSourceTitle
+                                                   });
+
+                                var fundsourceID = (from f in _MyDbContext.FundSources
+                                                    join fa in _MyDbContext.FundSourceAmount
+                                                    on f.FundSourceId equals fa.FundSourceId
+                                                    where f.FundSourceId == fa.FundSourceId
+                                                    select new
+                                                    {
+                                                        faId = f.FundSourceId,
+                                                        faBeginningBalance = fa.beginning_balance,
+                                                        uacsID = fa.UacsId
+                                                    });
+
+                                var fundsourceamountID = (from f in _MyDbContext.FundSources
+                                                          join fa in _MyDbContext.FundSourceAmount
+                                                          on f.FundSourceId equals fa.FundSourceId
+                                                          where f.FundSourceId == fa.FundSourceId
+                                                          select new
+                                                          {
+                                                              faAmountId = fa.FundSourceId
+                                                          });
+
+
+
+
+                                var asAt = (from oa in _MyDbContext.ObligationAmount
+                                            join o in _MyDbContext.Obligation
+                                            on oa.ObligationId equals o.Id
+                                            where o.Date >= date1 && o.Date <= date2
+                                            select new
+                                            {
+                                                amount = oa.Amount,
+                                                uacsId = oa.UacsId,
+                                                sourceId = o.FundSourceId,
+                                                status = o.status
+                                            });
+                                var unobligated_amount = fundsource_amount.beginning_balance - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+
+
+                                total = 0;
+
+                                /*ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 4).Value = fundsource_amount.Uacs.Account_title.ToUpper().ToString();*/
+
+                                ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 12).Value = fundsource_amount.Uacs.Expense_code;
+                                ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                                if (fundsource_amount.beginning_balance != 0)
+                                {
+                                    ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 13).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else
+                                {
+                                    ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 13).Value = "-";
+                                    ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+
+
+
+                                if (_MyDbContext.FundsRealignment.Any(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated"))
+                                {
+                                    //REALIGNMENT AMOUNT
+                                    ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 17).Value = "(" + _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.status == "activated").FirstOrDefault()?.Realignment_amount + ")";
+                                    ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else if (_MyDbContext.FundsRealignment.Any(x => x.Realignment_to == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId && x.status == "activated"))
+                                {
+                                    //REALIGNMENT AMOUNT
+                                    ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 17).Value = _MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.status == "activated").FirstOrDefault().Realignment_amount;
+                                    ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else
+                                {
+                                    //REALIGNMENT AMOUNT
+                                    ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 17).Value = "-";
+                                    ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 18).Value = "-";
+                                ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                var afterrealignment_amount = fundsource_amount.beginning_balance - fundsource_amount.realignment_amount;
+                                var afterrealignment_amountadd = fundsource_amount.beginning_balance + _MyDbContext.FundsRealignment.FirstOrDefault(x => x.Realignment_to == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId)?.Realignment_amount;
+                                if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any() || afterrealignment_amount != 0)
+                                {
+                                    //TOTAL ADJUSTED ALLOTMENT
+                                    ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 19).Value = afterrealignment_amount;
+                                    ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                                {
+                                    //TOTAL ADJUSTED ALLOTMENT
+                                    ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 19).Value = afterrealignment_amountadd;
+                                    ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (afterrealignment_amount == 0 || afterrealignment_amountadd == 0)
+                                {
+                                    //TOTAL ADJUSTED ALLOTMENT
+                                    ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 19).Value = fundsource_amount.beginning_balance;
+                                    ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (fundsource_amount.beginning_balance == 0)
+                                {
+                                    //TOTAL ADJUSTED ALLOTMENT
+                                    ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 19).Value = "-";
+                                    ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+
+                                if (fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated" && x.fundsourceTitle.Contains("RLIP")).Sum(x => x.amount) != 0)
+                                {
+                                    //OBLIGATED (FOR THE MONTH)
+                                    ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 20).Value = fortheMonth.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated" && x.fundsourceTitle.Contains("RLIP")).Sum(x => x.amount);
+                                    ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else
+                                {
+                                    //OBLIGATED (FOR THE MONTH)
+                                    ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 20).Value = "-";
+                                    ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount) != 0)
+                                {
+                                    //OBLIGATED (AS AT)
+                                    ws.Cell(currentRow, 21).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 21).Value = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                    ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#F2DCDB");
+                                    ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else
+                                {
+                                    //OBLIGATED (AS AT)
+                                    ws.Cell(currentRow, 21).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 21).Value = "-";
+                                    ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#F2DCDB");
+                                    ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+
+
+                                var addunobligated = afterrealignment_amount - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+                                var deductunobligated = afterrealignment_amountadd - asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount);
+
+                                if (_MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId).Any() || addunobligated != 0)
+                                {
+                                    ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 22).Value = addunobligated;
+                                    ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (_MyDbContext.FundsRealignment.Where(x => x.Realignment_to == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId).Any())
+                                {
+                                    ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 22).Value = deductunobligated;
+                                    ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (addunobligated == 0 || deductunobligated == 0)
+                                {
+                                    //UNOBLIGATED BALANCE OF ALLOTMENT
+                                    ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 22).Value = unobligated_amount;
+                                    ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                if (unobligated_amount == 0)
+                                {
+                                    //UNOBLIGATED BALANCE OF ALLOTMENT
+                                    ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 22).Value = "-";
+                                    ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+
+
+                                //PERCENT OF UTILIZATION
+                                if (/*asAt.Where(x => x.uacsId == fundsource_amount.UacsId).Sum(x => x.amount) == 0 || */afterrealignment_amount == 0)
+                                {
+                                    ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 23).Value = "-";
+                                    ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
+                                    ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else
+                                {
+
+                                    ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 23).Style.Font.FontName = "Calibri Light";
+                                    var percentTotal = asAt.Where(x => x.uacsId == fundsource_amount.UacsId && x.sourceId == fundsource_amount.FundSourceId && x.status == "activated").Sum(x => x.amount) / afterrealignment_amount;
+                                    ws.Cell(currentRow, 23).Value = percentTotal;
+                                    ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
+                                    ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+
+                                //TRANSFERED TO DATA FOR PS CURRENT
+                                var transferTo = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundTransferedTo.Select(b => b.FundSourceAmountId).Contains(c.UacsId)).FirstOrDefault().UacsId;
+                                foreach (var transferedTo in _MyDbContext.FundTransferedTo.Where(x => x.FundSourceAmountId == fundsource_amount.UacsId && x.FundSourceId == fundsource_amount.FundSourceId/* && x.Id == transferTo*/).ToList())
+                                {
+                                    currentRow++;
+                                    ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                                    ws.Cell(currentRow, 4).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Account_title.ToUpper().ToString();
+
+                                    ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Expense_code;
+
+                                    ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 13).Value = "-";
+
+                                    ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 19).Value = "(" + transferedTo.Amount.ToString("N", new CultureInfo("en-US")) + ")";
+
+                                    currentRow++;
+                                    ws.Cell(currentRow, 4).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 4).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    //ws.Cell(currentRow, 4).Style.Alignment.Indent = 3;
+                                    ws.Cell(currentRow, 4).Style.Font.SetItalic();
+                                    ws.Cell(currentRow, 4).Value = transferedTo.Particulars;
+
+                                    ws.Cell(currentRow, 12).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 12).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 12).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == 169).Expense_code;
+
+                                    ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 13).Value = "-";
+
+                                    ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                    ws.Cell(currentRow, 18).Value = "(" + transferedTo.Amount.ToString("N", new CultureInfo("en-US")) + ")";
+
+
+                                }
+
+                                //REALIGNMENT DATA FOR PS CURRENT
+                                var data = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundSourceAmount.Select(b => b.UacsId).Contains(c.UacsId)).FirstOrDefault().UacsId;
+                                foreach (var realignment in _MyDbContext.FundsRealignment.Where(x => x.FundSourceAmountId == fundsource_amount.FundSourceAmountId && x.FundSourceId == fundsource_amount.FundSourceId && x.Realignment_to == data && x.status == "activated").ToList())
+                                {
+                                    currentRow++;
+                                    Debug.WriteLine($"fsaid: {fundsource_amount.FundSourceAmountId}\nfundsrc_id {fundsource_amount}");
+                                    //ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.Where(c => !_MyDbContext.FundSourceAmount.Select(b => b.UacsId).Contains(c.UacsId)).FirstOrDefault().Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Account_title.ToUpper().ToString();
+                                    ws.Cell(currentRow, 1).Style.Alignment.Indent = 3;
+
+                                    ws.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == realignment.Realignment_to).Expense_code;
+                                    ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                    //ws.Cell(currentRow, 2).Style.Alignment.Indent = 3;
+
+                                    if (_MyDbContext.FundSourceAmount.Where(x => x.UacsId == realignment.Realignment_to).FirstOrDefault()?.beginning_balance == null)
+                                    {
+                                        ws.Cell(currentRow, 3).Value = "-";
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    }
+                                    else
+                                    {
+                                        ws.Cell(currentRow, 3).Value = _MyDbContext.FundSourceAmount.FirstOrDefault(x => x.UacsId == realignment.Realignment_to)?.beginning_balance;
+                                        ws.Cell(currentRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                                        ws.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    }
+                                    //REALIGNMENT AMOUNT
+                                    ws.Cell(currentRow, 4).Value = realignment.Realignment_amount;
+                                    ws.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                    //TRANSFER TO AMOUNT
+                                    ws.Cell(currentRow, 5).Value = "-";
+                                    ws.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                    //ADJUSTED ALLOTMENT
+                                    if (_MyDbContext.FundSourceAmount.Where(x => x.UacsId == realignment.Realignment_to).FirstOrDefault()?.beginning_balance == null)
+                                    {
+                                        ws.Cell(currentRow, 6).Value = "-";
+                                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
+                                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    }
+                                    else
+                                    {
+                                        ws.Cell(currentRow, 6).Value = _MyDbContext.FundSourceAmount.FirstOrDefault(x => x.UacsId == realignment.Realignment_to)?.beginning_balance;
+                                        ws.Cell(currentRow, 6).Style.NumberFormat.Format = "#,##0.00";
+                                        ws.Cell(currentRow, 6).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    }
+                                    //REALIGNMENT - FOR THE MONTH
+                                    ws.Cell(currentRow, 7).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 7).Value = /*fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);*/"-";
+
+                                    //REALIGNMENT - AS AT
+                                    ws.Cell(currentRow, 8).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 8).Value = /*fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);*/"-";
+
+                                    ws.Cell(currentRow, 9).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 9).Value = /*fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);*/"-";
+
+                                    ws.Cell(currentRow, 10).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 10).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    ws.Cell(currentRow, 10).Value = /*fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle != "AUTOMATIC APPROPRIATION").Sum(x => x.amount);*/"-";
+                                }
+                                currentRow++;
+                                total = (double)fundsource_amount.beginning_balance;
+                            }
+
+                            var fortheMonthTotal = (from oa in _MyDbContext.ObligationAmount
+                                                    join o in _MyDbContext.Obligation
+                                                    on oa.ObligationId equals o.Id
+                                                    where o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
+                                                    select new
+                                                    {
+                                                        amount = oa.Amount,
+                                                        uacsId = oa.UacsId,
+                                                        sourceId = o.FundSourceId,
+                                                        date = o.Date,
+                                                        status = o.status
+                                                    });
+
+                            var subtotalTransferedTo = (from ft in _MyDbContext.FundTransferedTo
+                                                        join fa in _MyDbContext.FundSourceAmount
+                                                        on ft.FundSourceId equals fa.FundSourceId
+                                                        where ft.FundSourceAmountId == fa.UacsId
+                                                        select new
+                                                        {
+                                                            UacsId = fa.UacsId,
+                                                            FundSourceId = fa.FundSourceId,
+                                                        });
+
+                            var asAtTotal = (from oa in _MyDbContext.ObligationAmount
+                                             join o in _MyDbContext.Obligation
+                                             on oa.ObligationId equals o.Id
+                                             where o.Date >= date1 && o.Date <= date2
+                                             select new
+                                             {
+                                                 amount = oa.Amount,
+                                                 sourceId = o.FundSourceId,
+                                                 uacsId = oa.UacsId,
+                                                 status = o.status
+                                             });
+
+                            var asAtTotalSaro = (from oa in _MyDbContext.ObligationAmount
+                                                 join o in _MyDbContext.Obligation
+                                                 on oa.ObligationId equals o.Id
+                                                 join s in _MyDbContext.SubAllotment
+                                                 on o.SubAllotmentId equals s.SubAllotmentId
+                                                 where o.Date >= date1 && o.Date <= date2
+                                                 select new
+                                                 {
+                                                     amount = oa.Amount,
+                                                     sourceId = o.SubAllotmentId,
+                                                     uacsId = oa.UacsId,
+                                                     status = o.status,
+                                                     appropriationId = s.AppropriationId,
+                                                     suballotmentTitle = s.Suballotment_title
+                                                 });
+                        }
+
+                        if (_MyDbContext.FundSources.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id && x.FundSourceTitle.Contains("RLIP")).Any())
+                        {
+                            var transferto_filter = (from f in _MyDbContext.FundSources
+                                                     join fa in _MyDbContext.FundSourceAmount
+                                                     on f.FundSourceId equals fa.FundSourceId
+                                                     join ft in _MyDbContext.FundTransferedTo
+                                                     on fa.FundSourceId equals ft.FundSourceId
+                                                     select new
+                                                     {
+                                                         FundSource_Id = f.FundSourceId,
+                                                         Uacs_UacsId = fa.UacsId,
+                                                         Uacs_FundSourceId = fa.FundSourceId,
+                                                     }).FirstOrDefault();
+
+                            ws.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 2).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 3).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 5).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 9).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 10).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 11).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 13).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 14).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 15).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 16).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 17).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 18).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 19).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 20).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 21).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 22).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 23).Style.Fill.BackgroundColor = XLColor.FromHtml("#EBF1DE");
+                            ws.Cell(currentRow, 11).Style.Font.SetBold();
+                            ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 11).Value = "TOTAL AUTOMATIC APPROPRIATIONS";
+
+                            var PTC = budget_allotment.FundSources.FirstOrDefault()?.Beginning_balance;
+                            //var PsTotalCurrent = +(double)PTC;
+
+
+                            ws.Cell(currentRow, 13).Style.Font.SetBold();
+                            ws.Cell(currentRow, 13).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 13).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 13).Value = PsTotalRlip;
+
+                            //REALIGNMENT TOTAL
+                            var realignment_total = budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount);
+                            if (realignment_total == null)
+                            {
+                                ws.Cell(currentRow, 17).Style.Font.SetBold();
+                                ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                ws.Cell(currentRow, 17).Value = 0.00;
+                            }
+                            else
+                            {
+                                ws.Cell(currentRow, 17).Style.Font.SetBold();
+                                ws.Cell(currentRow, 17).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 17).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 17).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                ws.Cell(currentRow, 17).Value = realignment_total;
+                            }
+
+
+                            //PS CURRENT TOTAL TRANSFERED TO
+                            ws.Cell(currentRow, 18).Style.Font.SetBold();
+                            ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 18).Value = _MyDbContext.FundTransferedTo.Where(x => x.FundSource.AllotmentClassId == 1 && x.FundSource.AppropriationId == 1 && x.FundSource.BudgetAllotmentId == id).Sum(x => x.Amount);
+                            ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                            //TOTAL - TOTAL AFTER REALIGNMENT
+                            ws.Cell(currentRow, 19).Style.Font.SetBold();
+                            ws.Cell(currentRow, 19).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 19).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 19).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 19).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 19).Value = PsTotalRlip - _MyDbContext.FundTransferedTo.Where(x => x.FundSource.AllotmentClassId == 1 && x.FundSource.AppropriationId == 1 && x.FundSource.BudgetAllotmentId == id).Sum(x => x.Amount);
+
+                            //TOTAL - FOR THE MONTH
+                            ws.Cell(currentRow, 20).Style.Font.SetBold();
+                            ws.Cell(currentRow, 20).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 20).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 20).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 20).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 20).Value = fortheMonthTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount);
+
+                            //TOTAL - AS AT
+                            ws.Cell(currentRow, 21).Style.Font.SetBold();
+                            ws.Cell(currentRow, 21).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 21).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 21).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 21).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 21).Value = asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount);
+
+                            //TOTAL - UNOBLIGATED BALANCE OF ALLOTMENT
+                            var unobligatedTotalinTotalPS = PsTotalRlip - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.appropriationID == 1 && x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount);
+                            ws.Cell(currentRow, 22).Style.Font.SetBold();
+                            ws.Cell(currentRow, 22).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 22).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 22).Value = unobligatedTotalinTotalPS;
+                            ws.Cell(currentRow, 22).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 22).Style.Font.FontName = "Calibri Light";
+
+                            //PERCENT OF UTILIZATION
+                            var totalPercentPS = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceTitle.Contains("RLIP")).Sum(x => x.amount) / allotment_total;
+                            ws.Cell(currentRow, 23).Value = totalPercentPS;
+                            ws.Cell(currentRow, 23).Style.NumberFormat.Format = "0.00%";
+                            ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 23).Style.Font.SetBold();
+                            ws.Cell(currentRow, 23).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 12).Style.Font.FontName = "Calibri Light";
+
+                            currentRow++;
+                            //END PS LOOP
+                        }
+                        //END AUTOMATIC APPROPRIATION
                     }
-                    //END AUTOMATIC APPROPRIATION PS LOOP
+                    //END AUTOMATIC APPROPRIATION
+
+
+
 
                     var saa = _MyDbContext.Budget_allotments
                         .Include(sub_allotment => sub_allotment.SubAllotment)

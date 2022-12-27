@@ -71,8 +71,13 @@ namespace fmis.Controllers
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
-            .Include(x => x.SubAllotment).ThenInclude(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
-            .Include(x => x.SubAllotment).ThenInclude(x => x.Appropriation)
+            .Include(x => x.SubAllotment)
+                .ThenInclude(x => x.Budget_allotment)
+                .ThenInclude(x => x.Yearly_reference)
+            .Include(x => x.SubAllotment)
+                .ThenInclude(x => x.Appropriation)
+            .Include(x => x.SubAllotment)
+                .ThenInclude(x => x.SubNegative)
             .FirstOrDefaultAsync(x => x.YearlyReferenceId == YearlyRefId);
 
 
@@ -83,12 +88,18 @@ namespace fmis.Controllers
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 
+            _context.FundSources.UpdateRange(budget_allotment.FundSources);
+            _context.SaveChanges();
+
+
+
             budget_allotment.SubAllotment.ToList().ForEach(x =>
             {
                 x.obligated_amount = _context.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
 
                 x.obligated_amount = +x.obligated_amount;
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
+                x.Beginning_balance = x.Beginning_balance - x.SubNegative.Where(x => x.SubAllotmentId == x.SubAllotmentId).Sum(x => x.Amount);
             });
 
             ViewBag.AllotmentClass = await _context.AllotmentClass.Include(x=>x.BudgetAllotments).AsNoTracking().ToListAsync();
