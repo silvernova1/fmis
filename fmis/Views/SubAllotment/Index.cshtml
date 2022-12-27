@@ -321,14 +321,19 @@ else
                             </a>
                             <br />
                             <br />
+                            @{
+
+                                var subAllotment = item.Beginning_balance - item.SubNegative.Where(x => x.SubAllotmentId == item.SubAllotmentId && x.status == "activated").Sum(x => x.Amount);
+
+                            }
                             <b class="red">
-                                ₱@item.SubNegative.Where(x => x.SubAllotmentId == item.SubAllotmentId).Sum(x => x.Amount).ToString("##,##0.00")
+                                ₱@item.SubNegative.Where(x => x.SubAllotmentId == item.SubAllotmentId).Where(x=>x.status == "activated").Sum(x => x.Amount).ToString("##,##0.00")
                             </b>
                         </center>
                     </td>
                     <td>
                         <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@subAllotment.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                     <td>
