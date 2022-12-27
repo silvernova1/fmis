@@ -83,10 +83,6 @@ namespace fmis.Controllers
             public string Expense_code { get; set; }
             [Column(TypeName = "decimal(18,4)")]
             public decimal Amount { get; set; }
-            /* public float Total_disbursement { get; set; }
-             public float Total_net_amount { get; set; }
-             public float Total_tax_amount { get; set; }
-             public float Total_others { get; set; }*/
             public string obligation_token { get; set; }
             public string obligation_amount_token { get; set; }
             public string status { get; set; }
@@ -117,7 +113,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> SaveObligationAmount(List<ObligationAmountData> data)
         {
             var data_holder = _context.ObligationAmount;
-            decimal utilized_amount = 0;
+            decimal obligated_amount = 0;
 
 
             var currentObligation = await _MyDbContext.Obligation
@@ -162,10 +158,10 @@ namespace fmis.Controllers
                 obligation_amount.status = "activated";
                 obligation_amount.obligation_token = item.obligation_token;
                 obligation_amount.obligation_amount_token = item.obligation_amount_token;
-                utilized_amount += item.Amount;
+                obligated_amount += item.Amount;
+                
 
                 _context.ObligationAmount.Update(obligation_amount);
-                Console.WriteLine(@"saved Obligation amount {0}", obligation_amount.Expense_code);
                 await _context.SaveChangesAsync();
             }
 
@@ -184,6 +180,7 @@ namespace fmis.Controllers
             {
                 obligation = await _MyDbContext.Obligation
                     .Include(x => x.ObligationAmounts)
+                    .Include(x => x.FundSource)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == calculation_data.obligation_id);
             }
@@ -291,7 +288,7 @@ namespace fmis.Controllers
             if (obligation.source_type == "fund_source")
             {
                 var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == obligation.FundSourceId).FirstOrDefaultAsync();
-                beginning_balance = fund_source.Remaining_balance;
+                beginning_balance = fund_source.Beginning_balance;
                 remaining_balance = fund_source.Remaining_balance;
                 obligated_amount = fund_source.obligated_amount;
             }
@@ -299,7 +296,7 @@ namespace fmis.Controllers
             {
                 //code ni amalio
                 var sub_allotment = await _MyDbContext.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
-                beginning_balance = sub_allotment.Remaining_balance;
+                beginning_balance = sub_allotment.Beginning_balance;
                 remaining_balance = sub_allotment.Remaining_balance;
                 obligated_amount = sub_allotment.obligated_amount;
             }

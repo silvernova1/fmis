@@ -125,11 +125,12 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(FmisUser fmisUser)
+        public async Task <IActionResult> Create(FmisUser fmisUser)
         {
             fmisUser.Password = _userService.HashPassword(fmisUser, fmisUser.Password);
             _context.Add(fmisUser);
             _context.SaveChanges();
+            await Task.Delay(500);
             ViewBag.filter = new FilterSidebar("user_main", "user_sub");
             ViewBag.layout = "_Layout";
             return View("~/Views/Account/CreateUser.cshtml");
