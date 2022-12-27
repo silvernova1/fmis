@@ -174,12 +174,8 @@ namespace fmis.Controllers
                                     .AsNoTracking()
                                     .ToListAsync();
 
-
-
             var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.Original != true || x.IsAddToNextAllotment == true || x.FundSourceTitle == "CANCELLED").ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
                                     .Concat(from y in _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId || x.IsAddToNextAllotment == true || x.Suballotment_title == "CANCELLED").ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
-
-
 
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data.ToList());
             var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
@@ -226,23 +222,24 @@ namespace fmis.Controllers
         }
 
 
+
         [HttpGet]
         [ValidateAntiForgeryToken]
-        public IActionResult openCreatedByAsync(int id, string obligation_token)
+        public IActionResult openCreatedBy(int id, string obligation_token)
         {
-            var obligation = (from o in  _MyDbContext.Obligation
+            var obligation = (from o in _MyDbContext.Obligation
                               join u in _MyDbContext.FmisUsers
                               on o.Created_by equals u.Username
                               select new
                               {
                                   user = u.Username,
-                                  Id = o.Id
+                                  Id = o.Id,
+                                  obligation_token = o.obligation_token
                               }).ToList();
 
             return Json(obligation.Where(x => x.Id == id).FirstOrDefault().user);
-             //return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml"); 
+            // return View("~/Views/Budget/John/Obligations/CreatedBy.cshtml"); 
         }
-
         // GET: Obligations/Create
         public IActionResult Create()
         {
@@ -326,10 +323,11 @@ namespace fmis.Controllers
                         var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "";
                         var fundSrcId = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceTitle == fundSrcTxt)?.FundSourceId;
                         var subAlltId = _MyDbContext.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
-
                         List<ObligationAmount> OAs = new();
+                        List<FundSource> fs = new();
                         string obligationToken = Guid.NewGuid().ToString();
                         int start = 14;
+
                         for (int x = 0; x < 12; x++)
                         {
                             if (!string.IsNullOrEmpty(worksheet.Cells[row, start].Text))
@@ -337,6 +335,7 @@ namespace fmis.Controllers
                                 Console.WriteLine(worksheet.Cells[row, start].Text);
                                 var uacs = _MyDbContext.Uacs.FirstOrDefault(x => x.Expense_code == worksheet.Cells[row, start].Text).UacsId;
                                 var amount = worksheet.Cells[row, (start + 1)].Value?.ToString();
+
                                 OAs.Add(new ObligationAmount()
                                 {
                                     UacsId = uacs,
@@ -372,10 +371,9 @@ namespace fmis.Controllers
                 }
                 timer.Stop();
 
-                Console.WriteLine("ellapsed: " + timer.ElapsedMilliseconds + "ms");
+            
                 await _MyDbContext.AddRangeAsync(obligations);
                 var water = await _MyDbContext.SaveChangesAsync();
-                Console.WriteLine(water);
                 var test = sb.ToString();
                 return Ok();
                 //return Content(sb.ToString());
