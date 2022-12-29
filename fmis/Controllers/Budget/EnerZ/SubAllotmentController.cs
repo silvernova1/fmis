@@ -351,13 +351,12 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            ViewBag.PapId = new SelectList((from s in _MyDbContext.SubAllotment
-                                              .Include(x => x.prexc)
+            ViewBag.PapId = new SelectList((from s in _MyDbContext.Prexc.Distinct()
                                               .ToList()
                                             select new
                                             {
-                                                prexcId = s.prexcId,
-                                                prexc = s.prexc.pap_title,
+                                                prexcId = s.Id,
+                                                prexc = s.pap_title,
                                             }),
                                   "prexcId",
                                   "prexc",

@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using fmis.Models.Carlo;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -312,6 +313,23 @@ namespace fmis.Controllers.Budget.John
 
                 //PS SAA
                 var PsTotalSaa = _MyDbContext.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Beginning_balance);
+                //PS Sub Negative Total
+                var PsTotalSubNegative = (from sn in _MyDbContext.SubNegative
+                                          join sa in _MyDbContext.Suballotment_amount
+                                          on sn.SubAllotmentAmountId equals sa.SubAllotmentAmountId
+                                          join s in _MyDbContext.SubAllotment
+                                          on sn.SubAllotmentId equals s.SubAllotmentId
+                                          select new
+                                          {
+                                              Amount = sn.Amount,
+                                              AllotmentClassId = s.AllotmentClassId,
+                                              AppropriationId = s.AppropriationId,
+                                              BudgetAllotmentId = s.BudgetAllotmentId
+                                          }).ToList();
+
+
+
+
                 var unobligatedTotalinTotalPSSaa = PsTotalSaa - asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.sourceType == "sub_allotment" && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount);
                 var totalPercentPSSaa = (double)asAtTotalinTotalPS.Where(x => x.allotmentClassID == 1 && x.fundSourceBudgetAllotmentId == id).Sum(x => x.amount) / allotment_total;
 
@@ -678,6 +696,8 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(x => x.SubTransferedTo)
                      .Include(x => x.SubAllotment)
                         .ThenInclude(x => x.SubAllotmentAmounts)
+                     .Include(x => x.SubAllotment)
+                        .ThenInclude(x => x.SubNegative)
                     .Where(x => x.YearlyReferenceId == id)
                         .ToListAsync();
 
@@ -1623,6 +1643,12 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 13).Style.NumberFormat.Format = "#,##0.00";
                                     ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
+                                //SUB NEGATIVE
+                                ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 15).Value = "(" + suballotment_amount.SubAllotment.SubNegative.FirstOrDefault().Amount + ")";
+                                ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                                 //REALIGNMENT SAA
                                 if (_MyDbContext.SubAllotment_Realignment.Where(x => x.SubAllotmentAmountId == suballotment_amount.SubAllotmentAmountId && x.SubAllotmentId == suballotment_amount.SubAllotmentId).Any())
@@ -2941,6 +2967,19 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
 
+                                //SUB NEGATIVE
+                                foreach(var subNegative in _MyDbContext.SubNegative.Where(x=>x.SubAllotmentAmountId == suballotment_amount.UacsId && x.SubAllotmentId == suballotment_amount.SubAllotmentId && x.status == "activated").ToList())
+                                {
+                                    ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 15).Value = "(" + subNegative.Amount/*.ToString("N", new CultureInfo("en-US"))*/ + ")";
+                                    ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    //JOHN
+                                }
+
+
+
                                 //REALIGNMENT SAA
                                 if (_MyDbContext.SubAllotment_Realignment.Where(x => x.SubAllotmentAmountId == suballotment_amount.SubAllotmentAmountId && x.SubAllotmentId == suballotment_amount.SubAllotmentId).Any())
                                 {
@@ -3020,12 +3059,6 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                                     ws.Cell(currentRow, 18).Value = "(" + transferedToSaa.Amount.ToString("N", new CultureInfo("en-US")) + ")";
                                 }
-
-                                /*ws.Cell(currentRow, 18).Style.Font.FontSize = 10;
-                                ws.Cell(currentRow, 18).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 18).Value = "-";
-                                ws.Cell(currentRow, 18).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 18).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);*/
 
                                 var SAAafterrealignment_amount = suballotment_amount.beginning_balance - suballotment_amount.realignment_amount;
                                 var SAAafterrealignment_amountadd = suballotment_amount.beginning_balance + _MyDbContext.SubAllotment_Realignment.FirstOrDefault(x => x.Realignment_to == suballotment_amount.UacsId && x.SubAllotmentId == suballotment_amount.SubAllotmentId)?.Realignment_amount;
@@ -3243,6 +3276,15 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 14).Value = subAllotment.Beginning_balance;
 
+                            //SUB NEGATIVE SUB TOTAL
+
+                                ws.Cell(currentRow, 15).Style.Font.SetBold();
+                                ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
+                                ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
+                                ws.Cell(currentRow, 15).Value = "(" + subAllotment.SubNegative.Where(x=>x.SubAllotmentId == subAllotment.SubAllotmentId).Sum(x=>x.Amount).ToString("N", new CultureInfo("en-US")) + ")";
+                                ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
+                                ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                             //REALIGNMENT SUBTOTAL
                             var SAArealignment_subtotal = budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.SubAllotment.FirstOrDefault().SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
                             var SAAsub6 = subAllotment.Beginning_balance - subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount) + subAllotment.SubAllotmentRealignment?.Sum(x => x.Realignment_amount);
@@ -3386,6 +3428,16 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 14).Style.NumberFormat.Format = "#,##0.00";
                             ws.Cell(currentRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             ws.Cell(currentRow, 14).Value = PsTotalSaa;
+
+                            //Sub Negative Total
+                            ws.Cell(currentRow, 15).Style.Font.SetBold();
+                            ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
+                            ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
+                            ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
+                            ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            ws.Cell(currentRow, 15).Value = "(" + PsTotalSubNegative.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id).Sum(x => x.Amount).ToString("N", new CultureInfo("en-US")) + ")";
+
+                            //JOHN
 
                             //REALIGNMENT TOTAL
                             var realignment_total = budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount) - budget_allotment.FundSources.FirstOrDefault()?.FundsRealignment?.Sum(x => x.Realignment_amount);
