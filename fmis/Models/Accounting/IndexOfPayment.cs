@@ -25,6 +25,9 @@ namespace fmis.Models.Accounting
         public string InvoiceNumber { get; set; }
         public int? SoNumber { get; set; }
 
+        public int allotmentClassType { get; set; }
+        public string bursNo { get; set; }
+
         [ForeignKey("ObligationId")]
         public int ObligationId { get; set; }
         [JsonIgnore]
