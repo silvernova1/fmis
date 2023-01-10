@@ -1,4 +1,4 @@
-﻿    @model fmis.Models.Accounting.IndexOfPayment
+﻿@model fmis.Models.Accounting.IndexOfPayment
 
 <link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
 <script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
@@ -66,11 +66,11 @@
         </div>
         <div class="col-md-12">
             <div class="col-md-3">
-                <select class="form-control category" required>
-                    <option> - Select Allotment Class - </option>
-                    <option> - PS - </option>
-                    <option> - MOOE - </option>
-                    <option> - CO - </option>
+                <select class="form-control category" asp-for="allotmentClassType" id="editAllotmentClass" required>
+                    <option value=""> - Select Allotment Class - </option>
+                    <option value="1">  PS  </option>
+                    <option value="2">  MOOE  </option>
+                    <option value="3">  CO  </option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -224,7 +224,8 @@
 </div>
 
 <script>
-        $(function () {
+
+     $(function () {
             $('input[name="date"]').daterangepicker({
                 autoUpdateInput: false,
                 locale: {
@@ -241,10 +242,24 @@
             $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
                 $(this).val('');
             });
-        });
-</script>
 
-<script>
+
+            $("select#editAllotmentClass").change(function () {
+            var cid = $(this).val();
+            $("select#ObligationId").empty();
+
+            //$.getJSON(`/IndexOfPayment/GetOrs?cid=${cid}`, function (data) {
+            $.getJSON('@Url.Action("GetOrs", "IndexOfPayment")?cid=' + cid, function (data) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+                    $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+
+        });
+
+
+        });
 
     var CategoryId;
 
