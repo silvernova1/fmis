@@ -117,12 +117,13 @@
             <thead>
                 <tr>
                     <th> Category </th>
+                    <th> ORS #</th>
                     <th> Dv # </th>
                     <th> Payee </th>
                     <th> Date </th>
                     <th> Particulars </th>
                     <th> PO #  </th>
-                    <th> ORS #</th>
+              
                     <th> Invoice #  </th>
                     <th> Project Id </th>
                     <th> # of Billing </th>
@@ -146,6 +147,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
                         </td>
+                        <td nowrap="nowrap">
+                            @ors_List.Where(x=>x.Id == item.ObligationId).FirstOrDefault().Name
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Dv.DvNo)
                         </td>
@@ -160,9 +164,6 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.PoNumber)
-                        </td>
-                        <td nowrap="nowrap">
-                            @ors_List.Where(x=>x.Id == item.ObligationId).FirstOrDefault().Name
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.InvoiceNumber)

@@ -22,7 +22,7 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 900px;">
+<div class="container" style="height: 1000px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
@@ -67,6 +67,18 @@
             </div>
         </div>
         <div class="col-md-12">
+             <div class="col-md-3">
+                <select class="form-control category" name="one" onchange="if (this.value=='fundSource'){this.form['fundSource'].style.visibility='visible'}else {this.form['fundSource'].style.visibility='hidden'};" required>
+                    <option value=""> - Select Fund Source - </option>
+                    <option value="1"> Regular Agency Fund  </option>
+                    <option value="fundSource"> Foreign Assisted Project Fund </option>
+                    <option value="fundSource"> Special Accounts - Locally Funded  </option>
+                    <option value="fundSource"> Special Accounts - Foreign Assisted/Grants  </option>
+                    <option value="fundSource"> Internally Generated Income </option>
+                    <option value="fundSource"> Business Type Income </option>
+                    <option value="fundSource"> Trust Fund </option>
+                </select>
+            </div>
             <div class="col-md-3">
                 <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type" required>
                     <option value=""> - Select Allotment Class - </option>
@@ -81,12 +93,18 @@
                 </div>
             </div>
         </div>
-        <br />
-        <div class="col-md-12" style="margin-top: 15px;">
+         <div class="col-md-12" style="margin-top: 10px;"> 
+              <div class="col-md-3" >
+                    <div class="form-group">
+                    <input type="text" placeholder="ORS NUMBER" name="fundSource" style="visibility:hidden;" class="form-control">
+                    </div>
+            </div>
+         </div>
+        <div class="col-md-12">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px"   />
+                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px"/>
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -98,7 +116,7 @@
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px" />
+                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px"/>
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
