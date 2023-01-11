@@ -44,12 +44,10 @@ namespace fmis.Controllers.Accounting
             _IndexofpaymentContext = indexofpaymentContext;
         }
 
-
         [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
 
             var indexData = from c in _MyDbContext.Indexofpayment
                             .Include(x => x.Category)
@@ -60,8 +58,6 @@ namespace fmis.Controllers.Accounting
                             .Include(x=>x.BillNumbers)
                             select c;
 
-
-                
             bool check = indexData.Any(a => a == null);
 
             if (!String.IsNullOrEmpty(searchString))
@@ -173,8 +169,6 @@ namespace fmis.Controllers.Accounting
             return Json(ors_List);
 
         }
-
-
 
         public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
@@ -350,6 +344,7 @@ namespace fmis.Controllers.Accounting
             indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
             indexes.ObligationId = index.ObligationId;
             indexes.allotmentClassType = index.allotmentClassType;
+            indexes.bursNo = index.bursNo;
 
             var newBillNumber = new BillNumber
                 {
