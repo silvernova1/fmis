@@ -1718,11 +1718,25 @@ namespace fmis.Controllers.Budget.John
                                     ws.Cell(currentRow, 13).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                                 }
                                 //SUB NEGATIVE
-                                ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
-                                ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
-                                ws.Cell(currentRow, 15).Value = "(" + suballotment_amount.SubAllotment.SubNegative.FirstOrDefault().Amount + ")";
-                                ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
-                                ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                if(suballotment_amount?.SubAllotment?.SubNegative?.FirstOrDefault()?.Amount == null)
+                                {
+                                    ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 15).Value = "";
+                                    ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                                else
+                                {
+
+                                    ws.Cell(currentRow, 15).Style.Font.FontSize = 10;
+                                    ws.Cell(currentRow, 15).Style.Font.FontName = "Calibri Light";
+                                    ws.Cell(currentRow, 15).Value = "(" + suballotment_amount?.SubAllotment?.SubNegative?.FirstOrDefault()?.Amount + ")";
+                                    ws.Cell(currentRow, 15).Style.NumberFormat.Format = "#,##0.00";
+                                    ws.Cell(currentRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                                }
+                                
 
                                 //REALIGNMENT SAA
                                 if (_MyDbContext.SubAllotment_Realignment.Where(x => x.SubAllotmentAmountId == suballotment_amount.SubAllotmentAmountId && x.SubAllotmentId == suballotment_amount.SubAllotmentId).Any())
