@@ -42,6 +42,7 @@
 </style>
 
 <input type="hidden" class="obligation" value="@JsonConvert.SerializeObject(Model)">
+<input type="hidden" id="current_user" value="@ViewBag.current_user" />
 <input type="hidden" class="uacs" value="@ViewBag.uacs">
 <input type="hidden" class="fund_sub" value="@ViewBag.fund_sub">
 <input type="hidden" id="ors_handler" value="" />
@@ -148,10 +149,9 @@
     <div class="modal-dialog modal-sm" style="width:40%;">
         <div class="modal-content">
             <h3 style="margin-left:20px;" class="grey lighter smaller-150">
-                Created
-                (Obligation)
+                Created by: 
             </h3>
-            <div class="modal-body CreatedByContent">
+            <div class="modal-body CreatedByContent" style="margin-left: 10px">
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
@@ -264,6 +264,7 @@
 		fund_sub_counter++;
 	});
     var obligation = $.parseJSON($(".obligation").val());
+    var current_user = $('#current_user').val();
 	const data = [];
     var counter = 0;
     var last_ors_handler;
@@ -274,15 +275,21 @@
             obligated_amount += this.Amount;
         });
 
+        var who_created = this.Created_by;
+        if (!who_created || who_created === '' || who_created === "NULL" || who_created === "0" || who_created === null) {
+            who_created = current_user;
+        }
+
+
         total_obligation += obligated_amount;
 
         last_ors_handler = this.Ors_no;
 		data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
             moment(this.Date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
-			this.Dv, //2
-			this.Pr_no, //3
-			this.Po_no, //4
+            this.Dv, //2
+            this.Po_no, //3
+			this.Pr_no, //4
 			this.Payee, //5
 			this.Address, //6
             this.Particulars, //7
@@ -315,17 +322,9 @@
             data[counter].push(this.SubAllotment ? this.SubAllotment.Remaining_balance : 0);
             data[counter].push(this.SubAllotment.AllotmentClassId);
         }
-        @*if (this.source_type == "fund_source") {
-            data[counter].push(this.FundSource.AllotmentClassId)
-        }
-        else if (this.source_type == "sub_allotment") {
-            data[counter].push(this.SubAllotment.AllotmentClassId)
-        }*@
 		counter++;
     });
 
-    @*console.log(last_ors_handler);
-    console.log(data[counter-2][8]);*@
 
     $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
 
@@ -351,15 +350,6 @@
         height: '800px',
         fixedColumnsLeft: 5,
         manualRowResize: true,
-        @*cells: function (row, col, prop) {
-            var cellProperties = {};
-            if (col == 8) {
-            }
-            cellProperties.type = {
-                renderer: negativeValueRenderer
-            }
-            return cellProperties;
-        },*@
         afterGetColHeader: addInput,
         beforeOnCellMouseDown(event, coords) {
             // Deselect the column after clicking on input.
@@ -383,7 +373,7 @@
             100, 100,
             150, 150, 10, 
         ],
-        colHeaders: ['FUND SOURCE', 'DATE', 'DV', 'PR #', 'PO #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
+        colHeaders: ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
             'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
             'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
             'OBLIGATION AMOUNT TOKEN 3', 'EXP CODE 3', 'AMOUNT 3',
@@ -417,11 +407,11 @@
                 type: 'text'
             },
             {
-                //PR#
+                //PO#
                 type: 'text'
             },
             {
-                //PO#
+                //PR#
                 type: 'text'
             },
             {
@@ -876,7 +866,7 @@
                         var first_column = selected[0][0];
                         var last_column = selected[0][2];
                         var many_token = [];
-                        console.log(first_column + "BOOOOOOM");
+  
                         for (let j = first_column; j <= last_column; j++) {
                             many_token.push(holder_data[j][12]);
                         }
@@ -1040,8 +1030,6 @@
                     });
                     return;
                 }
-
-
                 else if (col == 0) {
                     CHECK_FIRST_ROW1 = true;
                     console.log("col 0");
@@ -1053,13 +1041,13 @@
                             source_type: fund_sub_data_array[hot.getDataAtCell(row, 0)].source_type,
                             Date: hot.getDataAtCell(row, 1),
                             Dv: hot.getDataAtCell(row, 2),
-                            Pr_no: hot.getDataAtCell(row, 3),
-                            Po_no: hot.getDataAtCell(row, 4),
+                            Po_no: hot.getDataAtCell(row, 3),
+                            Pr_no: hot.getDataAtCell(row, 4),
                             Payee: hot.getDataAtCell(row, 5),
                             Address: hot.getDataAtCell(row, 6),
                             Particulars: hot.getDataAtCell(row, 7),
                             Ors_no: hot.getDataAtCell(row, 8),
-                            Created_by: hot.getDataAtCell(row, 9),
+                            Created_by: (hot.getDataAtCell(row, 9) !== '' || hot.getDataAtCell(row, 9) !== null || hot.getDataAtCell(row, 9) !== "0") ? hot.getDataAtCell(row, 9) : current_user,
                             Gross: hot.getDataAtCell(row, 10),
                             obligation_token: hot.getDataAtCell(row, 12)
                         }
@@ -1079,7 +1067,6 @@
                             } 
                             else if (data.source_type == 'sub_allotment') {
                                 CHECK_FIRST_ROW = false;
-                                console.log(data.subAllotment.allotmentClassId);
                                 hot.setDataAtCell(row, 51, data.subAllotment.allotmentClassId)
                             }
                         });
@@ -1099,7 +1086,6 @@
                         Amount: hot.getDataAtCell(row, col + 1),
                     });
 
-
                     ajaxServer(ajax_data, '@Url.Action("SaveObligationAmount", "ObligationAmount")')
                         .then(data => {
                             console.log(data);
@@ -1116,16 +1102,6 @@
                     var ajax_data = [];
                     AMOUNT = 0;
                     var amount = 0;
-
-                    @*if (!hot.getDataAtCell(row, col - 1) || !hot.getDataAtCell(row, col - 2)) {
-                        Lobibox.alert("error", {
-                            msg: "Please select expense code first!",
-                            sound: false,
-                        });
-                        TRAP_LOAD4 = false;
-                        hot.setDataAtCell(row, col, oldValue); //set the amount into previous amount
-                        return;
-                    }*@
 
 
                     if (!hot.getDataAtCell(row, col)) {
@@ -1167,7 +1143,7 @@
                     console.log(post_calculation_data);
                     $.post(url, post_calculation_data, function (result) {
                         console.log(result);
-                        var post_remaining_balance = result.remaining_balance;
+                        var post_remaining_balance = result.Remaining_balance;
                         var post_obligated_amount = result.obligated_amount;
                         if (oldValue) { //new : 9999, OLD :1 , REMAINING : 9999
                             oldValue = oldValue.toString().includes(",") ? parseFloat(oldValue.replace(/,/g, '')) : oldValue;
@@ -1252,13 +1228,13 @@
                                 source_type: hot.getDataAtCell(row, 0) ? fund_sub_data_array[hot.getDataAtCell(row, 0)].source_type : 0,
                                 Date: hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "",
                                 Dv: hot.getDataAtCell(row, 2) ? hot.getDataAtCell(row, 2) : "",
-                                Pr_no: hot.getDataAtCell(row, 3) ? hot.getDataAtCell(row, 3) : "",
-                                Po_no: hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "",
+                                Po_no: hot.getDataAtCell(row, 3) ? hot.getDataAtCell(row, 3) : "",
+                                Pr_no: hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "",
                                 Payee: hot.getDataAtCell(row, 5) ? hot.getDataAtCell(row, 5) : "",
                                 Address: hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "",
                                 Particulars: hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "",
                                 Ors_no: Ors_no,
-                                Created_by: hot.getDataAtCell(row, 9) ? hot.getDataAtCell(row, 9) : 0,
+                                Created_by: (hot.getDataAtCell(row, 9) === '' || hot.getDataAtCell(row, 9) === null || hot.getDataAtCell(row, 9) === 0) ? current_user : hot.getDataAtCell(row, 9),
                                 Gross: hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "",
                                 obligation_token: hot.getDataAtCell(row, 12)
                             }
@@ -1283,7 +1259,7 @@
             }
 		},
 		hiddenColumns: {
-            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
+           @* columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],*@
 		},
         licenseKey: 'non-commercial-and-evaluation',
     });

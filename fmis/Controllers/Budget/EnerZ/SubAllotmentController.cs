@@ -86,6 +86,8 @@ namespace fmis.Controllers
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
             ViewBag.LastYear = lastYear;
 
+            PopulatePapDropDownList();
+
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
@@ -103,6 +105,8 @@ namespace fmis.Controllers
             .Include(x => x.SubAllotment.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.AllotmentClass)
             .Include(x => x.Yearly_reference)
+            .Include(x => x.SubAllotment)
+            .ThenInclude(x => x.SubNegative)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
             //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
@@ -120,10 +124,10 @@ namespace fmis.Controllers
 
             budget_allotment.SubAllotment.ToList().ForEach(x =>
             {
-                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
-
+                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).Where(x=> x.status =="activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
+
 
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
             Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
@@ -342,6 +346,23 @@ namespace fmis.Controllers
                                    null);
         }
 
+
+        private void PopulatePapDropDownList()
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
+
+            ViewBag.PapId = new SelectList((from s in _MyDbContext.Prexc.Distinct()
+                                              .ToList()
+                                            select new
+                                            {
+                                                prexcId = s.Id,
+                                                prexc = s.pap_title,
+                                            }),
+                                  "prexcId",
+                                  "prexc",
+                                   null);  
+        }
+
         private void PopulateRespoDropDownList()
         {
             ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
@@ -386,7 +407,25 @@ namespace fmis.Controllers
 
         }
 
-     
+
+
+        private void PopulatePapTitleDropDownList()
+        {
+
+            ViewBag.PapTitleId = new SelectList((from s in _MyDbContext.Prexc
+                                                 .ToList()
+                                             select new
+                                             {
+                                                 PapTitleId = s.PapTypeID,
+                                                 PapTitle = s.pap_title
+                                             }),
+                                       "PapTitleId",
+                                       "PapTitle",
+                                       null);
+
+        }
+
+
         // GET: Sub_allotment/Delete/5
         public async Task<IActionResult> Delete(int? id, int? BudgetId, int budget_id)
         {
@@ -483,6 +522,9 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             return _context.SubAllotment.Any(e => e.SubAllotmentId == id);
         }
+
+
+  
 
         #region COOKIES
 

@@ -217,7 +217,7 @@ else
 <p>
     <button type="button" asp-controller="Sub_allotment" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
         <i class="ace-icon fa fa-plus "></i>Create New
-    </button> 
+    </button>
     <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
@@ -226,6 +226,20 @@ else
             @Html.TextBox("search") <input type="submit" value="search" />
         }*@
 </p>
+
+
+<form method="get" asp-action="Index" asp-controller="SubAllotment" id="search_form">
+    <span class="pull-left">
+         <select type="search" placeholder="Select Pap Title " class="form-group select2" name="search" id="search" value="" style="width: 250px;" asp-items="ViewBag.PapId">
+             <option value="">-- Filter Pap Title --</option>
+         </select>
+        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+            <i class="ace-icon fa fa-search "></i> Filter
+        </button>
+    </span>
+</form>
+<br />
+<br />
 
 @if (Model.SubAllotment.Count() > 0)
 {
@@ -317,13 +331,23 @@ else
                     <td>
                         <center>
                             <a asp-controller="SubNegative" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-danger btn-xs">
-                                <span class="glyphicon glyphicon-share-alt"></span>
+                                <span class="glyphicon glyphicon-share-alt"> </span>
                             </a>
+                            <br />
+                            <br />
+                            @{
+
+                                var subAllotment = item.Beginning_balance - item.SubNegative.Where(x => x.SubAllotmentId == item.SubAllotmentId && x.status == "activated").Sum(x => x.Amount);
+
+                            }
+                            <b class="red">
+                                ₱@item.SubNegative.Where(x => x.SubAllotmentId == item.SubAllotmentId).Where(x=>x.status == "activated").Sum(x => x.Amount).ToString("##,##0.00")
+                            </b>
                         </center>
                     </td>
                     <td>
                         <b class="green">
-                            <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@subAllotment.ToString("C", new CultureInfo("en-PH"))</span>
                         </b>
                     </td>
                     <td>
@@ -426,4 +450,9 @@ else
         suballotment_token = generate_token();
         $("#subs_input_token").val(suballotment_token);
     }
+
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
+
 </script>

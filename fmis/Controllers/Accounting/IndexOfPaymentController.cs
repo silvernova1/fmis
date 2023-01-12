@@ -44,12 +44,10 @@ namespace fmis.Controllers.Accounting
             _IndexofpaymentContext = indexofpaymentContext;
         }
 
-
         [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
 
             var indexData = from c in _MyDbContext.Indexofpayment
                             .Include(x => x.Category)
@@ -60,8 +58,6 @@ namespace fmis.Controllers.Accounting
                             .Include(x=>x.BillNumbers)
                             select c;
 
-
-                
             bool check = indexData.Any(a => a == null);
 
             if (!String.IsNullOrEmpty(searchString))
@@ -172,7 +168,6 @@ namespace fmis.Controllers.Accounting
 
             return Json(ors_List);
 
-            
         }
 
         public IActionResult CheckifExist(int CategoryId, string poNumber)
@@ -302,6 +297,8 @@ namespace fmis.Controllers.Accounting
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == id);
 
             PopulateCategoryDropDownList(index.CategoryId);
+            PopulateallotmentClassTypeList();
+
             var deductionArr = new List<IndexDeduction>(index.indexDeductions.AsEnumerable());
             for (int x = 0; x < 7 - index.indexDeductions.Count; x++)
             {
@@ -330,9 +327,6 @@ namespace fmis.Controllers.Accounting
 
             indexes.CategoryId = index.CategoryId == 0 ? indexes.CategoryId : index.CategoryId;
             indexes.DvId = index.DvId;
-
-            //indexes.Dv.PayeeDesc = index.Dv.PayeeDesc;
-
             indexes.DvDate = index.DvDate;
             indexes.Particulars = index.Particulars;
             indexes.PoNumber = index.PoNumber;
@@ -349,6 +343,8 @@ namespace fmis.Controllers.Accounting
             indexes.TotalDeduction = index.TotalDeduction;
             indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
             indexes.ObligationId = index.ObligationId;
+            indexes.allotmentClassType = index.allotmentClassType;
+            indexes.bursNo = index.bursNo;
 
             var newBillNumber = new BillNumber
                 {
@@ -361,6 +357,7 @@ namespace fmis.Controllers.Accounting
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
             PopulateOrsNoDownList();
+           
 
 
             _MyDbContext.Update(indexes);
@@ -432,14 +429,18 @@ namespace fmis.Controllers.Accounting
             ViewBag.ObligationId = new SelectList(Query, "IndexOfPaymentId", "ObligationId", selected);
         }
 
-
+        private void PopulateallotmentClassTypeList(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Indexofpayment
+                        orderby d.allotmentClassType
+                        select d;
+            ViewBag.AllotmentClassType = new SelectList(Query, "IndexOfPaymentId", "allotmentClassType", selected);
+        }
 
 
 
         public IActionResult Export(string searchString)
         {
-
-
             DataTable dt = new DataTable("Index of Payment");
             using (XLWorkbook wb = new XLWorkbook())
             {
