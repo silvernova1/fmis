@@ -68,19 +68,21 @@
         </div>
         <div class="col-md-12">
              <div class="col-md-3">
-                <select class="form-control category" name="one" onchange="if (this.value=='fundSource'){this.form['fundSource'].style.visibility='visible'}else {this.form['fundSource'].style.visibility='hidden'};" required>
-                    <option value=""> - Select Fund Source - </option>
+                <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
+                    <option value="z"> - Select Fund Source - </option>
                     <option value="1"> Regular Agency Fund  </option>
-                    <option value="fundSource"> Foreign Assisted Project Fund </option>
-                    <option value="fundSource"> Special Accounts - Locally Funded  </option>
-                    <option value="fundSource"> Special Accounts - Foreign Assisted/Grants  </option>
-                    <option value="fundSource"> Internally Generated Income </option>
-                    <option value="fundSource"> Business Type Income </option>
-                    <option value="fundSource"> Trust Fund </option>
+                    <option value="2"> Foreign Assisted Project Fund </option>
+                    <option value="3"> Special Accounts - Locally Funded  </option>
+                    <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
+                    <option value="5"> Internally Generated Income </option>
+                    <option value="6"> Business Type Income </option>
+                    <option value="7"> Trust Fund </option>
                 </select>
+
+               
             </div>
             <div class="col-md-3">
-                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type" required>
+                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
                     <option value=""> - Select Allotment Class - </option>
                     <option value="1">  PS  </option>
                     <option value="2">  MOOE </option>
@@ -93,10 +95,10 @@
                 </div>
             </div>
         </div>
-         <div class="col-md-12" style="margin-top: 10px;"> 
-              <div class="col-md-3" >
+         <div class="col-md-12" style="margin-top: 10px;">
+            <div class="col-md-3" id="fundSource" style="display: none">
                     <div class="form-group">
-                    <input type="text" placeholder="ORS NUMBER" name="fundSource" style="visibility:hidden;" class="form-control">
+                    <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
                     </div>
             </div>
          </div>
@@ -731,6 +733,16 @@
         }
     }
 
+
+    $(function () {
+        $("#ddlfundsource").change(function () {
+            if ($(this).val() != 1) {
+                $("#fundSource").show();
+            } else {
+                $("#fundSource").hide();
+            }
+        });
+    });
 
 
 </script>
