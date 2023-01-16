@@ -14,6 +14,7 @@ namespace fmis.Models
     public class Prexc : BaseEntityTimeStramp
     {
         public int Id { get; set; }
+        public string pap_initial { get; set; }
         public string pap_title { get; set; }
         public string pap_code1 { get; set; }
         public string pap_type { get; set; }

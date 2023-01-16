@@ -2920,7 +2920,18 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(uacs => uacs.Uacs)
                         .Include(x => x.SubAllotment)
                             .ThenInclude(x => x.SubTransferedTo)
+                        .Include(x=>x.SubAllotment)
+                            .ThenInclude(x=>x.prexc)
                         .Where(x => x.YearlyReferenceId == id);
+
+                    var prexc = (from p in _MyDbContext.Prexc
+                                 join s in _MyDbContext.SubAllotment
+                                 on p.Id equals s.prexcId
+                                 select new
+                                 {
+                                     papInitial = p.pap_initial,
+                                     prexcId = p.Id
+                                 }).ToList();
 
 
                     foreach (BudgetAllotment b in saa)
@@ -2936,7 +2947,7 @@ namespace fmis.Controllers.Budget.John
                         }
 
                         //START PS SAA CURRENT
-                        foreach (SubAllotment subAllotment in budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id && !x.Suballotment_title.Contains("SARO")).ToList())
+                        foreach (SubAllotment subAllotment in budget_allotment.SubAllotment.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == id/* && x.prexcId == x.prexcId*/ && !x.Suballotment_title.Contains("SARO")).OrderByDescending(x => x.Suballotment_title).OrderByDescending(x=>x.prexcId).ToList())
                         {
                             ws.Cell(currentRow, 1).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
@@ -2961,7 +2972,8 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 2).Style.Font.SetItalic();
                             ws.Cell(currentRow, 2).Style.Font.FontSize = 10;
                             ws.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
-                            ws.Cell(currentRow, 2).Value = subAllotment.Description?.ToString();
+                            ws.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                            ws.Cell(currentRow, 2).Value = subAllotment.prexc.pap_initial?.ToUpper().ToString() + "-" + subAllotment.Description?.ToString();
                             ws.Range(ws.Cell(currentRow, 2), ws.Cell(currentRow, 18)).Merge();
                             currentRow++;
 
@@ -3470,12 +3482,8 @@ namespace fmis.Controllers.Budget.John
                             ws.Cell(currentRow, 23).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                             allotment_totalSaa += (double)subAllotment.Beginning_balance;
-
                             currentRow++;
-
                         }
-
-
 
                         if (_MyDbContext.SubAllotment.Where(x => x.AppropriationId == 1 && x.AllotmentClassId == 1 && x.BudgetAllotmentId == id).Any())
                         {
