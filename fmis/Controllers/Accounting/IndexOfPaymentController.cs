@@ -44,12 +44,10 @@ namespace fmis.Controllers.Accounting
             _IndexofpaymentContext = indexofpaymentContext;
         }
 
-
         [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
-
 
             var indexData = from c in _MyDbContext.Indexofpayment
                             .Include(x => x.Category)
@@ -60,8 +58,6 @@ namespace fmis.Controllers.Accounting
                             .Include(x=>x.BillNumbers)
                             select c;
 
-
-                
             bool check = indexData.Any(a => a == null);
 
             if (!String.IsNullOrEmpty(searchString))
@@ -136,6 +132,11 @@ namespace fmis.Controllers.Accounting
             indexOfPayment.TotalDeduction = indexOfPayment.indexDeductions.Sum(x => x.Amount);
             indexOfPayment.NetAmount = indexOfPayment.GrossAmount - indexOfPayment.TotalDeduction;
 
+            indexOfPayment.allotmentClassType = indexOfPayment.allotmentClassType;
+            indexOfPayment.fundSource = indexOfPayment.fundSource;
+            indexOfPayment.orsNo = indexOfPayment.orsNo;
+            indexOfPayment.ObligationId = indexOfPayment.ObligationId;
+
             if (ModelState.IsValid)
             {
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
@@ -173,8 +174,6 @@ namespace fmis.Controllers.Accounting
             return Json(ors_List);
 
         }
-
-
 
         public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
@@ -413,7 +412,7 @@ namespace fmis.Controllers.Accounting
         }
         private void PopulateDvDropDownList(object selected = null)
         {
-            var Query = from d in _MyDbContext.Dv
+            var Query = from d in _MyDbContext?.Dv
                         orderby d.DvId
                         select d;
             ViewBag.DvId = new SelectList(Query, "DvId", "DvNo", selected);

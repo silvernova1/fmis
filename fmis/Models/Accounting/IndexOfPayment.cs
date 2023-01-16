@@ -25,8 +25,9 @@ namespace fmis.Models.Accounting
         public string InvoiceNumber { get; set; }
         public int? SoNumber { get; set; }
 
+        public int fundSource { get; set; }
         public int allotmentClassType { get; set; }
-        public string bursNo { get; set; }
+        public string orsNo { get; set; }
 
         [ForeignKey("ObligationId")]
         public int ObligationId { get; set; }
@@ -44,7 +45,7 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Category Category { get; set; }
         [ForeignKey("DvId")]
-        public int DvId { get; set; }
+        public int? DvId { get; set; }
         [JsonIgnore]
         public Dv Dv { get; set; }
 

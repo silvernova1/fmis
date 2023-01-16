@@ -51,7 +51,7 @@ namespace fmis.Controllers
         // GET: Budget_allotments
         public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment" ,"");
+            ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment", "");
             ViewBag.layout = "_Layout";
 
             string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
@@ -97,7 +97,6 @@ namespace fmis.Controllers
                 budget_allotment.SubAllotment.ToList().ForEach(x =>
                 {
                     x.obligated_amount = _context.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
-
                     x.obligated_amount = +x.obligated_amount;
                     x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
                     x.Beginning_balance = x.Beginning_balance - x.SubNegative.Where(x => x.SubAllotmentId == x.SubAllotmentId && x.status == "activated").Sum(x => x.Amount);
@@ -153,7 +152,7 @@ namespace fmis.Controllers
             var previousAllot = _context.FundSources.Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance) + _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result).Sum(x => x.Remaining_balance);
             ViewBag.PreviousAllot = previousAllot.ToString("C", new CultureInfo("en-PH"));
 
-            var previousAllotConapSaa =  _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance);
+            var previousAllotConapSaa = _context.SubAllotment.Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance);
             ViewBag.previousAllotConap = previousAllotConapSaa.ToString("C", new CultureInfo("en-PH"));
 
 
@@ -189,7 +188,7 @@ namespace fmis.Controllers
                                               }),
                                        "PrexcId",
                                        "prexc",
-                                       null);                    
+                                       null);
         }
 
         private void PopulatePsDropDownList()
@@ -209,7 +208,7 @@ namespace fmis.Controllers
 
         private void PopulateYrDropDownList(object selectedPrexc = null)
         {
-          
+
             var prexsQuery = from d in _context.Yearly_reference
                              orderby d.YearlyReference
                              select d;
@@ -241,11 +240,11 @@ namespace fmis.Controllers
                                    orderby d.Allotment_Class
                                    select d;
             ViewBag.AllotmentClassId = new SelectList((from s in _context.AllotmentClass.ToList()
-                                              select new
-                                              {
-                                                  Id = s.Id,
-                                                  Allotment_Class = s.Allotment_Class
-                                              }),
+                                                       select new
+                                                       {
+                                                           Id = s.Id,
+                                                           Allotment_Class = s.Allotment_Class
+                                                       }),
                                        "Id",
                                        "Allotment_Class",
                                        null);
@@ -255,11 +254,11 @@ namespace fmis.Controllers
         private void PopulateAllotmentClassDropDownList()
         {
             ViewBag.AllotmentClassId = new SelectList((from s in _context.AllotmentClass.ToList()
-                                              select new
-                                              {
-                                                  AllotmentClassId = s.Id,
-                                                  AllotmentClass = s.Allotment_Class
-                                              }),
+                                                       select new
+                                                       {
+                                                           AllotmentClassId = s.Id,
+                                                           AllotmentClass = s.Allotment_Class
+                                                       }),
                                     "AllotmentClassId",
                                     "AllotmentClass",
                                     null);
@@ -343,14 +342,14 @@ namespace fmis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( BudgetAllotment budget_allotment)
+        public async Task<IActionResult> Edit(BudgetAllotment budget_allotment)
         {
             var Budget = await _BudgetAllotmentContext.BudgetAllotment.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             Budget.Allotment_series = budget_allotment.Allotment_series;
             Budget.Allotment_title = budget_allotment.Allotment_title;
             Budget.Allotment_code = budget_allotment.Allotment_code;
 
-            _BudgetAllotmentContext.Update(Budget); 
+            _BudgetAllotmentContext.Update(Budget);
             await _BudgetAllotmentContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -399,7 +398,7 @@ namespace fmis.Controllers
         {
             var subAllotments = await _context.SubAllotment.Where(x => x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationId && x.BudgetAllotmentId == budgetAllotmentId).ToListAsync();
 
-            subAllotments.ForEach(x=>x.IsAddToNextAllotment = addToNext);
+            subAllotments.ForEach(x => x.IsAddToNextAllotment = addToNext);
 
             _context.UpdateRange(subAllotments);
             await _context.SaveChangesAsync();

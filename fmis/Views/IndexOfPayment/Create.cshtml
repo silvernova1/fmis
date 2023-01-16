@@ -22,7 +22,7 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 900px;">
+<div class="container" style="height: 1000px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
@@ -67,8 +67,22 @@
             </div>
         </div>
         <div class="col-md-12">
+             <div class="col-md-3">
+                <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
+                    <option value="z"> - Select Fund Source - </option>
+                    <option value="1"> Regular Agency Fund  </option>
+                    <option value="2"> Foreign Assisted Project Fund </option>
+                    <option value="3"> Special Accounts - Locally Funded  </option>
+                    <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
+                    <option value="5"> Internally Generated Income </option>
+                    <option value="6"> Business Type Income </option>
+                    <option value="7"> Trust Fund </option>
+                </select>
+
+               
+            </div>
             <div class="col-md-3">
-                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type" required>
+                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
                     <option value=""> - Select Allotment Class - </option>
                     <option value="1">  PS  </option>
                     <option value="2">  MOOE </option>
@@ -81,12 +95,18 @@
                 </div>
             </div>
         </div>
-        <br />
-        <div class="col-md-12" style="margin-top: 15px;">
+         <div class="col-md-12" style="margin-top: 10px;">
+            <div class="col-md-3" id="fundSource" style="display: none">
+                    <div class="form-group">
+                    <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
+                    </div>
+            </div>
+         </div>
+        <div class="col-md-12">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px"   />
+                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px"/>
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -98,7 +118,7 @@
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
                     <label>PROJECT ID:</label>
-                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px" />
+                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px"/>
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -713,6 +733,16 @@
         }
     }
 
+
+    $(function () {
+        $("#ddlfundsource").change(function () {
+            if ($(this).val() != 1) {
+                $("#fundSource").show();
+            } else {
+                $("#fundSource").hide();
+            }
+        });
+    });
 
 
 </script>
