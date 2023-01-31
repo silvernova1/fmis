@@ -19,18 +19,12 @@ namespace fmis.Data
     {
         public MyDbContext()
         {
-            //ChangeTracker.LazyLoadingEnabled = false;
-            //ChangeTracker.AutoDetectChangesEnabled = false;
-            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
             
         {
-            //ChangeTracker.LazyLoadingEnabled = false;
-            //ChangeTracker.AutoDetectChangesEnabled = false;
-            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
 

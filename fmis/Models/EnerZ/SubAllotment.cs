@@ -67,6 +67,7 @@ namespace fmis.Models
         public ICollection<SubTransferedTo> SubTransferedTo { get; set; }
         public ICollection<SubNegative> SubNegative { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
+        public ICollection<Obligation> Obligations { get; set; }
     }
 
 }

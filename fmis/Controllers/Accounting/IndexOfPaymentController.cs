@@ -99,7 +99,7 @@ namespace fmis.Controllers.Accounting
 
         // GET: Create
 
-        public IActionResult Create(int CategoryId, int DeductionId, int DvId)
+        public IActionResult Create(int CategoryId, int DeductionId, int? DvId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
@@ -412,7 +412,7 @@ namespace fmis.Controllers.Accounting
         }
         private void PopulateDvDropDownList(object selected = null)
         {
-            var Query = from d in _MyDbContext?.Dv
+            var Query = from d in _MyDbContext.Dv
                         orderby d.DvId
                         select d;
             ViewBag.DvId = new SelectList(Query, "DvId", "DvNo", selected);

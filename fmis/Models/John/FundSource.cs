@@ -63,6 +63,7 @@ namespace fmis.Models.John
         public ICollection<FundsRealignment> FundsRealignment { get; set; }
         public ICollection<FundTransferedTo> FundTransferedTo { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
+        public ICollection<Obligation> Obligations { get; set; }
 
     }
 }
