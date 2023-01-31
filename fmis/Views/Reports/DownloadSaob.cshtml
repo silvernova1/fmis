@@ -54,7 +54,7 @@
                     <div class="row">
                         <div class="" >
                             <div class="col-xs-12 col-sm-12" >
-                                  <button type="submit" @*onclick="submiBtnClick()" *@ class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+                                  <button type="submit" onclick="submiBtnClick()"  class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
                             </div>
                         </div>
                     </div>
@@ -80,6 +80,11 @@
 
 
     function submiBtnClick() {
+        //$.post("@Url.Action("Export","Reports"))
+            //{
+
+           //},
+
         var dateFrom = document.getElementById("dateFrom").value;
         var dateTo = document.getElementById("dateTo").value;
         if (dateFrom != '' && dateTo != '') {
@@ -96,7 +101,10 @@
                         i = i + 0.1;
                         $this.setProgress(i);
                     }, 10);
-                }
+                    setTimeout(function () {
+                }, 2000);
+                },
+                
             });
         }
         else {
