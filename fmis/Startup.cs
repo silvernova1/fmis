@@ -21,6 +21,7 @@ using fmis.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using fmis.Services;
+using Newtonsoft.Json;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -47,6 +48,12 @@ namespace fmis
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            };
 
             services.AddTransient<IUserService, UserService>();
 
