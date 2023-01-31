@@ -486,12 +486,17 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Delete(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var fundSource = await _MyDbContext.FundSources.Include(x => x.FundSourceAmounts).FirstOrDefaultAsync(x=>x.FundSourceId == id);
-
+            var fundSource = await _MyDbContext.FundSources
+                .Include(x => x.FundSourceAmounts)
+                .Include(x => x.FundTransferedTo)
+                .Include(x => x.FundsRealignment)
+                .Include(x => x.Obligations)
+                .FirstOrDefaultAsync(x => x.FundSourceId == id);
 
             _MyDbContext.Remove(fundSource);
             await _MyDbContext.SaveChangesAsync();
-            return RedirectToAction("Index", "FundSource", new { 
+            return RedirectToAction("Index", "FundSource", new
+            {
                 AllotmentClassId = fundSource.AllotmentClassId,
                 AppropriationId = fundSource.AppropriationId,
                 BudgetAllotmentId = fundSource.BudgetAllotmentId

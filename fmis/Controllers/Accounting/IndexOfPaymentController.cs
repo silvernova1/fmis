@@ -99,7 +99,7 @@ namespace fmis.Controllers.Accounting
 
         // GET: Create
 
-        public IActionResult Create(int CategoryId, int DeductionId, int DvId)
+        public IActionResult Create(int CategoryId, int DeductionId, int? DvId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
 
