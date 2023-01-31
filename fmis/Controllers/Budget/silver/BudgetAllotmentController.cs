@@ -60,22 +60,11 @@ namespace fmis.Controllers
             var result = res.Year.ToString();
             ViewBag.Result = result;
 
-
-            /*var budget_allotment = await _context.Budget_allotments
-            .Include(c => c.Yearly_reference)
-            .Include(x => x.FundSources)
-            .Include(x => x.SubAllotment)
-            .ThenInclude(x => x.Appropriation)
-            .FirstOrDefaultAsync(x => x.YearlyReferenceId == YearlyRefId);*/
-
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
-            .Include(x => x.SubAllotment)
-                .ThenInclude(x => x.Budget_allotment)
-                .ThenInclude(x => x.Yearly_reference)
-            .Include(x => x.SubAllotment)
-                .ThenInclude(x => x.Appropriation)
+                .ThenInclude(x=>x.Appropriation)
+            .Include(x => x.Yearly_reference)
             .Include(x => x.SubAllotment)
                 .ThenInclude(x => x.SubNegative)
             .FirstOrDefaultAsync(x => x.YearlyReferenceId == YearlyRefId);
@@ -380,7 +369,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             var budget_allotment = await _context.Budget_allotments.FindAsync(BudgetAllotmentId);
-            _context.Budget_allotments.Remove(budget_allotment);
+            _context.Budget_allotments.RemoveRange(budget_allotment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
