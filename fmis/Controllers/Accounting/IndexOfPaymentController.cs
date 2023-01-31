@@ -132,15 +132,13 @@ namespace fmis.Controllers.Accounting
             indexOfPayment.TotalDeduction = indexOfPayment.indexDeductions.Sum(x => x.Amount);
             indexOfPayment.NetAmount = indexOfPayment.GrossAmount - indexOfPayment.TotalDeduction;
 
-            indexOfPayment.allotmentClassType = indexOfPayment.allotmentClassType;
-            indexOfPayment.fundSource = indexOfPayment.fundSource;
-            indexOfPayment.orsNo = indexOfPayment.orsNo;
-            indexOfPayment.ObligationId = indexOfPayment.ObligationId;
+            indexOfPayment.DvId = indexOfPayment.DvId;
 
             if (ModelState.IsValid)
             {
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
                 _MyDbContext.Add(indexOfPayment);
+
                 await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -416,6 +414,7 @@ namespace fmis.Controllers.Accounting
                         orderby d.DvId
                         select d;
             ViewBag.DvId = new SelectList(Query, "DvId", "DvNo", selected);
+
         }
         private void PopulateDeductionDropDownList(object selected = null)
         {
