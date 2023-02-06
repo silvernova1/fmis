@@ -38,8 +38,8 @@
         <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (GAA)</h7>
         <div class="pull-right">
             <div class="btn-group">
-                <input type="submit" value="Save" class="btn btn-success btn-xs" />
-                <a class="btn btn-danger btn-xs" data-dismiss="modal">Exit</a>
+                <input type="submit" value="Save" class="btn btn-success btn-xs" data-bs-toggle="tooltip" title="Save" />
+                <a class="btn btn-danger btn-xs" data-dismiss="modal" data-bs-toggle="tooltip" title="Exit"> Exit</a>
             </div>
         </div>
     </div>
@@ -81,10 +81,9 @@
 
             @Html.CheckBoxFor(x => x.Breakdown, new { @class = "custom-checkbox" })
             <span class="lbl">Add to Breakdown</span>
-
+            <h6 style="font-weight:bold">Sub Total Amount:   <span id="sub_total_amt" style="color:green">₱0.00</span></h6>
         </div>
     </div>
-    <br />
     <input id="search_field2" style="float: left" type="search" hidden placeholder="Search" />
     <div id="fundsource_amount_edit" class="hot handsontable htColumnHeaders"></div>
     <br />
@@ -92,7 +91,7 @@
         <button id="export-file">Download CSV</button>
     </div>
 
-    <div class="infobox infobox-green pull-right">
+@*    <div class="infobox infobox-green pull-right">
         <div class="infobox-icon">
             <i class="ace-icon fa fa-money"></i>
         </div>
@@ -104,13 +103,14 @@
                 <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
             </div>
         </div>
-    </div>
+    </div>*@
 
 </form>
 
 <script>
   $(document).ready(function () {
       $('.select2').select2();
+      $('[data-bs-toggle="tooltip"]').tooltip();
     });
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');

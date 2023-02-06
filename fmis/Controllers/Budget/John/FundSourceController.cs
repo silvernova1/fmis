@@ -349,7 +349,7 @@ namespace fmis.Controllers.Budget.John
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
-            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList()
+            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList().Where(x=> x.status == "activated")
                                               select new
                                               {
                                                   PrexcId = s.Id,

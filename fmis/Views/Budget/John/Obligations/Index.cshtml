@@ -7,7 +7,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@functions{
+@functions {
     public string GetAntiXsrfRequestToken()
     {
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
@@ -54,37 +54,37 @@
 
 <div class="col-xs-12 ">
     @*  <div class="infobox infobox-green" style="margin-left: -10px">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color: grey;">
-                    @{
-                        decimal? overall_beginning_balance = (Model.Sum(x => x.FundSource?.Beginning_balance) + Model.Sum(x => x.SubAllotment?.Beginning_balance));
-                    }
-                    @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
-                </div>
-            </div>
-        </div>*@
+    <div class="infobox-icon">
+    <i class="ace-icon fa fa-calculator"></i>
+    </div>
+    <div class="infobox-data">
+    <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color: grey;">
+    @{
+    decimal? overall_beginning_balance = (Model.Sum(x => x.FundSource?.Beginning_balance) + Model.Sum(x => x.SubAllotment?.Beginning_balance));
+    }
+    @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
+    </span>
+    <div class="infobox-content">
+    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
+    </div>
+    </div>
+    </div>*@
     @*    <div class="infobox infobox-red" style="margin-left: -10px">
-            <div class="infobox-icon">
-                <i class="ace-icon fa fa-calculator"></i>
-            </div>
-            <div class="infobox-data">
-                <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-                    @{
-                        decimal? overall_remaining_balance = (Model.Sum(x => x.FundSource?.Remaining_balance) + Model.Sum(x => x.SubAllotment?.Remaining_balance));
-                    }
-                    @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
-                </span>
-                <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
-                </div>
-            </div>
-        </div>*@
+    <div class="infobox-icon">
+    <i class="ace-icon fa fa-calculator"></i>
+    </div>
+    <div class="infobox-data">
+    <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
+    @{
+    decimal? overall_remaining_balance = (Model.Sum(x => x.FundSource?.Remaining_balance) + Model.Sum(x => x.SubAllotment?.Remaining_balance));
+    }
+    @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
+    </span>
+    <div class="infobox-content">
+    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
+    </div>
+    </div>
+    </div>*@
 
 </div>
 <!---->
@@ -149,7 +149,7 @@
     <div class="modal-dialog modal-sm" style="width:40%;">
         <div class="modal-content">
             <h3 style="margin-left:20px;" class="grey lighter smaller-150">
-                Created by: 
+                Created by:
             </h3>
             <div class="modal-body CreatedByContent" style="margin-left: 10px">
             </div>
@@ -169,7 +169,7 @@
     const amounts = [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
     const tokens = [16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49];
 
-	//SET OBLIGATION TOKEN
+    //SET OBLIGATION TOKEN
     let ObligationToken = () => {
         let s4 = () => {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -186,14 +186,14 @@
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-	//SET AUTO DATE
+    //SET AUTO DATE
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
-	today = mm + '/' + dd + '/' + yyyy;
-	//SET AUTO ADDRESS
-	var Address = "CEBU CITY"
+    today = mm + '/' + dd + '/' + yyyy;
+    //SET AUTO ADDRESS
+    var Address = "CEBU CITY"
     const debounceFn = Handsontable.helper.debounce((colIndex, event) => {
         const filtersPlugin = hot.getPlugin('filters');
         filtersPlugin.removeConditions(colIndex);
@@ -221,11 +221,11 @@
             TH.appendChild(getInitializedElements(col));
         }
     };
-	var SOURCE_TYPE= "";
-	var CHECK_AFTER_ROW = false; //goods
-	var CHECK_FIRST_ROW = false;
+    var SOURCE_TYPE = "";
+    var CHECK_AFTER_ROW = false; //goods
+    var CHECK_FIRST_ROW = false;
     @*var CHECK_FIRST_ROW1 = false;*@
-    var AMOUNT = 0;
+        var AMOUNT = 0;
     var INSUFFICIENT_AMOUNT1 = false;
     var TRAP_LOAD = 0;
     var TRAP_LOAD2 = false;
@@ -233,12 +233,12 @@
     var TRAP_LOAD4 = false;
     var SET_10_ROW = false;
     var OPEN_LOADING_MODAL = false;
-     function ajaxServer(ajax_data, url) {
+    function ajaxServer(ajax_data, url) {
         return Promise.resolve($.ajax({
             type: 'POST',
             url: url,
             headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            data: { data: ajax_data},
+            data: { data: ajax_data },
         }));
     }
     function isNumeric(o) {
@@ -248,24 +248,24 @@
         }
         return o.length <= 15 && o.indexOf('e+') < 0 && o.indexOf('E+') < 0 && !isNaN(o) && isFinite(o);
     }
-	var fund_sub_data_dropdown = [];
-	var fund_sub_data_array = [];
-	var get_fund_sub = [];
-	var get_obligated_amount = [];
-	var fund_sub_counter = 0;
+    var fund_sub_data_dropdown = [];
+    var fund_sub_data_array = [];
+    var get_fund_sub = [];
+    var get_obligated_amount = [];
+    var fund_sub_counter = 0;
     $.each($.parseJSON($(".fund_sub").val()), function () {
-		fund_sub_data_dropdown[fund_sub_counter] = this.source_title;
-		var json_data = new Object();
-		json_data.source_id = this.source_id;
-		json_data.source_type = this.source_type;
-		fund_sub_data_array[this.source_title] = json_data;
+        fund_sub_data_dropdown[fund_sub_counter] = this.source_title;
+        var json_data = new Object();
+        json_data.source_id = this.source_id;
+        json_data.source_type = this.source_type;
+        fund_sub_data_array[this.source_title] = json_data;
         get_fund_sub[this.source_id + this.source_type] = this.source_title;
         get_obligated_amount[this.source_id + this.source_type] = this.obligated_amount;
-		fund_sub_counter++;
-	});
+        fund_sub_counter++;
+    });
     var obligation = $.parseJSON($(".obligation").val());
     var current_user = $('#current_user').val();
-	const data = [];
+    const data = [];
     var counter = 0;
     var last_ors_handler;
     var total_obligation = 0;
@@ -284,14 +284,14 @@
         total_obligation += obligated_amount;
 
         last_ors_handler = this.Ors_no;
-		data[counter] = [
+        data[counter] = [
             this.source_type == "fund_source" ? get_fund_sub[this.FundSourceId + this.source_type] : get_fund_sub[this.SubAllotmentId + this.source_type], //0
             moment(this.Date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
             this.Dv, //2
             this.Po_no, //3
-			this.Pr_no, //4
-			this.Payee, //5
-			this.Address, //6
+            this.Pr_no, //4
+            this.Payee, //5
+            this.Address, //6
             this.Particulars, //7
             this.Ors_no, //8
             this.Created_by, //9
@@ -299,14 +299,14 @@
             this.Id, //11
             this.obligation_token, //12
         ];
-   @*     if (!this.Ors_no && data[counter-1][8]) {
+        @*     if (!this.Ors_no && data[counter-1][8]) {
             last_ors_handler = data[counter - 1][8];
-        }*@
-        $.each(this.ObligationAmounts, function () {
-            data[counter].push(this.obligation_amount_token);
-            data[counter].push(this.Expense_code);
-            data[counter].push(this.Amount);
-        });
+            }*@
+            $.each(this.ObligationAmounts, function () {
+                data[counter].push(this.obligation_amount_token);
+                data[counter].push(this.Expense_code);
+                data[counter].push(this.Amount);
+            });
         for (var i = this.ObligationAmounts.length; i < 12; i++) {
             data[counter].push(ObligationAmountToken()); //obligation amount token
             data[counter].push("");  // expense code
@@ -322,7 +322,7 @@
             data[counter].push(this.SubAllotment ? this.SubAllotment.Remaining_balance : 0);
             data[counter].push(this.SubAllotment.AllotmentClassId);
         }
-		counter++;
+        counter++;
     });
 
 
@@ -332,14 +332,14 @@
     var uacs_data_dropdown = [];
     var uacs_data_array = [];
     var uacs_counter = 0;
-	$.each(uacs, function () {
-		uacs_data_dropdown[uacs_counter] = this.Expense_code;
+    $.each(uacs, function () {
+        uacs_data_dropdown[uacs_counter] = this.Expense_code;
         var json_data = new Object();
         json_data.UacsId = this.UacsId;
-		uacs_data_array[this.Expense_code] = json_data;
+        uacs_data_array[this.Expense_code] = json_data;
         uacs_counter++;
     });
-	const container = document.getElementById('example');
+    const container = document.getElementById('example');
     const button = document.querySelector('#export-file');
     var setter = false;
     const hot = new Handsontable(container, {
@@ -348,8 +348,9 @@
         colHeaders: true,
         filters: true,
         height: '800px',
-        fixedColumnsLeft: 5,
+        fixedColumnsLeft: 6,
         manualRowResize: true,
+        wordWrap: true,
         afterGetColHeader: addInput,
         beforeOnCellMouseDown(event, coords) {
             // Deselect the column after clicking on input.
@@ -371,7 +372,7 @@
             100, 100, 100,
             100, 100, 100,
             100, 100,
-            150, 150, 10, 
+            150, 150, 10,
         ],
         colHeaders: ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
             'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
@@ -386,7 +387,7 @@
             'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
             'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
             'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
-            'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE', 
+            'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE',
         ],
         columns: [
             {
@@ -845,7 +846,7 @@
             {
                 type: 'text'
             },
-     
+
         ],
         search: {
             searchResultClass: 'search-result-custom'
@@ -866,7 +867,7 @@
                         var first_column = selected[0][0];
                         var last_column = selected[0][2];
                         var many_token = [];
-  
+
                         for (let j = first_column; j <= last_column; j++) {
                             many_token.push(holder_data[j][12]);
                         }
@@ -1064,7 +1065,7 @@
                             if (data.source_type == 'fund_source') {
                                 CHECK_FIRST_ROW = false;
                                 hot.setDataAtCell(row, 51, data.fundSource.allotmentClassId)
-                            } 
+                            }
                             else if (data.source_type == 'sub_allotment') {
                                 CHECK_FIRST_ROW = false;
                                 hot.setDataAtCell(row, 51, data.subAllotment.allotmentClassId)
@@ -1241,26 +1242,26 @@
                         );
                     }
                 });
-               @* console.log(ajax_data);
-                if (checkDuplicateOrs(ajax_data[0].Ors_no) && get_col == 8) {
+                @* console.log(ajax_data);
+                    if (checkDuplicateOrs(ajax_data[0].Ors_no) && get_col == 8) {
                     Lobibox.alert("error", {
-                        msg: "DUPLICATE ORS NUMBER!!!",
-                        sound: false,
+                    msg: "DUPLICATE ORS NUMBER!!!",
+                    sound: false,
                     });
-                }
-                else {*@
-                console.log(ajax_data);
+                    }
+                    else {*@
+                    console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")').then(data => {
                     console.log(ajax_data);
                     console.log(data);
                 });
-               @* }*@
-                CHECK_FIRST_ROW = false;
+                @* }*@
+                    CHECK_FIRST_ROW = false;
             }
-		},
-		hiddenColumns: {
+        },
+        hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
-		},
+        },
         licenseKey: 'non-commercial-and-evaluation',
     });
     var tableData = JSON.stringify(hot.getSourceData());
