@@ -779,6 +779,8 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(x => x.SubAllotmentAmounts)
                      .Include(x => x.SubAllotment)
                         .ThenInclude(x => x.SubNegative)
+                     .Include(x => x.SubAllotment)
+                        .ThenInclude(x => x.prexc)
                     .Where(x => x.YearlyReferenceId == id)
                         .AsSplitQuery()
                         .ToListAsync();
@@ -11057,7 +11059,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 11).Value = "SUB-TOTAL" + " " + groups.FirstOrDefault().prexc.pap_initial.ToUpper().ToString();
+                                ws.Cell(currentRow, 11).Value = "SUB-TOTAL" + " " + groups?.FirstOrDefault()?.prexc?.pap_initial?.ToUpper().ToString();
 
                                 ws.Cell(currentRow, 14).Style.Font.SetBold();
                                 ws.Cell(currentRow, 14).Style.Font.FontSize = 10;
