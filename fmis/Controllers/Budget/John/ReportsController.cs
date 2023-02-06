@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using fmis.Models.Carlo;
 using DocumentFormat.OpenXml.Presentation;
+using System.Threading;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -53,6 +54,10 @@ namespace fmis.Controllers.Budget.John
 
         public async Task<IActionResult> Export(string fn, string date_from, string date_to, int? post_yearly_reference)
         {
+
+            var timer = new Stopwatch();
+            timer.Start();
+
             int id = YearlyRefId;
             if (post_yearly_reference != null)
             {
@@ -774,6 +779,8 @@ namespace fmis.Controllers.Budget.John
                         .ThenInclude(x => x.SubAllotmentAmounts)
                      .Include(x => x.SubAllotment)
                         .ThenInclude(x => x.SubNegative)
+                     .Include(x => x.SubAllotment)
+                        .ThenInclude(x => x.prexc)
                     .Where(x => x.YearlyReferenceId == id)
                         .AsSplitQuery()
                         .ToListAsync();
@@ -11052,7 +11059,7 @@ namespace fmis.Controllers.Budget.John
                                 ws.Cell(currentRow, 11).Style.Font.FontSize = 10;
                                 ws.Cell(currentRow, 11).Style.Font.FontName = "Calibri Light";
                                 ws.Cell(currentRow, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                                ws.Cell(currentRow, 11).Value = "SUB-TOTAL" + " " + groups.FirstOrDefault().prexc.pap_initial.ToUpper().ToString();
+                                ws.Cell(currentRow, 11).Value = "SUB-TOTAL" + " " + groups?.FirstOrDefault()?.prexc?.pap_initial?.ToUpper().ToString();
 
                                 ws.Cell(currentRow, 14).Style.Font.SetBold();
                                 ws.Cell(currentRow, 14).Style.Font.FontSize = 10;
@@ -15123,6 +15130,13 @@ namespace fmis.Controllers.Budget.John
                 ws.Cell(currentRow, 23).Style.Font.FontColor = XLColor.White;
                 ws.Cell(currentRow, 23).Value = GrandTotalpercentage.ToString("N", new CultureInfo("en-US"));
 
+
+                timer.Stop();
+                TimeSpan timeTaken = timer.Elapsed;
+                //string foo = "Time taken: " + timeTaken.ToString(@"m\:ss\.fff");
+
+                Thread.Sleep(timeTaken);
+
                 //ws.Columns().AdjustToContents();
                 //ws.Rows().AdjustToContents();
                 using (MemoryStream stream = new MemoryStream())
@@ -15131,6 +15145,7 @@ namespace fmis.Controllers.Budget.John
                     //ws.Columns().AdjustToContents();
                     //ws.Rows().AdjustToContents();
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", date2.ToString("MMMM").ToUpper() + ".xlsx");
+                    return View("DownloadSaob.cshtml");
                 }
             }
         }

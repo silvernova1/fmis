@@ -83,22 +83,22 @@ namespace fmis.Controllers
         public class ObligationData
         {
             public int Id { get; set; }
-            public int source_id { get; set; } 
+            public int source_id { get; set; }
             public string source_title { get; set; }
             public string source_type { get; set; }
             [Column(TypeName = "decimal(18,4)")]
             public decimal source_balance { get; set; }
-            public string Date { get; set; } 
-            public string Dv { get; set; } 
-            public string Pr_no { get; set; } 
-            public string Po_no { get; set; } 
-            public string Payee { get; set; } 
-            public string Address { get; set; } 
-            public string Particulars { get; set; } 
+            public string Date { get; set; }
+            public string Dv { get; set; }
+            public string Pr_no { get; set; }
+            public string Po_no { get; set; }
+            public string Payee { get; set; }
+            public string Address { get; set; }
+            public string Particulars { get; set; }
             public string Ors_no { get; set; }
-            public float Gross { get; set; } 
-            public string Created_by { get; set; } 
-            public string obligation_token { get; set; } 
+            public float Gross { get; set; }
+            public string Created_by { get; set; }
+            public string obligation_token { get; set; }
             public string status { get; set; }
         }
 
@@ -350,7 +350,7 @@ namespace fmis.Controllers
                         }
                         obligations.Add(new Obligation()
                         {
-                            FundSourceId = fundSrcId is not null? fundSrcId : subAlltId is null? 51 : null,
+                            FundSourceId = fundSrcId is not null ? fundSrcId : subAlltId is null ? 51 : null,
                             SubAllotmentId = subAlltId,
                             source_type = fundSrcId is not null ? "fund_source" : subAlltId is null ? "fund_source" : "sub_allotment",
                             obligation_token = obligationToken,
@@ -367,13 +367,13 @@ namespace fmis.Controllers
                             ObligationAmounts = OAs
                         });
 
-                        
+
                     }
                     //if (row == 1000) break;
                 }
                 timer.Stop();
 
-            
+
                 await _MyDbContext.AddRangeAsync(obligations);
                 var water = await _MyDbContext.SaveChangesAsync();
                 var test = sb.ToString();
@@ -398,17 +398,17 @@ namespace fmis.Controllers
 
             foreach (var item in data)
             {
-               var obligation = new Obligation(); //CLEAR OBJECT
+                var obligation = new Obligation(); //CLEAR OBJECT
 
-               if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
-               {
-                   obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
-               }
+                if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
+                {
+                    obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+                }
 
-               if (item.source_type.Equals("fund_source"))
-                   obligation.FundSourceId = item.source_id;
-               else if (item.source_type.Equals("sub_allotment"))
-                   obligation.SubAllotmentId = item.source_id;
+                if (item.source_type.Equals("fund_source"))
+                    obligation.FundSourceId = item.source_id;
+                else if (item.source_type.Equals("sub_allotment"))
+                    obligation.SubAllotmentId = item.source_id;
 
                 obligation.source_type = item.source_type;
                 obligation.Date = ToDateTime(item.Date);
@@ -424,13 +424,13 @@ namespace fmis.Controllers
                 obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
-               _context.Update(obligation);
+                _context.Update(obligation);
                 await _context.SaveChangesAsync();
 
                 if (item.source_type == "fund_source")
-                   obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
-               else 
-                   obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+                    obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+                else
+                    obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
 
                 Console.WriteLine(@"saved obligation {0}", item.source_id);
@@ -453,7 +453,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Create([Bind("Id,Date,Dv,Pr_no,Po_no,Payee,Address,Particulars,Ors_no,CreatedBy,Fund_source,Gross,Date_recieved,Time_recieved,Date_released,Time_released")] Obligation obligation)
         {
             if (ModelState.IsValid)
-            {                
+            {
                 _context.Add(obligation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -467,7 +467,7 @@ namespace fmis.Controllers
 
         {
             var p = ObligationsInput;
-            return null; 
+            return null;
         }
 
         // GET: Obligations/Edit/5
@@ -649,7 +649,7 @@ namespace fmis.Controllers
                         Font column3_font = FontFactory.GetFont("Times New Roman", 8, Font.BOLD, BaseColor.BLACK);
 
                         table3.AddCell(new PdfPCell(new Paragraph("Serial No.", arial_font_10)) { Padding = 6f, Border = 0 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" /*+ "000"*/ + ors.Ors_no, FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
 
                         table3.AddCell(new PdfPCell(new Paragraph("Date :", arial_font_10)) { Padding = 6f, Border = 0 });
                         table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), FontFactory.GetFont("Arial", 7, Font.NORMAL, BaseColor.BLACK))) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
@@ -796,7 +796,7 @@ namespace fmis.Controllers
                     Double disbursements = 0.00;
 
 
-             
+
 
                     var fundsources = (from fundsource in _MyDbContext.FundSources
                                        join obligation in _MyDbContext.Obligation
@@ -813,7 +813,7 @@ namespace fmis.Controllers
                                            source_type = obligation.source_type,
                                            fundsource_id = fundsource.FundSourceId,
                                            fundsource_code = fundsource.FundSourceTitle,
-                                           respo = respo.RespoCode,                     
+                                           respo = respo.RespoCode,
                                            signatory = respo.RespoHead,
                                            position = respo.RespoHeadPosition,
                                            particulars = obligation.Particulars

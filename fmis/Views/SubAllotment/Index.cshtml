@@ -229,9 +229,14 @@ else
 
 
 <form method="get" asp-action="Index" asp-controller="SubAllotment" id="search_form">
+    <input type="hidden" name="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
+    <input type="hidden" name="AppropriationId" value="@ViewBag.AppropriationId" />
+    <input type="hidden" name="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
+
     <span class="pull-left">
-         <select type="search" placeholder="Select Pap Title " class="form-group select2" name="search" id="search" value="" style="width: 300px;" asp-items="ViewBag.PapId">
-             <option value="">-- Filter Ppa Title --</option>
+
+        <select type="search" placeholder="Select Pap Title " class="form-group select2" name="filteredPap" id="filteredPap" value="" style="width: 250px;" asp-items="@ViewBag.PapId">
+             <option value="">-- Filter Pap Title --</option>
          </select>
         <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
             <i class="ace-icon fa fa-search "></i> Filter
