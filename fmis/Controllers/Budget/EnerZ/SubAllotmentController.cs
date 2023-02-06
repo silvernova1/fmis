@@ -21,6 +21,7 @@ using fmis.Filters;
 using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Authorization;
+using ViewBag;
 
 namespace fmis.Controllers
 {
@@ -85,7 +86,7 @@ namespace fmis.Controllers
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
             ViewBag.LastYear = lastYear;
-
+            ViewBag.filteredPap = filteredPap;
             PopulatePapDropDownList();
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;

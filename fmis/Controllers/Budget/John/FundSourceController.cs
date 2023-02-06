@@ -111,7 +111,7 @@ namespace fmis.Controllers.Budget.John
             });
 
             var fundsourcesLastYr = await _MyDbContext.FundSources
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.FromPreviousAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.RespoCenter)
                 .Include(x => x.Prexc)
                 .Include(x => x.Appropriation)
@@ -125,7 +125,7 @@ namespace fmis.Controllers.Budget.John
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.FromPreviousAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             var fundSource = "";
             foreach(var funds in _MyDbContext.FundSources)
@@ -150,6 +150,20 @@ namespace fmis.Controllers.Budget.John
             var fundsources = await _MyDbContext.FundSources.FindAsync(fundsourceId);
 
             fundsources.IsAddToNextAllotment = addToNext;
+
+            _MyDbContext.Update(fundsources);
+            await _MyDbContext.SaveChangesAsync();
+
+
+            return Ok(await _MyDbContext.SaveChangesAsync());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> FromPreviousYear(int fundsourceId, bool fromPrevious)
+        {
+            var fundsources = await _MyDbContext.FundSources.FindAsync(fundsourceId);
+
+            fundsources.FromPreviousAllotment = fromPrevious;
 
             _MyDbContext.Update(fundsources);
             await _MyDbContext.SaveChangesAsync();

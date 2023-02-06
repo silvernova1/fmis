@@ -7,6 +7,9 @@
     var currentYear = User.FindFirstValue("YearlyRef");
     var lastYear = int.Parse(User.FindFirstValue("YearlyRef")) - 1;
     var items = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString());
+    var lastYearFunds = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear.ToString());
+    var overallAllotment = items.Sum(x=>x.Beginning_balance) + lastYearFunds.Sum(x=>x.Beginning_balance);
+    var overallObligated = items.Sum(x => x.obligated_amount) + lastYearFunds.Sum(x => x.obligated_amount);
     //if (ViewBag.LastYear)
     //{
     //items = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString());
@@ -94,7 +97,8 @@
                 </div>
                 <div class="infobox-data">
                     <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                        @items.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                        @*@items.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));*@
+                        @overallAllotment.ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
                         <span class="label label-success arrowed-in arrowed-in-right"> ALLOTMENT </span>
@@ -107,7 +111,8 @@
                 </div>
                 <div class="infobox-data">
                     <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                        @items.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                        @*@items.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))*@
+                        @overallObligated.ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
                         <span class="label label-primary arrowed-in arrowed-in-right"> OBLIGATED </span>
@@ -247,11 +252,12 @@
             @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
+                var checkPrevious = item.FromPreviousAllotment ? "checked" : "";
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Prexc.pap_title)
                     </td>
-                    @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    @if (item.FromPreviousAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
                         <td>
                             CONAP @Html.DisplayFor(modelItem => item.FundSourceTitle)
@@ -269,13 +275,32 @@
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)"> <span class="glyphicon glyphicon-edit"></span></button>
                         <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                    @if (item.FromPreviousAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    {
+                        @*<div class="checkbox">
+                            <label>
+                                    <input name="form-field-checkbox" type="checkbox" @checkPrevious class="ace" onclick="FromPreviousYr(this.checked, '@item.FundSourceId')">
+                                <span class="lbl">From Previous Year</span>
+                            </label>
+                        </div>*@
 
                         <div class="checkbox">
-                            <label>
-                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
-                                <span class="lbl">Set Next Year</span>
-                            </label>
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                    <span class="lbl">Set Next Year Previous</span>
+                                </label>
                         </div>
+                    }
+                        else if (item.BudgetAllotment.Yearly_reference.YearlyReference == currentYear.ToString())
+                    {
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @checkPrevious class="ace" onclick="FromPreviousYr(this.checked, '@item.FundSourceId')">
+                                    <span class="lbl">Set Next Year</span>
+                                </label>
+                            </div>
+                    }
+                        
                     </td>
                     <td>
                         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> GAA Realignment</a>
@@ -333,6 +358,21 @@ else
             async: true,
             method: 'POST',
             success: function(result){
+                console.log(result);
+            }
+        })
+    }
+
+    function FromPreviousYr(set, fundsourceId) {
+        $.ajax({
+            url: '@Url.Action("FromPreviousYear","FundSource")',
+            data: {
+                fundsourceId: fundsourceId,
+                fromPrevious: set
+            },
+            async: true,
+            method: 'POST',
+            success: function (result) {
                 console.log(result);
             }
         })
