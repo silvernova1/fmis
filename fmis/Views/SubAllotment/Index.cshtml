@@ -115,17 +115,17 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-red">
+        <div class="infobox infobox-red" style="width: 270px;">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
-            <div class="infobox-data">
+            <div class="infobox-data" >
                 <span class="infobox-data-number" style="font-size:11pt; color: grey;">
                     @items.Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"))
                     @*@ViewBag.CurrentYrAllotment_remainingbalance*@
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> BALANCE </span>
+                    <span class="label label-danger arrowed-in arrowed-in-right"> UNOBLIGATED ALLOTMENT </span>
                 </div>
             </div>
         </div>
@@ -230,8 +230,8 @@ else
 
 <form method="get" asp-action="Index" asp-controller="SubAllotment" id="search_form">
     <span class="pull-left">
-         <select type="search" placeholder="Select Pap Title " class="form-group select2" name="search" id="search" value="" style="width: 250px;" asp-items="ViewBag.PapId">
-             <option value="">-- Filter Pap Title --</option>
+         <select type="search" placeholder="Select Pap Title " class="form-group select2" name="search" id="search" value="" style="width: 300px;" asp-items="ViewBag.PapId">
+             <option value="">-- Filter Ppa Title --</option>
          </select>
         <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
             <i class="ace-icon fa fa-search "></i> Filter
@@ -240,35 +240,34 @@ else
 </form>
 <br />
 <br />
-
 @if (Model.SubAllotment.Count() > 0)
 {
     <table class="table">
         <thead>
             <tr>
+                <th style="width: 200px">
+                    PPA TITLE
+                </th>
+                <th style="width: 300px">
+                   SUB ALLOTMENT TITLE
+                </th>
                 <th style="width: 250px">
-                    Pap Title
+                    DESCRIPTION
                 </th>
                 <th>
-                    Sub Allotment Title
-                </th>
-                <th style="width: 250px">
-                    Description
+                    RESPONSIBILITY CENTER
                 </th>
                 <th>
-                    Responsibility Center
+                   ACTIONS
+                </th>
+              @*  <th>
+                    SAA(REALIGNMENT)
                 </th>
                 <th>
-                    Actions
-                </th>
+                    SAA TRANSFERED TO
+                </th>*@
                 <th>
-                    SAA (Realignment)
-                </th>
-                <th>
-                    SAA Transfered To
-                </th>
-                <th>
-                    SAA Negative
+                   SAA NEGATIVE
                 </th>
                 <th>
                     ALLOTMENT@*<br>@items.Sum(x => x.Beginning_balance).ToString("#,##0.00")*@
@@ -277,7 +276,7 @@ else
                     OBLIGATED@*<br>@items.Sum(x => x.obligated_amount).ToString("#,##0.00")*@
                 </th>
                 <th>
-                    BALANCE@*<br>@items.Sum(x => x.Remaining_balance).ToString("#,##0.00")*@
+                    UNOBLIGATED ALLOTMENT @*<br>@items.Sum(x => x.Remaining_balance).ToString("#,##0.00")*@
                 </th>
 
             </tr>
@@ -309,8 +308,11 @@ else
                         @item.RespoCenter.Respo
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)"><span class="glyphicon glyphicon-edit"></span></button>
-                        <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter"> <span class="glyphicon glyphicon-trash"></span></a>
+                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)" data-bs-toggle="tooltip" title="Edit"><span class="glyphicon glyphicon-edit"></span></button>
+                        <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span></a>
+                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="SAA Realignment"><span class="glyphicon glyphicon-transfer"></span> </a>
+                        <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="SAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span> </a>
+
                         <div class="checkbox">
                             <label>
                                 <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.SubAllotmentId')">
@@ -318,7 +320,7 @@ else
                             </label>
                         </div>
                     </td>
-                    <td>
+                @*    <td>
                         <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Realignment</a>
                     </td>
                     <td>
@@ -327,10 +329,10 @@ else
                                 <span class="glyphicon glyphicon-share-alt"></span>
                             </a>
                         </center>
-                    </td>
+                    </td>*@
                     <td>
                         <center>
-                            <a asp-controller="SubNegative" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-danger btn-xs">
+                            <a asp-controller="SubNegative" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-danger btn-xs" data-bs-toggle="tooltip" title="SAA Negative">
                                 <span class="glyphicon glyphicon-share-alt"> </span>
                             </a>
                             <br />
@@ -379,6 +381,11 @@ else
         $('#search').val('');
         $('#search_form').submit();
     }
+
+    $(document).ready(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    });
+
 
     function AddNextYr(set, subAllotmentId){
         $.ajax({
