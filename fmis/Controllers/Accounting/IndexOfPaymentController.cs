@@ -132,7 +132,7 @@ namespace fmis.Controllers.Accounting
             indexOfPayment.TotalDeduction = indexOfPayment.indexDeductions.Sum(x => x.Amount);
             indexOfPayment.NetAmount = indexOfPayment.GrossAmount - indexOfPayment.TotalDeduction;
 
-            indexOfPayment.DvId = indexOfPayment.DvId;
+            indexOfPayment.DvId = indexOfPayment?.DvId;
 
             if (ModelState.IsValid)
             {
@@ -414,6 +414,8 @@ namespace fmis.Controllers.Accounting
                         orderby d.DvId
                         select d;
             ViewBag.DvId = new SelectList(Query, "DvId", "DvNo", selected);
+
+            
 
         }
         private void PopulateDeductionDropDownList(object selected = null)

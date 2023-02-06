@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
+      @*  <div class="col-md-12">
             <div class="col-md-3">
                 <select class="form-control category" asp-for="allotmentClassType" id="editAllotmentClass" required>
                     <option value=""> - Select Allotment Class - </option>
@@ -77,6 +77,33 @@
                 <select class="form-control select2 category" asp-for="@Model.ObligationId" >
                   
                 </select>
+            </div>
+        </div>*@
+         <div class="col-md-12">
+             <div class="col-md-3">
+                <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
+                    <option value="z"> - Select Fund Source - </option>
+                    <option value="1"> Regular Agency Fund  </option>
+                    <option value="2"> Foreign Assisted Project Fund </option>
+                    <option value="3"> Special Accounts - Locally Funded  </option>
+                    <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
+                    <option value="5"> Internally Generated Income </option>
+                    <option value="6"> Business Type Income </option>
+                    <option value="7"> Trust Fund </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
+                    <option value=""> - Select Allotment Class - </option>
+                    <option value="1">  PS  </option>
+                    <option value="2">  MOOE </option>
+                    <option value="3">  CO  </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select asp-for="ObligationId" class="form-control select2"></select>
+                </div>
             </div>
         </div>
         <br />

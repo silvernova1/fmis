@@ -580,7 +580,7 @@ namespace fmis.Controllers
                     float[] columnWidths = { 5, 25, 15 };
                     table.SetWidths(columnWidths);
 
-                    Image logo = Image.GetInstance("wwwroot/assets/images/ro7.png");
+                    Image logo = Image.GetInstance("wwwroot/assets/images/doh_logo_updated.png");
                     logo.ScaleAbsolute(60f, 60f);
                     PdfPCell logo_cell = new PdfPCell(logo);
                     logo_cell.DisableBorderSide(8);
