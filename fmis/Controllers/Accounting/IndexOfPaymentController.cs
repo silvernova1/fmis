@@ -796,18 +796,21 @@ namespace fmis.Controllers.Accounting
 
                 ws.Cell(currentRow, 29).Style.Font.FontSize = 10;
                 ws.Cell(currentRow, 29).Style.Font.FontName = "Calibri Light";
+                ws.Cell(currentRow, 28).Style.Font.SetBold();
                 ws.Cell(currentRow, 29).Value = totalGross;
                 ws.Cell(currentRow, 29).Style.Fill.BackgroundColor = XLColor.LightGray;
                 ws.Cell(currentRow, 29).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell(currentRow, 30).Style.Font.FontSize = 10;
                 ws.Cell(currentRow, 30).Style.Font.FontName = "Calibri Light";
+                ws.Cell(currentRow, 28).Style.Font.SetBold();
                 ws.Cell(currentRow, 30).Value = subTotalDeduction;
                 ws.Cell(currentRow, 30).Style.Fill.BackgroundColor = XLColor.LightGray;
                 ws.Cell(currentRow, 30).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 ws.Cell(currentRow, 31).Style.Font.FontSize = 10;
                 ws.Cell(currentRow, 31).Style.Font.FontName = "Calibri Light";
+                ws.Cell(currentRow, 28).Style.Font.SetBold();
                 ws.Cell(currentRow, 31).Value = totalDeduction;
                 ws.Cell(currentRow, 31).Style.Fill.BackgroundColor = XLColor.LightGray;
                 ws.Cell(currentRow, 31).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
