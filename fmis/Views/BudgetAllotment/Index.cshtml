@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="infobox infobox-red">
+        <div class="infobox infobox-red" style="width: 270px;">
             <div class="infobox-icon">
                 <i class="ace-icon fa fa-calculator"></i>
             </div>
@@ -69,7 +69,7 @@
                     @ViewBag.CurrentYrAllotment_remainingBalance
                 </span>
                 <div class="infobox-content">
-                    <span class="label label-danger arrowed-in arrowed-in-right"> BALANCE </span>
+                    <span class="label label-danger arrowed-in arrowed-in-right"> UNOBLIGATED ALLOTMENT </span>
                 </div>
             </div>
         </div>
@@ -136,15 +136,15 @@
                     <th></th>
                     <th></th>
                     <th>
-                        Fund Code
+                        FUND CODE
                     </th>
                     <th>
-                        Allotment Class
+                        ALLOTMENT CLASS
                     </th>
                     <th>
-                        For GAA
+                        FOR GAA
                     </th>
-                    <th>For SAA CY: @Model.Yearly_reference.YearlyReference  </th>
+                    <th>FOR SAA CY: @Model.Yearly_reference.YearlyReference  </th>
 
                     @if (appropriation.AppropriationSource == "CONAP")
                     {

@@ -27,7 +27,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("master_data", "respo", "");
             PopulateResposDropDownList();
-            return View(await _context.RespoCenter.OrderBy(x=>x.RespoCode).ToListAsync());
+            return View(await _context.RespoCenter.OrderBy(x=>x.RespoId).ToListAsync());
         }
 
         private void PopulateResposDropDownList(object selectedDepartment = null)
@@ -71,6 +71,9 @@ namespace fmis.Controllers.Budget
             return View(respocenter);
         }
 
+
+
+
         // GET: Appropriations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,7 +83,42 @@ namespace fmis.Controllers.Budget
                 return NotFound();
             }
 
-            var respocenter = await _context.RespoCenter.FindAsync(id);
+            var respo = await _MyDbcontext.RespoCenter.FindAsync(id);
+            if (respo == null)
+            {
+                return NotFound();
+            }
+            return View(respo);
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(RespoCenter respocenter)
+        {
+
+            var respo = await _MyDbcontext.RespoCenter.Where(x => x.RespoId == respocenter.RespoId).OrderByDescending(x=> x.RespoId).AsNoTracking().FirstOrDefaultAsync();
+            respo.Respo = respocenter.Respo;
+            respo.RespoCode = respocenter.RespoCode;
+
+            _MyDbcontext.Update(respo);
+            await _MyDbcontext.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+
+ 
+
+
+        // GET: Appropriations/Edit/5
+        /*public async Task<IActionResult> Edit(int? id)
+        {
+            ViewBag.filter = new FilterSidebar("master_data", "respo", "");
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var respocenter = await _MyDbcontext.RespoCenter.FindAsync(id);
             if (respocenter == null)
             {
                 return NotFound();
@@ -119,7 +157,7 @@ namespace fmis.Controllers.Budget
                 return RedirectToAction(nameof(Index));
             }
             return View(respocenter);
-        }
+        }*/
 
         private bool RespoCenterExists(int id)
         {
