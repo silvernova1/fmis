@@ -17,6 +17,7 @@ namespace fmis.Models.John
         [Key]
         public int FundSourceId { get; set; }
         public string FundSourceTitle { get; set; }
+        public string FundSourceTitleConap { get; set; }
         public string FundSourceTitleCode { get; set; }
         public bool IsAddToNextAllotment { get; set; }
         public bool FromPreviousAllotment { get; set; }

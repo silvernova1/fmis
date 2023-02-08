@@ -87,6 +87,7 @@
             </div>
             <div class="col-sm-2">
                 <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
+                <button asp-controller="Home" asp-action="Dashboard" class="btn btn-warning btn-sm "> <span class="glyphicon glyphicon-refresh"></span> Clear Filter </button>
             </div>
         </div>
     </form>
@@ -118,10 +119,10 @@
                     </div>
                 </div>
 
-                <div class="infobox infobox-red">
+                <div class="infobox infobox-red" >
                     <div class="infobox-data">
                         <span class="infobox-data-number">@ViewBag.filteredBalances.ToString("C", new CultureInfo("en-PH"))</span>
-                        <div class="infobox-content">BALANCE</div>
+                         <div class="infobox-content" style="font-size: 12px">UNOBLIGATED BALANCE</div>
                     </div>
                 </div>
 
@@ -151,7 +152,7 @@
                             <div class="widget-header widget-header-flat">
                                 <h4 class="widget-title lighter">
                                     <i class="ace-icon fa fa-signal"></i>
-                                    OVERALL CUMMULATIVE UTILIZATION
+                                    CUMULATIVE UTILIZATION
                                 </h4>
                             </div>
                             <div class="widget-body">
@@ -180,7 +181,7 @@
                             <div class="widget-header widget-header-flat">
                                 <h4 class="widget-title lighter">
                                     <i class="ace-icon fa fa-signal"></i>
-                                    OBLIGATION VS DISBURSEMENT
+                                    DISBURSED
                                 </h4>
 
                             </div>
@@ -192,7 +193,7 @@
                                             <span class="percent" style="font-size: 30pt; color: #006400; ">0.00%</span>
 
                                         </div>
-                                        <h4 class="grey lighter"> UNPAID OBLIGATION & DISBURSED </h4>
+                                        <h4 class="grey lighter"> DISBURSED </h4>
                                     </center>
 
                                 </div><!-- /.widget-main -->
