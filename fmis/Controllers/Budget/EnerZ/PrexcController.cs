@@ -30,6 +30,7 @@ namespace fmis.Controllers
         public class PrexcData
         {
             public int Id { get; set; }
+            public string pap_initial { get; set;}
             public string pap_title { get; set; }
             public string pap_code1 { get; set; }
             public string pap_type { get; set; }
@@ -105,6 +106,7 @@ namespace fmis.Controllers
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_initial = item.pap_initial;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
@@ -117,6 +119,7 @@ namespace fmis.Controllers
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
                     prexc.PapTypeID = 1;
+                    prexc.pap_initial = item.pap_initial;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_type = "GAS";
@@ -142,6 +145,7 @@ namespace fmis.Controllers
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_initial = item.pap_initial;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
@@ -154,6 +158,7 @@ namespace fmis.Controllers
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
                     prexc.PapTypeID = 2;
+                    prexc.pap_initial = item.pap_initial;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_type = "STO";
@@ -177,6 +182,7 @@ namespace fmis.Controllers
             {
                 if (data_holder.Where(s => s.token == item.token).FirstOrDefault() != null) //update
                 {
+                    data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_initial = item.pap_initial;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_title = item.pap_title;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().pap_code1 = item.pap_code1;
                     data_holder.Where(s => s.token == item.token).FirstOrDefault().status = "activated";
@@ -189,6 +195,7 @@ namespace fmis.Controllers
                     var prexc = new Prexc(); //clear object
                     prexc.Id = item.Id;
                     prexc.PapTypeID = 3;
+                    prexc.pap_initial = item.pap_initial;
                     prexc.pap_title = item.pap_title;
                     prexc.pap_code1 = item.pap_code1;
                     prexc.pap_type = "OPERATIONS";
@@ -203,25 +210,7 @@ namespace fmis.Controllers
             return Json(data);
         }
 
-
-        // POST: Prexc/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,pap_title,pap_code,pap_code2")] Prexc prexc)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(prexc);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(prexc);
-        }
-
-        [HttpPost]
-
         public ActionResult AddPrexc(IEnumerable<Prexc> PrexcInput)
 
         {
@@ -253,6 +242,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> Edit( Prexc prexc)
         {
             var prex = await _context.Prexc.Where(x => x.Id == prexc.Id).AsNoTracking().FirstOrDefaultAsync();
+            prex.pap_initial = prexc.pap_initial;
             prex.pap_title = prexc.pap_title;
             prex.pap_code1 = prexc.pap_code1;
             prex.pap_type = prexc.pap_type;
