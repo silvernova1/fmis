@@ -164,15 +164,50 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
         {
-            var subAllotments = await _context.SubAllotment.FindAsync(subAllotmentId);
+            var subAllotments = await _MyDbContext.SubAllotment.FindAsync(subAllotmentId);
 
-            subAllotments.IsAddToNextAllotment = addToNext;
+            if (subAllotments.Remaining_balance != 0)
+            {
 
-            _context.Update(subAllotments);
-            await _context.SaveChangesAsync();
+                subAllotments.IsAddToNextAllotment = addToNext;
+                if (subAllotments.IsAddToNextAllotment)
+                {
+                    subAllotments.Suballotment_title = "CONAP " + subAllotments.Suballotment_title;
+                }
+                else
+                {
+                    char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                    //fundsources.FromPreviousAllotment = true;
+                    subAllotments.Suballotment_title = subAllotments.Suballotment_title.TrimStart(trim);
+                    _MyDbContext.Update(subAllotments);
+                    await _MyDbContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                subAllotments.IsAddToNextAllotment = false;
+            }
+            _MyDbContext.Update(subAllotments);
+            await _MyDbContext.SaveChangesAsync();
+            return Ok(await _MyDbContext.SaveChangesAsync());
+        }
 
+        [HttpPost]
+        public async Task<ActionResult> CheckReusedConap(int subAllotmentId, bool reusedConap)
+        {
+            var subAllotments = await _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true).FirstOrDefaultAsync(x => x.SubAllotmentId == subAllotmentId);
 
-            return Ok(await _context.SaveChangesAsync());
+            if (subAllotments.Remaining_balance != 0)
+            {
+                subAllotments.ReUsedConap = reusedConap;
+            }
+            else
+            {
+                subAllotments.ReUsedConap = false;
+            }
+            _MyDbContext.Update(subAllotments);
+            await _MyDbContext.SaveChangesAsync();
+            return Ok(await _MyDbContext.SaveChangesAsync());
         }
 
         // GET: Sub_allotment/Create

@@ -215,8 +215,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                
+                <th>               
                     PAP TITLE
                 </th>
                 <th>
@@ -253,21 +252,25 @@
             @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
-                var checkPrevious = item.FromPreviousAllotment ? "checked" : "";
+                var checkReusedConap = item.ReUsedConap ? "checked" : "";
+
+                char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                var conap = item.FundSourceTitle.TrimStart(trim);
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Prexc.pap_title)
                     </td>
-                    @if (item.FromPreviousAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
                         <td>
-                            @Html.DisplayFor(modelItem => item.FundSourceTitleConap)
+                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
                         </td>
                     }
                     else
                     {
                         <td>
-                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                            @conap
+                            @*@Html.DisplayFor(modelItem => item.FundSourceTitle)*@
                         </td>
                     }
                     <td>
@@ -278,31 +281,30 @@
                         <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a>
                         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="GAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a>
                         <a asp-controller="FundTransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="GAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a>
-                        @if (item.FromPreviousAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
-                    {
-                        @*<div class="checkbox">
-                            <label>
-                                    <input name="form-field-checkbox" type="checkbox" @checkPrevious class="ace" onclick="FromPreviousYr(this.checked, '@item.FundSourceId')">
-                                <span class="lbl">From Previous Year</span>
-                            </label>
-                        </div>*@
-
-                        <div class="checkbox">
+                        @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                        {
+                            @*<div class="checkbox">
                                 <label>
                                     <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
                                     <span class="lbl">For Conap</span>
                                 </label>
-                        </div>
-                    }
-                        else if (item.BudgetAllotment.Yearly_reference.YearlyReference == currentYear.ToString())
-                    {
+                            </div>*@
                             <div class="checkbox">
                                 <label>
-                                    <input name="form-field-checkbox" type="checkbox" @checkPrevious class="ace" onclick="FromPreviousYr(this.checked, '@item.FundSourceId')">
+                                    <input name="form-field-checkbox" type="checkbox" @checkReusedConap class="ace" onclick="ReusedConap(this.checked, '@item.FundSourceId')">
                                     <span class="lbl">For Conap</span>
                                 </label>
                             </div>
-                    }
+                        }
+                        else
+                        {
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                    <span class="lbl">For Conap</span>
+                                </label>
+                            </div>
+                        }
                         
                     </td>
                   @*  <td>
@@ -370,12 +372,12 @@ else
         })
     }
 
-    function FromPreviousYr(set, fundsourceId) {
+    function ReusedConap(set, fundsourceId) {
         $.ajax({
-            url: '@Url.Action("FromPreviousYear","FundSource")',
+            url: '@Url.Action("CheckReusedConap","FundSource")',
             data: {
                 fundsourceId: fundsourceId,
-                fromPrevious: set
+                reusedConap: set
             },
             async: true,
             method: 'POST',

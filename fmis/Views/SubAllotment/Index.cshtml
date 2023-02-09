@@ -290,6 +290,9 @@ else
             @foreach (var item in items.OrderByDescending(x => x.CreatedAt))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
+                var checkReusedConap = item.ReUsedConap ? "checked" : "";
+
+
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.prexc.pap_title)
@@ -317,14 +320,30 @@ else
                         <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span></a>
                         <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="SAA Realignment"><span class="glyphicon glyphicon-transfer"></span> </a>
                         <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="SAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span> </a>
-
-                        <div class="checkbox">
-                            <label>
-                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.SubAllotmentId')">
-                                <span class="lbl">Set Next Year</span>
-                            </label>
-                        </div>
-                    </td>
+                        @if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                        {
+                            @*<div class="checkbox">
+                                <label>
+                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                <span class="lbl">For Conap</span>
+                                </label>
+                            </div>*@
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @checkReusedConap class="ace" onclick="ReusedConap(this.checked, '@item.SubAllotmentId')">
+                                    <span class="lbl">For Conap</span>
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.SubAllotmentId')">
+                                    <span class="lbl">For Conap</span>
+                                </label>
+                            </div>
+                        }
                 @*    <td>
                         <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Realignment</a>
                     </td>
@@ -402,6 +421,21 @@ else
             async: true,
             method: 'POST',
             success: function(result){
+                console.log(result);
+            }
+        })
+    }
+
+    function ReusedConap(set, subAllotmentId) {
+        $.ajax({
+            url: '@Url.Action("CheckReusedConap","SubAllotment")',
+            data: {
+                subAllotmentId: subAllotmentId,
+                reusedConap: set
+            },
+            async: true,
+            method: 'POST',
+            success: function (result) {
                 console.log(result);
             }
         })

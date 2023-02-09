@@ -64,6 +64,7 @@ namespace fmis.Controllers.Budget
             ViewBag.filter = new FilterSidebar("master_data", "respo", "");
             if (ModelState.IsValid)
             {
+                ViewBag.SuccessMessage = respocenter.Respo + " has been created successfully!";
                 _context.Add(respocenter);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
