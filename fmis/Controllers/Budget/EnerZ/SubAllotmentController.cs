@@ -77,9 +77,9 @@ namespace fmis.Controllers
         #endregion
 
         // GET:Sub_allotment
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, bool lastYear = false)
-        {
-          
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, int? filteredPap, bool lastYear = false)
+        {  
+
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment","");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
@@ -146,13 +146,17 @@ namespace fmis.Controllers
                     .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) && x.IsAddToNextAllotment == true || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
             else if (!string.IsNullOrEmpty(search))
-                {
+            {
                     search = search.Trim();
                     ViewBag.Search = search;
                     budget_allotment.SubAllotment = budget_allotment.SubAllotment
                         .Where(x => x.Suballotment_title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(search, StringComparison.InvariantCultureIgnoreCase) || x.prexc.pap_title.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                }
-            
+            }
+
+            if (filteredPap != null)
+            {
+                budget_allotment.SubAllotment = budget_allotment.SubAllotment.Where(x => x.prexcId == filteredPap).ToList();
+            }
 
             return View(budget_allotment);
         }
