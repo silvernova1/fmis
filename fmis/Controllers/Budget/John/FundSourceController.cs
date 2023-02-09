@@ -149,12 +149,47 @@ namespace fmis.Controllers.Budget.John
         {
             var fundsources = await _MyDbContext.FundSources.FindAsync(fundsourceId);
 
-            fundsources.IsAddToNextAllotment = addToNext;
-
+            if(fundsources.Remaining_balance != 0)
+            {
+                
+                fundsources.IsAddToNextAllotment = addToNext;
+                if (fundsources.IsAddToNextAllotment)
+                {
+                    fundsources.FundSourceTitle = "CONAP "+ fundsources.FundSourceTitle;
+                }
+                else
+                {
+                    char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                    //fundsources.FromPreviousAllotment = true;
+                    fundsources.FundSourceTitle = fundsources.FundSourceTitle.TrimStart(trim);
+                    _MyDbContext.Update(fundsources);
+                    await _MyDbContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                fundsources.IsAddToNextAllotment = false;
+            }
             _MyDbContext.Update(fundsources);
             await _MyDbContext.SaveChangesAsync();
+            return Ok(await _MyDbContext.SaveChangesAsync());
+        }
 
+        [HttpPost]
+        public async Task<ActionResult> CheckReusedConap(int fundsourceId, bool reusedConap)
+        {
+            var fundsources = await _MyDbContext.FundSources.Where(x=>x.IsAddToNextAllotment == true).FirstOrDefaultAsync(x=>x.FundSourceId == fundsourceId);
 
+            if (fundsources.Remaining_balance != 0)
+            {
+                fundsources.ReUsedConap = reusedConap;
+            }
+            else
+            {
+                fundsources.ReUsedConap = false;
+            }
+            _MyDbContext.Update(fundsources);
+            await _MyDbContext.SaveChangesAsync();
             return Ok(await _MyDbContext.SaveChangesAsync());
         }
 

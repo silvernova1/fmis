@@ -7,6 +7,9 @@
     var currentYear = User.FindFirstValue("YearlyRef");
     var lastYear = int.Parse(User.FindFirstValue("YearlyRef")) - 1;
     var items = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString());
+    var lastYearFunds = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear.ToString());
+    var overallAllotment = items.Sum(x=>x.Beginning_balance) + lastYearFunds.Sum(x=>x.Beginning_balance);
+    var overallObligated = items.Sum(x => x.obligated_amount) + lastYearFunds.Sum(x => x.obligated_amount);
     //if (ViewBag.LastYear)
     //{
     //items = Model.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString());
@@ -94,7 +97,8 @@
                 </div>
                 <div class="infobox-data">
                     <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                        @items.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
+                        @*@items.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));*@
+                        @overallAllotment.ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
                         <span class="label label-success arrowed-in arrowed-in-right"> ALLOTMENT </span>
@@ -107,7 +111,8 @@
                 </div>
                 <div class="infobox-data">
                     <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                        @items.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
+                        @*@items.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))*@
+                        @overallObligated.ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
                         <span class="label label-primary arrowed-in arrowed-in-right"> OBLIGATED </span>
@@ -210,8 +215,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                
+                <th>               
                     PAP TITLE
                 </th>
                 <th>
@@ -248,6 +252,10 @@
             @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
+                var checkReusedConap = item.ReUsedConap ? "checked" : "";
+
+                char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                var conap = item.FundSourceTitle.TrimStart(trim);
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Prexc.pap_title)
@@ -255,13 +263,14 @@
                     @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
                         <td>
-                            CONAP @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
                         </td>
                     }
                     else
                     {
                         <td>
-                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
+                            @conap
+                            @*@Html.DisplayFor(modelItem => item.FundSourceTitle)*@
                         </td>
                     }
                     <td>
@@ -269,15 +278,34 @@
                     </td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)" data-bs-toggle="tooltip" title="Edit"> <span class="glyphicon glyphicon-edit"></span>  </button>
-                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> 
-                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="GAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a> 
-                        <a asp-controller="FundTransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="GAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a> 
-                        <div class="checkbox">
-                            <label>
-                                <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
-                                <span class="lbl">Set Next Year</span>
-                            </label>
-                        </div>
+                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a>
+                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="GAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a>
+                        <a asp-controller="FundTransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="GAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a>
+                        @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                        {
+                            @*<div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                    <span class="lbl">For Conap</span>
+                                </label>
+                            </div>*@
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @checkReusedConap class="ace" onclick="ReusedConap(this.checked, '@item.FundSourceId')">
+                                    <span class="lbl">For Conap</span>
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="checkbox">
+                                <label>
+                                    <input name="form-field-checkbox" type="checkbox" @check class="ace" onclick="AddNextYr(this.checked, '@item.FundSourceId')">
+                                    <span class="lbl">For Conap</span>
+                                </label>
+                            </div>
+                        }
+                        
                     </td>
                   @*  <td>
                         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> GAA Realignment</a>
@@ -339,6 +367,21 @@ else
             async: true,
             method: 'POST',
             success: function(result){
+                console.log(result);
+            }
+        })
+    }
+
+    function ReusedConap(set, fundsourceId) {
+        $.ajax({
+            url: '@Url.Action("CheckReusedConap","FundSource")',
+            data: {
+                fundsourceId: fundsourceId,
+                reusedConap: set
+            },
+            async: true,
+            method: 'POST',
+            success: function (result) {
                 console.log(result);
             }
         })
