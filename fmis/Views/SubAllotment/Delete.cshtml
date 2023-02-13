@@ -11,7 +11,19 @@
     <center>
         <form asp-action="Delete" style="margin: 15px;">
             <input type="hidden" asp-for="SubAllotmentId" />
-            <input type="submit" value="Delete" class="btn btn-danger btn-sm" asp-route-budget_id="@ViewBag.budget_id" />
+            <input type="submit" value="Delete" class="btn btn-danger btn-sm" asp-route-budget_id="@ViewBag.budget_id"
+                   onclick=" if (confirm) {
+                    // Save it!
+                    Lobibox.notify('error', {
+                        title: 'Deleted',
+                        msg: 'SAA Successfully Deleted!',
+                });
+                }
+                    else
+                {
+                    return false
+                };" />
+
             <a data-dismiss="modal" class="btn btn-info btn-sm">Back to List</a>
         </form>
     </center>

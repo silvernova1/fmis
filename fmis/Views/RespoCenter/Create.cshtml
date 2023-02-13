@@ -9,7 +9,7 @@
 </style>
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
-<center><h3 class="grey lighter smaller ">Create Section</h3></center>
+<center><h3 class="grey lighter smaller ">Create Responsibility Center</h3></center>
 <hr />
 <div class="container">
     <div class="col-md-6">
@@ -17,21 +17,34 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <h5>Responsibility: </h5>
-                <input asp-for="Respo" class="form-control" />
+                <input asp-for="Respo" id="respo" class="form-control" />
                 <span asp-validation-for="Respo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <h5>Responsibility Code: </h5>
-                <input asp-for="RespoCode" class="form-control" />
+                <input asp-for="RespoCode" id="respocode" class="form-control" />
                 <span asp-validation-for="RespoCode" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Create" class="btn btn-success btn-sm" /> | <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
+                <input type="submit" value="Create" onclick="submitBtnClick()" class="btn btn-success btn-sm" /> | <a class="btn btn-sm btn-default" data-dismiss="modal">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    function submitBtnClick() {
+
+        var respo = document.getElementById("respo").value;
+        var respocode = document.getElementById("respocode").value;
+       
+        if (respo != '' && respocode != '' ) {
+            Lobibox.notify('success', {
+                msg: 'Responsibility Center Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+ </script>

@@ -269,7 +269,7 @@
                     </td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditFundSource(@Model.BudgetAllotmentId,@item.FundSourceId)" data-bs-toggle="tooltip" title="Edit"> <span class="glyphicon glyphicon-edit"></span>  </button>
-                        <a asp-controller="FundSource" asp-action="Delete" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> 
+                        <a asp-controller="FundSource" asp-action="Delete" onclick="deleteBtnClick()" asp-route-id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a>
                         <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.FundSourceId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="GAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a> 
                         <a asp-controller="FundTransferedTo" asp-route-fundsource_id="@item.FundSourceId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="GAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a> 
                         <div class="checkbox">
@@ -398,6 +398,24 @@ else
         fundsource_token = generate_token();
         $("#funds_input_token").val(fundsource_token);
     }
+
+
+    
+
+    function deleteBtnClick() {
+      
+
+        if (confirm == 'yes') {
+            Lobibox.notify('error', {
+                title: 'Deleted',
+                msg: 'Assignee Successfully Deleted!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+
 </script>
 
 

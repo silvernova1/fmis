@@ -10,21 +10,33 @@
             <input type="hidden" asp-for="RespoId" />
             <div class="form-group">
                 <h5>Responsibility: </h5>
-                <input asp-for="Respo" class="form-control" />
+                <input asp-for="Respo" id="respo" class="form-control" />
                 <span asp-validation-for="Respo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <h5>Responsibility Code: </h5>
-                <input asp-for="RespoCode" class="form-control" />
+                <input asp-for="RespoCode" id="respocode" class="form-control" />
                 <span asp-validation-for="RespoCode" class="text-danger"></span>
             </div>
             <div class="form-group pull-right">
-                <input type="submit" value="Save" class="btn btn-success btn-sm" />  <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
+                <input type="submit" value="Save" onclick="editBtnClick()" class="btn btn-success btn-sm" />  <a class="btn btn-default btn-sm" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
+<script>
+    function editBtnClick() {
+        var respo = document.getElementById("respo").value;
+        var respocode = document.getElementById("respocode").value;
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+
+        if (respo != '' && respocode != '') {
+            Lobibox.notify('info', {
+                msg: 'Responsibility Center Successfully Edited!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+</script>

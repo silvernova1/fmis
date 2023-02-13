@@ -25,7 +25,7 @@ namespace fmis.Controllers.Budget
         [Route("ResponsibilityCenter")]
         public async Task<IActionResult> Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "respo", "");
+            ViewBag.filter = new FilterSidebar("master_data", "respocenter", "");
             PopulateResposDropDownList();
             return View(await _context.RespoCenter.OrderBy(x=>x.RespoId).ToListAsync());
         }
@@ -53,7 +53,7 @@ namespace fmis.Controllers.Budget
         // GET: Appropriations/Create
         public IActionResult Create()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "respo", "");
+            ViewBag.filter = new FilterSidebar("master_data", "respocenter", "");
             return View();
         }
 
@@ -61,11 +61,12 @@ namespace fmis.Controllers.Budget
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Respo,RespoCode")] RespoCenter respocenter)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "respo", "");
+            ViewBag.filter = new FilterSidebar("master_data", "respocenter", "");
             if (ModelState.IsValid)
             {
                 _context.Add(respocenter);
                 await _context.SaveChangesAsync();
+                await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }
             return View(respocenter);
@@ -77,7 +78,7 @@ namespace fmis.Controllers.Budget
         // GET: Appropriations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            ViewBag.filter = new FilterSidebar("master_data", "respo", "");
+            ViewBag.filter = new FilterSidebar("master_data", "respocenter", "");
             if (id == null)
             {
                 return NotFound();
@@ -102,6 +103,7 @@ namespace fmis.Controllers.Budget
 
             _MyDbcontext.Update(respo);
             await _MyDbcontext.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index");
         }
 
@@ -170,6 +172,7 @@ namespace fmis.Controllers.Budget
             var respocenter = await _context.RespoCenter.Where(p => p.RespoId == ID).FirstOrDefaultAsync();
             _context.RespoCenter.Remove(respocenter);
             await _context.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index");
         }
 
