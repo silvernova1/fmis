@@ -350,7 +350,7 @@
         height: '800px',
         fixedColumnsLeft: 6,
         manualRowResize: true,
-        wordWrap: true,
+        wordWrap: false,
         afterGetColHeader: addInput,
         beforeOnCellMouseDown(event, coords) {
             // Deselect the column after clicking on input.
@@ -359,7 +359,7 @@
                 this.deselectCell();
             }
         },
-        colWidths: [200, 100, 70, 80, 80, 150, 80, 350, 80, 80, 150, 125, 100, 100,
+        colWidths: [200, 100, 70, 80, 80, 100, 100, 100, 80, 80, 150, 125, 100, 100,
             100, 100, 100,
             100, 100, 100,
             100, 100, 100,
@@ -1323,4 +1323,6 @@
 
         return check_flag.length > 0 ? true : false;
     }
+
+
 </script>
