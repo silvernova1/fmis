@@ -53,7 +53,7 @@
             <h7><i class="fa fa-bar-chart-o fa-fw"></i> Create Budget Source (GAA)</h7>
             <div class="pull-right">
                 <div class="btn-group">
-                    <input type="submit" id="btnsubmit" onclick="fundSourceToken" value="Create" class="btn btn-success btn-xs" data-bs-toggle="tooltip" title="Create" />
+                        <input type="submit" id="btnsubmit"  onclick="submitBtnClick()" value="Create" class="btn btn-success btn-xs" data-bs-toggle="tooltip" title="Create" />
                         <a class="btn btn-danger btn-xs" data-dismiss="modal" data-bs-toggle="tooltip" title="Exit">Exit</a>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label>Fund Source: </label>
-                    <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+                        <select class="form-control" asp-for="FundId" id="fund_source" asp-items="ViewBag.FundId"></select>
                 </div>
                 <div class="form-group">
                     <label>PPA Title:</label>
@@ -81,7 +81,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Responsibility Center: </label>
-                    <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+                    <select class="form-control" asp-for="RespoId" id="respo" asp-items="ViewBag.RespoId"></select>
                 </div>
                 @*<div class="form-group">
                     <label>Sections: </label>
@@ -89,7 +89,7 @@
                 </div>*@
                 <div class="form-group">
                     <label>FundSource Title:</label>
-                    <input asp-for="FundSourceTitle" class="form-control" name="FundSourceTitle" onchange="CheckFundSourceTitle(this);" required />
+                    <input asp-for="FundSourceTitle" class="form-control" name="FundSourceTitle" id="fundsource_title" onchange="CheckFundSourceTitle(this);" required />
                     <span asp-validation-for="FundSourceTitle" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -358,4 +358,22 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+
+    function submitBtnClick() {
+        var fund_source = document.getElementById("fund_source").value;
+        var respo = document.getElementById("respo").value;
+        var ppa_title = document.getElementById("ddlBranches").value;
+        var fundsource_title = document.getElementById("fundsource_title").value;
+
+
+        if (fund_source != '' && respo != '' && ppa_title != '' && fundsource_title != '') {
+            Lobibox.notify('success', {
+                msg: 'GAA Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
 </script>

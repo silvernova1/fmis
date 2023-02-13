@@ -39,7 +39,7 @@
         <h7><i class="fa fa-bar-chart-o fa-fw"></i> Edit Budget Source (SAA)</h7>
         <div class="pull-right">
             <div class="btn-group">
-                <input type="submit" value="Save" class="btn btn-success btn-xs" data-bs-toggle="tooltip" title="Save" />
+                <input type="submit" value="Save" class="btn btn-success btn-xs" onclick="editBtnClick()" data-bs-toggle="tooltip" title="Save" />
                 <a class="btn btn-danger btn-xs" data-dismiss="modal" data-bs-toggle="tooltip" title="Exit"> Exit</a>
             </div>
         </div>
@@ -50,7 +50,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label>Fund Source: </label>
-                <select class="form-control" asp-for="FundId" asp-items="ViewBag.FundId"></select>
+                <select class="form-control" asp-for="FundId" id="fund_source" asp-items="ViewBag.FundId"></select>
             </div>
             <div class="form-group">
                 <label>PAP Title:</label>
@@ -65,11 +65,11 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>Responsibility Center:</label>
-                <select class="form-control" asp-for="RespoId" asp-items="ViewBag.RespoId"></select>
+                <select class="form-control" asp-for="RespoId" id="respo" asp-items="ViewBag.RespoId"></select>
             </div>
             <div class="form-group">
                 <label>Sub-Allotment Title:</label>
-                <input asp-for="Suballotment_title" class="form-control">
+                <input asp-for="Suballotment_title" id="suballotment_title" class="form-control">
                 <span asp-validation-for="Suballotment_title" class="text-danger"></span>
             </div>
             <div class="form-group" hidden>
@@ -289,7 +289,6 @@
                             Amount: hot.getDataAtCell(row, col + 1),
                             suballotment_amount_token: hot.getDataAtCell(row, col + 2),
                             suballotment_token: suballotment_token
-
                         }
                     );
                     @*console.log(hot.getSourceData());*@
@@ -326,4 +325,24 @@
     });
     var tableData = JSON.stringify(hot.getSourceData());
     console.log(hot.getSourceData());
+
+    function editBtnClick() {
+
+        var fund_source = document.getElementById("fund_source").value;
+        var respo = document.getElementById("respo").value;
+        var ppa_title = document.getElementById("ddlBranches").value;
+        var suballotment_title = document.getElementById("suballotment_title").value;
+
+
+        if (fund_source != '' && respo != '' && ppa_title != '' && suballotment_title != '') {
+            Lobibox.notify('info', {
+                msg: 'SAA Successfully Edited!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+
+
 </script>

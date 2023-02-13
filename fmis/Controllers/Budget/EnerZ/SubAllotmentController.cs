@@ -254,6 +254,7 @@ namespace fmis.Controllers
             await _context.SaveChangesAsync();
 
             sub_allotment_amount.ForEach(a => a.SubAllotmentId = subAllotment.SubAllotmentId);
+            await Task.Delay(500);
             this._MyDbContext.SaveChanges();
 
             return RedirectToAction("Index", "SubAllotment", new
@@ -316,6 +317,7 @@ namespace fmis.Controllers
 
             _MyDbContext.Update(sub_allotment_data);
             await _MyDbContext.SaveChangesAsync();
+            await Task.Delay(500);
 
             return RedirectToAction("Index", "SubAllotment", new
             {
@@ -550,6 +552,7 @@ namespace fmis.Controllers
                 .FirstOrDefaultAsync(x => x.SubAllotmentId == id);
             _context.SubAllotment.Remove(sub_Allotment);
             await _context.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index", "SubAllotment", new
             {
                 AllotmentClassId = sub_Allotment.AllotmentClassId,

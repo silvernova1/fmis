@@ -227,7 +227,7 @@ namespace fmis.Controllers.Budget.John
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(FundSource fundSource, int PrexcId, int FundId)
+        public async Task <IActionResult> Create(FundSource fundSource, int PrexcId, int FundId)
         {
             fundSource.CreatedAt = DateTime.Now;
             fundSource.UpdatedAt = DateTime.Now;
@@ -259,9 +259,12 @@ namespace fmis.Controllers.Budget.John
                 {
                     _FundSourceContext.Add(fundSource);
                     _FundSourceContext.SaveChanges();
+                  
 
                     fundsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
+                    await Task.Delay(500);
                     this._MyDbContext.SaveChanges();
+
                 }
             }
             /*var item = _MyDbContext.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).FirstOrDefault();
@@ -270,7 +273,6 @@ namespace fmis.Controllers.Budget.John
                 ModelState.AddModelError("keyName", "Message");
                 return View();
             }*/
-
             return RedirectToAction("Index", "FundSource", new
             {
                 AllotmentClassId = fundSource.AllotmentClassId,
@@ -338,6 +340,7 @@ namespace fmis.Controllers.Budget.John
 
             _MyDbContext.Update(fundsource_data);
             await _MyDbContext.SaveChangesAsync();
+            await Task.Delay(500);
 
             return RedirectToAction("Index", "FundSource", new
             {
@@ -530,6 +533,7 @@ namespace fmis.Controllers.Budget.John
 
             _MyDbContext.Remove(fundSource);
             await _MyDbContext.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index", "FundSource", new
             {
                 AllotmentClassId = fundSource.AllotmentClassId,
