@@ -91,8 +91,8 @@ namespace fmis.Controllers
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
-            var last_year = res.Year.ToString();
-            ViewBag.LastYr = last_year;
+            var result = res.Year.ToString();
+            ViewBag.LastYr = result;
             ViewBag.CurrentYr = year;
 
             var budget_allotment = await _MyDbContext.Budget_allotments
@@ -110,32 +110,29 @@ namespace fmis.Controllers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
             //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
-            var suballotmentsLastYr = await _MyDbContext.SubAllotment
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == last_year)
-                .Include(x=>x.RespoCenter)
-                .Include(x=>x.prexc)
-                .Include(x=>x.Appropriation)
-                .Include(x=>x.AllotmentClass)
-                .Include(x=>x.Budget_allotment)
-                    .ThenInclude(x=>x.Yearly_reference)
-                .ToListAsync();
-            //Console.WriteLine("sub ctr: " +suballotmentsLastYr.Count());
-            //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
-
             budget_allotment.SubAllotment.ToList().ForEach(x =>
             {
-                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).Where(x=> x.status =="activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).Where(x => x.status == "activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 
+            var suballotmentsLastYr = await _MyDbContext.SubAllotment
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                .Include(x => x.RespoCenter)
+                .Include(x => x.prexc)
+                .Include(x => x.Appropriation)
+                .Include(x => x.AllotmentClass)
+                .Include(x => x.Budget_allotment)
+                    .ThenInclude(x => x.Yearly_reference)
+                .ToListAsync();
+            suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
             budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
-            Console.WriteLine("total ctr: "+budget_allotment.SubAllotment.Count());
 
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == last_year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             if (!string.IsNullOrEmpty(search) && lastYear == true)
             {
@@ -164,15 +161,50 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<ActionResult> CheckNextYear(int subAllotmentId, bool addToNext)
         {
-            var subAllotments = await _context.SubAllotment.FindAsync(subAllotmentId);
+            var subAllotments = await _MyDbContext.SubAllotment.FindAsync(subAllotmentId);
 
-            subAllotments.IsAddToNextAllotment = addToNext;
+            if (subAllotments.Remaining_balance != 0)
+            {
 
-            _context.Update(subAllotments);
-            await _context.SaveChangesAsync();
+                subAllotments.IsAddToNextAllotment = addToNext;
+                if (subAllotments.IsAddToNextAllotment)
+                {
+                    subAllotments.Suballotment_title = "CONAP " + subAllotments.Suballotment_title;
+                }
+                else
+                {
+                    char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                    //fundsources.FromPreviousAllotment = true;
+                    subAllotments.Suballotment_title = subAllotments.Suballotment_title.TrimStart(trim);
+                    _MyDbContext.Update(subAllotments);
+                    await _MyDbContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                subAllotments.IsAddToNextAllotment = false;
+            }
+            _MyDbContext.Update(subAllotments);
+            await _MyDbContext.SaveChangesAsync();
+            return Ok(await _MyDbContext.SaveChangesAsync());
+        }
 
+        [HttpPost]
+        public async Task<ActionResult> CheckReusedConap(int subAllotmentId, bool reusedConap)
+        {
+            var subAllotments = await _MyDbContext.SubAllotment.Where(x => x.IsAddToNextAllotment == true).FirstOrDefaultAsync(x => x.SubAllotmentId == subAllotmentId);
 
-            return Ok(await _context.SaveChangesAsync());
+            if (subAllotments.Remaining_balance != 0)
+            {
+                subAllotments.ReUsedConap = reusedConap;
+            }
+            else
+            {
+                subAllotments.ReUsedConap = false;
+            }
+            _MyDbContext.Update(subAllotments);
+            await _MyDbContext.SaveChangesAsync();
+            return Ok(await _MyDbContext.SaveChangesAsync());
         }
 
         // GET: Sub_allotment/Create
@@ -339,7 +371,7 @@ namespace fmis.Controllers
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
-            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList().Where(x => x.status == "activated")
+            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList()
                                               select new
                                               {
                                                   prexcId = s.Id,
