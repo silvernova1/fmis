@@ -879,11 +879,11 @@ namespace fmis.Controllers
 
                     if (fundsources.FirstOrDefault()?.source_type == "fund_source")
                     {
-                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n\n" + fundsources.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     }
                     else if (saa.FirstOrDefault()?.source_type == "sub_allotment")
                     {
-                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + saa.FirstOrDefault()?.fundsource_code + "\n\n" + saa.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + saa.FirstOrDefault()?.fundsource_code + "\n\n\n" + saa.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     }
 
                     //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
