@@ -93,7 +93,18 @@
                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.FundId">
                         <i class="ace-icon fa fa-edit"></i>Edit
                     </a> 
-                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Fund",new { id = @item.FundId })" onclick="return confirm('Do you want to delete this Fund Source?');">
+                    <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Fund",new { id = @item.FundId })"
+                          onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
+                                          // Save it!
+                                         Lobibox.notify('error', {
+                                               title: 'Deleted',
+                                                msg: 'Fund Code Successfully Deleted!',
+                                        });
+                                        }
+                                            else
+                                        {
+                                          return false
+                                        };">
                         <i class="ace-icon fa fa-trash"></i>Delete
                     </a>
                 </td>
