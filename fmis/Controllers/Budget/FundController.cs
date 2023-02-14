@@ -57,6 +57,7 @@ namespace fmis.Controllers
             
                 _fundContext.Add(fund);
                 await _fundContext.SaveChangesAsync();
+                await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }
             return View(fund);
@@ -93,6 +94,7 @@ namespace fmis.Controllers
 
             _fundContext.Update(funds);
             await _fundContext.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index");
         }
 
@@ -102,6 +104,7 @@ namespace fmis.Controllers
             var fund = await _fundContext.Fund.Include(x=>x.Sub_Allotments).ThenInclude(x=>x.SubAllotmentAmounts).Where(p => p.FundId == ID).FirstOrDefaultAsync();
             _fundContext.Fund.Remove(fund);
             await _fundContext.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index");
         }
 

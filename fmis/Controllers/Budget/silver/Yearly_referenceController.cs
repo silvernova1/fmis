@@ -75,6 +75,7 @@ namespace fmis.Controllers
             {
                 _MyDbcontext.Add(yearly_reference);
                 await _MyDbcontext.SaveChangesAsync();
+                await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.layout = "_Layout";
@@ -147,6 +148,7 @@ namespace fmis.Controllers
             var yearlyReference = await _context.Yearly_reference.Where(p => p.YearlyReferenceId == ID).FirstOrDefaultAsync();
             _context.Yearly_reference.Remove(yearlyReference);
             await _context.SaveChangesAsync();
+            await Task.Delay(500);
             return RedirectToAction("Index");
         }
 
