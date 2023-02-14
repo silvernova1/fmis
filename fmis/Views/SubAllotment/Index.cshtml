@@ -69,7 +69,7 @@
 @if (Model.SubAllotment.Count() > 0)
 {
     <h3 class="grey lighter smaller">
-        General Appropriations Act (GAA)
+        Sub Allotment (SAA)
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
             @Model.Yearly_reference.YearlyReference
@@ -274,8 +274,9 @@
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)" data-bs-toggle="tooltip" title="Edit"> <span class="glyphicon glyphicon-edit"></span>  </button>
                         <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a>
-                        <a asp-controller="FundsRealignment" asp-route-fundsource_id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="GAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a>
-                        <a asp-controller="FundTransferedTo" asp-route-fundsource_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.BudgetAllotmentId" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="GAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a>
+                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="SAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a>
+                        <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="SAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a>
+
                         @if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
                         {
                             <div class="checkbox">
@@ -296,8 +297,12 @@
                         }
                     </td>
                     <td>
-                        <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Realignment</a>
+                        <a asp-controller="SubNegative" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-transfer"></span> SAA Negative</a>
                     </td>
+
+
+
+
                     <td>
                         <b class="green">
                             <span>@item.Beginning_balance.ToString("C", new CultureInfo("en-PH"))</span>
