@@ -879,18 +879,18 @@ namespace fmis.Controllers
 
                     if (fundsources.FirstOrDefault()?.source_type == "fund_source")
                     {
-                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n\n" + fundsources.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     }
                     else if (saa.FirstOrDefault()?.source_type == "sub_allotment")
                     {
-                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + saa.FirstOrDefault()?.fundsource_code + "\n\n" + saa.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + saa.FirstOrDefault()?.fundsource_code + "\n\n\n" + saa.FirstOrDefault()?.respo, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
                     }
 
                     //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, times_new_roman_r8)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_LEFT });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, times_new_roman_r9)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, times_new_roman_r9)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, times_new_roman_r9)) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, times_new_roman_r8)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_LEFT });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
                     doc.Add(table_row_6);
 
                     var table_row_7 = new PdfPTable(5);
@@ -913,8 +913,8 @@ namespace fmis.Controllers
                     // END OF REMOVE BORDER
                     table_row_7.AddCell(new PdfPCell(po_dv) { Border = 14 });
 
-                    table_row_7.AddCell(new PdfPCell(new Paragraph("", table_row_5_font)) { Border = 14, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_7.AddCell(new PdfPCell(new Paragraph("\n TOTAL ", times_new_roman_r9)) { Border = 14, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_7.AddCell(new PdfPCell(new Paragraph("\n", table_row_5_font)) { Border = 14, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_7.AddCell(new PdfPCell(new Paragraph("\n TOTAL ", times_new_roman_r8)) { Border = 14, PaddingTop = 5, HorizontalAlignment = Element.ALIGN_CENTER });
 
 
                     PdfPTable tbt_total_amt = new PdfPTable(1);
@@ -943,9 +943,9 @@ namespace fmis.Controllers
 
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("")) { FixedHeight = 33f, Border = 13 });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Charges to appropriation/ allotment necessary, lawful and under my direct supervision; and supporting documents valid, proper and legal. \n", times_new_roman_r7)) { FixedHeight = 33f, Border = 13 });
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("Charges to appropriation/allotment necessary, lawful and under my direct supervision; and supporting documents valid, proper and legal. \n", times_new_roman_r7)) { FixedHeight = 33f, Border = 13 });
                     table_row_8.AddCell(new PdfPCell(new Paragraph("")) { FixedHeight = 33f, Border = 13 });
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Allotment available and obligated for the purpose/adjustment necessary as indicated above. \n", times_new_roman_r7)) { FixedHeight = 33f, Border = 13 });
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("Budget available and utilized for the purpose/adjustment necessary as indicated above. \n", times_new_roman_r7)) { FixedHeight = 33f, Border = 13 });
 
 
                     //SIGNATURE 1
@@ -994,9 +994,9 @@ namespace fmis.Controllers
 
                         //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
                         table_row_8.AddCell(new PdfPCell(new Paragraph("")));
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office / Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office /Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
                         table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r7)));
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Unit / Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Division/Unit/Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
 
                         table_row_8.AddCell(new PdfPCell(new Paragraph("Date:", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_LEFT, FixedHeight = 20f, VerticalAlignment = Element.ALIGN_MIDDLE });
                         table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 20f });
@@ -1027,9 +1027,9 @@ namespace fmis.Controllers
 
                         //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
                         table_row_8.AddCell(new PdfPCell(new Paragraph("")));
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office / Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head Requesting Office /Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
                         table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r7)));
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Unit / Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Head, Budget Division/Unit/Authorized Representative", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
 
                         table_row_8.AddCell(new PdfPCell(new Paragraph("Date: ", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_LEFT, FixedHeight = 20f, VerticalAlignment = Element.ALIGN_MIDDLE });
                         table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 20f });

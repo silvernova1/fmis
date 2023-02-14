@@ -3,9 +3,6 @@
 @using fmis.Models.John
 @model fmis.ViewModel.DashboardVM
 
-
-
-
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -141,10 +138,7 @@
                 
                 <div class="vspace-12-sm"></div>
             </div>
-
-
         </div><!-- /.row -->
-
         <div class="hr hr32 hr-dotted"></div>
         <div class="row">
             <!-- #OVERALL CUMMULATIVE UTILIZATION -->
@@ -164,7 +158,7 @@
                                     <div id="piechart-placeholder" hidden></div>
                                     <center>
                                         <div class="easy-pie-chart percentage" data-percent="@String.Format("{0:0.00}", ViewBag.filteredBalances)%" data-size="180" data-color="#1261A0">
-                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@*@String.Format("{0:0.00}", @perObligated)*@0.00%</span>
+                                            <span class="percent" style="font-size: 30pt; color: #1261A0">@*@String.Format("{0:0.00}", @perObligated)*@0.0%</span>
                                         </div>
                                         <h4 class="grey lighter">OBLIGATED @*@String.Format("{0:0.00}", @perObligated)%*@</h4>
                                     </center>
@@ -194,7 +188,7 @@
                                     <div id="obligated-piechart-placeholder" hidden></div>
                                     <center>
                                         <div class="easy-pie-chart percentage" data-percent="0" data-size="180" data-color="#006400">
-                                            <span class="percent" style="font-size: 30pt; color: #006400; ">0.00%</span>
+                                            <span class="percent" style="font-size: 30pt; color: #006400; ">0.0%</span>
 
                                         </div>
                                         <h4 class="grey lighter"> DISBURSED </h4>
@@ -250,7 +244,7 @@
             <!-- #end -->
             <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
             <div class="vspace-12-sm"></div>
-            @*<div class="col-sm-3 ">
+            <div class="col-sm-3 ">
                     <div class="widget-box monthly">
                         <div class="widget-header widget-header-flat widget-header-small">
                             <div class="widget-box transparent monthly1">
@@ -261,12 +255,12 @@
                                     </h4>
                                 </div>
                                 <div class="widget-body">
-                                    <div id="chartContainer" style="height: 270px; width: 100%;"></div>
+                                <div id="sales-charts" style="height: 245px; width: 100%;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>*@
+                </div>
             <!-- #end -->
 
         </div><!-- /.row -->
@@ -480,23 +474,29 @@
         $(document).one('ajaxloadstart.page', function (e) {
             $tooltip.remove();
         });
+
+
+
+
         var d1 = [];
-        for (var i = 0; i < Math.PI * 2; i += 0.5) {
+        for (var i = 0; i < Math.PI * 2; i += 100) {
             d1.push([i, Math.sin(i)]);
         }
         var d2 = [];
-        for (var i = 0; i < Math.PI * 2; i += 0.5) {
+        for (var i = 0; i < Math.PI * 2; i += 200) {
             d2.push([i, Math.cos(i)]);
         }
         var d3 = [];
-        for (var i = 0; i < Math.PI * 2; i += 0.2) {
+        for (var i = 0; i < Math.PI * 2; i += 300) {
             d3.push([i, Math.tan(i)]);
         }
-        var sales_charts = $('#sales-charts').css({ 'width': '100%', 'height': '220px' });
+
+
+        var sales_charts = $('#sales-charts');
         $.plot("#sales-charts", [
-            { label: "Domains", data: d1 },
-            { label: "Hosting", data: d2 },
-            { label: "Services", data: d3 }
+            { label: "ALLOTMENT", data: d1 },
+            { label: "OBLIGATION", data: d2 },
+            { label: "DISBURSEMENT", data: d3 }
         ], {
             hoverable: true,
             shadowSize: 0,
@@ -519,6 +519,8 @@
                 borderColor: '#555'
             }
         });
+
+
         $('#recent-box [data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
         function tooltip_placement(context, source) {
             var $source = $(source);
@@ -571,13 +573,11 @@
             else $(this).removeClass('dropup');
         });
     })
-    
-
+  
     function resetBtn(){
         $("#date_from").val("");
         $("#date_to").val("");
         $("#appro").val(0);
         $("#allot").val(0);
     }
-
 </script>
