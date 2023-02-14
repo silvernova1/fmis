@@ -68,26 +68,26 @@
             <div class="col-sm-2">
                 <div style="display: flex; justify-content: space-between;">
                     <span>Date From: </span>
-                    <input type="date" name="date_from" class="form-control" />
+                    <input type="date" name="date_from" id="date_from" class="form-control" value="@ViewBag.date_from" />
                 </div>
             </div>
             <div class="col-sm-2">
                 <div style="display: flex; justify-content: space-between;">
                     <span>Date To: </span>
-                    <input type="date" name="date_to" class="form-control" />
+                    <input type="date" name="date_to" id="date_to" class="form-control" value="@ViewBag.date_to" />
                 </div>
             </div>
             <div class="col-sm-2">
-                <select class="form-control" asp-for="FundSources.FirstOrDefault().AppropriationId" asp-items="@(new SelectList(ViewBag.appro,"AppropriationId","AppropriationSource"))">
+                <select class="form-control" id="appro" asp-for="FundSources.FirstOrDefault().AppropriationId" asp-items="@(new SelectList(ViewBag.appro,"AppropriationId","AppropriationSource"))">
                 </select>
             </div>
             <div class="col-sm-2">
-                <select class="form-control" asp-for="FundSources.FirstOrDefault().AllotmentClassId" asp-items="@(new SelectList(ViewBag.allot,"Id","Allotment_Class"))">
+                <select class="form-control" id="allot" asp-for="FundSources.FirstOrDefault().AllotmentClassId" asp-items="@(new SelectList(ViewBag.allot,"Id","Allotment_Class"))">
                 </select>
             </div>
             <div class="col-sm-2">
                 <button type="submit" class="btn btn-success btn-sm "> <span class="glyphicon glyphicon-filter"></span> Filter </button>
-                <button class="btn btn-warning btn-sm "> <span class="glyphicon glyphicon-refresh"></span> Clear Filter </button>
+                <button class="btn btn-warning btn-sm" onclick="resetBtn()"> <span class="glyphicon glyphicon-refresh"></span> Reset </button>
             </div>
         </div>
     </form>
@@ -132,9 +132,13 @@
                         <div class="infobox-content">UNPAID OBLIGATIONS</div>
                     </div>
                 </div>
-                <div class="mx-auto">
-                    <h4 class="grey lighter text-center"> As of @ViewBag.date2 </h4>
-                </div>
+                @if (ViewBag.date_to != null)
+                {
+                    <div class="mx-auto">
+                        <h4 class="grey lighter text-center"> As of @ViewBag.date2.ToString("MMMM dd, yyyy") </h4>
+                    </div>
+                }
+                
                 <div class="vspace-12-sm"></div>
             </div>
 
@@ -208,9 +212,7 @@
 
             <div class="col-sm-3 ">
                 <div class="widget-box allotmentclass" >
-
                     <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
-
                         <div class="widget-box transparent allotmentclass1">
                             <div class="widget-header widget-header-flat">
                                 <h4 class="widget-title lighter">
@@ -570,4 +572,12 @@
         });
     })
     
+
+    function resetBtn(){
+        $("#date_from").val("");
+        $("#date_to").val("");
+        $("#appro").val(0);
+        $("#allot").val(0);
+    }
+
 </script>

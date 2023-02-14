@@ -47,11 +47,19 @@ namespace fmis.Controllers
 
         #endregion
 
-        public IActionResult Dashboard(string date_from, string date_to, FundSource fundSource)
+        public IActionResult Dashboard(string date_from, string date_to, FundSource fundSource, int name)
         {
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
+            ViewBag.date_from = date_from;
+            ViewBag.date_to = date_to;
+            ViewBag.allotment_class = name;
+
+            if (name == 2)
+            {
+                return Json("NULL");
+            }
 
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
