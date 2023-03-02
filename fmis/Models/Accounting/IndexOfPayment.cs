@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,11 +27,11 @@ namespace fmis.Models.Accounting
         public int? SoNumber { get; set; }
 
         public int fundSource { get; set; }
-        public int allotmentClassType { get; set; }
+        public int? allotmentClassType { get; set; }
         public string orsNo { get; set; }
 
         [ForeignKey("ObligationId")]
-        public int ObligationId { get; set; }
+        public int? ObligationId { get; set; }
         [JsonIgnore]
         public Obligation Obligation { get; set; }
 
@@ -48,6 +49,7 @@ namespace fmis.Models.Accounting
         public int? DvId { get; set; }
         [JsonIgnore]
         public Dv Dv { get; set; }
+        //public IEnumerable<SelectListItem> DvList { get; set; }
 
     }
 }

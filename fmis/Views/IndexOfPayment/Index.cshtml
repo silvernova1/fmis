@@ -126,7 +126,7 @@
               
                     <th> Invoice #  </th>
                     <th> Project Id </th>
-                    <th> # of Billing </th>
+                    @*<th> # of Billing </th>*@
                     <th> Period Cover </th>
                     <th> From-To </th>
                     <th> Travel Period </th>
@@ -148,7 +148,14 @@
                             @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
                         </td>
                         <td nowrap="nowrap">
-                            @ors_List.Where(x=>x.Id == item.ObligationId).FirstOrDefault().Name
+                            @if (@ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault()?.Name == null)
+                            {
+                                @Html.DisplayFor(modelItem => item.orsNo)
+                            }
+                            else
+                            {
+                                @ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault().Name
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Dv.DvNo)
@@ -171,7 +178,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.ProjectId)
                         </td>
-                        @if (item.BillNumbers.Any())
+                        @*@if (item.BillNumbers.Any())
                         {
                             <td>
                                 @Html.DisplayFor(modelItem => item.NumberOfBill),
@@ -184,7 +191,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.NumberOfBill)
                             </td>
-                        }
+                        }*@
                         <td>
                             @Html.DisplayFor(modelItem => item.PeriodCover)
                         </td>

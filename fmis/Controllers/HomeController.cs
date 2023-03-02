@@ -47,19 +47,14 @@ namespace fmis.Controllers
 
         #endregion
 
-        public IActionResult Dashboard(string date_from, string date_to, FundSource fundSource, int name)
+        public IActionResult Dashboard(string date_from, string date_to, FundSource fundSource, int name, int id)
         {
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
             ViewBag.date_from = date_from;
             ViewBag.date_to = date_to;
-            ViewBag.allotment_class = name;
-
-            if (name == 2)
-            {
-                return Json("NULL");
-            }
+            ViewBag.id = id;
 
             DateTime date1 = Convert.ToDateTime(date_from);
             DateTime date2 = Convert.ToDateTime(date_to);
@@ -278,7 +273,19 @@ namespace fmis.Controllers
             List<AllotmentClass> allot = new List<AllotmentClass>();
             allot = (from a in _MyDbCOntext.AllotmentClass select a).ToList();
             allot.Insert(0, new AllotmentClass { Id = 0, Allotment_Class = "-- Select Allotment Class --" });
+
+
             ViewBag.allot = allot;
+
+            ViewBag.AllotId = new SelectList((from s in _MyDbCOntext.AllotmentClass.ToList()
+                                              select new
+                                              {
+                                                  Id = s.Id,
+                                                  allotmentClass = s.Allotment_Class,
+                                              }),
+                                       "Id",
+                                       "allotmentClass",
+                                       null);
 
 
             //CHART JS BEGIn
