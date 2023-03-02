@@ -21,11 +21,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label>Yearly Reference</label>
-                <input asp-for="YearlyReference" type="number" class="form-control" />
+                <input asp-for="YearlyReference" type="number" id="year" class="form-control" />
                 <span asp-validation-for="YearlyReference" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="Submit" value="Create" class="btn btn-sm btn-success" />
+                <input type="Submit" value="Create" onclick="submiBtnClick()" class="btn btn-sm btn-success" />
                 <a class="btn btn-sm btn-default" asp-action="Index">Back to List</a>
             </div>
         </form>
@@ -34,3 +34,19 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+                
+<script>
+
+    function submiBtnClick() {
+        var year = document.getElementById("year").value;
+        if (year != '') {
+            Lobibox.notify('success', {
+                msg: 'Year Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+</script>
