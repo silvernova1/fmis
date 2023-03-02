@@ -79,7 +79,7 @@
                 </select>
             </div>
             <div class="col-sm-2">
-                <select class="form-control" id="allot" asp-for="FundSources.FirstOrDefault().AllotmentClassId" asp-items="@(new SelectList(ViewBag.allot,"Id","Allotment_Class"))">
+                <select class="form-control" id="ddlallotmentId" onchange="return getAllotment(this)" asp-for="FundSources.FirstOrDefault().AllotmentClassId" asp-items="@(new SelectList(ViewBag.allot,"Id","Allotment_Class"))">
                 </select>
             </div>
             <div class="col-sm-2">
@@ -132,7 +132,7 @@
                 @if (ViewBag.date_to != null)
                 {
                     <div class="mx-auto">
-                        <h4 class="grey lighter text-center"> As of @ViewBag.date2.ToString("MMMM dd, yyyy") </h4>
+                        <h4 class="grey lighter text-center"> As of @ViewBag.id  @ViewBag.date2.ToString("MMMM dd, yyyy") </h4>
                     </div>
                 }
                 
@@ -203,7 +203,6 @@
 
             <!-- #end -->
             <!-- #ALLOTMENT CLASS -->
-
             <div class="col-sm-3 ">
                 <div class="widget-box allotmentclass" >
                     <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
@@ -215,33 +214,43 @@
                                 </h4>
                             </div>
                             <div class="widget-body">
-                                <div class="widget-main">
+                                @if (ViewBag.allotmentId == 1)
+                                {
                                     <h5>PS</h5>
                                     <div class="progress progress-striped active">
                                         <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
                                         <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION : @ViewBag.PSObligation"></div>
                                         <div class="progress-bar bg-info" style="width: @ViewBag.PS%;" data-toggle="tooltip" title="BALANCE : @ViewBag.PS%"></div>
                                     </div>
-                                    <h5>MOOE</h5>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                        <div class="progress-bar bg-info" style="width: @ViewBag.MOOE%;" data-toggle="tooltip" title="BALANCE : @ViewBag.MOOE%"></div>
-                                    </div>
-
-                                    <h5>CO</h5>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" style="width: 0%;" data-toggle="tooltip" title="DISBURSED"></div>
-                                        <div class="progress-bar progress-bar-warning" style="width: 0%;" data-toggle="tooltip" title="UNPAID OBLIGATION"></div>
-                                        <div class="progress-bar bg-info" style="width: @ViewBag.CO%;" data-toggle="tooltip" title="BALANCE : @ViewBag.CO%"></div>
-                                    </div>
-                                </div><!-- /.widget-main -->
+                                }
                             </div>
                         </div>
                     </div>
                 </div><!-- /.widget-box -->
             </div><!-- /.col -->
             <!-- #end -->
+<<<<<<< HEAD
+                        <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
+                        @*<div class="vspace-12-sm"></div>
+                        <div class="col-sm-3 ">
+                            <div class="widget-box monthly">
+                                <div class="widget-header widget-header-flat widget-header-small">
+                                    <div class="widget-box transparent monthly1">
+                                        <div class="widget-header widget-header-flat">
+                                            <h4 class="widget-title lighter">
+                                                <i class="ace-icon fa fa-signal"></i>
+                                                MONTHLY OBLIGATION (Disbursement)
+                                            </h4>
+                                        </div>
+                                        <div class="widget-body">
+                                            <div id="sales-charts" style="height: 245px; width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                        <!-- #end -->
+=======
             <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
             <div class="vspace-12-sm"></div>
             <div class="col-sm-3 ">
@@ -262,8 +271,9 @@
                     </div>
                 </div>
             <!-- #end -->
+>>>>>>> 68867e16246f3dbe9a565473fde7cb0989e612ae
 
-        </div><!-- /.row -->
+                    </div><!-- /.row -->
 
         <div class="hr hr32 hr-dotted"></div>
 
@@ -578,6 +588,25 @@
         $("#date_from").val("");
         $("#date_to").val("");
         $("#appro").val(0);
-        $("#allot").val(0);
+        $("#ddlallotmentId").val(0);
+    }
+
+
+    getAllotment();
+    function getAllotment() {
+        var selected_val = $('#ddlallotmentId').val();
+        //alert(selected_val);
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Dashboard","Home")",
+            data: { id: selected_val },
+            success: function (response){
+                selected_val = $('#ddlallotmentId').val();
+                        console.log(selected_val);
+            },
+            error: function (){
+                alert("ERROR");
+            } 
+        })
     }
 </script>

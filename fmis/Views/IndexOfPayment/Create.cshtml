@@ -70,7 +70,7 @@
         <div class="col-md-12">
              <div class="col-md-3">
                 <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
-                    <option value="z"> - Select Fund Source - </option>
+                    <option value="0"> - Select Fund Source - </option>
                     <option value="1"> Regular Agency Fund  </option>
                     <option value="2"> Foreign Assisted Project Fund </option>
                     <option value="3"> Special Accounts - Locally Funded  </option>
@@ -82,15 +82,16 @@
             </div>
             <div class="col-md-3">
                 <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
-                    <option value=""> - Select Allotment Class - </option>
+                    <option value="0"> - Select Allotment Class - </option>
                     <option value="1">  PS  </option>
                     <option value="2">  MOOE </option>
                     <option value="3">  CO  </option>
                 </select>
             </div>
             <div class="col-md-3">
-                <div class="form-group">
+                <div class="form-group" id="obligation">
                     <select asp-for="ObligationId" class="form-control select2"></select>
+                    <option value="orsNo"></option>
                 </div>
             </div>
         </div>
@@ -736,8 +737,12 @@
         $("#ddlfundsource").change(function () {
             if ($(this).val() != 1) {
                 $("#fundSource").show();
+                $("#allotmentClass_type").hide();
+                $("#obligation").hide();
             } else {
                 $("#fundSource").hide();
+                $("#allotmentClass_type").show();
+                $("#obligation").show();
             }
         });
     });
