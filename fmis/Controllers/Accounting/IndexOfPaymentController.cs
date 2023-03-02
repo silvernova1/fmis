@@ -150,7 +150,7 @@ namespace fmis.Controllers.Accounting
                            fundsource = fundsource.AppropriationId,
                            obligation = obligation.source_type,
                            Id = obligation.Id,
-                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id,
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id.ToString(),
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
 
