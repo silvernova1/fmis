@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using fmis.Services;
 using Newtonsoft.Json;
+using fmis;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -37,8 +38,6 @@ namespace fmis
         }
 
         public IConfiguration Configuration;
-
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -160,6 +159,15 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("SectionsContext")));
             #endregion
 
+
+
+            services.AddSignalR();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
+
+
             services.Add(new ServiceDescriptor(typeof(PersonalInformationMysqlContext), new PersonalInformationMysqlContext(Configuration.GetConnectionString("PersonalInformationMysqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -170,7 +178,6 @@ namespace fmis
             services.Add(new ServiceDescriptor(typeof(DtsMySqlContext), new DtsMySqlContext(Configuration.GetConnectionString("DtsMySqlContext"))));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddSignalR();
 
             services.AddDistributedMemoryCache();
 
@@ -226,7 +233,7 @@ namespace fmis
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                endpoints.MapHub<ChatHub>("/chatHub");
+            
             });
 
             
