@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using System.Text;
 using System.Diagnostics;
+using fmis.Models.Accounting;
 
 //SAMPLE
 
@@ -100,6 +101,8 @@ namespace fmis.Controllers
             public string Created_by { get; set; }
             public string obligation_token { get; set; }
             public string status { get; set; }
+            public int ObligationId { get; set; }
+            public string orsNoTemp { get; set; }
         }
 
         public class ManyId
@@ -410,6 +413,27 @@ namespace fmis.Controllers
                 else if (item.source_type.Equals("sub_allotment"))
                     obligation.SubAllotmentId = item.source_id;
 
+
+                var ors = (from fundsource in _MyDbContext.FundSources
+                           join obligations in _MyDbContext.Obligation
+                           on fundsource.FundSourceId equals obligations.FundSourceId
+                           join allotmentclass in _MyDbContext.AllotmentClass
+                           on fundsource.AllotmentClassId equals allotmentclass.Id
+                           join fund in _MyDbContext.Fund
+                           on fundsource.FundId equals fund.FundId
+                           where obligations.obligation_token == item.obligation_token
+                           select new
+                           {
+                               allotment = allotmentclass.Fund_Code,
+                               fundCurrent = fund.Fund_code_current,
+                               fundConap = fund.Fund_code_conap,
+                               fundsource = fundsource.AppropriationId,
+                               obligation = obligations.source_type,
+                               Id = obligations.Id,
+                               Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligations.Date.ToString("yyyy-MM") + "-" + "000" + obligations.Ors_no,
+                               allotmentCLassId = fundsource.AllotmentClassId
+                           }).ToList();
+
                 obligation.source_type = item.source_type;
                 obligation.Date = ToDateTime(item.Date);
                 obligation.Dv = item.Dv;
@@ -424,6 +448,8 @@ namespace fmis.Controllers
                 obligation.Ors_no = item.Ors_no;
                 obligation.status = "activated";
                 obligation.obligation_token = item.obligation_token;
+                obligation.Ors_no_Temp = ors.FirstOrDefault()?.Name;
+
                 _context.Update(obligation);
                 await _context.SaveChangesAsync();
 
@@ -663,12 +689,14 @@ namespace fmis.Controllers
                                         }).ToList();
 
 
+
+
                     if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault()?.obligation == "fund_source")
                     {
 
                         
                         table3.AddCell(new PdfPCell(new Paragraph("Serial No.", times_new_roman_r9)) {  Border = 0, PaddingTop = 25 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, times_new_roman_r9)) { Border = 0,  PaddingTop = 25 , HorizontalAlignment = Element.ALIGN_CENTER});
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" /*+ "000"*/ + ors.Ors_no, times_new_roman_r9)) { Border = 0,  PaddingTop = 25 , HorizontalAlignment = Element.ALIGN_CENTER});
 
 
                         table3.AddCell(new PdfPCell(new Paragraph("Date :", times_new_roman_r9)) {  Border = 0, PaddingTop = 10 });
