@@ -148,6 +148,9 @@
                             @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
                         </td>
                         <td nowrap="nowrap">
+                            @Html.DisplayFor(modelItem => item.orsNo)
+                        </td>
+                        @*<td nowrap="nowrap">
                             @if (@ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault()?.Name == null)
                             {
                                 @Html.DisplayFor(modelItem => item.orsNo)
@@ -156,7 +159,7 @@
                             {
                                 @ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault().Name
                             }
-                        </td>
+                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.Dv.DvNo)
                         </td>
