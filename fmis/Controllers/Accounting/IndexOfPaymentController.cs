@@ -134,7 +134,7 @@ namespace fmis.Controllers.Accounting
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
 
-            indexOfPayment.IndexFundSourceId = indexOfPayment.fundSource;
+            //indexOfPayment.IndexFundSourceId = indexOfPayment.fundSource;
 
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligation in _MyDbContext.Obligation
@@ -152,7 +152,7 @@ namespace fmis.Controllers.Accounting
                            fundsource = fundsource.AppropriationId,
                            obligation = obligation.source_type,
                            Id = obligation.Id,
-                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id.ToString(),
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
                            OrsNo = obligation.Ors_no_Temp,
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
@@ -210,7 +210,7 @@ namespace fmis.Controllers.Accounting
                                 fundsource = fundsource.AppropriationId,
                                 obligation = obligation.source_type,
                                 Id = obligation.Id,
-                                Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Ors_no,
+                                Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
                                 Orsno = obligation.Ors_no_Temp,
                                 allotmentCLassId = fundsource.AllotmentClassId
                             }).ToList();
@@ -361,7 +361,7 @@ namespace fmis.Controllers.Accounting
 
             PopulateCategoryDropDownList(index.CategoryId);
             PopulateallotmentClassTypeList();
-            PopulateOrsDropDownList(index.IndexFundSourceId);
+            //PopulateOrsDropDownList(index.IndexFundSourceId);
 
 
 
@@ -433,7 +433,7 @@ namespace fmis.Controllers.Accounting
                            fundsource = fundsource.AppropriationId,
                            obligation = obligation.source_type,
                            Id = obligation.Id,
-                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id,
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
 
@@ -462,7 +462,7 @@ namespace fmis.Controllers.Accounting
             _MyDbContext.Update(indexes);
             //await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
-            PopulateOrsDropDownList(indexes.IndexFundSourceId);
+            //PopulateOrsDropDownList(indexes.IndexFundSourceId);
             return RedirectToAction("Index");
         }
 
