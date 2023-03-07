@@ -51,5 +51,8 @@ namespace fmis.Models.Accounting
         public Dv Dv { get; set; }
         //public IEnumerable<SelectListItem> DvList { get; set; }
 
+        public int IndexFundSourceId { get; set; }
+        public virtual IndexFundSource IndexFundSource { get; set; }
+
     }
 }

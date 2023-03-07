@@ -134,6 +134,8 @@ namespace fmis.Controllers.Accounting
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
 
+            indexOfPayment.IndexFundSourceId = indexOfPayment.fundSource;
+
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligation in _MyDbContext.Obligation
                        on fundsource.FundSourceId equals obligation.FundSourceId
@@ -159,12 +161,10 @@ namespace fmis.Controllers.Accounting
 
             if (indexOfPayment.ObligationId != null)
             {
-                return Json("TRUE");
                 indexOfPayment.orsNo = ors.FirstOrDefault()?.Name;
             }
             else
             {
-                return Json("FALSE");
                 indexOfPayment.orsNo = indexOfPayment.orsNo;
             }
 
@@ -356,13 +356,12 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
                 .Include(x => x.BillNumbers)
-                .Include(x=>x.Obligation)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == id);
 
             PopulateCategoryDropDownList(index.CategoryId);
             PopulateallotmentClassTypeList();
-            //PopulateOrsDropDownList();
+            PopulateOrsDropDownList(index.IndexFundSourceId);
 
 
 
@@ -390,7 +389,6 @@ namespace fmis.Controllers.Accounting
             var indexes = await _MyDbContext.Indexofpayment
                 .Include(x => x.Dv)
                 .Include(x => x.BillNumbers)
-                .Include(x=>x.Obligation)
                 .Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId)
                 .FirstOrDefaultAsync();
 
@@ -411,7 +409,7 @@ namespace fmis.Controllers.Accounting
             indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
             indexes.TotalDeduction = index.TotalDeduction;
             indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
-            indexes.ObligationId = index?.ObligationId;
+            indexes.ObligationId = index.ObligationId;
             indexes.allotmentClassType = index.allotmentClassType;
             /*indexes.orsNo = index.orsNo.Replace("," , "");
             indexes.orsNo = indexes.orsNo.Substring(0, indexes.orsNo.Length - 3);*/
@@ -458,13 +456,13 @@ namespace fmis.Controllers.Accounting
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
-            PopulateOrsNoDownList();
 
 
 
             _MyDbContext.Update(indexes);
             //await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
+            PopulateOrsDropDownList(indexes.IndexFundSourceId);
             return RedirectToAction("Index");
         }
 
@@ -520,17 +518,17 @@ namespace fmis.Controllers.Accounting
             });
         }
 
-        /*private void PopulateOrsDropDownList(object selected = null)
+        private void PopulateOrsDropDownList(object selected = null)
         {
-            var Query = from ors in _MyDbContext.Indexofpayment
-                        orderby ors.IndexOfPaymentId
+            var Query = from ors in _MyDbContext.IndexFundSource
+                        orderby ors.Id
                         select ors;
-            ViewBag.ors = _MyDbContext.Indexofpayment.Select(x => new SelectListItem
+            ViewBag.IndexFund = _MyDbContext.IndexFundSource.Select(x => new SelectListItem
             {
-                Value = x.IndexOfPaymentId.ToString(),
-                Text = x.orsNo
+                Value = x.Id.ToString(),
+                Text = x.Title
             });
-        }*/
+        }
 
         private void PopulateDeductionDropDownList(object selected = null)
         {
