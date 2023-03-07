@@ -64,8 +64,8 @@
                 </div>
             </div>
         </div>
-         <div class="col-md-12">
-             <div class="col-md-3">
+        <div class="col-md-12">
+            <div class="col-md-3">
                 <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
                     <option value="z"> - Select Fund Source - </option>
                     <option value="1"> Regular Agency Fund  </option>
@@ -88,32 +88,31 @@
                     </select>
                 </div>
             }
+            @if (Model.ObligationId != null)
+            {
+                <div class="col-md-3">
+                <div class="form-group" id="obligation">
+                    @*<select asp-for="ObligationId" class="form-control select2"></select>*@
+                    <select asp-for="ObligationId" class="form-control select2">
+                        @{
+                                            <option value="@Model.ObligationId">
+                                                @Model.orsNo
+                                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="col-md-12">
             <div class="col-md-3">
-                @if(Model.ObligationId != null)
-                {
-                    <div class="form-group" id="obligation">
-                        @*<select asp-for="ObligationId" class="form-control select2"></select>*@
-                        <select asp-for="ObligationId" class="form-control select2">
-                            @{
-                                <option value="@Model.ObligationId">
-                                    @Model.orsNo
-                                </option>
-                            }
-                        </select>
-                    </div>
-                }
+                    <label> ORS:</label>
+                  @*<textarea asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />*@
+                @Html.TextAreaFor(m => m.orsNo, new { @class = "form-control", @style = "resize: none; overflow: auto; height:35px", @id = "orsId"})
+                @*<input type="text" asp-for="orsNo" class="form-control" value="@Model.orsNo" id="orsId">*@
             </div>
         </div>
-        <div class="col-md-12" style="margin-top: 10px;">
-            <div class="col-md-3" id="fundSource" style="display: none">
-                    <div class="form-group">
-                  @*  <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />*@
-
-                    <input type="text" asp-for="orsNo" class="form-control" value="@Model.orsNo" required>
-
-                    </div>
-            </div>
-         </div>
         <br />
         <div class="col-md-12" style="margin-top: 15px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
@@ -199,7 +198,7 @@
             <div class="col-md-12" onchange="submitDeduction(this);">
                 <input asp-for="indexDeductions[x].IndexDeductionId" type="hidden" />
                 <div class="col-md-2" style="width: 250px;">
-                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2" >
+                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2">
                         <option value=""> - Select Deduction - </option>
                     </select>
                 </div>
@@ -221,7 +220,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control deduction_amount"  />
+                        <input class="form-control deduction_amount" />
                     </div>
                 </div>
             </div>
@@ -269,32 +268,32 @@
             $.getJSON('@Url.Action("GetOrs", "IndexOfPayment")?cid=' + cid, function (data) {
                 //console.log(data);
                 $.each(data, function (i, item) {
-                    $("select#ObligationId").append(`<option value="${item.id}">${item.orsno}</option>`);
+                    $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
                 });
             });
         });
+    });
+
+    $(function () {
+        $('input[name="date"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
         });
 
-     $(function () {
-            $('input[name="date"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-            $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                var data = {
-                    date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-                };
-            });
-
-            $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
-                $(this).val('');
-            });
+        $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
 
 
-            $("select#editAllotmentClass").change(function () {
+        $("select#editAllotmentClass").change(function () {
             var cid = $(this).val();
             $("select#ObligationId").empty();
 
@@ -302,14 +301,14 @@
             $.getJSON('@Url.Action("GetOrs", "IndexOfPayment")?cid=' + cid, function (data) {
                 //console.log(data);
                 $.each(data, function (i, item) {
-                    $("select#ObligationId").append(`<option value="${item.id}">${item.orsno}</option>`);
+                    $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
                 });
             });
 
         });
 
 
-        });
+    });
 
     var CategoryId;
 
@@ -542,13 +541,17 @@
     $(function () {
         $("#ddlfundsource").change(function () {
             if ($(this).val() != 1) {
-                $("#fundSource").show();
                 $("#allotmentClass_type").hide();
                 $("#obligation").hide();
             } else {
-                $("#fundSource").hide();
                 $("#allotmentClass_type").show();
                 $("#obligation").show();
+            }
+            if ($(this).val() <= 1 ) {
+                $("#orsId").attr('disabled', true);
+            }
+            else{
+                $("#orsId").attr('disabled', false);
             }
         });
     });

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using fmis.Models.UserModels;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace fmis.Data
 {
@@ -80,6 +81,7 @@ namespace fmis.Data
         public DbSet<IndexDeduction> IndexDeduction { get; set; }
         public DbSet<BillNumber> BillNumber { get; set; }
         public DbSet<SubNegative> SubNegative { get; set; }
+        public DbSet<IndexFundSource> IndexFundSource { get; set; }
 
 
 
@@ -123,8 +125,8 @@ namespace fmis.Data
                                                        new RespoCenter { RespoId = 3, Respo = "RD/ARD", RespoCode = "13-001-03-0007-2022-003", RespoHead = "GUY R. PEREZ, MD, RPT, FPSMS, MBAHA, CESE", RespoHeadPosition = "DIRECTOR III" },
                                                        new RespoCenter { RespoId = 4, Respo = "RLED", RespoCode = "13-001-03-0007-2022-004", RespoHead = "SOPHIA M. MANCAO, MD, DPSP", RespoHeadPosition = "CHIEF - Regulation of Regional Health Facilities and Services" });
 
-            modelBuilder.Entity<FundSource>().HasData(new FundSource { FundSourceId = 51, FundSourceTitle = "CANCELLED", RespoId = 1, PrexcId = 1, AllotmentClassId = 1, 
-                                                                       AppropriationId =1, FundId =1, Beginning_balance = (decimal)0.00, Remaining_balance = (decimal)0.00, obligated_amount = (decimal)0.00, utilized_amount = (decimal)0.00, realignment_amount = (decimal)0.00, IsAddToNextAllotment = false, Original = false, Breakdown = false});
+            modelBuilder.Entity<FundSource>().HasData(new FundSource { FundSourceId = 51, FundSourceTitle = "CANCELLED", RespoId = 1, PrexcId = 1, AllotmentClassId = 1,
+                AppropriationId = 1, FundId = 1, Beginning_balance = (decimal)0.00, Remaining_balance = (decimal)0.00, obligated_amount = (decimal)0.00, utilized_amount = (decimal)0.00, realignment_amount = (decimal)0.00, IsAddToNextAllotment = false, Original = false, Breakdown = false });
             modelBuilder.Entity<SubAllotment>().HasData(new SubAllotment
             {
                 SubAllotmentId = 138,
@@ -143,6 +145,16 @@ namespace fmis.Data
                 Original = false,
                 Breakdown = false
             });
+
+            modelBuilder.Entity<IndexFundSource>().HasData(
+                    new IndexFundSource { Id = 1, Title = "Regular Agency Fund"},
+                    new IndexFundSource { Id = 2, Title = "Foreign Assisted Project Fund" },
+                    new IndexFundSource { Id = 3, Title = "Special Accounts - Locally Funded" },
+                    new IndexFundSource { Id = 4, Title = "Special Accounts - Foreign Assisted/Grants" },
+                    new IndexFundSource { Id = 5, Title = "Internally Generated Income" },
+                    new IndexFundSource { Id = 6, Title = "Business Type Income" },
+                    new IndexFundSource { Id = 7, Title = "Trust Fund" }           
+            );
         }
 
 
