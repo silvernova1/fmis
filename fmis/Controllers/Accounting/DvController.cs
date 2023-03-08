@@ -121,7 +121,9 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
             dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
-            
+            dv.PayeeDesc = _MyDbContext.Payee.FirstOrDefault(x=>x.PayeeId == dv.PayeeId).PayeeDescription;
+
+
             if (ModelState.IsValid)
             {
                 dv.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0)

@@ -816,7 +816,7 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(deductionsRow, 17).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 17).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 17).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 17).Value = totalDeduction;
+                    ws.Cell(deductionsRow, 17).Value = totalnet;
                     ws.Cell(deductionsRow, 17).Style.Fill.BackgroundColor = XLColor.LightGray;
                     ws.Cell(deductionsRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
