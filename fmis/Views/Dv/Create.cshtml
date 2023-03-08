@@ -248,13 +248,7 @@
             var cid = $(this).val();
             //alert(cid);
             $("select#PayeeId").empty();
-
-            //live
-            //$.getJSON(`dummy/Dv/GetPayee?cid=${cid}`, function (data) {
-
-            //local
-            //$.getJSON(`/Dv/GetPayee?cid=${cid}`, function (data) {
-            $.getJSON(`dummy/Dv/GetPayee?cid=${cid}`, function (data) {
+            $.getJSON(`/Dv/GetPayee?cid=${cid}`, function (data) {
                 //console.log(data);
                 $.each(data, function (i, item) {
                     $("select#PayeeId").append(`<option value="${item.id}">${item.name}</option>`);
