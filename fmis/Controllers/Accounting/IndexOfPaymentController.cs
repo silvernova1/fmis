@@ -457,8 +457,6 @@ namespace fmis.Controllers.Accounting
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
 
-
-
             _MyDbContext.Update(indexes);
             //await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();

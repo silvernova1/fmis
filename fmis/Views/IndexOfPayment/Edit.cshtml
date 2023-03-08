@@ -88,6 +88,12 @@
                     </select>
                 </div>
             }
+            else
+            {
+                    <div class="col-md-3 2 box 3 box 4 box 5 box 6 box 7 box">
+                        @Html.TextAreaFor(m => m.orsNo, new { @class = "form-control", @style = "resize: none; overflow: auto; height:35px", @id = "orsId"})
+                    </div>
+            }
             @if (Model.ObligationId != null)
             {
                 <div class="col-md-3">
@@ -105,14 +111,7 @@
             }
         </div>
 
-        <div class="col-md-12">
-            <div class="col-md-3">
-                    <label> ORS:</label>
-                  @*<textarea asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />*@
-                @Html.TextAreaFor(m => m.orsNo, new { @class = "form-control", @style = "resize: none; overflow: auto; height:35px", @id = "orsId"})
-                @*<input type="text" asp-for="orsNo" class="form-control" value="@Model.orsNo" id="orsId">*@
-            </div>
-        </div>
+        
         <br />
         <div class="col-md-12" style="margin-top: 15px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
@@ -204,7 +203,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" />
+                        <input asp-for="indexDeductions[x].Amount" class="form-control deduction_amount" placeholder="0.00" />
                     </div>
                 </div>
             </div>
@@ -220,7 +219,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control deduction_amount" />
+                        <input class="form-control deduction_amount" placeholder="0.00" />
                     </div>
                 </div>
             </div>
@@ -258,6 +257,21 @@
 </div>
 
 <script>
+
+    $(document).ready(function () {
+        $("select#ddlfundsource").change(function () {
+            $(this).find("option:selected").each(function () {
+                var optionValue = $(this).attr("value");
+                if (optionValue) {
+                    $(".box").not("." + optionValue).hide();
+                    $("." + optionValue).show();
+                } else {
+                    $(".box").hide();
+                }
+            });
+        }).change();
+    });
+
     //cascade dropdownlist for allotment class
     $(function () {
         $("select#allotmentClass_type").change(function () {
@@ -547,12 +561,12 @@
                 $("#allotmentClass_type").show();
                 $("#obligation").show();
             }
-            if ($(this).val() <= 1 ) {
-                $("#orsId").attr('disabled', true);
-            }
-            else{
-                $("#orsId").attr('disabled', false);
-            }
+           // if ($(this).val() <= 1 ) {
+           //     $("#orsId").attr('disabled', true);
+           // }
+           // else{
+           //     $("#orsId").attr('disabled', false);
+            //}
         });
     });
 
