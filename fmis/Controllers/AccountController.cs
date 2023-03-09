@@ -115,10 +115,27 @@ namespace fmis.Controllers
         #endregion*/
 
         [HttpGet]
+        public IActionResult Index()
+        {
+
+            ViewBag.filter = new FilterSidebar("user_main", "users", "");
+            ViewBag.layout = "_Layout";
+            return View(_context.FmisUsers.ToList());
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+
+            ViewBag.filter = new FilterSidebar("user_main", "new_user", "");
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult CreateUser()
         {
 
-            ViewBag.filter = new FilterSidebar("user_main", "user_sub");
+            ViewBag.filter = new FilterSidebar("user_main", "new_user", "");
             ViewBag.layout = "_Layout";
             return View("~/Views/Account/CreateUser.cshtml");
         }
@@ -127,13 +144,47 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task <IActionResult> Create(FmisUser fmisUser)
         {
+
             fmisUser.Password = _userService.HashPassword(fmisUser, fmisUser.Password);
             _context.Add(fmisUser);
             _context.SaveChanges();
             await Task.Delay(500);
             ViewBag.filter = new FilterSidebar("user_main", "user_sub");
             ViewBag.layout = "_Layout";
-            return View("~/Views/Account/CreateUser.cshtml");
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await _context.FmisUsers.FindAsync(id);
+            if(user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(FmisUser user)
+        {
+            user.Password = _userService.HashPassword(user, user?.Password);
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user = await _context.FmisUsers.FirstOrDefaultAsync(x=>x.Id == id);
+            _context.Remove(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
 
@@ -239,7 +290,7 @@ namespace fmis.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),                
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Email, user.Email),
+                /*new Claim(ClaimTypes.Email, user.Email),*/
                 new Claim("YearlyRef", user.Year),
                 new Claim("YearlyRefId", user.YearId.ToString())
             };

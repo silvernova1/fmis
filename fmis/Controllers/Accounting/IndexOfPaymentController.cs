@@ -10,7 +10,6 @@ using fmis.Models;
 using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
-
 using fmis.Data.Accounting;
 using Microsoft.AspNetCore.Authorization;
 using ClosedXML.Excel;
@@ -27,10 +26,12 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.RegularExpressions;
 using fmis.Models.silver;
 using DocumentFormat.OpenXml.InkML;
+using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "AccountingAdmin")]
+    //[Authorize(Policy = "AccountingAdmin")]
+    [Authorize]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -174,10 +175,13 @@ namespace fmis.Controllers.Accounting
 
             if (ModelState.IsValid)
             {
+                var currentUser = User.FindFirst(ClaimTypes.Name).Value;
                 PopulateDvDropDownList();
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
-                _MyDbContext.Add(indexOfPayment);
+                indexOfPayment.CreatedBy = currentUser;
 
+
+                _MyDbContext.Add(indexOfPayment);
                 await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -568,7 +572,7 @@ namespace fmis.Controllers.Accounting
                 var currentRow = 2;
                 var deductRow = 1;
                 var currentColumn = 15;
-                var deductColumn = 15;
+                var deductColumn = 18;
 
                 var indexData = _MyDbContext.Indexofpayment
                                             .Include(x => x.Category)
@@ -669,6 +673,24 @@ namespace fmis.Controllers.Accounting
                 ws.Cell("N1").Style.Font.SetBold();
                 ws.Cell("N1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
+                ws.Cell("O1").Style.Font.FontSize = 10;
+                ws.Cell("O1").Style.Font.FontName = "Calibri Light";
+                ws.Cell("O1").Value = "Gross Amount";
+                ws.Cell("O1").Style.Font.SetBold();
+                ws.Cell("O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                ws.Cell("P1").Style.Font.FontSize = 10;
+                ws.Cell("P1").Style.Font.FontName = "Calibri Light";
+                ws.Cell("P1").Value = "Total Deductions";
+                ws.Cell("P1").Style.Font.SetBold();
+                ws.Cell("P1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                ws.Cell("Q1").Style.Font.FontSize = 10;
+                ws.Cell("Q1").Style.Font.FontName = "Calibri Light";
+                ws.Cell("Q1").Value = "Net Amount";
+                ws.Cell("Q1").Style.Font.SetBold();
+                ws.Cell("Q1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
 
                 foreach (var deductions in _MyDbContext.Deduction)
                 {
@@ -757,6 +779,21 @@ namespace fmis.Controllers.Accounting
                         ws.Cell(deductionsRow, 14).Value = deduct_item.AccountNumber;
                         ws.Cell(deductionsRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
+                        ws.Cell(deductionsRow, 15).Style.Font.FontSize = 10;
+                        ws.Cell(deductionsRow, 15).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(deductionsRow, 15).Value = deduct_item.GrossAmount;
+                        ws.Cell(deductionsRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        ws.Cell(deductionsRow, 16).Style.Font.FontSize = 10;
+                        ws.Cell(deductionsRow, 16).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(deductionsRow, 16).Value = deduct_item.TotalDeduction;
+                        ws.Cell(deductionsRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        ws.Cell(deductionsRow, 17).Style.Font.FontSize = 10;
+                        ws.Cell(deductionsRow, 17).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(deductionsRow, 17).Value = deduct_item.NetAmount;
+                        ws.Cell(deductionsRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
 
                         foreach (var deduct_amount in deduct_item.indexDeductions.GroupBy(x=>x.DeductionId))
                         {
@@ -775,19 +812,19 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(deductionsRow, 15).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 15).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 15).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 15).Value = "GROSS";
+                    ws.Cell(deductionsRow, 15).Value = "TOTAL GROSS AMOUNT";
                     ws.Cell(deductionsRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     ws.Cell(deductionsRow, 16).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 16).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 16).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 16).Value = "SUB-TOTAL";
+                    ws.Cell(deductionsRow, 16).Value = "TOTAL DEDUCTIONS";
                     ws.Cell(deductionsRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     ws.Cell(deductionsRow, 17).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 17).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 17).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 17).Value = "DEDUCTION";
+                    ws.Cell(deductionsRow, 17).Value = "NET AMOUNT";
                     ws.Cell(deductionsRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     deductionsRow++;
