@@ -13,7 +13,7 @@ using System;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "AccountingAdmin")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class AssigneeController : Controller
     {
 
