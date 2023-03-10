@@ -50,6 +50,9 @@
                             Username
                         </th>
                         <th>
+                            Role
+                        </th>
+                        <th>
                             Action
                         </th>
                     </tr>
@@ -57,11 +60,25 @@
                 <tbody>
                     @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
                     {
+                        
                         @foreach (var item in Model.Where(x => x.Role == "accounting_admin" || x.Role == "accounting_user"))
                         {
+                            var admin = "Admin";
+                            var user = "User";
                             <tr>
                                 <td>
                                     @item.Username
+                                </td>
+                                <td>
+                                    @if (item.Role == "accounting_admin")
+                                    {
+                                        @admin;
+                                    }
+                                    else
+                                    {
+                                        @user;
+                                    }
+                                    
                                 </td>
                                 <td>
                                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.Id" data-bs-toggle="tooltip" title="Edit">
@@ -76,11 +93,24 @@
                     }
                     @if (User.FindFirstValue(ClaimTypes.Role) == "budget_admin")
                     {
+                        var admin = "Admin";
+                        var user = "User";
                         @foreach (var item in Model.Where(x => x.Role == "budget_admin" || x.Role == "budget_user"))
                         {
                             <tr>
                                 <td>
                                     @item.Username
+                                </td>
+                                <td>
+                                    @if (item.Role == "accounting_admin")
+                                    {
+                                        @admin;
+                                    }
+                                    else
+                                    {
+                                        @user;
+                                    }
+
                                 </td>
                                 <td>
                                     <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.Id" data-bs-toggle="tooltip" title="Edit">
