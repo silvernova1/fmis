@@ -30,8 +30,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    //[Authorize(Policy = "AccountingAdmin")]
-    [Authorize]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
