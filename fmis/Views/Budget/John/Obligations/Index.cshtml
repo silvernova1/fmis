@@ -208,8 +208,8 @@
     var SOURCE_TYPE = "";
     var CHECK_AFTER_ROW = false; //goods
     var CHECK_FIRST_ROW = false;
-    @*var CHECK_FIRST_ROW1 = false;*@
-        var AMOUNT = 0;
+    //var CHECK_FIRST_ROW1 = false;
+    var AMOUNT = 0;
     var INSUFFICIENT_AMOUNT1 = false;
     var TRAP_LOAD = 0;
     var TRAP_LOAD2 = false;
@@ -283,9 +283,9 @@
             this.Id, //11
             this.obligation_token, //12
         ];
-        @*     if (!this.Ors_no && data[counter-1][8]) {
-            last_ors_handler = data[counter - 1][8];
-            }*@
+        //     if (!this.Ors_no && data[counter-1][8]) {
+          //  last_ors_handler = data[counter - 1][8];
+            //}
             $.each(this.ObligationAmounts, function () {
                 data[counter].push(this.obligation_amount_token);
                 data[counter].push(this.Expense_code);
@@ -334,7 +334,9 @@
         height: '800px',
         fixedColumnsLeft: 6,
         manualRowResize: true,
+        manualColumnResize: true,
         wordWrap: false,
+        collaborate: true,
         afterGetColHeader: addInput,
         beforeOnCellMouseDown(event, coords) {
             // Deselect the column after clicking on input.
@@ -1226,20 +1228,20 @@
                         );
                     }
                 });
-                @* console.log(ajax_data);
+                /* console.log(ajax_data);
                     if (checkDuplicateOrs(ajax_data[0].Ors_no) && get_col == 8) {
                     Lobibox.alert("error", {
                     msg: "DUPLICATE ORS NUMBER!!!",
                     sound: false,
                     });
                     }
-                    else {*@
+                    else {*/
                     console.log(ajax_data);
                 ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")').then(data => {
                     console.log(ajax_data);
                     console.log(data);
                 });
-                @* }*@
+             /*    }*/
                     CHECK_FIRST_ROW = false;
             }
         },

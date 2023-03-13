@@ -10,18 +10,22 @@ using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Microsoft.AspNet.SignalR;
 
 namespace fmis.Controllers.Accounting
 {
+
     [Authorize(Roles = "accounting_admin , accounting_user")]
     public class AssigneeController : Controller
     {
 
         private readonly MyDbContext _MyDbContext;
+       
 
         public AssigneeController(MyDbContext MyDbContext)
         {
             _MyDbContext = MyDbContext;
+         
         }
 
         public async Task<IActionResult> Index()
@@ -29,6 +33,14 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "assignee", "");
             return View(await _MyDbContext.Assignee.ToListAsync());
         }
+
+        [HttpGet]
+        public IActionResult GetAssignee()
+        {
+            var res = _MyDbContext.Assignee.ToList();
+            return Ok(res);
+        }
+
 
         public IActionResult Create()
         {
