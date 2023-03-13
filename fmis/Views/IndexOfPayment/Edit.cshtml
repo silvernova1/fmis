@@ -85,18 +85,7 @@
                     <option value="3">  CO  </option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <div class="form-group" id="obligation">
-                    @*<select asp-for="ObligationId" class="form-control select2"></select>*@
-                    <select asp-for="ObligationId" class="form-control select2">
-                        @{
-                            <option value="@Model.IndexOfPaymentId">
-                                @Model.orsNo
-                            </option>
-                        }
-                    </select>
-                </div>
-            </div>
+
         </div>
         <div class="col-md-12" style="margin-top: 10px;">
             <div class="col-md-3" id="fundSource" style="display: none">

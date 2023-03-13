@@ -28,7 +28,7 @@
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
                     <h5>Fund Cluster: </h5>
-                    <select class="form-control" asp-for="FundClusterId" asp-items="ViewBag.FundClusterId">
+                    <select class="form-control" asp-for="FundClusterId" id="fundCluster" asp-items="ViewBag.FundClusterId">
                         <option value="">- FundCluster</option>
                     </select>
                     @*@Html.DropDownList("FundClusterId", ViewBag.FundClusterId, " - FundCluster - ", htmlAttributes: new { @class = "form-control", @id = "fundCluster", @required = "required" })*@
@@ -375,6 +375,7 @@
     document.getElementById("textarea").value = "To payment of";
 
     function submiBtnClick() {
+
         var fundCluster = document.getElementById("fundCluster").value;
         var dvDate = document.getElementById("dvDate").value;
         var dvType = document.getElementById("dv_type").value;
