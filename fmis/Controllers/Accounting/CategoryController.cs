@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "AccountingAdmin")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class CategoryController : Controller
     {
         private readonly MyDbContext _MyDbContext;

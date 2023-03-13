@@ -30,11 +30,11 @@
                 <input asp-for="Password" class="form-control" value="" required/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" value=""  type="email" required/>
                 <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="Role" class="control-label"></label>
                 <input type="hidden" asp-for="Role" id="role"   />

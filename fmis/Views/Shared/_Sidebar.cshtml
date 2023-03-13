@@ -554,7 +554,11 @@
 
                     <ul class="submenu">
                         <li class="@if (ViewBag.filter.sub == "user_sub")
-                @Html.Raw("active")">
+                            @Html.Raw("active")">
+                            <a asp-controller="Account" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                All User(s)
+                            </a>
                             <a asp-controller="Account" asp-action="CreateUser">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 Create User
@@ -733,15 +737,23 @@
                     <b class="arrow"></b>
 
                     <ul class="submenu">
-                        <li class="@if (ViewBag.filter.sub == "user_sub")
-                @Html.Raw("active")">
+                        <li class="@if (ViewBag.filter.sub == "users")
+                            @Html.Raw("active")">
+                            <a asp-controller="Account" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                All User(s)
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        @*<li class="@if (ViewBag.filter.sub == "new_user")
+                            @Html.Raw("active")">
                             <a asp-controller="Account" asp-action="CreateUser">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 Create User
                             </a>
 
                             <b class="arrow"></b>
-                        </li>
+                        </li>*@
                     </ul>
                 </li>
             }
