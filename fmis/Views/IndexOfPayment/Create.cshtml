@@ -80,7 +80,7 @@
                     <option value="7"> Trust Fund </option>
                 </select>
             </div>
-            <div class="col-md-3">
+          @*  <div class="col-md-3">
                 <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
                     <option value="0"> - Select Allotment Class - </option>
                     <option value="1">  PS  </option>
@@ -93,15 +93,14 @@
                     <select asp-for="ObligationId" class="form-control select2"></select>
                     <option value="orsNo"></option>
                 </div>
-            </div>
-        </div>
-         <div class="col-md-12" style="margin-top: 10px;">
-            <div class="col-md-3" id="fundSource" style="display: none">
+            </div>*@
+             <div class="col-md-3" id="fundSource" @* style="display: none"*@>
                     <div class="form-group">
                     <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
                     </div>
             </div>
-         </div>
+        </div>
+    
         <div class="col-md-12">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
@@ -735,7 +734,7 @@
 
     $(function () {
         $("#ddlfundsource").change(function () {
-            if ($(this).val() != 1) {
+            if ($(this).val() != 0) {
                 $("#fundSource").show();
                 $("#allotmentClass_type").hide();
                 $("#obligation").hide();

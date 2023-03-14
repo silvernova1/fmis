@@ -67,7 +67,7 @@
          <div class="col-md-12">
              <div class="col-md-3">
                 <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
-                    <option value="z"> - Select Fund Source - </option>
+                    <option value="0"> - Select Fund Source - </option>
                     <option value="1"> Regular Agency Fund  </option>
                     <option value="2"> Foreign Assisted Project Fund </option>
                     <option value="3"> Special Accounts - Locally Funded  </option>
@@ -77,25 +77,25 @@
                     <option value="7"> Trust Fund </option>
                 </select>
             </div>
-            <div class="col-md-3">
+         @*   <div class="col-md-3">
                 <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
                     <option value="0"> - Select Allotment Class - </option>
                     <option value="1">  PS  </option>
                     <option value="2">  MOOE </option>
                     <option value="3">  CO  </option>
                 </select>
-            </div>
+            </div>*@
+            <div class="col-md-3" id="fundSource" >
+                <div class="form-group">
+                    @*  <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />*@
 
+                    <input type="text" asp-for="orsNo" class="form-control"  required>
+
+                </div>
+            </div>
         </div>
         <div class="col-md-12" style="margin-top: 10px;">
-            <div class="col-md-3" id="fundSource" style="display: none">
-                    <div class="form-group">
-                  @*  <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />*@
-
-                    <input type="text" asp-for="orsNo" class="form-control" value="@Model.orsNo" required>
-
-                    </div>
-            </div>
+            
          </div>
         <br />
         <div class="col-md-12" style="margin-top: 15px;">

@@ -328,15 +328,12 @@ namespace fmis.Controllers.Accounting
             return cell;
         }
 
-           public IActionResult PrintDv(string[] token, int id)
+        [Route("PrintDv")]
+        public IActionResult PrintDv(string[] token, int id)
         {
-
-
-          
             using (MemoryStream stream = new System.IO.MemoryStream())
                 {
                 
-
                     string ExportData = "This is pdf generated";
                     StringReader reader = new StringReader(ExportData);
                     Document doc = new iTextSharp.text.Document(PageSize.A4);
