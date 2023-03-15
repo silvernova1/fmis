@@ -700,30 +700,28 @@
             </li>
 
 
-            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "accounting_user" || User.FindFirstValue(ClaimTypes.Role) == "user")
-            {
-                <li class="@if (ViewBag.filter.main == "end_user")
-                @Html.Raw("active open")">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-user"></i>
-                    <span class="menu-text"> END USER </span>
 
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-                    <li class="@if (ViewBag.filter.sub == "DV")
-                @Html.Raw("active")">
-                        <a asp-area="" asp-controller="DV" asp-action="Index">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Disbursement Voucher
-                        </a>
+                @*<li class="@if (ViewBag.filter.main == "end_user")
+                    @Html.Raw("active open")">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-user"></i>
+                        <span class="menu-text"> END USER </span>
 
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-            }
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <b class="arrow"></b>
+                    <ul class="submenu">
+                        <li class="@if (ViewBag.filter.sub == "DV")
+                    @Html.Raw("active")">
+                            <a asp-area="" asp-controller="DV" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                Disbursement Voucher
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
+                </li>*@
             
 
             @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
@@ -760,6 +758,33 @@
                     </ul>
                 </li>*@
             }
+        }
+
+        @if(User.FindFirstValue(ClaimTypes.Role) == "user" || User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "accounting_user")
+        {
+            <li class="@if (ViewBag.filter.main == "end_user")
+                    @Html.Raw("active open")
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-user"></i>
+                    <span class="menu-text"> END USER </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub == "DV")
+                    @Html.Raw("active")
+">
+                        <a asp-area="" asp-controller="DV" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Disbursement Voucher
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
         }
 
 
