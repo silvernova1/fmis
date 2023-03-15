@@ -35,7 +35,7 @@
                 <input asp-for="Email" class="form-control" value=""  type="email" required/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>*@
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Role" class="control-label"></label>
                 <input type="hidden" asp-for="Role" id="role"   />
             <select class="form-control" id="dropdown"  >
@@ -51,7 +51,7 @@
                 <option value="accounting_user">Accounting (User)</option>
                 }
             </select>
-            </div>
+            </div>*@
             <div class="btn-group">
                 <input type="submit" value="Create"  class="btn btn-success btn-sm" id="submitBtn" onclick="ResetValues()" />
             </div>

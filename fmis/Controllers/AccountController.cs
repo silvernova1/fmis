@@ -201,16 +201,10 @@ namespace fmis.Controllers
             {
                 switch (User.FindFirstValue(ClaimTypes.Role))
                 {
-                    case "budget_admin":
-                        return RedirectToAction("Dashboard", "Home");
-                    case "budget_user":
-                        return RedirectToAction("Dashboard", "Home");
-                    case "accounting_admin":
-                        return RedirectToAction("Dashboard", "Home");
-                    case "accounting_user":
+                    case "admin":
                         return RedirectToAction("Dashboard", "Home");
                     default:
-                        return NotFound();
+                        return RedirectToAction("Index", "Dv");
                 }
             }
         }
@@ -228,7 +222,18 @@ namespace fmis.Controllers
                     user.Year = (await _context.Yearly_reference.FirstOrDefaultAsync(x => x.YearlyReferenceId == model.Year))?.YearlyReference;
                     user.YearId = model.Year;
                     await LoginAsync(user, model.RememberMe);
-                    switch (user.Role)
+
+                    
+                    if (user.Username == "1731")
+                    {
+                        return RedirectToAction("Dashboard", "Home");
+                    }                      
+                    else
+                    {
+                        return RedirectToAction("Index", "Dv");
+                    }
+                        
+                    /*switch (user.Role)
                     {
                         case "budget_admin":
                             return RedirectToAction("Dashboard", "Home");
@@ -240,7 +245,11 @@ namespace fmis.Controllers
                             return RedirectToAction("Dashboard", "Home");
                         default:
                             return NotFound();
-                    }
+                    }*/
+                }
+                else
+                {
+                    ModelState.AddModelError("Username", "Username or Password is Incorrect");
                 }
 
             }
@@ -287,9 +296,12 @@ namespace fmis.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),                
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"admin" : user.Username),
+                new Claim(ClaimTypes.GivenName, user.Fname),
+                new Claim(ClaimTypes.Surname, user.Lname),
+                //new Claim(ClaimTypes.Role, user.Role),
                 /*new Claim(ClaimTypes.Email, user.Email),*/
                 new Claim("YearlyRef", user.Year),
                 new Claim("YearlyRefId", user.YearId.ToString())

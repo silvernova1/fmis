@@ -15,13 +15,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
 namespace fmis.Controllers
 {
 
-    [Authorize]
+    //[Authorize]
+    //[Authorize(Policy = "Job Order")]
+    [Authorize(Policy = "Administrator")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -49,6 +52,8 @@ namespace fmis.Controllers
 
         public IActionResult Dashboard(string date_from, string date_to, FundSource fundSource, int name, int id)
         {
+            Console.WriteLine("user " + User.FindFirstValue(ClaimTypes.Name));
+
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");
             ViewBag.layout = "_Layout";
