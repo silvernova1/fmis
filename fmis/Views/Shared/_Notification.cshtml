@@ -58,7 +58,7 @@
                 <img class="nav-user-photo" src="~/assets/images/doh.png" alt="Jason's Photo" />
                 <span class="user-info">
                     <small>Welcome,</small>
-                    @User.FindFirstValue(ClaimTypes.Name)
+                    @User.FindFirstValue(ClaimTypes.GivenName) @User.FindFirstValue(ClaimTypes.Surname)
                 </span>
 
                 <i class="ace-icon fa fa-caret-down"></i>
@@ -86,7 +86,7 @@
                         <button type="submit" style="width:auto;"
                                 class="nav-link btn btn-link py-0">
                             <i class="ace-icon fa fa-sign-out"></i>
-                            Logout @User.FindFirstValue(ClaimTypes.Name)
+                            Logout @User.FindFirstValue(ClaimTypes.GivenName) @User.FindFirstValue(ClaimTypes.Surname)
                         </button>
                     </form>
                 </li>

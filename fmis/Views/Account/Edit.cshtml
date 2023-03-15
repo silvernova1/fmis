@@ -19,7 +19,7 @@
                 <input asp-for="Password" value="" class="form-control" required/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Role" class="control-label"></label>
                 <select class="form-control" asp-for="Role" id="dropdown">
                     <option value=""> Select User Role</option>
@@ -34,7 +34,7 @@
                         <option value="accounting_user">Accounting (User)</option>
                     }
                 </select>
-            </div>
+            </div>*@
             <div class="form-group pull-right">
                 <input type="submit" value="Save" class="btn btn-success btn-xs" /> <a class="btn btn-default btn-xs" asp-action="Index">Back to List</a>
             </div>

@@ -46,6 +46,7 @@ namespace fmis.Models.Accounting
         public Assignee Assignee { get; set; }
 
         public string DvType { get; set; }
+        public string UserId { get; set; }
 
 
     }

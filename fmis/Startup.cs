@@ -58,8 +58,17 @@ namespace fmis
             services.AddTransient<IUserService, UserService>();
 
             #region CONTEXTS
-            services.AddDbContext<fmisContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));
+
+            services.AddDbContext<fmisContext>(
+                options=>
+                {
+                    options.UseMySql(Configuration.GetConnectionString("UserConnection"),
+                        Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql"));
+                
+                });
+
+            /*services.AddDbContext<fmisContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("fmisContext")));*/
             services.AddDbContext<DesignationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DesignationContext")));
             services.AddDbContext<DivisionContext>(options =>
@@ -188,13 +197,22 @@ namespace fmis
                 options.ExpireTimeSpan = TimeSpan.FromHours(5);
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
             });
+            /*services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrator", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "admin"));
+                options.AddPolicy("Job Order", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Job Order"));
+                options.AddPolicy("Permanent", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Permanent"));
+            });*/
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("BudgetAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_admin"));
+                options.AddPolicy("Job Order", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Job Order"));
+                options.AddPolicy("Permanent", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Permanent"));
+
                 options.AddPolicy("BudgetUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_user"));
                 options.AddPolicy("AccountingAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("AccountingUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_user"));
-
+                options.AddPolicy("Administrator", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "admin"));
             });
             services.Configure<CookiePolicyOptions>(options =>
             {
