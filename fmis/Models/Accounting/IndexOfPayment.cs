@@ -49,6 +49,7 @@ namespace fmis.Models.Accounting
         public int? DvId { get; set; }
         [JsonIgnore]
         public Dv Dv { get; set; }
+        public string UserId { get; set; }
         //public IEnumerable<SelectListItem> DvList { get; set; }
 
         /*public int IndexFundSourceId { get; set; }

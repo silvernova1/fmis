@@ -14,8 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Accounting
 {
-    //[Authorize(Roles = "accounting_admin , accounting_user")]
-    [Authorize(Policy = "Administrator")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class FundClusterController : Controller
     {
         private readonly MyDbContext _MyDbContext;

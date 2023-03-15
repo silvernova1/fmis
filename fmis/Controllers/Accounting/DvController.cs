@@ -35,7 +35,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "admin , Job Order")]
+    [Authorize(Roles = "accounting_admin, accounting_user")]
     //[Authorize(Policy = "Administrator")]
     public class DvController : Controller
     {
@@ -57,7 +57,6 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.Assignee)
                 .Include(x => x.Payee)
                 .Include(x => x.dvDeductions).ThenInclude(x=>x.Deduction)
-                .Where(x=>x.UserId == UserId)
                 .AsNoTracking()
                 .ToListAsync();
 

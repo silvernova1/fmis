@@ -30,8 +30,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    //[Authorize(Roles = "accounting_admin , accounting_user")]
-    [Authorize(Policy = "Administrator")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -63,6 +62,8 @@ namespace fmis.Controllers.Accounting
                                 .ThenInclude(x => x.Deduction)
                             .Include(x => x.BillNumbers)
                             select c;
+
+            ViewBag.UserId = UserId;
 
             bool check = indexData.Any(a => a == null);
 
@@ -178,7 +179,8 @@ namespace fmis.Controllers.Accounting
                 var currentUser = User.FindFirst(ClaimTypes.Name).Value;
                 PopulateDvDropDownList();
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
-                indexOfPayment.CreatedBy = currentUser;
+                indexOfPayment.CreatedBy = FName + " " + LName;
+                indexOfPayment.UserId = UserId;
 
 
                 _MyDbContext.Add(indexOfPayment);
@@ -560,7 +562,11 @@ namespace fmis.Controllers.Accounting
             ViewBag.AllotmentClassType = new SelectList(Query, "IndexOfPaymentId", "allotmentClassType", selected);
         }
 
-
+        #region COOKIES
+        public string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string FName => User.FindFirstValue(ClaimTypes.GivenName);
+        public string LName => User.FindFirstValue(ClaimTypes.Surname);
+        #endregion
 
         public IActionResult Export(string searchString)
         {
