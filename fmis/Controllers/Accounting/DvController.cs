@@ -338,7 +338,10 @@ namespace fmis.Controllers.Accounting
         }
 
            public IActionResult PrintDv(string[] token, int id)
-           {
+        {
+
+
+          
             using (MemoryStream stream = new System.IO.MemoryStream())
                 {
                 
@@ -348,9 +351,11 @@ namespace fmis.Controllers.Accounting
                     Document doc = new iTextSharp.text.Document(PageSize.A4);
                     PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                     doc.Open();
+
+          
                     doc.NewPage();
 
-                var fundCluster = (from dv in _MyDbContext.Dv
+                   var fundCluster = (from dv in _MyDbContext.Dv
                                    join fc in _MyDbContext.FundCluster
                                    on dv.FundClusterId equals fc.FundClusterId
 
@@ -380,7 +385,7 @@ namespace fmis.Controllers.Accounting
                                    }).ToList();
 
 
-                Paragraph header_text = new Paragraph("DISBURSEMENT VOUCHER");
+                    Paragraph header_text = new Paragraph("DISBURSEMENT VOUCHER");
 
                     header_text.Font = FontFactory.GetFont("Times New Roman", 10, Font.BOLD, BaseColor.BLACK);
                     header_text.Alignment = Element.ALIGN_CENTER;
@@ -393,12 +398,12 @@ namespace fmis.Controllers.Accounting
                     float[] columnWidths = { 5, 25, 15 };
                     table.SetWidths(columnWidths);
 
-                    Image logo = Image.GetInstance("wwwroot/assets/images/doh.png");
+                    Image logo = Image.GetInstance("wwwroot/assets/images/doh_logo_updated.png");
                     logo.ScaleAbsolute(60f, 60f);
                     PdfPCell logo_cell = new PdfPCell(logo);
                     logo_cell.DisableBorderSide(8);
 
-                    logo_cell.Padding = 10f;
+                    logo_cell.Padding = 11f;
                     table.AddCell(logo_cell);
 
 
@@ -413,12 +418,36 @@ namespace fmis.Controllers.Accounting
                     var table2 = new PdfPTable(1);
                     table2.DefaultCell.Border = 0;
 
-                    table2.AddCell(new PdfPCell(new Paragraph(" __________________________________", arial_font_10)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table2.AddCell(new PdfPCell(new Paragraph("Entity Name", arial_font_11)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table2.AddCell(new PdfPCell(new Paragraph("DISBURSEMENT VOUCHER", arial_font_12)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    FontFactory.Register("C:\\Windows\\Fonts\\timesbd.ttf", "Times New Roman Bold");
+
+                    var times_new_roman_b12 = FontFactory.GetFont("Times New Roman Bold", 12f);
+                    var times_new_roman_b11 = FontFactory.GetFont("Times New Roman Bold", 11f);
+                    var times_new_roman_b10 = FontFactory.GetFont("Times New Roman Bold", 10f);
+                    var times_new_roman_b9 = FontFactory.GetFont("Times New Roman Bold", 9f);
+                    var times_new_roman_b8 = FontFactory.GetFont("Times New Roman Bold", 8f);
 
 
-                    var no_left_bor = new PdfPCell(table2);
+                    FontFactory.Register("C:\\Windows\\Fonts\\times.ttf", "Times New Roman Regular");
+                    var times_new_roman_r12 = FontFactory.GetFont("Times New Roman Regular", 12f);
+                    var times_new_roman_r11 = FontFactory.GetFont("Times New Roman Regular", 11f);
+                    var times_new_roman_r10 = FontFactory.GetFont("Times New Roman Regular", 10f);
+                    var times_new_roman_r9 = FontFactory.GetFont("Times New Roman Regular", 9f);
+                    var times_new_roman_r8 = FontFactory.GetFont("Times New Roman Regular", 8f);
+                    var times_new_roman_r7 = FontFactory.GetFont("Times New Roman Regular", 7f);
+
+
+                   // table2.AddCell(new PdfPCell(new Paragraph(" __________________________________", arial_font_10)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Paragraph("Republic of Philippines", times_new_roman_r9)) { Padding = 2f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Paragraph("Department of Health", times_new_roman_r9)) { Padding = 2f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Paragraph("CENTRAL VISAYAS CENTER FOR HEALTH DEVELOPMENT", times_new_roman_b9)) { Padding = 2f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Paragraph("Osmeña Boulevard, Sambag II, Cebu City, 6000 Philippines", times_new_roman_r8)) { Padding = 2f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Paragraph("Regional Director's Office Tel. No. (032) 253-6335 Fax No. (032) 254-0109", times_new_roman_r8)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table2.AddCell(new PdfPCell(new Phrase("DISBURSEMENT VOUCHER", times_new_roman_b12)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+
+                    //table2.AddCell(new PdfPCell(new Paragraph("Entity Name", arial_font_11)) { Padding = 6f, Border = 0, HorizontalAlignment = Element.ALIGN_CENTER });
+
+
+              var no_left_bor = new PdfPCell(table2);
                     no_left_bor.DisableBorderSide(4);
                     table.AddCell(no_left_bor);
 
@@ -752,10 +781,10 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_row11_width = { 30, 10, 10, 10 };
                     table_row_11.WidthPercentage = 100f;
                     table_row_11.SetWidths(tbt_row11_width);
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 80f });
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 80f });
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 80f });
-                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 80f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 60f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 60f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 60f });
+                    table_row_11.AddCell(new PdfPCell(new Paragraph("", arial_font_9)) { Border = 13, VerticalAlignment = Element.ALIGN_LEFT, FixedHeight = 60f });
                     doc.Add(table_row_11);
 
                     var table_row_13 = new PdfPTable(2);
