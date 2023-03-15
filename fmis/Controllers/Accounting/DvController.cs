@@ -35,7 +35,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin, accounting_user")]
+    [Authorize(Roles = "accounting_admin, user")]
     //[Authorize(Policy = "Administrator")]
     public class DvController : Controller
     {
