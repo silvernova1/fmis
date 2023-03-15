@@ -700,8 +700,9 @@
             </li>
 
 
-
-            <li class="@if (ViewBag.filter.main == "end_user")
+            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin, accounting_user, user")
+            {
+                <li class="@if (ViewBag.filter.main == "end_user")
                 @Html.Raw("active open")">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-user"></i>
@@ -722,8 +723,10 @@
                     </li>
                 </ul>
             </li>
+            }
+            
 
-            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin, user")
+            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
             {
                 @*<li class="@if (ViewBag.filter.main == "user_main")
             @Html.Raw("active open")">
