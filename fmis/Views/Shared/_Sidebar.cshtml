@@ -700,7 +700,7 @@
             </li>
 
 
-            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin, accounting_user, user")
+            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "accounting_user" || User.FindFirstValue(ClaimTypes.Role) == "user")
             {
                 <li class="@if (ViewBag.filter.main == "end_user")
                 @Html.Raw("active open")">
