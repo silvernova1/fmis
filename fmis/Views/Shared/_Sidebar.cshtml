@@ -723,7 +723,7 @@
                 </ul>
             </li>
 
-            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin, user")
             {
                 @*<li class="@if (ViewBag.filter.main == "user_main")
             @Html.Raw("active open")">
