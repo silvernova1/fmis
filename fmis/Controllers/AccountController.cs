@@ -298,11 +298,9 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"admin" : user.Username),
+                new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"admin" : "Job Order"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
-                //new Claim(ClaimTypes.Role, user.Role),
-                /*new Claim(ClaimTypes.Email, user.Email),*/
                 new Claim("YearlyRef", user.Year),
                 new Claim("YearlyRefId", user.YearId.ToString())
             };
