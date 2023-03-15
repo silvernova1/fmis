@@ -58,6 +58,7 @@ namespace fmis
 
             #region CONTEXTS
 
+            //no errors on local
             services.AddDbContext<fmisContext>(
                 options=>
                 {
