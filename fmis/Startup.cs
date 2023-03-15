@@ -170,7 +170,7 @@ namespace fmis
 
 
 
-            services.AddSignalR();
+            //services.AddSignalR();
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -213,13 +213,13 @@ namespace fmis
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("BudgetAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_admin"));
-                options.AddPolicy("Job Order", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Job Order"));
                 options.AddPolicy("Permanent", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Permanent"));
 
                 options.AddPolicy("BudgetUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_user"));
                 options.AddPolicy("AccountingAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("AccountingUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_user"));
                 options.AddPolicy("Administrator", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "admin"));
+                options.AddPolicy("User", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "user"));
             });
             services.Configure<CookiePolicyOptions>(options =>
             {

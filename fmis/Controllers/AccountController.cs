@@ -201,7 +201,7 @@ namespace fmis.Controllers
             {
                 switch (User.FindFirstValue(ClaimTypes.Role))
                 {
-                    case "admin":
+                    case "accounting_admin":
                         return RedirectToAction("Dashboard", "Home");
                     default:
                         return RedirectToAction("Index", "Dv");
@@ -298,7 +298,7 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"admin" : "Job Order"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"accounting_admin" : "accounting_user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
