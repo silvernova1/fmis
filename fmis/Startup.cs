@@ -205,12 +205,6 @@ namespace fmis
                 options.ExpireTimeSpan = TimeSpan.FromHours(5);
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
             });
-            /*services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Administrator", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "admin"));
-                options.AddPolicy("Job Order", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Job Order"));
-                options.AddPolicy("Permanent", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Permanent"));
-            });*/
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("BudgetAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_admin"));
