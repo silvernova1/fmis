@@ -30,7 +30,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin , accounting_user")]
+    [Authorize(Policy = "Accounting")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -232,7 +232,7 @@ namespace fmis.Controllers.Accounting
         {
             var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
 
-            if (UserRole == "accounting_admin")
+            if (Username == "201700272" || Username == "1731")
             {
                 if (data != null)
                 {
@@ -569,6 +569,7 @@ namespace fmis.Controllers.Accounting
 
         #region COOKIES
         public string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string Username => User.FindFirstValue(ClaimTypes.Name);
         public string UserRole => User.FindFirstValue(ClaimTypes.Role);
         public string FName => User.FindFirstValue(ClaimTypes.GivenName);
         public string LName => User.FindFirstValue(ClaimTypes.Surname);
