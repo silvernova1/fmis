@@ -153,7 +153,6 @@ namespace fmis.Controllers.Accounting
 
             var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
 
-
             var dvCtr = "0001";
             var dvNo = $"{type}{currentMonth}-{dvCtr}";
 
@@ -176,7 +175,6 @@ namespace fmis.Controllers.Accounting
             {
                 dvNo = $"{type}0{currentMonth}-{dvCtr}";
             }
-             
 
             return Ok(dvNo);
         }
@@ -335,15 +333,12 @@ namespace fmis.Controllers.Accounting
             return cell;
         }
 
-           public IActionResult PrintDv(string[] token, int id)
+        [Route("PrintDv")]
+        public IActionResult PrintDv(string[] token, int id)
         {
-
-
-          
             using (MemoryStream stream = new System.IO.MemoryStream())
                 {
                 
-
                     string ExportData = "This is pdf generated";
                     StringReader reader = new StringReader(ExportData);
                     Document doc = new iTextSharp.text.Document(PageSize.A4);

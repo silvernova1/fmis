@@ -15,6 +15,7 @@ using AuthorizeAttribute = Microsoft.AspNetCore.Authorization.AuthorizeAttribute
 
 namespace fmis.Controllers.Accounting
 {
+
     [Authorize(Roles = "accounting_admin , accounting_user")]
     public class AssigneeController : Controller
     {
