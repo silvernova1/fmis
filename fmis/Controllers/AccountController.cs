@@ -125,7 +125,7 @@ namespace fmis.Controllers
                     case "accounting_user":
                         return RedirectToAction("Dashboard", "Home");
                     default:
-                        return RedirectToAction("Index", "IndexOfPayment");
+                        return RedirectToAction("Dashboard", "Dv");
                 }
             }
         }
@@ -151,7 +151,7 @@ namespace fmis.Controllers
                     }                      
                     else
                     {
-                        return RedirectToAction("Index", "Dv");
+                        return RedirectToAction("Dashboard", "Dv");
                     }
                         
                     /*switch (user.Role)
@@ -219,7 +219,9 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("1731")?"accounting_admin" : "accounting_user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")?"accounting_admin" : "accounting_user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"accounting_user" : "accounting_user"),
+                new Claim(ClaimTypes.Role, "user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
