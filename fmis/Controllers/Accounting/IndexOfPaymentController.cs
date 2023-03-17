@@ -232,7 +232,7 @@ namespace fmis.Controllers.Accounting
         {
             var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
 
-            if (Username == "201700272" || Username == "1731")
+            if (Username == "201700272")
             {
                 if (data != null)
                 {
