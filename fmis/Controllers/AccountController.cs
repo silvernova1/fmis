@@ -33,87 +33,6 @@ namespace fmis.Controllers
             _userService = userService;
         }
 
-        /*#region CREATE ACCOUNT
-        public async Task<ActionResult> CreateBudget()
-        {
-            var user = new FmisUser()
-            {
-                Id = 0,
-                Username = "doh7budget",
-                Email = "doh7budget@gmail.com",
-                Role = "budget_admin"
-            };
-
-            user.Password = _userService.HashPassword(user, "doh7budget");
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-            return Ok(user);
-        }
-
-<<<<<<< HEAD
-=======
-        public async Task<ActionResult> CreateBudget2()
-        {
-            var user = new FmisUser()
-            {
-                Id = 0,
-                Username = "doh7budget2",
-                Email = "doh7budget@gmail.com",
-                Role = "budget_admin"
-            };
-
-            user.Password = _userService.HashPassword(user, "doh7budget2");
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
-        }
-
-        public async Task<ActionResult> CreateBudget3()
-        {
-            var user = new FmisUser()
-            {
-                Id = 0,
-                Username = "doh7budget3",
-                Email = "doh7budget@gmail.com",
-                Role = "budget_admin"
-            };
-
-            user.Password = _userService.HashPassword(user, "doh7budget3");
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
-        }
-
->>>>>>> 4ee93a580779d93da9b625c82be221e6b76fabfa
-        public async Task<ActionResult> CreateAccounting()
-        {
-            var user = new FmisUser()
-            {
-                Id = 0,
-                Username = "doh7accounting",
-                Email = "doh7accounting@gmail.com",
-                Role = "accounting_admin"
-            };
-
-            user.Password = _userService.HashPassword(user, "doh7accounting");
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
-        }
-<<<<<<< HEAD
-
-
-        #endregion
-=======
-        #endregion*/
-
         [HttpGet]
         public IActionResult Index()
         {
@@ -201,23 +120,17 @@ namespace fmis.Controllers
             {
                 switch (User.FindFirstValue(ClaimTypes.Role))
                 {
-                    case "budget_admin":
-                        return RedirectToAction("Dashboard", "Home");
-                    case "budget_user":
-                        return RedirectToAction("Dashboard", "Home");
                     case "accounting_admin":
                         return RedirectToAction("Dashboard", "Home");
-                    case "accounting_user":
-                        return RedirectToAction("Dashboard", "Home");
                     default:
-                        return NotFound();
+                        return RedirectToAction("Index", "Dv");
                 }
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, IFormCollection collection)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             ViewData["Year"] = _context.Yearly_reference.ToList();
             if (ModelState.IsValid)
@@ -228,19 +141,20 @@ namespace fmis.Controllers
                     user.Year = (await _context.Yearly_reference.FirstOrDefaultAsync(x => x.YearlyReferenceId == model.Year))?.YearlyReference;
                     user.YearId = model.Year;
                     await LoginAsync(user, model.RememberMe);
-                    switch (user.Role)
+
+                    
+                    if (user.Username == "201700272" || user.Username == "0623" || user.Username =="0437")
                     {
-                        case "budget_admin":
-                            return RedirectToAction("Dashboard", "Home");
-                        case "budget_user":
-                            return RedirectToAction("Dashboard", "Home");
-                        case "accounting_admin":
-                            return RedirectToAction("Dashboard", "Home");
-                        case "accounting_user":
-                            return RedirectToAction("Dashboard", "Home");
-                        default:
-                            return NotFound();
+                        return RedirectToAction("Dashboard", "Home");
                     }
+                    else
+                    {
+                        return RedirectToAction("Index", "Dv");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("Username", "Username or Password is Incorrect");
                 }
 
             }
@@ -287,10 +201,11 @@ namespace fmis.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),                
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role),
-                /*new Claim(ClaimTypes.Email, user.Email),*/
+                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")?"accounting_admin" : "user"),
+                new Claim(ClaimTypes.GivenName, user.Fname),
+                new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
                 new Claim("YearlyRefId", user.YearId.ToString())
             };
@@ -301,5 +216,8 @@ namespace fmis.Controllers
         }
         #endregion
 
+        #region COOKIES
+        public string UserRole { get { return User.FindFirstValue(ClaimTypes.Role); } }
+        #endregion
     }
 }

@@ -17,10 +17,13 @@ namespace fmis.Services
     {
         private readonly PasswordHasher<FmisUser> _hasher = new PasswordHasher<FmisUser>();
         private readonly MyDbContext _context;
+        private readonly fmisContext _fcontext;
 
-        public UserService(MyDbContext context)
+        public UserService(MyDbContext context, fmisContext fcontext)
         {
             _context = context;
+            _fcontext = fcontext;
+
         }
 
         public async Task<FmisUser> ValidateUserCredentialsAsync(string username, string password)
@@ -29,21 +32,15 @@ namespace fmis.Services
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            user = await _context.FmisUsers.FirstOrDefaultAsync(x => x.Username == username);
+            user = await _fcontext.users.FirstOrDefaultAsync(x => x.Username == username);
 
-            if (user is null) return null;
+            if (string.IsNullOrEmpty(user.Username)) return null;
 
-            try
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                var result = _hasher.VerifyHashedPassword(user, user.Password, password);
-                if (result.Equals(PasswordVerificationResult.Success))
-                {
-                    return user;
-                }
+                user = null;
             }
-            catch(Exception ex) { Console.WriteLine(ex.Message); }
-
-            return null;
+            return user;
         }
 
         public string HashPassword(FmisUser user, string password)

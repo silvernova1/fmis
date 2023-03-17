@@ -31,10 +31,11 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.html.simpleparser;
 using Microsoft.Extensions.Hosting.Internal;
 using iTextSharp.text.pdf.draw;
+using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin , accounting_user")]
+    [Authorize(Roles = "accounting_admin,user")]
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -58,6 +59,8 @@ namespace fmis.Controllers.Accounting
                 .AsNoTracking()
                 .ToListAsync();
 
+            ViewBag.UserId = UserId;
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 dv = dv.Where(x => x.DvNo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.RespoCenter.Respo.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || x.Payee.PayeeDescription.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
@@ -69,11 +72,11 @@ namespace fmis.Controllers.Accounting
             ViewBag.searchString = searchString;
 
             //no filter
-            var grossAmountTotal = _MyDbContext.Dv.Sum(x => x.GrossAmount);
+            var grossAmountTotal = _MyDbContext.Dv.Where(x=>x.UserId == UserId).Sum(x => x.GrossAmount);
             ViewBag.grossTotal = grossAmountTotal;
-            var totalDeductionTotal = _MyDbContext.Dv.Sum(x => x.TotalDeduction);
+            var totalDeductionTotal = _MyDbContext.Dv.Where(x => x.UserId == UserId).Sum(x => x.TotalDeduction);
             ViewBag.totalDeductionTotal = totalDeductionTotal;
-            var netAmountTotal = _MyDbContext.Dv.Sum(x => x.NetAmount);
+            var netAmountTotal = _MyDbContext.Dv.Where(x=>x.UserId == UserId).Sum(x => x.NetAmount);
             ViewBag.netTotal = netAmountTotal;
 
             //with filter
@@ -122,7 +125,7 @@ namespace fmis.Controllers.Accounting
             dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
             dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             dv.PayeeDesc = _MyDbContext.Payee.FirstOrDefault(x=>x.PayeeId == dv.PayeeId).PayeeDescription;
-
+            dv.UserId = UserId;
 
             if (ModelState.IsValid)
             {
@@ -316,7 +319,9 @@ namespace fmis.Controllers.Accounting
         }
 
 
-
+        #region COOKIES
+        public string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        #endregion
 
         public PdfPCell getCell(String text, int alignment)
         {

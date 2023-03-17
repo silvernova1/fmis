@@ -30,7 +30,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin , accounting_user")]
+    [Authorize(Policy = "Accounting")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -62,6 +62,8 @@ namespace fmis.Controllers.Accounting
                                 .ThenInclude(x => x.Deduction)
                             .Include(x => x.BillNumbers)
                             select c;
+
+            ViewBag.UserId = UserId;
 
             bool check = indexData.Any(a => a == null);
 
@@ -103,7 +105,6 @@ namespace fmis.Controllers.Accounting
         }
 
         // GET: Create
-
         public IActionResult Create(int CategoryId, int DeductionId, int? DvId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
@@ -133,8 +134,6 @@ namespace fmis.Controllers.Accounting
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
-
-            //indexOfPayment.IndexFundSourceId = indexOfPayment.fundSource;
 
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligation in _MyDbContext.Obligation
@@ -177,7 +176,8 @@ namespace fmis.Controllers.Accounting
                 var currentUser = User.FindFirst(ClaimTypes.Name).Value;
                 PopulateDvDropDownList();
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
-                indexOfPayment.CreatedBy = currentUser;
+                indexOfPayment.CreatedBy = FName + " " + LName;
+                indexOfPayment.UserId = UserId;
 
 
                 _MyDbContext.Add(indexOfPayment);
@@ -231,6 +231,14 @@ namespace fmis.Controllers.Accounting
         public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
             var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
+
+            if (Username == "201700272")
+            {
+                if (data != null)
+                {
+                    return Json(2);
+                }
+            }
 
             if (data != null)
             {
@@ -556,7 +564,13 @@ namespace fmis.Controllers.Accounting
             ViewBag.AllotmentClassType = new SelectList(Query, "IndexOfPaymentId", "allotmentClassType", selected);
         }
 
-
+        #region COOKIES
+        public string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string Username => User.FindFirstValue(ClaimTypes.Name);
+        public string UserRole => User.FindFirstValue(ClaimTypes.Role);
+        public string FName => User.FindFirstValue(ClaimTypes.GivenName);
+        public string LName => User.FindFirstValue(ClaimTypes.Surname);
+        #endregion
 
         public IActionResult Export(string searchString)
         {

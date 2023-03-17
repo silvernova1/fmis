@@ -308,10 +308,14 @@
             </div>
             <div class="col-md-12" style="margin-left: 260px;">
                 <div class="form-group">
-                    <input type="submit" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                    <input type="submit" id="Btn" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
                 </div>
             </div>
         </div>
+
+        @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
+
+
     </form>
 </div>
 
@@ -381,12 +385,19 @@
         function (data) {
             if (data == 0) {
                 $("#Status").html('<font color="Green">Po Number is available</font>');
-                $("#poNumber").css("border-color", "Green");
+                $("#poNumber").css("border-color", "Green");2
+                
 
             }
             else if(data == 1){
                 $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
                 $("#poNumber").css("border-color", "Red");
+                document.getElementById("Btn").disabled = true;
+            }
+            else if(data == 2){
+                $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
+                $("#poNumber").css("border-color", "Red");
+                document.getElementById("Btn").disabled = false;
             }
         });
     }
@@ -705,6 +716,7 @@
         var dvNo = document.getElementById("ddlBranches").value;
         var dvDate = document.getElementById("dvDate").value;
         var particulars = document.getElementById("particulars").value;
+        var poNumber = document.getElementById("poNumber").value;
 
         if (category != '' && dvNo != '' && particulars != '' && dvDate != '') {
             Lobibox.notify('success', {
