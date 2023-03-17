@@ -105,7 +105,6 @@ namespace fmis.Controllers.Accounting
         }
 
         // GET: Create
-
         public IActionResult Create(int CategoryId, int DeductionId, int? DvId)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
@@ -135,8 +134,6 @@ namespace fmis.Controllers.Accounting
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
-
-            //indexOfPayment.IndexFundSourceId = indexOfPayment.fundSource;
 
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligation in _MyDbContext.Obligation
@@ -234,6 +231,14 @@ namespace fmis.Controllers.Accounting
         public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
             var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
+
+            if (UserRole == "accounting_admin")
+            {
+                if (data != null)
+                {
+                    return Json(2);
+                }
+            }
 
             if (data != null)
             {
@@ -564,6 +569,7 @@ namespace fmis.Controllers.Accounting
 
         #region COOKIES
         public string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string UserRole => User.FindFirstValue(ClaimTypes.Role);
         public string FName => User.FindFirstValue(ClaimTypes.GivenName);
         public string LName => User.FindFirstValue(ClaimTypes.Surname);
         #endregion
