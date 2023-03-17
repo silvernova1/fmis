@@ -123,7 +123,7 @@
                     <th> Date </th>
                     <th> Particulars </th>
                     <th> PO #  </th>
-              
+
                     <th> Invoice #  </th>
                     <th> Project Id </th>
                     @*<th> # of Billing </th>*@
@@ -136,7 +136,11 @@
                     <th> Deductions </th>
                     <th> Total Deductions </th>
                     <th> Net Amount </th>
-                    <th> Action  </th>
+                    @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+                    {
+                        <th> Action </th>
+                    }
+                    <th> Created By </th>
                 </tr>
             </thead>
             <tbody>
@@ -148,6 +152,9 @@
                             @Html.DisplayFor(modelItem => item.Category.CategoryDescription)
                         </td>
                         <td nowrap="nowrap">
+                            @Html.DisplayFor(modelItem => item.orsNo)
+                        </td>
+                        @*<td nowrap="nowrap">
                             @if (@ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault()?.Name == null)
                             {
                                 @Html.DisplayFor(modelItem => item.orsNo)
@@ -156,7 +163,7 @@
                             {
                                 @ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault().Name
                             }
-                        </td>
+                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.Dv.DvNo)
                         </td>
@@ -218,11 +225,15 @@
                         </td>
                         <td>₱@item.TotalDeduction.ToString("##,##0.00")</td>
                         <td>₱@item.NetAmount.ToString("##,##0.00")</td>
-                        <td>
-                            <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.IndexOfPaymentId" data-bs-toggle="tooltip" title="Edit">
-                                <i class="ace-icon fa fa-edit"></i>
-                            </a>
-                        </td>
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+                        {
+                            <td>
+                                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.IndexOfPaymentId" data-bs-toggle="tooltip" title="Edit">
+                                    <i class="ace-icon fa fa-edit"></i>
+                                </a>
+                            </td>
+                        }
+                        <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
                     </tr>
                 }
             </tbody>

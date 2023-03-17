@@ -34,7 +34,7 @@ using iTextSharp.text.pdf.draw;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "AccountingAdmin")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -121,7 +121,9 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
             dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
-            
+            dv.PayeeDesc = _MyDbContext.Payee.FirstOrDefault(x=>x.PayeeId == dv.PayeeId).PayeeDescription;
+
+
             if (ModelState.IsValid)
             {
                 dv.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0)
@@ -148,7 +150,6 @@ namespace fmis.Controllers.Accounting
 
             var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
 
-
             var dvCtr = "0001";
             var dvNo = $"{type}{currentMonth}-{dvCtr}";
 
@@ -171,7 +172,6 @@ namespace fmis.Controllers.Accounting
             {
                 dvNo = $"{type}0{currentMonth}-{dvCtr}";
             }
-             
 
             return Ok(dvNo);
         }

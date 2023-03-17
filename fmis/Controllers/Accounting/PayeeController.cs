@@ -38,7 +38,7 @@ using System.Diagnostics;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "AccountingAdmin")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class PayeeController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -71,7 +71,6 @@ namespace fmis.Controllers.Accounting
             public string single_token { get; set; }
             public List<Many> many_token { get; set; }
         }
-
 
 
         public async Task<IActionResult> Individual()

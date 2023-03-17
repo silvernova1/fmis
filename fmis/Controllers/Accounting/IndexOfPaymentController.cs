@@ -10,7 +10,6 @@ using fmis.Models;
 using fmis.Models.Accounting;
 using fmis.Filters;
 using Microsoft.AspNetCore.Identity;
-
 using fmis.Data.Accounting;
 using Microsoft.AspNetCore.Authorization;
 using ClosedXML.Excel;
@@ -27,10 +26,11 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.RegularExpressions;
 using fmis.Models.silver;
 using DocumentFormat.OpenXml.InkML;
+using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "AccountingAdmin")]
+    [Authorize(Roles = "accounting_admin , accounting_user")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -134,6 +134,8 @@ namespace fmis.Controllers.Accounting
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
 
+            //indexOfPayment.IndexFundSourceId = indexOfPayment.fundSource;
+
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligation in _MyDbContext.Obligation
                        on fundsource.FundSourceId equals obligation.FundSourceId
@@ -150,11 +152,14 @@ namespace fmis.Controllers.Accounting
                            fundsource = fundsource.AppropriationId,
                            obligation = obligation.source_type,
                            Id = obligation.Id,
-                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id.ToString(),
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
+                           OrsNo = obligation.Ors_no_Temp,
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
 
-            if(indexOfPayment.ObligationId != null)
+            var orsNo = ors.FirstOrDefault()?.OrsNo;
+
+            if (indexOfPayment.ObligationId != null)
             {
                 indexOfPayment.orsNo = ors.FirstOrDefault()?.Name;
             }
@@ -169,10 +174,13 @@ namespace fmis.Controllers.Accounting
 
             if (ModelState.IsValid)
             {
+                var currentUser = User.FindFirst(ClaimTypes.Name).Value;
                 PopulateDvDropDownList();
                 indexOfPayment.indexDeductions = indexOfPayment.indexDeductions.Where(x => x.DeductionId != 0 && x.Amount != 0).ToList();
-                _MyDbContext.Add(indexOfPayment);
+                indexOfPayment.CreatedBy = currentUser;
 
+
+                _MyDbContext.Add(indexOfPayment);
                 await Task.Delay(500);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -196,7 +204,7 @@ namespace fmis.Controllers.Accounting
                             on fundsource.AllotmentClassId equals allotmentclass.Id
                             join fund in _MyDbContext.Fund
                             on fundsource.FundId equals fund.FundId
-                            where fundsource.AllotmentClassId == cid
+                            where fundsource.AllotmentClassId == cid && obligation.status == "activated"
                             select new
                             {
                                 allotment = allotmentclass.Fund_Code,
@@ -205,10 +213,17 @@ namespace fmis.Controllers.Accounting
                                 fundsource = fundsource.AppropriationId,
                                 obligation = obligation.source_type,
                                 Id = obligation.Id,
-                                Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id,
+                                Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
+                                Orsno = obligation.Ors_no_Temp,
                                 allotmentCLassId = fundsource.AllotmentClassId
                             }).ToList();
 
+            var ors = _MyDbContext.Obligation.Where(x=>x.FundSource.AllotmentClassId == cid && x.status == "activated").ToList()
+                          .Select(x => new
+                          {
+                              Id = x.Id,
+                              Name = x.Ors_no_Temp
+                          });
 
             return Json(ors_List);
         }
@@ -327,11 +342,6 @@ namespace fmis.Controllers.Accounting
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
 
-            List<IndexOfPayment> ors = new List<IndexOfPayment>();
-            ors = (from o in _MyDbContext.Indexofpayment select o).Where(x=>x.IndexOfPaymentId == id).ToList();
-            ors.Insert(0, new IndexOfPayment { IndexOfPaymentId = 0, orsNo = "--Select ORS--" });
-            ViewBag.message = ors;
-
             /*ViewBag.ors = _MyDbContext.Indexofpayment.Select(x => new SelectListItem
             {
                 Value = x.IndexOfPaymentId.ToString(),
@@ -354,7 +364,7 @@ namespace fmis.Controllers.Accounting
 
             PopulateCategoryDropDownList(index.CategoryId);
             PopulateallotmentClassTypeList();
-            PopulateOrsDropDownList();
+            //PopulateOrsDropDownList(index.IndexFundSourceId);
 
 
 
@@ -427,7 +437,7 @@ namespace fmis.Controllers.Accounting
                            fundsource = fundsource.AppropriationId,
                            obligation = obligation.source_type,
                            Id = obligation.Id,
-                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + "000" + obligation.Id,
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
 
@@ -450,13 +460,11 @@ namespace fmis.Controllers.Accounting
             PopulateCategoryDropDownList();
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
-            PopulateOrsNoDownList();
-
-
 
             _MyDbContext.Update(indexes);
             //await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
+            //PopulateOrsDropDownList(indexes.IndexFundSourceId);
             return RedirectToAction("Index");
         }
 
@@ -514,13 +522,13 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateOrsDropDownList(object selected = null)
         {
-            var Query = from ors in _MyDbContext.Indexofpayment
-                        orderby ors.IndexOfPaymentId
+            var Query = from ors in _MyDbContext.IndexFundSource
+                        orderby ors.Id
                         select ors;
-            ViewBag.ors = _MyDbContext.Indexofpayment.Select(x => new SelectListItem
+            ViewBag.IndexFund = _MyDbContext.IndexFundSource.Select(x => new SelectListItem
             {
-                Value = x.IndexOfPaymentId.ToString(),
-                Text = x.orsNo
+                Value = x.Id.ToString(),
+                Text = x.Title
             });
         }
 
@@ -564,7 +572,7 @@ namespace fmis.Controllers.Accounting
                 var currentRow = 2;
                 var deductRow = 1;
                 var currentColumn = 15;
-                var deductColumn = 15;
+                var deductColumn = 18;
 
                 var indexData = _MyDbContext.Indexofpayment
                                             .Include(x => x.Category)
@@ -665,6 +673,24 @@ namespace fmis.Controllers.Accounting
                 ws.Cell("N1").Style.Font.SetBold();
                 ws.Cell("N1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
+                ws.Cell("O1").Style.Font.FontSize = 10;
+                ws.Cell("O1").Style.Font.FontName = "Calibri Light";
+                ws.Cell("O1").Value = "Gross Amount";
+                ws.Cell("O1").Style.Font.SetBold();
+                ws.Cell("O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                ws.Cell("P1").Style.Font.FontSize = 10;
+                ws.Cell("P1").Style.Font.FontName = "Calibri Light";
+                ws.Cell("P1").Value = "Total Deductions";
+                ws.Cell("P1").Style.Font.SetBold();
+                ws.Cell("P1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                ws.Cell("Q1").Style.Font.FontSize = 10;
+                ws.Cell("Q1").Style.Font.FontName = "Calibri Light";
+                ws.Cell("Q1").Value = "Net Amount";
+                ws.Cell("Q1").Style.Font.SetBold();
+                ws.Cell("Q1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
 
                 foreach (var deductions in _MyDbContext.Deduction)
                 {
@@ -753,6 +779,21 @@ namespace fmis.Controllers.Accounting
                         ws.Cell(deductionsRow, 14).Value = deduct_item.AccountNumber;
                         ws.Cell(deductionsRow, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
+                        ws.Cell(deductionsRow, 15).Style.Font.FontSize = 10;
+                        ws.Cell(deductionsRow, 15).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(deductionsRow, 15).Value = deduct_item.GrossAmount;
+                        ws.Cell(deductionsRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        ws.Cell(deductionsRow, 16).Style.Font.FontSize = 10;
+                        ws.Cell(deductionsRow, 16).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(deductionsRow, 16).Value = deduct_item.TotalDeduction;
+                        ws.Cell(deductionsRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        ws.Cell(deductionsRow, 17).Style.Font.FontSize = 10;
+                        ws.Cell(deductionsRow, 17).Style.Font.FontName = "Calibri Light";
+                        ws.Cell(deductionsRow, 17).Value = deduct_item.NetAmount;
+                        ws.Cell(deductionsRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
 
                         foreach (var deduct_amount in deduct_item.indexDeductions.GroupBy(x=>x.DeductionId))
                         {
@@ -771,19 +812,19 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(deductionsRow, 15).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 15).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 15).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 15).Value = "GROSS";
+                    ws.Cell(deductionsRow, 15).Value = "TOTAL GROSS AMOUNT";
                     ws.Cell(deductionsRow, 15).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     ws.Cell(deductionsRow, 16).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 16).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 16).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 16).Value = "SUB-TOTAL";
+                    ws.Cell(deductionsRow, 16).Value = "TOTAL DEDUCTIONS";
                     ws.Cell(deductionsRow, 16).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     ws.Cell(deductionsRow, 17).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 17).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 17).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 17).Value = "DEDUCTION";
+                    ws.Cell(deductionsRow, 17).Value = "NET AMOUNT";
                     ws.Cell(deductionsRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     deductionsRow++;
@@ -812,7 +853,7 @@ namespace fmis.Controllers.Accounting
                     ws.Cell(deductionsRow, 17).Style.Font.FontSize = 10;
                     ws.Cell(deductionsRow, 17).Style.Font.FontName = "Calibri Light";
                     ws.Cell(deductionsRow, 17).Style.Font.SetBold();
-                    ws.Cell(deductionsRow, 17).Value = totalDeduction;
+                    ws.Cell(deductionsRow, 17).Value = totalnet;
                     ws.Cell(deductionsRow, 17).Style.Fill.BackgroundColor = XLColor.LightGray;
                     ws.Cell(deductionsRow, 17).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 

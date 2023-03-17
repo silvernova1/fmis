@@ -64,8 +64,8 @@
                 </div>
             </div>
         </div>
-         <div class="col-md-12">
-             <div class="col-md-3">
+        <div class="col-md-12">
+            <div class="col-md-3">
                 <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
                     <option value="0"> - Select Fund Source - </option>
                     <option value="1"> Regular Agency Fund  </option>
@@ -77,26 +77,13 @@
                     <option value="7"> Trust Fund </option>
                 </select>
             </div>
-         @*   <div class="col-md-3">
-                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
-                    <option value="0"> - Select Allotment Class - </option>
-                    <option value="1">  PS  </option>
-                    <option value="2">  MOOE </option>
-                    <option value="3">  CO  </option>
-                </select>
-            </div>*@
             <div class="col-md-3" id="fundSource" >
                 <div class="form-group">
-                    @*  <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />*@
-
-                    <input type="text" asp-for="orsNo" class="form-control"  required>
-
+                  
+                    <textarea asp-for="orsNo" value="@Model.orsNo" class="form-control" style=" resize: none; overflow: auto; height:35px"></textarea>
                 </div>
             </div>
         </div>
-        <div class="col-md-12" style="margin-top: 10px;">
-            
-         </div>
         <br />
         <div class="col-md-12" style="margin-top: 15px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
@@ -182,13 +169,13 @@
             <div class="col-md-12" onchange="submitDeduction(this);">
                 <input asp-for="indexDeductions[x].IndexDeductionId" type="hidden" />
                 <div class="col-md-2" style="width: 250px;">
-                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2" >
+                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2">
                         <option value=""> - Select Deduction - </option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" />
+                        <input asp-for="indexDeductions[x].Amount" value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" placeholder="0.00" />
                     </div>
                 </div>
             </div>
@@ -204,7 +191,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control deduction_amount"  />
+                        <input class="form-control deduction_amount" placeholder="0.00" />
                     </div>
                 </div>
             </div>
@@ -242,6 +229,21 @@
 </div>
 
 <script>
+
+    $(document).ready(function () {
+        $("select#ddlfundsource").change(function () {
+            $(this).find("option:selected").each(function () {
+                var optionValue = $(this).attr("value");
+                if (optionValue) {
+                    $(".box").not("." + optionValue).hide();
+                    $("." + optionValue).show();
+                } else {
+                    $(".box").hide();
+                }
+            });
+        }).change();
+    });
+
     //cascade dropdownlist for allotment class
     $(function () {
         $("select#allotmentClass_type").change(function () {
@@ -256,28 +258,28 @@
                 });
             });
         });
+    });
+
+    $(function () {
+        $('input[name="date"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
         });
 
-     $(function () {
-            $('input[name="date"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-            $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                var data = {
-                    date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-                };
-            });
-
-            $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
-                $(this).val('');
-            });
+        $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
 
 
-            $("select#editAllotmentClass").change(function () {
+        $("select#editAllotmentClass").change(function () {
             var cid = $(this).val();
             $("select#ObligationId").empty();
 
@@ -292,7 +294,7 @@
         });
 
 
-        });
+    });
 
     var CategoryId;
 
@@ -525,14 +527,18 @@
     $(function () {
         $("#ddlfundsource").change(function () {
             if ($(this).val() != 1) {
-                $("#fundSource").show();
                 $("#allotmentClass_type").hide();
                 $("#obligation").hide();
             } else {
-                $("#fundSource").hide();
                 $("#allotmentClass_type").show();
                 $("#obligation").show();
             }
+           // if ($(this).val() <= 1 ) {
+           //     $("#orsId").attr('disabled', true);
+           // }
+           // else{
+           //     $("#orsId").attr('disabled', false);
+            //}
         });
     });
 

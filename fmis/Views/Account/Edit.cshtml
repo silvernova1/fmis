@@ -1,0 +1,43 @@
+﻿@model fmis.Models.UserModels.FmisUser
+
+
+<center><h3 class="grey lighter smaller">Edit User </h3></center>
+<hr />
+<div class="container">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            @*<input type="hidden" asp-for="Created_at" />*@
+            <div class="form-group">
+                <h5>Username: </h5>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <h5>Password: </h5>
+                <input asp-for="Password" value="" class="form-control" required/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <select class="form-control" asp-for="Role" id="dropdown">
+                    <option value=""> Select User Role</option>
+                    @if (User.FindFirstValue(ClaimTypes.Role) == "budget_admin")
+                    {
+                        <option value="budget_admin">Budget (Admin)</option>
+                        <option value="budget_user">Budget (User)</option>
+                    }
+                    @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+                    {
+                        <option value="accounting_admin">Accounting (Admin)</option>
+                        <option value="accounting_user">Accounting (User)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group pull-right">
+                <input type="submit" value="Save" class="btn btn-success btn-xs" /> <a class="btn btn-default btn-xs" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
