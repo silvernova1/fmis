@@ -233,8 +233,33 @@ else
         No Records found
     </div>
 }
-
-    @if (ViewBag.searchString == null)
+    @if(User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+    {
+    <div class="row">
+        <div class="pull-right">
+            <div class="infobox infobox-green">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@Model.Sum(x=>x.GrossAmount).ToString("##,##0.00")</span>
+                    <div class="infobox-content">GROSS AMOUNT</div>
+                </div>
+            </div>
+            <div class="infobox infobox-red">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@Model.Sum(x=>x.TotalDeduction).ToString("##,##0.00")</span>
+                    <div class="infobox-content">TOTAL DEDUCTIONS</div>
+                </div>
+            </div>
+            <div class="infobox infobox-blue2">
+                <div class="infobox-data">
+                    <span class="infobox-data-number">₱@Model.Sum(x=>x.NetAmount).ToString("##,##0.00")</span>
+                    <div class="infobox-content">NET AMOUNT</div>
+                </div>
+            </div>
+            <div class="vspace-12-sm"></div>
+        </div>
+    </div>
+    }
+    @*@if (ViewBag.searchString == null)
     {
         <div class="row">
             <div class="pull-right">
@@ -285,7 +310,7 @@ else
                 <div class="vspace-12-sm"></div>
             </div>
         </div>
-    }
+    }*@
 
 <script>
 
