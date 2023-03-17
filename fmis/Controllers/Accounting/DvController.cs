@@ -35,7 +35,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin, user, accounting_user")]
+    [Authorize(Policy = "Accounting")]
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;

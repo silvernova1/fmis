@@ -583,7 +583,7 @@
 
         }
 
-        @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "accounting_user")
+        @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "user")
         {
             <li class="@if(ViewBag.filter.main == "Accounting")
                 @Html.Raw("active open")">
@@ -760,7 +760,7 @@
             }
         }
 
-        @if(User.FindFirstValue(ClaimTypes.Role) == "user" || User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "accounting_user")
+        @if(User.FindFirstValue(ClaimTypes.Role) == "user" || User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
         {
             <li class="@if (ViewBag.filter.main == "end_user")
                     @Html.Raw("active open")

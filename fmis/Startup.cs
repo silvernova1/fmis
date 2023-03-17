@@ -211,9 +211,10 @@ namespace fmis
                 options.AddPolicy("Permanent", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "Permanent"));
 
                 options.AddPolicy("BudgetUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_user"));
-                options.AddPolicy("AccountingAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("AccountingUser", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_user"));
                 options.AddPolicy("Administrator", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "admin"));
+
+                options.AddPolicy("Accounting", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("User", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "user"));
             });
             services.Configure<CookiePolicyOptions>(options =>
