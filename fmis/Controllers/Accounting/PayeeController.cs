@@ -73,7 +73,6 @@ namespace fmis.Controllers.Accounting
         }
 
 
-
         public async Task<IActionResult> Individual()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "individual");

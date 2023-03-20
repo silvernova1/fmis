@@ -192,7 +192,6 @@ namespace fmis.Controllers.Accounting
                 {
                     dvNo = $"{type}0{currentMonth}-{dvCtr}";
                 }
-
                 if (latest == null) return Ok(dvNo);
                 dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
 
@@ -363,15 +362,12 @@ namespace fmis.Controllers.Accounting
             return cell;
         }
 
-           public IActionResult PrintDv(string[] token, int id)
+        [Route("PrintDv")]
+        public IActionResult PrintDv(string[] token, int id)
         {
-
-
-          
             using (MemoryStream stream = new System.IO.MemoryStream())
                 {
                 
-
                     string ExportData = "This is pdf generated";
                     StringReader reader = new StringReader(ExportData);
                     Document doc = new iTextSharp.text.Document(PageSize.A4);

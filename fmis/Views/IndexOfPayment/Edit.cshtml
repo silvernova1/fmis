@@ -77,42 +77,13 @@
                     <option value="7"> Trust Fund </option>
                 </select>
             </div>
-
-            @if(Model.ObligationId != null)
-            {
-                <div class="col-md-3">
-                    <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
-                        <option value="0"> - Select Allotment Class - </option>
-                        <option value="1">  PS  </option>
-                        <option value="2">  MOOE </option>
-                        <option value="3">  CO  </option>
-                    </select>
-                </div>
-            }
-            else
-            {
-                    <div class="col-md-3 2 box 3 box 4 box 5 box 6 box 7 box">
-                        @Html.TextAreaFor(m => m.orsNo, new { @class = "form-control", @style = "resize: none; overflow: auto; height:35px", @id = "orsId"})
-                    </div>
-            }
-            @if (Model.ObligationId != null)
-            {
-                <div class="col-md-3">
-                <div class="form-group" id="obligation">
-                    @*<select asp-for="ObligationId" class="form-control select2"></select>*@
-                    <select asp-for="ObligationId" class="form-control select2">
-                        @{
-                                            <option value="@Model.ObligationId">
-                                                @Model.orsNo
-                                            </option>
-                        }
-                    </select>
+            <div class="col-md-3" id="fundSource" >
+                <div class="form-group">
+                  
+                    <textarea asp-for="orsNo" value="@Model.orsNo" class="form-control" style=" resize: none; overflow: auto; height:35px"></textarea>
                 </div>
             </div>
-            }
         </div>
-
-        
         <br />
         <div class="col-md-12" style="margin-top: 15px;">
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
@@ -204,7 +175,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input asp-for="indexDeductions[x].Amount" class="form-control deduction_amount" placeholder="0.00" />
+                        <input asp-for="indexDeductions[x].Amount" value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" placeholder="0.00" />
                     </div>
                 </div>
             </div>
