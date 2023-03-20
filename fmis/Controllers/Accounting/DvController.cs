@@ -148,37 +148,65 @@ namespace fmis.Controllers.Accounting
 
         public async Task<IActionResult> GetLatestDvType(string type)
         {
-
-            string currentMonth = DateTime.Now.Month.ToString();
-
             var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
 
-
-            var dvCtr = "0001";
-            var dvNo = $"{type}{currentMonth}-{dvCtr}";
-
-            if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+            if (type == "T")
             {
-                dvNo = $"{type}{currentMonth}-{dvCtr}";
+                string currentMonth = DateTime.Now.Month.ToString();
+                var dvCtr = "0816";
+                var dvNo = $"{type}{currentMonth}-{dvCtr}";
+
+                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                {
+                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                }
+                else
+                {
+                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                }
+
+                if (latest == null) return Ok(dvNo);
+                dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
+
+                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                {
+                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                }
+                else
+                {
+                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                }
+                return Ok(dvNo);
             }
             else
             {
-                dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                string currentMonth = DateTime.Now.Month.ToString();
+                var dvCtr = "0751";
+                var dvNo = $"{type}{currentMonth}-{dvCtr}";
+
+                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                {
+                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                }
+                else
+                {
+                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                }
+
+                if (latest == null) return Ok(dvNo);
+                dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
+
+                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                {
+                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                }
+                else
+                {
+                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                }
+                return Ok(dvNo);
             }
-
-            if (latest == null) return Ok(dvNo);
-            dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1])+1:0000}";
-
-            if(currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
-            {
-                dvNo = $"{type}{currentMonth}-{dvCtr}";
-            } else
-            {
-                dvNo = $"{type}0{currentMonth}-{dvCtr}";
-            }
-             
-
-            return Ok(dvNo);
+            
         }
 
 

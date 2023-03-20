@@ -99,12 +99,21 @@
                         <div class="col-md-6">
                             <ul class="breadcrumb">
                                 <li>
-                                    <i class="ace-icon fa fa-home home-icon"></i>
-                                    <a href="#">Home</a>
+                                    @if (User.FindFirstValue(ClaimTypes.Role) == "user")
+                                    {
+                                            <i class="ace-icon fa fa-home home-icon"></i>
+                                            <a asp-controller="Dv" asp-action="Index">Home</a>
+                                    }
+                                    else
+                                    {
+                                            <i class="ace-icon fa fa-home home-icon"></i>
+                                            <a asp-controller="Home" asp-action="Dashboard">Home</a>
+                                    }
+                                    
                                 </li>
-                                <li class="active">
+                                @*<li class="active">
                                     Budget Utilization Dashboard
-                                </li>
+                                </li>*@
                             </ul>
                         </div>
                         <div class="col-md-6">
