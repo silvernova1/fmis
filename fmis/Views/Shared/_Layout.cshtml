@@ -132,6 +132,8 @@
                                         var year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == yearId).YearlyReference;
                                     }*@
 
+                                    @*@User.FindFirstValue(ClaimTypes.Role)*@
+
                                     CY:   @User.FindFirstValue("YearlyRef")
 
 

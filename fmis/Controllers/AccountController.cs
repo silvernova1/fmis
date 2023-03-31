@@ -143,7 +143,7 @@ namespace fmis.Controllers
                     await LoginAsync(user, model.RememberMe);
 
                     
-                    if (user.Username == "201700272" || user.Username == "0623" || user.Username =="0437" || user.Username == "hr_admin")
+                    if (user.Username == "201700272" || user.Username == "0623" || user.Username =="0437" || user.Username == "hr_admin" || user.Username == "1731")
                     {
                         return RedirectToAction("Dashboard", "Home");
                     }
@@ -203,7 +203,8 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "budget_admin"),
+                //new Claim(ClaimTypes.Role, user.Username.Equals("1731")?"budget_admin" : "user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),

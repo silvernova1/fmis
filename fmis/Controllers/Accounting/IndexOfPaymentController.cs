@@ -27,6 +27,12 @@ using System.Text.RegularExpressions;
 using fmis.Models.silver;
 using DocumentFormat.OpenXml.InkML;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
+using System.Diagnostics;
+using System.Text;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DataTable = System.Data.DataTable;
 
 namespace fmis.Controllers.Accounting
 {
@@ -52,7 +58,7 @@ namespace fmis.Controllers.Accounting
         [Route("Accounting/IndexOfPayment")]
         public async Task<IActionResult> Index(string searchString)
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "index");
 
             var indexData = from c in _MyDbContext.Indexofpayment
                             .Include(x => x.Category)
@@ -391,6 +397,154 @@ namespace fmis.Controllers.Accounting
             }
             /*PopulateAssignedIndexDeductionData(Index);*/
             return View(index);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UploadIndex()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "import");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ImportIndex()
+        {
+            IFormFile excelfile = Request.Form.Files[0];
+            string sWebRootFolder = Directory.GetCurrentDirectory() + @"\UploadFile";
+            if (!Directory.Exists(sWebRootFolder)) Directory.CreateDirectory(sWebRootFolder);
+            string sFileName = $"{Guid.NewGuid()}.xlsx";
+            Stopwatch timer = new();
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+            {
+                excelfile.CopyTo(fs);
+                fs.Flush();
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                StringBuilder sb = new StringBuilder();
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                int rowCount = worksheet.Dimension.Rows;
+                int ColCount = worksheet.Dimension.Columns;
+                ColCount = 14;
+                List<IndexOfPayment> index = new();
+
+
+                var payeeId = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeDescription == "LANDBANK OF THE PHILIPPINES").PayeeId;
+                var categoryId = _MyDbContext.Category.FirstOrDefault(x => x.CategoryId == 25).CategoryId;
+
+                //List<IndexDeduction> indexDeductions = new();
+                for (int row = 9; row <= rowCount; row++)
+                {
+                    
+
+                    var amount = worksheet.Cells[row, 13].Value?.ToString();
+
+                    var indexes = new IndexOfPayment
+                    {
+                        payeeId = payeeId,
+                        CategoryId = categoryId,
+                        Particulars = worksheet.Cells[row, 4].Text,
+                        GrossAmount = Convert.ToDecimal(amount),
+                        indexDeductions = new List<IndexDeduction>()
+                    };
+                    index.Add(indexes);
+                    /*index.Add(new IndexOfPayment()
+                    {
+                        payeeId = payeeId,
+                        CategoryId = categoryId,
+                        Particulars = worksheet.Cells[row, 4].Text,
+                        GrossAmount = Convert.ToDecimal(amount),
+                        indexDeductions = new List<IndexDeduction>()
+                    });*/
+
+                    var deductionTax = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 22).DeductionId;
+                    var deductionPhic = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 23).DeductionId;
+                    var deductionPagibig = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 24).DeductionId;
+                    var deductionCoop = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 25).DeductionId;
+
+                    var deduct_Tax = worksheet.Cells[row, 14].Value?.ToString();
+                    var deduct_Phic = worksheet.Cells[row, 15].Value?.ToString();
+                    var deduct_Pagibig = worksheet.Cells[row, 16].Value?.ToString();
+                    var deduct_Coop = worksheet.Cells[row, 17].Value?.ToString();
+
+
+
+
+                            //for (ColCount = 14; ColCount <= 17; ColCount++)
+                            //{
+                                if (deduct_Tax != null)
+                                {
+                                    IndexDeduction index_deduct = new IndexDeduction();
+                                    index_deduct.IndexOfPaymentId = index.FirstOrDefault(x=>x.Particulars == x.Particulars).IndexOfPaymentId;
+                                    index_deduct.DeductionId = deductionTax;
+                                    index_deduct.Amount = Convert.ToDecimal(deduct_Tax);
+                                    indexes.indexDeductions.Add(index_deduct);
+                                }
+                                if (deduct_Phic != null)
+                                {
+                                    IndexDeduction index_deduct = new IndexDeduction();
+                                    index_deduct.IndexOfPaymentId = index.FirstOrDefault(x=>x.Particulars == x.Particulars).IndexOfPaymentId;
+                                    index_deduct.DeductionId = deductionPhic;
+                                    index_deduct.Amount = Convert.ToDecimal(deduct_Phic);
+                                    indexes.indexDeductions.Add(index_deduct);
+                                }
+                                if (deduct_Pagibig != null)
+                                {
+                                    IndexDeduction index_deduct = new IndexDeduction();
+                                    index_deduct.IndexOfPaymentId = index.FirstOrDefault(x=>x.Particulars == x.Particulars).IndexOfPaymentId;
+                                    index_deduct.DeductionId = deductionPagibig;
+                                    index_deduct.Amount = Convert.ToDecimal(deduct_Pagibig);
+                                    indexes.indexDeductions.Add(index_deduct);
+                                }
+                                if (deduct_Coop != null)
+                                {
+                                    IndexDeduction index_deduct = new IndexDeduction();
+                                    index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars).IndexOfPaymentId;
+                                    index_deduct.DeductionId = deductionCoop;
+                                    index_deduct.Amount = Convert.ToDecimal(deduct_Coop);
+                                    indexes.indexDeductions.Add(index_deduct);
+                                }
+
+                            //}
+
+                    /*foreach (var indexId in index)
+                    {
+                        IndexDeduction index_deduct = new IndexDeduction();
+                        index_deduct.IndexOfPaymentId = indexId.IndexOfPaymentId;
+                        index_deduct.Amount = Convert.ToDecimal(deduct_Tax);
+
+                        indexes.indexDeductions.Add(index_deduct);
+                    }*/
+
+                    
+
+                    /*var deductions = deduct_Tax is not null ? deduct_Tax : null;
+                    var deductionId = deductionTax is not null ? deductionTax : deductionPhic is not null ? deductionPhic : deductionPagibig is not null ? deductionPagibig : deductionCoop is not null ? deductionCoop : null;
+
+                    var item = new IndexDeduction
+                    {
+                        DeductionId = deductionTax is not null ? deductionTax : deductionPhic is not null ? deductionPhic : deductionPagibig is not null ? deductionPagibig : deductionCoop is not null ? deductionCoop : null,
+                        Amount = Convert.ToDecimal(deduct_Tax),
+                        IndexOfPayment = indexes
+                    };
+                    indexes.indexDeductions.Add(item);*/
+                    //ColCount++;
+                    /*indexDeductions.Add(new IndexDeduction()
+                    {
+                        Amount = Convert.ToDecimal(deduct_Tax),
+                        DeductionId = deductionTax,
+                        IndexDeductionId = index.
+                    });*/
+                }
+                await _MyDbContext.AddRangeAsync(index);
+                var water = await _MyDbContext.SaveChangesAsync();
+                Console.WriteLine(water);
+                var test = sb.ToString();
+                return Ok();
+                //return Content(sb.ToString());
+            }
         }
 
         [HttpPost]

@@ -13,6 +13,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using fmis.Models.UserModels;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace fmis.Data
 {
@@ -89,6 +90,12 @@ namespace fmis.Data
         {
 
             base.OnModelCreating(modelBuilder);
+
+
+            /*modelBuilder.Entity<IndexOfPayment>()
+            .HasMany(o => o.indexDeductions)
+            .WithOne(i => i.IndexOfPayment)
+            .HasForeignKey(i => i.IndexOfPaymentId);*/
 
             modelBuilder.Entity<FmisUser>().ToTable("FmisUser");
             modelBuilder.Entity<BudgetAllotment>().ToTable("BudgetAllotment");

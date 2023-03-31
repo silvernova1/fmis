@@ -17,9 +17,9 @@ namespace fmis.Models.Accounting
         public int? NumberOfBill { get; set; }
         public ICollection<BillNumber> BillNumbers { get; set; }
         public List<IndexDeduction> indexDeductions { get; set; }
-        public double GrossAmount { get; set; }
-        public double TotalDeduction { get; set; }
-        public double NetAmount { get; set; }
+        public decimal GrossAmount { get; set; }
+        public decimal TotalDeduction { get; set; }
+        public decimal NetAmount { get; set; }
         public string Particulars { get; set; }
         public string PoNumber { get; set; }
         public int? ProjectId { get; set; }
@@ -42,7 +42,7 @@ namespace fmis.Models.Accounting
         public string date { get; set; }
         public string travel_period { get; set; }
         [ForeignKey("CategoryId")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         [JsonIgnore]
         public Category Category { get; set; }
         [ForeignKey("DvId")]
@@ -50,6 +50,12 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public Dv Dv { get; set; }
         public string UserId { get; set; }
+
+
+        [ForeignKey("payeeId")]
+        public int? payeeId { get; set; }
+        public Payee payee { get; set; }
+
         //public IEnumerable<SelectListItem> DvList { get; set; }
 
         /*public int IndexFundSourceId { get; set; }

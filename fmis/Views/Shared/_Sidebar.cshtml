@@ -688,13 +688,33 @@
                         <b class="arrow"></b>
                     </li>
 
-                    <li class="@if(ViewBag.filter.sub == "index_of_payment")
-                    @Html.Raw("active")">
-                        <a asp-area="" asp-controller="IndexOfPayment" asp-action="Index">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Index of Payment
+                    <li class="@if (ViewBag.filter.sub == "index_of_payment")
+                    @Html.Raw("active open")">
+
+                        <a href="#" class="dropdown-toggle">
+                            <span class="menu-text"> Index of Payment </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
                         </a>
-                        <b class="arrow"></b>
+                        <ul class="submenu">
+                            <li class="@if (ViewBag.filter.sub2 == "index")
+                     @Html.Raw("active")">
+                                <a asp-controller="IndexOfPayment" asp-action="Index">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    Index
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="@if (ViewBag.filter.sub2 == "import")
+                     @Html.Raw("active")">
+                                <a asp-controller="IndexOfPayment" asp-action="UploadIndex">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    Upload Index
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                
+                        </ul>
                     </li>
                 </ul>
             </li>
