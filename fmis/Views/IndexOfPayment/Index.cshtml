@@ -85,10 +85,10 @@
         </div>
     </div>
     <div class="col-md-7">
-        @if(Model.Where(x=>x.Category.CategoryDescription == ViewBag.searchString).Any() || Model.Where(x=>x.Dv.DvNo == ViewBag.searchString).Any() || Model.Where(x=>x.Dv.PayeeDesc == ViewBag.searchString).Any())
+        @if(Model.Where(x=>x.Category.CategoryDescription == ViewBag.searchString).Any() || Model.Where(x=>x.Dv?.DvNo == ViewBag.searchString).Any() || Model.Where(x=>x.Dv?.PayeeDesc == ViewBag.searchString).Any())
         {
             <form action="@Url.Action("Export","IndexOfPayment")" method="post" id="myform">
-                <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv.DvNo">
+                <input type="hidden" class="form-control" name="searchString" value="@Model.FirstOrDefault().Dv?.DvNo">
                 <a class="btn btn-primary btn-sm" onclick="document.getElementById('myform').submit()">
                     <i class="ace-icon fa fa-download"></i>Download
                 </a>
