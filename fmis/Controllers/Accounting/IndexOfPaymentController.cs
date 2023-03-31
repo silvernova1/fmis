@@ -575,15 +575,12 @@ namespace fmis.Controllers.Accounting
             indexes.TotalDeduction = index.TotalDeduction;
             indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
             indexes.ObligationId = index.ObligationId;
+            indexes.orsNo = index.orsNo;
             //indexes.allotmentClassType = index.allotmentClassType;
             /*indexes.orsNo = index.orsNo.Replace("," , "");
             indexes.orsNo = indexes.orsNo.Substring(0, indexes.orsNo.Length - 3);*/
             //indexes.fundSource = index.fundSource;
             //indexes.allotmentClassType = index.allotmentClassType;
-
-
-
-
 
 
             var ors = (from fundsource in _MyDbContext.FundSources
