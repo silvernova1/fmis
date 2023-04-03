@@ -1,4 +1,4 @@
-﻿ @model IEnumerable<fmis.Models.Accounting.Dv>
+﻿@model IEnumerable<fmis.Models.Accounting.Dv>
 @using System.Globalization;
 @{
     ViewData["Title"] = "DisbursementVoucher";
@@ -29,10 +29,9 @@
 </div>
 
 <!--EDIT MODAL-->
-<div class="modal fade" id="EditModal" role="dialog"  data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="EditModal" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-
         </div>
     </div>
 </div>
@@ -41,7 +40,6 @@
 <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-
         </div>
     </div>
 </div>
@@ -58,8 +56,8 @@
         </a>
     </div>
     <div class="col-md-4">
-        <form  id="search_form">
-            <input type="search" class="form-group" name="searchString"  style="width: 340px;" id="search" />
+        <form id="search_form">
+            <input type="search" class="form-group" name="searchString" style="width: 340px;" id="search" />
             <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
                 <i class="ace-icon fa fa-search "></i> Search
             </button> <button class="btn btn-sm btn-outline-success my-2 my-sm-0" style="margin-bottom: 3px;" type="button" onclick="viewAllClicked();">View All</button>
@@ -110,7 +108,7 @@
             </tr>
         </thead>
         <tbody>
-            @if(User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
             {
                 @foreach (var item in Model)
                 {
@@ -168,7 +166,7 @@
             }
             else
             {
-                @foreach (var item in Model.Where(x=>x.UserId == ViewBag.UserId))
+                @foreach (var item in Model.Where(x => x.UserId == ViewBag.UserId))
                 {
                     <tr>
                         <td>
@@ -222,7 +220,7 @@
                     </tr>
                 }
             }
-            
+
         </tbody>
     </table>
 }
@@ -233,8 +231,8 @@ else
         No Records found
     </div>
 }
-    @if(User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
-    {
+@if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+{
     <div class="row">
         <div class="pull-right">
             <div class="infobox infobox-green">
@@ -258,8 +256,8 @@ else
             <div class="vspace-12-sm"></div>
         </div>
     </div>
-    }
-    @*@if (ViewBag.searchString == null)
+}
+@*@if (ViewBag.searchString == null)
     {
         <div class="row">
             <div class="pull-right">
@@ -350,4 +348,8 @@ else
         $('#search').val('');
         $('#search_form').submit();
     }
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> cf4af5ad43a5a62c272bd8f4a5d7062a8cac0404
