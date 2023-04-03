@@ -1,4 +1,4 @@
-﻿ @model IEnumerable<fmis.Models.Accounting.Dv>
+﻿@model IEnumerable<fmis.Models.Accounting.Dv>
 @using System.Globalization;
 @{
     ViewData["Title"] = "DisbursementVoucher";
@@ -29,10 +29,9 @@
 </div>
 
 <!--EDIT MODAL-->
-<div class="modal fade" id="EditModal" role="dialog"  data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="EditModal" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-
         </div>
     </div>
 </div>
@@ -41,7 +40,6 @@
 <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-
         </div>
     </div>
 </div>
@@ -58,8 +56,8 @@
         </a>
     </div>
     <div class="col-md-4">
-        <form  id="search_form">
-            <input type="search" class="form-group" name="searchString"  style="width: 340px;" id="search" />
+        <form id="search_form">
+            <input type="search" class="form-group" name="searchString" style="width: 340px;" id="search" />
             <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
                 <i class="ace-icon fa fa-search "></i> Search
             </button> <button class="btn btn-sm btn-outline-success my-2 my-sm-0" style="margin-bottom: 3px;" type="button" onclick="viewAllClicked();">View All</button>
@@ -110,64 +108,9 @@
             </tr>
         </thead>
         <tbody>
-            @if(User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+            @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
             {
                 @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @item.FundCluster?.FundClusterDescription
-                        </td>
-                        <td>
-                            @* @Html.DisplayFor(modelItem => item.Date)*@
-                            @item.Date.ToString("dd/MM/yyyy")
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DvNo)
-                        </td>
-                        <td style="width: 50px;">
-                            @Html.DisplayFor(modelItem => item.Payee.PayeeDescription)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RespoCenter.Respo)
-                        </td>
-                        <td style="width: 300px;">
-                            @Html.DisplayFor(modelItem => item.Particulars)
-                        </td>
-                        <td>
-                            ₱@item.GrossAmount.ToString("##,##0.00")
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                @foreach (var deduction in item.dvDeductions)
-                                {
-                                    <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
-                                }
-                            </select>
-                        </td>
-                        <td>
-                            ₱@item.TotalDeduction.ToString("##,##0.00")
-                        </td>
-                        <td>
-                            ₱@item.NetAmount.ToString("##,##0.00")
-                        </td>
-                        <td>
-
-                            <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
-                                <i class="ace-icon fa fa-edit"></i>
-                            </a>
-                            @* <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Dv",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Dv?');">
-                <i class="ace-icon fa fa-trash"></i>
-                </a>*@
-                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
-                            <i class="ace-icon fa fa-file-pdf-o"></i>
-                        </a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                @foreach (var item in Model.Where(x=>x.UserId == ViewBag.UserId))
                 {
                     <tr>
                         <td>
@@ -221,7 +164,63 @@
                     </tr>
                 }
             }
-            
+            else
+            {
+                @foreach (var item in Model.Where(x => x.UserId == ViewBag.UserId))
+                {
+                    <tr>
+                        <td>
+                            @item.FundCluster?.FundClusterDescription
+                        </td>
+                        <td>
+                            @* @Html.DisplayFor(modelItem => item.Date)*@
+                            @item.Date.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DvNo)
+                        </td>
+                        <td style="width: 50px;">
+                            @Html.DisplayFor(modelItem => item.Payee.PayeeDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RespoCenter.Respo)
+                        </td>
+                        <td style="width: 300px;">
+                            @Html.DisplayFor(modelItem => item.Particulars)
+                        </td>
+                        <td>
+                            ₱@item.GrossAmount.ToString("##,##0.00")
+                        </td>
+                        <td>
+                            <select class="form-control">
+                                @foreach (var deduction in item.dvDeductions)
+                                {
+                                    <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            ₱@item.TotalDeduction.ToString("##,##0.00")
+                        </td>
+                        <td>
+                            ₱@item.NetAmount.ToString("##,##0.00")
+                        </td>
+                        <td>
+
+                            <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
+                                <i class="ace-icon fa fa-edit"></i>
+                            </a>
+                            @* <a class="btn btn-xs btn-danger" href="@Url.Action("Delete","Dv",new { id = @item.DvId })" onclick="return confirm('Do you want to delete this Dv?');">
+                <i class="ace-icon fa fa-trash"></i>
+                </a>*@
+                            <a class="btn btn-xs btn-success" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+
         </tbody>
     </table>
 }
@@ -232,8 +231,8 @@ else
         No Records found
     </div>
 }
-    @if(User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
-    {
+@if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+{
     <div class="row">
         <div class="pull-right">
             <div class="infobox infobox-green">
@@ -257,8 +256,8 @@ else
             <div class="vspace-12-sm"></div>
         </div>
     </div>
-    }
-    @*@if (ViewBag.searchString == null)
+}
+@*@if (ViewBag.searchString == null)
     {
         <div class="row">
             <div class="pull-right">
@@ -350,4 +349,3 @@ else
         $('#search_form').submit();
     }
 </script>
-
