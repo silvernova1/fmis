@@ -400,7 +400,7 @@ namespace fmis.Controllers.Accounting
         }
 
         [HttpGet]
-        public async Task<IActionResult> UploadIndex()
+        public IActionResult UploadIndex()
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "import");
             return View();
@@ -439,17 +439,7 @@ namespace fmis.Controllers.Accounting
                 {
                     
 
-                    var amount = worksheet.Cells[row, 13].Value?.ToString();
-
-                    var indexes = new IndexOfPayment
-                    {
-                        payeeId = payeeId,
-                        CategoryId = categoryId,
-                        Particulars = worksheet.Cells[row, 4].Text,
-                        GrossAmount = Convert.ToDecimal(amount),
-                        indexDeductions = new List<IndexDeduction>()
-                    };
-                    index.Add(indexes);
+                    
                     /*index.Add(new IndexOfPayment()
                     {
                         payeeId = payeeId,
@@ -469,12 +459,36 @@ namespace fmis.Controllers.Accounting
                     var deduct_Pagibig = worksheet.Cells[row, 16].Value?.ToString();
                     var deduct_Coop = worksheet.Cells[row, 17].Value?.ToString();
 
+                    var amount = worksheet.Cells[row, 13].Value?.ToString();
+
+                    var deduct_TaxCell = worksheet.Cells[row, 14].GetValue<decimal>();
+                    var deduct_PhicCell = worksheet.Cells[row, 15].GetValue<decimal>();
+                    var deduct_PagibigCell = worksheet.Cells[row, 16].GetValue<decimal>();
+                    var deduct_CoopCell = worksheet.Cells[row, 17].GetValue<decimal>();
+                    var total_deductions = deduct_TaxCell + deduct_PhicCell + deduct_PagibigCell + deduct_CoopCell;
+
+                    var indexes = new IndexOfPayment
+                    {
+                        CreatedBy = Username,
+                        payeeId = payeeId,
+                        CategoryId = categoryId,
+                        Particulars = worksheet.Cells[row, 4].Text,
+                        GrossAmount = Convert.ToDecimal(amount),
+                        TotalDeduction = Convert.ToDecimal(total_deductions),
+                        NetAmount = Convert.ToDecimal(amount) - total_deductions,
+                        indexDeductions = new List<IndexDeduction>()
+                    };
+                    if (!string.IsNullOrEmpty(worksheet.Cells[row, 4].Text))
+                    {
+                        index.Add(indexes);
+                    }
+
+                    
 
 
-
-                            //for (ColCount = 14; ColCount <= 17; ColCount++)
-                            //{
-                                if (deduct_Tax != null)
+                    //for (ColCount = 14; ColCount <= 17; ColCount++)
+                    //{
+                    if (deduct_Tax != null)
                                 {
                                     IndexDeduction index_deduct = new IndexDeduction();
                                     index_deduct.IndexOfPaymentId = index.FirstOrDefault(x=>x.Particulars == x.Particulars).IndexOfPaymentId;
@@ -507,6 +521,7 @@ namespace fmis.Controllers.Accounting
                                     indexes.indexDeductions.Add(index_deduct);
                                 }
 
+
                             //}
 
                     /*foreach (var indexId in index)
@@ -518,7 +533,7 @@ namespace fmis.Controllers.Accounting
                         indexes.indexDeductions.Add(index_deduct);
                     }*/
 
-                    
+
 
                     /*var deductions = deduct_Tax is not null ? deduct_Tax : null;
                     var deductionId = deductionTax is not null ? deductionTax : deductionPhic is not null ? deductionPhic : deductionPagibig is not null ? deductionPagibig : deductionCoop is not null ? deductionCoop : null;
