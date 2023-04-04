@@ -433,22 +433,9 @@ namespace fmis.Controllers.Accounting
 
                 var payeeId = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeDescription == "LANDBANK OF THE PHILIPPINES").PayeeId;
                 var categoryId = _MyDbContext.Category.FirstOrDefault(x => x.CategoryId == 25).CategoryId;
-
-                //List<IndexDeduction> indexDeductions = new();
+                int dvRow = 9;
                 for (int row = 9; row <= rowCount; row++)
                 {
-                    
-
-                    
-                    /*index.Add(new IndexOfPayment()
-                    {
-                        payeeId = payeeId,
-                        CategoryId = categoryId,
-                        Particulars = worksheet.Cells[row, 4].Text,
-                        GrossAmount = Convert.ToDecimal(amount),
-                        indexDeductions = new List<IndexDeduction>()
-                    });*/
-
                     var deductionTax = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 22).DeductionId;
                     var deductionPhic = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 23).DeductionId;
                     var deductionPagibig = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 24).DeductionId;
@@ -467,12 +454,15 @@ namespace fmis.Controllers.Accounting
                     var deduct_CoopCell = worksheet.Cells[row, 17].GetValue<decimal>();
                     var total_deductions = deduct_TaxCell + deduct_PhicCell + deduct_PagibigCell + deduct_CoopCell;
 
+                    var dvId = _MyDbContext.Dv.FirstOrDefault(x => x.DvNo == worksheet.Cells[dvRow, 23].Text).DvId;
+
                     var indexes = new IndexOfPayment
                     {
                         CreatedBy = Username,
+                        DvId = dvId,
                         payeeId = payeeId,
                         CategoryId = categoryId,
-                        Particulars = worksheet.Cells[row, 4].Text,
+                        Particulars = /*worksheet.Cells[row, 4].Text,*/ _MyDbContext.Dv.FirstOrDefault(x=>x.DvId == dvId).Particulars,
                         GrossAmount = Convert.ToDecimal(amount),
                         TotalDeduction = Convert.ToDecimal(total_deductions),
                         NetAmount = Convert.ToDecimal(amount) - total_deductions,
@@ -483,12 +473,7 @@ namespace fmis.Controllers.Accounting
                         index.Add(indexes);
                     }
 
-                    
-
-
-                    //for (ColCount = 14; ColCount <= 17; ColCount++)
-                    //{
-                    if (deduct_Tax != null)
+                                if (deduct_Tax != null)
                                 {
                                     IndexDeduction index_deduct = new IndexDeduction();
                                     index_deduct.IndexOfPaymentId = index.FirstOrDefault(x=>x.Particulars == x.Particulars).IndexOfPaymentId;
@@ -521,44 +506,12 @@ namespace fmis.Controllers.Accounting
                                     indexes.indexDeductions.Add(index_deduct);
                                 }
 
-
-                            //}
-
-                    /*foreach (var indexId in index)
-                    {
-                        IndexDeduction index_deduct = new IndexDeduction();
-                        index_deduct.IndexOfPaymentId = indexId.IndexOfPaymentId;
-                        index_deduct.Amount = Convert.ToDecimal(deduct_Tax);
-
-                        indexes.indexDeductions.Add(index_deduct);
-                    }*/
-
-
-
-                    /*var deductions = deduct_Tax is not null ? deduct_Tax : null;
-                    var deductionId = deductionTax is not null ? deductionTax : deductionPhic is not null ? deductionPhic : deductionPagibig is not null ? deductionPagibig : deductionCoop is not null ? deductionCoop : null;
-
-                    var item = new IndexDeduction
-                    {
-                        DeductionId = deductionTax is not null ? deductionTax : deductionPhic is not null ? deductionPhic : deductionPagibig is not null ? deductionPagibig : deductionCoop is not null ? deductionCoop : null,
-                        Amount = Convert.ToDecimal(deduct_Tax),
-                        IndexOfPayment = indexes
-                    };
-                    indexes.indexDeductions.Add(item);*/
-                    //ColCount++;
-                    /*indexDeductions.Add(new IndexDeduction()
-                    {
-                        Amount = Convert.ToDecimal(deduct_Tax),
-                        DeductionId = deductionTax,
-                        IndexDeductionId = index.
-                    });*/
                 }
                 await _MyDbContext.AddRangeAsync(index);
                 var water = await _MyDbContext.SaveChangesAsync();
                 Console.WriteLine(water);
                 var test = sb.ToString();
                 return Ok();
-                //return Content(sb.ToString());
             }
         }
 

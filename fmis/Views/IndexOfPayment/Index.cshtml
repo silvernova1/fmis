@@ -121,9 +121,8 @@
                     <th> Dv # </th>
                     <th> Payee </th>
                     <th> Date </th>
-                    <th> Particulars </th>
+                    <th style="white-space: nowrap;"> Particulars </th>
                     <th> PO #  </th>
-
                     <th> Invoice #  </th>
                     <th> Project Id </th>
                     @*<th> # of Billing </th>*@
@@ -175,7 +174,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.DvDate)
                             </td>
-                            <td>
+                            <td style="width: 150px">
                                 @Html.DisplayFor(modelItem => item.Particulars)
                             </td>
                             <td>
@@ -260,7 +259,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.DvDate)
                             </td>
-                            <td>
+                            <td style="width: 150px">
                                 @Html.DisplayFor(modelItem => item.Particulars)
                             </td>
                             <td>
