@@ -44,10 +44,20 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="form-group">
-                        <label>PAYEE :</label>
-                        <input id="payeeDesc" class="form-control" readonly />
-                    </div>
+                    @if (ViewBag.payee != null)
+                    { 
+                        <div class="form-group">
+                            <label>PAYEE :</label>
+                            <input value="@ViewBag.payee" class="form-control" readonly />
+                        </div>
+                    }
+                    @if(ViewBag.payee == null)
+                    {
+                        <div class="form-group">
+                            <label>PAYEE :</label>
+                            <input id="payeeDesc" class="form-control" readonly />
+                        </div>
+                    }
                 </div>
             </div>
             <div>
@@ -370,7 +380,7 @@
             data: "id=" + selected_val,
             success: function (data) {
                 if (data.length > 0) {
-                    $('#payeeDesc').val(data[0].payeeDesc);
+                     $('#payeeDesc').val(data[0].payeeDesc);
                 }
                 else {
                     $('#payeeDesc').val('');
