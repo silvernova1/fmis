@@ -676,6 +676,7 @@ namespace fmis.Controllers.Accounting
                     {
                     foreach (var deductions in item.dvDeductions.ToList())
                         {
+                            
                         //return Json(item.dvDeductions.Select(x => x.Deduction.DeductionDescription).ToList());
                         }
                     }
@@ -685,7 +686,7 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_ro6_width = { 20, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n" + deduct + "\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n" + fundCluster.FirstOrDefault().dvDeduction.FirstOrDefault(x=>x.DvId == id).Deduction.DeductionDescription + "\n\n\n\n\n\n\n\n\n Amount Due", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" + 

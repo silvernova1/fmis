@@ -121,8 +121,9 @@
                     <th> Dv # </th>
                     <th> Payee </th>
                     <th> Date </th>
-                    <th style="white-space: nowrap;"> Particulars </th>
+                    <th> Particulars </th>
                     <th> PO #  </th>
+
                     <th> Invoice #  </th>
                     <th> Project Id </th>
                     @*<th> # of Billing </th>*@
@@ -155,26 +156,26 @@
                             <td nowrap="nowrap">
                                 @Html.DisplayFor(modelItem => item.orsNo)
                             </td>
-                            @*<td nowrap="nowrap">
-                @if (@ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault()?.Name == null)
-                {
-                @Html.DisplayFor(modelItem => item.orsNo)
-                }
-                else
-                {
-                @ors_List.Where(x => x.Id == item.ObligationId).FirstOrDefault().Name
-                }
-                </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Dv.DvNo)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
+                            @if(item.payeeId == null)
+                            {
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Dv.Payee.PayeeDescription)
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                @Html.DisplayFor(modelItem => item.payee.PayeeDescription)
                             </td>
+                            }
+                            
                             <td>
                                 @Html.DisplayFor(modelItem => item.DvDate)
                             </td>
-                            <td style="width: 150px">
+                            <td style="width: 50px">
                                 @Html.DisplayFor(modelItem => item.Particulars)
                             </td>
                             <td>
@@ -259,7 +260,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.DvDate)
                             </td>
-                            <td style="width: 150px">
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Particulars)
                             </td>
                             <td>
@@ -271,20 +272,6 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ProjectId)
                             </td>
-                            @*@if (item.BillNumbers.Any())
-                {
-                <td>
-                @Html.DisplayFor(modelItem => item.NumberOfBill),
-
-                @String.Join(", ", item.BillNumbers.Select(p => p.NumberOfBilling).ToArray())
-                </td>
-                }
-                else
-                {
-                <td>
-                @Html.DisplayFor(modelItem => item.NumberOfBill)
-                </td>
-                }*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.PeriodCover)
                             </td>
