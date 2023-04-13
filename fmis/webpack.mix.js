@@ -1,4 +1,12 @@
 const mix = require('laravel-mix');
 
-mix.js('VueSrc/app.js', 'wwwroot/vue/dist').vue()
-    .sass('VueSrc/app.scss', 'wwwroot/vue/dist');
+mix.webpackConfig({
+    resolve: {
+        alias: {
+            '@': __dirname + '/VueSrc'
+        },
+    },
+})
+
+mix.ts('vuesrc/app.ts', 'wwwroot/vue/dist').vue()
+    .sass('vuesrc/app.scss', 'wwwroot/vue/dist');

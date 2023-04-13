@@ -157,6 +157,16 @@
 
                         <b class="arrow"></b>
                     </li>
+                    <li class="@if (ViewBag.filter.sub == "Handsontable")
+                @Html.Raw("active")
+">
+                        <a asp-controller="Handsontable" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Handsontable
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
                     <li class="@if (ViewBag.filter.sub == "respocenter")
                 @Html.Raw("active")">
                         <a asp-controller="RespoCenter" asp-action="Index">
