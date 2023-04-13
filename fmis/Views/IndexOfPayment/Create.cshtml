@@ -23,319 +23,349 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 1000px;">
-    <form asp-action="Create" style="position:center;">
-        <div class="col-md-12">
-            <div class="col-md-3">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label>Category: </label>
-                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" required>
-                        <option> - Select Category - </option>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="container" style="height: 1000px;">
+        <form asp-action="Create" style="position:center;" method="post">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label>Category: </label>
+                        <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" required>
+                            <option> - Select Category - </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Dv Number: </label>
+                            @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
+                            @if (ViewBag.Message != null && ViewBag.Message == "Exist")
+                            {
+                                <br />
+
+                                <span style="color:red;">Already exist.</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Payee:</label>
+                            <input id="payeeDesc" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="col-md-3">
+                        <label>Date: </label>
+                        <input asp-for="DvDate" type="date" class="form-control" id="dvDate" required>
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Particulars: </label>
+                        <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
+                        <option value="0"> - Select Fund Source - </option>
+                        <option value="1"> Regular Agency Fund  </option>
+                        <option value="2"> Foreign Assisted Project Fund </option>
+                        <option value="3"> Special Accounts - Locally Funded  </option>
+                        <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
+                        <option value="5"> Internally Generated Income </option>
+                        <option value="6"> Business Type Income </option>
+                        <option value="7"> Trust Fund </option>
                     </select>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3" id="fundSource" style="display: none">
                     <div class="form-group">
-                        <label>Dv Number: </label>
-                        @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
-                        @if (ViewBag.Message != null && ViewBag.Message == "Exist")
-                        {
-                            <br /><span style="color:red;">Already exist.</span>
-                        }
+                        <textarea placeholder="Ors Number" asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Payee:</label>
-                        <input id="payeeDesc" class="form-control" readonly />
-                    </div>
+                    <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
+                        <option value="0"> - Select Allotment Class - </option>
+                        <option value="1">  PS  </option>
+                        <option value="2">  MOOE </option>
+                        <option value="3">  CO  </option>
+                    </select>
                 </div>
-            </div>
-            <div>
                 <div class="col-md-3">
-                    <label>Date: </label>
-                    <input asp-for="DvDate" type="date" class="form-control" id="dvDate" required >
-                    <span class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Particulars: </label>
-                    <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control" required></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12">
-             <div class="col-md-3">
-                <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
-                    <option value="0"> - Select Fund Source - </option>
-                    <option value="1"> Regular Agency Fund  </option>
-                    <option value="2"> Foreign Assisted Project Fund </option>
-                    <option value="3"> Special Accounts - Locally Funded  </option>
-                    <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
-                    <option value="5"> Internally Generated Income </option>
-                    <option value="6"> Business Type Income </option>
-                    <option value="7"> Trust Fund </option>
-                </select>
-            </div>
-            <div class="col-md-3" id="fundSource" style="display: none">
-                <div class="form-group">
-                    <textarea placeholder="Ors Number"  asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
-                    </div>
-            </div>
-            <div class="col-md-3">
-                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
-                    <option value="0"> - Select Allotment Class - </option>
-                    <option value="1">  PS  </option>
-                    <option value="2">  MOOE </option>
-                    <option value="3">  CO  </option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group" id="obligation">
-                    <select asp-for="ObligationId" class="form-control select2"></select>
-                    <option value="orsNo"></option>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
-                <div class="form-group">
-                    <label>PO #:</label>
-                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px"/>
-                </div>
-                <div class="row">
-                    <label class="col-sm-2"></label>
-                    <div class="col-sm-10">
-                        <p id="Status" />
+                    <div class="form-group" id="obligation">
+                        <select asp-for="ObligationId" class="form-control select2"></select>
+                        <option value="orsNo"></option>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
-                <div class="form-group">
-                    <label>PROJECT ID:</label>
-                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px"/>
-                </div>
-                <div class="row">
-                    <label class="col-sm-2"></label>
-                    <div class="col-sm-10">
-                        <p id="ProjectCheck" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
-                <div class="form-group">
-                    <label>INVOICE #:</label>
-                    <textarea asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()"  style="resize: none; overflow: auto; height:35px" />
-                </div>
-                <div class="row">
-                    <label class="col-sm-2"></label>
-                    <div class="col-sm-10">
-                        <p id="InvoiceCheck" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
-                <div class="form-group">
-                    <label>Period Cover:</label>
-                    <input type="month" asp-for="PeriodCover" id="periodCover" class="form-control" onchange="PeriodCheck()">
-                </div>
-                <div class="row">
-                    <label class="col-sm-2"></label>
-                    <div class="col-sm-10">
-                        <p id="PeriodCheck" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
-                <div class="form-group">
-                    <label>Period Covered From-To:</label>
-                    <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()" />
-                </div>
-                <div class="row">
-                    <label class="col-sm-2"></label>
-                    <div class="col-sm-10">
-                        <p id="FromToCheck" />
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
+            <div class="col-md-12">
+                <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                     <div class="form-group">
-                        <label>S.O #:</label>
-                        <textarea  asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" />
+                        <label>PO #:</label>
+                        <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
                         <div class="col-sm-10">
-                            <p id="SoCheck" />
+                            <p id="Status" />
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
+                <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                     <div class="form-group">
-                        <label>TRAVEL PERIOD:</label>
-                        <input type="text" name="travel_period" asp-for="travel_period" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
-                    <div class="form-group">
-                        <label>ACCOUNT #:</label>
-                        <textarea  asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" style="resize: none; overflow: auto; height:35px" />
+                        <label>PROJECT ID:</label>
+                        <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px" />
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
                         <div class="col-sm-10">
-                            <p id="AccNoCheck" />
+                            <p id="ProjectCheck" />
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
+                <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
                     <div class="form-group">
-                        <label># OF BILLING: (FIRST, SECOND):</label>
-                        <textarea asp-for="NumberOfBill" class="form-control" style="resize: none; overflow: auto; height:35px" />
+                        <label>INVOICE #:</label>
+                        <textarea asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" style="resize: none; overflow: auto; height:35px" />
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="InvoiceCheck" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
+                    <div class="form-group">
+                        <label>Period Cover:</label>
+                        @*<input asp-for="PeriodCover" type="text" name="daterange" />*@
+                        @*<input type="text" name="daterange" id="daterange" />*@
+                        <input type="text" asp-for="PeriodCover" class="form-control" name="daterange">
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="PeriodCheck" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+                    <div class="form-group">
+                        <label>Period Covered From-To:</label>
+                        <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()" />
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="FromToCheck" />
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
+                        <div class="form-group">
+                            <label>S.O #:</label>
+                            <textarea asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" />
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-2"></label>
+                            <div class="col-sm-10">
+                                <p id="SoCheck" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
+                        <div class="form-group">
+                            <label>TRAVEL PERIOD:</label>
+                            <input type="text" name="travel_period" asp-for="travel_period" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
+                        <div class="form-group">
+                            <label>ACCOUNT #:</label>
+                            <textarea asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" style="resize: none; overflow: auto; height:35px" />
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-2"></label>
+                            <div class="col-sm-10">
+                                <p id="AccNoCheck" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
+                        <div class="form-group">
+                            <label># OF BILLING: (FIRST, SECOND):</label>
+                            <textarea asp-for="NumberOfBill" class="form-control" style="resize: none; overflow: auto; height:35px" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" style="margin-top: 20px;">
-            <div class="col-md-2" style="width: 250px; ">
-                <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
-                    <label style="font-weight:bold;">GROSS AMOUNT: </label>
+            <div class="col-md-12" style="margin-top: 20px;">
+                <div class="col-md-2" style="width: 250px; ">
+                    <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
+                        <label style="font-weight:bold;">GROSS AMOUNT: </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text"  />
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" />
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text"  />
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" />
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" />
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12" onchange="submitDeduction(this);">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text"  />
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction - </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text"  />
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <div class="form-group" style="margin-left: 80px; margin-top: 5px;">
+                        <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="total_deduction" placeholder="0.00" readonly />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <div class="form-group" style="margin-left: 80px; margin-top: 5px;">
-                    <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
+                        <label style="font-weight:bold;">NET AMOUNT: </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="net_amount" placeholder="0.00" readonly />
+                    </div>
+                </div>
+                <div class="col-md-12" style="margin-left: 260px;">
+                    <div class="form-group">
+                        <input type="submit" id="Btn" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="text" id="total_deduction" placeholder="0.00" readonly />
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
-                    <label style="font-weight:bold;">NET AMOUNT: </label>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" type="text" id="net_amount" placeholder="0.00" readonly />
-                </div>
-            </div>
-            <div class="col-md-12" style="margin-left: 260px;">
-                <div class="form-group">
-                    <input type="submit" id="Btn" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
-                </div>
-            </div>
-        </div>
 
-        @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
-
-
-    </form>
-</div>
+            @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
+        </form>
+    </div>
+}
 
 
 
 <script>
+
+    //date range
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left'
+        }, function (start, end, label) {
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            var data = { startDate: start.format('DD/MM/YYYY'), endDate: end.format('DD/MM/YYYY'), __RequestVerificationToken: token };
+            console.log(data);
+            $.ajax({
+                url: '@Url.Action("Create", "IndexOfPayment")',
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    // handle success
+                },
+                error: function (xhr, status, error) {
+                    // handle error
+                }
+            });
+        });
+    });
 
     //cascade dropdownlist for allotment class
     $(function () {
@@ -353,17 +383,7 @@
 
         });
 
-        $('input[type=text]').click(function () {
-            if ($(this).val() === '0') {
-                $(this).val('');
-            }
-        }).change(function () {
-            updateTextView($(this));
-        }).focusout(function () {
-            if (this.value === '') {
-                this.value = '0';
-            }
-        })
+        
 
     });
 
@@ -756,8 +776,4 @@
             }
         });
     });
-
-
-
-
 </script>

@@ -205,16 +205,21 @@ namespace fmis.Controllers.Accounting
                 int ColCount = worksheet.Dimension.Columns;
                 List<Payee> payee = new();
 
-              
+                
+
                 timer.Start();
                 for (int row = 1; row <= rowCount; row++)
                 {
                     string payeeToken = Guid.NewGuid().ToString();
                     var payee_Type = worksheet.Cells[row, 3].Text;
-                   
-                          payee.Add(new Payee()
+
+                    string payeeDesc = worksheet.Cells[row, 1].Text;
+                    char[] chartoTrim = { ' ', '\t' };
+                    string trimmedPayeeDesc = payeeDesc.TrimEnd(chartoTrim);
+
+                    payee.Add(new Payee()
                           {
-                                PayeeDescription = worksheet.Cells[row, 1].Text,
+                                PayeeDescription = trimmedPayeeDesc,
                                 TinNo = worksheet.Cells[row, 2].Text,
                                 payee_type = payee_Type,
                                 token = payeeToken,
