@@ -23,11 +23,8 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm"}))
-{
-    @Html.AntiForgeryToken()
-    <div class="container" style="height: 1000px;">
-        <form asp-action="Create" style="position:center;" method="post">
+<div class="container" style="height: 1000px;">
+        <form asp-action="Create" style="position:center;">
             <div class="col-md-12">
                 <div class="col-md-3">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -147,7 +144,7 @@
                         <label>Period Cover:</label>
                         @*<input asp-for="PeriodCover" type="text" name="daterange" />*@
                         @*<input type="text" name="daterange" id="daterange" />*@
-                        <input type="text" asp-for="PeriodCover" class="form-control" name="daterange">
+                        <input type="text" asp-for="PeriodCover" class="form-control" name="daterange" id="daterange" onchange="PeriodCheck()">
                     </div>
                     <div class="row">
                         <label class="col-sm-2"></label>
@@ -337,7 +334,6 @@
             @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
         </form>
     </div>
-}
 
 
 
@@ -348,10 +344,8 @@
         $('input[name="daterange"]').daterangepicker({
             opens: 'left'
         }, function (start, end, label) {
-            var form = $('#__AjaxAntiForgeryForm');
-            var token = $('input[name="__RequestVerificationToken"]', form).val();
             console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-            var data = { startDate: start.format('DD/MM/YYYY'), endDate: end.format('DD/MM/YYYY'), __RequestVerificationToken: token };
+            var data = { startDate: start.format('DD/MM/YYYY'), endDate: end.format('DD/MM/YYYY')};
             console.log(data);
             $.ajax({
                 url: '@Url.Action("Create", "IndexOfPayment")',
@@ -383,7 +377,40 @@
 
         });
 
-        
+        //adding zero
+        const allNumberInputs = document.querySelectorAll('input[type="text"]');
+        const noZeroInput = document.getElementById('daterange');
+
+        allNumberInputs.forEach(input => {
+          if (input !== noZeroInput) {
+            input.addEventListener('blur', addLeadingZero);
+          }
+        });
+
+        function addLeadingZero(event) {
+          const input = event.target;
+          const value = input.value.trim();
+
+          if (value !== '' && !isNaN(value) && value[0] !== '0') {
+            input.value = parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+          }
+          if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }
+
+        @*$('input[type=text]').click(function () {
+            if ($(this).val() === '0') {
+                $(this).val('');
+            }
+
+        }).change(function () {
+            updateTextView($(this));
+        }).focusout(function () {
+            if (this.value === '') {
+                this.value = '0';
+            }
+        })*@
 
     });
 
@@ -459,17 +486,17 @@
         $("#PeriodCheck").html("Checking...");
         $.post("@Url.Action("CheckPeriodExist", "IndexOfPayment")",
             {
-                periodCover: $("#periodCover").val()
+                periodCover: $("#daterange").val()
             },
         function (data) {
             if (data == 0) {
                 $("#PeriodCheck").html('<font color="Green">Available</font>');
-                $("#periodCover").css("border-color", "Green");
+                $("#daterange").css("border-color", "Green");
 
             }
             else {
                 $("#PeriodCheck").html('<font color="Red">Already Exist!</font>');
-                $("#periodCover").css("border-color", "Red");
+                $("#daterange").css("border-color", "Red");
             }
         });
     }
