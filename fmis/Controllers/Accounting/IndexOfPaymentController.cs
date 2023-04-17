@@ -139,12 +139,15 @@ namespace fmis.Controllers.Accounting
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment, string startDate, string endDate)
+        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment, string daterange)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
-            indexOfPayment.PeriodCover = startDate + " - " + endDate;
 
+            if (indexOfPayment.PeriodCover == null)
+            {
+                indexOfPayment.PeriodCover = daterange;
+            }
 
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligation in _MyDbContext.Obligation
@@ -273,9 +276,9 @@ namespace fmis.Controllers.Accounting
                 return Json(0);
             }
         }
-        /*public JsonResult CheckPeriodExist(string periodCover)
+        public JsonResult CheckPeriodExist(string daterange)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.PeriodCover == periodCover && x.IndexOfPaymentId != x.IndexOfPaymentId).SingleOrDefault();
+            var data = _MyDbContext.Indexofpayment.Where(x => x.PeriodCover == daterange && x.IndexOfPaymentId != x.IndexOfPaymentId).SingleOrDefault();
 
             if (data != null)
             {
@@ -285,7 +288,7 @@ namespace fmis.Controllers.Accounting
             {
                 return Json(0);
             }
-        }*/
+        }
         public JsonResult CheckProjectExist(int project)
         {
             var data = _MyDbContext.Indexofpayment.Where(x => x.ProjectId == project).SingleOrDefault();
@@ -536,7 +539,7 @@ namespace fmis.Controllers.Accounting
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IndexOfPayment index)
+        public async Task<IActionResult> Edit(IndexOfPayment index, string daterange)
         {
             var indexes = await _MyDbContext.Indexofpayment
                 .Include(x => x.Dv)
@@ -553,7 +556,7 @@ namespace fmis.Controllers.Accounting
             indexes.InvoiceNumber = index.InvoiceNumber;
             indexes.ProjectId = index.ProjectId;
             indexes.NumberOfBill = index.NumberOfBill;
-            indexes.PeriodCover = index.PeriodCover;
+            indexes.PeriodCover = daterange;
             indexes.date = index.date;
             indexes.travel_period = index.travel_period;
             indexes.SoNumber = index.SoNumber;
