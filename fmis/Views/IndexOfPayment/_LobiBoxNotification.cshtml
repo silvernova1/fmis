@@ -1,0 +1,14 @@
+﻿<div id="lobibox-notification"></div>
+
+@section scripts {
+    <script>
+        $(function () {
+            var notification = @Html.Raw(Model);
+
+            Lobibox.notify(notification.type, {
+                msg: notification.message,
+                title: notification.title
+            });
+        });
+    </script>
+}

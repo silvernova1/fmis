@@ -24,343 +24,328 @@
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
 <div class="container" style="height: 1000px;">
-        <form asp-action="Create" style="position:center;">
-            <div class="col-md-12">
+    <form asp-action="Create" style="position:center;">
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label>Category: </label>
+                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" required>
+                        <option> - Select Category - </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-3">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label>Category: </label>
-                        <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" required>
-                            <option> - Select Category - </option>
-                        </select>
+                        <label>Dv Number: </label>
+                        @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
+                        @if (ViewBag.Message != null && ViewBag.Message == "Exist")
+                        {
+                            <br />
+
+                            <span style="color:red;">Already exist.</span>
+                        }
                     </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Payee:</label>
+                        <input id="payeeDesc" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="col-md-3">
+                    <label>Date: </label>
+                    <input asp-for="DvDate" type="date" class="form-control" id="dvDate" required>
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Particulars: </label>
+                    <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control" required></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
+                    <option value="0"> - Select Fund Source - </option>
+                    <option value="1"> Regular Agency Fund  </option>
+                    <option value="2"> Foreign Assisted Project Fund </option>
+                    <option value="3"> Special Accounts - Locally Funded  </option>
+                    <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
+                    <option value="5"> Internally Generated Income </option>
+                    <option value="6"> Business Type Income </option>
+                    <option value="7"> Trust Fund </option>
+                </select>
+            </div>
+            <div class="col-md-3" id="fundSource" style="display: none">
+                <div class="form-group">
+                    <textarea placeholder="Ors Number" asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
+                    <option value="0"> - Select Allotment Class - </option>
+                    <option value="1">  PS  </option>
+                    <option value="2">  MOOE </option>
+                    <option value="3">  CO  </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group" id="obligation">
+                    <select asp-for="ObligationId" class="form-control select2"></select>
+                    <option value="orsNo"></option>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
+                <div class="form-group">
+                    <label>PO #:</label>
+                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px" />
                 </div>
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Dv Number: </label>
-                            @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
-                            @if (ViewBag.Message != null && ViewBag.Message == "Exist")
-                            {
-                                <br />
-
-                                <span style="color:red;">Already exist.</span>
-                            }
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Payee:</label>
-                            <input id="payeeDesc" class="form-control" readonly />
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="col-md-3">
-                        <label>Date: </label>
-                        <input asp-for="DvDate" type="date" class="form-control" id="dvDate" required>
-                        <span class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Particulars: </label>
-                        <textarea asp-for="Particulars" id="particulars" style="height: 70px;" class="form-control" required></textarea>
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <p id="Status" />
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="col-md-3">
-                    <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
-                        <option value="0"> - Select Fund Source - </option>
-                        <option value="1"> Regular Agency Fund  </option>
-                        <option value="2"> Foreign Assisted Project Fund </option>
-                        <option value="3"> Special Accounts - Locally Funded  </option>
-                        <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
-                        <option value="5"> Internally Generated Income </option>
-                        <option value="6"> Business Type Income </option>
-                        <option value="7"> Trust Fund </option>
-                    </select>
+            <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
+                <div class="form-group">
+                    <label>PROJECT ID:</label>
+                    <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px" />
                 </div>
-                <div class="col-md-3" id="fundSource" style="display: none">
-                    <div class="form-group">
-                        <textarea placeholder="Ors Number" asp-for="orsNo" style=" resize: none; overflow: auto; height:35px" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
-                        <option value="0"> - Select Allotment Class - </option>
-                        <option value="1">  PS  </option>
-                        <option value="2">  MOOE </option>
-                        <option value="3">  CO  </option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group" id="obligation">
-                        <select asp-for="ObligationId" class="form-control select2"></select>
-                        <option value="orsNo"></option>
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <p id="ProjectCheck" />
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
-                    <div class="form-group">
-                        <label>PO #:</label>
-                        <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px" />
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-2"></label>
-                        <div class="col-sm-10">
-                            <p id="Status" />
-                        </div>
-                    </div>
+            <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
+                <div class="form-group">
+                    <label>INVOICE #:</label>
+                    <textarea asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" style="resize: none; overflow: auto; height:35px" />
                 </div>
-                <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
-                    <div class="form-group">
-                        <label>PROJECT ID:</label>
-                        <textarea asp-for="ProjectId" id="project" class="form-control" onchange="ProjectCheck()" style="resize: none; overflow: auto; height:35px" />
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-2"></label>
-                        <div class="col-sm-10">
-                            <p id="ProjectCheck" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
-                    <div class="form-group">
-                        <label>INVOICE #:</label>
-                        <textarea asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" style="resize: none; overflow: auto; height:35px" />
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-2"></label>
-                        <div class="col-sm-10">
-                            <p id="InvoiceCheck" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
-                    <div class="form-group">
-                        <label>Period Cover:</label>
-                        @*<input asp-for="PeriodCover" type="text" name="daterange" />*@
-                        @*<input type="text" name="daterange" id="daterange" />*@
-                        <input type="text" asp-for="PeriodCover" class="form-control" name="daterange" id="daterange" onchange="PeriodCheck()">
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-2"></label>
-                        <div class="col-sm-10">
-                            <p id="PeriodCheck" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
-                    <div class="form-group">
-                        <label>Period Covered From-To:</label>
-                        <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()" />
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-2"></label>
-                        <div class="col-sm-10">
-                            <p id="FromToCheck" />
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
-                        <div class="form-group">
-                            <label>S.O #:</label>
-                            <textarea asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" />
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-2"></label>
-                            <div class="col-sm-10">
-                                <p id="SoCheck" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
-                        <div class="form-group">
-                            <label>TRAVEL PERIOD:</label>
-                            <input type="text" name="travel_period" asp-for="travel_period" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
-                        <div class="form-group">
-                            <label>ACCOUNT #:</label>
-                            <textarea asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" style="resize: none; overflow: auto; height:35px" />
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-2"></label>
-                            <div class="col-sm-10">
-                                <p id="AccNoCheck" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
-                        <div class="form-group">
-                            <label># OF BILLING: (FIRST, SECOND):</label>
-                            <textarea asp-for="NumberOfBill" class="form-control" style="resize: none; overflow: auto; height:35px" />
-                        </div>
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <p id="InvoiceCheck" />
                     </div>
                 </div>
             </div>
-            <div class="col-md-12" style="margin-top: 20px;">
-                <div class="col-md-2" style="width: 250px; ">
-                    <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
-                        <label style="font-weight:bold;">GROSS AMOUNT: </label>
-                    </div>
+            <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
+                <div class="form-group">
+                    <label>Period Cover:</label>
+                    <input type="text" asp-for="PeriodCover" id="periodCover" name="periodCover" class="form-control" onchange="PeriodCheck()">
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12" onchange="submitDeduction(this);">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text" />
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <p id="PeriodCheck" />
                     </div>
                 </div>
             </div>
-            <div class="col-md-12" onchange="submitDeduction(this);">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
+            <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+                <div class="form-group">
+                    <label>Period Covered From-To:</label>
+                    <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()" />
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12" onchange="submitDeduction(this);">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12" onchange="submitDeduction(this);">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12" onchange="submitDeduction(this);">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12" onchange="submitDeduction(this);">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
-                        <option value=""> - Select Deduction - </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="col-md-2" style="width: 250px;">
-                    <div class="form-group" style="margin-left: 80px; margin-top: 5px;">
-                        <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control" type="text" id="total_deduction" placeholder="0.00" readonly />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="col-md-2" style="width: 250px;">
-                    <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
-                        <label style="font-weight:bold;">NET AMOUNT: </label>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input class="form-control" type="text" id="net_amount" placeholder="0.00" readonly />
-                    </div>
-                </div>
-                <div class="col-md-12" style="margin-left: 260px;">
-                    <div class="form-group">
-                        <input type="submit" id="Btn" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <p id="FromToCheck" />
                     </div>
                 </div>
             </div>
 
-            @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
-        </form>
-    </div>
+            <div>
+                <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
+                    <div class="form-group">
+                        <label>S.O #:</label>
+                        <textarea asp-for="SoNumber" id="so" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" />
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="SoCheck" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
+                    <div class="form-group">
+                        <label>TRAVEL PERIOD:</label>
+                        <input type="text" name="travel_period" asp-for="travel_period" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
+                    <div class="form-group">
+                        <label>ACCOUNT #:</label>
+                        <textarea asp-for="AccountNumber" id="accNo" class="form-control" onchange="AccNoCheck()" style="resize: none; overflow: auto; height:35px" />
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="AccNoCheck" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
+                    <div class="form-group">
+                        <label># OF BILLING: (FIRST, SECOND):</label>
+                        <textarea asp-for="NumberOfBill" class="form-control" style="resize: none; overflow: auto; height:35px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top: 20px;">
+            <div class="col-md-2" style="width: 250px; ">
+                <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
+                    <label style="font-weight:bold;">GROSS AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="gross_amount" type="text" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[0].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[0].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[1].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[1].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[2].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[2].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[3].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[3].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[4].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[4].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" onchange="submitDeduction(this);">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[5].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[5].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <select asp-items="ViewBag.DeductionId" asp-for="indexDeductions[6].DeductionId" class="form-control select2">
+                    <option value=""> - Select Deduction - </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control deduction_amount" asp-for="indexDeductions[6].Amount" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group" style="margin-left: 80px; margin-top: 5px;">
+                    <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="text" id="total_deduction" placeholder="0.00" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
+                    <label style="font-weight:bold;">NET AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="text" id="net_amount" placeholder="0.00" readonly />
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-left: 260px;">
+                <div class="form-group">
+                    <input type="submit" id="Btn" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+
+        @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
+
+
+    </form>
+</div>
 
 
 
 <script>
-
-    //date range
+    //daterange
     $(function () {
-        $('input[name="daterange"]').daterangepicker({
+        $('input[name="periodCover"]').daterangepicker({
             opens: 'left'
         }, function (start, end, label) {
             console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-            var data = { startDate: start.format('DD/MM/YYYY'), endDate: end.format('DD/MM/YYYY')};
-            console.log(data);
-            $.ajax({
-                url: '@Url.Action("Create", "IndexOfPayment")',
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    // handle success
-                },
-                error: function (xhr, status, error) {
-                    // handle error
-                }
-            });
         });
     });
-
     //cascade dropdownlist for allotment class
     $(function () {
         $("select#allotmentClass_type").change(function () {
@@ -382,37 +367,37 @@
         const noZeroInput = document.getElementById('daterange');
 
         allNumberInputs.forEach(input => {
-          if (input !== noZeroInput) {
-            input.addEventListener('blur', addLeadingZero);
-          }
+            if (input !== noZeroInput) {
+                input.addEventListener('blur', addLeadingZero);
+            }
         });
 
         function addLeadingZero(event) {
-          const input = event.target;
-          const value = input.value.trim();
+            const input = event.target;
+            const value = input.value.trim();
 
-          if (value !== '' && !isNaN(value) && value[0] !== '0') {
-            input.value = parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-          }
-          if ($(this).val() === '0') {
+            if (value !== '' && !isNaN(value) && value[0] !== '0') {
+                input.value = parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }
+            if ($(this).val() === '0') {
                 $(this).val('');
             }
         }
 
-        @*$('input[type=text]').click(function () {
+    @*$('input[type=text]').click(function () {
             if ($(this).val() === '0') {
-                $(this).val('');
+            $(this).val('');
             }
 
-        }).change(function () {
+            }).change(function () {
             updateTextView($(this));
-        }).focusout(function () {
+            }).focusout(function () {
             if (this.value === '') {
-                this.value = '0';
+            this.value = '0';
             }
-        })*@
+            })*@
 
-    });
+        });
 
     //prevent saving on enter
     $(document).ready(function () {
@@ -443,24 +428,25 @@
                 CategoryId: $("#CategoryId").val(), poNumber: $("#poNumber").val()
 
             },
-        function (data) {
-            if (data == 0) {
-                $("#Status").html('<font color="Green">Po Number is available</font>');
-                $("#poNumber").css("border-color", "Green");2
-                
+            function (data) {
+                if (data == 0) {
+                    $("#Status").html('<font color="Green">Po Number is available</font>');
+                    $("#poNumber").css("border-color", "Green");
+                    document.getElementById("Btn").disabled = false;
 
-            }
-            else if(data == 1){
-                $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
-                $("#poNumber").css("border-color", "Red");
-                document.getElementById("Btn").disabled = true;
-            }
-            else if(data == 2){
-                $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
-                $("#poNumber").css("border-color", "Red");
-                document.getElementById("Btn").disabled = false;
-            }
-        });
+
+                }
+                else if (data == 1) {
+                    $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
+                    $("#poNumber").css("border-color", "Red");
+                    document.getElementById("Btn").disabled = true;
+                }
+                else if (data == 2) {
+                    $("#Status").html('<font color="Red">Po Number Already Exist!</font>');
+                    $("#poNumber").css("border-color", "Red");
+                    document.getElementById("Btn").disabled = false;
+                }
+            });
     }
     //invoice number
     function InvoiceCheck() {
@@ -469,36 +455,39 @@
             {
                 invoice: $("#invoice").val()
             },
-        function (data) {
-            if (data == 0) {
-                $("#InvoiceCheck").html('<font color="Green">Invoice Number is available</font>');
-                $("#invoice").css("border-color", "Green");
+            function (data) {
+                if (data == 0) {
+                    $("#InvoiceCheck").html('<font color="Green">Invoice Number is available</font>');
+                    $("#invoice").css("border-color", "Green");
 
-            }
-            else {
-                $("#InvoiceCheck").html('<font color="Red">Invoice Number Already Exist!</font>');
-                $("#invoice").css("border-color", "Red");
-            }
-        });
+                }
+                else {
+                    $("#InvoiceCheck").html('<font color="Red">Invoice Number Already Exist!</font>');
+                    $("#invoice").css("border-color", "Red");
+                }
+            });
     }
     //period cover
     function PeriodCheck() {
         $("#PeriodCheck").html("Checking...");
         $.post("@Url.Action("CheckPeriodExist", "IndexOfPayment")",
             {
-                periodCover: $("#daterange").val()
+                periodCover: $("#periodCover").val(),
+                ddlBranches: $("#ddlBranches").val()
             },
-        function (data) {
-            if (data == 0) {
-                $("#PeriodCheck").html('<font color="Green">Available</font>');
-                $("#daterange").css("border-color", "Green");
+            function (data) {
+                if (data == 0) {
+                    $("#PeriodCheck").html('<font color="Green">Available</font>');
+                    $("#periodCover").css("border-color", "Green");
+                    document.getElementById("Btn").disabled = false;
 
-            }
-            else {
-                $("#PeriodCheck").html('<font color="Red">Already Exist!</font>');
-                $("#daterange").css("border-color", "Red");
-            }
-        });
+                }
+                else {
+                    $("#PeriodCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#periodCover").css("border-color", "Red");
+                    document.getElementById("Btn").disabled = true;
+                }
+            });
     }
     //project id
     function ProjectCheck() {
@@ -507,17 +496,17 @@
             {
                 project: $("#project").val()
             },
-        function (data) {
-            if (data == 0) {
-                $("#ProjectCheck").html('<font color="Green">Available</font>');
-                $("#project").css("border-color", "Green");
+            function (data) {
+                if (data == 0) {
+                    $("#ProjectCheck").html('<font color="Green">Available</font>');
+                    $("#project").css("border-color", "Green");
 
-            }
-            else {
-                $("#ProjectCheck").html('<font color="Red">Already Exist!</font>');
-                $("#project").css("border-color", "Red");
-            }
-        });
+                }
+                else {
+                    $("#ProjectCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#project").css("border-color", "Red");
+                }
+            });
     }
     //from to
     function FromToCheck() {
@@ -526,17 +515,17 @@
             {
                 fromTo: $("#fromTo").val()
             },
-        function (data) {
-            if (data == 0) {
-                $("#FromToCheck").html('<font color="Green">Available</font>');
-                $("#fromTo").css("border-color", "Green");
+            function (data) {
+                if (data == 0) {
+                    $("#FromToCheck").html('<font color="Green">Available</font>');
+                    $("#fromTo").css("border-color", "Green");
 
-            }
-            else {
-                $("#FromToCheck").html('<font color="Red">Already Exist!</font>');
-                $("#fromTo").css("border-color", "Red");
-            }
-        });
+                }
+                else {
+                    $("#FromToCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#fromTo").css("border-color", "Red");
+                }
+            });
     }
     //So
     function SoCheck() {
@@ -545,17 +534,17 @@
             {
                 so: $("#so").val()
             },
-        function (data) {
-            if (data == 0) {
-                $("#SoCheck").html('<font color="Green">Available</font>');
-                $("#so").css("border-color", "Green");
+            function (data) {
+                if (data == 0) {
+                    $("#SoCheck").html('<font color="Green">Available</font>');
+                    $("#so").css("border-color", "Green");
 
-            }
-            else {
-                $("#SoCheck").html('<font color="Red">Already Exist!</font>');
-                $("#so").css("border-color", "Red");
-            }
-        });
+                }
+                else {
+                    $("#SoCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#so").css("border-color", "Red");
+                }
+            });
     }
     //Account Number
     function AccNoCheck() {
@@ -564,20 +553,20 @@
             {
                 accNo: $("#accNo").val()
             },
-        function (data) {
-            if (data == 0) {
-                $("#AccNoCheck").html('<font color="Green">Available</font>');
-                $("#accNo").css("border-color", "Green");
+            function (data) {
+                if (data == 0) {
+                    $("#AccNoCheck").html('<font color="Green">Available</font>');
+                    $("#accNo").css("border-color", "Green");
 
-            }
-            else {
-                $("#AccNoCheck").html('<font color="Red">Already Exist!</font>');
-                $("#accNo").css("border-color", "Red");
-            }
-        });
+                }
+                else {
+                    $("#AccNoCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#accNo").css("border-color", "Red");
+                }
+            });
     }
 
-      $(function () {
+    $(function () {
         $('input[name="date"]').daterangepicker({
             autoUpdateInput: false,
             locale: {
@@ -695,67 +684,67 @@
         }
     });
 
-     $("#CategoryId").on('change', function () {
+    $("#CategoryId").on('change', function () {
         var value = $(this).val();
         console.log(value);
         const categ = [];
-         if (value == 1) {
-             $("#hidden-panel1").show();
-             $("#hidden-panel5").show();
-             categ.push('2', '3', '4', '6', '7', '8', '9', '10');
-         } else if (value == 2 || value == 3) {
-             $("#hidden-panel1").show();
-             $("#hidden-panel4").show();
-             categ.push('2', '5', '6', '7', '8', '9', '10');
-         } else if (value == 4 ) {
-             $("#hidden-panel1").show();
-             categ.push('2', '4', '5', '6', '7', '8', '9', '10');
-         } else if (value == 5) {
-             $("#hidden-panel2").show();
-             $("#hidden-panel10").show();
-             categ.push('1', '3', '4', '5', '6', '7', '8', '9');
-         } else if (value == 6 || value == 15  || value == 24 ||
-             value == 25 || value == 26 || value == 27 || value == 28 ||
-             value == 32 || value == 33 || value == 34 || value == 35) {
-             $("#hidden-panel4").show();
-             categ.push('1', '2', '3', '5', '6', '7', '8', '9', '10');
-         } else if (value == 7) {
-             $("#hidden-panel4").show();
-             $("#hidden-panel10").show();
-             categ.push('1', '2', '3', '5', '6', '7', '8', '9');
+        if (value == 1) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel5").show();
+            categ.push('2', '3', '4', '6', '7', '8', '9', '10');
+        } else if (value == 2 || value == 3) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel4").show();
+            categ.push('2', '5', '6', '7', '8', '9', '10');
+        } else if (value == 4) {
+            $("#hidden-panel1").show();
+            categ.push('2', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 5) {
+            $("#hidden-panel2").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '3', '4', '5', '6', '7', '8', '9');
+        } else if (value == 6 || value == 15 || value == 24 ||
+            value == 25 || value == 26 || value == 27 || value == 28 ||
+            value == 32 || value == 33 || value == 34 || value == 35) {
+            $("#hidden-panel4").show();
+            categ.push('1', '2', '3', '5', '6', '7', '8', '9', '10');
+        } else if (value == 7) {
+            $("#hidden-panel4").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '2', '3', '5', '6', '7', '8', '9');
 
-         } else if (value == 8 || value == 9 || value == 10 || value == 11 ||
-             value == 22 || value == 30 || value == 31) {
-             $("#hidden-panel6").show();
-             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
-         } else if (value == 12 || value == 19) {
-             $("#hidden-panel8").show();
-             $("#hidden-panel7").show();
-             categ.push('1', '2', '3', '4', '5', '6', '9', '10');
+        } else if (value == 8 || value == 9 || value == 10 || value == 11 ||
+            value == 22 || value == 30 || value == 31) {
+            $("#hidden-panel6").show();
+            categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
+        } else if (value == 12 || value == 19) {
+            $("#hidden-panel8").show();
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '3', '4', '5', '6', '9', '10');
 
-         } else if (value == 13 || value == 14) {
-             $("#hidden-panel7").show();
-             categ.push('1', '2', '3', '4', '5', '6', '8', '9', '10');
+        } else if (value == 13 || value == 14) {
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '3', '4', '5', '6', '8', '9', '10');
 
-         } else if (value == 16 || value == 17 || value == 18) {
-             $("#hidden-panel6").show();
-             $("#hidden-panel9").show();
-             categ.push('1', '2', '3', '4', '5', '8', '10');
-         } else if (value == 20 || value == 29) {
-             categ.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 16 || value == 17 || value == 18) {
+            $("#hidden-panel6").show();
+            $("#hidden-panel9").show();
+            categ.push('1', '2', '3', '4', '5', '8', '10');
+        } else if (value == 20 || value == 29) {
+            categ.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
 
-         } else if (value == 21) {
-             $("#hidden-panel8").show();
-             categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
-         }
-         else if (value == 23) {
-             $("#hidden-panel6").show();
-             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
-         }
-             categ.forEach(function (i) {
-                 $('#hidden-panel' + i).hide();
-             });
-         });
+        } else if (value == 21) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
+        }
+        else if (value == 23) {
+            $("#hidden-panel6").show();
+            categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
+        }
+        categ.forEach(function (i) {
+            $('#hidden-panel' + i).hide();
+        });
+    });
 
 
     $(document).ready(function () {
@@ -770,24 +759,24 @@
         });
     });
 
-  @*  document.getElementById("textarea").value = "To payment of";*@
+    @*  document.getElementById("textarea").value = "To payment of";*@
 
-    function submiBtnClick() {
-        var category = document.getElementsByClassName("category").value;
-        var dvNo = document.getElementById("ddlBranches").value;
-        var dvDate = document.getElementById("dvDate").value;
-        var particulars = document.getElementById("particulars").value;
-        var poNumber = document.getElementById("poNumber").value;
+        function submiBtnClick() {
+            var category = document.getElementsByClassName("category").value;
+            var dvNo = document.getElementById("ddlBranches").value;
+            var dvDate = document.getElementById("dvDate").value;
+            var particulars = document.getElementById("particulars").value;
+            var poNumber = document.getElementById("poNumber").value;
 
-        if (category != '' && dvNo != '' && particulars != '' && dvDate != '') {
-            Lobibox.notify('success', {
-                msg: 'Index Of Payment Date Successfully Added!',
-            });
+            if (category != '' && dvNo != '' && particulars != '' && dvDate != '') {
+                Lobibox.notify('success', {
+                    msg: 'Index Of Payment Date Successfully Added!',
+                });
+            }
+            else {
+                return false;
+            }
         }
-        else {
-            return false;
-        }
-    }
 
 
     $(function () {
@@ -803,4 +792,8 @@
             }
         });
     });
+
+
+
+
 </script>
