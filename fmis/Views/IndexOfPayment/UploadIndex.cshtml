@@ -3,10 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-
-
 <div class="widget-box col-md-2" style="margin-top: 50px; margin-left: 20px;">
     <div class="widget-header">
         <i class="fa fa-upload"></i><h4 class="widget-title"> Upload Index </h4>
@@ -17,7 +13,7 @@
         <div class="widget-main">
 
             <div>
-                <form asp-action="ImportIndex"
+                <form asp-action="UploadIndex"
                       enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
                       method="post">
                     <dl>
@@ -40,10 +36,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 <script>
     async function AJAXSubmit(oFormElement) {
         var resultElement = oFormElement.elements.namedItem("result");
@@ -55,12 +47,16 @@
                 body: formData
             });
 
-    @*if (response.ok) {
-                window.location.href = '/';
-                }*@
-
-                resultElement.value = 'Result: ' @*+ response.status *@+ ' Success!! ' +
-                    response.statusText;
+            if (response.ok) {
+                Lobibox.notify('success', {
+                    msg: 'File uploaded successfully.'
+                });
+            }
+            else {
+                Lobibox.notify('warning', {
+                    msg: 'Error uploading file.'
+                });
+            }
             return false;
         } catch (error) {
             console.error('Error:', error);
