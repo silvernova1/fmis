@@ -147,6 +147,7 @@
 </div>
 
 <script>
+
     let str = "\u20B1"
 
     const exp_code = [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47];
@@ -184,6 +185,8 @@
         filtersPlugin.addCondition(colIndex, 'contains', [event.target.value]);
         filtersPlugin.filter();
     }, 100);
+
+
     const addEventListeners = (input, colIndex) => {
         input.addEventListener('keydown', event => {
             debounceFn(colIndex, event);
@@ -286,11 +289,11 @@
         //     if (!this.Ors_no && data[counter-1][8]) {
           //  last_ors_handler = data[counter - 1][8];
             //}
-            $.each(this.ObligationAmounts, function () {
-                data[counter].push(this.obligation_amount_token);
-                data[counter].push(this.Expense_code);
-                data[counter].push(this.Amount);
-            });
+        $.each(this.ObligationAmounts, function () {
+            data[counter].push(this.obligation_amount_token);
+            data[counter].push(this.Expense_code);
+            data[counter].push(this.Amount);
+        });
         for (var i = this.ObligationAmounts.length; i < 12; i++) {
             data[counter].push(ObligationAmountToken()); //obligation amount token
             data[counter].push("");  // expense code
@@ -309,6 +312,8 @@
         counter++;
     });
 
+
+    console.log(data);
 
     $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
 

@@ -645,7 +645,7 @@
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <li class="@if (ViewBag.filter.sub2 == "individual")
+                            @*<li class="@if (ViewBag.filter.sub2 == "individual")
                      @Html.Raw("active")">
                                 <a asp-controller="Payee" asp-action="Individual">
                                     <i class="menu-icon fa fa-arrow-right blue"></i>
@@ -653,6 +653,7 @@
                                 </a>
                                 <b class="arrow"></b>
                             </li>
+
                             <li class="@if (ViewBag.filter.sub2 == "supplier")
                      @Html.Raw("active")">
                                 <a asp-controller="Payee" asp-action="Supplier">
@@ -660,14 +661,69 @@
                                     Supplier/Contractor
                                 </a>
                                 <b class="arrow"></b>
+                            </li>*@
+
+                            <li class="@if (ViewBag.filter.sub2 == "hrmo_permanent")
+                         @Html.Raw("active")">
+                                <a asp-controller="Payee" asp-action="HrmoPermanent">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    HRMO PERMANENT
+                                </a>
+                                <b class="arrow"></b>
                             </li>
+
+                            <li class="@if (ViewBag.filter.sub2 == "hrmo_job_order")
+                     @Html.Raw("active")">
+                                <a asp-controller="Payee" asp-action="HrmoJobOrder">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    HRMO JOB ORDER
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@if (ViewBag.filter.sub2 == "hrh_contractual")
+                     @Html.Raw("active")
+">
+                                <a asp-controller="Payee" asp-action="HrhContractual">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    HRH CONTRACTUAL
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@if (ViewBag.filter.sub2 == "hrh_job_order")
+                     @Html.Raw("active")
+">
+                                <a asp-controller="Payee" asp-action="HrhJobOrder">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    HRH JOB ORDER
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@if (ViewBag.filter.sub2 == "contractors")
+                     @Html.Raw("active")">
+                                <a asp-controller="Payee" asp-action="Contractors">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    CONTRACTORS
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+
+
+                            <li class="@if (ViewBag.filter.sub2 == "supplier")
+                     @Html.Raw("active")
+">
+                                <a asp-controller="Payee" asp-action="Supplier">
+                                    <i class="menu-icon fa fa-arrow-right blue"></i>
+                                    SUPPLIER
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+
                 
                         </ul>
                     </li>
-
-
-
-
 
 
                     @*  <li class="@if(ViewBag.filter.sub == "payee")
