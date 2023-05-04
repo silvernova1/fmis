@@ -116,10 +116,10 @@
                     </div>
                 </div>
 
-                <div class="infobox infobox-red" >
+                <div class="infobox infobox-red">
                     <div class="infobox-data">
                         <span class="infobox-data-number">@ViewBag.filteredBalances.ToString("C", new CultureInfo("en-PH"))</span>
-                         <div class="infobox-content" style="font-size: 12px">UNOBLIGATED ALLOTMENT</div>
+                        <div class="infobox-content" style="font-size: 12px">UNOBLIGATED ALLOTMENT</div>
                     </div>
                 </div>
 
@@ -135,7 +135,7 @@
                         <h4 class="grey lighter text-center"> As of @ViewBag.id  @ViewBag.date2.ToString("MMMM dd, yyyy") </h4>
                     </div>
                 }
-                
+
                 <div class="vspace-12-sm"></div>
             </div>
         </div><!-- /.row -->
@@ -204,7 +204,7 @@
             <!-- #end -->
             <!-- #ALLOTMENT CLASS -->
             <div class="col-sm-3 ">
-                <div class="widget-box allotmentclass" >
+                <div class="widget-box allotmentclass">
                     <div class="widget-header widget-header-flat widget-header-small" style="height: 290px;">
                         <div class="widget-box transparent allotmentclass1">
                             <div class="widget-header widget-header-flat">
@@ -232,22 +232,22 @@
             <!-- MONTHLY OBLIGATION DISBUTSEMENT  -->
             <div class="vspace-12-sm"></div>
             <div class="col-sm-3 ">
-                    <div class="widget-box monthly">
-                        <div class="widget-header widget-header-flat widget-header-small">
-                            <div class="widget-box transparent monthly1">
-                                <div class="widget-header widget-header-flat">
-                                    <h4 class="widget-title lighter">
-                                        <i class="ace-icon fa fa-signal"></i>
-                                        MONTHLY OBLIGATION (Disbursement)
-                                    </h4>
-                                </div>
-                                <div class="widget-body">
+                <div class="widget-box monthly">
+                    <div class="widget-header widget-header-flat widget-header-small">
+                        <div class="widget-box transparent monthly1">
+                            <div class="widget-header widget-header-flat">
+                                <h4 class="widget-title lighter">
+                                    <i class="ace-icon fa fa-signal"></i>
+                                    MONTHLY OBLIGATION (Disbursement)
+                                </h4>
+                            </div>
+                            <div class="widget-body">
                                 <div id="sales-charts" style="height: 245px; width: 100%;"></div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             <!-- #end -->
         </div><!-- /.row -->
 
@@ -290,21 +290,21 @@
                                         var lastYear = (int.Parse(User.FindFirstValue("YearlyRef")) - 1).ToString();
 
                                         var allotments = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Beginning_balance)
-                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Beginning_balance)
-                                                       + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Remaining_balance)
-                                                       + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Remaining_balance);
+                                        + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Beginning_balance)
+                                        + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Remaining_balance)
+                                        + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.Remaining_balance);
 
                                         var obligated = Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
-                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
-                                                      + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
-                                                      + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount);
+                                        + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
+                                        + Model.FundSources.Where(x => x.RespoId == item.RespoId && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount)
+                                        + Model.Sub_allotments.Where(x => x.RespoId == item.RespoId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true && x.Date >= ViewBag.date1 && x.Date <= ViewBag.date2 && x.AppropriationId == ViewBag.appropriationSourceId && x.AllotmentClassId == ViewBag.allotmentClassId).Sum(x => x.obligated_amount);
 
 
 
                                         var unobligated = allotments - (Math.Abs(obligated));
 
                                         @*var percentage = obligated / allotments * 100;
-                                            var positiveValue = Math.Abs(percentage);*@
+                                    var positiveValue = Math.Abs(percentage);*@
 
 
                                         <tr>
@@ -363,8 +363,8 @@
         $.resize.throttleWindow = false;
         var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
         var data = [
-             { label: "BALANCE", data: @ViewBag.Balance, color: "#68BC31" },
-             { label: "OBLIGATED", data: @ViewBag.Obligated, color: "#2091CF" },
+            { label: "BALANCE", data: @ViewBag.Balance, color: "#68BC31" },
+            { label: "OBLIGATED", data: @ViewBag.Obligated, color: "#2091CF" },
         ]
         function drawPieChart(placeholder, data, position) {
             $.plot(placeholder, data, {
@@ -422,10 +422,10 @@
         var data = [
             { label: "UNPAID OBLIGATIONS", data: 1, color: "#FEE074" },
             { label: "DISBURSED", data: 1, color: "#DA5430" },
-            @* { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
+    @* { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
             { label: "direct traffic", data: 18.6, color: "#DA5430" },
             { label: "other", data: 10, color: "#FEE074" } *@
-        ]
+            ]
         function drawPieChart_2(placeholder_2, data, position) {
             $.plot(placeholder_2, data, {
                 series: {
@@ -460,10 +460,6 @@
         $(document).one('ajaxloadstart.page', function (e) {
             $tooltip.remove();
         });
-
-
-
-
         var d1 = [];
         for (var i = 0; i < Math.PI * 2; i += 100) {
             d1.push([i, Math.sin(i)]);
@@ -476,8 +472,6 @@
         for (var i = 0; i < Math.PI * 2; i += 300) {
             d3.push([i, Math.tan(i)]);
         }
-
-
         var sales_charts = $('#sales-charts');
         $.plot("#sales-charts", [
             { label: "ALLOTMENT", data: d1 },
@@ -505,8 +499,6 @@
                 borderColor: '#555'
             }
         });
-
-
         $('#recent-box [data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
         function tooltip_placement(context, source) {
             var $source = $(source);
@@ -559,15 +551,13 @@
             else $(this).removeClass('dropup');
         });
     })
-  
-    function resetBtn(){
+
+    function resetBtn() {
         $("#date_from").val("");
         $("#date_to").val("");
         $("#appro").val(0);
         $("#ddlallotmentId").val(0);
     }
-
-
     getAllotment();
     function getAllotment() {
         var selected_val = $('#ddlallotmentId').val();
@@ -576,13 +566,13 @@
             type: "POST",
             url: "@Url.Action("Dashboard","Home")",
             data: { id: selected_val },
-            success: function (response){
+            success: function (response) {
                 selected_val = $('#ddlallotmentId').val();
-                        console.log(selected_val);
+                console.log(selected_val);
             },
-            error: function (){
+            error: function () {
                 alert("ERROR");
-            } 
+            }
         })
     }
 </script>
