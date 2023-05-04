@@ -6,3 +6,7 @@ export function userDetails(params: {} = {}) {
     return req.get(domainExtension+"/Handsontable/Details", params);
 }
 
+export function obligationData(params: {} = {}) {
+    return req.get(domainExtension + "/Handsontable/Obligation", params);
+}
+
