@@ -73,14 +73,54 @@ namespace fmis.Controllers.Accounting
         }
 
 
-        public async Task<IActionResult> Individual()
+        public async Task<IActionResult> HrmoPermanent()
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "payee", "individual");
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrmo_permanent");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T").OrderBy(x=> x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "A").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
-            return View("~/Views/Payee/Individual.cshtml");
+            return View("~/Views/Payee/HrmoPermanent.cshtml");
+        }
+
+        public async Task<IActionResult> HrmoJobOrder()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrmo_job_order");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "B").OrderBy(x => x.CreatedAt).ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Payee/HrmoJobOrder.cshtml");
+        }
+
+        public async Task<IActionResult> HrhContractual()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrh_contractual");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "C").OrderBy(x => x.CreatedAt).ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Payee/HrhContractual.cshtml");
+        }
+
+        public async Task<IActionResult> HrhJobOrder()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrh_job_order");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "D").OrderBy(x => x.CreatedAt).ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Payee/HrhJobOrder.cshtml");
+        }
+
+        public async Task<IActionResult> Contractors()
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "payee", "contractors");
+            ViewBag.layout = "_Layout";
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "E").OrderBy(x => x.CreatedAt).ToListAsync());
+            ViewBag.temp = json;
+
+            return View("~/Views/Payee/Contractors.cshtml");
         }
 
 
@@ -88,21 +128,20 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "supplier");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "S").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "F").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/Supplier.cshtml");
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [RequestSizeLimit(1073741824)]
-        public async Task <IActionResult> SaveIndividual(List<PayeeData> data)
+        public async Task<IActionResult> SaveHrmoPermanent(List<PayeeData> data)
         {
             var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
-        
+
             foreach (var item in data)
             {
                 var payee = new Payee();
@@ -114,12 +153,121 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "T";
+                payee.payee_type = "A";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
             }
-    
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(1073741824)]
+        public async Task<IActionResult> SaveHrmoJobOrder(List<PayeeData> data)
+        {
+            var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
+
+            foreach (var item in data)
+            {
+                var payee = new Payee();
+                if (await data_holder.AnyAsync(s => s.token == item.token)) //CHECK IF EXIST
+                {
+                    payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
+                }
+                payee.PayeeDescription = item.PayeeDescription.ToUpper();
+                payee.TinNo = item.TinNo;
+                payee.status = "activated";
+                payee.token = item.token;
+                payee.payee_type = "B";
+
+                _MyDbContext.Payee.Update(payee);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(1073741824)]
+        public async Task<IActionResult> SaveHrhContractual(List<PayeeData> data)
+        {
+            var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
+
+            foreach (var item in data)
+            {
+                var payee = new Payee();
+                if (await data_holder.AnyAsync(s => s.token == item.token)) //CHECK IF EXIST
+                {
+                    payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
+                }
+                payee.PayeeDescription = item.PayeeDescription.ToUpper();
+                payee.TinNo = item.TinNo;
+                payee.status = "activated";
+                payee.token = item.token;
+                payee.payee_type = "C";
+
+                _MyDbContext.Payee.Update(payee);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(1073741824)]
+        public async Task<IActionResult> SaveHrhJobOrder(List<PayeeData> data)
+        {
+            var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
+
+            foreach (var item in data)
+            {
+                var payee = new Payee();
+                if (await data_holder.AnyAsync(s => s.token == item.token)) //CHECK IF EXIST
+                {
+                    payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
+                }
+                payee.PayeeDescription = item.PayeeDescription.ToUpper();
+                payee.TinNo = item.TinNo;
+                payee.status = "activated";
+                payee.token = item.token;
+                payee.payee_type = "D";
+
+                _MyDbContext.Payee.Update(payee);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(1073741824)]
+        public async Task<IActionResult> SaveContractors(List<PayeeData> data)
+        {
+            var data_holder = _MyDbContext.Payee.Where(x => x.status == "activated");
+
+            foreach (var item in data)
+            {
+                var payee = new Payee();
+                if (await data_holder.AnyAsync(s => s.token == item.token)) //CHECK IF EXIST
+                {
+                    payee = await data_holder.Where(s => s.token == item.token).FirstOrDefaultAsync();
+                }
+                payee.PayeeDescription = item.PayeeDescription.ToUpper();
+                payee.TinNo = item.TinNo;
+                payee.status = "activated";
+                payee.token = item.token;
+                payee.payee_type = "E";
+
+                _MyDbContext.Payee.Update(payee);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
             return Ok();
         }
 
@@ -141,7 +289,7 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "S";
+                payee.payee_type = "F";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -149,8 +297,6 @@ namespace fmis.Controllers.Accounting
 
             return Ok();
         }
-
-
 
         public void setUpDeleteData(string token)
         {
@@ -173,7 +319,7 @@ namespace fmis.Controllers.Accounting
 
             foreach (var many in data.many_token)
                 setUpDeleteData(many.many_token);
-           
+
             return Json(data);
         }
 
@@ -205,7 +351,7 @@ namespace fmis.Controllers.Accounting
                 int ColCount = worksheet.Dimension.Columns;
                 List<Payee> payee = new();
 
-                
+
 
                 timer.Start();
                 for (int row = 1; row <= rowCount; row++)
@@ -218,15 +364,15 @@ namespace fmis.Controllers.Accounting
                     string trimmedPayeeDesc = payeeDesc.TrimEnd(chartoTrim);
 
                     payee.Add(new Payee()
-                          {
-                                PayeeDescription = trimmedPayeeDesc,
-                                TinNo = worksheet.Cells[row, 2].Text,
-                                payee_type = payee_Type,
-                                token = payeeToken,
-                                status = "activated",
-                               
-                          });
-                    
+                    {
+                        PayeeDescription = trimmedPayeeDesc,
+                        TinNo = worksheet.Cells[row, 2].Text,
+                        payee_type = payee_Type,
+                        token = payeeToken,
+                        status = "activated",
+
+                    });
+
                     //if (row == 1000) break;
                 }
                 timer.Stop();
