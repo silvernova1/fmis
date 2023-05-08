@@ -150,7 +150,7 @@ namespace fmis.Controllers.Accounting
         {
             var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
 
-            if (type == "T")
+            if (type == "S")
             {
                 string currentMonth = DateTime.Now.Month.ToString();
                 var dvCtr = "0816";
