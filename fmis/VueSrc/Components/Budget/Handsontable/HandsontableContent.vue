@@ -40,7 +40,7 @@
     watch(watchUserInfo, (value) => {
         userInfoLoaded.value = true
         const unique_id = userInfo.value.userid + "websocket" + userInfo.value.fname + "websocket" + userInfo.value.lname
-        socket.value = new WebSocket("ws://"+domain+":8080", [unique_id.replace(" ", "_")]);
+        socket.value = new WebSocket("ws://" + domain + ":8080", [unique_id.replace(" ", "_")]);
         socket.value.addEventListener('open', (event: Event) => {
             console.log('WebSocket connection established');
         });
@@ -109,7 +109,7 @@
                     } else if (actionType === 'insert_row') {
                         removeRow(data.row, data.row)
                     } else if (actionType === 'printOrs') {
-                        
+
                     }
 
                     console.log(data);
@@ -119,10 +119,10 @@
                 afterChangeFlag.value = false
             }
 
-        }); 
+        });
     })
 
-    const previosUserData = (select_checker: [{userid:String,row:any,col:any}], decrement: any) => {
+    const previosUserData = (select_checker: [{ userid: String, row: any, col: any }], decrement: any) => {
         const user_clicking = select_checker[select_checker.length - 1].userid
         if (select_checker[select_checker.length - decrement]) {
             const handler_checker = select_checker[select_checker.length - decrement]
@@ -159,26 +159,10 @@
         });
     }
 
-    let fund_sub_data_dropdown = [];
-    let fund_sub_data_array = {};
-    let get_fund_sub = {};
-    let get_obligated_amount = {};
-    let fund_sub_counter = 0;
-    JSON.parse(('.fund_sub')).forEach(function (item) {
-        fund_sub_data_dropdown[fund_sub_counter] = item.source_title;
-        let json_data = {
-            source_id: item.source_id,
-            source_type: item.source_type,
-        };
-        fund_sub_data_array[item.source_title] = json_data;
-        get_fund_sub[item.source_id + item.source_type] = item.source_title;
-        get_obligated_amount[item.source_id + item.source_type] = item.obligated_amount;
-        fund_sub_counter++;
-    });
 
 
     const handsondData = ref([])
-           
+
     const colHeaders = ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
         'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
         'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -212,11 +196,11 @@
             150, 150, 10,
         ],
 
-        columns : [
-            {   
+        columns: [
+            {
                 //FundSource
                 type: 'dropdown',
-                source: fund_sub_data_dropdown
+
             },
             {
                 //Date
@@ -252,7 +236,7 @@
             },
             {
                 //CreatedBy
-                type: 'text', 
+                type: 'text',
             },
             {
                 //TotalAmount
@@ -457,7 +441,7 @@
                 }
             },
             {
-                //Remaining Balance 
+                //Remaining Balance
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
@@ -469,7 +453,7 @@
             },
         ],
 
-        hiddenColumns : {
+        hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
             indicators: true, // show the indicator in the header
         },
@@ -502,7 +486,7 @@
                         insertBelowRow(options[0].start.row)
                         const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options }
                         socket.value.send(JSON.stringify(send_data));
-                    }                       
+                    }
                 },
                 'separator': ContextMenu.SEPARATOR,
                 'remove_row': {
@@ -518,8 +502,8 @@
                 },
                 'printOrs': {
                     name: 'Print Ors',
-                    callback: function (changes: any, options: any) {                                       
-                        console.log(options);  
+                    callback: function (changes: any, options: any) {
+                        console.log(options);
 
                         const start = options[0].start.row
                         const end = options[0].end.row
@@ -565,7 +549,7 @@
 
     const printOrs = (start: any, end: any) => {
         const cell = hotTableComponent.value.hotInstance
-      
+
         cell.alter('printOrs', start, end + 1);
     }
 
@@ -720,7 +704,7 @@
     <hot-table ref="hotTableComponent"
                :data="handsondData"
                :colHeaders="colHeaders"
-               :colWidth ="true"
+               :colWidth="true"
                :rowHeaders="true"
                stretchH="all"
                height="auto"
@@ -730,9 +714,7 @@
                :afterRender="afterRender"
                :afterOnCellMouseDown="afterOnCellMouseDown"
                :afterUndo="onAfterUndo"
-               v-if="handsondData.length > 0"
-          
-    >
+               v-if="handsondData.length > 0">
     </hot-table>
     <h3 v-else>Processing...</h3>
 </template>

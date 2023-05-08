@@ -77,7 +77,11 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrmo_permanent");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T1").OrderBy(x => x.CreatedAt).ToListAsync());
+            //var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T1").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee
+            .Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T1")
+            .OrderBy(x => x.CreatedAt)
+            .ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/HrmoPermanent.cshtml");
@@ -304,6 +308,9 @@ namespace fmis.Controllers.Accounting
             return Ok();
         }
 
+
+
+
         public void setUpDeleteData(string token)
         {
             var payee = new Payee(); //CLEAR OBJECT
@@ -325,7 +332,7 @@ namespace fmis.Controllers.Accounting
 
             foreach (var many in data.many_token)
                 setUpDeleteData(many.many_token);
-           
+
             return Json(data);
         }
 
@@ -357,7 +364,7 @@ namespace fmis.Controllers.Accounting
                 int ColCount = worksheet.Dimension.Columns;
                 List<Payee> payee = new();
 
-                
+
 
                 timer.Start();
                 for (int row = 1; row <= rowCount; row++)
@@ -378,9 +385,8 @@ namespace fmis.Controllers.Accounting
                                 payee_type2 = payee_Type2,
                                 token = payeeToken,
                                 status = "activated",
-                               
                           });
-                    
+                
                     //if (row == 1000) break;
                 }
                 timer.Stop();

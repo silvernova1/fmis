@@ -26,7 +26,7 @@ namespace fmis.Controllers.Budget.Rusel
 
         public HandsontableController(MyDbContext MyDbContext)
         {
-            
+
             _MyDbContext = MyDbContext;
         }
 
