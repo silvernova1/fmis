@@ -3,11 +3,15 @@
 @{
     ViewData["Title"] = "Handsontable";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string time = DateTime.Now.ToString();
 }
+
+
 
 <div id="app">
     <handsontable-content></handsontable-content>
 </div>
 
-<script src="~/vue/dist/app.js"></script>
+<script src="~/vue/dist/app.js?version=@time"></script>
 

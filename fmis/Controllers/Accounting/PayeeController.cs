@@ -77,7 +77,11 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrmo_permanent");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "A").OrderBy(x => x.CreatedAt).ToListAsync());
+            //var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T1").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee
+            .Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T1")
+            .OrderBy(x => x.CreatedAt)
+            .ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/HrmoPermanent.cshtml");
@@ -87,7 +91,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrmo_job_order");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "B").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T2").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/HrmoJobOrder.cshtml");
@@ -97,7 +101,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrh_contractual");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "C").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T3").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/HrhContractual.cshtml");
@@ -107,7 +111,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "hrh_job_order");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "D").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "T" && s.payee_type2 == "T3").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/HrhJobOrder.cshtml");
@@ -117,7 +121,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "contractors");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "E").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "S" && s.payee_type2 == "S1").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/Contractors.cshtml");
@@ -128,7 +132,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("Accounting", "payee", "supplier");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "F").OrderBy(x => x.CreatedAt).ToListAsync());
+            var json = JsonSerializer.Serialize(await _MyDbContext.Payee.Where(s => s.status == "activated" && s.payee_type == "S" && s.payee_type2 == "S2").OrderBy(x => x.CreatedAt).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/Payee/Supplier.cshtml");
@@ -153,7 +157,8 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "A";
+                payee.payee_type = "T";
+                payee.payee_type2 = "T1";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -180,7 +185,8 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "B";
+                payee.payee_type = "T";
+                payee.payee_type2 = "T2";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -207,7 +213,8 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "C";
+                payee.payee_type = "T";
+                payee.payee_type2 = "T3";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -235,7 +242,8 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "D";
+                payee.payee_type = "T";
+                payee.payee_type2 = "T4";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -262,7 +270,8 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "E";
+                payee.payee_type = "S";
+                payee.payee_type2 = "S1";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -289,7 +298,8 @@ namespace fmis.Controllers.Accounting
                 payee.TinNo = item.TinNo;
                 payee.status = "activated";
                 payee.token = item.token;
-                payee.payee_type = "F";
+                payee.payee_type = "S";
+                payee.payee_type2 = "S2";
 
                 _MyDbContext.Payee.Update(payee);
                 await _MyDbContext.SaveChangesAsync();
@@ -297,6 +307,9 @@ namespace fmis.Controllers.Accounting
 
             return Ok();
         }
+
+
+
 
         public void setUpDeleteData(string token)
         {
@@ -358,21 +371,22 @@ namespace fmis.Controllers.Accounting
                 {
                     string payeeToken = Guid.NewGuid().ToString();
                     var payee_Type = worksheet.Cells[row, 3].Text;
+                    var payee_Type2 = worksheet.Cells[row, 4].Text;
 
                     string payeeDesc = worksheet.Cells[row, 1].Text;
                     char[] chartoTrim = { ' ', '\t' };
                     string trimmedPayeeDesc = payeeDesc.TrimEnd(chartoTrim);
 
                     payee.Add(new Payee()
-                    {
-                        PayeeDescription = trimmedPayeeDesc,
-                        TinNo = worksheet.Cells[row, 2].Text,
-                        payee_type = payee_Type,
-                        token = payeeToken,
-                        status = "activated",
-
-                    });
-
+                          {
+                                PayeeDescription = trimmedPayeeDesc,
+                                TinNo = worksheet.Cells[row, 2].Text,
+                                payee_type = payee_Type,
+                                payee_type2 = payee_Type2,
+                                token = payeeToken,
+                                status = "activated",
+                          });
+                
                     //if (row == 1000) break;
                 }
                 timer.Stop();
