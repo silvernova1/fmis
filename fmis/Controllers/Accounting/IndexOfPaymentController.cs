@@ -33,6 +33,11 @@ using System.Diagnostics;
 using System.Text;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DataTable = System.Data.DataTable;
+using Newtonsoft.Json;
+using Microsoft.Office.Interop.Excel;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using fmis.ViewModel;
 
 namespace fmis.Controllers.Accounting
 {
@@ -277,10 +282,10 @@ namespace fmis.Controllers.Accounting
                 return Json(0);
             }
         }
-        public JsonResult CheckPeriodExist(string periodCover, int ddlBranches)
+        public JsonResult CheckPeriodExist(string periodCover, int ddlBranches, int CategoryId)
         {
             var payee_Id = _MyDbContext.Dv.FirstOrDefault(x => x.DvId == ddlBranches)?.PayeeId;
-            var data = _MyDbContext.Indexofpayment.Any(x => x.PeriodCover == periodCover && x.payeeId == payee_Id);
+            var data = _MyDbContext.Indexofpayment.Any(x => x.PeriodCover == periodCover && x.payeeId == payee_Id && x.CategoryId == CategoryId);
 
             if (data)
             {
@@ -421,10 +426,94 @@ namespace fmis.Controllers.Accounting
             return View();
         }
 
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadIndex(IFormFile file)
+        {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "import");
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("File is empty");
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+
+                using (var package = new ExcelPackage(stream))
+                {
+                    var worksheet = package.Workbook.Worksheets[1];
+
+                    var data = new List<string>();
+                    var existingData = new List<string>();
+                    for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                    {
+                        //var key = worksheet.Cells[row, 1].Value?.ToString();
+                        //var value = worksheet.Cells[row, 2].Value?.ToString();
+
+                        var payee_fname = worksheet.Cells[row, 3].Text.ToString();
+                        var payee_mname = worksheet.Cells[row, 4].Text.ToString();
+                        var payee_lname = worksheet.Cells[row, 2].Text.ToString();
+
+
+                        // Check if any of the name components are null or empty
+                        if (!string.IsNullOrEmpty(payee_fname) && !string.IsNullOrEmpty(payee_mname) && !string.IsNullOrEmpty(payee_lname))
+                        {
+                            var concatenatedPayee = payee_fname + " " + payee_mname + " " + payee_lname;
+                            var existingPayee = await _MyDbContext.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
+
+                            if(existingPayee != null)
+                            {
+                                // Data already exists, add it to the existingData list
+                                existingData.Add(concatenatedPayee);
+                            }
+                            else
+                            {
+                                // Data doesn't exist, add it to the data list
+                                data.Add(concatenatedPayee);
+                            }
+                        }
+                    }
+
+                    var model = new UploadDataViewModel
+                    {
+                        ExistingData = existingData,
+                        NewData = data
+                    };
+
+                    //ViewBag.ExistingData = existingData;
+                    //ViewBag.NewData = data;
+
+                    //ViewBag.Data = data;
+                    //var payees = JsonConvert.SerializeObject(data);
+
+                    // Return the JSON as a response
+                    //return Content(payees, "application/json");
+                    return View(model);
+                }
+            }
+        }*/
+
+        private bool CheckPayeeExistsInDatabase(string payeeDescription)
+        {
+             using (var dbContext = new MyDbContext())
+             {
+                 var matchingPayee = _MyDbContext.Payee
+                     .FirstOrDefault(p => p.PayeeDescription == payeeDescription);
+            
+                 return matchingPayee != null;
+             }
+            //return false;
+        }
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UploadIndex(IFormFile fileUpload)
         {
+            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "import");
             if (fileUpload != null && fileUpload.Length > 0)
             {
                 var response = new { success = true };
@@ -456,6 +545,7 @@ namespace fmis.Controllers.Accounting
 
                 var categoryId = _MyDbContext.Category.FirstOrDefault(x => x.CategoryId == 25).CategoryId;
                 int dvRow = 9;
+                var data = new List<string>();
                 for (int row = 9; row <= rowCount; row++)
                 {
                     var deductionTax = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 22).DeductionId;
@@ -485,72 +575,91 @@ namespace fmis.Controllers.Accounting
 
                     var payeeId = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeDescription == concatenatedPayee)?.PayeeId;
                     var periodCover = worksheet.Cells[dvRow, 24]?.Text is not null ? worksheet.Cells[dvRow, 24]?.Text : null;
-                    //bool periodExist = _MyDbContext.Indexofpayment.Any(x => x.PeriodCover == worksheet.Cells[dvRow, 24].Text && x.payeeId == payeeId);
 
+                    var existingPayee = await _MyDbContext.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
+                    if (existingPayee == null)
+                    {
+                        // Data already exists, add it to the existingData list
+                        data.Add(concatenatedPayee);
+                    }
+                    else
+                    {
+                        var indexes = new IndexOfPayment
+                        {
+                            CreatedBy = FName + " " + LName,
+                            DvId = dvId,
+                            PeriodCover = periodCover,
+                            DvDate = dvDate,
+                            payeeId = payeeId,
+                            CategoryId = categoryId,
+                            Particulars = _MyDbContext.Dv.FirstOrDefault(x => x.DvId == dvId).Particulars,
+                            GrossAmount = Convert.ToDecimal(amount),
+                            TotalDeduction = Convert.ToDecimal(total_deductions),
+                            NetAmount = Convert.ToDecimal(amount) - total_deductions,
+                            indexDeductions = new List<IndexDeduction>()
+                        };
+                        if (payeeId != null)
+                        {
+                            index.Add(indexes);
+                        }
 
-                    var indexes = new IndexOfPayment
-                    {
-                        CreatedBy = FName + " " + LName,
-                        DvId = dvId,
-                        PeriodCover = periodCover,
-                        DvDate = dvDate,
-                        payeeId = payeeId,
-                        CategoryId = categoryId,
-                        Particulars = /*worksheet.Cells[row, 4].Text,*/ _MyDbContext.Dv.FirstOrDefault(x => x.DvId == dvId).Particulars,
-                        GrossAmount = Convert.ToDecimal(amount),
-                        TotalDeduction = Convert.ToDecimal(total_deductions),
-                        NetAmount = Convert.ToDecimal(amount) - total_deductions,
-                        indexDeductions = new List<IndexDeduction>()
-                    };
-                    if (/*!string.IsNullOrEmpty(worksheet.Cells[row, 4].Text)*/payeeId != null)
-                    {
-                        index.Add(indexes);
-                    }
-
-                    if (deduct_Tax != null)
-                    {
-                        IndexDeduction index_deduct = new IndexDeduction();
-                        index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars).IndexOfPaymentId;
-                        index_deduct.DeductionId = deductionTax;
-                        index_deduct.Amount = Convert.ToDecimal(deduct_Tax);
-                        indexes.indexDeductions.Add(index_deduct);
-                    }
-                    if (deduct_Phic != null)
-                    {
-                        IndexDeduction index_deduct = new IndexDeduction();
-                        index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars)?.IndexOfPaymentId;
-                        index_deduct.DeductionId = deductionPhic;
-                        index_deduct.Amount = Convert.ToDecimal(deduct_Phic);
-                        indexes.indexDeductions.Add(index_deduct);
-                    }
-                    if (deduct_Pagibig != null)
-                    {
-                        IndexDeduction index_deduct = new IndexDeduction();
-                        index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars)?.IndexOfPaymentId;
-                        index_deduct.DeductionId = deductionPagibig;
-                        index_deduct.Amount = Convert.ToDecimal(deduct_Pagibig);
-                        indexes.indexDeductions.Add(index_deduct);
-                    }
-                    if (deduct_Coop != null)
-                    {
-                        IndexDeduction index_deduct = new IndexDeduction();
-                        index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars)?.IndexOfPaymentId;
-                        index_deduct.DeductionId = deductionCoop;
-                        index_deduct.Amount = Convert.ToDecimal(deduct_Coop);
-                        indexes.indexDeductions.Add(index_deduct);
+                        if (deduct_Tax != null)
+                        {
+                            IndexDeduction index_deduct = new IndexDeduction();
+                            index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars).IndexOfPaymentId;
+                            index_deduct.DeductionId = deductionTax;
+                            index_deduct.Amount = Convert.ToDecimal(deduct_Tax);
+                            indexes.indexDeductions.Add(index_deduct);
+                        }
+                        if (deduct_Phic != null)
+                        {
+                            IndexDeduction index_deduct = new IndexDeduction();
+                            index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars)?.IndexOfPaymentId;
+                            index_deduct.DeductionId = deductionPhic;
+                            index_deduct.Amount = Convert.ToDecimal(deduct_Phic);
+                            indexes.indexDeductions.Add(index_deduct);
+                        }
+                        if (deduct_Pagibig != null)
+                        {
+                            IndexDeduction index_deduct = new IndexDeduction();
+                            index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars)?.IndexOfPaymentId;
+                            index_deduct.DeductionId = deductionPagibig;
+                            index_deduct.Amount = Convert.ToDecimal(deduct_Pagibig);
+                            indexes.indexDeductions.Add(index_deduct);
+                        }
+                        if (deduct_Coop != null)
+                        {
+                            IndexDeduction index_deduct = new IndexDeduction();
+                            index_deduct.IndexOfPaymentId = index.FirstOrDefault(x => x.Particulars == x.Particulars)?.IndexOfPaymentId;
+                            index_deduct.DeductionId = deductionCoop;
+                            index_deduct.Amount = Convert.ToDecimal(deduct_Coop);
+                            indexes.indexDeductions.Add(index_deduct);
+                        }
                     }
 
                 }
 
-                await _MyDbContext.AddRangeAsync(index);
-                var water = await _MyDbContext.SaveChangesAsync();
+                var model = new UploadDataViewModel
+                {
+                    NewData = data
+                };
 
-                TempData["SuccessMessage"] = "File uploaded successfully!";
-                TempData["NotificationType"] = "success";
+                if(model.NewData != null)
+                {
+                    return View(model);
+                }
+                else
+                {
+                    await _MyDbContext.AddRangeAsync(index);
+                    var water = await _MyDbContext.SaveChangesAsync();
 
-                Console.WriteLine(water);
-                var test = sb.ToString();
-                return Ok();
+                    TempData["SuccessMessage"] = "File uploaded successfully!";
+                    TempData["NotificationType"] = "success";
+
+                    Console.WriteLine(water);
+                    var test = sb.ToString();
+                    return Ok();
+                }
             }
         }
 

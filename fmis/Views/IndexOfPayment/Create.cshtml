@@ -473,7 +473,8 @@
         $.post("@Url.Action("CheckPeriodExist", "IndexOfPayment")",
             {
                 periodCover: $("#periodCover").val(),
-                ddlBranches: $("#ddlBranches").val()
+                ddlBranches: $("#ddlBranches").val(),
+                CategoryId: $("#CategoryId").val()
             },
             function (data) {
                 if (data == 0) {
