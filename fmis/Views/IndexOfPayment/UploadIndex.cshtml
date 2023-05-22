@@ -1,4 +1,5 @@
-﻿@{
+﻿@model fmis.ViewModel.UploadDataViewModel
+@{
     ViewData["Title"] = "Upload File";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -6,36 +7,45 @@
 <div class="widget-box col-md-2" style="margin-top: 50px; margin-left: 20px;">
     <div class="widget-header">
         <i class="fa fa-upload"></i><h4 class="widget-title"> Upload Index </h4>
-
     </div>
     <br />
     <div class="widget-body">
         <div class="widget-main">
-
             <div>
-                <form asp-action="UploadIndex"
-                      enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
-                      method="post">
+                <form method="post" enctype="multipart/form-data" asp-action="UploadIndex">
                     <dl>
-
                         <dd>
-                            <input id="FileUpload_FormFile" type="file"
-                                   name="FileUpload.FormFile" />
+                            <input type="file" name="file" />
                         </dd>
                     </dl>
-
                     <input class="btn btn-success btn-sm" type="submit" value="Upload" />
-
-                    <div style="margin-top:15px">
-                        <output name="result"></output>
-                    </div>
                 </form>
             </div>
-
-
         </div>
     </div>
 </div>
+
+@if (Model?.NewData != null)
+{
+    <div class="modal-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Payee(s) does not exists in database. Please add.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var newItem in Model.NewData)
+                {
+                    <tr>
+                        <td>@newItem</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
 <script>
     async function AJAXSubmit(oFormElement) {
         var resultElement = oFormElement.elements.namedItem("result");

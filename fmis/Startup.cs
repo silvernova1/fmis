@@ -42,6 +42,7 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddRazorPages();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
@@ -236,6 +237,7 @@ namespace fmis
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin());
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseRouting();
