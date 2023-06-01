@@ -119,7 +119,7 @@ namespace fmis.Controllers.Accounting
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0780")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname)
             };
