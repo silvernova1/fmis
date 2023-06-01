@@ -994,7 +994,7 @@ namespace fmis.Controllers.Accounting
 
                         ws.Cell(deductionsRow, 1).Style.Font.FontSize = 10;
                         ws.Cell(deductionsRow, 1).Style.Font.FontName = "Calibri Light";
-                        ws.Cell(deductionsRow, 1).Value = deduct_item.Category.CategoryDescription;
+                        ws.Cell(deductionsRow, 1).Value = deduct_item?.Category?.CategoryDescription;
                         ws.Cell(deductionsRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                         ws.Cell(deductionsRow, 2).Style.Font.FontSize = 10;

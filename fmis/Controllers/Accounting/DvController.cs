@@ -150,7 +150,7 @@ namespace fmis.Controllers.Accounting
         {
             var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
 
-            if (type == "T")
+            if (type == "S")
             {
                 string currentMonth = DateTime.Now.Month.ToString();
                 var dvCtr = "0816";
@@ -675,15 +675,16 @@ namespace fmis.Controllers.Accounting
                     List<string> deductionsList = new List<string>();
 
                     Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
+                    
                     foreach (var dvDeductions in item.Where(x => x.DvId == id))
                     {
-                    var deduct = fundCluster.FirstOrDefault().dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault().Amount;
+                    var deduct = fundCluster.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                         foreach (var deductions in dvDeductions.dvDeductions)
                         {
                             deductionsAmount.Add(deductions.Amount);
-                            string description = deductions.Deduction.DeductionDescription.PadRight(15);
-                            string netDeduct = deduct.ToString("##,#00.00").PadRight(12);
-                            string amount = deductions.Amount.ToString("##,#00.00").PadLeft(15);
+                            string description = deductions?.Deduction.DeductionDescription.PadRight(15);
+                            string netDeduct = deduct?.ToString("##,#00.00").PadRight(12);
+                            string amount = deductions?.Amount.ToString("##,#00.00").PadLeft(15);
 
                             deductionsList.Add(description + " { " + netDeduct + " } " + amount);
                             Console.WriteLine(string.Join("\n", deductionsList));

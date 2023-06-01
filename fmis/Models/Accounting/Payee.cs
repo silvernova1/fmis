@@ -13,5 +13,6 @@ namespace fmis.Models.Accounting
         public string token { get; set; }
         public string status { get; set; }
         public string payee_type { get; set; }
+        public string payee_type2 { get; set;  }
     }
 }
