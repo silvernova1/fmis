@@ -25,6 +25,7 @@ namespace fmis.Controllers
     //[Authorize]
     //[Authorize(Policy = "Job Order")]
     [Authorize(Roles = "accounting_admin, accounting_user, budget_admin")]
+    //[Authorize(AuthenticationSchemes = "Scheme1")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

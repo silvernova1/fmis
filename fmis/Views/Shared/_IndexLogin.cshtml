@@ -1,0 +1,81 @@
+﻿@{
+    var bodyTags = User.Identity.IsAuthenticated ? "hold-transition layout-top-nav" : "hold-transition login-page";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index of Payment - @ViewData["Title"]</title>
+    <link rel="icon" href="~/img/doh.png" />
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="~/plugins/toastr/toastr.min.css" />
+    <link rel="stylesheet" href="~/css/adminlte/adminlte.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/plugins/datepicker/css/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css" />
+</head>
+<body class="@bodyTags">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="wrapper">
+            <partial name="~/Views/Shared/_Banner.cshtml" />
+            <partial name="~/Views/Shared/_Navbar.cshtml" />
+
+            <div class="content-wrapper">
+                <section class="content">
+                    <div class="">
+                        @RenderBody()
+                    </div>
+                </section>
+            </div>
+
+            <div class="modal fade" tabindex="-1" data-backdrop="static" role="dialog" id="form_modal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <strong>2020 <a href="https://adminlte.io">DOH7 - Payroll</a></strong>
+                All rights reserved.
+                <div class="float-right d-none d-sm-inline-block">
+                    <b>Version</b> 2.0
+                </div>
+            </footer>
+        </div>
+    }
+    else
+    {
+        <div class="login-box">
+            @RenderBody()
+        </div>
+    }
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/js/adminlte/adminlte.min.js"></script>
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+    <script src="~/plugins/datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    @await RenderSectionAsync("SrcScripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
