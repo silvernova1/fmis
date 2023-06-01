@@ -1,0 +1,36 @@
+﻿@model System.Net.HttpStatusCode
+@using fmis.Filters;
+@{
+    ViewData["Title"] = "404";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+}
+
+<div class="well">
+	<h1 class="grey lighter smaller">
+		<span class="blue bigger-125">
+			<i class="ace-icon fa fa-sitemap"></i>
+			404
+		</span>
+		Page Not Found
+	</h1>
+
+	<hr>
+	<h3 class="lighter smaller"></h3>
+
+	<hr>
+	<div class="space"></div>
+
+	<div class="center">
+		<form>
+			<a href="javascript:history.back()" class="btn btn-grey">
+				<i class="ace-icon fa fa-arrow-left"></i>
+				Go Back
+			</a>
+			<a asp-controller="Home" asp-action="Dashboard" class="btn btn-primary">
+				<i class="ace-icon fa fa-tachometer"></i>
+				Dashboard
+			</a>
+		</form>
+	</div>
+</div>

@@ -134,9 +134,10 @@
 
                                     @*@User.FindFirstValue(ClaimTypes.Role)*@
 
-                                    CY:   @User.FindFirstValue("YearlyRef")
-
-
+                                        @if (User.IsInRole("budget_admin"))
+                                        {
+                                        CY: @User.FindFirstValue("YearlyRef");
+                                        }
                                     </li>
                                     <partial name="~/Views/Shared/_Notification.cshtml" />
                                     <partial name="~/Views/Shared/_Account.cshtml" />
@@ -145,7 +146,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="page-content">
                     @RenderBody()
                     <div class="modal" id="loading_modal" tabindex="-1" role="dialog">

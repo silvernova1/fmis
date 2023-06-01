@@ -41,7 +41,6 @@ using fmis.ViewModel;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Policy = "Accounting")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;

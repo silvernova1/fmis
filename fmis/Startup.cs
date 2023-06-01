@@ -194,18 +194,20 @@ namespace fmis
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddCookie(options =>
             {
-                options.LoginPath = "/Account/Login";
-                options.LogoutPath = "/Account/Logout";
+                options.Cookie.Name = "CookieAuth";
+                options.LoginPath = "/Index/Login";
+                options.LogoutPath = "/Index/Logout";
                 options.AccessDeniedPath = "/Account/NotFound";
                 options.ExpireTimeSpan = TimeSpan.FromHours(5);
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
             });
+
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("BudgetAdmin", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "budget_admin"));
@@ -246,13 +248,20 @@ namespace fmis
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "scheme1",
+                    pattern: "/Account/Login",
+                    defaults: new { controller = "Account", action = "Login" });
+
+                endpoints.MapControllerRoute(
+                    name: "scheme2",
+                    pattern: "/Index/Login",
+                    defaults: new { controller = "Index", action = "Login" });
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-            
-            });
-
-            
+            });            
         }
     }
 }
