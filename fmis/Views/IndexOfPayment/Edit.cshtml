@@ -125,7 +125,7 @@
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <input asp-for="PoNumber" type="text" class="form-control" />
+                    <textarea asp-for="PoNumber" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" >@Model.PoNumber</textarea>
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
@@ -158,7 +158,7 @@
                 <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
                     <div class="form-group">
                         <label>S.O #:</label>
-                        <textarea asp-for="SoNumber" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" />
+                        <textarea asp-for="SoNumber" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" >@Model.SoNumber</textarea>
                     </div>
                 </div>
                 <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
