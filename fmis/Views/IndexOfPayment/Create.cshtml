@@ -341,9 +341,20 @@
     //daterange
     $(function () {
         $('input[name="periodCover"]').daterangepicker({
-            opens: 'left'
-        }, function (start, end, label) {
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="periodCover"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="periodCover"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
         });
     });
     //cascade dropdownlist for allotment class
@@ -585,6 +596,8 @@
             $(this).val('');
         });
     });
+
+
 
     $(function () {
         $('input[name="travel_period"]').daterangepicker({
