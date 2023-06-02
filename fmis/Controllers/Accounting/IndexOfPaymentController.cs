@@ -680,7 +680,7 @@ namespace fmis.Controllers.Accounting
             indexes.InvoiceNumber = index.InvoiceNumber;
             indexes.ProjectId = index.ProjectId;
             indexes.NumberOfBill = index.NumberOfBill;
-            indexes.PeriodCover = daterange;
+            indexes.PeriodCover = index.PeriodCover;
             indexes.date = index.date;
             indexes.travel_period = index.travel_period;
             indexes.SoNumber = index.SoNumber;

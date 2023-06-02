@@ -40,7 +40,7 @@ namespace fmis.Models.Accounting
         public DateTime DvDate { get; set; }
         public string PeriodCover { get; set; }
         public string date { get; set; }
-        public string travel_period { get; set; }
+        public string? travel_period { get; set; }
         [ForeignKey("CategoryId")]
         public int? CategoryId { get; set; }
         [JsonIgnore]

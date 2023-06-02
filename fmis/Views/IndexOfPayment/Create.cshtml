@@ -154,7 +154,7 @@
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
                     <label>Period Covered From-To:</label>
-                    <input type="text" class="form-control" asp-for="date" name="date" id="fromTo" onchange="FromToCheck()" />
+                    <input type="date" class="form-control" asp-for="date" id="fromTo" onchange="FromToCheck()" />
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -338,12 +338,23 @@
 
 
 <script>
-    //daterange
+    //period cover
     $(function () {
         $('input[name="periodCover"]').daterangepicker({
-            opens: 'left'
-        }, function (start, end, label) {
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="periodCover"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="periodCover"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
         });
     });
     //cascade dropdownlist for allotment class
@@ -585,6 +596,8 @@
             $(this).val('');
         });
     });
+
+
 
     $(function () {
         $('input[name="travel_period"]').daterangepicker({
