@@ -63,6 +63,40 @@ namespace fmis.Controllers.Budget.Rusel
             return Json(obligation);
         }
 
+        public IActionResult fundSub()
+        {
+            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            var yearAdded = int.Parse(year);
+            var res = next_year.AddYears(-1);
+            var lastYr = res.Year.ToString();
+
+            var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => 
+            x.BudgetAllotment.YearlyReferenceId == YearlyRefId &&
+            x.Original != true || 
+            x.FundSourceTitle == "CANCELLED" || 
+            x.IsAddToNextAllotment == true && 
+            x.FundSourceTitle.Contains("CONAP")).ToList() 
+            select new { 
+                source_id = x.FundSourceId, 
+                source_title = x.FundSourceTitle, 
+                remaining_balance = x.Remaining_balance, 
+                source_type = "fund_source", 
+                obligated_amount = x.obligated_amount })
+            .Concat(from y in _MyDbContext.SubAllotment.Where(x => 
+            x.Budget_allotment.YearlyReferenceId == YearlyRefId || 
+            x.IsAddToNextAllotment == true || 
+            x.Suballotment_title == "CANCELLED").ToList() 
+            select new { 
+                source_id = y.SubAllotmentId, 
+                source_title = y.Suballotment_title, 
+                remaining_balance = y.Remaining_balance, 
+                source_type = "sub_allotment", 
+                obligated_amount = y.obligated_amount });
+
+            return Json(fund_sub_data);
+        }
+
         public IActionResult Details()
         {
             var json = new
@@ -73,5 +107,7 @@ namespace fmis.Controllers.Budget.Rusel
             };
             return Json(json);
         }
+
+
     }
 }

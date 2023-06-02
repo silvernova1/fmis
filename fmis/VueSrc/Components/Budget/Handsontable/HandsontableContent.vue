@@ -1,10 +1,11 @@
 <script setup lang="ts">
-    import { userDetails, obligationData } from "../../../api/index"
+    import { userDetails, obligationData, fundSub } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
     import { registerAllModules } from 'handsontable/registry';
     import 'handsontable/dist/handsontable.full.css';
+    import axios from 'axios';
 
     import moment from "moment"
 
@@ -108,10 +109,7 @@
                         changeDataCell({ row: data.row, col: data.col, data: data.data })
                     } else if (actionType === 'insert_row') {
                         removeRow(data.row, data.row)
-                    } else if (actionType === 'printOrs') {
-
                     }
-
                     console.log(data);
                 }
             }
@@ -121,7 +119,6 @@
 
         });
     })
-
     const previosUserData = (select_checker: [{ userid: String, row: any, col: any }], decrement: any) => {
         const user_clicking = select_checker[select_checker.length - 1].userid
         if (select_checker[select_checker.length - decrement]) {
@@ -159,8 +156,6 @@
         });
     }
 
-
-
     const handsondData = ref([])
 
     const colHeaders = ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
@@ -177,6 +172,8 @@
         'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
         'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
         'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE']
+
+
 
     const hotSettings = ref({
 
@@ -200,7 +197,9 @@
             {
                 //FundSource
                 type: 'dropdown',
-
+                async source(query, callback) {
+                    callback(await __fundSub())
+                }
             },
             {
                 //Date
@@ -259,8 +258,29 @@
             },
             {
                 //ExpenseCode 1
-                type: 'dropdown'
+                type: 'dropdown',
+                getSource(query, callback) {
+                    const url = '/Obligations/GetExpenseCode'; // Replace with your actual URL
+                    const allotmentId = this.instance.getDataAtCell(this.row, 51);
+
+                    axios.get(url, { params: { allotmentId } })
+                        .then(response => {
+                            if (response.status === 200) {
+                                callback(response.data.items);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                },
+
+                mounted() {
+                    this.getSource('', items => {
+                        this.dropdownItems = items;
+                    });
+                }
             },
+          
             {
                 //Amount1
                 type: 'numeric',
@@ -461,7 +481,7 @@
         wordWrap: false,
         manualRowResize: true,
         manualColumnResize: true,
-        height: '800px',
+        height: 'auto',
         //fixedColumnsLeft: 6,
         afterRemoveRow: (index: any, amount: any) => {
 
@@ -500,35 +520,23 @@
                         socket.value.send(JSON.stringify(send_data));
                     }
                 },
-                'printOrs': {
+                'print_ors': {
                     name: 'Print Ors',
-                    callback: function (changes: any, options: any) {
+                    callback: function (key: any, options: any) {
                         console.log(options);
-
                         const start = options[0].start.row
                         const end = options[0].end.row
-                        const send_data = { start: start, end: end, printOrs: true, userid: userInfo.value.userid, status: options }
-                        socket.value.send(JSON.stringify(send_data));
 
-                        var selected = handsondData.value || [];
-                        var holder_data = this.hotSettings.value();
-                        var first_column = selected[0][0];
-                        var last_column = selected[0][2];
-                        var many_token = [];
+                        console.log(handsondData.value[start][12]);
+   
+                        const baseUrl = '/Obligations/PrintOrs'+"?";
+                        const queryParams = [];
+                        for (let j = start; j <= end; j++) {
+                            queryParams.push(`token=${handsondData.value[j][12]}`);
+                        }
 
-                        for (let j = first_column; j <= last_column; j++) {
-                            many_token.push(holder_data[j][12]);
-                        }
-                        var url = `${this.$router.options.base}/PrintOrs/Obligations?`;
-                        for (let i = 0; i < many_token.length; i++) {
-                            if ((i + 1) != many_token.length) {
-                                url += `token=${many_token[i]}&`;
-                            } else {
-                                url += `token=${many_token[i]}`;
-                            }
-                        }
+                        const url = `${baseUrl}${queryParams.join('&')}`;
                         window.open(url);
-
                     }
                 },
                 'undo': {
@@ -544,14 +552,7 @@
             }
         },
         licenseKey: 'non-commercial-and-evaluation',
-
     })
-
-    const printOrs = (start: any, end: any) => {
-        const cell = hotTableComponent.value.hotInstance
-
-        cell.alter('printOrs', start, end + 1);
-    }
 
     const insertAboveRow = (row: Number) => {
         const cell = hotTableComponent.value.hotInstance;
@@ -646,7 +647,6 @@
     const __obligationData = async () => {
         const response = await obligationData()
         const data = await Promise.all(response.map(async (item: any) => {
-            //console.log(item);
             const amount: number[] = item.obligationAmounts.map((item) => item.amount);
             const obligation_amount: number = amount.reduce((total, amount) => total + amount, 0);
 
@@ -663,7 +663,7 @@
             });
 
             const dataBody = [
-                "fundsource", //0
+                item.source_type == "fund_source" ? get_fund_sub.value[item.fundSourceId + item.source_type] : get_fund_sub.value[item.subAllotmentId + item.source_type],
                 moment(item.date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
                 item.dv, //2
                 item.po_no, //3
@@ -680,16 +680,28 @@
 
             //return dataBody
             return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody)
-
             totalObligation.value += obligation_amount
         }))
 
         handsondData.value = data
-        console.log(data)
     }
+
+    const get_fund_sub = ref([]);
+    const __fundSub = async () => {
+        const response = await fundSub()
+        const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
+                get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
+                return item.source_title
+            }
+        ));
+        return fundSubDataDropdown
+    }
+
+
+    __fundSub()
     __obligationData()
 </script>
-
+  
 
 <template>
     <div class="row" style="padding:20px;">
@@ -744,7 +756,7 @@
         background-color: lightgray !important;
     }
 
-    .highlight_gray {
+    .highlight_salmon {
         background-color: lightsalmon !important;
     }
 
