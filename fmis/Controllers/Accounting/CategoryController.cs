@@ -18,6 +18,7 @@ namespace fmis.Controllers.Accounting
     [Authorize(Roles = "accounting_admin, accounting_user")]
     public class CategoryController : Controller
     {
+        private const int PageSize = 10;
         private readonly MyDbContext _MyDbContext;
 
         public CategoryController(MyDbContext MyDbContext)
@@ -90,6 +91,26 @@ namespace fmis.Controllers.Accounting
             await Task.Delay(500);
             await _MyDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+
+        public IActionResult Pagination(int page = 1)
+        {
+            int totalItems = _MyDbContext.Category.Count();
+            var products = _MyDbContext.Category
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            var model = new PaginationViewModel<Category>
+            {
+                Items = products,
+                PageNumber = page,
+                PageSize = PageSize,
+                TotalItems = totalItems
+            };
+
+            return View(model);
         }
 
 
