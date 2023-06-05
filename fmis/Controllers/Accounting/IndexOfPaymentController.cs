@@ -104,7 +104,6 @@ namespace fmis.Controllers.Accounting
             var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
 
-
             return View(await indexData.ToListAsync());
 
         }
