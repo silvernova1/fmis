@@ -4,11 +4,13 @@ using fmis.Services;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace fmis.Controllers.Accounting
@@ -23,6 +25,7 @@ namespace fmis.Controllers.Accounting
             _userService = userService;
         }
 
+        #region LOGIN
         [HttpGet]
         public IActionResult Login()
         {
@@ -44,7 +47,7 @@ namespace fmis.Controllers.Accounting
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(IndexViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -54,7 +57,7 @@ namespace fmis.Controllers.Accounting
                     await LoginAsync(user, model.RememberMe);
 
 
-                    if (user.Username == "201700272" || user.Username == "0623" || user.Username == "0437" || user.Username == "hr_admin" || user.Username == "1731")
+                    if (user.Username == "201700272" || user.Username == "0623" || user.Username == "0437" || user.Username == "hr_admin")
                     {
                         return RedirectToAction("Index", "IndexOfPayment");
                     }
@@ -71,7 +74,9 @@ namespace fmis.Controllers.Accounting
             }
             return View(model);
         }
+        #endregion
 
+        #region LOGOUT
         [HttpGet]
         public async Task<IActionResult> Logout(string returnUrl)
         {
@@ -82,21 +87,10 @@ namespace fmis.Controllers.Accounting
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (User.IsInRole("accounting_admin"))
-            {
-                return RedirectToAction("Login", "Index");
-            }
-            else if (User.IsInRole("user"))
-            {
-                return RedirectToAction("Login", "Index");
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            await HttpContext.SignOutAsync("Scheme2");
+            return RedirectToAction("Login", "Index");
         }
-
+        #endregion
 
         #region NOT FOUND
         public new IActionResult NotFound()
@@ -119,20 +113,20 @@ namespace fmis.Controllers.Accounting
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0780")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0780")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "accounting_user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname)
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(principal, properties);
+            var identity1 = new ClaimsIdentity(claims, "Scheme2");
+            var principal1 = new ClaimsPrincipal(identity1);
+
+            await HttpContext.SignInAsync("Scheme2", principal1);
         }
         #endregion
 
         #region COOKIES
         public string UserRole { get { return User.FindFirstValue(ClaimTypes.Role); } }
         #endregion
-
     }
 }

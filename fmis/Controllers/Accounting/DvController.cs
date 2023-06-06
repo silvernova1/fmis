@@ -35,7 +35,7 @@ using System.Security.Claims;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin,user")]
+    [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_user")]
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -49,6 +49,9 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+
+            Console.WriteLine("user: " + User.FindFirstValue(ClaimTypes.Name));
+            Console.WriteLine("role: " + User.FindFirstValue(ClaimTypes.Role));
 
             var dv = await _MyDbContext.Dv
                 .Include(x => x.RespoCenter)

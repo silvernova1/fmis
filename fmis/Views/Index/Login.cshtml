@@ -1,4 +1,4 @@
-﻿@model fmis.ViewModel.LoginViewModel
+﻿@model fmis.ViewModel.IndexViewModel
 
 
 @{
@@ -18,7 +18,7 @@
     <div class="card-body login-card-body">
         <p class="login-box-msg">Sign in to start your session</p>
 
-        <form method="post">
+        <form method="post" asp-action="Login">
             <input type="hidden" asp-for="ReturnUrl" />
             <div class="input-group mb-3">
                 <input type="text" asp-for="Username" class="form-control" placeholder="User ID">
