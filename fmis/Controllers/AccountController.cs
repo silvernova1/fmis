@@ -18,6 +18,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using fmis.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
@@ -109,6 +110,7 @@ namespace fmis.Controllers
 
         #region LOGIN
         [HttpGet]
+        //[Authorize(Policy = "Policy1")]
         public IActionResult Login()
         {
             ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x => x.YearlyReference).ToList();
@@ -120,16 +122,17 @@ namespace fmis.Controllers
             {
                 switch (User.FindFirstValue(ClaimTypes.Role))
                 {
-                    case "accounting_admin":
-                        return RedirectToAction("Dashboard", "Home");
+                    case "budget_admin":
+                        return RedirectToAction("Index", "BudgetAllotment");
                     default:
-                        return RedirectToAction("Index", "Dv");
+                        return RedirectToAction("Dashboard", "Home");
                 }
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //[Authorize(Policy = "Policy1")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             ViewData["Year"] = _context.Yearly_reference.ToList();
@@ -143,15 +146,13 @@ namespace fmis.Controllers
                     await LoginAsync(user, model.RememberMe);
 
                     
-                    if (user.Username == "201700272" || user.Username == "0623" || user.Username =="0437" || user.Username == "1731")
+                    if (user.Username == "hr_admin")
                     {
-                        return NotFound();
-                        //return RedirectToAction("Dashboard", "Home");
+                        return RedirectToAction("Index", "BudgetAllotment");
                     }
                     else
                     {
-                        return NotFound();
-                        //return RedirectToAction("Index", "Dv");
+                        return RedirectToAction("Dashboard", "Home");
                     }
                 }
                 else
@@ -175,19 +176,8 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (User.IsInRole("accounting_admin"))
-            {
-                return RedirectToAction("Login", "Index");
-            }
-            else if(User.IsInRole("user"))
-            {
-                return RedirectToAction("Login", "Index");
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            await HttpContext.SignOutAsync("Scheme1");
+            return RedirectToAction("Login", "Account");
         }
         #endregion
 
@@ -212,16 +202,17 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin")?"budget_admin" : "budget_user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
                 new Claim("YearlyRefId", user.YearId.ToString())
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(principal, properties);
+            var identity1 = new ClaimsIdentity(claims, "Scheme1");
+            var principal1 = new ClaimsPrincipal(identity1);
+
+            await HttpContext.SignInAsync("Scheme1", principal1);
         }
         #endregion
 
