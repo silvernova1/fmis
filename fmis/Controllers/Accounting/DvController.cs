@@ -139,7 +139,7 @@ namespace fmis.Controllers.Accounting
             return View(dv);
         }
 
-        public IActionResult GetPayee(string cid)
+        public IActionResult GetPayee(string cid, string cid2)
         {
             var payee_List = _MyDbContext.Payee.Where(x=>x.payee_type == cid).Select(c => new { Id = c.PayeeId, Name = c.PayeeDescription }).ToList();
 
@@ -1171,7 +1171,6 @@ namespace fmis.Controllers.Accounting
                 }
 
            }
-
 
         public IActionResult PrintAdvancePayment(string[] token, int id)
         {
@@ -2815,7 +2814,6 @@ namespace fmis.Controllers.Accounting
             }
 
         }
-
 
         public IActionResult PrintRetention(string[] token, int id)
         {

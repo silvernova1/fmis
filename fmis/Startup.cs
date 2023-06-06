@@ -200,8 +200,8 @@ namespace fmis
             .AddCookie(options =>
             {
                 options.Cookie.Name = "CookieAuth";
-                options.LoginPath = "/Index/Login";
-                options.LogoutPath = "/Index/Logout";
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/NotFound";
                 options.ExpireTimeSpan = TimeSpan.FromHours(5);
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;

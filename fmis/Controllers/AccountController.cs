@@ -145,13 +145,11 @@ namespace fmis.Controllers
                     
                     if (user.Username == "201700272" || user.Username == "0623" || user.Username =="0437" || user.Username == "1731")
                     {
-                        return NotFound();
-                        //return RedirectToAction("Dashboard", "Home");
+                        return RedirectToAction("Dashboard", "Home");
                     }
                     else
                     {
-                        return NotFound();
-                        //return RedirectToAction("Index", "Dv");
+                        return RedirectToAction("Index", "Dv");
                     }
                 }
                 else
@@ -212,7 +210,7 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("201700272")||user.Username.Equals("0623")||user.Username.Equals("0437")||user.Username.Equals("hr_admin")?"accounting_admin" : "budget_admin"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
