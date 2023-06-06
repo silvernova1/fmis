@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using DocumentFormat.OpenXml.EMMA;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Claims;
 
 namespace fmis.Controllers
 {
@@ -53,6 +54,9 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "BudgetAllotment", "");
             ViewBag.layout = "_Layout";
+
+            Console.WriteLine("user: " + User.FindFirstValue(ClaimTypes.Name));
+            Console.WriteLine("role: " + User.FindFirstValue(ClaimTypes.Role));
 
             string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);

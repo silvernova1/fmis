@@ -14,8 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Accounting
 {
-    //[Authorize(Roles = "accounting_admin , accounting_user")]
-    [Authorize(Roles = "accounting_admin, accounting_user")]
+    [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_admin")]
     public class CategoryController : Controller
     {
         private const int PageSize = 10;

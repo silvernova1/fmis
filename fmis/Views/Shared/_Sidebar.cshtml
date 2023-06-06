@@ -943,7 +943,7 @@
             }
         }
 
-        @if (User.FindFirstValue(ClaimTypes.Role) == "user" || User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+        @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_user" || User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
         {
             <li class="@if (ViewBag.filter.main == "end_user")
                     @Html.Raw("active open")

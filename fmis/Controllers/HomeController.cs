@@ -21,11 +21,7 @@ using System.Threading.Tasks;
 
 namespace fmis.Controllers
 {
-
-    //[Authorize]
-    //[Authorize(Policy = "Job Order")]
-    [Authorize(Roles = "accounting_admin, accounting_user, budget_admin")]
-    //[Authorize(AuthenticationSchemes = "Scheme1")]
+    [Authorize(AuthenticationSchemes = "Scheme1", Roles = "budget_user")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -54,6 +50,7 @@ namespace fmis.Controllers
         public IActionResult Dashboard(string date_from, string date_to, FundSource fundSource, int name, int id)
         {
             Console.WriteLine("user " + User.FindFirstValue(ClaimTypes.Name));
+            Console.WriteLine("role " + User.FindFirstValue(ClaimTypes.Role));
 
             ViewBag.filter_sidebar = "dashboard";
             ViewBag.filter = new FilterSidebar("dashboard", "home", "");

@@ -38,7 +38,7 @@ using System.Diagnostics;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(Roles = "accounting_admin , accounting_user")]
+    [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_admin")]
     public class PayeeController : Controller
     {
         private readonly MyDbContext _MyDbContext;
