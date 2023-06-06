@@ -218,28 +218,6 @@ namespace fmis
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 }); ;
 
-            /*services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Scheme1";
-            })
-            .AddCookie("Scheme1", options =>
-            {
-                options.Cookie.Name = "Scheme1Cookie";
-                options.LoginPath = "/Account/Login";
-                options.LogoutPath = "/Account/Logout";
-                options.AccessDeniedPath = "/Account/NotFound";
-                options.ExpireTimeSpan = TimeSpan.FromHours(5);
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
-            })
-            .AddCookie("Scheme2", options =>
-            {
-                options.Cookie.Name = "Scheme2Cookie";
-                options.LoginPath = "/Index/Login";
-                options.LogoutPath = "/Index/Logout";
-                options.AccessDeniedPath = "/Index/NotFound";
-                options.ExpireTimeSpan = TimeSpan.FromHours(5);
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
-            });*/
 
             services.AddAuthorization(options =>
             {

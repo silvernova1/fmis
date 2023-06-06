@@ -15,7 +15,7 @@ export function fundSub(params: {} = {}) {
 }
 
 export function expCode(params: {} = {}) {
-    return req.get(domainExtension + "/Handsontable/expCode", params);
+    return req.get(domainExtension + "/Obligations/GetExpenseCode", params);
 }
 
 

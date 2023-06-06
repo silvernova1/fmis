@@ -1,12 +1,11 @@
 <script setup lang="ts">
-    import { userDetails, obligationData, fundSub } from "../../../api/index"
+    import { userDetails, obligationData, fundSub, expCode } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
     import { registerAllModules } from 'handsontable/registry';
     import 'handsontable/dist/handsontable.full.css';
     import axios from 'axios';
-
     import moment from "moment"
 
     //register Handsontable's modules
@@ -203,7 +202,8 @@
             },
             {
                 //Date
-                type: 'date'
+                type: 'date',
+    
             },
             {
                 //Dv
@@ -223,7 +223,7 @@
             },
             {
                 //Address
-                type: 'text'
+                type: 'text',
             },
             {
                 //Particulars
@@ -259,28 +259,11 @@
             {
                 //ExpenseCode 1
                 type: 'dropdown',
-                getSource(query, callback) {
-                    const url = '/Obligations/GetExpenseCode'; // Replace with your actual URL
-                    const allotmentId = this.instance.getDataAtCell(this.row, 51);
-
-                    axios.get(url, { params: { allotmentId } })
-                        .then(response => {
-                            if (response.status === 200) {
-                                callback(response.data.items);
-                            }
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                },
-
-                mounted() {
-                    this.getSource('', items => {
-                        this.dropdownItems = items;
-                    });
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
                 }
             },
-          
             {
                 //Amount1
                 type: 'numeric',
@@ -294,7 +277,11 @@
             },
             {
                 //ExpenseCode 2
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount2
@@ -309,7 +296,11 @@
             },
             {
                 //ExpenseCode 3
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 3
@@ -324,7 +315,11 @@
             },
             {
                 //ExpenseCode 4
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 4
@@ -339,7 +334,11 @@
             },
             {
                 //ExpenseCode 5
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 5
@@ -354,7 +353,11 @@
             },
             {
                 //ExpenseCode 6
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 6
@@ -369,7 +372,11 @@
             },
             {
                 //ExpenseCode 7
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 7
@@ -384,7 +391,11 @@
             },
             {
                 //ExpenseCode 8
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 8
@@ -399,7 +410,11 @@
             },
             {
                 //ExpenseCode 9
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 9
@@ -414,7 +429,11 @@
             },
             {
                 //ExpenseCode 10
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 10
@@ -429,7 +448,11 @@
             },
             {
                 //ExpenseCode 11
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount11
@@ -444,7 +467,11 @@
             },
             {
                 //ExpenseCode 12
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 12
@@ -468,7 +495,7 @@
                 }
             },
             {
-                //Pap Type
+                //ALLOTMENT CLASS
                 type: 'text'
             },
         ],
@@ -481,7 +508,7 @@
         wordWrap: false,
         manualRowResize: true,
         manualColumnResize: true,
-        height: 'auto',
+        height: '600px',
         //fixedColumnsLeft: 6,
         afterRemoveRow: (index: any, amount: any) => {
 
@@ -506,6 +533,7 @@
                         insertBelowRow(options[0].start.row)
                         const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options }
                         socket.value.send(JSON.stringify(send_data));
+
                     }
                 },
                 'separator': ContextMenu.SEPARATOR,
@@ -562,6 +590,8 @@
     const insertBelowRow = (row: Number) => {
         const cell = hotTableComponent.value.hotInstance;
         cell.alter('insert_row_below', row);
+ 
+
     }
 
     const removeRow = (start: any, end: any) => {
@@ -606,6 +636,7 @@
     const afterChangeFlag = ref(false)
     const afterChange = (changes: any, source: any) => {
         if (changes && source === 'edit' && !afterChangeFlag.value) {
+
             const [row, col, oldValue, newValue] = changes[0];
             const data = hotTableComponent.value.hotInstance.getDataAtCell(row, col);
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: data }
@@ -678,8 +709,13 @@
                 item.obligation_token, //12
             ]
 
-            //return dataBody
-            return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody)
+            const beginningRemainingAllotmentBody = [
+                item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
+                item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
+                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId
+            ]
+            //console.log(dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody))
+            return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
             totalObligation.value += obligation_amount
         }))
 
@@ -697,6 +733,10 @@
         return fundSubDataDropdown
     }
 
+    const __expCode = async (allotmentId: Number) => {
+        const response = await expCode({ allotmentId: allotmentId })
+        return response.items
+    }
 
     __fundSub()
     __obligationData()
@@ -719,7 +759,6 @@
                :colWidth="true"
                :rowHeaders="true"
                stretchH="all"
-               height="auto"
                :settings="hotSettings"
                :afterSelection="highlightCell"
                :afterChange="afterChange"
@@ -768,6 +807,7 @@
         border-radius: 50%;
     }
 
+
     span.blink {
         display: block;
         width: 15px;
@@ -784,4 +824,9 @@
             opacity: 0;
         }
     }
+
+    .wtHider {
+        margin-bottom: 200px;
+    }
+
 </style>
