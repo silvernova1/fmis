@@ -143,12 +143,13 @@
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
                     <label>PERIOD COVER</label>
-                    <input type="text" asp-for="PeriodCover" class="form-control" name="periodCover" id="daterange" value="@Model.PeriodCover" onchange="PeriodCheck()">
+                    @* <input type="month" asp-for="PeriodCover" class="form-control" name="periodCover" id="daterange" value="@Model.PeriodCover" onchange="PeriodCheck()">*@
+                      <input type="month"  value="@Model.PeriodCover">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
-                    <label>FROM TO</label>
+                    <label>Period Covered From-To:</label>
                     @*<input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">*@
                     <input type="text" class="form-control" asp-for="date" name="date" />
                 </div>
@@ -536,8 +537,7 @@
             $("#hidden-panel2").show();
             $("#hidden-panel10").show();
             categ.push('1', '3', '4', '5', '6', '7', '8', '9');
-        } else if (value == 6 || value == 15 || value == 24 ||
-            value == 25 || value == 26 || value == 27 || value == 28 ||
+        } else if (value == 6 || value == 15 || 
             value == 32 || value == 33 || value == 34 || value == 35) {
             $("#hidden-panel4").show();
             categ.push('1', '2', '3', '5', '6', '7', '8', '9', '10');
@@ -547,7 +547,7 @@
             categ.push('1', '2', '3', '5', '6', '7', '8', '9');
 
         } else if (value == 8 || value == 9 || value == 10 || value == 11 ||
-            value == 22 || value == 30 || value == 31) {
+            value == 22 || value == 23 || value == 24 || value == 25 || value == 26 || value == 27 || value == 28 || value == 30 || value == 31) {
             $("#hidden-panel6").show();
             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
         } else if (value == 12 || value == 19) {
@@ -570,10 +570,10 @@
             $("#hidden-panel8").show();
             categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
         }
-        else if (value == 23) {
-            $("#hidden-panel6").show();
-            categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
-        }
+     //   else if (value == 23) {
+     //       $("#hidden-panel6").show();
+       //     categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
+       // }
         categ.forEach(function (i) {
             $('#hidden-panel' + i).hide();
         });

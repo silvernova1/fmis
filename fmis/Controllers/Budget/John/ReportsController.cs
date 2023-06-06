@@ -26,6 +26,8 @@ using Microsoft.AspNetCore.Authorization;
 using fmis.Models.Carlo;
 using DocumentFormat.OpenXml.Presentation;
 using System.Threading;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -15157,6 +15159,15 @@ namespace fmis.Controllers.Budget.John
             return View();
         }
 
+
+        [Route("Dv/Saob2")]
+        public IActionResult DownloadSaob2()
+        {
+            ViewBag.filter = new FilterSidebar("budget_report", "saob", "");
+            PopulatePrexcsDropDownList();
+
+            return View();
+        }
 
         /*DROPDOWN LIST FOR PREXC*/
 

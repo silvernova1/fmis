@@ -42,9 +42,10 @@
                         @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
                         @if (ViewBag.Message != null && ViewBag.Message == "Exist")
                         {
-                            <br />
+                            <br/>
 
                             <span style="color:red;">Already exist.</span>
+                      
                         }
                     </div>
                 </div>
@@ -141,8 +142,9 @@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
-                    <label>Period Cover:</label>
-                    <input type="text" asp-for="PeriodCover" id="periodCover" name="periodCover" class="form-control" onchange="PeriodCheck()">
+                    <label>Period Covered:</label>
+                    @*<input type="text" asp-for="PeriodCover" id="periodCover" name="periodCover" class="form-control" onchange="PeriodCheck()">*@
+                    <input type="month" asp-for="PeriodCover" class="form-control">
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -154,7 +156,7 @@
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
                 <div class="form-group">
                     <label>Period Covered From-To:</label>
-                    <input type="date" class="form-control" asp-for="date" id="fromTo" onchange="FromToCheck()" />
+                    <input type="text" class="form-control" asp-for="date" id="fromTo" onchange="FromToCheck()" />
                 </div>
                 <div class="row">
                     <label class="col-sm-2"></label>
@@ -338,6 +340,8 @@
 
 
 <script>
+
+
     //period cover
     $(function () {
         $('input[name="periodCover"]').daterangepicker({
@@ -585,6 +589,7 @@
                 cancelLabel: 'Clear'
             }
         });
+
         $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
             var data = {
@@ -606,6 +611,7 @@
                 cancelLabel: 'Clear'
             }
         });
+
         $('input[name="travel_period"]').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             var data = {
@@ -717,9 +723,8 @@
             $("#hidden-panel2").show();
             $("#hidden-panel10").show();
             categ.push('1', '3', '4', '5', '6', '7', '8', '9');
-        } else if (value == 6 || value == 15 || value == 24 ||
-            value == 25 || value == 26 || value == 27 || value == 28 ||
-            value == 32 || value == 33 || value == 34 || value == 35) {
+        } else if (value == 6 || value == 15 ||  
+             value == 32 || value == 33 || value == 34 || value == 35) {
             $("#hidden-panel4").show();
             categ.push('1', '2', '3', '5', '6', '7', '8', '9', '10');
         } else if (value == 7) {
@@ -728,7 +733,7 @@
             categ.push('1', '2', '3', '5', '6', '7', '8', '9');
 
         } else if (value == 8 || value == 9 || value == 10 || value == 11 ||
-            value == 22 || value == 30 || value == 31) {
+            value == 22 || value == 24 || value == 25 || value == 26 || value == 27 || value == 28 || value == 30 || value == 31) {
             $("#hidden-panel6").show();
             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
         } else if (value == 12 || value == 19) {
@@ -752,7 +757,7 @@
             categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
         }
         else if (value == 23) {
-            $("#hidden-panel6").show();
+           $("#hidden-panel6").show();
             categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
         }
         categ.forEach(function (i) {
