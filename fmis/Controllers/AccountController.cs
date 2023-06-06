@@ -132,7 +132,6 @@ namespace fmis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "Policy1")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             ViewData["Year"] = _context.Yearly_reference.ToList();
