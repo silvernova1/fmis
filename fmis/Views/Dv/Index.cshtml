@@ -160,6 +160,19 @@
                             <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
                                 <i class="ace-icon fa fa-file-pdf-o"></i>
                             </a>
+
+                            <a class="btn btn-xs btn-warning" target="_blank" href="@Url.Action("PrintAdvancePayment","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Advance Payment">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+
+                            <a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintFinalBilling","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Progress Final Billing">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+
+                            <a class="btn btn-xs btn-danger" target="_blank" href="@Url.Action("PrintRetention","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Retention">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+
                         </td>
                     </tr>
                 }
@@ -213,6 +226,18 @@
                             <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
                                 <i class="ace-icon fa fa-file-pdf-o"></i>
                             </a>
+                            <a class="btn btn-xs btn-warning" target="_blank" href="@Url.Action("PrintAdvancePayment","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Advance Payment">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+
+                            <a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintFinalBilling","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Progress Final Billing">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+
+                            <a class="btn btn-xs btn-danger" target="_blank" href="@Url.Action("PrintRetention","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Retention">
+                                <i class="ace-icon fa fa-file-pdf-o"></i>
+                            </a>
+
                         </td>
                     </tr>
                 }

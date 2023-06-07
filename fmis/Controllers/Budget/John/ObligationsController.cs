@@ -35,6 +35,7 @@ using System.Text;
 using System.Diagnostics;
 using fmis.Models.Accounting;
 
+
 //SAMPLE
 
 namespace fmis.Controllers
@@ -1221,6 +1222,8 @@ namespace fmis.Controllers
 
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, reader);
                 doc.Close(); return File(stream.ToArray(), "application/pdf");
+
+          
             }
         }
 

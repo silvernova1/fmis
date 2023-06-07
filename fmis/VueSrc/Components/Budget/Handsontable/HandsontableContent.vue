@@ -1,11 +1,11 @@
 <script setup lang="ts">
-    import { userDetails, obligationData } from "../../../api/index"
+    import { userDetails, obligationData, fundSub, expCode } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
     import { registerAllModules } from 'handsontable/registry';
     import 'handsontable/dist/handsontable.full.css';
-
+    import axios from 'axios';
     import moment from "moment"
 
     //register Handsontable's modules
@@ -108,10 +108,7 @@
                         changeDataCell({ row: data.row, col: data.col, data: data.data })
                     } else if (actionType === 'insert_row') {
                         removeRow(data.row, data.row)
-                    } else if (actionType === 'printOrs') {
-
                     }
-
                     console.log(data);
                 }
             }
@@ -121,7 +118,6 @@
 
         });
     })
-
     const previosUserData = (select_checker: [{ userid: String, row: any, col: any }], decrement: any) => {
         const user_clicking = select_checker[select_checker.length - 1].userid
         if (select_checker[select_checker.length - decrement]) {
@@ -159,8 +155,6 @@
         });
     }
 
-
-
     const handsondData = ref([])
 
     const colHeaders = ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
@@ -177,6 +171,8 @@
         'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
         'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
         'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE']
+
+
 
     const hotSettings = ref({
 
@@ -200,11 +196,14 @@
             {
                 //FundSource
                 type: 'dropdown',
-
+                async source(query, callback) {
+                    callback(await __fundSub())
+                }
             },
             {
                 //Date
-                type: 'date'
+                type: 'date',
+    
             },
             {
                 //Dv
@@ -224,7 +223,7 @@
             },
             {
                 //Address
-                type: 'text'
+                type: 'text',
             },
             {
                 //Particulars
@@ -259,7 +258,11 @@
             },
             {
                 //ExpenseCode 1
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount1
@@ -274,7 +277,11 @@
             },
             {
                 //ExpenseCode 2
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount2
@@ -289,7 +296,11 @@
             },
             {
                 //ExpenseCode 3
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 3
@@ -304,7 +315,11 @@
             },
             {
                 //ExpenseCode 4
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 4
@@ -319,7 +334,11 @@
             },
             {
                 //ExpenseCode 5
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 5
@@ -334,7 +353,11 @@
             },
             {
                 //ExpenseCode 6
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 6
@@ -349,7 +372,11 @@
             },
             {
                 //ExpenseCode 7
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 7
@@ -364,7 +391,11 @@
             },
             {
                 //ExpenseCode 8
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 8
@@ -379,7 +410,11 @@
             },
             {
                 //ExpenseCode 9
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 9
@@ -394,7 +429,11 @@
             },
             {
                 //ExpenseCode 10
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 10
@@ -409,7 +448,11 @@
             },
             {
                 //ExpenseCode 11
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount11
@@ -424,7 +467,11 @@
             },
             {
                 //ExpenseCode 12
-                type: 'dropdown'
+                type: 'dropdown',
+                async source(query, callback) {
+                    const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
+                    callback(await __expCode(data))
+                }
             },
             {
                 //Amount 12
@@ -448,7 +495,7 @@
                 }
             },
             {
-                //Pap Type
+                //ALLOTMENT CLASS
                 type: 'text'
             },
         ],
@@ -461,7 +508,7 @@
         wordWrap: false,
         manualRowResize: true,
         manualColumnResize: true,
-        height: '800px',
+        height: '600px',
         //fixedColumnsLeft: 6,
         afterRemoveRow: (index: any, amount: any) => {
 
@@ -486,6 +533,7 @@
                         insertBelowRow(options[0].start.row)
                         const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options }
                         socket.value.send(JSON.stringify(send_data));
+
                     }
                 },
                 'separator': ContextMenu.SEPARATOR,
@@ -500,35 +548,23 @@
                         socket.value.send(JSON.stringify(send_data));
                     }
                 },
-                'printOrs': {
+                'print_ors': {
                     name: 'Print Ors',
-                    callback: function (changes: any, options: any) {
+                    callback: function (key: any, options: any) {
                         console.log(options);
-
                         const start = options[0].start.row
                         const end = options[0].end.row
-                        const send_data = { start: start, end: end, printOrs: true, userid: userInfo.value.userid, status: options }
-                        socket.value.send(JSON.stringify(send_data));
 
-                        var selected = handsondData.value || [];
-                        var holder_data = this.hotSettings.value();
-                        var first_column = selected[0][0];
-                        var last_column = selected[0][2];
-                        var many_token = [];
+                        console.log(handsondData.value[start][12]);
+   
+                        const baseUrl = '/Obligations/PrintOrs'+"?";
+                        const queryParams = [];
+                        for (let j = start; j <= end; j++) {
+                            queryParams.push(`token=${handsondData.value[j][12]}`);
+                        }
 
-                        for (let j = first_column; j <= last_column; j++) {
-                            many_token.push(holder_data[j][12]);
-                        }
-                        var url = `${this.$router.options.base}/PrintOrs/Obligations?`;
-                        for (let i = 0; i < many_token.length; i++) {
-                            if ((i + 1) != many_token.length) {
-                                url += `token=${many_token[i]}&`;
-                            } else {
-                                url += `token=${many_token[i]}`;
-                            }
-                        }
+                        const url = `${baseUrl}${queryParams.join('&')}`;
                         window.open(url);
-
                     }
                 },
                 'undo': {
@@ -544,14 +580,7 @@
             }
         },
         licenseKey: 'non-commercial-and-evaluation',
-
     })
-
-    const printOrs = (start: any, end: any) => {
-        const cell = hotTableComponent.value.hotInstance
-
-        cell.alter('printOrs', start, end + 1);
-    }
 
     const insertAboveRow = (row: Number) => {
         const cell = hotTableComponent.value.hotInstance;
@@ -561,6 +590,8 @@
     const insertBelowRow = (row: Number) => {
         const cell = hotTableComponent.value.hotInstance;
         cell.alter('insert_row_below', row);
+ 
+
     }
 
     const removeRow = (start: any, end: any) => {
@@ -605,6 +636,7 @@
     const afterChangeFlag = ref(false)
     const afterChange = (changes: any, source: any) => {
         if (changes && source === 'edit' && !afterChangeFlag.value) {
+
             const [row, col, oldValue, newValue] = changes[0];
             const data = hotTableComponent.value.hotInstance.getDataAtCell(row, col);
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: data }
@@ -646,7 +678,6 @@
     const __obligationData = async () => {
         const response = await obligationData()
         const data = await Promise.all(response.map(async (item: any) => {
-            //console.log(item);
             const amount: number[] = item.obligationAmounts.map((item) => item.amount);
             const obligation_amount: number = amount.reduce((total, amount) => total + amount, 0);
 
@@ -663,7 +694,7 @@
             });
 
             const dataBody = [
-                "fundsource", //0
+                item.source_type == "fund_source" ? get_fund_sub.value[item.fundSourceId + item.source_type] : get_fund_sub.value[item.subAllotmentId + item.source_type],
                 moment(item.date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
                 item.dv, //2
                 item.po_no, //3
@@ -678,18 +709,39 @@
                 item.obligation_token, //12
             ]
 
-            //return dataBody
-            return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody)
-
+            const beginningRemainingAllotmentBody = [
+                item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
+                item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
+                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId
+            ]
+            //console.log(dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody))
+            return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
             totalObligation.value += obligation_amount
         }))
 
         handsondData.value = data
-        console.log(data)
     }
+
+    const get_fund_sub = ref([]);
+    const __fundSub = async () => {
+        const response = await fundSub()
+        const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
+                get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
+                return item.source_title
+            }
+        ));
+        return fundSubDataDropdown
+    }
+
+    const __expCode = async (allotmentId: Number) => {
+        const response = await expCode({ allotmentId: allotmentId })
+        return response.items
+    }
+
+    __fundSub()
     __obligationData()
 </script>
-
+  
 
 <template>
     <div class="row" style="padding:20px;">
@@ -707,7 +759,6 @@
                :colWidth="true"
                :rowHeaders="true"
                stretchH="all"
-               height="auto"
                :settings="hotSettings"
                :afterSelection="highlightCell"
                :afterChange="afterChange"
@@ -744,7 +795,7 @@
         background-color: lightgray !important;
     }
 
-    .highlight_gray {
+    .highlight_salmon {
         background-color: lightsalmon !important;
     }
 
@@ -755,6 +806,7 @@
         /* background-color: #0fcc45; */
         border-radius: 50%;
     }
+
 
     span.blink {
         display: block;
@@ -772,4 +824,9 @@
             opacity: 0;
         }
     }
+
+    .wtHider {
+        margin-bottom: 200px;
+    }
+
 </style>

@@ -52,42 +52,6 @@
 </h3>
 <hr>
 
-<div class="col-xs-12 ">
-    @*  <div class="infobox infobox-green" style="margin-left: -10px">
-    <div class="infobox-icon">
-    <i class="ace-icon fa fa-calculator"></i>
-    </div>
-    <div class="infobox-data">
-    <span class="infobox-data-number" id="total_beginning_balance" style="font-size:11pt; color: grey;">
-    @{
-    decimal? overall_beginning_balance = (Model.Sum(x => x.FundSource?.Beginning_balance) + Model.Sum(x => x.SubAllotment?.Beginning_balance));
-    }
-    @overall_beginning_balance?.ToString("C", new CultureInfo("en-PH"))
-    </span>
-    <div class="infobox-content">
-    <span class="label label-success arrowed-in arrowed-in-right"> Beginning Balance </span>
-    </div>
-    </div>
-    </div>*@
-    @*    <div class="infobox infobox-red" style="margin-left: -10px">
-    <div class="infobox-icon">
-    <i class="ace-icon fa fa-calculator"></i>
-    </div>
-    <div class="infobox-data">
-    <span class="infobox-data-number" id="total_remaining_balance" style="font-size:11pt; color: grey;">
-    @{
-    decimal? overall_remaining_balance = (Model.Sum(x => x.FundSource?.Remaining_balance) + Model.Sum(x => x.SubAllotment?.Remaining_balance));
-    }
-    @overall_remaining_balance?.ToString("C", new CultureInfo("en-PH"))
-    </span>
-    <div class="infobox-content">
-    <span class="label label-danger arrowed-in arrowed-in-right"> Remaining Balance </span>
-    </div>
-    </div>
-    </div>*@
-
-</div>
-<!---->
 
 <div class="controls">
     <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
@@ -240,6 +204,7 @@
     var get_fund_sub = [];
     var get_obligated_amount = [];
     var fund_sub_counter = 0;
+
     $.each($.parseJSON($(".fund_sub").val()), function () {
         fund_sub_data_dropdown[fund_sub_counter] = this.source_title;
         var json_data = new Object();
@@ -267,7 +232,6 @@
             who_created = current_user;
         }
 
-
         total_obligation += obligated_amount;
 
         last_ors_handler = this.Ors_no;
@@ -286,8 +250,8 @@
             this.Id, //11
             this.obligation_token, //12
         ];
-        //     if (!this.Ors_no && data[counter-1][8]) {
-          //  last_ors_handler = data[counter - 1][8];
+            //if (!this.Ors_no && data[counter-1][8]) {
+            //last_ors_handler = data[counter - 1][8];
             //}
         $.each(this.ObligationAmounts, function () {
             data[counter].push(this.obligation_amount_token);
@@ -1251,7 +1215,7 @@
             }
         },
         hiddenColumns: {
-            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
+            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50],
         },
         licenseKey: 'non-commercial-and-evaluation',
     });

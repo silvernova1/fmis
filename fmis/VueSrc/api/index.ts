@@ -10,3 +10,17 @@ export function obligationData(params: {} = {}) {
     return req.get(domainExtension + "/Handsontable/Obligation", params);
 }
 
+export function fundSub(params: {} = {}) {
+    return req.get(domainExtension + "/Handsontable/fundSub", params);
+}
+
+export function expCode(params: {} = {}) {
+    return req.get(domainExtension + "/Obligations/GetExpenseCode", params);
+}
+
+
+
+
+
+
+

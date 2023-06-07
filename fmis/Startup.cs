@@ -23,6 +23,7 @@ using System.Security.Claims;
 using fmis.Services;
 using Newtonsoft.Json;
 using fmis;
+using Microsoft.AspNetCore.Authorization;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -192,20 +193,30 @@ namespace fmis
 
             services.AddDistributedMemoryCache();
 
+
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = "Scheme1";
+                options.DefaultChallengeScheme = "Scheme1";
             })
-            .AddCookie(options =>
-            {
-                options.Cookie.Name = "CookieAuth";
-                options.LoginPath = "/Index/Login";
-                options.LogoutPath = "/Index/Logout";
-                options.AccessDeniedPath = "/Account/NotFound";
-                options.ExpireTimeSpan = TimeSpan.FromHours(5);
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
-            });
+                .AddCookie("Scheme1", options =>
+                {
+                    options.Cookie.Name = "Scheme1";
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Account/NotFound";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(5);
+                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                })
+                .AddCookie("Scheme2", options =>
+                {
+                    options.Cookie.Name = "Scheme2";
+                    options.LoginPath = "/Index/Login";
+                    options.LogoutPath = "/Index/Logout";
+                    options.AccessDeniedPath = "/Index/NotFound";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(5);
+                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                }); ;
 
 
             services.AddAuthorization(options =>
@@ -225,7 +236,13 @@ namespace fmis
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
             });
-        }    
+        }
+
+
+        public class CustomRequirement : IAuthorizationRequirement
+        {
+            // Empty requirement
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
@@ -243,20 +260,12 @@ namespace fmis
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "scheme1",
-                    pattern: "/Account/Login",
-                    defaults: new { controller = "Account", action = "Login" });
-
-                endpoints.MapControllerRoute(
-                    name: "scheme2",
-                    pattern: "/Index/Login",
-                    defaults: new { controller = "Index", action = "Login" });
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

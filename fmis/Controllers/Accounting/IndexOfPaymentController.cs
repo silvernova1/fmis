@@ -38,9 +38,11 @@ using Microsoft.Office.Interop.Excel;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using fmis.ViewModel;
+using Microsoft.AspNetCore.Authentication;
 
 namespace fmis.Controllers.Accounting
 {
+    [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_admin")]
     public class IndexOfPaymentController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -63,6 +65,9 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "index");
+
+            Console.WriteLine("user: " + User.FindFirstValue(ClaimTypes.Name));
+            Console.WriteLine("role: " + User.FindFirstValue(ClaimTypes.Role));
 
             var indexData = from c in _MyDbContext.Indexofpayment
                             .Include(x => x.Category)
@@ -103,7 +108,6 @@ namespace fmis.Controllers.Accounting
             ViewBag.totalDeduction = totalDeduction;
             var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
-
 
             return View(await indexData.ToListAsync());
 
