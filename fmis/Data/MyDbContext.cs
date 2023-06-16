@@ -83,6 +83,7 @@ namespace fmis.Data
         public DbSet<BillNumber> BillNumber { get; set; }
         public DbSet<SubNegative> SubNegative { get; set; }
         public DbSet<IndexFundSource> IndexFundSource { get; set; }
+        public DbSet<InfraAdvancePayment> InfraAdvancePayment { get; set; }
 
 
 

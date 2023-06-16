@@ -58,6 +58,7 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.FundCluster)
                 .Include(x => x.Assignee)
                 .Include(x => x.Payee)
+                .Include(x=>x.InfraAdvancePayment)
                 .Include(x => x.dvDeductions).ThenInclude(x=>x.Deduction)
                 .AsNoTracking()
                 .ToListAsync();
@@ -90,7 +91,7 @@ namespace fmis.Controllers.Accounting
             var netAmount = _MyDbContext.Dv.Where(x => x.DvNo == searchString || x.RespoCenter.Respo == searchString || x.Payee.PayeeDescription == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
 
-            return View(dv.ToList());
+            return View(dv);
         }
 
 
@@ -103,8 +104,10 @@ namespace fmis.Controllers.Accounting
             PopulateRespoDropDownList();
             PopulateAssigneeDropDownList();
             PopulateDeductionDropDownList();
-
+            
             Dv newDv = new() { dvDeductions = new List<DvDeduction>(7)};
+            var stype = newDv.DvSupType;
+            newDv.InfraAdvancePayment = newDv.InfraAdvancePayment;
             for (int x = 0; x < 7; x++)
             {
                 newDv.dvDeductions.Add(new DvDeduction());
@@ -119,16 +122,27 @@ namespace fmis.Controllers.Accounting
             return Json(branches.Where(x => x.PayeeId == id).ToList());
         }
 
-        //hello to the world
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Dv dv)
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-            dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
-            dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
+            //dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
+            //dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             dv.PayeeDesc = _MyDbContext.Payee.FirstOrDefault(x=>x.PayeeId == dv.PayeeId).PayeeDescription;
             dv.UserId = UserId;
+
+            if(dv.DvSupType == null)
+            {
+                dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
+                dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
+            }
+            else
+            {
+                var advancepayment_percentage = dv.InfraAdvancePayment.AdvancePayment / 100;
+                dv.TotalDeduction = dv.GrossAmount - advancepayment_percentage;
+                dv.NetAmount = dv.GrossAmount * advancepayment_percentage;
+            }
 
             if (ModelState.IsValid)
             {
@@ -488,7 +502,7 @@ namespace fmis.Controllers.Accounting
                         FixedHeight = 30,
                     });
                 
-                    table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().fcDes.ToString(), arial_font_9))
+                    table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.fcDes.ToString(), arial_font_9))
                     {
                         Border = 2,
                         HorizontalAlignment = Element.ALIGN_CENTER,
@@ -500,7 +514,7 @@ namespace fmis.Controllers.Accounting
                         Padding = 6f,
                         Border = 0
                     });
-                    table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvDate.ToShortDateString(), arial_font_9))
+                    table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvDate.ToShortDateString(), arial_font_9))
                     {
                         Border = 0,
                         Padding = 6f,
@@ -513,7 +527,7 @@ namespace fmis.Controllers.Accounting
                         Border = 0
                     }
                     );
-                    table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvNo, arial_font_9))
+                    table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvNo, arial_font_9))
                     {
                         Border = 0,
                         Padding = 6f,
@@ -606,14 +620,14 @@ namespace fmis.Controllers.Accounting
                         FixedHeight = 25,
                         VerticalAlignment = Element.ALIGN_MIDDLE
                     });
-                    table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvPayee.ToString(), arial_font_9))
+                    table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvPayee.ToString(), arial_font_9))
                     {
                         HorizontalAlignment = Element.ALIGN_LEFT,
                         FixedHeight = 25,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         PaddingLeft = 10,
                     });
-                    table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster.FirstOrDefault().dvTinNo.ToString(), arial_font_9))
+                    table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster?.FirstOrDefault()?.dvTinNo.ToString(), arial_font_9))
                     {
                         HorizontalAlignment = Element.ALIGN_LEFT,
                         FixedHeight = 25,
@@ -681,7 +695,7 @@ namespace fmis.Controllers.Accounting
                     
                     foreach (var dvDeductions in item.Where(x => x.DvId == id))
                     {
-                    var deduct = fundCluster.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                         foreach (var deductions in dvDeductions.dvDeductions)
                         {
                             deductionsAmount.Add(deductions.Amount);
@@ -699,13 +713,13 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_ro6_width = { 20, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n" +  string.Join("\n", deductionsList) + "\n\n\n\n                                                                                        Amount Due:", arial_font_deductions)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" +  string.Join("\n", deductionsList) + "\n\n\n\n                                                                                        Amount Due:", arial_font_deductions)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                        "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        fundCluster.FirstOrDefault().dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                        "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
                     {
                         Border = 13,
                         FixedHeight = 140f,
@@ -749,9 +763,9 @@ namespace fmis.Controllers.Accounting
                     table_row_8.DefaultCell.FixedHeight = 200f;
                     table_row_8.WidthPercentage = 100f;
                     table_row_8.SetWidths(tbt_ro8_width);
-                if (fundCluster.FirstOrDefault().respo == "RAMIL R. ABREA, CPA, MBA")
+                if (fundCluster?.FirstOrDefault()?.respo == "RAMIL R. ABREA, CPA, MBA")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -759,9 +773,9 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
                 }
-                else if (fundCluster.FirstOrDefault().respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
+                else if (fundCluster?.FirstOrDefault()?.respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -771,7 +785,7 @@ namespace fmis.Controllers.Accounting
                 }
                 else
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -937,7 +951,7 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         FixedHeight = 20f
                     });
-                    table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeName, arial_font_9))
+                    table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeName, arial_font_9))
                     {
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -951,9 +965,9 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         FixedHeight = 20f
                     });
-                        if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                        if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                         {
-                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respo, arial_font_8))
+                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.respo, arial_font_8))
                             table_row_17.AddCell(new PdfPCell(new Paragraph("SOPHIA M. MANCAO, MD, DPSP, RN-MAN", arial_font_8))
                             {
                                 Border = 13,
@@ -986,7 +1000,7 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         FixedHeight = 25f
                     });
-                    table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
+                    table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
                     {
                         Border = 13,
                         VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -1002,7 +1016,7 @@ namespace fmis.Controllers.Accounting
                         FixedHeight = 25f,
                         
                     });
-                    if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                    if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                     {
                         table_row_18.AddCell(new PdfPCell(new Paragraph("DIRECTOR III" + "\n" + "Agency Head/Authorized Representative", arial_font_8))
                         {
@@ -1196,6 +1210,9 @@ namespace fmis.Controllers.Accounting
                                    join r in _MyDbContext.RespoCenter
                                    on dv.RespoCenterId equals r.RespoId
 
+                                   join ap in _MyDbContext.InfraAdvancePayment
+                                   on dv.DvId equals ap.DvId
+
                                    join a in _MyDbContext.Assignee
                                    on dv.AssigneeId equals a.AssigneeId
                                    where dv.DvId == id
@@ -1215,7 +1232,8 @@ namespace fmis.Controllers.Accounting
                                        assigneeDvId = dv.AssigneeId,
                                        assigneeName = a.FullName,
                                        assigneeDesignation = a.Designation,
-                                       dvDeduction = dv.dvDeductions
+                                       dvDeduction = dv.dvDeductions,
+                                       advancePayment = ap.AdvancePayment
                                    }).ToList();
 
 
@@ -1297,7 +1315,7 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 30,
                 });
 
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().fcDes.ToString(), arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.fcDes.ToString(), arial_font_9))
                 {
                     Border = 2,
                     HorizontalAlignment = Element.ALIGN_CENTER,
@@ -1309,7 +1327,7 @@ namespace fmis.Controllers.Accounting
                     Padding = 6f,
                     Border = 0
                 });
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvDate.ToShortDateString(), arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvDate.ToShortDateString(), arial_font_9))
                 {
                     Border = 0,
                     Padding = 6f,
@@ -1322,7 +1340,7 @@ namespace fmis.Controllers.Accounting
                     Border = 0
                 }
                 );
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvNo, arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvNo, arial_font_9))
                 {
                     Border = 0,
                     Padding = 6f,
@@ -1415,14 +1433,14 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 25,
                     VerticalAlignment = Element.ALIGN_MIDDLE
                 });
-                table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvPayee.ToString(), arial_font_9))
+                table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvPayee.ToString(), arial_font_9))
                 {
                     HorizontalAlignment = Element.ALIGN_LEFT,
                     FixedHeight = 25,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     PaddingLeft = 10,
                 });
-                table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster.FirstOrDefault().dvTinNo.ToString(), arial_font_9))
+                table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster?.FirstOrDefault()?.dvTinNo.ToString(), arial_font_9))
                 {
                     HorizontalAlignment = Element.ALIGN_LEFT,
                     FixedHeight = 25,
@@ -1487,10 +1505,9 @@ namespace fmis.Controllers.Accounting
                 List<string> deductionsList = new List<string>();
 
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
-
                 foreach (var dvDeductions in item.Where(x => x.DvId == id))
                 {
-                    var deduct = fundCluster.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                     foreach (var deductions in dvDeductions.dvDeductions)
                     {
                         deductionsAmount.Add(deductions.Amount);
@@ -1502,25 +1519,26 @@ namespace fmis.Controllers.Accounting
                         Console.WriteLine(string.Join("\n", deductionsList));
                     }
                 }
-
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
                 table_row_6.WidthPercentage = 100f;
                 table_row_6.SetWidths(tbt_ro6_width);
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n" + "A. Contract Amount: \n" + "               " + "               a. 1 Original Contract Amount" + "\n" +
-                "               " + "               a. 2 % Advance Payment" + "\n" +
-                "               " + "               a. 3 Equivalent Amount (a.1 x a.2)" + "\n\n" +
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "For Payment of  " + " : " + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() +"\n"+
+                                                                      "Contractor          " + ":" + fundCluster?.FirstOrDefault()?.dvPayee +
+                    "\n\n\n\n" + "A. Contract Amount: \n" + "               " + "               a. 1 Original Contract Amount" + "                   PHP" + "  " + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") +  "\n" +
+                "               " + "               a. 2 % Advance Payment" + "                                        " + "      " +fundCluster?.FirstOrDefault()?.advancePayment + ".00%" + "\n" +
+                "               " + "               a. 3 Equivalent Amount (a.1 x a.2)" + "            PHP" + "  " + fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00") + "\n\n" +
      
 
-                    string.Join("\n", deductionsList) + "\n\n\n\n                                                                                        Amount Due:", arial_font_deductions))
+                    string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                      Amount Due:", arial_font_deductions))
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster.FirstOrDefault().dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                    "" + "\n" + "" + "\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00") + "\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
@@ -1564,9 +1582,9 @@ namespace fmis.Controllers.Accounting
                 table_row_8.DefaultCell.FixedHeight = 200f;
                 table_row_8.WidthPercentage = 100f;
                 table_row_8.SetWidths(tbt_ro8_width);
-                if (fundCluster.FirstOrDefault().respo == "RAMIL R. ABREA, CPA, MBA")
+                if (fundCluster?.FirstOrDefault()?.respo == "RAMIL R. ABREA, CPA, MBA")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -1574,9 +1592,9 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
                 }
-                else if (fundCluster.FirstOrDefault().respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
+                else if (fundCluster?.FirstOrDefault()?.respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -1586,7 +1604,7 @@ namespace fmis.Controllers.Accounting
                 }
                 else
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -1752,7 +1770,7 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeName, arial_font_9))
+                table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeName, arial_font_9))
                 {
                     Border = 13,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -1766,9 +1784,9 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                 {
-                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respo, arial_font_8))
+                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.respo, arial_font_8))
                     table_row_17.AddCell(new PdfPCell(new Paragraph("SOPHIA M. MANCAO, MD, DPSP, RN-MAN", arial_font_8))
                     {
                         Border = 13,
@@ -1801,7 +1819,7 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
+                table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
                 {
                     Border = 13,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -1817,7 +1835,7 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 20f,
 
                 });
-                if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                 {
                     table_row_18.AddCell(new PdfPCell(new Paragraph("DIRECTOR III" + "\n" + "Agency Head/Authorized Representative", arial_font_8))
                     {
@@ -2112,7 +2130,7 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 30,
                 });
 
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().fcDes.ToString(), arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.fcDes.ToString(), arial_font_9))
                 {
                     Border = 2,
                     HorizontalAlignment = Element.ALIGN_CENTER,
@@ -2124,7 +2142,7 @@ namespace fmis.Controllers.Accounting
                     Padding = 6f,
                     Border = 0
                 });
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvDate.ToShortDateString(), arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvDate.ToShortDateString(), arial_font_9))
                 {
                     Border = 0,
                     Padding = 6f,
@@ -2137,7 +2155,7 @@ namespace fmis.Controllers.Accounting
                     Border = 0
                 }
                 );
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvNo, arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvNo, arial_font_9))
                 {
                     Border = 0,
                     Padding = 6f,
@@ -2230,14 +2248,14 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 25,
                     VerticalAlignment = Element.ALIGN_MIDDLE
                 });
-                table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvPayee.ToString(), arial_font_9))
+                table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvPayee.ToString(), arial_font_9))
                 {
                     HorizontalAlignment = Element.ALIGN_LEFT,
                     FixedHeight = 25,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     PaddingLeft = 10,
                 });
-                table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster.FirstOrDefault().dvTinNo.ToString(), arial_font_9))
+                table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster?.FirstOrDefault()?.dvTinNo.ToString(), arial_font_9))
                 {
                     HorizontalAlignment = Element.ALIGN_LEFT,
                     FixedHeight = 25,
@@ -2305,7 +2323,7 @@ namespace fmis.Controllers.Accounting
 
                 foreach (var dvDeductions in item.Where(x => x.DvId == id))
                 {
-                    var deduct = fundCluster.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                     foreach (var deductions in dvDeductions.dvDeductions)
                     {
                         deductionsAmount.Add(deductions.Amount);
@@ -2323,7 +2341,7 @@ namespace fmis.Controllers.Accounting
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
                 table_row_6.WidthPercentage = 100f;
                 table_row_6.SetWidths(tbt_ro6_width);
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n" + "A. Contract Amount: \n" + "               " + "        a. 0 Revised Contract Amount" + "\n" +
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n" + "A. Contract Amount: \n" + "               " + "        a. 0 Revised Contract Amount" + "\n" +
                 "               " + "        a. 1 Original Contract Amount" + "\n" +
                 "               " + "        a. 2 % Advance Payment" + "\n" +
                 "               " + "        a. 3 Equivalent Amount (a.1 x a.2)" + "\n\n" +
@@ -2346,9 +2364,9 @@ namespace fmis.Controllers.Accounting
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster.FirstOrDefault().dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                    "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
@@ -2392,9 +2410,9 @@ namespace fmis.Controllers.Accounting
                 table_row_8.DefaultCell.FixedHeight = 200f;
                 table_row_8.WidthPercentage = 100f;
                 table_row_8.SetWidths(tbt_ro8_width);
-                if (fundCluster.FirstOrDefault().respo == "RAMIL R. ABREA, CPA, MBA")
+                if (fundCluster?.FirstOrDefault()?.respo == "RAMIL R. ABREA, CPA, MBA")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -2402,9 +2420,9 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
                 }
-                else if (fundCluster.FirstOrDefault().respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
+                else if (fundCluster?.FirstOrDefault()?.respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -2414,7 +2432,7 @@ namespace fmis.Controllers.Accounting
                 }
                 else
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -2580,7 +2598,7 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeName, arial_font_9))
+                table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeName, arial_font_9))
                 {
                     Border = 13,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -2594,9 +2612,9 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                 {
-                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respo, arial_font_8))
+                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.respo, arial_font_8))
                     table_row_17.AddCell(new PdfPCell(new Paragraph("SOPHIA M. MANCAO, MD, DPSP, RN-MAN", arial_font_8))
                     {
                         Border = 13,
@@ -2629,7 +2647,7 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
+                table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
                 {
                     Border = 13,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -2645,7 +2663,7 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 20f,
 
                 });
-                if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                 {
                     table_row_18.AddCell(new PdfPCell(new Paragraph("DIRECTOR III" + "\n" + "Agency Head/Authorized Representative", arial_font_8))
                     {
@@ -2940,7 +2958,7 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 30,
                 });
 
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().fcDes.ToString(), arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.fcDes.ToString(), arial_font_9))
                 {
                     Border = 2,
                     HorizontalAlignment = Element.ALIGN_CENTER,
@@ -2952,7 +2970,7 @@ namespace fmis.Controllers.Accounting
                     Padding = 6f,
                     Border = 0
                 });
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvDate.ToShortDateString(), arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvDate.ToShortDateString(), arial_font_9))
                 {
                     Border = 0,
                     Padding = 6f,
@@ -2965,7 +2983,7 @@ namespace fmis.Controllers.Accounting
                     Border = 0
                 }
                 );
-                table3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvNo, arial_font_9))
+                table3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvNo, arial_font_9))
                 {
                     Border = 0,
                     Padding = 6f,
@@ -3058,14 +3076,14 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 25,
                     VerticalAlignment = Element.ALIGN_MIDDLE
                 });
-                table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().dvPayee.ToString(), arial_font_9))
+                table_row_3.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.dvPayee.ToString(), arial_font_9))
                 {
                     HorizontalAlignment = Element.ALIGN_LEFT,
                     FixedHeight = 25,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     PaddingLeft = 10,
                 });
-                table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster.FirstOrDefault().dvTinNo.ToString(), arial_font_9))
+                table_row_3.AddCell(new PdfPCell(new Paragraph("Tin/Employee No.:" + fundCluster?.FirstOrDefault()?.dvTinNo.ToString(), arial_font_9))
                 {
                     HorizontalAlignment = Element.ALIGN_LEFT,
                     FixedHeight = 25,
@@ -3133,7 +3151,7 @@ namespace fmis.Controllers.Accounting
 
                 foreach (var dvDeductions in item.Where(x => x.DvId == id))
                 {
-                    var deduct = fundCluster.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                     foreach (var deductions in dvDeductions.dvDeductions)
                     {
                         deductionsAmount.Add(deductions.Amount);
@@ -3151,7 +3169,7 @@ namespace fmis.Controllers.Accounting
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
                 table_row_6.WidthPercentage = 100f;
                 table_row_6.SetWidths(tbt_ro6_width);
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster.FirstOrDefault().dvParticulars.ToString() + "\n\n\n\n" + "               \n" + "               " + 
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" + "               \n" + "               " + 
                 "               1st Progress Billing " + "\n" +
                 "               " + "               2nd Progress Billing" + "\n" +
                 "               " + "               3rd Progress Billing" + "\n" +
@@ -3162,9 +3180,9 @@ namespace fmis.Controllers.Accounting
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + fundCluster.FirstOrDefault().dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster.FirstOrDefault().dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster.FirstOrDefault().dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                    "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
@@ -3208,9 +3226,9 @@ namespace fmis.Controllers.Accounting
                 table_row_8.DefaultCell.FixedHeight = 200f;
                 table_row_8.WidthPercentage = 100f;
                 table_row_8.SetWidths(tbt_ro8_width);
-                if (fundCluster.FirstOrDefault().respo == "RAMIL R. ABREA, CPA, MBA")
+                if (fundCluster?.FirstOrDefault()?.respo == "RAMIL R. ABREA, CPA, MBA")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -3218,9 +3236,9 @@ namespace fmis.Controllers.Accounting
                         HorizontalAlignment = Element.ALIGN_LEFT,
                     });
                 }
-                else if (fundCluster.FirstOrDefault().respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
+                else if (fundCluster?.FirstOrDefault()?.respo == "JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS")
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                           " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -3230,7 +3248,7 @@ namespace fmis.Controllers.Accounting
                 }
                 else
                 {
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster.FirstOrDefault().respo, arial_font_9b))
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("A. Certified: Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.\n\n\n\n                                                             " + fundCluster?.FirstOrDefault()?.respo, arial_font_9b))
                     {
                         Border = 13,
                         FixedHeight = 50f,
@@ -3396,7 +3414,7 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeName, arial_font_9))
+                table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeName, arial_font_9))
                 {
                     Border = 13,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -3410,9 +3428,9 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                 {
-                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().respo, arial_font_8))
+                    //table_row_17.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.respo, arial_font_8))
                     table_row_17.AddCell(new PdfPCell(new Paragraph("SOPHIA M. MANCAO, MD, DPSP, RN-MAN", arial_font_8))
                     {
                         Border = 13,
@@ -3445,7 +3463,7 @@ namespace fmis.Controllers.Accounting
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     FixedHeight = 20f
                 });
-                table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster.FirstOrDefault().assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
+                table_row_18.AddCell(new PdfPCell(new Paragraph(fundCluster?.FirstOrDefault()?.assigneeDesignation + "\n" + "Accounting Unit/ Authorized Representative", arial_font_8))
                 {
                     Border = 13,
                     VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -3461,7 +3479,7 @@ namespace fmis.Controllers.Accounting
                     FixedHeight = 20f,
 
                 });
-                if (fundCluster.FirstOrDefault().dvGrossAmount <= 1000000)
+                if (fundCluster?.FirstOrDefault()?.dvGrossAmount <= 1000000)
                 {
                     table_row_18.AddCell(new PdfPCell(new Paragraph("DIRECTOR III" + "\n" + "Agency Head/Authorized Representative", arial_font_8))
                     {
