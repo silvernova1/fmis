@@ -713,7 +713,7 @@ namespace fmis.Controllers.Accounting
                     float[] tbt_ro6_width = { 20, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" +  string.Join("\n", deductionsList) + "\n\n\n\n                                                                                        Amount Due:", arial_font_deductions)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" +  string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n                                                                                                        Amount Due:", arial_font_deductions)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" +
@@ -1505,7 +1505,7 @@ namespace fmis.Controllers.Accounting
                 List<string> deductionsList = new List<string>();
 
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
-                foreach (var dvDeductions in item.Where(x => x.DvId == id))
+                /*foreach (var dvDeductions in item.Where(x => x.DvId == id))
                 {
                     var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                     foreach (var deductions in dvDeductions.dvDeductions)
@@ -1518,7 +1518,7 @@ namespace fmis.Controllers.Accounting
                         deductionsList.Add(description + " { " + netDeduct + " } " + amount);
                         Console.WriteLine(string.Join("\n", deductionsList));
                     }
-                }
+                }*/
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
@@ -1526,12 +1526,12 @@ namespace fmis.Controllers.Accounting
                 table_row_6.SetWidths(tbt_ro6_width);
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "For Payment of  " + " : " + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() +"\n"+
                                                                       "Contractor          " + ":" + fundCluster?.FirstOrDefault()?.dvPayee +
-                    "\n\n\n\n" + "A. Contract Amount: \n" + "               " + "               a. 1 Original Contract Amount" + "                   PHP" + "  " + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") +  "\n" +
-                "               " + "               a. 2 % Advance Payment" + "                                        " + "      " +fundCluster?.FirstOrDefault()?.advancePayment + ".00%" + "\n" +
-                "               " + "               a. 3 Equivalent Amount (a.1 x a.2)" + "            PHP" + "  " + fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00") + "\n\n" +
+                    "\n\n\n\n" + "A. Contract Amount: \n" + "               " + "               a. 1 Original Contract Amount" + "                   " + "  " + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") +  "\n" +
+                "               " + "               a. 2 % Advance Payment" + "                                        " + "      " +fundCluster?.FirstOrDefault()?.advancePayment  + "\n" +
+                "               " + "               a. 3 Equivalent Amount (a.1 x a.2)" + "            " + "  " + fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00") + "\n\n" +
      
 
-                    string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                      Amount Due:", arial_font_deductions))
+                    string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                      Amount Due:", arial_font_deductions))
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
@@ -2321,7 +2321,7 @@ namespace fmis.Controllers.Accounting
 
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
 
-                foreach (var dvDeductions in item.Where(x => x.DvId == id))
+                /*foreach (var dvDeductions in item.Where(x => x.DvId == id))
                 {
                     var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                     foreach (var deductions in dvDeductions.dvDeductions)
@@ -2334,7 +2334,7 @@ namespace fmis.Controllers.Accounting
                         deductionsList.Add(description + " { " + netDeduct + " } " + amount);
                         Console.WriteLine(string.Join("\n", deductionsList));
                     }
-                }
+                }*/
 
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
@@ -2357,16 +2357,16 @@ namespace fmis.Controllers.Accounting
                 "               " + "        c. 3 Retention(10% x b.5)" + "\n" +
                 "               " + "        c. 4 VAT  (c.1/1.12 x 5%)" + "\n" +
                 "               " + "        c. 5 EWT  (c.1/1.12 x 2%)" + "\n" +
-                "               " + "                   Total Deduction: " + "\n\n" +
+                "               " + "                   Total Deduction: " + "\n" +
 
-                    string.Join("\n", deductionsList) + "\n\n\n\n                                                                                        Amount Due:", arial_font_deductions))
+                    string.Join("\n", deductionsList) + "                                                                                                      Amount Due:", arial_font_deductions))
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                    "" + "\n" + /*fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
+                    /*fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
+                    /*fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00")*/"", arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
@@ -3149,7 +3149,7 @@ namespace fmis.Controllers.Accounting
 
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
 
-                foreach (var dvDeductions in item.Where(x => x.DvId == id))
+                /*foreach (var dvDeductions in item.Where(x => x.DvId == id))
                 {
                     var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                     foreach (var deductions in dvDeductions.dvDeductions)
@@ -3162,7 +3162,7 @@ namespace fmis.Controllers.Accounting
                         deductionsList.Add(description + " { " + netDeduct + " } " + amount);
                         Console.WriteLine(string.Join("\n", deductionsList));
                     }
-                }
+                }*/
 
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
@@ -3175,14 +3175,14 @@ namespace fmis.Controllers.Accounting
                 "               " + "               3rd Progress Billing" + "\n" +
               
 
-                    string.Join("\n", deductionsList) + "\n\n\n\n                                                                                        Amount Due:", arial_font_deductions))
+                    string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                         Amount Due:", arial_font_deductions))
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                    "" + "\n" + /*fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
+                    /*fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
+                    /*fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00")*/"", arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
