@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { userDetails, obligationData, fundSub, expCode } from "../../../api/index"
+    import { userDetails, obligationData, fundSub, expCode, saveObligation } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
@@ -20,6 +20,13 @@
     const select_push = ref([])
     const user_connected = ref([])
     const onlineUser = ref([])
+
+    const props = defineProps({
+        xsrf: {
+            type: String,
+            xsrf: null,
+        }
+    });
 
     const _userDetails = async () => {
         const response = await userDetails()
@@ -203,7 +210,7 @@
             {
                 //Date
                 type: 'date',
-    
+
             },
             {
                 //Dv
@@ -555,8 +562,6 @@
                         const start = options[0].start.row
                         const end = options[0].end.row
 
-                        console.log(handsondData.value[start][12]);
-   
                         const baseUrl = '/Obligations/PrintOrs'+"?";
                         const queryParams = [];
                         for (let j = start; j <= end; j++) {
@@ -584,14 +589,61 @@
 
     const insertAboveRow = (row: Number) => {
         const cell = hotTableComponent.value.hotInstance;
+
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        const dateToday = dd + '/' + mm + '/' + yyyy;
+        const address = "CEBU CITY";
+
         cell.alter('insert_row_above', row);
+
+        const dateAddress = [
+            [row, 1, dateToday],
+            [row, 6, address]
+        ];
+        cell.setDataAtCell(dateAddress);
+
     }
 
-    const insertBelowRow = (row: Number) => {
-        const cell = hotTableComponent.value.hotInstance;
-        cell.alter('insert_row_below', row);
- 
 
+
+    const insertBelowRow = (row: Number) => {
+
+        const ors_number = 1234;
+        
+        let ObligationToken = () => {
+            let s4 = () => {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        }
+        const obligation_token = ObligationToken();
+
+        const cell = hotTableComponent.value.hotInstance;
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        const dateToday = dd + '/' + mm + '/' + yyyy;
+        const address = "CEBU CITY";
+
+        cell.alter('insert_row_below', row);
+
+        const rows = row.valueOf() + 1
+
+        const autoFill = [
+            [rows, 1, dateToday],
+            [rows, 6, address],
+            [rows, 8, ors_number],
+            [rows, 12, obligation_token]
+
+        ];
+        cell.setDataAtCell(autoFill);
+    
     }
 
     const removeRow = (start: any, end: any) => {
@@ -638,10 +690,31 @@
         if (changes && source === 'edit' && !afterChangeFlag.value) {
 
             const [row, col, oldValue, newValue] = changes[0];
-            const data = hotTableComponent.value.hotInstance.getDataAtCell(row, col);
-            const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: data }
+            const hot = hotTableComponent.value.hotInstance;
+            const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
+
+
+
+            let data = new FormData();
+            data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
+            data.append('source_type', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_type : 0);
+            data.append('date', hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "");
+            data.append('dv', hot.getDataAtCell(row, 2) ? hot.getDataAtCell(row, 2) : "");
+            data.append('po_no', hot.getDataAtCell(row, 3) ? hot.getDataAtCell(row, 3) : "");
+            data.append('pr_no', hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "");
+            data.append('payee', hot.getDataAtCell(row, 5) ? hot.getDataAtCell(row, 5) : "");
+            data.append('address', hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "");
+            data.append('ors_no', "");
+            data.append('created_by',"");
+            data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
+            data.append('id', hot.getDataAtCell(row, 11) ? hot.getDataAtCell(row, 11) : "");
+            data.append('obligation_token', hot.getDataAtCell(row, 12));
+
+            //console.log(obligation_data);
+            __saveObligation(data)
             socket.value.send(JSON.stringify(send_data));
         }
+
     }
 
     const afterRender = () => {
@@ -678,6 +751,8 @@
     const __obligationData = async () => {
         const response = await obligationData()
         const data = await Promise.all(response.map(async (item: any) => {
+
+            console.log(item);
             const amount: number[] = item.obligationAmounts.map((item) => item.amount);
             const obligation_amount: number = amount.reduce((total, amount) => total + amount, 0);
 
@@ -695,7 +770,7 @@
 
             const dataBody = [
                 item.source_type == "fund_source" ? get_fund_sub.value[item.fundSourceId + item.source_type] : get_fund_sub.value[item.subAllotmentId + item.source_type],
-                moment(item.date, "YYYY-MM-DD").format('MM/DD/YYYY'), //1
+                moment(item.date, "YYYY-MM-DD").format('DD/MM/YYYY'), //1
                 item.dv, //2
                 item.po_no, //3
                 item.pr_no, //4
@@ -723,10 +798,16 @@
     }
 
     const get_fund_sub = ref([]);
+    const fund_sub_data_array = ref([]);
     const __fundSub = async () => {
         const response = await fundSub()
         const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
+                const json_data: { source_id: string; source_type: string } = {
+                    source_id: item.source_id,
+                    source_type: item.source_type,
+                };
                 get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
+                fund_sub_data_array.value[item.source_title] = json_data;
                 return item.source_title
             }
         ));
@@ -738,8 +819,15 @@
         return response.items
     }
 
+    const __saveObligation = async (data: {}) => {
+        console.log(data);
+        const response = await saveObligation(data);
+        console.log(response);
+    };
+
     __fundSub()
     __obligationData()
+
 </script>
   
 
@@ -767,6 +855,7 @@
                :afterUndo="onAfterUndo"
                v-if="handsondData.length > 0">
     </hot-table>
+
     <h3 v-else>Processing...</h3>
 </template>
 

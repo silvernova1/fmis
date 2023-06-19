@@ -159,7 +159,7 @@ namespace fmis.Controllers
                 obligation_amount.obligation_token = item.obligation_token;
                 obligation_amount.obligation_amount_token = item.obligation_amount_token;
                 obligated_amount += item.Amount;
-                
+
 
                 _context.ObligationAmount.Update(obligation_amount);
                 await _context.SaveChangesAsync();

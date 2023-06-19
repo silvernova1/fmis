@@ -8,8 +8,6 @@ Axios.defaults.timeout = 300000;
 
 Axios.defaults.baseURL = process.env.API_BASE_URL;
 //Axios.defaults.baseURL = import.meta.env.API_BASE_URL;
-
-
 Axios.interceptors.request.use((request: any) => {
 
     //request.headers["Authorization"] = request.headers["Authorization"] ? '' : 'Bearer ' + S.getAuthToken();
@@ -30,11 +28,10 @@ Axios.interceptors.response.use(
             return Promise.reject(error);
         } else if (code < 200 || code > 300) {
             return Promise.reject("error");
-        } else {
+        }
+        else {
             return response.data
         }
-
-        //return response.data.data;
     },
     (error) => {
         let code = 0;
