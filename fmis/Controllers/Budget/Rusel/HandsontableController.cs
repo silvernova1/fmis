@@ -108,6 +108,5 @@ namespace fmis.Controllers.Budget.Rusel
             return Json(json);
         }
 
-
     }
 }

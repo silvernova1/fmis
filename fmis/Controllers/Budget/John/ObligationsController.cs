@@ -40,7 +40,7 @@ using fmis.Models.Accounting;
 
 namespace fmis.Controllers
 {
-    [Authorize(Policy = "BudgetAdmin")]
+    //[Authorize(Policy = "BudgetAdmin")]
     public class ObligationsController : Controller
     {
         private readonly ObligationContext _context;
@@ -84,16 +84,16 @@ namespace fmis.Controllers
 
         public class ObligationData
         {
-            public int Id { get; set; }
             public int source_id { get; set; }
+            public int Id { get; set; }
             public string source_title { get; set; }
             public string source_type { get; set; }
             [Column(TypeName = "decimal(18,4)")]
             public decimal source_balance { get; set; }
             public string Date { get; set; }
             public string Dv { get; set; }
-            public string Pr_no { get; set; }
             public string Po_no { get; set; }
+            public string Pr_no { get; set; }
             public string Payee { get; set; }
             public string Address { get; set; }
             public string Particulars { get; set; }
@@ -386,10 +386,75 @@ namespace fmis.Controllers
             }
         }
 
+
+        public async Task<IActionResult> saveObligationFromVue(ObligationData item)
+        {
+            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
+            next_year.ToString("yyyy-MM-dd 00:00:00");
+            var res = next_year.AddYears(-1);
+            var result = res.Year.ToString();
+
+            var data_holder = _context.Obligation.Where(x => x.status == "activated");
+
+            var ors = (from fundsource in _MyDbContext.FundSources
+                       join obligations in _MyDbContext.Obligation
+                       on fundsource.FundSourceId equals obligations.FundSourceId
+                       join allotmentclass in _MyDbContext.AllotmentClass
+                       on fundsource.AllotmentClassId equals allotmentclass.Id
+                       join fund in _MyDbContext.Fund
+                       on fundsource.FundId equals fund.FundId
+                       where obligations.obligation_token == item.obligation_token
+                       select new
+                       {
+                           allotment = allotmentclass.Fund_Code,
+                           fundCurrent = fund.Fund_code_current,
+                           fundConap = fund.Fund_code_conap,
+                           fundsource = fundsource.AppropriationId,
+                           obligation = obligations.source_type,
+                           Id = obligations.Id,
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligations.Date.ToString("yyyy-MM") + "-" + "000" + obligations.Ors_no,
+                           allotmentCLassId = fundsource.AllotmentClassId
+                       }).ToList();
+
+            var obligation = new Obligation(); //CLEAR OBJECT
+            if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
+            {
+                obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+            }
+
+            if (item.source_type.Equals("fund_source"))
+                obligation.FundSourceId = item.source_id;
+            else if (item.source_type.Equals("sub_allotment"))
+                obligation.SubAllotmentId = item.source_id;
+
+            obligation.source_type = item.source_type;
+            obligation.Date = ToDateTime(item.Date);
+            obligation.Dv = item.Dv;
+            obligation.Pr_no = item.Pr_no;
+            obligation.Po_no = item.Po_no;
+            obligation.Payee = item.Payee;
+            obligation.Address = item.Address;
+            obligation.Particulars = item.Particulars;
+            obligation.Created_by = item.Created_by;
+            obligation.yearAdded = next_year;
+            obligation.Gross = item.Gross;
+            obligation.Ors_no = item.Ors_no;
+            obligation.status = "activated";
+            obligation.obligation_token = item.obligation_token;
+            obligation.Ors_no_Temp = ors.FirstOrDefault()?.Name;
+
+            _context.Update(obligation);
+            await _context.SaveChangesAsync();
+
+            return Json(obligation);
+        }
+
         [HttpPost]
         [RequestSizeLimit(1073741824)]
-        public async Task<IActionResult> SaveObligation(List<ObligationData> data)
+        public async Task<IActionResult> SaveObligation([FromBody] ObligationData[] data)
         {
+            //return Json(data);
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             next_year.ToString("yyyy-MM-dd 00:00:00");

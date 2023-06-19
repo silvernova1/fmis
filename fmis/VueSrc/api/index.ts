@@ -18,6 +18,14 @@ export function expCode(params: {} = {}) {
     return req.get(domainExtension + "/Obligations/GetExpenseCode", params);
 }
 
+export function saveObligation(params: {} ) {
+    return req.post(domainExtension + "/Obligations/saveObligationFromVue", params);
+}
+/*
+export function saveObligationAmount(params: {}) {
+    return req.post(domainExtension + "/ObligationAmount/SaveObligationAmountFromVue", params);
+}
+*/
 
 
 

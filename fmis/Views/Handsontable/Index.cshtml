@@ -1,5 +1,5 @@
 ﻿@using System.Text.Json;
-
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Handsontable";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,7 +7,12 @@
     string time = DateTime.Now.ToString();
 }
 
-
+@functions {
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 
 <div id="app">
     <handsontable-content></handsontable-content>

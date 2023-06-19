@@ -1197,20 +1197,20 @@
                         );
                     }
                 });
-                /* console.log(ajax_data);
+                 console.log(ajax_data);
                     if (checkDuplicateOrs(ajax_data[0].Ors_no) && get_col == 8) {
-                    Lobibox.alert("error", {
-                    msg: "DUPLICATE ORS NUMBER!!!",
-                    sound: false,
-                    });
+                        Lobibox.alert("error", {
+                        msg: "DUPLICATE ORS NUMBER!!!",
+                        sound: false,
+                        });
+                        }
+                    else {
+                        console.log(ajax_data);
+                        ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")').then(data => {
+                            console.log(ajax_data);
+                            console.log(data);
+                        });
                     }
-                    else {*/
-                    console.log(ajax_data);
-                ajaxServer(ajax_data, '@Url.Action("SaveObligation", "Obligations")').then(data => {
-                    console.log(ajax_data);
-                    console.log(data);
-                });
-             /*    }*/
                     CHECK_FIRST_ROW = false;
             }
         },
