@@ -15164,10 +15164,68 @@ namespace fmis.Controllers.Budget.John
         public IActionResult DownloadSaob2()
         {
             ViewBag.filter = new FilterSidebar("budget_report", "saob", "");
-            PopulatePrexcsDropDownList();
+            DownloadExcel();
 
-            return View();
+            return View();  
         }
+
+
+
+        public ActionResult DownloadExcel()
+        {
+            // Create an Excel package
+            using (var package = new ExcelPackage())
+            {
+                // Create a worksheet
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                // center Title
+                worksheet.Cells["K1:U1"].Merge = true;
+                worksheet.Cells["K1:U1"].Value = "STATEMENT OF ALLOTMENTS,OBLIGATIONS,DISBURSEMENTS AND BALANCES";
+                worksheet.Cells["K1:U1"].Style.Font.Size = 14;
+                worksheet.Cells["K1:U1"].Style.Font.Bold = true;
+                worksheet.Cells["K1:U1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                // Add a Title
+                worksheet.Cells["O2:R2"].Merge = true;
+                worksheet.Cells["O2:R2"].Value = "As at June 30, 2023";
+                worksheet.Cells["O2:R2"].Style.Font.Size = 14;
+                worksheet.Cells["O2:R2"].Style.Font.Bold = true;
+                worksheet.Cells["O2:R2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+               
+                worksheet.Cells["B1"].Value = "STATEMENT OF ALLOTMENTS,OBLIGATIONS,DISBURSEMENTS AND BALANCES";
+                worksheet.Cells["B1"].Style.Font.Size = 14;
+                worksheet.Cells["B1"].Style.Font.Bold = true;
+                worksheet.Cells["B1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                // Lift Title Column
+                worksheet.Cells["B2"].Merge = true;
+                worksheet.Cells["B2"].Value = "As at June 30, 2023";
+                worksheet.Cells["B2"].Style.Font.Size = 14;
+                worksheet.Cells["B2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["B3"].Merge = true;
+                worksheet.Cells["B3"].Value = "(In Pesos)";
+                worksheet.Cells["B3"].Style.Font.Size = 14;
+                worksheet.Cells["B3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["B3"].Merge = true;
+                worksheet.Cells["B3"].Value = "(In Pesos)";
+                worksheet.Cells["B3"].Style.Font.Size = 14;
+                worksheet.Cells["B3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                //adding Column 1
+
+
+
+                // Generate the file content
+                var fileBytes = package.GetAsByteArray();
+   
+                    // Return the Excel file for download
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "CY2023SaobDohCvcHd.xlsx");
+                
+                
+            }
+           
+        }//end of function
+
 
         /*DROPDOWN LIST FOR PREXC*/
 

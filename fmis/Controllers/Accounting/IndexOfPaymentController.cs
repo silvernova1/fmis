@@ -39,6 +39,8 @@ using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authentication;
+using PagedList;
+using System.Collections;
 
 namespace fmis.Controllers.Accounting
 {
@@ -61,10 +63,38 @@ namespace fmis.Controllers.Accounting
             _IndexofpaymentContext = indexofpaymentContext;
         }
 
-        [Route("Accounting/IndexOfPayment")]
-        public async Task<IActionResult> Index(string searchString)
+        //private List<IndexOfPayment> GetDataFromDatabase()
+        //{
+        //  return  _IndexofpaymentContext.IndexOfPayment.ToList();
+        //}
+
+        //[Route("Accounting/IndexOfPayment")]
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
+            //var data = GetDataFromDatabase();
+            //// Set the page size (number of items per page)
+            //int pageSize = 10;
+            //// Calculate the current page number
+            //int pageNumber = (page ?? 1);
+
+            //var pageData = data.ToPagedList(pageNumber, pageSize);
+            //if(pageData != null)
+            //{
+            //    return View(pageData);
+            //}
+
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "index");
+
+            //if (searchString != null)
+            //{
+            //    page = 1;
+            //}
+            //else
+            //{
+            //   searchString = currentFilter;
+            //}
+
+            ViewBag.CurrentFilter = searchString;
 
             Console.WriteLine("user: " + User.FindFirstValue(ClaimTypes.Name));
             Console.WriteLine("role: " + User.FindFirstValue(ClaimTypes.Role));
@@ -109,9 +139,17 @@ namespace fmis.Controllers.Accounting
             var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
 
-            return View(await indexData.ToListAsync());
 
+            var pageSize = 5;
+            var pageIndex = page ?? 1;
+            var items = indexData.AsQueryable();
+            var paginatedList = await PaginatedList<IndexOfPayment>.CreateAsync(items, pageIndex, pageSize);
+
+            return View(paginatedList);
+              
         }
+
+
 
         public IActionResult selectAT(int id)
         {
@@ -422,6 +460,111 @@ namespace fmis.Controllers.Accounting
             return View(index);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(IndexOfPayment index, string daterange, int? page)
+        {
+            var indexes = await _MyDbContext.Indexofpayment
+                .Include(x => x.Dv)
+                    .ThenInclude(x => x.Payee)
+                .Include(x => x.BillNumbers)
+                .Include(x=>x.Category)
+                .Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId)
+                .FirstOrDefaultAsync();
+
+
+
+
+            if(indexes.CategoryId is null)
+            {
+                indexes.CategoryId = indexes.CategoryId;
+            }
+            else if(index.CategoryId is null)
+            {
+                indexes.CategoryId = indexes.CategoryId;
+            }
+            else
+            {
+
+                indexes.CategoryId = index.CategoryId;
+            }                        
+           
+            indexes.DvId = index.DvId;
+            indexes.DvDate = index.DvDate;
+            indexes.Particulars = index.Particulars;
+            indexes.PoNumber = index.PoNumber;
+            indexes.InvoiceNumber = index.InvoiceNumber;
+            indexes.ProjectId = index.ProjectId;
+            indexes.NumberOfBill = index.NumberOfBill;
+            indexes.PeriodCover = index.PeriodCover;
+        //    indexes.Category = index.Category;
+            indexes.date = index.date;
+            indexes.travel_period = index.travel_period;
+            indexes.SoNumber = index.SoNumber;
+            indexes.AccountNumber = index.AccountNumber;
+            indexes.GrossAmount = index.GrossAmount;
+            indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
+            indexes.TotalDeduction = index.TotalDeduction;
+            indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
+            indexes.ObligationId = index.ObligationId;
+            indexes.orsNo = index.orsNo;
+            //indexes.allotmentClassType = index.allotmentClassType;
+            /*indexes.orsNo = index.orsNo.Replace("," , "");
+            indexes.orsNo = indexes.orsNo.Substring(0, indexes.orsNo.Length - 3);*/
+            //indexes.fundSource = index.fundSource;
+            //indexes.allotmentClassType = index.allotmentClassType;
+
+
+            var ors = (from fundsource in _MyDbContext.FundSources
+                       join obligation in _MyDbContext.Obligation
+                       on fundsource.FundSourceId equals obligation.FundSourceId
+                       join allotmentclass in _MyDbContext.AllotmentClass
+                       on fundsource.AllotmentClassId equals allotmentclass.Id
+                       join fund in _MyDbContext.Fund
+                       on fundsource.FundId equals fund.FundId
+                       where obligation.Id == index.ObligationId
+                       select new
+                       {
+                           allotment = allotmentclass.Fund_Code,
+                           fundCurrent = fund.Fund_code_current,
+                           fundConap = fund.Fund_code_conap,
+                           fundsource = fundsource.AppropriationId,
+                           obligation = obligation.source_type,
+                           Id = obligation.Id,
+                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
+                           allotmentCLassId = fundsource.AllotmentClassId
+                       }).ToList();
+
+            if (indexes.ObligationId != null)
+            {
+                indexes.orsNo = ors.FirstOrDefault()?.Name;
+            }
+            else
+            {
+                indexes.orsNo = index.orsNo;
+            }
+
+            var newBillNumber = new BillNumber
+            {
+                IndexOfPaymentId = index.IndexOfPaymentId,
+                NumberOfBilling = index.NumberOfBill
+            };
+            indexes.BillNumbers.Add(newBillNumber);
+
+            PopulateCategoryDropDownList();
+            PopulateDvDropDownList();
+            PopulateDeductionDropDownList();
+
+            _MyDbContext.Update(indexes);
+            //await Task.Delay(500);
+            await _MyDbContext.SaveChangesAsync();
+            //PopulateOrsDropDownList(indexes.IndexFundSourceId);
+            return RedirectToAction("Index");
+
+      
+
+        }
+
         [HttpGet]
         public IActionResult UploadIndex()
         {
@@ -666,89 +809,7 @@ namespace fmis.Controllers.Accounting
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IndexOfPayment index, string daterange)
-        {
-            var indexes = await _MyDbContext.Indexofpayment
-                .Include(x => x.Dv)
-                    .ThenInclude(x => x.Payee)
-                .Include(x => x.BillNumbers)
-                .Where(x => x.IndexOfPaymentId == index.IndexOfPaymentId)
-                .FirstOrDefaultAsync();
-
-            indexes.CategoryId = /*index.CategoryId == 0 ? indexes.CategoryId : */index.CategoryId;
-            indexes.DvId = index.DvId;
-            indexes.DvDate = index.DvDate;
-            indexes.Particulars = index.Particulars;
-            indexes.PoNumber = index.PoNumber;
-            indexes.InvoiceNumber = index.InvoiceNumber;
-            indexes.ProjectId = index.ProjectId;
-            indexes.NumberOfBill = index.NumberOfBill;
-            indexes.PeriodCover = index.PeriodCover;
-            indexes.date = index.date;
-            indexes.travel_period = index.travel_period;
-            indexes.SoNumber = index.SoNumber;
-            indexes.AccountNumber = index.AccountNumber;
-            indexes.GrossAmount = index.GrossAmount;
-            indexes.indexDeductions = index.indexDeductions.Where(x => x.DeductionId != null).ToList();
-            indexes.TotalDeduction = index.TotalDeduction;
-            indexes.NetAmount = index.GrossAmount - index.indexDeductions.Sum(x => x.Amount);
-            indexes.ObligationId = index.ObligationId;
-            indexes.orsNo = index.orsNo;
-            //indexes.allotmentClassType = index.allotmentClassType;
-            /*indexes.orsNo = index.orsNo.Replace("," , "");
-            indexes.orsNo = indexes.orsNo.Substring(0, indexes.orsNo.Length - 3);*/
-            //indexes.fundSource = index.fundSource;
-            //indexes.allotmentClassType = index.allotmentClassType;
-
-
-            var ors = (from fundsource in _MyDbContext.FundSources
-                       join obligation in _MyDbContext.Obligation
-                       on fundsource.FundSourceId equals obligation.FundSourceId
-                       join allotmentclass in _MyDbContext.AllotmentClass
-                       on fundsource.AllotmentClassId equals allotmentclass.Id
-                       join fund in _MyDbContext.Fund
-                       on fundsource.FundId equals fund.FundId
-                       where obligation.Id == index.ObligationId
-                       select new
-                       {
-                           allotment = allotmentclass.Fund_Code,
-                           fundCurrent = fund.Fund_code_current,
-                           fundConap = fund.Fund_code_conap,
-                           fundsource = fundsource.AppropriationId,
-                           obligation = obligation.source_type,
-                           Id = obligation.Id,
-                           Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligation.Date.ToString("yyyy-MM") + "-" + obligation.Ors_no,
-                           allotmentCLassId = fundsource.AllotmentClassId
-                       }).ToList();
-
-            if (indexes.ObligationId != null)
-            {
-                indexes.orsNo = ors.FirstOrDefault()?.Name;
-            }
-            else
-            {
-                indexes.orsNo = index.orsNo;
-            }
-
-            var newBillNumber = new BillNumber
-            {
-                IndexOfPaymentId = index.IndexOfPaymentId,
-                NumberOfBilling = index.NumberOfBill
-            };
-            indexes.BillNumbers.Add(newBillNumber);
-
-            PopulateCategoryDropDownList();
-            PopulateDvDropDownList();
-            PopulateDeductionDropDownList();
-
-            _MyDbContext.Update(indexes);
-            //await Task.Delay(500);
-            await _MyDbContext.SaveChangesAsync();
-            //PopulateOrsDropDownList(indexes.IndexFundSourceId);
-            return RedirectToAction("Index");
-        }
+        
 
         private void PopulateAssignedIndexDeductionData(IndexOfPayment index)
         {

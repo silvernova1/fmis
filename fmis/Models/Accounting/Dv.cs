@@ -39,7 +39,7 @@ namespace fmis.Models.Accounting
         public int RespoCenterId { get; set; }
         [JsonIgnore]
         public RespoCenter RespoCenter { get; set; }
-
+      
         [ForeignKey("AssigneeId")]
         public int AssigneeId { get; set; }
         [JsonIgnore]

@@ -30,7 +30,7 @@
                     <label asp-for="Category" class="control-label"></label>
                     <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
                         <option value=""> - Select Category - </option>
-                    </select>
+                    </select>   
                 </div>
             </div>
 
@@ -144,7 +144,7 @@
                 <div class="form-group">
                     <label>PERIOD COVER</label>
                     @* <input type="month" asp-for="PeriodCover" class="form-control" name="periodCover" id="daterange" value="@Model.PeriodCover" onchange="PeriodCheck()">*@
-                      <input type="month"  value="@Model.PeriodCover">
+                    <input type="month" name="PeriodCover" asp-for="PeriodCover" value="@Model.PeriodCover">
                 </div>
             </div>
             <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
@@ -257,15 +257,48 @@
                 <div class="form-group">
                     <input class="form-control" type="text" value="@Model.NetAmount.ToString("##,#00.00")" id="net_amount" placeholder="0.00" readonly />
                 </div>
-                <input type="submit" onclick="submiBtnClick()" value="Submit" class="btn btn-success btn-xs " />
+                <input type="submit" onclick="submiBtnClick()" id="myButton" value="Submit" class="btn btn-success btn-xs " />
 
-                <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+                <a class="btn btn-xs btn-default" id="myButton" asp-action="Index">Back to List</a>
             </div>
         </div>
     </form>
 </div>
 
 <script>
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var modalButton = document.getElementById("myButton");
+
+        // Attach a click event listener to the modal button
+        modalButton.addEventListener("click", function () {
+            var currentPageNumber = getCurrentPageNumber();
+            var targetUrl = "/IndexOfPayment/Action?page=" + currentPageNumber;
+
+            // Update the button's data-target attribute with the target URL
+            modalButton.setAttribute("data-target", targetUrl);
+
+            // Trigger the modal to open
+            $(modalButton).modal("show");
+        });
+
+        // Function to get the current page number from the pagination link URL
+        function getCurrentPageNumber() {
+            var currentPageLink = document.querySelector(".pagination-link.active");
+            var pageUrl = currentPageLink.href;
+            var urlParams = new URLSearchParams(pageUrl);
+            var pageNumber = urlParams.get("page");
+
+            return pageNumber;
+        }
+    });
+
+
+
+
+
     $(function () {
         $('input[name="periodCover"]').daterangepicker({
             autoUpdateInput: false,
@@ -517,8 +550,17 @@
         $('#net_amount').val(net.toLocaleString());
     }
 
+    const input = document.querySelector("#CategoryId");
+    const output = document.querySelector("#CategoryId");
+    input.addEventListener("input", (e) => {
+        output.textContent = e.target.value;
+    });
 
+
+
+ 
     $("#CategoryId").on('change', function () {
+
         var value = $(this).val();
         console.log(value);
         const categ = [];

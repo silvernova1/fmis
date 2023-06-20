@@ -14,7 +14,7 @@
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
-        margin: 0;
+        margin: 0;               
     }
     /* Firefox */
     input[type=number] {
@@ -29,9 +29,12 @@
             <div class="col-md-3">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label>Category: </label>
+                    <label>Category: </label>          
                     <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" required>
-                        <option> - Select Category - </option>
+                        @ViewData["DvId"] = new List<SelectListItem>
+                            {
+                            <option> - Select Category - </option>
+                        };
                     </select>
                 </div>
             </div>
@@ -39,7 +42,8 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Dv Number: </label>
-                        @Html.DropDownList("DvId", null, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
+                        @Html.DropDownList("DvId", ViewData["DvId"] as IEnumerable<SelectListItem>, " - Select Dv Number - " , htmlAttributes: new { @class = "prexcDropdown form-control", @id = "ddlBranches", onchange = "return get_sbu(this)", @required = "required" })
+                 
                         @if (ViewBag.Message != null && ViewBag.Message == "Exist")
                         {
                             <br/>
@@ -47,7 +51,7 @@
                             <span style="color:red;">Already exist.</span>
                       
                         }
-                    </div>
+                    </div>  
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">

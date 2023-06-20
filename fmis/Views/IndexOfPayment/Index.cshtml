@@ -1,8 +1,10 @@
-﻿@model IEnumerable<fmis.Models.Accounting.IndexOfPayment>
+﻿@model PaginatedList<fmis.Models.Accounting.IndexOfPayment>
 @using fmis.Data;
 @inject MyDbContext _MyDbContext
 
 @{
+
+
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -38,7 +40,7 @@
 
     .pbutton {
         margin-left: 3px;
-    }
+    }   
 
 
 </style>
@@ -98,7 +100,8 @@
             </form>
         }
     </div>
-    <div class="col-md-4">
+
+  <div class="col-md-4">
         <form id="search_form">
             <input type="search" class="form-group" name="searchString" style="width: 340px;" id="search" />
             <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
@@ -113,7 +116,7 @@
 @if(Model.Count()>0)
 {
     <div class="table-responsive">
-        <table class="table table-striped" id="data" >
+        <table class="table" id="example" >
             <thead>
                 <tr>
                     <th> Category </th>
@@ -219,7 +222,7 @@
                             <td> ₱@item.GrossAmount.ToString("##,##0.00")</td>
                             <td>
                                 <select class="form-control" style="width: 320px;">
-                                    @foreach (var deduction in item.indexDeductions)
+                                    @foreach (var deduction in item?.indexDeductions)
                                     {
                                         <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
                                     }
@@ -312,8 +315,26 @@
                 }
             </tbody>
         </table>
+
+     @*   @{
+            var preDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+          
+        }
+
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="btn btn-default @preDisabled">
+            Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>*@
     </div>
-    <br />
+    <br/>
+
 }
 else
 {
@@ -350,96 +371,28 @@ else
     </div>
 }
 
-@*@if (ViewBag.searchString == null)
-{
-    <div class="row">
-        <div class="pull-right">
-            <div class="infobox infobox-green">
-                <div class="infobox-data">
-                    <span class="infobox-data-number">₱@ViewBag.grossTotal.ToString("##,##0.00")</span>
-                    <div class="infobox-content">GROSS AMOUNT</div>
-                </div>
-            </div>
-            <div class="infobox infobox-red">
-                <div class="infobox-data">
-                    <span class="infobox-data-number">₱@ViewBag.totalDeductionTotal.ToString("##,##0.00")</span>
-                    <div class="infobox-content">TOTAL DEDUCTIONS</div>
-                </div>
-            </div>
-            <div class="infobox infobox-blue2">
-                <div class="infobox-data">
-                    <span class="infobox-data-number">₱@ViewBag.netTotal.ToString("##,##0.00")</span>
-                    <div class="infobox-content">NET AMOUNT</div>
-                </div>
-            </div>
-            <div class="vspace-12-sm"></div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="row">
-        <div class="pull-right">
-            <div class="infobox infobox-green">
-                <div class="infobox-data">
-                    <span class="infobox-data-number">₱@ViewBag.gross.ToString("##,##0.00")</span>
-                    <div class="infobox-content">GROSS AMOUNT</div>
-                </div>
-            </div>
-            <div class="infobox infobox-red">
-                <div class="infobox-data">
-                    <span class="infobox-data-number">₱@ViewBag.totalDeduction.ToString("##,##0.00")</span>
-                    <div class="infobox-content">TOTAL DEDUCTIONS</div>
-                </div>
-            </div>
-            <div class="infobox infobox-blue2">
-                <div class="infobox-data">
-                    <span class="infobox-data-number">₱@ViewBag.net.ToString("##,##0.00")</span>
-                    <div class="infobox-content">NET AMOUNT</div>
-                </div>
-            </div>
-            <div class="vspace-12-sm"></div>
-        </div>
-    </div>
-}*@
-
+<br />
+<!-- Render the pagination links -->
+<div class="pagination-container">
+    @if (Model.HasPreviousPage)
+    {
+        <a class="btn btn-outline-success" href="@Url.Action("Index", new { page = Model.PageIndex - 1 })">Previous</a>
+    }
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <a class="btn btn-outline-success" href="@Url.Action("Index", new { page = i })">@i</a>
+    }
+    @if (Model.HasNextPage)
+    {
+        <a class="btn btn-outline-success" href="@Url.Action("Index", new { page = Model.PageIndex + 1 })">Next</a>
+    }
+</div>
 
 <script>
 
-    $(document).ready(function () {
-        $('[data-bs-toggle="tooltip"]').tooltip();
-    });
-
-    $(document).ready(function () {
-        $('#data').after('<div id="nav"></div>');
-        var rowsShown = 10;
-        var rowsTotal = $('#data tbody tr').length;
-        var numPages = rowsTotal / rowsShown;
-        for (i = 0; i < numPages; i++) {
-            var pageNum = i + 1;
-            $('#nav').append('<a href="#" class="pbutton btn-xs btn-info"  rel="' + i + '">' + pageNum + '</a>');
-        }
-        $('#data tbody tr').hide();
-        $('#data tbody tr').slice(0, rowsShown).show();
-        $('#nav a:first').addClass('active');
-        $('#nav a').bind('click', function () {
-
-            $('#nav a').removeClass('active');
-            $(this).addClass('active');
-            var currPage = $(this).attr('rel');
-            var startItem = currPage * rowsShown;
-            var endItem = startItem + rowsShown;
-            $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
-                css('display', 'table-row').animate({ opacity: 1 }, 300);
-        });
-@*
-        $('#EditModal').on('hide.bs.modal', function () {
-            $(this).find('.modal-content').empty();
-        });*@
-    });
-
-    function viewAllClicked() {
+        function viewAllClicked() {
         $('#search').val('');
         $('#search_form').submit();
     }
+
 </script>
