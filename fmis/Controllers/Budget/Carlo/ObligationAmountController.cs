@@ -110,17 +110,70 @@ namespace fmis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveObligationAmount(List<ObligationAmountData> data)
+        public async Task<IActionResult> SaveObligationAmountFromVue(ObligationAmountData datas)
         {
             var data_holder = _context.ObligationAmount;
             decimal obligated_amount = 0;
 
+            var currentObligation = await _MyDbContext.Obligation
+                .Include(x => x.FundSource)
+                .Include(x => x.SubAllotment)
+                .FirstOrDefaultAsync(x => x.Id == datas.ObligationId);
+
+       
+                var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
+                if (await data_holder.AsNoTracking().AnyAsync(s => s.obligation_amount_token == datas.obligation_amount_token)) //CHECK IF EXIST
+                    obligation_amount = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == datas.obligation_amount_token);
+                if (obligation_amount.Id != 0 && string.IsNullOrEmpty(datas.Expense_code))
+                {
+                    obligation_amount.status = "deactivated";
+                    _context.ObligationAmount.Update(obligation_amount);
+                    await _context.SaveChangesAsync();
+                }
+
+                if (currentObligation.source_type == "fund_source" && !string.IsNullOrEmpty(datas.Expense_code))
+                {
+                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == datas.Expense_code))
+                        return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
+                }
+                else if (currentObligation.source_type == "sub_allotment" && !string.IsNullOrEmpty(datas.Expense_code))
+                {
+                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == datas.Expense_code))
+                        return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
+                }
+
+
+                var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == datas.obligation_token);
+                var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == datas.Expense_code);
+
+                obligation_amount.ObligationId = obligation.Id;
+                obligation_amount.UacsId = uacs.UacsId;
+                if (datas.Expense_code != "")
+                    obligation_amount.Expense_code = Convert.ToInt64(datas.Expense_code);
+                obligation_amount.Amount = datas.Amount;
+                obligation_amount.status = "activated";
+                obligation_amount.obligation_token = datas.obligation_token;
+                obligation_amount.obligation_amount_token = datas.obligation_amount_token;
+                obligated_amount += datas.Amount;
+
+
+                _context.ObligationAmount.Update(obligation_amount);
+                await _context.SaveChangesAsync();
+            
+
+            return Json(obligation_amount);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveObligationAmount([FromBody] ObligationAmountData[] data)
+        {
+            var data_holder = _context.ObligationAmount;
+            decimal obligated_amount = 0;
 
             var currentObligation = await _MyDbContext.Obligation
                 .Include(x => x.FundSource)
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
-
 
             foreach (var item in data)
             {
@@ -167,6 +220,65 @@ namespace fmis.Controllers
 
             return Json(data);
         }
+
+
+
+ /*       [HttpPost]
+        public async Task<IActionResult> SaveObligationAmount(List<ObligationAmountData> data)
+        {
+            var data_holder = _context.ObligationAmount;
+            decimal obligated_amount = 0;
+
+            var currentObligation = await _MyDbContext.Obligation
+                .Include(x => x.FundSource)
+                .Include(x => x.SubAllotment)
+                .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
+
+            foreach (var item in data)
+            {
+                var obligation_amount = new ObligationAmount(); //CLEAR OBJECT
+                if (await data_holder.AsNoTracking().AnyAsync(s => s.obligation_amount_token == item.obligation_amount_token)) //CHECK IF EXIST
+                    obligation_amount = await data_holder.AsNoTracking().FirstOrDefaultAsync(s => s.obligation_amount_token == item.obligation_amount_token);
+                if (obligation_amount.Id != 0 && string.IsNullOrEmpty(item.Expense_code))
+                {
+                    obligation_amount.status = "deactivated";
+                    _context.ObligationAmount.Update(obligation_amount);
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+
+                if (currentObligation.source_type == "fund_source" && !string.IsNullOrEmpty(item.Expense_code))
+                {
+                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
+                        return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
+                }
+                else if (currentObligation.source_type == "sub_allotment" && !string.IsNullOrEmpty(item.Expense_code))
+                {
+                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
+                        return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
+                }
+
+
+                var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
+                var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
+
+                obligation_amount.ObligationId = obligation.Id;
+                obligation_amount.UacsId = uacs.UacsId;
+                if (item.Expense_code != "")
+                    obligation_amount.Expense_code = Convert.ToInt64(item.Expense_code);
+                obligation_amount.Amount = item.Amount;
+                obligation_amount.status = "activated";
+                obligation_amount.obligation_token = item.obligation_token;
+                obligation_amount.obligation_amount_token = item.obligation_amount_token;
+                obligated_amount += item.Amount;
+                
+
+                _context.ObligationAmount.Update(obligation_amount);
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(data);
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> calculateObligatedAmount(ObligationCalculationData calculation_data)

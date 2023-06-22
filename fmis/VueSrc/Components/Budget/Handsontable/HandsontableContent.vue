@@ -180,7 +180,6 @@
         'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE']
 
 
-
     const hotSettings = ref({
 
         colWidths: [200, 100, 70, 80, 80, 100, 100, 100, 80, 80, 150, 125, 100, 100,
@@ -562,7 +561,7 @@
                         const start = options[0].start.row
                         const end = options[0].end.row
 
-                        const baseUrl = '/Obligations/PrintOrs'+"?";
+                        const baseUrl = '/Obligations/PrintOrs' + "?";
                         const queryParams = [];
                         for (let j = start; j <= end; j++) {
                             queryParams.push(`token=${handsondData.value[j][12]}`);
@@ -587,6 +586,29 @@
         licenseKey: 'non-commercial-and-evaluation',
     })
 
+    const incrementORS = (array) => {
+        // Find the maximum value in the array
+        const maxValue = array.reduce((prevValue, currValue) => {
+            const prevNum = parseInt(prevValue);
+            const currNum = parseInt(currValue);
+            return isNaN(prevNum) || currNum > prevNum ? currValue : prevValue;
+        });
+
+        // Extract the numeric part from the max value
+        const numericPart = parseInt(maxValue);
+
+        // Check if the last character is a letter
+        const lastChar = maxValue[maxValue.length - 1];
+        if (isNaN(numericPart) && lastChar >= 'A' && lastChar <= 'Z') {
+            // Increment the character
+            const nextChar = String.fromCharCode(lastChar.charCodeAt(0) + 1);
+            const incrementedValue = maxValue.slice(0, -1) + nextChar;
+            return incrementedValue; // Output: '0024B'
+        } else {
+            return parseInt(maxValue) + 1; // Output: '0024'
+        }
+    }
+
     const insertAboveRow = (row: Number) => {
         const cell = hotTableComponent.value.hotInstance;
 
@@ -596,34 +618,27 @@
         const yyyy = today.getFullYear();
         const dateToday = dd + '/' + mm + '/' + yyyy;
         const address = "CEBU CITY";
-
         cell.alter('insert_row_above', row);
 
-        const dateAddress = [
-            [row, 1, dateToday],
-            [row, 6, address]
-        ];
-        cell.setDataAtCell(dateAddress);
+        const obligation_token = ObligationAmountToken();
+        const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
+        const rows = row.valueOf() 
+        const autoFill = [
+            [rows, 1, dateToday],
+            [rows, 6, address],
+            [rows, 8, ors_number],
+            [rows, 12, obligation_token]
 
+        ];
+        cell.setDataAtCell(autoFill);
     }
 
-
-
     const insertBelowRow = (row: Number) => {
-
-        const ors_number = 1234;
-        
-        let ObligationToken = () => {
-            let s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
-            }
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        }
-        const obligation_token = ObligationToken();
+        const obligation_token = ObligationAmountToken();
 
         const cell = hotTableComponent.value.hotInstance;
+        const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
+
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -634,7 +649,6 @@
         cell.alter('insert_row_below', row);
 
         const rows = row.valueOf() + 1
-
         const autoFill = [
             [rows, 1, dateToday],
             [rows, 6, address],
@@ -643,7 +657,6 @@
 
         ];
         cell.setDataAtCell(autoFill);
-    
     }
 
     const removeRow = (start: any, end: any) => {
@@ -693,8 +706,6 @@
             const hot = hotTableComponent.value.hotInstance;
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
 
-
-
             let data = new FormData();
             data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
             data.append('source_type', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_type : 0);
@@ -704,8 +715,9 @@
             data.append('pr_no', hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "");
             data.append('payee', hot.getDataAtCell(row, 5) ? hot.getDataAtCell(row, 5) : "");
             data.append('address', hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "");
-            data.append('ors_no', "");
-            data.append('created_by',"");
+            data.append('particulars', hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "");
+            data.append('ors_no', hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "");
+            data.append('created_by', "");
             data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
             data.append('id', hot.getDataAtCell(row, 11) ? hot.getDataAtCell(row, 11) : "");
             data.append('obligation_token', hot.getDataAtCell(row, 12));
@@ -768,6 +780,7 @@
                 ];
             });
 
+
             const dataBody = [
                 item.source_type == "fund_source" ? get_fund_sub.value[item.fundSourceId + item.source_type] : get_fund_sub.value[item.subAllotmentId + item.source_type],
                 moment(item.date, "YYYY-MM-DD").format('DD/MM/YYYY'), //1
@@ -785,9 +798,12 @@
             ]
 
             const beginningRemainingAllotmentBody = [
-                item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
-                item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
-                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId
+                //item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
+                item.source_type == "fund_source" ? item.fundSource.beginning_balance : 0,
+                //item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
+                item.source_type == "fund_source" ? item.fundSource.remaining_balance : 0,
+                //item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId
+                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : 0
             ]
             //console.log(dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody))
             return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
@@ -802,14 +818,14 @@
     const __fundSub = async () => {
         const response = await fundSub()
         const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
-                const json_data: { source_id: string; source_type: string } = {
-                    source_id: item.source_id,
-                    source_type: item.source_type,
-                };
-                get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
-                fund_sub_data_array.value[item.source_title] = json_data;
-                return item.source_title
-            }
+            const json_data: { source_id: string; source_type: string } = {
+                source_id: item.source_id,
+                source_type: item.source_type,
+            };
+            get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
+            fund_sub_data_array.value[item.source_title] = json_data;
+            return item.source_title
+        }
         ));
         return fundSubDataDropdown
     }
@@ -829,7 +845,7 @@
     __obligationData()
 
 </script>
-  
+
 
 <template>
     <div class="row" style="padding:20px;">
@@ -917,5 +933,4 @@
     .wtHider {
         margin-bottom: 200px;
     }
-
 </style>
