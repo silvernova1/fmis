@@ -395,6 +395,7 @@ namespace fmis.Controllers
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
 
+            var retObligation = new List<Obligation>();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
 
             var ors = (from fundsource in _MyDbContext.FundSources
@@ -447,7 +448,14 @@ namespace fmis.Controllers
             _context.Update(obligation);
             await _context.SaveChangesAsync();
 
-            return Json(obligation);
+
+            if (item.source_type == "fund_source")
+                obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+            else
+                obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+            retObligation.Add(obligation);
+
+            return Json(retObligation.FirstOrDefault());
         }
 
         [HttpPost]

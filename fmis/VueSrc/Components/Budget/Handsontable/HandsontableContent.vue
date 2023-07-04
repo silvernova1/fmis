@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { userDetails, obligationData, fundSub, expCode, saveObligation } from "../../../api/index"
+    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
@@ -7,6 +7,7 @@
     import 'handsontable/dist/handsontable.full.css';
     import axios from 'axios';
     import moment from "moment"
+import exp from "constants";
 
     //register Handsontable's modules
     registerAllModules();
@@ -195,7 +196,7 @@
             100, 100, 100,
             100, 100, 100,
             100, 100,
-            150, 150, 10,
+            150, 150, 150,
         ],
 
         columns: [
@@ -506,10 +507,10 @@
             },
         ],
 
-        hiddenColumns: {
+     /*   hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
             indicators: true, // show the indicator in the header
-        },
+        },*/
 
         wordWrap: false,
         manualRowResize: true,
@@ -609,7 +610,21 @@
         }
     }
 
+    const exp_code = [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47];
+    const amounts = [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
+    const tokens = [12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
+
     const insertAboveRow = (row: Number) => {
+
+        const ObligationAmountToken = () => {
+            const s4 = () => {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            };
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        };
+
         const cell = hotTableComponent.value.hotInstance;
 
         const today = new Date();
@@ -620,21 +635,28 @@
         const address = "CEBU CITY";
         cell.alter('insert_row_above', row);
 
-        const obligation_token = ObligationAmountToken();
         const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
         const rows = row.valueOf() 
         const autoFill = [
             [rows, 1, dateToday],
             [rows, 6, address],
             [rows, 8, ors_number],
-            [rows, 12, obligation_token]
-
+            ...tokens.map(token => [rows, token, ObligationAmountToken()])
         ];
+          
         cell.setDataAtCell(autoFill);
     }
 
     const insertBelowRow = (row: Number) => {
-        const obligation_token = ObligationAmountToken();
+
+        const ObligationAmountToken = () => {
+            const s4 = () => {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            };
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        };
 
         const cell = hotTableComponent.value.hotInstance;
         const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
@@ -649,13 +671,14 @@
         cell.alter('insert_row_below', row);
 
         const rows = row.valueOf() + 1
+
         const autoFill = [
             [rows, 1, dateToday],
             [rows, 6, address],
             [rows, 8, ors_number],
-            [rows, 12, obligation_token]
-
+            ...tokens.map(token => [rows, token, ObligationAmountToken()]),
         ];
+
         cell.setDataAtCell(autoFill);
     }
 
@@ -701,29 +724,37 @@
     const afterChangeFlag = ref(false)
     const afterChange = (changes: any, source: any) => {
         if (changes && source === 'edit' && !afterChangeFlag.value) {
-
             const [row, col, oldValue, newValue] = changes[0];
             const hot = hotTableComponent.value.hotInstance;
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
 
-            let data = new FormData();
-            data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
-            data.append('source_type', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_type : 0);
-            data.append('date', hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "");
-            data.append('dv', hot.getDataAtCell(row, 2) ? hot.getDataAtCell(row, 2) : "");
-            data.append('po_no', hot.getDataAtCell(row, 3) ? hot.getDataAtCell(row, 3) : "");
-            data.append('pr_no', hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "");
-            data.append('payee', hot.getDataAtCell(row, 5) ? hot.getDataAtCell(row, 5) : "");
-            data.append('address', hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "");
-            data.append('particulars', hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "");
-            data.append('ors_no', hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "");
-            data.append('created_by', "");
-            data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
-            data.append('id', hot.getDataAtCell(row, 11) ? hot.getDataAtCell(row, 11) : "");
-            data.append('obligation_token', hot.getDataAtCell(row, 12));
+            let obligation_data = new FormData();
 
-            //console.log(obligation_data);
-            __saveObligation(data)
+            obligation_data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
+            obligation_data.append('source_type', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_type : 0);
+            obligation_data.append('date', hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "");
+            obligation_data.append('dv', hot.getDataAtCell(row, 2) ? hot.getDataAtCell(row, 2) : "");
+            obligation_data.append('po_no', hot.getDataAtCell(row, 3) ? hot.getDataAtCell(row, 3) : "");
+            obligation_data.append('pr_no', hot.getDataAtCell(row, 4) ? hot.getDataAtCell(row, 4) : "");
+            obligation_data.append('payee', hot.getDataAtCell(row, 5) ? hot.getDataAtCell(row, 5) : "");
+            obligation_data.append('address', hot.getDataAtCell(row, 6) ? hot.getDataAtCell(row, 6) : "");
+            obligation_data.append('particulars', hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "");
+            obligation_data.append('ors_no', hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "");
+            obligation_data.append('created_by', "");
+            obligation_data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
+            obligation_data.append('id', hot.getDataAtCell(row, 11) ? hot.getDataAtCell(row, 11) : "");
+            obligation_data.append('obligation_token', hot.getDataAtCell(row, 12));
+
+            __saveObligation(obligation_data,row)
+
+        /*    let obligation_amount_data = new FormData()
+
+            obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, 13)),
+            obligation_amount_data.append('expense_code', hot.getDataAtCell(row, 14) ? hot.getDataAtCell(row, 14) : ""),
+            obligation_amount_data.append('amount', hot.getDataAtCell(row, 15) ? hot.getDataAtCell(row, 15) : "")
+
+            __saveObligationAmount(obligation_amount_data)*/
+
             socket.value.send(JSON.stringify(send_data));
         }
 
@@ -764,7 +795,7 @@
         const response = await obligationData()
         const data = await Promise.all(response.map(async (item: any) => {
 
-            console.log(item);
+            //console.log(item);
             const amount: number[] = item.obligationAmounts.map((item) => item.amount);
             const obligation_amount: number = amount.reduce((total, amount) => total + amount, 0);
 
@@ -779,7 +810,6 @@
                     "" // amount
                 ];
             });
-
 
             const dataBody = [
                 item.source_type == "fund_source" ? get_fund_sub.value[item.fundSourceId + item.source_type] : get_fund_sub.value[item.subAllotmentId + item.source_type],
@@ -825,8 +855,7 @@
             get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
             fund_sub_data_array.value[item.source_title] = json_data;
             return item.source_title
-        }
-        ));
+        }));
         return fundSubDataDropdown
     }
 
@@ -835,11 +864,19 @@
         return response.items
     }
 
-    const __saveObligation = async (data: {}) => {
-        console.log(data);
+    const __saveObligation = async (data: {}, row: number) => {
+        //console.log(data);
         const response = await saveObligation(data);
-        console.log(response);
+        const allotmentClassId = response.source_type == "fund_source" ? response.fundSource.allotmentClassId : response.subAllotment.allotmentClassId;
+        handsondData.value[row][51] = allotmentClassId;
+        const send_data = { row: row, col: 51, afterChange: true, userid: userInfo.value.userid, data: allotmentClassId }
+        socket.value.send(JSON.stringify(send_data));
     };
+
+    const __saveObligationAmount = async (data: {}) => {
+        const response = await __saveObligationAmount(data);
+        console.log(response);
+    }
 
     __fundSub()
     __obligationData()
