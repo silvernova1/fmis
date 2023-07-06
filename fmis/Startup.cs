@@ -24,6 +24,7 @@ using fmis.Services;
 using Newtonsoft.Json;
 using fmis;
 using Microsoft.AspNetCore.Authorization;
+using System.Web.Http.Controllers;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -57,6 +58,9 @@ namespace fmis
             };
 
             services.AddTransient<IUserService, UserService>();
+
+            services.AddSingleton<AutoIncrementGenerator>();
+            services.AddHttpContextAccessor();
 
             #region CONTEXTS
 
@@ -173,7 +177,7 @@ namespace fmis
 
 
 
-            //services.AddSignalR();
+            services.AddSignalR();
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -292,6 +296,7 @@ namespace fmis
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<DvHub>("/dvHub");
             });            
         }
     }

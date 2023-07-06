@@ -19,6 +19,14 @@
     }
 </style>
 
+<!-- Modal -->
+<div id="myModal" class="modal fade bd-example-modal-lg" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <di id="modalContent"></di>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade bd-example-modal-lg" id="CreateModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -53,9 +61,11 @@
     <div class="col-md-8">
         <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
             <i class="ace-icon fa fa-plus "></i> Create New
-        </a>@* | <a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#CreateModal">
+        </a> | @*<a asp-action="Create" class="btn btn-success btn-sm" data-toggle="modal" data-target="#openModalBtn">
             <i class="ace-icon fa fa-plus "></i> For Infra
         </a>*@
+
+        <a href="@Url.Action("CreatePartial")" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal"><i class="ace-icon fa fa-plus "></i> For Infra</a>
     </div>
     <div class="col-md-4">
         <form id="search_form">
@@ -135,62 +145,61 @@
                             @Html.DisplayFor(modelItem => item.Particulars)
                         </td>
                         <td>
-                            ₱@item.GrossAmount.ToString("##,##0.00")
+                            ₱@item.GrossAmount?.ToString("##,##0.00")
                         </td>
-                        @if(item.DvSupType != "1")
+                        @if (item.DvSupType == "1")
                         {
-                        <td>
-                            <select class="form-control">
-                                @foreach (var deduction in item.dvDeductions)
-                                {
-                                    <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
-                                }
-                            </select>
-                        </td>
+                            <td>
+                                <option>Advance Payment -- @item?.InfraAdvancePayment?.AdvancePayment?.ToString("##,##0.00")%</option>
+                            </td>
+                        }
+                        else if (item.DvSupType == "3")
+                        {
+                            <td>
+                                <select class="form-control">
+                                    @foreach (var ret in item?.InfraRetentions)
+                                    {
+                                        <option>@ret?.billingNo -- @ret?.Amount</option>
+                                    }
+                                </select>
+                            </td>
                         }
                         else
                         {
                             <td>
-                                <option>Advance Payment -- ₱@item.InfraAdvancePayment.AdvancePayment.ToString("##,##0.00")</option>
+                                <select class="form-control">
+                                    @foreach (var deduction in item?.dvDeductions)
+                                    {
+                                        <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                                    }
+                                </select>
                             </td>
                         }
                         <td>
-                            ₱@item.TotalDeduction.ToString("##,##0.00")
+                            @item.TotalDeduction?.ToString("##,##0.00")
                         </td>
                         <td>
-                            ₱@item.NetAmount.ToString("##,##0.00")
+                            @item.NetAmount?.ToString("##,##0.00")
                         </td>
                         <td>
-                            <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
+                            @*<a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
                                 <i class="ace-icon fa fa-edit"></i>
-                            </a>
-                            <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>
-                            <a class="btn btn-xs btn-warning" target="_blank" href="@Url.Action("PrintAdvancePayment","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Advance Payment">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>
-                            <a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintFinalBilling","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Progress Final Billing">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>
-                            <a class="btn btn-xs btn-danger" target="_blank" href="@Url.Action("PrintRetention","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Retention">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>
-                            @*@if(item.DvSupType == "1")
+                            </a>*@
+                            @if(item.DvSupType == "1")
                             {
-                                <a class="btn btn-xs btn-warning" target="_blank" href="@Url.Action("PrintAdvancePayment","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Advance Payment">
+                                <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintAdvancePayment","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Advance Payment">
                                     <i class="ace-icon fa fa-file-pdf-o"></i>
                                 </a>
                             }
-                            else if(item.DvSupType == "2")
+                            else if (item.DvSupType == "2")
                             {
-                                <a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintFinalBilling","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Progress Final Billing">
+                                <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintFinalBilling","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Progress Final Billing">
                                     <i class="ace-icon fa fa-file-pdf-o"></i>
                                 </a>
                             }
                             else if (item.DvSupType == "3")
                             {
-                                <a class="btn btn-xs btn-danger" target="_blank" href="@Url.Action("PrintRetention","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Retention">
+                                <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintRetention","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Retention">
                                     <i class="ace-icon fa fa-file-pdf-o"></i>
                                 </a>
                             }
@@ -199,7 +208,7 @@
                                 <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
                                     <i class="ace-icon fa fa-file-pdf-o"></i>
                                 </a>
-                            }*@
+                            }
                         </td>
                     </tr>
                 }
@@ -229,36 +238,48 @@
                             @Html.DisplayFor(modelItem => item.Particulars)
                         </td>
                         <td>
-                            ₱@item.GrossAmount.ToString("##,##0.00")
+                            ₱@item.GrossAmount?.ToString("##,##0.00")
                         </td>
-                        @if (item.DvSupType != "1")
+                        @if (item.DvSupType == "1")
                         {
-                        <td>
-                            <select class="form-control">
-                                @foreach (var deduction in item.dvDeductions)
-                                {
-                                    <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
-                                }
-                            </select>
-                        </td>
+                            <td>
+                                <option>Advance Payment -- @item?.InfraAdvancePayment?.AdvancePayment?.ToString("##,##0.00")%</option>
+                            </td>
+                        }
+                        else if(item.DvSupType == "3")
+                        {
+                            <td>
+                                <select class="form-control">
+                                    @foreach (var deduction in item.InfraRetentions)
+                                    {
+                                        <option>@deduction.Amount</option>
+                                    }
+                                </select>
+                            </td>
                         }
                         else
                         {
                             <td>
-                                <option>Advance Payment -- ₱@item.InfraAdvancePayment.AdvancePayment.ToString("##,##0.00")</option>
+                                <select class="form-control">
+                                    @foreach (var deduction in item.dvDeductions)
+                                    {
+                                        <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                                    }
+                                </select>
                             </td>
                         }
+                        
                         <td>
-                            ₱@item.TotalDeduction.ToString("##,##0.00")
+                            ₱@item.TotalDeduction.?ToString("##,##0.00")
                         </td>
                         <td>
-                            ₱@item.NetAmount.ToString("##,##0.00")
+                            ₱@item.NetAmount?.ToString("##,##0.00")
                         </td>
                         <td>
 
-                            <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
+                            @*<a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
                                 <i class="ace-icon fa fa-edit"></i>
-                            </a>
+                            </a>*@
                             <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
                                 <i class="ace-icon fa fa-file-pdf-o"></i>
                             </a>
@@ -295,19 +316,19 @@ else
         <div class="pull-right">
             <div class="infobox infobox-green">
                 <div class="infobox-data">
-                    <span class="infobox-data-number">₱@Model.Sum(x=>x.GrossAmount).ToString("##,##0.00")</span>
+                    <span class="infobox-data-number">₱@Model.Sum(x=>x.GrossAmount)?.ToString("##,##0.00")</span>
                     <div class="infobox-content">GROSS AMOUNT</div>
                 </div>
             </div>
             <div class="infobox infobox-red">
                 <div class="infobox-data">
-                    <span class="infobox-data-number">₱@Model.Sum(x=>x.TotalDeduction).ToString("##,##0.00")</span>
+                    <span class="infobox-data-number">₱@Model.Sum(x=>x.TotalDeduction)?.ToString("##,##0.00")</span>
                     <div class="infobox-content">TOTAL DEDUCTIONS</div>
                 </div>
             </div>
             <div class="infobox infobox-blue2">
                 <div class="infobox-data">
-                    <span class="infobox-data-number">₱@Model.Sum(x=>x.NetAmount).ToString("##,##0.00")</span>
+                    <span class="infobox-data-number">₱@Model.Sum(x=>x.NetAmount)?.ToString("##,##0.00")</span>
                     <div class="infobox-content">NET AMOUNT</div>
                 </div>
             </div>
@@ -318,6 +339,16 @@ else
 
 
 <script>
+
+    $(document).ready(function () {
+        // Open modal when the button is clicked
+        $("#openModalBtn").click(function () {
+            // Load the partial view into the modal
+            $("#modalContent").load("/Dv/CreatePartial", function () {
+                $("#myModal").modal("show");
+            });
+        });
+    });
 
     $(document).ready(function () {
         $('[data-bs-toggle="tooltip"]').tooltip();

@@ -84,6 +84,7 @@ namespace fmis.Data
         public DbSet<SubNegative> SubNegative { get; set; }
         public DbSet<IndexFundSource> IndexFundSource { get; set; }
         public DbSet<InfraAdvancePayment> InfraAdvancePayment { get; set; }
+        public DbSet<InfraRetention> InfraRetentions { get; set; }
 
 
 
@@ -92,6 +93,11 @@ namespace fmis.Data
 
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<InfraRetention>()
+                .HasOne(x => x.Dv)
+                .WithMany(x => x.InfraRetentions)
+                .HasForeignKey(x=>x.DvId);
+                
 
             /*modelBuilder.Entity<IndexOfPayment>()
             .HasMany(o => o.indexDeductions)

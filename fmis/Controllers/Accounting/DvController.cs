@@ -32,6 +32,10 @@ using iTextSharp.text.html.simpleparser;
 using Microsoft.Extensions.Hosting.Internal;
 using iTextSharp.text.pdf.draw;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using DocumentFormat.OpenXml.InkML;
+using fmis.Data.Accounting;
+using System.Text;
 
 namespace fmis.Controllers.Accounting
 {
@@ -39,10 +43,14 @@ namespace fmis.Controllers.Accounting
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;
+        private readonly AutoIncrementGenerator _autoIncrementGenerator;
+        private readonly IHubContext<DvHub> _hubContext;
 
-        public DvController(MyDbContext MyDbContext)
+        public DvController(MyDbContext MyDbContext, AutoIncrementGenerator autoIncrementGenerator, IHubContext<DvHub> hubContext)
         {
             _MyDbContext = MyDbContext;
+            _autoIncrementGenerator = autoIncrementGenerator;
+            _hubContext = hubContext;
         }
 
         [Route("Accounting/DisbursementVoucher")]
@@ -59,6 +67,7 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.Assignee)
                 .Include(x => x.Payee)
                 .Include(x=>x.InfraAdvancePayment)
+                .Include(x=>x.InfraRetentions)
                 .Include(x => x.dvDeductions).ThenInclude(x=>x.Deduction)
                 .AsNoTracking()
                 .ToListAsync();
@@ -94,7 +103,82 @@ namespace fmis.Controllers.Accounting
             return View(dv);
         }
 
+        #region INFRA PARTIAL
+        // GET: Dv/CreatePartial
+        public IActionResult CreatePartial()
+        {
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+            PopulateFundClusterDropDownList();
+            PopulatePayeeDropDownListPartial();
+            PopulateRespoDropDownList();
+            PopulateAssigneeDropDownList();
+            PopulateDeductionDropDownList();
 
+            Dv newDv = new() { InfraRetentions = new List<InfraRetention>(6) };
+            for (int x = 0; x < 6; x++)
+            {
+                newDv.InfraRetentions.Add(new InfraRetention());
+            }
+            var stype = newDv.DvSupType;
+            newDv.InfraAdvancePayment = newDv.InfraAdvancePayment;
+
+
+            newDv.DvNo = _autoIncrementGenerator.GenerateSupplier();
+            return PartialView("_CreatePartial", newDv);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePartial(Dv dv)
+        {
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+            dv.PayeeDesc = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeId == dv.PayeeId).PayeeDescription;
+            dv.UserId = UserId;
+            var dvId = dv.DvId;
+            decimal sum = 0;
+
+            if (dv.DvSupType == "1")
+            {
+                dv.InfraAdvancePayment = dv.InfraAdvancePayment;
+                var advancepayment_percentage = dv.InfraAdvancePayment.AdvancePayment / 100;
+                dv.NetAmount = advancepayment_percentage * dv.GrossAmount;
+                dv.TotalDeduction = dv.GrossAmount - dv.NetAmount;
+            }
+            else
+            {
+                foreach (var ret in dv.InfraRetentions)
+                {
+                    _MyDbContext.InfraRetentions.Add(ret);
+                    if (ret.Amount.HasValue)
+                    {
+                        sum += ret.Amount.Value;
+                    }
+                }
+                dv.GrossAmount = sum;
+                _MyDbContext.SaveChanges();
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                dv.InfraRetentions = dv.InfraRetentions.Where(x => x.Id != 0 && x.Amount != 0)
+                    .ToList();
+                _MyDbContext.Add(dv);
+                await _MyDbContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(dv);
+        }
+
+        private void PopulatePayeeDropDownListPartial(object selected = null)
+        {
+            var Query = from d in _MyDbContext.Payee
+                        where d.payee_type == "S"
+                        orderby d.PayeeId
+                        select d;
+            ViewBag.PayeeId = new SelectList(Query, "PayeeId", "PayeeDescription", selected);
+        }
+        #endregion
         // GET: Category/Create
         public IActionResult Create()
         {
@@ -108,6 +192,16 @@ namespace fmis.Controllers.Accounting
             Dv newDv = new() { dvDeductions = new List<DvDeduction>(7)};
             var stype = newDv.DvSupType;
             newDv.InfraAdvancePayment = newDv.InfraAdvancePayment;
+            newDv.InfraRetentions = newDv.InfraRetentions;
+            newDv.DvNo = _autoIncrementGenerator.GenerateIndividual();
+
+            if (newDv.DvNo != null)
+            {
+                // DvNo exists, notify clients via SignalR
+                _hubContext.Clients.All.SendAsync("DvNoExists", newDv.DvNo);
+            }
+
+
             for (int x = 0; x < 7; x++)
             {
                 newDv.dvDeductions.Add(new DvDeduction());
@@ -134,7 +228,7 @@ namespace fmis.Controllers.Accounting
 
             if(dv.DvSupType == null)
             {
-                dv.TotalDeduction = dv.dvDeductions.Sum(x => x.Amount);
+                dv.TotalDeduction = (decimal)dv.dvDeductions.Sum(x => x.Amount);
                 dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             }
             else
@@ -158,7 +252,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult GetPayee(string cid)
         {
-            var payee_List = _MyDbContext.Payee.Where(x=>x.payee_type == cid).Select(c => new { Id = c.PayeeId, Name = c.PayeeDescription }).ToList();
+            var payee_List = _MyDbContext.Payee.Where(x=>x.payee_type == "T").Select(c => new { Id = c.PayeeId, Name = c.PayeeDescription }).ToList();
 
             return Json(payee_List);
         }
@@ -281,7 +375,7 @@ namespace fmis.Controllers.Accounting
             dvs.GrossAmount = dv.GrossAmount;
             dvs.dvDeductions = dv.dvDeductions.Where(x => x.DeductionId != null).ToList();
             dvs.TotalDeduction = dv.TotalDeduction;
-            dvs.NetAmount = dvs.GrossAmount - (float)dv.dvDeductions.Sum(x => x.Amount);
+            dvs.NetAmount = dvs.GrossAmount - (decimal)dv.dvDeductions.Sum(x => x.Amount);
             dvs.DvType = dvs.DvType;
 
             PopulateFundClusterDropDownList();
@@ -350,6 +444,7 @@ namespace fmis.Controllers.Accounting
         private void PopulatePayeeDropDownList(object selected = null)
         {
             var Query = from d in _MyDbContext.Payee
+                        where d.payee_type == "T"
                         orderby d.PayeeId
                         select d;
             ViewBag.PayeeId = new SelectList(Query, "PayeeId", "PayeeDescription", selected);
@@ -695,7 +790,7 @@ namespace fmis.Controllers.Accounting
                     
                     foreach (var dvDeductions in item.Where(x => x.DvId == id))
                     {
-                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - (decimal)dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
                         foreach (var deductions in dvDeductions.dvDeductions)
                         {
                             deductionsAmount.Add(deductions.Amount);
@@ -717,9 +812,9 @@ namespace fmis.Controllers.Accounting
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                        "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                        "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        fundCluster?.FirstOrDefault()?.dvTotalDeductions?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
                     {
                         Border = 13,
                         FixedHeight = 140f,
@@ -1504,22 +1599,19 @@ namespace fmis.Controllers.Accounting
                 var item = _MyDbContext.Dv.Include(x => x.dvDeductions).ThenInclude(x => x.Deduction).ToList();
                 List<float> deductionsAmount = new List<float>();
                 List<string> deductionsList = new List<string>();
+                
 
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
-                /*foreach (var dvDeductions in item.Where(x => x.DvId == id))
-                {
-                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
-                    foreach (var deductions in dvDeductions.dvDeductions)
-                    {
-                        deductionsAmount.Add(deductions.Amount);
-                        string description = deductions?.Deduction.DeductionDescription.PadRight(15);
-                        string netDeduct = deduct?.ToString("##,#00.00").PadRight(12);
-                        string amount = deductions?.Amount.ToString("##,#00.00").PadLeft(15);
+                string firstExpression = fundCluster?.FirstOrDefault()?.dvGrossAmount?.ToString("N2");
+                string paddedFirstExpression = firstExpression?.PadLeft(15);
 
-                        deductionsList.Add(description + " { " + netDeduct + " } " + amount);
-                        Console.WriteLine(string.Join("\n", deductionsList));
-                    }
-                }*/
+                var secondExpression = fundCluster?.FirstOrDefault()?.advancePayment.ToString();
+                string paddedSecondExpression = secondExpression?.PadLeft(15);
+
+                string thirdExpression = fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("N2");
+                string paddedThirdExpression = thirdExpression?.PadLeft(15);
+
+                // john's update
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
@@ -1527,9 +1619,9 @@ namespace fmis.Controllers.Accounting
                 table_row_6.SetWidths(tbt_ro6_width);
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "For Payment of  " + " : " + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() +"\n"+
                                                                       "Contractor          " + ":" + fundCluster?.FirstOrDefault()?.dvPayee +
-                    "\n\n\n\n" + "A. Contract Amount: \n" + "               " + "               a. 1 Original Contract Amount" + "                   " + "  " + fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00") +  "\n" +
-                "               " + "               a. 2 % Advance Payment" + "                                        " + "      " +fundCluster?.FirstOrDefault()?.advancePayment  + "\n" +
-                "               " + "               a. 3 Equivalent Amount (a.1 x a.2)" + "            " + "  " + fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00") + "\n\n" +
+                    "\n\n\n\n" + "A. Contract Amount: \n" + "               " + "               a. 1 Original Contract Amount" + "                   " + "  " + paddedFirstExpression +  "\n" +
+                "               " + "               a. 2 % Advance Payment" + "                                 " + paddedSecondExpression + "\n" +
+                "               " + "               a. 3 Equivalent Amount (a.1 x a.2)" + "           " + "    " + paddedThirdExpression + "\n\n" +
      
 
                     string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                      Amount Due:", arial_font_deductions))
@@ -1538,8 +1630,8 @@ namespace fmis.Controllers.Accounting
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
                     "" + "\n" + "" + "\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00") + "\n\n\n\n\n\n\n\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00"), arial_font_9))
+                    fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                    fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
@@ -2861,6 +2953,9 @@ namespace fmis.Controllers.Accounting
 
                                    join a in _MyDbContext.Assignee
                                    on dv.AssigneeId equals a.AssigneeId
+
+                                   join ret in _MyDbContext.InfraRetentions
+                                   on dv.DvId equals ret.DvId
                                    where dv.DvId == id
                                    select new
                                    {
@@ -2878,7 +2973,8 @@ namespace fmis.Controllers.Accounting
                                        assigneeDvId = dv.AssigneeId,
                                        assigneeName = a.FullName,
                                        assigneeDesignation = a.Designation,
-                                       dvDeduction = dv.dvDeductions
+                                       dvDeduction = dv.dvDeductions,
+                                       retBillNo = ret.billingNo
                                    }).ToList();
 
 
@@ -3165,26 +3261,58 @@ namespace fmis.Controllers.Accounting
                         Console.WriteLine(string.Join("\n", deductionsList));
                     }
                 }*/
+                var dvs = _MyDbContext.Dv.Where(x=>x.DvId == id).Include(x => x.InfraRetentions).ToList();
+                List<string> billingNos = new List<string>();
+                List<decimal> billingAmounts = new List<decimal>();
+                string billingNosString;
+                foreach (var ret in dvs)
+                {
+                    foreach(var items in ret.InfraRetentions)
+                    {
+                        var billingNo = items.billingNo;
+                        var amount = items.Amount ?? 0;
+
+                        billingNos.Add(billingNo);
+                        billingAmounts.Add(amount);
+                        //string billingNosString = string.Join(", ", billingNos);
+                        //Console.WriteLine(billingNosString);
+                    }
+                }
+                billingNosString = "                     " + string.Join("\n                     ", billingNos);
+                string billingAmountsString = "                     " + string.Join("\n                     ", billingAmounts.Select(a => a.ToString()));
+
+                int maxBillingNoLength = billingNos.Max(n => n.Length);
+                int billingNosWidth = 30;
+                int billingAmountsWidth = 10;
+
+                string[] combinedArray = billingNosString.Split('\n')
+                    .Zip(billingAmountsString.Split('\n'), (n, a) => string.Format("{0,-" + billingNosWidth + "} {1}", n.PadRight(maxBillingNoLength), a))
+                    .ToArray();
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < combinedArray.Length; i++)
+                {
+                    sb.AppendLine(combinedArray[i]);
+                    if (i == combinedArray.Length - 1)
+                    {
+                        int underlineLength = combinedArray[i].Length;
+                        sb.AppendLine(new string(' ', underlineLength));
+                        sb.AppendLine("                     Total Amount:                              ".PadRight(maxBillingNoLength + billingAmountsWidth + 1) + billingAmounts.Sum());
+                    }
+                }
+                string combinedString = sb.ToString();
+                //string combinedString = string.Join("\n", combinedArray);
 
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
                 table_row_6.WidthPercentage = 100f;
                 table_row_6.SetWidths(tbt_ro6_width);
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" + "               \n" + "               " + 
-                "               1st Progress Billing " + "\n" +
-                "               " + "               2nd Progress Billing" + "\n" +
-                "               " + "               3rd Progress Billing" + "\n" +
-              
-
-                    string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                         Amount Due:", arial_font_deductions))
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n\n" + combinedString + "\n\n\n\n\n\n\n\n\n\n\n                                                                                              Amount Due:", arial_font_deductions))
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + /*fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
-                    /*fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
-                    /*fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00")*/"", arial_font_9))
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n\n\n\n\n\n\n\n\n\n" + "PHP" + billingAmounts.Sum() + "\n\n\n\n\n\n\n\n\n\n"+ "PHP" + billingAmounts.Sum(), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,

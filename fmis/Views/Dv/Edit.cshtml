@@ -104,7 +104,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount.ToString("##,#00.00")" asp-for="GrossAmount" onchange="computeNetAmount()" />
+                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount?.ToString("##,#00.00")" asp-for="GrossAmount" onchange="computeNetAmount()" />
                 </div>
             </div>
         </div>
@@ -153,7 +153,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="total_deduction" value="@Model.TotalDeduction.ToString("##,#00.00")" type="text" asp-for="TotalDeduction" placeholder="0.00" readonly />
+                    <input class="form-control" id="total_deduction" value="@Model.TotalDeduction?.ToString("##,#00.00")" type="text" asp-for="TotalDeduction" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
@@ -166,7 +166,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <input class="form-control" id="net_amount" value="@Model.NetAmount.ToString("##,#00.00")" type="text" placeholder="0.00" readonly />
+                    <input class="form-control" id="net_amount" value="@Model.NetAmount?.ToString("##,#00.00")" type="text" placeholder="0.00" readonly />
                 </div>
             </div>
         </div>
