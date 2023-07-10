@@ -36,6 +36,7 @@ using Microsoft.AspNetCore.SignalR;
 using DocumentFormat.OpenXml.InkML;
 using fmis.Data.Accounting;
 using System.Text;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 
 namespace fmis.Controllers.Accounting
 {
@@ -114,17 +115,23 @@ namespace fmis.Controllers.Accounting
             PopulateAssigneeDropDownList();
             PopulateDeductionDropDownList();
 
-            Dv newDv = new() { InfraRetentions = new List<InfraRetention>(6) };
-            for (int x = 0; x < 6; x++)
+
+            var dvList = _MyDbContext.Dv.Include(x => x.InfraAdvancePayment).Include(x => x.InfraProgress).Include(x => x.InfraRetentions).ToList();
+            var dvNo = _autoIncrementGenerator.GenerateSupplier();
+            foreach (var dv in dvList)
             {
-                newDv.InfraRetentions.Add(new InfraRetention());
+                var stype = dv.DvSupType;
+                dv.DvNo = _autoIncrementGenerator.GenerateSupplier();
+                if (!string.IsNullOrEmpty(dv.DvNo))
+                {
+                    dvNo = dv.DvNo;
+                    break;
+                }
             }
-            var stype = newDv.DvSupType;
-            newDv.InfraAdvancePayment = newDv.InfraAdvancePayment;
 
+            ViewBag.DvNo = dvNo;
 
-            newDv.DvNo = _autoIncrementGenerator.GenerateSupplier();
-            return PartialView("_CreatePartial", newDv);
+            return PartialView("_CreatePartial");
         }
 
         [HttpPost]
@@ -136,6 +143,8 @@ namespace fmis.Controllers.Accounting
             dv.UserId = UserId;
             var dvId = dv.DvId;
             decimal sum = 0;
+            //var infraProgress = dv.InfraProgress.Where(x => x.Id != 0 && x.Amount != null);
+            //var infraRetention = dv.InfraRetentions.Where(x => x.Id != 0 && x.Amount != null);
 
             if (dv.DvSupType == "1")
             {
@@ -144,26 +153,15 @@ namespace fmis.Controllers.Accounting
                 dv.NetAmount = advancepayment_percentage * dv.GrossAmount;
                 dv.TotalDeduction = dv.GrossAmount - dv.NetAmount;
             }
-            else
-            {
-                foreach (var ret in dv.InfraRetentions)
-                {
-                    _MyDbContext.InfraRetentions.Add(ret);
-                    if (ret.Amount.HasValue)
-                    {
-                        sum += ret.Amount.Value;
-                    }
-                }
-                dv.GrossAmount = sum;
-                _MyDbContext.SaveChanges();
-            }
-
 
             if (ModelState.IsValid)
             {
-                dv.InfraRetentions = dv.InfraRetentions.Where(x => x.Id != 0 && x.Amount != 0)
-                    .ToList();
-                _MyDbContext.Add(dv);
+                if (dv.InfraProgress != null || dv.InfraRetentions != null)
+                {
+                    dv.InfraRetentions = dv.InfraRetentions.Where(x => x.Amount != null).ToList();
+                    dv.InfraProgress = dv.InfraProgress.Where(x => x.Amount != null).ToList();
+                }
+                _MyDbContext.Dv.Add(dv);
                 await _MyDbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -2141,7 +2139,8 @@ namespace fmis.Controllers.Accounting
                                        assigneeDvId = dv.AssigneeId,
                                        assigneeName = a.FullName,
                                        assigneeDesignation = a.Designation,
-                                       dvDeduction = dv.dvDeductions
+                                       dvDeduction = dv.dvDeductions,
+                                       dvInfraProgress = dv.InfraProgress
                                    }).ToList();
 
 
@@ -2412,6 +2411,11 @@ namespace fmis.Controllers.Accounting
                 List<float> deductionsAmount = new List<float>();
                 List<string> deductionsList = new List<string>();
 
+                //var percentage_a = fundCluster?.FirstOrDefault()?.dvInfraProgress.Take(3).Sum(x => x.Amount);
+                var a1 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(1).First().Amount;
+                var a2 = 0 + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(2).First().Amount;
+                var percentage_a = a1 * a2;
+
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
 
                 /*foreach (var dvDeductions in item.Where(x => x.DvId == id))
@@ -2434,22 +2438,22 @@ namespace fmis.Controllers.Accounting
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
                 table_row_6.WidthPercentage = 100f;
                 table_row_6.SetWidths(tbt_ro6_width);
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n" + "A. Contract Amount: \n" + "               " + "        a. 0 Revised Contract Amount" + "\n" +
-                "               " + "        a. 1 Original Contract Amount" + "\n" +
-                "               " + "        a. 2 % Advance Payment" + "\n" +
-                "               " + "        a. 3 Equivalent Amount (a.1 x a.2)" + "\n\n" +
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n" + "A. Contract Amount: \n" + "               " + "        a. 0 Revised Contract Amount " + "                                           " + fundCluster?.FirstOrDefault()?.dvInfraProgress?.First()?.Amount + "\n" +
+                "               " + "        a. 1 Original Contract Amount " + "                                            " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(1).First().Amount + "\n" +
+                "               " + "        a. 2 % Advance Payment " + "                                                   " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(2).First().Amount + "\n" +
+                "               " + "        a. 3 Equivalent Amount (a.1 x a.2) " + percentage_a + "\n\n" +
 
-                "B. Accomplishment: \n" + "             " + "          b. 1% Accomplishment as Requested to date" + "\n" +
-                "               " + "        b. 2  Equivalent Amount (a.1 x b.1)" + "\n" +
-                "               " + "        b. 3 % Previous Billing Accomplishment" + "\n" +
-                "               " + "        b. 4 Equivalent Amount (a.1 x b.3)" + "\n" +
+                "B. Accomplishment: \n" + "             " + "          b. 1% Accomplishment as Requested to date " + "                   " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(3).First().Amount  + "\n" +
+                "               " + "        b. 2  Equivalent Amount (a.1 x b.1) " + "                                    " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(4).First().Amount + "\n" +
+                "               " + "        b. 3 % Previous Billing Accomplishment " + "                            " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(5).First().Amount + "\n" +
+                "               " + "        b. 4 Equivalent Amount (a.1 x b.3) " + "                                     " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(6).First().Amount + "\n" +
                 "               " + "        b. 5  This Period Less Previous billing  (b.2 - b.4)" + "\n\n" +
 
-                "A. Less: \n" + "               " + "        c. 1. Total Liquidated Damages" + "\n" +
-                "               " + "        c. 2 Recoupment of Downpayment (a.3 x (b.1 - b.3))" + "\n" +
-                "               " + "        c. 3 Retention(10% x b.5)" + "\n" +
-                "               " + "        c. 4 VAT  (c.1/1.12 x 5%)" + "\n" +
-                "               " + "        c. 5 EWT  (c.1/1.12 x 2%)" + "\n" +
+                "A. Less: \n" + "               " + "        c. 1. Total Liquidated Damages " + "                                         " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(7).First().Amount + "\n" +
+                "               " + "        c. 2 Recoupment of Downpayment (a.3 x (b.1 - b.3)) " + "        " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(8).First().Amount + "\n" +
+                "               " + "        c. 3 Retention(10% x b.5) " + "                                                  " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(9).First().Amount + "\n" +
+                "               " + "        c. 4 VAT  (c.1/1.12 x 5%) " + "                                                   " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(10).First().Amount + "\n" +
+                "               " + "        c. 5 EWT  (c.1/1.12 x 2%) " + "                                                  " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(11).First().Amount + "\n" +
                 "               " + "                   Total Deduction: " + "\n" +
 
                     string.Join("\n", deductionsList) + "                                                                                                      Amount Due:", arial_font_deductions))

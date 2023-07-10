@@ -85,6 +85,7 @@ namespace fmis.Data
         public DbSet<IndexFundSource> IndexFundSource { get; set; }
         public DbSet<InfraAdvancePayment> InfraAdvancePayment { get; set; }
         public DbSet<InfraRetention> InfraRetentions { get; set; }
+        public DbSet<InfraProgress> InfraProgress { get; set; }
 
 
 

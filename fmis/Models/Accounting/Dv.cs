@@ -56,6 +56,9 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public List<InfraRetention> InfraRetentions { get; set; }
 
+        [JsonIgnore]
+        public List<InfraProgress> InfraProgress { get; set; }
+
 
     }
 }

@@ -60,7 +60,7 @@
             </div>
             <div class="1stcol col-md-2" style="width: 130px;">
                 <h5>Dv #: </h5>
-                <input asp-for="DvNo" type="text" id="dv_no" class="form-control" readonly />
+                <input asp-for="DvNo" type="text" id="dv_no" class="form-control" readonly value="@ViewBag.DvNo" />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
             </div>
         </div>
@@ -148,6 +148,189 @@
             </div>
         </div>
 
+        <!--PROGRESS FINAL BILLING-->
+        <div name="progress" id="progress">
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.0 Revised Contract Amount</label>
+                    <input type="hidden" asp-for="InfraProgress[0].bulletNo" value="a.0 Revised Contract Amount" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[0].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.1 Original Contract Amount</label>
+                    <input type="hidden" asp-for="InfraProgress[1].bulletNo" value="a.1 Original Contract Amount"  />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[1].Amount" type="text" id="Oca" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.2 % Advance Payment</label>
+                    <input type="hidden" asp-for="InfraProgress[2].bulletNo" value="a.2 % Advance Payment"  />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[2].Amount" type="text" id="Ap" oninput="percentageA()" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.3 Equivalent Amount (a.1 x a.2)</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="0.00" readonly id="total_a" />
+                    </div>
+                </div>
+            </div>
+
+            <!--B-->
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.1 % Accomplishment as Requested to date</label>
+                    <input type="hidden" asp-for="InfraProgress[3].bulletNo" value="b.1 % Accomplishment as Requested to date" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[3].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.2 Equivalent Amount (a.1 x b.1)</label>
+                    <input type="hidden" asp-for="InfraProgress[4].bulletNo" value="b.2 Equivalent Amount (a.1 x b.1)" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[4].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.3 % Previous Billing Accomplishment (a.1 x b.1)</label>
+                    <input type="hidden" asp-for="InfraProgress[5].bulletNo" value="b.3 % Previous Billing Accomplishment (a.1 x b.1)" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[5].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.4 Equivalent Amount (a.1 x b.3)</label>
+                    <input type="hidden" asp-for="InfraProgress[6].bulletNo" value="b.4 Equivalent Amount (a.1 x b.3)" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[6].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.5 This Period Less Previous billing (b.2 -b.4)</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="total_b" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <!--C-->
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.1 Total Liquidated Damages</label>
+                    <input type="hidden" asp-for="InfraProgress[7].bulletNo" value="c.1 Total Liquidated Damages" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[7].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.2 Recoupment of Downpayment (a.3 x (b.1 - b.3))</label>
+                    <input type="hidden" asp-for="InfraProgress[8].bulletNo" value="c.2 Recoupment of Downpayment (a.3 x (b.1 - b.3))" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[8].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.3 Retention ( 10% x b.5 )</label>
+                    <input type="hidden" asp-for="InfraProgress[9].bulletNo" value="c.3 % Retention ( 10% x b.5 )" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[9].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label></label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="total_c" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+
+             <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.4 VAT ( c.1 /1.12 x 5% )</label>
+                    <input type="hidden" asp-for="InfraProgress[10].bulletNo" value="c.4 VAT ( c.1 /1.12 x 5% )" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[10].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.5 EWT ( c.1 / 1.12 x 2% )</label>
+                    <input type="hidden" asp-for="InfraProgress[11].bulletNo" value="c.5 EWT ( c.1 / 1.12 x 2% )" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[11].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>Total Deduction</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="total_d" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <!--RETENTION-->
         <div name="retention" id="retention">
             <div class="col-md-12">
@@ -207,6 +390,25 @@
 
 
 <script>
+    //percentage A
+    function percentageA() {
+        var grossAmountInput = document.getElementById("Oca").value;
+        var advancePayment = document.getElementById('Ap').value;
+        var advancePaymentPercent = '0.' + advancePayment;
+
+        var sanitizedGrossAmount = grossAmountInput.replace(/,/g, '');
+        var grossAmount = parseFloat(sanitizedGrossAmount);
+
+
+        var result = advancePaymentPercent * grossAmount;
+        var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        var percentageAmountInput = document.getElementById('total_a');
+        percentageAmountInput.value = formattedPercentage;
+    }
+    //
+
+    //
     function calculateTotalBilling() {
         var total = 0.0;
 
@@ -290,34 +492,49 @@
     //
 
     var advanceDiv = document.getElementById('advance');
+    var progressDiv = document.getElementById('progress');
     var retentionDiv = document.getElementById('retention');
 
-    retentionDiv.style.display = 'none';
     advanceDiv.style.display = 'block';
+    progressDiv.style.display = 'none';
+    retentionDiv.style.display = 'none';
 
     document.getElementById("stype").addEventListener("change", function () {
         var selectedOption = this.value;
         var advance = document.getElementById("advance");
+        var progress = document.getElementById("progress");
         var retention = document.getElementById("retention");
-
+        var containerElement = document.getElementsByClassName("container")[0];
+        console.log(progress);
         if (selectedOption === "1") {
+            containerElement.style.height = "650px";
             advance.style.display = "block";
+            progress.style.display = "none";
+            retention.style.display = "none";
+        }
+        else if (selectedOption === "2") {
+            containerElement.style.height = "1100px";
+            progress.style.display = "block";
+            advance.style.display = "none";
             retention.style.display = "none";
         }
         else if (selectedOption === "3") {
+            containerElement.style.height = "650px";
             retention.style.display = "block";
             advance.style.display = "none";
+            progress.style.display = "none";
         }
         else {
             advance.style.display = "none";
             retention.style.display = "none";
+            progress.style.display = "none";
         }
     });
 
     $(function () {
         $("select#stype").change(function () {
             var stypeId = $(this).val();
-            console.log(stypeId);
+            //console.log(stypeId);
             if (stypeId == 1) {
                 //$("#hidden-advance").show();
             }
