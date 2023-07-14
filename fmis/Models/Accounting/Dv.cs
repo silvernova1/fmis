@@ -12,11 +12,12 @@ namespace fmis.Models.Accounting
     {
         public int DvId { get; set; }
         public string DvNo { get; set; }
-        public float GrossAmount { get; set; }
-        public float TotalDeduction { get; set; }
-        public float NetAmount { get; set; }
+        public decimal? GrossAmount { get; set; }
+        public decimal? TotalDeduction { get; set; }
+        public decimal? NetAmount { get; set; }
 
-        public List<DvDeduction> dvDeductions { get; set; }
+        public List<DvDeduction>? dvDeductions { get; set; }
+
         public string Particulars { get; set; }
 
         [DataType(DataType.Date)]
@@ -51,6 +52,12 @@ namespace fmis.Models.Accounting
 
         [JsonIgnore]
         public InfraAdvancePayment? InfraAdvancePayment { get; set; }
+
+        [JsonIgnore]
+        public List<InfraRetention>? InfraRetentions { get; set; }
+
+        [JsonIgnore]
+        public List<InfraProgress>? InfraProgress { get; set; }
 
 
     }

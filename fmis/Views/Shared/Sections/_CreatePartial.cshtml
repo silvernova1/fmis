@@ -1,4 +1,4 @@
-﻿ @model fmis.Models.Accounting.Dv;
+﻿@model fmis.Models.Accounting.Dv;
 
 
 
@@ -17,13 +17,22 @@
     .select2 {
         width: 100% !important;
     }
+
+    .input-with-button {
+        display: flex;
+        align-items: center;
+    }
+
+        .input-with-button .add-input {
+            margin-left: 10px;
+        }
 </style>
 
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Disbursement Voucher</h3></center>
 <hr />
 <div class="container" style="height: 840px;">
-    <form asp-action="Create" style="position:center;">
+    <form asp-action="CreatePartial" style="position:center;" method="post">
         <div class="col-md-12">
             <div class="col-md-2" style="width: 200px;">
                 <div class="form-group">
@@ -31,7 +40,6 @@
                     <select class="form-control" asp-for="FundClusterId" id="fundCluster" asp-items="ViewBag.FundClusterId">
                         <option value="">- FundCluster</option>
                     </select>
-                    @*@Html.DropDownList("FundClusterId", ViewBag.FundClusterId, " - FundCluster - ", htmlAttributes: new { @class = "form-control", @id = "fundCluster", @required = "required" })*@
                 </div>
             </div>
             <div class="1stcol col-md-2">
@@ -41,18 +49,7 @@
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
             </div>
-            <div class="1stcol col-md-2" style="width: 250px;">
-                <h5>Dv #: </h5>
-                <input type="text" class="form-control" readonly value="SUPPLIER/CONTRACTOR" />
-            </div>
-            @*<div class="col-md-2" style="width: 200px;">
-                <h5>Dv Type: </h5>
-                <select class="form-control" id="dv_type" asp-for="DvType" required>
-                    <option value="S">SUPPLIER/CONTRACTOR</option>
-                    <option value="T">INDIVIDUAL CLAIM/PAYROLL</option>
-                </select>
-            </div>*@
-            @*<div class="1stcol col-md-2" style="width: 150px;" name="hidden-stype" id="hidden-stype">
+            <div class="1stcol col-md-2" style="width: 150px;">
                 <h5>Supplier Type: </h5>
                 <select asp-for="DvSupType" class="form-control" id="stype">
                     <option value="">Select Supplier Type</option>
@@ -60,7 +57,7 @@
                     <option value="2">Progress Final Billing</option>
                     <option value="3">Retention</option>
                 </select>
-            </div>*@
+            </div>
             <div class="1stcol col-md-2" style="width: 130px;">
                 <h5>Dv #: </h5>
                 <input asp-for="DvNo" type="text" id="dv_no" class="form-control" readonly />
@@ -86,7 +83,7 @@
             <div id="payee" class="col-md-4" style="display: none;">
                 <div class="form-group">
                     <h5>Payee Description:  </h5>
-                    <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control"/>
+                    <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control" />
                     <span asp-validation-for="PayeeDesc" class="text-danger"></span>
                 </div>
             </div>
@@ -111,131 +108,45 @@
             </div>
         </div>
 
-        <!--INDIVIDUAL ADVANCE PAYMENT AMOUNT-->
-       @* <div class="col-md-12" style="margin-top: 20px" name="advance-gross" id="advance-gross">
-            <div class="col-md-2" style="width: 250px;">
-                <div class="form-group">
-                    <label style="font-weight:bold;">ORIGINAL CONTRACT AMOUNT </label>
+        <!--ADVANCE PAYMENT AMOUNT-->
+        <div id="advance">
+            <div class="col-md-12" style="margin-top: 20px">
+                <div class="col-md-2" style="width: 250px;">
+                    <div class="form-group">
+                        <label>ORIGINAL CONTRACT AMOUNT: </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control gross_amount" id="gross_amount" type="text" asp-for="GrossAmount" />
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control gross_amount" id="gross_amount" type="text" asp-for="GrossAmount" />
-                </div>
-            </div>
-        </div>*@
 
-        @*<div class="col-md-12" onchange="submitDeduction(this);" name="advance-deduction1" id="advance-deduction1">
-            <div class="col-md-2" style="width: 250px;">
-                ADVANCE PAYMENT
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="InfraAdvancePayment.AdvancePayment" type="text"/>
+            <div class="col-md-12" onchange="submitDeduction(this);" name="advance-deduction1" id="advance-deduction1">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>ADVANCE PAYMENT: </label>
                 </div>
-            </div>
-        </div>*@
-        <!--INDIVIDUAL DEDUCTION AMOUNT-->
-        <div class="col-md-12" style="margin-top: 20px" name="individual-gross" id="individual-gross">
-            <div class="col-md-2" style="width: 250px;">
-                <div class="form-group">
-                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">GROSS AMOUNT: </label>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control gross_amount" id="gross_amount" type="text" asp-for="GrossAmount" />
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="InfraAdvancePayment.AdvancePayment" type="text" />
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-12" onchange="submitDeduction(this);" name="individual-deduction1" id="individual-deduction1">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" />
+        <!--RETENTION-->
+        <div name="retention" id="retention">
+            <div class="col-md-12" style="margin-top: 20px">
+                <div class="col-md-2" style="width: 250px;">
+                    <div class="form-group">
+                        <label>1st Billing:</label>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" onchange="submitDeduction(this);" name="individual-deduction2" id="individual-deduction2">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[1].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="text"  />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" onchange="submitDeduction(this);" name="individual-deduction3" id="individual-deduction3">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[2].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[2].Amount" type="text"   />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" onchange="submitDeduction(this);" name="individual-deduction4" id="individual-deduction4">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[3].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[3].Amount" type="text"   />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" onchange="submitDeduction(this);" name="individual-deduction5" id="individual-deduction5">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[4].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[4].Amount" type="text"   />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" onchange="submitDeduction(this);" name="individual-deduction6" id="individual-deduction6">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[5].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[5].Amount" type="text" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12" name="individual-deduction7" id="individual-deduction7">
-            <div class="col-md-2" style="width: 250px;">
-                <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[6].DeductionId" class="form-control select2">
-                    <option value=""> - Select Deduction -</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control deduction_amount" asp-for="dvDeductions[6].Amount" type="text"   />
+                <div class="col-md-2" id="newInput">
+                    <div class="form-group input-with-button">
+                        <input class="form-control gross_amount" type="text" name="InfraRetentions[0].GrossAmount" /><button class="add-input">+</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -243,20 +154,7 @@
         <div class="col-md-12">
             <div class="col-md-2" style="width: 250px;">
                 <div class="form-group">
-                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">TOTAL DEDUCTIONS: </label>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input class="form-control" id="total_deduction" type="text" placeholder="0.00" readonly />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-2" style="width: 250px;">
-                <div class="form-group">
-                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">NET AMOUNT: </label>
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">EQUIVALENT AMOUNT: </label>
                 </div>
             </div>
             <div class="col-md-2">
@@ -277,33 +175,74 @@
 
 <script>
 
-    //SIGNAL R
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/dvHub")
-        .build();
+    $(document).ready(function () {
+        var count = 1; // Counter for the number of billings
 
-    connection.start().then(function () {
-        console.log("SignalR connection established.");
-    }).catch(function (err) {
-        console.error(err.toString());
+        // Handle button click event
+        $('#retention').on('click', '.add-input', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            count++; // Increment the counter
+
+            // Determine the appropriate label based on the count
+            var label;
+            if (count === 2) {
+                label = '2nd Billing:';
+            } else if (count === 3) {
+                label = '3rd Billing:';
+            } else {
+                label = count + 'th Billing:';
+            }
+
+            // Create the new billing label and input
+            var labelElement = $('<label>').text(label);
+            var input = $('<input>').addClass('form-control gross_amount').attr({
+                'type': 'text',
+                'name': 'InfraRetentions[' + (count - 1) + '].Amount'
+            });
+
+            // Create the container for the new billing label and input
+            var container = $('<div>').addClass('col-md-12').css('margin-top', '20px');
+            container.append($('<div>').addClass('col-md-2').css('width', '250px').append($('<div>').addClass('form-group').append(labelElement)));
+            container.append($('<div>').addClass('col-md-2').append($('<div>').addClass('form-group').append(input)));
+
+            // Append the new container to the parent
+            $('#retention').append(container);
+        });
     });
 
-    connection.on("DvNoExists", function (dvNo) {
-        console.log("DvNo exists: " + dvNo);
-        document.getElementById("dvNoExistsSpan").style.display = "inline"; // Show the span
+    var advanceDiv = document.getElementById('advance');
+    var retentionDiv = document.getElementById('retention');
+
+    retentionDiv.style.display = 'none';
+    advanceDiv.style.display = 'block';
+
+    document.getElementById("stype").addEventListener("change", function () {
+        var selectedOption = this.value;
+        var advance = document.getElementById("advance");
+        var retention = document.getElementById("retention");
+
+        if (selectedOption === "1") {
+            advance.style.display = "block";
+        }
+        else if (selectedOption === "3") {
+            retention.style.display = "block";
+            advance.style.display = "none";
+        }
+        else {
+            advance.style.display = "none";
+            retention.style.display = "none";
+        }
     });
 
-    //
-
-    $(function (){
+    $(function () {
         $("select#stype").change(function () {
-        var stypeId = $(this).val();
+            var stypeId = $(this).val();
             console.log(stypeId);
-            if(stypeId == 1){
+            if (stypeId == 1) {
                 //$("#hidden-advance").show();
             }
-            else
-            {
+            else {
                 //$("#hidden-individual").hide();
             }
         })
@@ -328,8 +267,7 @@
                 $("#individual-deduction6").hide();
                 $("#individual-deduction7").hide();*/
             }
-            else
-            {
+            else {
                 /*$("#advance-gross").hide();
                 $("#advance-deduction1").hide();
                 $("#hidden-stype").hide();
@@ -389,7 +327,6 @@
     get_sbu();
     function get_sbu() {
         var selected_val = $('#ddlBranches').find(":selected").attr('value');
-        //alert(selected_val);
         $.ajax({
             type: "POST",
             url: '@Url.Action("selectP", "Dv")',
@@ -479,9 +416,9 @@
         var particulars = document.getElementById("textarea").value;
         var respoCenter = document.getElementById("respoCenter").value;
         var selectOptions = document.getElementById("selectOptions").value;
-            
-        if (fundCluster != '' && dvDate != '' && dvType != ''  && particulars != ''
-            && respoCenter != '' && selectOptions != '' ) {
+
+        if (fundCluster != '' && dvDate != '' && dvType != '' && particulars != ''
+            && respoCenter != '' && selectOptions != '') {
             Lobibox.notify('success', {
                 msg: 'Disbursement Voucher Successfully Added!',
             });

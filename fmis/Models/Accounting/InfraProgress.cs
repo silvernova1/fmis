@@ -2,11 +2,13 @@
 
 namespace fmis.Models.Accounting
 {
-    public class InfraAdvancePayment
+    public class InfraProgress
     {
         [Key]
         public int Id { get; set; }
-        public decimal? AdvancePayment { get; set; }
+        public decimal? Amount { get; set; }
+
+        public string? bulletNo { get; set; }
 
         public int? DvId { get; set; }
         public Dv? Dv { get; set; }
