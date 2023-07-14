@@ -1,0 +1,25 @@
+﻿ @{
+    ViewData["Title"] = "SAOB";
+}
+
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <h1>Download Data here </h1>
+    @{
+
+        Html.BeginForm("DownloadExcel", "Reports", FormMethod.Get);
+        {
+            <div>
+            
+            <input type="submit" value="Download Excel File" style="width:150px;height:27px" />
+            </div>
+            
+        }
+    }
+
+
+</div>

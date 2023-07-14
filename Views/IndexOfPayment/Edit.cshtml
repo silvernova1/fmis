@@ -1,0 +1,710 @@
+﻿@model fmis.Models.Accounting.IndexOfPayment
+
+<link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
+<script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
+<script src="~/assets/plugin/daterangepicker/daterangepicker.js"></script>
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+<center><h3 class="grey lighter smaller">Update Index of Payment </h3></center>
+<hr />
+<div class="container" style="height: 885px;">
+    <form asp-action="Edit" style="position:center;" method="post">
+        <input asp-for="IndexOfPaymentId" type="hidden" />
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <select class="form-control select2 category" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
+                        <option value=""> - Select Category - </option>
+                    </select>   
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Dv" class="control-label"></label>
+                        <select class="prexcDropdown form-control select2 category" asp-for="DvId" id="ddlBranches" onchange="return get_sbu(this)" asp-items="ViewBag.DvId" required>
+                            <option value=""> - Select Dv - </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    @if (ViewBag.payee != null)
+                    { 
+                        <div class="form-group">
+                            <label>PAYEE :</label>
+                            <input value="@ViewBag.payee" class="form-control" readonly />
+                        </div>
+                    }
+                    @if(ViewBag.payee == null)
+                    {
+                        <div class="form-group">
+                            <label>PAYEE :</label>
+                            <input id="payeeDesc" class="form-control" readonly />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div>
+                <div class="col-md-3">
+                    <label> DATE:</label>
+                    <input type="date" asp-for="DvDate" asp-format="{0:yyyy-MM-dd}" class="form-control" id="dvDate" required>
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>PARTICULARS:</label>
+                    <textarea asp-for="Particulars" class="form-control" type="text" style="height: 70px;" id="particulars" required> </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <select class="form-control category" id="ddlfundsource" asp-for="fundSource" required>
+                    <option value="0"> - Select Fund Source - </option>
+                    <option value="1"> Regular Agency Fund  </option>
+                    <option value="2"> Foreign Assisted Project Fund </option>
+                    <option value="3"> Special Accounts - Locally Funded  </option>
+                    <option value="4"> Special Accounts - Foreign Assisted/Grants  </option>
+                    <option value="5"> Internally Generated Income </option>
+                    <option value="6"> Business Type Income </option>
+                    <option value="7"> Trust Fund </option>
+                </select>
+            </div>
+            @if (Model.ObligationId != null)
+            {
+                <div class="col-md-3">
+                    <select class="form-control category" asp-for="allotmentClassType" id="allotmentClass_type">
+                        <option value="0"> - Select Allotment Class - </option>
+                        <option value="1">  PS  </option>
+                        <option value="2">  MOOE </option>
+                        <option value="3">  CO  </option>
+                    </select>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-3 2 box 3 box 4 box 5 box 6 box 7 box">
+                    @Html.TextAreaFor(m => m.orsNo, new { @class = "form-control", @style = "resize: none; overflow: auto; height:35px", @id = "orsId"})
+                </div>
+            }
+            @if (Model.ObligationId != null)
+            {
+                <div class="col-md-3">
+                    <div class="form-group" id="obligation">
+                        @*<select asp-for="ObligationId" class="form-control select2"></select>*@
+                        <select asp-for="ObligationId" class="form-control select2">
+                            @{
+                                <option value="@Model.ObligationId">
+                                    @Model.orsNo
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+        </div>
+        <br />
+        <div class="col-md-12" style="margin-top: 15px;">
+            <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
+                <div class="form-group">
+                    <label>PO #:</label>
+                    <textarea asp-for="PoNumber" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" >@Model.PoNumber</textarea>
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
+                <div class="form-group">
+                    <label>PROJECT ID:</label>
+                    <input asp-for="ProjectId" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
+                <div class="form-group">
+                    <label>INVOICE #:</label>
+                    <input asp-for="InvoiceNumber" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
+                <div class="form-group">
+                    <label>PERIOD COVER</label>
+                    @* <input type="month" asp-for="PeriodCover" class="form-control" name="periodCover" id="daterange" value="@Model.PeriodCover" onchange="PeriodCheck()">*@
+                    <input type="month" name="PeriodCover" asp-for="PeriodCover" value="@Model.PeriodCover">
+                </div>
+            </div>
+            <div class="col-md-3" name="hidden-panel6" id="hidden-panel6">
+                <div class="form-group">
+                    <label>Period Covered From-To:</label>
+                    @*<input type="text" name="date_range" asp-for="PeriodCoverFromTo" class="form-control js-daterangepicker">*@
+                    <input type="text" class="form-control" asp-for="date" name="date" />
+                </div>
+            </div>
+
+            <div>
+                <div class="col-md-3" name="hidden-panel7" id="hidden-panel7">
+                    <div class="form-group">
+                        <label>S.O #:</label>
+                        <textarea asp-for="SoNumber" class="form-control" onchange="SoCheck()" style="resize: none; overflow: auto; height:35px" >@Model.SoNumber</textarea>
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel8" id="hidden-panel8">
+                    <div class="form-group">
+                        <label>TRAVEL PERIOD:</label>
+                        <input type="text" name="travel_period" asp-for="travel_period" value="@Model.travel_period" class="form-control js-daterangepicker">
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel9" id="hidden-panel9">
+                    <div class="form-group">
+                        <label>ACCOUNT #:</label>
+                        <input type="text" asp-for="AccountNumber" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3" name="hidden-panel10" id="hidden-panel10">
+                    <div class="form-group">
+                        <label># OF BILLING: (FIRST, SECOND):</label>
+                        <input type="text" asp-for="NumberOfBill" id="billnumber" class="form-control" onchange="billNumberCheck()" value="@Model?.BillNumbers?.OrderByDescending(x=>x.Id)?.FirstOrDefault()?.NumberOfBilling" />
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"></label>
+                        <div class="col-sm-10">
+                            <p id="Status" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top: 40px;">
+            <div class="col-md-2" style="width: 250px; ">
+                <div class="form-group" style="margin-left: 100px; margin-top: 5px;">
+                    <label style="font-weight:bold;">GROSS AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount.ToString("##,#00.00")" asp-for="GrossAmount" placeholder="0.00" onchange="computeNetAmount()" />
+                </div>
+            </div>
+        </div>
+
+        @for (int x = 0; x < Model.indexDeductions.Count; x++)
+        {
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <input asp-for="indexDeductions[x].IndexDeductionId" type="hidden" />
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-for="indexDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input asp-for="indexDeductions[x].Amount" value="@Model.indexDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" placeholder="0.00" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        @for (int x = 0; x < Model.indexDeductions.Count - 7; x++)
+        {
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-for="indexDeductions[x+Model.indexDeductions.Count]" asp-items="ViewBag.DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" placeholder="0.00" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group" style="margin-left: 80px; margin-top: 5px;">
+                    <label style="font-weight:bold;">TOTAL DEDUCTIONS: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="total_deduction" value="@Model.TotalDeduction.ToString("##,#00.00")" asp-for="TotalDeduction" placeholder="0.00" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group" style="margin-left: 120px; margin-top: 5px;">
+                    <label style="font-weight:bold;">NET AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" type="text" value="@Model.NetAmount.ToString("##,#00.00")" id="net_amount" placeholder="0.00" readonly />
+                </div>
+                <input type="submit" onclick="submiBtnClick()" id="myButton" value="Submit" class="btn btn-success btn-xs " />
+
+                <a class="btn btn-xs btn-default" id="myButton" asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var modalButton = document.getElementById("myButton");
+
+        // Attach a click event listener to the modal button
+        modalButton.addEventListener("click", function () {
+            var currentPageNumber = getCurrentPageNumber();
+            var targetUrl = "/IndexOfPayment/Action?page=" + currentPageNumber;
+
+            // Update the button's data-target attribute with the target URL
+            modalButton.setAttribute("data-target", targetUrl);
+
+            // Trigger the modal to open
+            $(modalButton).modal("show");
+        });
+
+        // Function to get the current page number from the pagination link URL
+        function getCurrentPageNumber() {
+            var currentPageLink = document.querySelector(".pagination-link.active");
+            var pageUrl = currentPageLink.href;
+            var urlParams = new URLSearchParams(pageUrl);
+            var pageNumber = urlParams.get("page");
+
+            return pageNumber;
+        }
+    });
+
+
+
+
+
+    $(function () {
+        $('input[name="periodCover"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="periodCover"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="periodCover"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+    //date range
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left'
+        }, function (start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            var data = { startDate: start.format('DD/MM/YYYY'), endDate: end.format('DD/MM/YYYY') };
+            console.log(data);
+            $.ajax({
+                url: '@Url.Action("Create", "IndexOfPayment")',
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    // handle success
+                },
+                error: function (xhr, status, error) {
+                    // handle error
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("select#ddlfundsource").change(function () {
+            $(this).find("option:selected").each(function () {
+                var optionValue = $(this).attr("value");
+                if (optionValue) {
+                    $(".box").not("." + optionValue).hide();
+                    $("." + optionValue).show();
+                } else {
+                    $(".box").hide();
+                }
+            });
+        }).change();
+    });
+
+    //cascade dropdownlist for allotment class
+    $(function () {
+        $("select#allotmentClass_type").change(function () {
+            var cid = $(this).val();
+            $("select#ObligationId").empty();
+
+            //$.getJSON(`/IndexOfPayment/GetOrs?cid=${cid}`, function (data) {
+            $.getJSON('@Url.Action("GetOrs", "IndexOfPayment")?cid=' + cid, function (data) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+                    $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+        });
+    });
+
+    $(function () {
+        $('input[name="date"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+
+        $("select#editAllotmentClass").change(function () {
+            var cid = $(this).val();
+            $("select#ObligationId").empty();
+
+            //$.getJSON(`/IndexOfPayment/GetOrs?cid=${cid}`, function (data) {
+            $.getJSON('@Url.Action("GetOrs", "IndexOfPayment")?cid=' + cid, function (data) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+                    $("select#ObligationId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+
+        });
+
+
+    });
+
+    var CategoryId;
+
+    $("#CategoryId").on('change', function () {
+        CategoryId = $("#CategoryId").val();
+    });
+
+    //bill number
+    function billNumberCheck() {
+        $("#Status").html("Checking...");
+        $.post("@Url.Action("CheckBillNumberExist", "IndexOfPayment")",
+            {
+                CategoryId: $("#CategoryId").val(), billnumber: $("#billnumber").val(), IndexOfPaymentId: $("#IndexOfPaymentId").val()
+            },
+            function (data) {
+                if (data == 0) {
+                    $("#Status").html('<font color="Green">Bill Number is available</font>');
+                    $("#billnumber").css("border-color", "Green");
+
+                }
+                else {
+                    $("#Status").html('<font color="Red">Bill Number Already Exist!</font>');
+                    $("#billnumber").css("border-color", "Red");
+                }
+            });
+    }
+
+    $('.select2').select2();
+    $("#CategoryId").val(36);
+    $("#CategoryId").trigger("click");
+    $(document).ready(function () {
+        for (i = 1; i <= 10; i++) {
+            $('#hidden-panel' + i).hide();
+        }
+    });
+
+    $(document).ready(function () {
+        $('.prexcDropdown').select2();
+    });
+    get_sbu();
+
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectAT", "IndexOfPayment")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                     $('#payeeDesc').val(data[0].payeeDesc);
+                }
+                else {
+                    $('#payeeDesc').val('');
+                }
+            }
+        });
+
+        const allNumberInputs = document.querySelectorAll('input[type="text"]');
+        const noZeroInput = document.getElementById('daterange');
+
+        allNumberInputs.forEach(input => {
+          if (input !== noZeroInput) {
+            input.addEventListener('blur', addLeadingZero);
+          }
+        });
+
+        function addLeadingZero(event) {
+          const input = event.target;
+          const value = input.value.trim();
+
+          if (value !== '' && !isNaN(value) && value[0] !== '0') {
+            input.value = parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+          }
+          if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }
+
+    }
+
+    //period cover
+    function PeriodCheck() {
+        $("#PeriodCheck").html("Checking...");
+        $.post("@Url.Action("CheckPeriodExist", "IndexOfPayment")",
+            {
+                periodCover: $("#daterange").val()
+            },
+            function (data) {
+                if (data == 0) {
+                    $("#PeriodCheck").html('<font color="Green">Available</font>');
+                    $("#daterange").css("border-color", "Green");
+
+                }
+                else {
+                    $("#PeriodCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#daterange").css("border-color", "Red");
+                }
+            });
+    }
+
+    //adding comma after 3 digits
+    function updateTextView(_obj) {
+        var num = +_obj.val();
+        if (num == 0) {
+            _obj.val('');
+        } else {
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+        }
+    }
+    function getNumber(_str) {
+        var arr = _str.split('');
+        var out = new Array();
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (isNaN(arr[cnt]) == false) {
+                out.push(arr[cnt]);
+            }
+        }
+        return Number(out.join(''));
+    }
+
+
+    function submitDeduction(parentDiv) {
+        let dvDeduction = $(parentDiv).find('select');
+        let dvDedectionAmt = $(parentDiv).find('input');
+
+        if (dvDeduction.val() && dvDedectionAmt.val()) {
+            console.log(dvDeduction.val(), dvDedectionAmt.val());
+        }
+        computeNetAmount();
+
+    }
+
+    function computeNetAmount() {
+        let amounts = $('.deduction_amount');
+        let gross_amount = +$('#gross_amount').val().replace(/,/g, '');
+        let total = 0;
+        $(amounts).each(function (index, value) {
+            total += +value.value.replace(/,/g, '');
+        });
+
+        var net = gross_amount - total;
+
+        $('#total_deduction').val(total.toLocaleString());
+        $('#net_amount').val(net.toLocaleString());
+    }
+
+    const input = document.querySelector("#CategoryId");
+    const output = document.querySelector("#CategoryId");
+    input.addEventListener("input", (e) => {
+        output.textContent = e.target.value;
+    });
+
+
+
+ 
+    $("#CategoryId").on('change', function () {
+
+        var value = $(this).val();
+        console.log(value);
+        const categ = [];
+        if (value == 1) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel5").show();
+            categ.push('2', '3', '4', '6', '7', '8', '9', '10');
+        } else if (value == 2 || value == 3) {
+            $("#hidden-panel1").show();
+            $("#hidden-panel4").show();
+            categ.push('2', '5', '6', '7', '8', '9', '10');
+        } else if (value == 4) {
+            $("#hidden-panel1").show();
+            categ.push('2', '4', '5', '6', '7', '8', '9', '10');
+        } else if (value == 5) {
+            $("#hidden-panel2").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '3', '4', '5', '6', '7', '8', '9');
+        } else if (value == 6 || value == 15 || 
+            value == 32 || value == 33 || value == 34 || value == 35) {
+            $("#hidden-panel4").show();
+            categ.push('1', '2', '3', '5', '6', '7', '8', '9', '10');
+        } else if (value == 7) {
+            $("#hidden-panel4").show();
+            $("#hidden-panel10").show();
+            categ.push('1', '2', '3', '5', '6', '7', '8', '9');
+
+        } else if (value == 8 || value == 9 || value == 10 || value == 11 ||
+            value == 22 || value == 23 || value == 24 || value == 25 || value == 26 || value == 27 || value == 28 || value == 30 || value == 31) {
+            $("#hidden-panel6").show();
+            categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
+        } else if (value == 12 || value == 19) {
+            $("#hidden-panel8").show();
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '3', '4', '5', '6', '9', '10');
+
+        } else if (value == 13 || value == 14) {
+            $("#hidden-panel7").show();
+            categ.push('1', '2', '3', '4', '5', '6', '8', '9', '10');
+
+        } else if (value == 16 || value == 17 || value == 18) {
+            $("#hidden-panel6").show();
+            $("#hidden-panel9").show();
+            categ.push('1', '2', '3', '4', '5', '8', '10');
+        } else if (value == 20 || value == 29) {
+            categ.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+
+        } else if (value == 21) {
+            $("#hidden-panel8").show();
+            categ.push('1', '2', '3', '4', '5', '6', '7', '9', '10');
+        }
+     //   else if (value == 23) {
+     //       $("#hidden-panel6").show();
+       //     categ.push('1', '2', '3', '4', '5', '7', '8', '9', '10');
+       // }
+        categ.forEach(function (i) {
+            $('#hidden-panel' + i).hide();
+        });
+    });
+
+
+
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+    $(function () {
+        $('input[name="travel_period"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="travel_period"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                travel_period: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="travel_period"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+
+    $(function () {
+        $('input[name="date_range"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="date_range"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var data = {
+                date: picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+            };
+        });
+
+        $('input[name="date_range"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+
+
+    function submiBtnClick() {
+        var category = document.getElementsByClassName("category").value;
+        var dvNo = document.getElementById("ddlBranches").value;
+        var dvDate = document.getElementById("dvDate").value;
+        var particulars = document.getElementById("particulars").value;
+
+
+        if (category != '' && dvNo != '' && particulars != '' && dvDate != '') {
+            Lobibox.notify('info', {
+                msg: 'Index Of Payment Data Successfully Updated!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+
+    $(function () {
+        $("#ddlfundsource").change(function () {
+            if ($(this).val() != 1) {
+                $("#allotmentClass_type").hide();
+                $("#obligation").hide();
+            } else {
+                $("#allotmentClass_type").show();
+                $("#obligation").show();
+            }
+           // if ($(this).val() <= 1 ) {
+           //     $("#orsId").attr('disabled', true);
+           // }
+           // else{
+           //     $("#orsId").attr('disabled', false);
+            //}
+        });
+    });
+
+</script>

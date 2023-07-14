@@ -1,0 +1,301 @@
+﻿@model fmis.Models.Accounting.Dv;
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .select2 {
+        width: 100% !important;
+    }
+</style>
+
+
+<center><h3 class="grey lighter smaller">Update Disbursement Voucher </h3></center>
+<hr />
+<div class="container" style="height: 840px;">
+    <form asp-action="Edit" style="position:center;">
+        <input asp-for="DvId" type="hidden" />
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <h5>Fund Cluster: </h5>
+                    <select class="form-control select2" name="CategoryId" asp-for="FundClusterId" asp-items="ViewBag.FundClusterId" id="fundCluster" required>
+                        <option value=""> - Select Category - </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <h5>Dv Date: </h5>
+                    <input asp-for="Date"  type="date" asp-format="{0:yyyy-MM-dd}" class="form-control"  id="dvDate" required/>
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2" style="width: 250px;">
+                <h5>Dv Type: </h5>
+                <select class="form-control" id="dv_type" asp-for="DvType"  required>
+                    <option value="">Select Dv Type</option>
+                    <option value="S">SUPPLIER / CONTRACTOR</option>
+                    <option value="T">INDIVIDUAL CLAIM / PAYROLL</option>
+                </select>
+            </div>
+            <div class="1stcol col-md-2">
+                <h5>Dv #: </h5>
+                <input asp-for="DvNo" type="text" id="dv_no" class="form-control" readonly />
+                <span asp-validation-for="DvNo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <h5>PAYEE: </h5>
+                    <select class="form-control select2" asp-for="PayeeId" asp-items="ViewBag.PayeeId">
+                        <option value=""> - Select Payee - </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="form-group">
+                    <h5>Particulars:  </h5>
+                    <textarea asp-for="Particulars" class="form-control"  type="text" style="height: 70px;" id="textarea" required> </textarea>
+                    <span asp-validation-for="Particulars" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="payee" class="col-md-4" style="display: none;">
+                <div class="form-group">
+                    <h5>Payee Description:  </h5>
+                    <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control" />
+                    <span asp-validation-for="PayeeDesc" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label>Responsibility Center: </label>
+                    <select class="form-control" asp-for="RespoCenterId" asp-items="ViewBag.RespoId" id="respoCenter" required></select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Select Options: </label>
+                    <select class="form-control " asp-for="AssigneeId" asp-items="ViewBag.AssigneeId" id="selectOptions" required>
+                        <option value=""> - Select Assignee - </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="margin-top: 20px">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">GROSS AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="gross_amount" type="text" value="@Model.GrossAmount.ToString("##,#00.00")" asp-for="GrossAmount" onchange="computeNetAmount()" />
+                </div>
+            </div>
+        </div>
+
+        @for (int x = 0; x < Model.dvDeductions.Count; x++)
+        {
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <input asp-for="dvDeductions[x].DvDeductionId" type="hidden" />
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-for="dvDeductions[x].DeductionId" asp-items="ViewBag.DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input asp-for="dvDeductions[x].Amount" value="@Model.dvDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        @for (int x = 0; x < Model.dvDeductions.Count - 7; x++)
+        {
+            <div class="col-md-12" onchange="submitDeduction(this);">
+                <div class="col-md-2" style="width: 250px;">
+                    <select asp-for="dvDeductions[x+Model.dvDeductions.Count]" asp-items="ViewBag.DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction - </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" type="text"/>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">TOTAL  DEDUCTIONS: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="total_deduction" value="@Model.TotalDeduction.ToString("##,#00.00")" type="text" asp-for="TotalDeduction" placeholder="0.00" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">NET AMOUNT: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input class="form-control" id="net_amount" value="@Model.NetAmount.ToString("##,#00.00")" type="text" placeholder="0.00" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="margin-left: 260px;">
+            <div class="form-group">
+                <input type="submit" value="Update" onclick="submiBtnClick()" class="submit btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+
+    //cascade dropdownlist
+    $(function () {
+        $("select#dv_type").change(function () {
+            var cid = $(this).val();
+            //alert(cid);
+            $("select#PayeeId").empty();
+
+            $.getJSON(`/Dv/GetPayee?cid=${cid}`, function (data) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+                    $("select#PayeeId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+        });
+
+        $('input[type=text]').click(function () {
+            if ($(this).val() === '0') {
+                $(this).val('');
+            }
+        }).change(function () {
+            updateTextView($(this));
+        }).focusout(function () {
+            if (this.value === '') {
+                this.value = '0';
+            }
+        })
+    });
+
+
+    //adding comma after 3 digits
+    function updateTextView(_obj) {
+        var num = +_obj.val();
+        if (num == 0) {
+            _obj.val('');
+        } else {
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+        }
+    }
+
+    function getNumber(_str) {
+        var arr = _str.split('');
+        var out = new Array();
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (isNaN(arr[cnt]) == false) {
+                out.push(arr[cnt]);
+            }
+        }
+        return Number(out.join(''));
+    }
+
+
+    $('.select2').select2();
+     $('#dv_type').on('change', function () {
+            var type = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetLatestDvType","Dv")',
+                data: {
+                    type: type
+                },
+                method: 'GET',
+                async: true,
+                success: function (output) {
+                    $('#dv_no').val(output);
+                }
+            })
+     });
+
+
+        function submitDeduction(parentDiv) {
+            let dvDeduction = $(parentDiv).find('select');
+            let dvDedectionAmt = $(parentDiv).find('input');
+            if (dvDeduction.val() && dvDedectionAmt.val()) {
+                console.log(dvDeduction.val(), dvDedectionAmt.val());
+            }
+            computeNetAmount();
+
+        }
+
+        function computeNetAmount() {
+            let amounts = $('.deduction_amount');
+            let gross_amount = +$('#gross_amount').val().replace(/,/g, '');
+            let total = 0;
+            $(amounts).each(function (index, value) {
+                total += +value.value.replace(/,/g, '');
+            });
+
+            var net = gross_amount - total;
+
+            $('#total_deduction').val(total.toLocaleString());
+            $('#net_amount').val(net.toLocaleString());
+        }
+
+    function submiBtnClick() {
+        var fundCluster = document.getElementById("fundCluster").value;
+        var dvDate = document.getElementById("dvDate").value;
+        var dvType = document.getElementById("dv_type").value;
+        var particulars = document.getElementById("textarea").value;
+        var respoCenter = document.getElementById("respoCenter").value;
+        var selectOptions = document.getElementById("selectOptions").value;
+
+        if (fundCluster != '' && dvDate != '' && dvType != '' && particulars != ''
+            && respoCenter != '' && selectOptions != '') {
+            Lobibox.notify('info', {
+                msg: 'Disbursement Voucher Successfully Updated!',
+                title: 'Updated'
+            });
+        }
+        else {
+            return false;
+        }
+    }
+
+</script>
