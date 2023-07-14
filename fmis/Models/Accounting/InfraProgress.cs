@@ -7,6 +7,7 @@ namespace fmis.Models.Accounting
         [Key]
         public int Id { get; set; }
         public decimal? Amount { get; set; }
+
         public string? bulletNo { get; set; }
 
         public int? DvId { get; set; }

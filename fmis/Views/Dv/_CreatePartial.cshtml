@@ -157,7 +157,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[0].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[0].Amount" type="text" id="a0" />
                     </div>
                 </div>
             </div>
@@ -168,7 +168,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[1].Amount" type="text" id="Oca" />
+                        <input class="form-control" asp-for="InfraProgress[1].Amount" type="text" id="a1" />
                     </div>
                 </div>
             </div>
@@ -179,7 +179,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[2].Amount" type="text" id="Ap" oninput="percentageA()" />
+                        <input class="form-control" asp-for="InfraProgress[2].Amount" type="text" id="a2" oninput="percentageA()" />
                     </div>
                 </div>
             </div>
@@ -189,7 +189,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" type="text" placeholder="0.00" readonly id="total_a" />
+                        <input class="form-control" type="text" placeholder="0.00" readonly id="a3" />
                     </div>
                 </div>
             </div>
@@ -202,7 +202,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[3].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[3].Amount" type="text" id="b1" oninput="percentageB()" />
                     </div>
                 </div>
             </div>
@@ -213,7 +213,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[4].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[4].Amount" type="text" id="b2"/>
                     </div>
                 </div>
             </div>
@@ -224,7 +224,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[5].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[5].Amount" type="text" id="b3"/>
                     </div>
                 </div>
             </div>
@@ -235,7 +235,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[6].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[6].Amount" type="text" id="b4" oninput="b4Result()" />
                     </div>
                 </div>
             </div>
@@ -245,7 +245,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" id="total_b" type="text" placeholder="0.00" readonly />
+                        <input class="form-control" type="text" placeholder="0.00" readonly id="b5"/>
                     </div>
                 </div>
             </div>
@@ -269,7 +269,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[8].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[8].Amount" type="text" id="c2"/>
                     </div>
                 </div>
             </div>
@@ -280,7 +280,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[9].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[9].Amount" type="text" id="c3" />
                     </div>
                 </div>
             </div>
@@ -302,7 +302,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[10].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[10].Amount" type="text" id="c4"/>
                     </div>
                 </div>
             </div>
@@ -313,7 +313,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[11].Amount" type="text" />
+                        <input class="form-control" asp-for="InfraProgress[11].Amount" type="text" id="c5"/>
                     </div>
                 </div>
             </div>
@@ -323,7 +323,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" id="total_d" type="text" placeholder="0.00" readonly />
+                        <input class="form-control" id="total_deductions" type="text" placeholder="0.00" readonly />
                     </div>
                 </div>
             </div>
@@ -392,19 +392,80 @@
 <script>
     //percentage A
     function percentageA() {
-        var grossAmountInput = document.getElementById("Oca").value;
-        var advancePayment = document.getElementById('Ap').value;
-        var advancePaymentPercent = '0.' + advancePayment;
+        var grossAmountInput = document.getElementById("a1").value;
+        var advancePayment = document.getElementById('a2').value;
+        var percentValue = advancePayment.replace('%', '');
+        var percent = parseFloat(percentValue) / 100;
 
         var sanitizedGrossAmount = grossAmountInput.replace(/,/g, '');
         var grossAmount = parseFloat(sanitizedGrossAmount);
 
 
-        var result = advancePaymentPercent * grossAmount;
+        var result = percent * grossAmount;
         var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        var percentageAmountInput = document.getElementById('total_a');
+        var percentageAmountInput = document.getElementById('a3');
         percentageAmountInput.value = formattedPercentage;
+    }
+    //
+
+    //percentage B
+    function percentageB() {
+        var a0 = document.getElementById("a0").value;
+        var b1 = document.getElementById('b1').value;
+        var percentValue = b1.replace('%', '');
+        var percentb1 = parseFloat(percentValue) / 100;
+
+        var sanitizedResult = a0.replace(/,/g, '');
+        var a0Amount = parseFloat(sanitizedResult);
+
+        var result = percentb1 * a0Amount;
+        var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        var percentageAmountInput = document.getElementById('b2');
+        percentageAmountInput.value = formattedPercentage;
+    }
+    //
+
+    //percentage B
+    function b4Result() {
+        var a0 = document.getElementById("a0").value;
+        var b2 = document.getElementById("b2").value;
+        var b4 = document.getElementById('b4').value;
+        var b5 = document.getElementById('b5').value;
+        var b4Result = (b4 / a0) * 100;
+
+        b2 = b2.replace(/,/g, "");
+        b4 = b4.replace(/,/g, "");
+
+
+        var b5 = parseFloat(b2) - parseFloat(b4);   
+
+        result = b4Result.toFixed(4);
+        b5Result = b5.toFixed(2);
+        var formattedResult = b5.toLocaleString();
+
+        var c2Result = (b5Result * 0.15).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var c3Result = (b5Result * 0.10).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var c4Result = (parseFloat(formattedResult.replace(/,/g, "")) / 1.12) * 0.05;
+        var c5Result = (parseFloat(formattedResult.replace(/,/g, "")) / 1.12) * 0.02;
+        var formattedc4 = c4Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formattedc5 = c5Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var total_c = (parseFloat(c2Result.replace(/,/g, "")) + parseFloat(c3Result.replace(/,/g, ""))).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var total_deductions = c4Result + c5Result;
+
+        var formattedC4Result = c4Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formattedC5Result = c5Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formattedTotalDeductions = total_deductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        document.getElementById("b3").value = result + "%";
+        document.getElementById("b5").value = formattedResult;
+        document.getElementById("c2").value = c2Result;
+        document.getElementById("c3").value = c3Result;
+        document.getElementById("total_c").value = total_c;
+        document.getElementById("c4").value = formattedc4;
+        document.getElementById("c5").value = formattedc5;
+        document.getElementById("total_deductions").value = formattedTotalDeductions;
     }
     //
 

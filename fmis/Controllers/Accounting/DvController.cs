@@ -69,6 +69,7 @@ namespace fmis.Controllers.Accounting
                 .Include(x => x.Payee)
                 .Include(x=>x.InfraAdvancePayment)
                 .Include(x=>x.InfraRetentions)
+                .Include(x=>x.InfraProgress)
                 .Include(x => x.dvDeductions).ThenInclude(x=>x.Deduction)
                 .AsNoTracking()
                 .ToListAsync();
@@ -159,7 +160,7 @@ namespace fmis.Controllers.Accounting
                 if (dv.InfraProgress != null || dv.InfraRetentions != null)
                 {
                     dv.InfraRetentions = dv.InfraRetentions.Where(x => x.Amount != null).ToList();
-                    dv.InfraProgress = dv.InfraProgress.Where(x => x.Amount != null).ToList();
+                    //dv.InfraProgress = dv.InfraProgress.Where(x => x.Amount != null).ToList();
                 }
                 _MyDbContext.Dv.Add(dv);
                 await _MyDbContext.SaveChangesAsync();
@@ -810,9 +811,9 @@ namespace fmis.Controllers.Accounting
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                        "" + "\n" + fundCluster?.FirstOrDefault()?.dvGrossAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        fundCluster?.FirstOrDefault()?.dvTotalDeductions?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
+                        "" + "\n" + "PHP " + fundCluster?.FirstOrDefault()?.dvGrossAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        "PHP " + fundCluster?.FirstOrDefault()?.dvTotalDeductions?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
+                        "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
                     {
                         Border = 13,
                         FixedHeight = 140f,
@@ -1628,8 +1629,8 @@ namespace fmis.Controllers.Accounting
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
                     "" + "\n" + "" + "\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n\n\n\n\n\n\n\n" +
-                    fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
+                    "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                    "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,
@@ -2106,7 +2107,7 @@ namespace fmis.Controllers.Accounting
 
                 string ExportData = "This is pdf generated";
                 StringReader reader = new StringReader(ExportData);
-                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                Document doc = new iTextSharp.text.Document(PageSize.LEGAL);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
@@ -2412,9 +2413,29 @@ namespace fmis.Controllers.Accounting
                 List<string> deductionsList = new List<string>();
 
                 //var percentage_a = fundCluster?.FirstOrDefault()?.dvInfraProgress.Take(3).Sum(x => x.Amount);
-                var a1 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(1).First().Amount;
-                var a2 = 0 + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(2).First().Amount;
-                var percentage_a = a1 * a2;
+                var a0 = fundCluster.FirstOrDefault().dvInfraProgress.FirstOrDefault().Amount ?? 0;
+                var a1 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(1).FirstOrDefault().Amount ?? 0;
+                var a2 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(2).FirstOrDefault().Amount / 100 ?? 0;
+                decimal percentage_a = a1 * a2;
+                string formattedPercentage = percentage_a.ToString("N2");
+                var b1 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(3).FirstOrDefault().Amount ?? 0;
+                var b2 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(4).FirstOrDefault().Amount ?? 0;
+                var b3 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(5).FirstOrDefault().Amount ?? 0;
+                var b4 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(6).FirstOrDefault().Amount ?? 0;
+                var total_b = b2 - b4;
+
+                var c1 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(7).FirstOrDefault().Amount ?? 0;
+                //var c1Formatted = c1 != null ? c1.Value.ToString("N2") : "-";
+                var total_b_c1Diff = total_b - c1;
+
+                var c2 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(8).FirstOrDefault().Amount ?? 0;
+                var c3 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(9).FirstOrDefault().Amount ?? 0;
+                var total_c = c2 + c3;
+                var c4 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(10).FirstOrDefault().Amount ?? 0;
+                var c5 = fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(11).FirstOrDefault()?.Amount ?? 0;
+                var total_d = c4 + c5;
+                var totalDiffC = total_b_c1Diff - total_c;
+                var amount_due = totalDiffC - total_d;
 
                 Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
 
@@ -2433,40 +2454,43 @@ namespace fmis.Controllers.Accounting
                     }
                 }*/
 
+                var infras = _MyDbContext.InfraProgress.Where(x=>x.DvId == id).ToList();
+
                 doc.Add(table_row_5);
                 var table_row_6 = new PdfPTable(4);
                 float[] tbt_ro6_width = { 20, 5, 5, 5 };
                 table_row_6.WidthPercentage = 100f;
                 table_row_6.SetWidths(tbt_ro6_width);
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n" + "A. Contract Amount: \n" + "               " + "        a. 0 Revised Contract Amount " + "                                           " + fundCluster?.FirstOrDefault()?.dvInfraProgress?.First()?.Amount + "\n" +
-                "               " + "        a. 1 Original Contract Amount " + "                                            " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(1).First().Amount + "\n" +
-                "               " + "        a. 2 % Advance Payment " + "                                                   " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(2).First().Amount + "\n" +
-                "               " + "        a. 3 Equivalent Amount (a.1 x a.2) " + percentage_a + "\n\n" +
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n" + "A. Contract Amount: \n" + "               " + "        a. 0 Revised Contract Amount " + "                                  " + a0.ToString("N2") + "\n" +
+                "               " + "        a. 1 Original Contract Amount " + "                                   " + a1.ToString("N2") + "\n" +
+                "               " + "        a. 2 % Advance Payment " + "                                                       " + a2.ToString("N2") + "\n" +
+                "               " + "        a. 3 Equivalent Amount (a.1 x a.2) " + "                           "+ formattedPercentage + "\n\n" +
 
-                "B. Accomplishment: \n" + "             " + "          b. 1% Accomplishment as Requested to date " + "                   " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(3).First().Amount  + "\n" +
-                "               " + "        b. 2  Equivalent Amount (a.1 x b.1) " + "                                    " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(4).First().Amount + "\n" +
-                "               " + "        b. 3 % Previous Billing Accomplishment " + "                            " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(5).First().Amount + "\n" +
-                "               " + "        b. 4 Equivalent Amount (a.1 x b.3) " + "                                     " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(6).First().Amount + "\n" +
-                "               " + "        b. 5  This Period Less Previous billing  (b.2 - b.4)" + "\n\n" +
+                "B. Accomplishment: \n" + "             " + "          b. 1% Accomplishment as Requested to date " + "                    " + b1.ToString("N2") + "\n" +
+                "               " + "        b. 2  Equivalent Amount (a.1 x b.1) " + "                           " + b2.ToString("N2") + "\n" +
+                "               " + "        b. 3 % Previous Billing Accomplishment " + "                           " + b3.ToString("0.####") + "\n" +
+                "               " + "        b. 4 Equivalent Amount (a.1 x b.3) " + "                            " + b4.ToString("N") + "\n" +
+                "               " + "        b. 5  This Period Less Previous billing  (b.2 - b.4)" + "         " + total_b.ToString("N2") + "\n\n" +
 
-                "A. Less: \n" + "               " + "        c. 1. Total Liquidated Damages " + "                                         " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(7).First().Amount + "\n" +
-                "               " + "        c. 2 Recoupment of Downpayment (a.3 x (b.1 - b.3)) " + "        " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(8).First().Amount + "\n" +
-                "               " + "        c. 3 Retention(10% x b.5) " + "                                                  " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(9).First().Amount + "\n" +
-                "               " + "        c. 4 VAT  (c.1/1.12 x 5%) " + "                                                   " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(10).First().Amount + "\n" +
-                "               " + "        c. 5 EWT  (c.1/1.12 x 2%) " + "                                                  " + fundCluster?.FirstOrDefault()?.dvInfraProgress.Skip(11).First().Amount + "\n" +
-                "               " + "                   Total Deduction: " + "\n" +
+                "A. Less: \n" + "               " + "        c. 1. Total Liquidated Damages " + "                                           " + c1.ToString("N2") + "\n" +
+                "               " + "        c. 2 Recoupment of Downpayment (a.3 x (b.1 - b.3)) " + "   " + c2.ToString("N2") + "\n" +
+                "               " + "        c. 3 Retention(10% x b.5) " + "                                               " + c3.ToString("N2") + "\n" 
+                + "                                                                                                              " +total_c.ToString("N2") + "\n\n\n" +
+                "               " + "        c. 4 VAT  (c.1/1.12 x 5%) " + "                                                " + c4.ToString("N2") + "\n" +
+                "               " + "        c. 5 EWT  (c.1/1.12 x 2%) " + "                                               " + c5.ToString("N2") + "\n" +
+                "               " + "                   Total Deduction: " + "                                                   " + total_d.ToString("N2") + "\n\n\n\n" 
 
-                    string.Join("\n", deductionsList) + "                                                                                                      Amount Due:", arial_font_deductions))
+                     + "                                                                                                      Amount Due:", arial_font_deductions))
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + /*fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
-                    /*fundCluster?.FirstOrDefault()?.dvTotalDeductions.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n" +
-                    /*fundCluster?.FirstOrDefault()?.dvNetAmount.ToString("##,#00.00")*/"", arial_font_9))
+                    "" + "\n" + /*fundCluster?.FirstOrDefault()?.dvGrossAmount.ToString("##,#00.00")*/"" + "\n\n\n\n\n\n\n\n\n\n\n" +
+                    "PHP " + total_b.ToString("N2") + "\n\n\n" + "PHP " + c1.ToString("N2") + "\n" + "PHP " + total_b_c1Diff.ToString("N2") + "\n\n" + "PHP " + total_c.ToString("N2") + "\n" + "PHP " + totalDiffC.ToString("N2") + "\n\n\n"  + "PHP " + total_d.ToString("C", new CultureInfo("en-PH")) + "\n\n\n" +
+                    "PHP " + amount_due.ToString("N2") , arial_font_9))
                 {
                     Border = 13,
-                    FixedHeight = 200f,
+                    FixedHeight = 250f,
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     VerticalAlignment = Element.ALIGN_TOP,
                     PaddingBottom = 7,
@@ -3316,7 +3340,7 @@ namespace fmis.Controllers.Accounting
                 { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
-                table_row_6.AddCell(new PdfPCell(new Paragraph("\n\n\n\n\n\n\n\n\n\n" + "PHP" + billingAmounts.Sum() + "\n\n\n\n\n\n\n\n\n\n"+ "PHP" + billingAmounts.Sum(), arial_font_9))
+                table_row_6.AddCell(new PdfPCell(new Paragraph("\n\n\n\n\n\n\n\n\n\n" + "PHP " + billingAmounts.Sum() + "\n\n\n\n\n\n\n\n\n\n"+ "PHP " + billingAmounts.Sum(), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,

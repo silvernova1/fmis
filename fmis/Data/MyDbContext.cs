@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using fmis.Models.UserModels;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Xml;
 
 namespace fmis.Data
 {
@@ -88,6 +90,14 @@ namespace fmis.Data
         public DbSet<InfraProgress> InfraProgress { get; set; }
 
 
+        public class MyEntityConfiguration : IEntityTypeConfiguration<InfraProgress>
+        {
+            public void Configure(EntityTypeBuilder<InfraProgress> builder)
+            {
+                builder.Property(e => e.Amount)
+                    .HasColumnType("decimal(18, 4)");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,7 +108,9 @@ namespace fmis.Data
                 .HasOne(x => x.Dv)
                 .WithMany(x => x.InfraRetentions)
                 .HasForeignKey(x=>x.DvId);
-                
+
+            modelBuilder.ApplyConfiguration(new MyEntityConfiguration());
+
 
             /*modelBuilder.Entity<IndexOfPayment>()
             .HasMany(o => o.indexDeductions)

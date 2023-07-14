@@ -51,13 +51,13 @@ namespace fmis.Models.Accounting
         public string UserId { get; set; }
 
         [JsonIgnore]
-        public InfraAdvancePayment InfraAdvancePayment { get; set; }
+        public InfraAdvancePayment? InfraAdvancePayment { get; set; }
 
         [JsonIgnore]
-        public List<InfraRetention> InfraRetentions { get; set; }
+        public List<InfraRetention>? InfraRetentions { get; set; }
 
         [JsonIgnore]
-        public List<InfraProgress> InfraProgress { get; set; }
+        public List<InfraProgress>? InfraProgress { get; set; }
 
 
     }
