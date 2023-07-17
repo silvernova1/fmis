@@ -21,18 +21,14 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class ObligationAmountController : Controller
     {
-        private readonly ObligationAmountContext _context;
-        private readonly LogsContext _LContext;
-        private readonly MyDbContext _MyDbContext;
+        private readonly MyDbContext _context;
         private Obligation obligation;
         private decimal REMAINING_BALANCE = 0;
         private decimal OBLIGATED_AMOUNT = 0;
 
-        public ObligationAmountController(ObligationAmountContext context, LogsContext LContext, MyDbContext myDbContext)
+        public ObligationAmountController(MyDbContext context)
         {
             _context = context;
-            _LContext = LContext;
-            _MyDbContext = myDbContext;
         }
 
         public class ObligationCalculationData
@@ -115,7 +111,7 @@ namespace fmis.Controllers
             var data_holder = _context.ObligationAmount;
             decimal obligated_amount = 0;
 
-            var currentObligation = await _MyDbContext.Obligation
+            var currentObligation = await _context.Obligation
                 .Include(x => x.FundSource)
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == item.ObligationId);
@@ -133,18 +129,18 @@ namespace fmis.Controllers
 
                 if (currentObligation.source_type == "fund_source" && !string.IsNullOrEmpty(item.Expense_code))
                 {
-                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
+                    if (!_context.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
                         return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
                 }
                 else if (currentObligation.source_type == "sub_allotment" && !string.IsNullOrEmpty(item.Expense_code))
                 {
-                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
+                    if (!_context.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
                         return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
                 }
 
 
-                var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
-                var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
+                var obligation = await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
+                var uacs = await _context.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
 
                 obligation_amount.ObligationId = obligation.Id;
                 obligation_amount.UacsId = uacs.UacsId;
@@ -172,7 +168,7 @@ namespace fmis.Controllers
             var data_holder = _context.ObligationAmount;
             decimal obligated_amount = 0;
 
-            var currentObligation = await _MyDbContext.Obligation
+            var currentObligation = await _context.Obligation
                 .Include(x => x.FundSource)
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
@@ -192,18 +188,18 @@ namespace fmis.Controllers
 
                 if (currentObligation.source_type == "fund_source" && !string.IsNullOrEmpty(item.Expense_code))
                 {
-                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
+                    if (!_context.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
                         return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
                 }
                 else if (currentObligation.source_type == "sub_allotment" && !string.IsNullOrEmpty(item.Expense_code))
                 {
-                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
+                    if (!_context.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
                         return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
                 }
 
 
-                var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
-                var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
+                var obligation = await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
+                var uacs = await _context.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
 
                 obligation_amount.ObligationId = obligation.Id;
                 obligation_amount.UacsId = uacs.UacsId;
@@ -231,7 +227,7 @@ namespace fmis.Controllers
             var data_holder = _context.ObligationAmount;
             decimal obligated_amount = 0;
 
-            var currentObligation = await _MyDbContext.Obligation
+            var currentObligation = await _context.Obligation
                 .Include(x => x.FundSource)
                 .Include(x => x.SubAllotment)
                 .FirstOrDefaultAsync(x => x.Id == data.First().ObligationId);
@@ -251,18 +247,18 @@ namespace fmis.Controllers
 
                 if (currentObligation.source_type == "fund_source" && !string.IsNullOrEmpty(item.Expense_code))
                 {
-                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
+                    if (!_context.Uacs.Any(x => x.uacs_type == currentObligation.FundSource.AllotmentClassId && x.Expense_code == item.Expense_code))
                         return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
                 }
                 else if (currentObligation.source_type == "sub_allotment" && !string.IsNullOrEmpty(item.Expense_code))
                 {
-                    if (!_MyDbContext.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
+                    if (!_context.Uacs.Any(x => x.uacs_type == currentObligation.SubAllotment.AllotmentClassId && x.Expense_code == item.Expense_code))
                         return BadRequest(new { error_message = "INVALID EXPENSE CODE" });
                 }
 
 
-                var obligation = await _MyDbContext.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
-                var uacs = await _MyDbContext.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
+                var obligation = await _context.Obligation.AsNoTracking().FirstOrDefaultAsync(x => x.obligation_token == item.obligation_token);
+                var uacs = await _context.Uacs.AsNoTracking().FirstOrDefaultAsync(x => x.Expense_code == item.Expense_code);
 
                 obligation_amount.ObligationId = obligation.Id;
                 obligation_amount.UacsId = uacs.UacsId;
@@ -292,7 +288,7 @@ namespace fmis.Controllers
 
             if (calculation_data.obligation_id != 0)
             {
-                obligation = await _MyDbContext.Obligation
+                obligation = await _context.Obligation
                     .Include(x => x.ObligationAmounts)
                     .Include(x => x.FundSource)
                     .AsNoTracking()
@@ -300,7 +296,7 @@ namespace fmis.Controllers
             }
             else
             {
-                obligation = await _MyDbContext.Obligation
+                obligation = await _context.Obligation
                     .Include(x => x.ObligationAmounts)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(s => s.obligation_token == calculation_data.obligation_token);
@@ -309,7 +305,7 @@ namespace fmis.Controllers
             //Obligate/calculation the fundsource/suballotment
             if (obligation.source_type == "fund_source")
             {
-                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == obligation.FundSourceId).FirstOrDefaultAsync();
+                var fund_source = await _context.FundSources.Where(s => s.FundSourceId == obligation.FundSourceId).FirstOrDefaultAsync();
                 fund_source.Remaining_balance = calculation_data.remaining_balance;
                 fund_source.obligated_amount = calculation_data.obligated_amount;
 
@@ -317,14 +313,14 @@ namespace fmis.Controllers
                 obligated_amount = fund_source.obligated_amount;
                 fundsource_id = (int)obligation.FundSourceId;
 
-                _MyDbContext.FundSources.Update(fund_source);
-                _MyDbContext.SaveChanges();
+                _context.FundSources.Update(fund_source);
+                _context.SaveChanges();
             }
             else if (obligation.source_type == "sub_allotment")
             {
                 //code ni amalio
 
-                var sub_allotment = await _MyDbContext.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
+                var sub_allotment = await _context.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
                 sub_allotment.Remaining_balance = calculation_data.remaining_balance;
                 sub_allotment.obligated_amount = calculation_data.obligated_amount;
 
@@ -332,8 +328,8 @@ namespace fmis.Controllers
                 obligated_amount = sub_allotment.obligated_amount;
                 suballotment_id = (int)obligation.SubAllotmentId;
 
-                _MyDbContext.SubAllotment.Update(sub_allotment);
-                _MyDbContext.SaveChanges();
+                _context.SubAllotment.Update(sub_allotment);
+                _context.SaveChanges();
             }
 
             NotificationLogs(fundsource_id, suballotment_id, obligation.source_type, "obligated", calculation_data.amount);
@@ -346,7 +342,7 @@ namespace fmis.Controllers
             GetObligatedAndRemaining get_obligated_remaining = new GetObligatedAndRemaining();
             get_obligated_remaining.remaining_balance = remaining_balance;
             get_obligated_remaining.obligated_amount = await _context.ObligationAmount.AsNoTracking().Where(x => x.obligation_token == calculation_data.obligation_token).SumAsync(s => s.Amount);
-            var overall_obligation = await _MyDbContext
+            var overall_obligation = await _context
                                     .Obligation
                                     .Where(x => x.status == "activated")
                                     .Include(x => x.ObligationAmounts)
@@ -375,8 +371,8 @@ namespace fmis.Controllers
             logs.source_type = source_type;
             logs.logs_type = logs_type;
             logs.amount = amount;
-            _LContext.Logs.Update(logs);
-            _LContext.SaveChanges();
+            _context.Logs.Update(logs);
+            _context.SaveChanges();
         }
 
         [HttpPost]
@@ -387,13 +383,13 @@ namespace fmis.Controllers
             decimal obligated_amount = 0;
             if (post_calculation_data.obligation_id != 0)
             {
-                obligation = await _MyDbContext.Obligation
+                obligation = await _context.Obligation
                     .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == post_calculation_data.obligation_id);
             }
             else
             {
-                obligation = await _MyDbContext.Obligation
+                obligation = await _context.Obligation
                     .AsNoTracking()
                     .FirstOrDefaultAsync(s => s.obligation_token == post_calculation_data.obligation_token);
             }
@@ -401,7 +397,7 @@ namespace fmis.Controllers
             //calculation for funsource or sub allotment
             if (obligation.source_type == "fund_source")
             {
-                var fund_source = await _MyDbContext.FundSources.Where(s => s.FundSourceId == obligation.FundSourceId).FirstOrDefaultAsync();
+                var fund_source = await _context.FundSources.Where(s => s.FundSourceId == obligation.FundSourceId).FirstOrDefaultAsync();
                 beginning_balance = fund_source.Beginning_balance;
                 remaining_balance = fund_source.Remaining_balance;
                 obligated_amount = fund_source.obligated_amount;
@@ -409,7 +405,7 @@ namespace fmis.Controllers
             else if (obligation.source_type == "sub_allotment")
             {
                 //code ni amalio
-                var sub_allotment = await _MyDbContext.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
+                var sub_allotment = await _context.SubAllotment.Where(s => s.SubAllotmentId == obligation.SubAllotmentId).FirstOrDefaultAsync();
                 beginning_balance = sub_allotment.Beginning_balance;
                 remaining_balance = sub_allotment.Remaining_balance;
                 obligated_amount = sub_allotment.obligated_amount;
@@ -455,13 +451,13 @@ namespace fmis.Controllers
             obligation_amount.status = "deactivated";
             if (source_type == "fund_source")
             {
-                obligation_amount.fundSource = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceId == source_id);
+                obligation_amount.fundSource = _context.FundSources.FirstOrDefault(x => x.FundSourceId == source_id);
                 obligation_amount.fundSource.Remaining_balance += obligation_amount.Amount;
                 obligation_amount.fundSource.obligated_amount -= obligation_amount.Amount;
             }
             else if (source_type == "sub_allotment")
             {
-                obligation_amount.SubAllotment = _MyDbContext.SubAllotment.FirstOrDefault(x => x.SubAllotmentId == source_id);
+                obligation_amount.SubAllotment = _context.SubAllotment.FirstOrDefault(x => x.SubAllotmentId == source_id);
                 obligation_amount.SubAllotment.Remaining_balance += obligation_amount.Amount;
                 obligation_amount.SubAllotment.obligated_amount -= obligation_amount.Amount;
             }

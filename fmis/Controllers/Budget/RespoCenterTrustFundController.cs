@@ -14,12 +14,10 @@ namespace fmis.Controllers.Budget
     [Authorize(Policy = "BudgetAdmin")]
     public class RespoCenterTrustFundController : Controller
     {
-        private readonly RespoCenterTrustFundContext _context;
-        private readonly MyDbContext _MyDbcontext;
-        public RespoCenterTrustFundController(RespoCenterTrustFundContext context, MyDbContext MyDbcontext)
+        private readonly MyDbContext _context;
+        public RespoCenterTrustFundController(MyDbContext context)
         {
             _context = context;
-            _MyDbcontext = MyDbcontext;
         }
 
 

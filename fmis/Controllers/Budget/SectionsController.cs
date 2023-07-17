@@ -13,12 +13,10 @@ namespace fmis.Controllers.Budget
 {
     public class SectionsController : Controller
     {
-        private readonly SectionsContext _context;
-        private readonly MyDbContext _MyDbcontext;
-        public SectionsController(SectionsContext context, MyDbContext MyDbcontext)
+        private readonly MyDbContext _context;
+        public SectionsController(MyDbContext context)
         {
             _context = context;
-            _MyDbcontext = MyDbcontext;
         }
 
         //[Route("ResponsibilityCenter")]
@@ -37,7 +35,7 @@ namespace fmis.Controllers.Budget
         }
         private void PopulateRespoDropDownList()
         {
-            ViewBag.RespoId = new SelectList((from s in _MyDbcontext.RespoCenter.ToList()
+            ViewBag.RespoId = new SelectList((from s in _context.RespoCenter.ToList()
                                               select new
                                               {
                                                   RespoId = s.RespoId,

@@ -20,13 +20,11 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class UacsController : Controller
     {
-        private readonly UacsContext _context;
-        private readonly MyDbContext _MyDbContext;
+        private readonly MyDbContext _context;
 
-        public UacsController(UacsContext context, MyDbContext MyDbContext)
+        public UacsController(MyDbContext context)
         {
             _context = context;
-            _MyDbContext = MyDbContext;
         }
 
         public class UacsData

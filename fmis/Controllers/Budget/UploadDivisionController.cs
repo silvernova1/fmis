@@ -18,9 +18,9 @@ namespace fmis.Controllers
 {
     public class UploadDivisionController : Controller
     {
-        private DivisionContext Context { get; }
+        private MyDbContext Context { get; }
 
-        public UploadDivisionController(DivisionContext _context)
+        public UploadDivisionController(MyDbContext _context)
         {
             this.Context = _context;
         }

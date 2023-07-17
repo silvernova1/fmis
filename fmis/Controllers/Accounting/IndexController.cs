@@ -17,9 +17,9 @@ namespace fmis.Controllers.Accounting
 {
     public class IndexController : Controller
     {
-        private readonly MyDbContext _context;
+        private readonly fmisContext _context;
         private readonly IUserService _userService;
-        public IndexController(MyDbContext context, IUserService userService)
+        public IndexController(fmisContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;

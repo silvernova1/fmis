@@ -43,20 +43,18 @@ namespace fmis.Controllers
     //[Authorize(Policy = "BudgetAdmin")]
     public class ObligationsController : Controller
     {
-        private readonly ObligationContext _context;
+        private readonly MyDbContext _context;
         private readonly ObligationAmountContext _Ucontext;
         private readonly UacsContext _UacsContext;
-        private readonly MyDbContext _MyDbContext;
 
         ORSReporting rpt_ors = new ORSReporting();
         private Obligation obligation;
 
-        public ObligationsController(ObligationContext context, ObligationAmountContext Ucontext, UacsContext UacsContext, MyDbContext MyDbContext)
+        public ObligationsController(ObligationAmountContext Ucontext, UacsContext UacsContext, MyDbContext context)
         {
             _context = context;
             _Ucontext = Ucontext;
             _UacsContext = UacsContext;
-            _MyDbContext = MyDbContext;
         }
 
         public IActionResult PrintPdf(ManyId many)
@@ -119,7 +117,7 @@ namespace fmis.Controllers
 
         public async Task<ActionResult> GetExpenseCode(int allotmentId)
         {
-            var expenseCode = await _MyDbContext.Uacs
+            var expenseCode = await _context.Uacs
                 .Where(x => x.uacs_type == allotmentId)
                 .Select(x => x.Expense_code)
                 .ToListAsync();
@@ -163,7 +161,7 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("ors", "obligation", "");
             ViewBag.current_user = User.FindFirstValue(ClaimTypes.Name);
 
-            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var yearAdded = int.Parse(year);
             var res = next_year.AddYears(-1);
@@ -178,14 +176,14 @@ namespace fmis.Controllers
                                     .AsNoTracking()
                                     .ToListAsync();
 
-            var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.Original != true || x.FundSourceTitle == "CANCELLED" || x.IsAddToNextAllotment == true && x.FundSourceTitle.Contains("CONAP")).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
-                                    .Concat(from y in _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId || x.IsAddToNextAllotment == true || x.Suballotment_title == "CANCELLED").ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
+            var fund_sub_data = (from x in _context.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.Original != true || x.FundSourceTitle == "CANCELLED" || x.IsAddToNextAllotment == true && x.FundSourceTitle.Contains("CONAP")).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
+                                    .Concat(from y in _context.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId || x.IsAddToNextAllotment == true || x.Suballotment_title == "CANCELLED").ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
 
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data.ToList());
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _context.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
-            var totalObligated = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
+            var totalObligated = _context.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount) + _context.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId).Sum(x => x.obligated_amount);
             ViewBag.totalObligatedAmount = totalObligated.ToString("##,#00.00");
 
             return View("~/Views/Budget/John/Obligations/Index.cshtml", obligation);
@@ -216,9 +214,9 @@ namespace fmis.Controllers
             }
 
             /*  if (obligation.source_type == "fund_source")
-                  obligation.FundSource = await _MyDbContext.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
+                  obligation.FundSource = await _context.FundSources.Where(x => x.FundSourceId == obligation.FundSourceId).ToListAsync();
               else if (obligation.source_type == "sub_allotment")
-                  obligation.SubAllotment = await _MyDbContext.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
+                  obligation.SubAllotment = await _context.Sub_allotment.Where(x => x.SubAllotmentId == obligation.SubAllotmentId).ToListAsync();*/
 
             /*return Json(obligation);*/
 
@@ -231,8 +229,8 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult openCreatedBy(int id, string obligation_token)
         {
-            var obligation = (from o in _MyDbContext.Obligation
-                              join u in _MyDbContext.FmisUsers
+            var obligation = (from o in _context.Obligation
+                              join u in _context.FmisUsers
                               on o.Created_by equals u.Username
                               select new
                               {
@@ -325,8 +323,8 @@ namespace fmis.Controllers
                     if (!string.IsNullOrEmpty(worksheet.Cells[row, 9].Text))
                     {
                         var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "";
-                        var fundSrcId = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceTitle == fundSrcTxt)?.FundSourceId;
-                        var subAlltId = _MyDbContext.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
+                        var fundSrcId = _context.FundSources.FirstOrDefault(x => x.FundSourceTitle == fundSrcTxt)?.FundSourceId;
+                        var subAlltId = _context.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
                         List<ObligationAmount> OAs = new();
                         List<FundSource> fs = new();
                         string obligationToken = Guid.NewGuid().ToString();
@@ -337,7 +335,7 @@ namespace fmis.Controllers
                             if (!string.IsNullOrEmpty(worksheet.Cells[row, start].Text))
                             {
                                 Console.WriteLine(worksheet.Cells[row, start].Text);
-                                var uacs = _MyDbContext.Uacs.FirstOrDefault(x => x.Expense_code == worksheet.Cells[row, start].Text).UacsId;
+                                var uacs = _context.Uacs.FirstOrDefault(x => x.Expense_code == worksheet.Cells[row, start].Text).UacsId;
                                 var amount = worksheet.Cells[row, (start + 1)].Value?.ToString();
 
                                 OAs.Add(new ObligationAmount()
@@ -378,8 +376,8 @@ namespace fmis.Controllers
                 timer.Stop();
 
 
-                await _MyDbContext.AddRangeAsync(obligations);
-                var water = await _MyDbContext.SaveChangesAsync();
+                await _context.AddRangeAsync(obligations);
+                var water = await _context.SaveChangesAsync();
                 var test = sb.ToString();
                 return Ok();
                 //return Content(sb.ToString());
@@ -389,7 +387,7 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> saveObligationFromVue(ObligationData item)
         {
-            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             next_year.ToString("yyyy-MM-dd 00:00:00");
             var res = next_year.AddYears(-1);
@@ -398,12 +396,12 @@ namespace fmis.Controllers
             var retObligation = new List<Obligation>();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
 
-            var ors = (from fundsource in _MyDbContext.FundSources
-                       join obligations in _MyDbContext.Obligation
+            var ors = (from fundsource in _context.FundSources
+                       join obligations in _context.Obligation
                        on fundsource.FundSourceId equals obligations.FundSourceId
-                       join allotmentclass in _MyDbContext.AllotmentClass
+                       join allotmentclass in _context.AllotmentClass
                        on fundsource.AllotmentClassId equals allotmentclass.Id
-                       join fund in _MyDbContext.Fund
+                       join fund in _context.Fund
                        on fundsource.FundId equals fund.FundId
                        where obligations.obligation_token == item.obligation_token
                        select new
@@ -450,9 +448,9 @@ namespace fmis.Controllers
 
 
             if (item.source_type == "fund_source")
-                obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+                obligation.FundSource = await _context.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
             else
-                obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+                obligation.SubAllotment = await _context.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
             retObligation.Add(obligation);
 
             return Json(retObligation.FirstOrDefault());
@@ -463,7 +461,7 @@ namespace fmis.Controllers
         public async Task<IActionResult> SaveObligation([FromBody] ObligationData[] data)
         {
             //return Json(data);
-            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             next_year.ToString("yyyy-MM-dd 00:00:00");
             var res = next_year.AddYears(-1);
@@ -488,12 +486,12 @@ namespace fmis.Controllers
                     obligation.SubAllotmentId = item.source_id;
 
 
-                var ors = (from fundsource in _MyDbContext.FundSources
-                           join obligations in _MyDbContext.Obligation
+                var ors = (from fundsource in _context.FundSources
+                           join obligations in _context.Obligation
                            on fundsource.FundSourceId equals obligations.FundSourceId
-                           join allotmentclass in _MyDbContext.AllotmentClass
+                           join allotmentclass in _context.AllotmentClass
                            on fundsource.AllotmentClassId equals allotmentclass.Id
-                           join fund in _MyDbContext.Fund
+                           join fund in _context.Fund
                            on fundsource.FundId equals fund.FundId
                            where obligations.obligation_token == item.obligation_token
                            select new
@@ -528,9 +526,9 @@ namespace fmis.Controllers
                 await _context.SaveChangesAsync();
 
                 if (item.source_type == "fund_source")
-                    obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
+                    obligation.FundSource = await _context.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
                 else
-                    obligation.SubAllotment = await _MyDbContext.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
+                    obligation.SubAllotment = await _context.SubAllotment.FirstOrDefaultAsync(x => x.SubAllotmentId == obligation.SubAllotmentId);
                 retObligation.Add(obligation);
 
                 Console.WriteLine(@"saved obligation {0}", item.source_id);
@@ -664,7 +662,7 @@ namespace fmis.Controllers
 
 
                     doc.NewPage();
-                    var budget_allotments = _MyDbContext.Budget_allotments.Include(f => f.FundSources).FirstOrDefault();
+                    var budget_allotments = _context.Budget_allotments.Include(f => f.FundSources).FirstOrDefault();
 
                     Paragraph header_text = new Paragraph("OBLIGATION REQUEST AND STATUS");
 
@@ -728,12 +726,12 @@ namespace fmis.Controllers
                     table3.SetWidths(table3widths);
                     table3.DefaultCell.Border = 0;
 
-                    var allotments = (from fundsource in _MyDbContext.FundSources
-                                      join obligation in _MyDbContext.Obligation
+                    var allotments = (from fundsource in _context.FundSources
+                                      join obligation in _context.Obligation
                                       on fundsource.FundSourceId equals obligation.FundSourceId
-                                      join allotmentclass in _MyDbContext.AllotmentClass
+                                      join allotmentclass in _context.AllotmentClass
                                       on fundsource.AllotmentClassId equals allotmentclass.Id
-                                      join fund in _MyDbContext.Fund
+                                      join fund in _context.Fund
                                       on fundsource.FundId equals fund.FundId
                                       where obligation.obligation_token == tok
                                       select new
@@ -745,12 +743,12 @@ namespace fmis.Controllers
                                           obligation = obligation.source_type
                                       }).ToList();
 
-                    var allotmentsAA = (from sub_allotment in _MyDbContext.SubAllotment
-                                        join obligation in _MyDbContext.Obligation
+                    var allotmentsAA = (from sub_allotment in _context.SubAllotment
+                                        join obligation in _context.Obligation
                                       on sub_allotment.SubAllotmentId equals obligation.SubAllotmentId
-                                        join allotmentclass in _MyDbContext.AllotmentClass
+                                        join allotmentclass in _context.AllotmentClass
                                         on sub_allotment.AllotmentClassId equals allotmentclass.Id
-                                        join fund in _MyDbContext.Fund
+                                        join fund in _context.Fund
                                         on sub_allotment.FundId equals fund.FundId
                                         where obligation.obligation_token == tok
                                         select new
@@ -918,12 +916,12 @@ namespace fmis.Controllers
 
 
 
-                    var fundsources = (from fundsource in _MyDbContext.FundSources
-                                       join obligation in _MyDbContext.Obligation
+                    var fundsources = (from fundsource in _context.FundSources
+                                       join obligation in _context.Obligation
                                        on fundsource.FundSourceId equals obligation.FundSourceId
-                                       join prexc in _MyDbContext.Prexc
+                                       join prexc in _context.Prexc
                                        on fundsource.PrexcId equals prexc.Id
-                                       join respo in _MyDbContext.RespoCenter
+                                       join respo in _context.RespoCenter
                                        on fundsource.RespoId equals respo.RespoId
                                        where obligation.obligation_token == tok
                                        select new
@@ -939,12 +937,12 @@ namespace fmis.Controllers
                                            particulars = obligation.Particulars
                                        }).ToList();
 
-                    var saa = (from SAA in _MyDbContext.SubAllotment
-                               join obligation in _MyDbContext.Obligation
+                    var saa = (from SAA in _context.SubAllotment
+                               join obligation in _context.Obligation
                                on SAA.SubAllotmentId equals obligation.SubAllotmentId
-                               join prexc in _MyDbContext.Prexc
+                               join prexc in _context.Prexc
                                on SAA.prexcId equals prexc.Id
-                               join respo in _MyDbContext.RespoCenter
+                               join respo in _context.RespoCenter
                                on SAA.RespoId equals respo.RespoId
                                where obligation.obligation_token == tok
                                select new
@@ -961,8 +959,8 @@ namespace fmis.Controllers
                                }).ToList();
 
 
-                    var uacses = (from obligation in _MyDbContext.Obligation
-                                  join obligation_amount in _MyDbContext.ObligationAmount
+                    var uacses = (from obligation in _context.Obligation
+                                  join obligation_amount in _context.ObligationAmount
                                   on obligation.Id equals obligation_amount.ObligationId
 
                                   where obligation.obligation_token == tok
@@ -1062,8 +1060,8 @@ namespace fmis.Controllers
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name: ", times_new_roman_r8)) );
 
-                    var saasignatory = (from rc in _MyDbContext.RespoCenter
-                                        join sa in _MyDbContext.SubAllotment
+                    var saasignatory = (from rc in _context.RespoCenter
+                                        join sa in _context.SubAllotment
                                         on rc.RespoId equals sa.RespoId
                                         select new
                                         {

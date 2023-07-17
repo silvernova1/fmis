@@ -20,9 +20,9 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class PrexcController : Controller
     {
-        private readonly PrexcContext _context;
+        private readonly MyDbContext _context;
 
-        public PrexcController(PrexcContext context)
+        public PrexcController(MyDbContext context)
         {
             _context = context;
         }

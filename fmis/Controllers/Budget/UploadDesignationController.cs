@@ -18,9 +18,9 @@ namespace fmis.Controllers
 {
     public class UploadDesignationController : Controller
     {
-        private DesignationContext Context { get; }
+        private MyDbContext Context { get; }
 
-        public UploadDesignationController(DesignationContext _context)
+        public UploadDesignationController(MyDbContext _context)
         {
             this.Context = _context;
         }

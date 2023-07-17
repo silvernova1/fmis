@@ -17,8 +17,8 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class AppropriationsController : Controller
     {
-        private readonly AppropriationContext _context;
-        public AppropriationsController(AppropriationContext context)
+        private readonly MyDbContext _context;
+        public AppropriationsController(MyDbContext context)
         {
             _context = context;
         }

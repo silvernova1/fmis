@@ -16,11 +16,11 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class Ors_headController : Controller
     {
-        private readonly Ors_headContext _context;
+        private readonly MyDbContext _context;
         private readonly DesignationContext _DContext;
         private readonly Personal_InfoMysqlContext _pis_context;
 
-        public Ors_headController(Ors_headContext context, DesignationContext DContext, Personal_InfoMysqlContext pis_context)
+        public Ors_headController(MyDbContext context, DesignationContext DContext, Personal_InfoMysqlContext pis_context)
         {
             _context = context;
             _DContext = DContext;

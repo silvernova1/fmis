@@ -19,23 +19,15 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class SubAllotment_RealignmentController : Controller
     {
-        private readonly SubAllotment_RealignmentContext _context;
-        private readonly UacsContext _UacsContext;
-        private readonly Suballotment_amountContext _SAContext;
-        private readonly SubAllotmentContext _SContext;
-        private readonly MyDbContext _MyDbContext;
+        private readonly MyDbContext _context;
         private SubAllotment SubAllotment;
         private decimal REMAINING_BALANCE = 0;
         private decimal REALIGN_AMOUNT = 0;
 
 
-        public SubAllotment_RealignmentController(SubAllotment_RealignmentContext context, UacsContext UacsContext, Suballotment_amountContext SAContext, SubAllotmentContext SContext, MyDbContext MyDbContext)
+        public SubAllotment_RealignmentController(MyDbContext context)
         {
             _context = context;
-            _UacsContext = UacsContext;
-            _SAContext = SAContext;
-            _SContext = SContext;
-            _MyDbContext = MyDbContext;
         }
 
         public class SubAllotmentRealignmentData
@@ -92,7 +84,7 @@ namespace fmis.Controllers
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            SubAllotment = await _SContext.SubAllotment
+            SubAllotment = await _context.SubAllotment
                             .Include(x => x.SubAllotmentAmounts)
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.Budget_allotment)
@@ -100,11 +92,11 @@ namespace fmis.Controllers
                                 .ThenInclude(x => x.SubAllotmentAmount)
                             .AsNoTracking()
                             .FirstOrDefaultAsync(x => x.SubAllotmentId == sub_allotment_id);
-            var from_uacs = await _SAContext.Suballotment_amount
+            var from_uacs = await _context.Suballotment_amount
                             .Where(x => x.SubAllotmentId == sub_allotment_id)
                             .Select(x => x.UacsId)
                             .ToArrayAsync();
-            SubAllotment.Uacs = await _UacsContext.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
+            SubAllotment.Uacs = await _context.Uacs.Where(p => !from_uacs.Contains(p.UacsId)).AsNoTracking().ToListAsync();
 
             //return Json(FundSource);
             return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
@@ -112,7 +104,7 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> realignmentRemaining(int sub_allotment_id, string suballotment_amount_token)
         {
-            var sub_allotment = await _SContext.SubAllotment
+            var sub_allotment = await _context.SubAllotment
                                 .Include(x => x.SubAllotmentAmounts.Where(x => x.suballotment_amount_token == suballotment_amount_token))
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync(s => s.SubAllotmentId == sub_allotment_id);
@@ -121,13 +113,13 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> subAllotmentAmountRemainingBalance(string suballotment_amount_token)
         {
-            var suballotment_amount_remaining_balance = await _SAContext.Suballotment_amount.AsNoTracking().FirstOrDefaultAsync(x => x.suballotment_amount_token == suballotment_amount_token);
+            var suballotment_amount_remaining_balance = await _context.Suballotment_amount.AsNoTracking().FirstOrDefaultAsync(x => x.suballotment_amount_token == suballotment_amount_token);
             return Json(suballotment_amount_remaining_balance.remaining_balance);
         }
 
         public async Task<IActionResult> realignmentAmountSave(SubAllotmentRealignmentSaveAmount calculation)
         {
-            SubAllotment = await _SContext.SubAllotment
+            SubAllotment = await _context.SubAllotment
                             .Include(x => x.SubAllotmentAmounts.Where(s => s.suballotment_amount_token == calculation.suballotment_amount_token))
                             .Include(x => x.SubAllotmentRealignment.Where(s => s.token == calculation.realignment_token))
                             .AsNoTracking()
@@ -141,8 +133,8 @@ namespace fmis.Controllers
             SubAllotment.SubAllotmentAmounts.FirstOrDefault().remaining_balance = calculation.suballotment_amount_remaining_balance;
             SubAllotment.SubAllotmentAmounts.FirstOrDefault().realignment_amount = calculation.suballotment_amount_realignment;
 
-            _SContext.Update(SubAllotment);
-            await _SContext.SaveChangesAsync();
+            _context.Update(SubAllotment);
+            await _context.SaveChangesAsync();
 
             return Json(SubAllotment);
         }
