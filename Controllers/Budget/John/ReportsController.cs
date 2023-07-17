@@ -15356,6 +15356,7 @@ namespace fmis.Controllers.Budget.John
             //worksheet.Cell(9, 1).Style.Font.FontSize = 10;
             // Merge four rows
             //  Write the data to the worksheet 
+
             int CurrentRow = 12;
             IXLRow row = worksheet.Row(CurrentRow);
 
@@ -15367,7 +15368,6 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
             worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
             CurrentRow++;
-
             var columndata0 = funsources.Where(fsa => fsa.fundsourceId == 15 ).Select(u => u.Account_title );
             worksheet.Cell(CurrentRow, 1).Value = columndata0.First();
             int dataRow = CurrentRow + 1;
@@ -15381,6 +15381,7 @@ namespace fmis.Controllers.Budget.John
                 cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
                 dataRow++;
             }
+
             //ExpenseCode
             var columnData = funsources.Where(fs => fs.fundsourceId == 15).Select(u => u.expensesCode);
             worksheet.Cell(CurrentRow, 2).Value = columnData.First();
