@@ -789,7 +789,7 @@ namespace fmis.Controllers.Accounting
                     
                     foreach (var dvDeductions in item.Where(x => x.DvId == id))
                     {
-                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - (decimal)dvDeductions.dvDeductions.FirstOrDefault()?.Amount;
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - (decimal)(dvDeductions?.dvDeductions?.FirstOrDefault()?.Amount ?? 0);
                         foreach (var deductions in dvDeductions.dvDeductions)
                         {
                             deductionsAmount.Add(deductions.Amount);
