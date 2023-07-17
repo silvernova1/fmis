@@ -160,7 +160,18 @@
                                     @foreach (var amount in item?.InfraProgress)
                                     {
                                         var formattedAmount = amount.Amount ?? 0;
-                                        <option>@amount.bulletNo -- @formattedAmount.ToString("N2")</option>
+                                        var formattedAmountString = formattedAmount.ToString();
+
+                                        if (formattedAmountString.EndsWith("00"))
+                                        {
+                                            formattedAmountString = formattedAmount.ToString("N2");
+                                        }
+                                        else if (formattedAmountString.EndsWith("0000"))
+                                        {
+                                            formattedAmountString = formattedAmount.ToString("N4");
+                                        }
+
+                                        <option>@amount.bulletNo -- @formattedAmountString</option>
                                     }
                                 </select>
                             </td>
