@@ -15185,6 +15185,8 @@ namespace fmis.Controllers.Budget.John
                                
                               select new
                               {
+                                  FsaUacsId = fsa.UacsId,
+                                  UacsId = u.UacsId,
                                   fundsourceId = fs.FundSourceId,
                                   fundsTitle = fs.FundSourceTitle,
                                   Account_title = u.Account_title,
@@ -15354,37 +15356,120 @@ namespace fmis.Controllers.Budget.John
             //worksheet.Cell(9, 1).Style.Font.FontSize = 10;
             // Merge four rows
             //  Write the data to the worksheet 
-            int row = 15;
+            int CurrentRow = 12;
+            IXLRow row = worksheet.Row(CurrentRow);
 
-            worksheet.Cell(row, 1).Value = funsources.Where(fs => fs.fundsourceId == 15).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(row, 1).Style.Font.SetBold();
-            worksheet.Cell(row, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(row, 1).Style.Font.FontSize = 8;
+            int startingRow = CurrentRow;
+            CurrentRow++;
 
-            //var columnData0 = funsources.Where(fs => fs.fundsourceId == 15).Select(u => u.Account_title);
-            //worksheet.Cell(row, 1).Value = columnData0;
-            //foreach (var data in columnData0)
-            //{
-            //    IXLCell cell = worksheet.Cell(row, 1);
-            //    // Set the cell value
-            //    cell.Value = data;
-            //    // Set the font size for the cell
-            //    cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-            //}
+            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 15).Select(fs => fs.fundsTitle).FirstOrDefault();
+            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
+            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
+            CurrentRow++;
+
+            var columndata0 = funsources.Where(fsa => fsa.fundsourceId == 15 ).Select(u => u.Account_title );
+            worksheet.Cell(CurrentRow, 1).Value = columndata0.First();
+            int dataRow = CurrentRow + 1;
+            foreach (var data in columndata0.Skip(1))
+            {
+                IXLCell cell = worksheet.Cell(dataRow, 1);
+                //Set the cell value
+                cell.Value = data;
+                //    Set the font size for the cell 
+
+                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                dataRow++;
+            }
             //ExpenseCode
-            //var columnData = funsources.Where(fs => fs.fundsourceId == 15).Select(u => u.expensesCode);
-            //worksheet.Cell(row, 2).Value = columnData;
-            //foreach (var data in columnData)
-            //{
-            //    IXLCell cell = worksheet.Cell(row, 1);
-            //    // Set the cell value
-            //    cell.Value = data;
-            //    // Set the font size for the cell
-            //    cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-            //}
+            var columnData = funsources.Where(fs => fs.fundsourceId == 15).Select(u => u.expensesCode);
+            worksheet.Cell(CurrentRow, 2).Value = columnData.First();
+            int dataRow1 = CurrentRow + 1;
+            foreach (var data in columnData.Skip(1))
+            {
+                IXLCell cell = worksheet.Cell(dataRow1, 2);
+                //Set the cell value
+                cell.Value = data;
+                //    Set the font size for the cell
 
+                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                dataRow1++;
+            }
+            CurrentRow++;
 
+            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 16).Select(fs => fs.fundsTitle).FirstOrDefault();
+            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
+            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
+            CurrentRow++;
 
+            var columndata1 = funsources.Where(fsa => fsa.fundsourceId == 16).Select(u => u.Account_title);
+            worksheet.Cell(CurrentRow, 1).Value = columndata1.First();
+            int dataRow0 = CurrentRow + 1;
+            foreach (var data in columndata1.Skip(1))
+            {
+                IXLCell cell = worksheet.Cell(dataRow0, 1);
+                //Set the cell value
+                cell.Value = data;
+                //    Set the font size for the cell 
+
+                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                dataRow0++;
+            }
+
+            //Expense Code
+            var columnData1 = funsources.Where(fs => fs.fundsourceId == 16).Select(u => u.expensesCode);
+            worksheet.Cell(CurrentRow, 2).Value = columnData1.First();
+            int dataRow2 = CurrentRow + 1;
+            foreach (var data in columnData1.Skip(1))
+            {
+                IXLCell cell = worksheet.Cell(dataRow2, 2);
+                //Set the cell value
+                cell.Value = data;
+                //    Set the font size for the cell
+
+                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                dataRow2++;
+            }
+            CurrentRow++;
+
+            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 55).Select(fs => fs.fundsTitle).FirstOrDefault();
+            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
+            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
+            CurrentRow++;
+
+            var columndata2 = funsources.Where(fsa => fsa.fundsourceId == 55).Select(u => u.Account_title);
+            worksheet.Cell(CurrentRow, 1).Value = columndata2.First();
+            foreach (var data in columndata2.Skip(1))
+            {
+                IXLCell cell = worksheet.Cell(CurrentRow, 1);
+                //Set the cell value
+                cell.Value = data;
+                //    Set the font size for the cell 
+
+                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                CurrentRow++;
+            }
+
+            //Expense Code
+            var columnData2 = funsources.Where(fs => fs.fundsourceId == 55).Select(u => u.expensesCode);
+            worksheet.Cell(CurrentRow, 2).Value = columnData2.First();
+        
+            foreach (var data in columnData2.Skip(1))
+            {
+                IXLCell cell = worksheet.Cell(CurrentRow, 2);
+                //Set the cell value
+                cell.Value = data;
+                //    Set the font size for the cell
+
+                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                dataRow2++;
+            }
+            CurrentRow++;
+
+            // Continue fetching from the last row
+            CurrentRow = startingRow;
 
             var range1 = worksheet.Range("A9:A12");
             range1.Merge();
@@ -15397,10 +15482,6 @@ namespace fmis.Controllers.Budget.John
             range1.Style.Font.FontSize = 10;
             worksheet.Column("A").Width = 25;
 
-
-
-
-        
 
 
             var range2 = worksheet.Range("B9:B12");
