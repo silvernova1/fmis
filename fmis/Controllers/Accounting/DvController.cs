@@ -1627,9 +1627,9 @@ namespace fmis.Controllers.Accounting
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
                 table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                    "" + "\n" + "" + "\n\n\n\n\n\n" +
-                    "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n\n\n\n\n\n\n\n" +
-                    "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
+                    "" + "\n" + "" + "\n\n\n\n\n\n\n" +
+                    "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("N2") + "\n\n\n\n\n\n\n\n\n\n\n\n" +
+                    "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("N2"), arial_font_9))
                 {
                     Border = 13,
                     FixedHeight = 200f,

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<fmis.Models.Accounting.Dv>
 @using System.Globalization;
+@using System.Text.RegularExpressions
 @{
     ViewData["Title"] = "DisbursementVoucher";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -180,10 +181,25 @@
                         {
                             <td>
                                 <select class="form-control">
-                                    @foreach (var ret in item?.InfraRetentions)
-                                    {
+                                    @foreach (var ret in item?.InfraRetentions.OrderBy(x=>
+                                   {
+                                       var match = Regex.Match(x.billingNo, @"\d+");
+                                       if (match.Success)
+                                       {
+                                           return int.Parse(match.Value);
+                                       }
+                                       else
+                                       {
+                                           return int.MaxValue;
+                                       }
+                                   
+                                   }))
+                                   {
                                         <option>@ret?.billingNo -- @ret?.Amount</option>
-                                    }
+                                   }
+
+
+
                                 </select>
                             </td>
                         }
