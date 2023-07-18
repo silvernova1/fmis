@@ -93,9 +93,15 @@ import exp from "constants";
                 if (data.afterChange) {
                     changeDataCell(data);
                 } else if (data.insertedAbove) {
-                    insertAboveRow(data.row);
+                    insertAboveRow(data.row,data.data);
+                    const send_data = { row: data.row , col: 12, data: data.data }
+                    changeDataCell(send_data);
                 } else if (data.insertedBelow) {
-                    insertBelowRow(data.row);
+                    insertBelowRow(data.row, data.data);
+                    //need the same token to all users
+                    const send_data = { row: data.row+1, col: 12, data: data.data }
+                    changeDataCell(send_data);
+                    //
                 } else if (data.removeRow) {
                     removeRow(data.start, data.end);
                 } else if (data.onAfterUndo) {
@@ -106,7 +112,7 @@ import exp from "constants";
                         let count = 0
                         for (var i = rowStart; i < rowEnd; i++) {
                             console.log("row=" + i)
-                            insertAboveRow(i)
+                            insertAboveRow(i, data.data)
                             data.data[count].forEach((item: any, column: Number) => {
                                 changeDataCell({ row: i, col: column, data: item })
                             })
@@ -196,15 +202,15 @@ import exp from "constants";
             100, 100, 100,
             100, 100, 100,
             100, 100,
-            150, 150, 150,
+            100, 100, 100,
         ],
-
         columns: [
             {
                 //FundSource
                 type: 'dropdown',
                 async source(query, callback) {
-                    callback(await __fundSub())
+                    const response = await __fundSub()
+                    callback(response)
                 }
             },
             {
@@ -268,7 +274,10 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    console.log(data)
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -287,7 +296,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -306,7 +317,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -325,7 +338,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -344,7 +359,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -363,7 +380,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -382,7 +401,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -401,7 +422,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -420,7 +443,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -439,7 +464,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -458,7 +485,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -477,7 +506,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -507,10 +538,10 @@ import exp from "constants";
             },
         ],
 
-     /*   hiddenColumns: {
+        hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
             indicators: true, // show the indicator in the header
-        },*/
+        },
 
         wordWrap: false,
         manualRowResize: true,
@@ -528,17 +559,18 @@ import exp from "constants";
                     name: 'Insert row above',
                     callback: function (changes: any, options: any) {
                         console.log(changes)
-                        insertAboveRow(options[0].start.row)
-                        const send_data = { row: options[0].start.row, insertedAbove: true, userid: userInfo.value.userid, status: options }
+                        const obligation_token_get = ObligationAmountToken();
+                        insertAboveRow(options[0].start.row, obligation_token_get)
+                        const send_data = { row: options[0].start.row, insertedAbove: true, userid: userInfo.value.userid, status: options, data: obligation_token_get }
                         socket.value.send(JSON.stringify(send_data));
                     }
                 },
                 'row_below': {
                     name: 'Insert row below',
                     callback: function (changes: any, options: any) {
-                        console.log(changes)
-                        insertBelowRow(options[0].start.row)
-                        const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options }
+                        const obligation_token_get = ObligationAmountToken();
+                        insertBelowRow(options[0].start.row, obligation_token_get);
+                        const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options, data: obligation_token_get }
                         socket.value.send(JSON.stringify(send_data));
 
                     }
@@ -610,11 +642,10 @@ import exp from "constants";
         }
     }
 
-    const exp_code = [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47];
-    const amounts = [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
-    const tokens = [12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
 
-    const insertAboveRow = (row: Number) => {
+
+    const tokens = [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
+    const insertAboveRow = (row: Number, obligation_token: String) => {
 
         const ObligationAmountToken = () => {
             const s4 = () => {
@@ -641,13 +672,14 @@ import exp from "constants";
             [rows, 1, dateToday],
             [rows, 6, address],
             [rows, 8, ors_number],
-            ...tokens.map(token => [rows, token, ObligationAmountToken()])
+            [rows, 12, obligation_token],
+            ...tokens.map(token => [rows, token, ObligationAmountToken()]),
         ];
           
         cell.setDataAtCell(autoFill);
     }
 
-    const insertBelowRow = (row: Number) => {
+    const insertBelowRow = (row: Number, obligation_token: String) => {
 
         const ObligationAmountToken = () => {
             const s4 = () => {
@@ -676,6 +708,7 @@ import exp from "constants";
             [rows, 1, dateToday],
             [rows, 6, address],
             [rows, 8, ors_number],
+            [rows, 12, obligation_token],
             ...tokens.map(token => [rows, token, ObligationAmountToken()]),
         ];
 
@@ -724,10 +757,15 @@ import exp from "constants";
     const afterChangeFlag = ref(false)
     const afterChange = (changes: any, source: any) => {
         if (changes && source === 'edit' && !afterChangeFlag.value) {
+            console.log("haha");
             const [row, col, oldValue, newValue] = changes[0];
             const hot = hotTableComponent.value.hotInstance;
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
-
+            console.log(col);
+            if (!hot.getDataAtCell(row, 0)) {
+                console.log("stop if col 0 no value");
+                return;
+            }
             let obligation_data = new FormData();
 
             obligation_data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
@@ -741,23 +779,40 @@ import exp from "constants";
             obligation_data.append('particulars', hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "");
             obligation_data.append('ors_no', hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "");
             obligation_data.append('created_by', "");
-            obligation_data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
-            obligation_data.append('id', hot.getDataAtCell(row, 11) ? hot.getDataAtCell(row, 11) : "");
+            obligation_data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : ""); 
             obligation_data.append('obligation_token', hot.getDataAtCell(row, 12));
 
-            __saveObligation(obligation_data,row)
+            __saveObligation(obligation_data, row)
 
-        /*    let obligation_amount_data = new FormData()
-
-            obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, 13)),
-            obligation_amount_data.append('expense_code', hot.getDataAtCell(row, 14) ? hot.getDataAtCell(row, 14) : ""),
-            obligation_amount_data.append('amount', hot.getDataAtCell(row, 15) ? hot.getDataAtCell(row, 15) : "")
-
-            __saveObligationAmount(obligation_amount_data)*/
+            if (col >= 14 && col <= 48 && hot.getDataAtCell(row, 0)) {
+                console.log(col)
+                let obligation_amount_data = new FormData()
+                obligation_amount_data.append('obligationId', hot.getDataAtCell(row, 11));
+                obligation_amount_data.append('obligation_token', hot.getDataAtCell(row, 12));
+                if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'expense') {
+                    obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col));
+                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col-1));
+                } else if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'amount') {
+                    obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col - 1));
+                    obligation_amount_data.append('amount', hot.getDataAtCell(row, col));
+                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col-2));
+                }
+                __saveObligationAmount(obligation_amount_data)
+            }
 
             socket.value.send(JSON.stringify(send_data));
         }
+    }
 
+    const gridExpenseAmountToken = () => {
+        return Array.from({ length: 36 }, (_, index) => {
+            const number = index + 13;
+            const label = index % 3 === 0 ? 'token' : '';
+            const attribute = index % 3 === 2 ? 'amount' : 'expense';
+
+            const value = [number, label + (label !== '' ? '' : attribute)];
+            return value;
+        });
     }
 
     const afterRender = () => {
@@ -790,8 +845,26 @@ import exp from "constants";
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
+
+    const get_fund_sub = ref([]);
+    const fund_sub_data_array = ref([]);
+    const __fundSub = async () => {
+        const response = await fundSub()
+        const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
+            const json_data: { source_id: string; source_type: string } = {
+                source_id: item.source_id,
+                source_type: item.source_type,
+            };
+            get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
+            fund_sub_data_array.value[item.source_title] = json_data;
+            return item.source_title
+        }));
+        return fundSubDataDropdown
+    }
+
     const totalObligation = ref(0)
     const __obligationData = async () => {
+        await __fundSub();
         const response = await obligationData()
         const data = await Promise.all(response.map(async (item: any) => {
 
@@ -843,27 +916,13 @@ import exp from "constants";
         handsondData.value = data
     }
 
-    const get_fund_sub = ref([]);
-    const fund_sub_data_array = ref([]);
-    const __fundSub = async () => {
-        const response = await fundSub()
-        const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
-            const json_data: { source_id: string; source_type: string } = {
-                source_id: item.source_id,
-                source_type: item.source_type,
-            };
-            get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
-            fund_sub_data_array.value[item.source_title] = json_data;
-            return item.source_title
-        }));
-        return fundSubDataDropdown
-    }
+    /*console.log(gridAmount.find(item => item[0] === 18)[1]);*/
 
     const __expCode = async (allotmentId: Number) => {
         const response = await expCode({ allotmentId: allotmentId })
         return response.items
     }
-
+    
     const __saveObligation = async (data: {}, row: number) => {
         //console.log(data);
         const response = await saveObligation(data);
@@ -874,15 +933,13 @@ import exp from "constants";
     };
 
     const __saveObligationAmount = async (data: {}) => {
-        const response = await __saveObligationAmount(data);
+        console.log(data);
+        const response = await saveObligationAmount(data);
         console.log(response);
     }
 
-    __fundSub()
     __obligationData()
-
 </script>
-
 
 <template>
     <div class="row" style="padding:20px;">
