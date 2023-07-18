@@ -398,6 +398,17 @@ namespace fmis.Controllers
             var retObligation = new List<Obligation>();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
 
+            var obligation = new Obligation(); //CLEAR OBJECT
+            if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
+            {
+                obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+            }
+
+            if (item.source_type.Equals("fund_source"))
+                obligation.FundSourceId = item.source_id;
+            else if (item.source_type.Equals("sub_allotment"))
+                obligation.SubAllotmentId = item.source_id;
+
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligations in _MyDbContext.Obligation
                        on fundsource.FundSourceId equals obligations.FundSourceId
@@ -417,17 +428,6 @@ namespace fmis.Controllers
                            Name = allotmentclass.Fund_Code + "-" + fund.Fund_code_current + "-" + obligations.Date.ToString("yyyy-MM") + "-" + "000" + obligations.Ors_no,
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
-
-            var obligation = new Obligation(); //CLEAR OBJECT
-            if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
-            {
-                obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
-            }
-
-            if (item.source_type.Equals("fund_source"))
-                obligation.FundSourceId = item.source_id;
-            else if (item.source_type.Equals("sub_allotment"))
-                obligation.SubAllotmentId = item.source_id;
 
             obligation.source_type = item.source_type;
             obligation.Date = ToDateTime(item.Date);
@@ -989,10 +989,10 @@ namespace fmis.Controllers
                     }
 
                     //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, times_new_roman_r8)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_LEFT });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, times_new_roman_r8)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_LEFT });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, times_new_roman_r9)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, times_new_roman_r9)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, times_new_roman_r9)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
                     doc.Add(table_row_6);
 
                     var table_row_7 = new PdfPTable(5);

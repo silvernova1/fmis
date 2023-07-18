@@ -201,7 +201,7 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin")?"budget_admin" : "budget_user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin")? "budget_admin" : "budget_user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
