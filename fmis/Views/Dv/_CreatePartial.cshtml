@@ -1,0 +1,780 @@
+﻿@model fmis.Models.Accounting.Dv;
+
+
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .select2 {
+        width: 100% !important;
+    }
+    .input-with-button {
+    display: flex;
+    align-items: center;
+    }
+
+    .input-with-button .add-input {
+    margin-left: 10px;
+    }
+</style>
+
+<button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
+<center><h3 class="grey lighter smaller">Create Disbursement Voucher</h3></center>
+<hr />
+<div class="container" style="height: 840px;">
+    <form asp-action="CreatePartial" style="position:center;" method="post">
+        @Html.AntiForgeryToken()
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 200px;">
+                <div class="form-group">
+                    <h5>Fund Cluster: </h5>
+                    <select class="form-control" asp-for="FundClusterId" id="fundCluster" asp-items="ViewBag.FundClusterId">
+                        <option value="">- FundCluster</option>
+                    </select>
+                </div>
+            </div>
+            <div class="1stcol col-md-2">
+                <div class="form-group">
+                    <h5>Dv Date: </h5>
+                    <input asp-for="Date" type="date" id="dvDate" class="form-control" required />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="1stcol col-md-2" style="width: 150px;">
+                <h5>Dv Category: </h5>
+                <select asp-for="DvSupType" class="form-control" id="stype">
+                    <option value="">Select Supplier Type</option>
+                    <option value="1">Advance Payment</option>
+                    <option value="2">Progress Final Billing</option>
+                    <option value="3">Retention</option>
+                </select>
+            </div>
+            <div class="1stcol col-md-2" style="width: 130px;">
+                <h5>Dv #: </h5>
+                <input asp-for="DvNo" type="text" id="dv_no" class="form-control" value="S07-0030" />
+                <span asp-validation-for="DvNo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <h5>Payee: </h5>
+                    <select asp-for="PayeeId" class="form-control select2" asp-items="ViewBag.PayeeId"></select>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="form-group">
+                    <h5>Particulars:  </h5>
+                    <textarea asp-for="Particulars" class="form-control" id="textarea" type="text" style="height: 70px;" required> </textarea>
+                    <span asp-validation-for="Particulars" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="payee" class="col-md-4" style="display: none;">
+                <div class="form-group">
+                    <h5>Payee Description:  </h5>
+                    <input asp-for="PayeeDesc" id="payeeDescription" type="text" class="form-control" />
+                    <span asp-validation-for="PayeeDesc" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 250px;">
+                <div class="form-group">
+                    <label>Responsibility Center: </label>
+                    <select class="form-control" asp-for="RespoCenterId" id="respoCenter" asp-items="ViewBag.RespoId" required>
+                        <option value="">Select Respo Center </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Select Options: </label>
+                    <select class="form-control" asp-for="AssigneeId" id="selectOptions" asp-items="ViewBag.AssigneeId" required>
+                        <option value="">Select Options  </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!--ADVANCE PAYMENT AMOUNT-->
+        <div id="advance">
+            <div class="col-md-12" style="margin-top: 20px">
+                <div class="col-md-2" style="width: 250px;">
+                    <div class="form-group">
+                        <label>ORIGINAL CONTRACT AMOUNT: </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" type="text" asp-for="GrossAmount" id="GrossAmount" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12" >
+                <div class="col-md-2" style="width: 250px;">
+                    <label>ADVANCE PAYMENT: </label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraAdvancePayment.AdvancePayment" type="text" oninput="calculatePercentage()" id="InfraAdvancePayment_AdvancePayment" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <div class="form-group">
+                        <label style="font-weight:bold; margin-left: 80px; margin-top: 10px;">EQUIVALENT AMOUNT: </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="percentage_amount" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--PROGRESS FINAL BILLING-->
+        <div name="progress" id="progress">
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.0 Revised Contract Amount</label>
+                    <input type="hidden" asp-for="InfraProgress[0].bulletNo" value="a.0 Revised Contract Amount" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[0].Amount" type="text" id="a0" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.1 Original Contract Amount</label>
+                    <input type="hidden" asp-for="InfraProgress[1].bulletNo" value="a.1 Original Contract Amount"  />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[1].Amount" type="text" id="a1" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.2 % Advance Payment</label>
+                    <input type="hidden" asp-for="InfraProgress[2].bulletNo" value="a.2 % Advance Payment"  />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[2].Amount" type="text" id="a2" oninput="percentageA()" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>a.3 Equivalent Amount (a.1 x a.2)</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="0.00" readonly id="a3" />
+                    </div>
+                </div>
+            </div>
+
+            <!--B-->
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.1 % Accomplishment as Requested to date</label>
+                    <input type="hidden" asp-for="InfraProgress[3].bulletNo" value="b.1 % Accomplishment as Requested to date" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[3].Amount" type="text" id="b1" oninput="percentageB()" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.2 Equivalent Amount (a.1 x b.1)</label>
+                    <input type="hidden" asp-for="InfraProgress[4].bulletNo" value="b.2 Equivalent Amount (a.1 x b.1)" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[4].Amount" type="text" id="b2"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.3 % Previous Billing Accomplishment (a.1 x b.1)</label>
+                    <input type="hidden" asp-for="InfraProgress[5].bulletNo" value="b.3 % Previous Billing Accomplishment (a.1 x b.1)" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[5].Amount" type="text" id="b3"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.4 Equivalent Amount (a.1 x b.3)</label>
+                    <input type="hidden" asp-for="InfraProgress[6].bulletNo" value="b.4 Equivalent Amount (a.1 x b.3)" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[6].Amount" type="text" id="b4" oninput="b4Result()" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>b.5 This Period Less Previous billing (b.2 -b.4)</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="0.00" readonly id="b5"/>
+                    </div>
+                </div>
+            </div>
+
+            <!--C-->
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.1 Total Liquidated Damages</label>
+                    <input type="hidden" asp-for="InfraProgress[7].bulletNo" value="c.1 Total Liquidated Damages" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[7].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.2 Recoupment of Downpayment (a.3 x (b.1 - b.3))</label>
+                    <input type="hidden" asp-for="InfraProgress[8].bulletNo" value="c.2 Recoupment of Downpayment (a.3 x (b.1 - b.3))" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[8].Amount" type="text" id="c2"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.3 Retention ( 10% x b.5 )</label>
+                    <input type="hidden" asp-for="InfraProgress[9].bulletNo" value="c.3 Retention ( 10% x b.5 )" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[9].Amount" type="text" id="c3" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label></label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="total_c" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+
+             <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.4 VAT ( c.1 /1.12 x 5% )</label>
+                    <input type="hidden" asp-for="InfraProgress[10].bulletNo" value="c.4 VAT ( c.1 /1.12 x 5% )" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[10].Amount" type="text" id="c4"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>c.5 EWT ( c.1 / 1.12 x 2% )</label>
+                    <input type="hidden" asp-for="InfraProgress[11].bulletNo" value="c.5 EWT ( c.1 / 1.12 x 2% )" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraProgress[11].Amount" type="text" id="c5"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>Total Deduction</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="total_deductions" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--RETENTION-->
+        <div name="retention" id="retention">
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>1st Progress Billing</label>
+                    <input type="hidden" asp-for="InfraRetentions[0].billingNo" value="1st Progress Billing" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraRetentions[0].Amount" type="text" />
+                    </div>
+                </div>
+                <button type="button" onclick="addBilling()">+</button>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>2nd Progress Billing</label>
+                    <input type="hidden" asp-for="InfraRetentions[1].billingNo" value="2nd Progress Billing" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraRetentions[1].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>3rd Progress Billing</label>
+                    <input type="hidden" asp-for="InfraRetentions[2].billingNo" value="3rd Progress Billing" />
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" asp-for="InfraRetentions[2].Amount" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div id="billing-container"></div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>Total Billing Amount</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="total_billing" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="margin-left: 260px;">
+            <div class="form-group">
+                <input type="submit" value="Create" onclick="submiBtnClick()" class="btn btn-success btn-xs" />  <a class="btn btn-xs btn-default" asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    //percentage A
+    function percentageA() {
+        var grossAmountInput = document.getElementById("a1").value;
+        var advancePayment = document.getElementById('a2').value;
+        var percentValue = advancePayment.replace('%', '');
+        var percent = parseFloat(percentValue) / 100;
+
+        var sanitizedGrossAmount = grossAmountInput.replace(/,/g, '');
+        var grossAmount = parseFloat(sanitizedGrossAmount);
+
+
+        var result = percent * grossAmount;
+        var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        var percentageAmountInput = document.getElementById('a3');
+        percentageAmountInput.value = formattedPercentage;
+    }
+    //
+
+    //percentage B
+    function percentageB() {
+        var a0 = document.getElementById("a0").value;
+        var b1 = document.getElementById('b1').value;
+        var percentValue = b1.replace('%', '');
+        var percentb1 = parseFloat(percentValue) / 100;
+
+        var sanitizedResult = a0.replace(/,/g, '');
+        var a0Amount = parseFloat(sanitizedResult);
+
+        var result = percentb1 * a0Amount;
+        var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        var percentageAmountInput = document.getElementById('b2');
+        percentageAmountInput.value = formattedPercentage;
+    }
+    //
+
+    //percentage B
+    function b4Result() {
+        var a0 = document.getElementById("a0").value;
+        var b2 = document.getElementById("b2").value;
+        var b4 = document.getElementById('b4').value;
+        var b5 = document.getElementById('b5').value;
+        var b4Result = (b4 / a0) * 100;
+
+        b2 = b2.replace(/,/g, "");
+        b4 = b4.replace(/,/g, "");
+
+
+        var b5 = parseFloat(b2) - parseFloat(b4);   
+
+        result = b4Result.toFixed(4);
+        b5Result = b5.toFixed(2);
+        var formattedResult = b5.toLocaleString();
+
+        var c2Result = (b5Result * 0.15).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var c3Result = (b5Result * 0.10).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var c4Result = (parseFloat(formattedResult.replace(/,/g, "")) / 1.12) * 0.05;
+        var c5Result = (parseFloat(formattedResult.replace(/,/g, "")) / 1.12) * 0.02;
+        var formattedc4 = c4Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formattedc5 = c5Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var total_c = (parseFloat(c2Result.replace(/,/g, "")) + parseFloat(c3Result.replace(/,/g, ""))).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var total_deductions = c4Result + c5Result;
+
+        var formattedC4Result = c4Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formattedC5Result = c5Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formattedTotalDeductions = total_deductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        document.getElementById("b3").value = result;
+        document.getElementById("b5").value = formattedResult;
+        document.getElementById("c2").value = c2Result;
+        document.getElementById("c3").value = c3Result;
+        document.getElementById("total_c").value = total_c;
+        document.getElementById("c4").value = formattedc4;
+        document.getElementById("c5").value = formattedc5;
+        document.getElementById("total_deductions").value = formattedTotalDeductions;
+    }
+    //
+
+    //
+    function calculateTotalBilling() {
+        var total = 0.0;
+
+        // Loop through each billing input and add its value to the total
+        var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
+        for (var i = 0; i < billingInputs.length; i++) {
+            var amount = parseFloat(billingInputs[i].value);
+            if (!isNaN(amount)) {
+                total += amount;
+            }
+        }
+
+        // Update the total billing amount in the input field
+        document.getElementById("total_billing").value = total.toFixed(2).toLocaleString();
+    }
+
+    // Call the calculateTotalBilling function initially and whenever a billing amount is changed
+    calculateTotalBilling();
+    var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
+    for (var i = 0; i < billingInputs.length; i++) {
+        billingInputs[i].addEventListener("input", calculateTotalBilling);
+    }
+
+    //new billing
+    var billingCount = 3; // Initialize the billing count
+
+    function addBilling() {
+        billingCount++; // Increment the billing count
+
+        var container = document.getElementById("billing-container");
+        var billingDiv = document.createElement("div");
+        billingDiv.className = "col-md-12";
+
+              var billingLabelDiv = document.createElement("div");
+        billingLabelDiv.className = "col-md-2";
+        billingLabelDiv.style.width = "250px";
+        var billingLabel = document.createElement("label");
+        billingLabel.textContent = billingCount + "th Progress Billing";
+        billingLabelDiv.appendChild(billingLabel);
+        var billingHiddenInput = document.createElement("input");
+        billingHiddenInput.type = "hidden";
+        billingHiddenInput.name = "InfraRetentions[" + (billingCount - 1) + "].billingNo";
+        billingHiddenInput.value = billingCount + "th Progress Billing";
+        billingLabelDiv.appendChild(billingHiddenInput);
+
+        var billingInputDiv = document.createElement("div");
+        billingInputDiv.className = "col-md-2";
+        var billingInputFormGroup = document.createElement("div");
+        billingInputFormGroup.className = "form-group";
+        var billingInput = document.createElement("input");
+        billingInput.className = "form-control";
+        billingInput.type = "text";
+        billingInput.name = "InfraRetentions[" + (billingCount - 1) + "].Amount";
+        billingInputDiv.appendChild(billingInputFormGroup);
+        billingInputFormGroup.appendChild(billingInput);
+
+        billingDiv.appendChild(billingLabelDiv);
+        billingDiv.appendChild(billingInputDiv);
+        container.appendChild(billingDiv);
+
+        // Add event listener to the new billing input
+        billingInput.addEventListener("input", calculateTotalBilling);
+    }
+    //
+    //percentage
+    function calculatePercentage() {
+        var grossAmountInput = document.getElementById("GrossAmount").value;
+        var advancePayment = document.getElementById('InfraAdvancePayment_AdvancePayment').value;
+        var advancePaymentPercent = '0.' + advancePayment;
+
+        var sanitizedGrossAmount = grossAmountInput.replace(/,/g, '');
+        var grossAmount = parseFloat(sanitizedGrossAmount);
+
+
+        var result = advancePaymentPercent * grossAmount;
+        var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        var percentageAmountInput = document.getElementById('percentage_amount');
+        percentageAmountInput.value = formattedPercentage;
+    }
+    //
+
+    var advanceDiv = document.getElementById('advance');
+    var progressDiv = document.getElementById('progress');
+    var retentionDiv = document.getElementById('retention');
+
+    advanceDiv.style.display = 'block';
+    progressDiv.style.display = 'none';
+    retentionDiv.style.display = 'none';
+
+    document.getElementById("stype").addEventListener("change", function () {
+        var selectedOption = this.value;
+        var advance = document.getElementById("advance");
+        var progress = document.getElementById("progress");
+        var retention = document.getElementById("retention");
+        var containerElement = document.getElementsByClassName("container")[0];
+        console.log(progress);
+        if (selectedOption === "1") {
+            containerElement.style.height = "650px";
+            advance.style.display = "block";
+            progress.style.display = "none";
+            retention.style.display = "none";
+        }
+        else if (selectedOption === "2") {
+            containerElement.style.height = "1100px";
+            progress.style.display = "block";
+            advance.style.display = "none";
+            retention.style.display = "none";
+        }
+        else if (selectedOption === "3") {
+            containerElement.style.height = "650px";
+            retention.style.display = "block";
+            advance.style.display = "none";
+            progress.style.display = "none";
+        }
+        else {
+            advance.style.display = "none";
+            retention.style.display = "none";
+            progress.style.display = "none";
+        }
+    });
+
+    $(function () {
+        $("select#stype").change(function () {
+            var stypeId = $(this).val();
+            //console.log(stypeId);
+            if (stypeId == 1) {
+                //$("#hidden-advance").show();
+            }
+            else {
+                //$("#hidden-individual").hide();
+            }
+        })
+    })
+
+    //cascade dropdownlist
+    $(function () {
+        $("select#dv_type").change(function () {
+            var cid = $(this).val();
+            console.log(cid);
+            if (cid == 'S') {
+                //$("#advance-gross").show();
+                //$("#advance-deduction1").show();
+                //$("#hidden-stype").show();
+
+                /*$("#individual-gross").hide();
+                $("#individual-deduction1").hide();
+                $("#individual-deduction2").hide();
+                $("#individual-deduction3").hide();
+                $("#individual-deduction4").hide();
+                $("#individual-deduction5").hide();
+                $("#individual-deduction6").hide();
+                $("#individual-deduction7").hide();*/
+            }
+            else {
+                /*$("#advance-gross").hide();
+                $("#advance-deduction1").hide();
+                $("#hidden-stype").hide();
+
+                $("#individual-gross").show();
+                $("#individual-deduction1").show();
+                $("#individual-deduction2").show();
+                $("#individual-deduction3").show();
+                $("#individual-deduction4").show();
+                $("#individual-deduction5").show();
+                $("#individual-deduction6").show();
+                $("#individual-deduction7").show();*/
+            }
+
+            //alert(cid);
+            $("select#PayeeId").empty();
+            $.getJSON('@Url.Action("GetPayee", "Dv")?cid=' + cid, function (data) {
+                $.each(data, function (i, item) {
+                    $("select#PayeeId").append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            });
+        });
+
+    });
+
+    //adding comma after 3 digits
+    function updateTextView(_obj) {
+        var num = +_obj.val();
+        if (num == '') {
+            _obj.val('0');
+        } else {
+            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+        }
+    }
+    function getNumber(_str) {
+        var arr = _str.split('');
+        var out = new Array();
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (isNaN(arr[cnt]) == false) {
+                out.push(arr[cnt]);
+            }
+        }
+        return Number(out.join(''));
+    }
+
+    get_sbu();
+    function get_sbu() {
+        var selected_val = $('#ddlBranches').find(":selected").attr('value');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("selectP", "Dv")',
+            data: "id=" + selected_val,
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#payeeDescription').val(data[0].payeeDescription);
+                }
+                else {
+                    $('#payeeDescription').val('');
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#FundCluster').change(function () {
+            var ddlValue = $(this).val();
+
+            //alert(ddlValue);
+
+            if (ddlValue = 10) {
+                $('#payee').hide();
+            }
+            else {
+                $('#payee').hide();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        //Prevent users from submitting a form by hitting Enter
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        $('.select2').select2();
+
+        $('#dv_type').on('change', function () {
+            var type = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetLatestDvType","Dv")',
+                data: {
+                    type: type
+                },
+                method: 'GET',
+                async: true,
+                success: function (output) {
+                    $('#dv_no').val(output);
+                }
+            })
+        });
+    });
+
+    function submitDeduction(parentDiv) {
+        let dvDeduction = $(parentDiv).find('select');
+        let dvDedectionAmt = $(parentDiv).find('input');
+        if (dvDeduction.val() && dvDedectionAmt.val()) {
+            console.log(dvDeduction.val(), dvDedectionAmt.val());
+        }
+        computeNetAmount();
+    }
+
+    function computeNetAmount() {
+        let amounts = $('.deduction_amount');
+        let gross_amount = +$('#gross_amount').val().replace(/,/g, '');
+        let total = 0;
+        $(amounts).each(function (index, value) {
+            total += +value.value.replace(/,/g, '');
+        });
+        var net = gross_amount - total;
+
+        $('#total_deduction').val(total.toLocaleString());
+        $('#net_amount').val(net.toLocaleString());
+    }
+
+    document.getElementById("textarea").value = "To payment of";
+
+    function submiBtnClick() {
+
+        var fundCluster = document.getElementById("fundCluster").value;
+        var dvDate = document.getElementById("dvDate").value;
+        var dvType = document.getElementById("dv_type").value;
+        var particulars = document.getElementById("textarea").value;
+        var respoCenter = document.getElementById("respoCenter").value;
+        var selectOptions = document.getElementById("selectOptions").value;
+
+        if (fundCluster != '' && dvDate != '' && dvType != '' && particulars != ''
+            && respoCenter != '' && selectOptions != '') {
+            Lobibox.notify('success', {
+                msg: 'Disbursement Voucher Successfully Added!',
+            });
+        }
+        else {
+            return false;
+        }
+    }
+
+
+</script>
+
+
