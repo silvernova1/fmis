@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\fmis\\fmis.csproj": {}
+    "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj": {}
   },
   "projects": {
-    "D:\\fmis\\fmis.csproj": {
+    "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\fmis\\fmis.csproj",
+        "projectUniqueName": "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj",
         "projectName": "fmis",
-        "projectPath": "D:\\fmis\\fmis.csproj",
-        "packagesPath": "C:\\Users\\Jondy\\.nuget\\packages\\",
-        "outputPath": "D:\\fmis\\obj\\",
+        "projectPath": "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj",
+        "packagesPath": "C:\\Users\\Jondy Gonzalez\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jondy\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Jondy Gonzalez\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -293,12 +289,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[5.0.17, 5.0.17]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"

@@ -79,8 +79,8 @@ namespace fmis.Controllers.Budget.John
             DateTime datefilter = Convert.ToDateTime(date_to);
             String date3 = datefilter.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture);
 
-            date1.ToString("yyyy-MM-dd 00:00:00");
-            date2.ToString("yyyy-MM-dd 23:59:59");
+                date1.ToString("yyyy-MM-dd 00:00:00");
+                date2.ToString("yyyy-MM-dd 23:59:59");
             DateTime dateTimeNow = date2;
             DateTime dateTomorrow = dateTimeNow.Date.AddDays(1);
             /*var lastDayOfMonth = DateTime.DaysInMonth(date1.Year, date1.Month);*/
@@ -108,7 +108,7 @@ namespace fmis.Controllers.Budget.John
 
 
             var fortheMonthTotalinTotalPS = (from oa in _MyDbContext.ObligationAmount
-                                             join o in _MyDbContext.Obligation
+                                             join o in _MyDbContext.Obligation  
                                              on oa.ObligationId equals o.Id
                                              join f in _MyDbContext.FundSources
                                              on o.FundSourceId equals f.FundSourceId
@@ -15179,23 +15179,26 @@ namespace fmis.Controllers.Budget.John
         public ActionResult DownloadExcel()
         {
 
+            DateTime dateFrom = new DateTime(2020, 1, 1); // Example start date
+            DateTime dateTo = new DateTime(2025, 12, 31); // Example end date
+
 
             var funsources = (from fs in _MyDbContext.FundSources
-                              join fsa in _MyDbContext.FundSourceAmount
-                             on fs.FundSourceId equals fsa.FundSourceId
-                              join u in _MyDbContext.Uacs
-                               on fsa.UacsId equals u.UacsId
-
+                              join fsa in _MyDbContext.FundSourceAmount on fs.FundSourceId equals fsa.FundSourceId
+                              join u in _MyDbContext.Uacs on fsa.UacsId equals u.UacsId
+                              join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId 
+  
+                            //  where o.Date >= dateFrom && o.Date <= dateTo
                               select new
                               {
                                   FsaUacsId = fsa.UacsId,
                                   UacsId = u.UacsId,
+                                  Date = o.Date,
                                   fundsourceId = fs.FundSourceId,
                                   fundsTitle = fs.FundSourceTitle,
                                   Account_title = u.Account_title,
                                   expensesCode = u.Expense_code
-                              }).ToList();
-
+                              }).Distinct().ToList();
 
 
             // var fundsource3 = (from fs in _MyDbContext.FundSources
@@ -15362,260 +15365,63 @@ namespace fmis.Controllers.Budget.John
 
             int CurrentRow = 12;
             IXLRow row = worksheet.Row(CurrentRow);
-
             int startingRow = CurrentRow;
             CurrentRow++;
 
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == fs.fundsourceId && fs.UacsId == fs.UacsId).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
-            var columndata0 = funsources.Where(fsa => fsa.fundsourceId == 15).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata0.First();
-            int dataRow = CurrentRow + 1;
-            foreach (var data in columndata0.Skip(1))
+            var filteredFunsources = funsources.Where(o => o.Date >= dateFrom && o.Date <= dateTo).ToList();
+
+            // Get distinct category names
+            var fundsTitle = filteredFunsources.Select(fs => fs.fundsTitle).Distinct().ToList();
+
+            // Iterate through the fundsTitle and display each value in a separate row
+            foreach (var title in fundsTitle)
             {
-                IXLCell cell = worksheet.Cell(dataRow, 1);
-               //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
+                if (string.IsNullOrEmpty(title)) // Skip empty or null titles
+                    continue;
 
-               cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                dataRow++;
-            }
-
-            //ExpenseCode
-            var columnData = funsources.Where(fs => fs.fundsourceId == 15).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData.First();
-            int dataRow1 = CurrentRow + 1;
-            foreach (var data in columnData.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(dataRow1, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                dataRow1++;
-            }
-            CurrentRow++;
-
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 16).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
-
-            var columndata1 = funsources.Where(fsa => fsa.fundsourceId == 16).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata1.First();
-            int dataRow0 = CurrentRow + 1;
-            foreach (var data in columndata1.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(dataRow0, 1);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                dataRow0++;
-            }
-
-            //Expense Code
-            var columnData1 = funsources.Where(fs => fs.fundsourceId == 16).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData1.First();
-            int dataRow2 = CurrentRow + 1;
-            foreach (var data in columnData1.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(dataRow2, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                worksheet.Cell(CurrentRow, 1).Value = title;
+                worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
+                worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
+                worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
                 CurrentRow++;
-            }
-            CurrentRow++;
 
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 55).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
+                // Get the items belonging to the current category
+                var itemsInCategory = filteredFunsources.Where(fs => fs.fundsTitle == title).ToList();
 
-            var columndata2 = funsources.Where(fsa => fsa.fundsourceId == 55).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata2.First();
-            foreach (var data in columndata2.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 1);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
+                // Create separate lists to store unique Account_title and expensesCode
+                var uniqueAccountTitles = new List<string>();
+                var uniqueExpensesCodes = new List<string>();
 
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
+                // Iterate through the items and store unique Account_title and expensesCode
+                foreach (var item in itemsInCategory)
+                {
+                    if (!uniqueAccountTitles.Contains(item.Account_title))
+                        uniqueAccountTitles.Add(item.Account_title);
+
+                    if (!uniqueExpensesCodes.Contains(item.expensesCode))
+                        uniqueExpensesCodes.Add(item.expensesCode);
+                }
+
+                // Display the items and expensesCode in the same row for the current category
+                foreach (var accountTitle in uniqueAccountTitles)
+                {
+                    worksheet.Cell(CurrentRow, 1).Value = accountTitle;
+                    worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8; // Replace 8 with the desired font size
+
+                    // Find the corresponding expensesCode for the accountTitle
+                    var expensesCode = itemsInCategory.FirstOrDefault(item => item.Account_title == accountTitle)?.expensesCode;
+                    worksheet.Cell(CurrentRow, 2).Value = expensesCode;
+                    worksheet.Cell(CurrentRow, 2).Style.Font.FontSize = 8; // Replace 8 with the desired font size
+
+                    CurrentRow++;
+                }
+
+                // Increment row to leave a blank row between each category
                 CurrentRow++;
             }
 
-            //Expense Code
-            var columnData2 = funsources.Where(fs => fs.fundsourceId == 55).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData2.First();
-
-            foreach (var data in columnData2.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-            CurrentRow++;
-
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 56).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
-
-            var columndata3 = funsources.Where(fsa => fsa.fundsourceId == 56).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata3.First();
-            foreach (var data in columndata3.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 1);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-
-            //Expense Code
-            var columnData3 = funsources.Where(fs => fs.fundsourceId == 56).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData3.First();
-
-            foreach (var data in columnData3.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-            CurrentRow++;
-
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 57).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
-
-            var columndata4 = funsources.Where(fsa => fsa.fundsourceId == 57).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata4.First();
-            foreach (var data in columndata4.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 1);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-
-            //Expense Code
-            var columnData4 = funsources.Where(fs => fs.fundsourceId == 57).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData3.First();
-
-            foreach (var data in columnData4.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-            CurrentRow++;
-
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 58).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
-
-            var columndata5 = funsources.Where(fsa => fsa.fundsourceId == 58).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata5.First();
-            foreach (var data in columndata5.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 1);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-
-            //Expense Code
-            var columnData5 = funsources.Where(fs => fs.fundsourceId == 58).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData5.First();
-
-            foreach (var data in columnData5.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-            CurrentRow++;
-
-
-            worksheet.Cell(CurrentRow, 1).Value = funsources.Where(fs => fs.fundsourceId == 59).Select(fs => fs.fundsTitle).FirstOrDefault();
-            worksheet.Cell(CurrentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontColor = XLColor.Red;
-            worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
-            CurrentRow++;
-
-            var columndata6 = funsources.Where(fsa => fsa.fundsourceId == 59).Select(u => u.Account_title);
-            worksheet.Cell(CurrentRow, 1).Value = columndata6.First();
-            foreach (var data in columndata6.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 1);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell 
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-
-            //Expense Code
-            var columnData6 = funsources.Where(fs => fs.fundsourceId == 59).Select(u => u.expensesCode);
-            worksheet.Cell(CurrentRow, 2).Value = columnData6.First();
-
-            foreach (var data in columnData6.Skip(1))
-            {
-                IXLCell cell = worksheet.Cell(CurrentRow, 2);
-                //Set the cell value
-                cell.Value = data;
-                //    Set the font size for the cell
-
-                cell.Style.Font.FontSize = 8; // Replace 12 with the desired font size
-                CurrentRow++;
-            }
-
-
-
-            // Continue fetching from the last row
             CurrentRow = startingRow;
+
 
             var range1 = worksheet.Range("A9:A12");
             range1.Merge();
@@ -15624,7 +15430,7 @@ namespace fmis.Controllers.Budget.John
             range1.Style.Alignment.WrapText = true;
             range1.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             range1.Style.Font.SetBold();
-            range1.Style.Fill.BackgroundColor = XLColor.Pink;
+            range1.Style.Fill.BackgroundColor = XLColor.Pink; 
             range1.Style.Font.FontSize = 10;
             worksheet.Column("A").Width = 25;
 
