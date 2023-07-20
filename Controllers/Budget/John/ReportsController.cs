@@ -15179,21 +15179,36 @@ namespace fmis.Controllers.Budget.John
         public ActionResult DownloadExcel()
         {
 
-            DateTime dateFrom = new DateTime(2020, 1, 1); // Example start date
-            DateTime dateTo = new DateTime(2025, 12, 31); // Example end date
+                   DateTime dateFrom = new DateTime(2015, 1, 1); // Example start date
+               DateTime dateTo = new DateTime(2025, 12, 31); // Example end date
+
+          //  date1.ToString("yyyy-MM-dd 00:00:00");
+          //  date2.ToString("yyyy-MM-dd 23:59:59");
+            //DateTime date1 = Convert.ToDateTime(date_from);
+            //DateTime date2 = Convert.ToDateTime(date_to);
+
+        //    DateTime date1 = Convert.ToDateTime(date_from);
+        //    DateTime date2 = Convert.ToDateTime(date_to);
+
+            // Set the time part of date1 to the beginning of the day (00:00:00)
+           // date1 = date1.Date;
+
+            // Set the time part of date2 to the end of the day (23:59:59)
+          //  date2 = date2.Date.AddDays(1).AddSeconds(-1);
+
 
 
             var funsources = (from fs in _MyDbContext.FundSources
                               join fsa in _MyDbContext.FundSourceAmount on fs.FundSourceId equals fsa.FundSourceId
                               join u in _MyDbContext.Uacs on fsa.UacsId equals u.UacsId
-                              join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId 
+                             // join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId 
   
                             //  where o.Date >= dateFrom && o.Date <= dateTo
                               select new
                               {
-                                  FsaUacsId = fsa.UacsId,
-                                  UacsId = u.UacsId,
-                                  Date = o.Date,
+                                //  FsaUacsId = fsa.UacsId,
+                                  //UacsId = u.UacsId,
+                                 // Date = o.Date,
                                   fundsourceId = fs.FundSourceId,
                                   fundsTitle = fs.FundSourceTitle,
                                   Account_title = u.Account_title,
@@ -15368,8 +15383,8 @@ namespace fmis.Controllers.Budget.John
             int startingRow = CurrentRow;
             CurrentRow++;
 
-            var filteredFunsources = funsources.Where(o => o.Date >= dateFrom && o.Date <= dateTo).ToList();
-
+            //var filteredFunsources = funsources.Where(o => o.Date >= dateFrom && o.Date <= dateTo).ToList();
+            var filteredFunsources = funsources.Where(sa => sa.fundsourceId == sa.fundsourceId).ToList();
             // Get distinct category names
             var fundsTitle = filteredFunsources.Select(fs => fs.fundsTitle).Distinct().ToList();
 
