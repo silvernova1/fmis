@@ -143,7 +143,6 @@ namespace fmis.Controllers.Accounting
             dv.PayeeDesc = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeId == dv.PayeeId).PayeeDescription;
             dv.UserId = UserId;
             var dvId = dv.DvId;
-            decimal sum = 0;
             //var infraProgress = dv.InfraProgress.Where(x => x.Id != 0 && x.Amount != null);
             //var infraRetention = dv.InfraRetentions.Where(x => x.Id != 0 && x.Amount != null);
 
@@ -153,6 +152,12 @@ namespace fmis.Controllers.Accounting
                 var advancepayment_percentage = dv.InfraAdvancePayment.AdvancePayment / 100;
                 dv.NetAmount = advancepayment_percentage * dv.GrossAmount;
                 dv.TotalDeduction = dv.GrossAmount - dv.NetAmount;
+            }
+            if(dv.DvSupType == "3")
+            {
+                dv.GrossAmount = dv.InfraRetentions.Sum(x=>x.Amount);
+                dv.TotalDeduction = dv.dvDeductions.Sum(x=>x.Amount);
+                dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             }
 
             if (ModelState.IsValid)
@@ -782,20 +787,20 @@ namespace fmis.Controllers.Accounting
                     });
                     
                     var item = _MyDbContext.Dv.Include(x => x.dvDeductions).ThenInclude(x => x.Deduction).ToList();
-                    List<float> deductionsAmount = new List<float>();
+                    List<decimal?> deductionsAmount = new List<decimal?>();
                     List<string> deductionsList = new List<string>();
 
                     Font arial_font_deductions = FontFactory.GetFont("", 8, Font.NORMAL, BaseColor.BLACK);
                     
                     foreach (var dvDeductions in item.Where(x => x.DvId == id))
                     {
-                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - (decimal)(dvDeductions?.dvDeductions?.FirstOrDefault()?.Amount ?? 0);
+                    var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - (dvDeductions?.dvDeductions?.FirstOrDefault()?.Amount ?? 0);
                         foreach (var deductions in dvDeductions.dvDeductions)
                         {
                             deductionsAmount.Add(deductions.Amount);
                             string description = deductions?.Deduction.DeductionDescription.PadRight(15);
                             string netDeduct = deduct?.ToString("##,#00.00").PadRight(12);
-                            string amount = deductions?.Amount.ToString("##,#00.00").PadLeft(15);
+                            string amount = deductions?.Amount?.ToString("##,#00.00").PadLeft(15);
 
                             deductionsList.Add(description + " { " + netDeduct + " } " + amount);
                             Console.WriteLine(string.Join("\n", deductionsList));

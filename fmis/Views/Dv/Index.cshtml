@@ -211,7 +211,7 @@
                                     <select class="form-control">
                                         @foreach (var deduction in item?.dvDeductions)
                                         {
-                                            <option>@deduction.Deduction.DeductionDescription -- @deduction.Amount.ToString("N2")</option>
+                                            <option>@deduction.Deduction.DeductionDescription -- @deduction.Amount?.ToString("N2")</option>
                                         }
                                     </select>
                                 </td>
@@ -311,7 +311,7 @@
                                 <select class="form-control">
                                     @foreach (var deduction in item.dvDeductions)
                                     {
-                                        <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount.ToString("##,##0.00")</option>
+                                        <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount?.ToString("##,##0.00")</option>
                                     }
                                 </select>
                             </td>
