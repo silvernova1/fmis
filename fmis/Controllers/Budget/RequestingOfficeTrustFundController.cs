@@ -14,12 +14,10 @@ namespace fmis.Controllers.Budget
     [Authorize(Policy = "BudgetAdmin")]
     public class RequestingOfficeTrustFundController : Controller
     {
-        private readonly RequestingOfficeTrustFundContext _context;
-        private readonly MyDbContext _MyDbcontext;
-        public RequestingOfficeTrustFundController(RequestingOfficeTrustFundContext context, MyDbContext MyDbcontext)
+        private readonly MyDbContext _context;
+        public RequestingOfficeTrustFundController(MyDbContext context)
         {
             _context = context;
-            _MyDbcontext = MyDbcontext;
         }
 
         public async Task<IActionResult> Index()

@@ -16,13 +16,11 @@ namespace fmis.Services
     public class UserService : IUserService
     {
         private readonly PasswordHasher<FmisUser> _hasher = new PasswordHasher<FmisUser>();
-        private readonly MyDbContext _context;
-        private readonly fmisContext _fcontext;
+        private readonly fmisContext _context;
 
-        public UserService(MyDbContext context, fmisContext fcontext)
+        public UserService(fmisContext context)
         {
             _context = context;
-            _fcontext = fcontext;
 
         }
 
@@ -32,7 +30,7 @@ namespace fmis.Services
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            user = await _fcontext.users.FirstOrDefaultAsync(x => x.Username == username);
+            user = await _context.users.FirstOrDefaultAsync(x => x.Username == username);
 
             if (string.IsNullOrEmpty(user.Username)) return null;
 

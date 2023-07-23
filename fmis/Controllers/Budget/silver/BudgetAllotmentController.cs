@@ -26,20 +26,12 @@ namespace fmis.Controllers
     public class BudgetAllotmentController : Controller
     {
         private readonly MyDbContext _context;
-        private readonly BudgetAllotmentContext _BudgetAllotmentContext;
-        private readonly Yearly_referenceContext _osContext;
-        private readonly Ors_headContext _orssContext;
         private readonly PersonalInformationMysqlContext _pis_context;
-        private readonly SubAllotmentContext _saContext;
 
-        public BudgetAllotmentController(BudgetAllotmentContext BudgetAllotmentContext, MyDbContext context, Yearly_referenceContext osContext, Ors_headContext orssContext, PersonalInformationMysqlContext pis_context, SubAllotmentContext sa_Context)
+        public BudgetAllotmentController(MyDbContext context, PersonalInformationMysqlContext pis_context)
         {
-            _BudgetAllotmentContext = BudgetAllotmentContext;
             _context = context;
-            _osContext = osContext;
-            _orssContext = orssContext;
             _pis_context = pis_context;
-            _saContext = sa_Context;
         }
 
         //POST
@@ -218,7 +210,7 @@ namespace fmis.Controllers
 
             List<Yearly_reference> oh = new List<Yearly_reference>();
 
-            oh = (from c in _osContext.Yearly_reference select c).ToList();
+            oh = (from c in _context.Yearly_reference select c).ToList();
             oh.Insert(0, new Yearly_reference { YearlyReferenceId = 0, YearlyReference = "--Select Year--" });
 
             ViewBag.message = oh;
@@ -266,8 +258,8 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(BudgetAllotment budget_allotment)
         {
-            _BudgetAllotmentContext.Add(budget_allotment);
-            _BudgetAllotmentContext.SaveChanges();
+            _context.Add(budget_allotment);
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
@@ -295,7 +287,7 @@ namespace fmis.Controllers
 
             List<Ors_head> oh = new List<Ors_head>();
 
-            oh = (from c in _orssContext.Ors_head select c).ToList();
+            oh = (from c in _context.Ors_head select c).ToList();
             oh.Insert(0, new Ors_head { Id = 0, Personalinfo_userid = "--Select ORS Head--" });
 
             ViewBag.message = oh;
@@ -337,13 +329,13 @@ namespace fmis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BudgetAllotment budget_allotment)
         {
-            var Budget = await _BudgetAllotmentContext.BudgetAllotment.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
+            var Budget = await _context.Budget_allotments.Where(x => x.BudgetAllotmentId == budget_allotment.BudgetAllotmentId).AsNoTracking().FirstOrDefaultAsync();
             Budget.Allotment_series = budget_allotment.Allotment_series;
             Budget.Allotment_title = budget_allotment.Allotment_title;
             Budget.Allotment_code = budget_allotment.Allotment_code;
 
-            _BudgetAllotmentContext.Update(Budget);
-            await _BudgetAllotmentContext.SaveChangesAsync();
+            _context.Update(Budget);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

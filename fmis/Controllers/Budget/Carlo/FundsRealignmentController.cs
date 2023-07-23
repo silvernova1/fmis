@@ -19,22 +19,20 @@ namespace fmis.Controllers.Budget.Carlo
     [Authorize(Policy = "BudgetAdmin")]
     public class FundsRealignmentController : Controller
     {
-        private readonly FundsRealignmentContext _context;
+        private readonly MyDbContext _context;
         private readonly UacsContext _UacsContext;
         private readonly FundSourceAmountContext _FAContext;
         private readonly FundSourceContext _FContext;
-        private readonly MyDbContext _allContext;
         private FundSource FundSource;
         private decimal REMAINING_BALANCE = 0;
         private decimal REALIGN_AMOUNT = 0;
 
-        public FundsRealignmentController(FundsRealignmentContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext, MyDbContext allContext)
+        public FundsRealignmentController(MyDbContext context, UacsContext UacsContext, FundSourceAmountContext FAContext, FundSourceContext FContext)
         {
             _context = context;
             _UacsContext = UacsContext;
             _FAContext = FAContext;
             _FContext = FContext;
-            _allContext = allContext;
         }
 
         public class FundsRealignmentData
@@ -92,7 +90,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         
 
-            FundSource = await _allContext.FundSources
+            FundSource = await _context.FundSources
                             .Include(x => x.FundSourceAmounts)
                                 .ThenInclude(x => x.Uacs)
                             .Include(x => x.BudgetAllotment)
@@ -123,7 +121,7 @@ namespace fmis.Controllers.Budget.Carlo
 
         public async Task<IActionResult> fundSourceAmountRemainingBalance(string fundsource_amount_token)
         {
-            var fundsource_amount_remaining_balance = await _allContext.FundSourceAmount.AsNoTracking().FirstOrDefaultAsync(x => x.fundsource_amount_token == fundsource_amount_token);
+            var fundsource_amount_remaining_balance = await _context.FundSourceAmount.AsNoTracking().FirstOrDefaultAsync(x => x.fundsource_amount_token == fundsource_amount_token);
             return Json(fundsource_amount_remaining_balance.remaining_balance);
         }
 
@@ -197,7 +195,7 @@ namespace fmis.Controllers.Budget.Carlo
                                 .FirstOrDefault(x => x.token == funds_realignment_token);
             funds_realignment.status = "deactivated";
 
-            var fundSourceAmount = _allContext.FundSourceAmount.FirstOrDefault(x => x.FundSourceAmountId == funds_realignment.Realignment_to);
+            var fundSourceAmount = _context.FundSourceAmount.FirstOrDefault(x => x.FundSourceAmountId == funds_realignment.Realignment_to);
             fundSourceAmount.realignment_amount = 0;
             //funds_realignment.FundSource = _FContext.FundSource.FirstOrDefault(x => x.FundSourceId == fundsource_id);
             funds_realignment.FundSource.Remaining_balance += funds_realignment.Realignment_amount;

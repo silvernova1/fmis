@@ -18,9 +18,9 @@ namespace fmis.Controllers.Budget.John
     
     public class AllotmentClassesController : Controller
     {
-        private readonly AllotmentClassContext _context;
+        private readonly MyDbContext _context;
 
-        public AllotmentClassesController(AllotmentClassContext context)
+        public AllotmentClassesController(MyDbContext context)
         {
             _context = context;
         }

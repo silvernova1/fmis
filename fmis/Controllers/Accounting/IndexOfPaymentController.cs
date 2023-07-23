@@ -45,20 +45,12 @@ namespace fmis.Controllers.Accounting
     [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_admin")]
     public class IndexOfPaymentController : Controller
     {
-        private readonly MyDbContext _MyDbContext;
-        private readonly CategoryContext _CategoryContext;
-        private readonly DeductionContext _DeductionContext;
-        private readonly DvContext _DvContext;
-        private readonly IndexofpaymentContext _IndexofpaymentContext;
+        private readonly MyDbContext _context;
 
 
-        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext)
+        public IndexOfPaymentController(MyDbContext context)
         {
-            _MyDbContext = MyDbContext;
-            _CategoryContext = categoryContext;
-            _DeductionContext = deductionContext;
-            _DvContext = dvContext;
-            _IndexofpaymentContext = indexofpaymentContext;
+            _context = context;
         }
 
         [Route("Accounting/IndexOfPayment")]
@@ -69,7 +61,7 @@ namespace fmis.Controllers.Accounting
             Console.WriteLine("user: " + User.FindFirstValue(ClaimTypes.Name));
             Console.WriteLine("role: " + User.FindFirstValue(ClaimTypes.Role));
 
-            var indexData = from c in _MyDbContext.Indexofpayment
+            var indexData = from c in _context.Indexofpayment
                             .Include(x => x.Category)
                             .Include(x => x.Dv)
                                 .ThenInclude(x => x.Payee)
@@ -94,19 +86,19 @@ namespace fmis.Controllers.Accounting
             ViewBag.searchString = searchString;
 
             //no filter
-            var grossAmountTotal = _MyDbContext.Indexofpayment.Sum(x => x.GrossAmount);
+            var grossAmountTotal = _context.Indexofpayment.Sum(x => x.GrossAmount);
             ViewBag.grossTotal = grossAmountTotal;
-            var totalDeductionTotal = _MyDbContext.Indexofpayment.Sum(x => x.TotalDeduction);
+            var totalDeductionTotal = _context.Indexofpayment.Sum(x => x.TotalDeduction);
             ViewBag.totalDeductionTotal = totalDeductionTotal;
-            var netAmountTotal = _MyDbContext.Indexofpayment.Sum(x => x.NetAmount);
+            var netAmountTotal = _context.Indexofpayment.Sum(x => x.NetAmount);
             ViewBag.netTotal = netAmountTotal;
 
             //with filter
-            var grossAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.GrossAmount);
+            var grossAmount = _context.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.GrossAmount);
             ViewBag.gross = grossAmount;
-            var totalDeduction = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.TotalDeduction);
+            var totalDeduction = _context.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.TotalDeduction);
             ViewBag.totalDeduction = totalDeduction;
-            var netAmount = _MyDbContext.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
+            var netAmount = _context.Indexofpayment.Where(x => x.Category.CategoryDescription == searchString || x.Dv.DvNo == searchString || x.Dv.PayeeDesc == searchString).Sum(x => x.NetAmount);
             ViewBag.net = netAmount;
 
             return View(await indexData.ToListAsync());
@@ -115,7 +107,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult selectAT(int id)
         {
-            var branches = _MyDbContext.Dv.Include(x => x.Payee).ToList();
+            var branches = _context.Dv.Include(x => x.Payee).ToList();
             return Json(branches.Where(x => x.DvId == id).ToList());
         }
 
@@ -155,12 +147,12 @@ namespace fmis.Controllers.Accounting
                 indexOfPayment.PeriodCover = daterange;
             }
 
-            var ors = (from fundsource in _MyDbContext.FundSources
-                       join obligation in _MyDbContext.Obligation
+            var ors = (from fundsource in _context.FundSources
+                       join obligation in _context.Obligation
                        on fundsource.FundSourceId equals obligation.FundSourceId
-                       join allotmentclass in _MyDbContext.AllotmentClass
+                       join allotmentclass in _context.AllotmentClass
                        on fundsource.AllotmentClassId equals allotmentclass.Id
-                       join fund in _MyDbContext.Fund
+                       join fund in _context.Fund
                        on fundsource.FundId equals fund.FundId
                        where obligation.Id == indexOfPayment.ObligationId
                        select new
@@ -190,8 +182,8 @@ namespace fmis.Controllers.Accounting
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "");
             indexOfPayment.TotalDeduction = indexOfPayment.indexDeductions.Sum(x => x.Amount);
             indexOfPayment.NetAmount = indexOfPayment.GrossAmount - indexOfPayment.TotalDeduction;
-            indexOfPayment.payeeId = _MyDbContext.Dv.FirstOrDefault(x => x.DvId == indexOfPayment.DvId).PayeeId;
-            var periodExist = _MyDbContext.Indexofpayment.FirstOrDefault(x => x.PeriodCover == indexOfPayment.PeriodCover && x.payeeId == indexOfPayment.payeeId);
+            indexOfPayment.payeeId = _context.Dv.FirstOrDefault(x => x.DvId == indexOfPayment.DvId).PayeeId;
+            var periodExist = _context.Indexofpayment.FirstOrDefault(x => x.PeriodCover == indexOfPayment.PeriodCover && x.payeeId == indexOfPayment.payeeId);
 
             if (ModelState.IsValid)
             {
@@ -201,9 +193,9 @@ namespace fmis.Controllers.Accounting
                 indexOfPayment.CreatedBy = FName + " " + LName;
                 indexOfPayment.UserId = UserId;
 
-                _MyDbContext.Add(indexOfPayment);
+                _context.Add(indexOfPayment);
                 await Task.Delay(500);
-                await _MyDbContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -214,18 +206,18 @@ namespace fmis.Controllers.Accounting
         public IActionResult GetOrs(int cid, IndexOfPayment index)
         {
 
-            var budget_allotment = _MyDbContext.Budget_allotments
+            var budget_allotment = _context.Budget_allotments
             .Include(c => c.Yearly_reference)
             .Include(x => x.FundSources)
                 .ThenInclude(x => x.Obligations)
             .FirstOrDefault();
 
-            var ors_List = (from fundsource in _MyDbContext.FundSources
-                            join obligation in _MyDbContext.Obligation
+            var ors_List = (from fundsource in _context.FundSources
+                            join obligation in _context.Obligation
                             on fundsource.FundSourceId equals obligation.FundSourceId
-                            join allotmentclass in _MyDbContext.AllotmentClass
+                            join allotmentclass in _context.AllotmentClass
                             on fundsource.AllotmentClassId equals allotmentclass.Id
-                            join fund in _MyDbContext.Fund
+                            join fund in _context.Fund
                             on fundsource.FundId equals fund.FundId
                             where fundsource.AllotmentClassId == cid && obligation.status == "activated"
                             select new
@@ -241,7 +233,7 @@ namespace fmis.Controllers.Accounting
                                 allotmentCLassId = fundsource.AllotmentClassId
                             }).ToList();
 
-            var ors = _MyDbContext.Obligation.Where(x => x.FundSource.AllotmentClassId == cid && x.status == "activated").ToList()
+            var ors = _context.Obligation.Where(x => x.FundSource.AllotmentClassId == cid && x.status == "activated").ToList()
                           .Select(x => new
                           {
                               Id = x.Id,
@@ -253,7 +245,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult CheckifExist(int CategoryId, string poNumber)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
+            var data = _context.Indexofpayment.Where(x => x.PoNumber == poNumber && x.CategoryId == CategoryId).SingleOrDefault();
 
             if (Username == "201700272")
             {
@@ -274,7 +266,7 @@ namespace fmis.Controllers.Accounting
         }
         public JsonResult CheckInvoiceExist(string invoice)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.InvoiceNumber == invoice).SingleOrDefault();
+            var data = _context.Indexofpayment.Where(x => x.InvoiceNumber == invoice).SingleOrDefault();
 
             if (data != null)
             {
@@ -287,8 +279,8 @@ namespace fmis.Controllers.Accounting
         }
         public JsonResult CheckPeriodExist(string periodCover, int ddlBranches, int CategoryId)
         {
-            var payee_Id = _MyDbContext.Dv.FirstOrDefault(x => x.DvId == ddlBranches)?.PayeeId;
-            var data = _MyDbContext.Indexofpayment.Any(x => x.PeriodCover == periodCover && x.payeeId == payee_Id && x.CategoryId == CategoryId);
+            var payee_Id = _context.Dv.FirstOrDefault(x => x.DvId == ddlBranches)?.PayeeId;
+            var data = _context.Indexofpayment.Any(x => x.PeriodCover == periodCover && x.payeeId == payee_Id && x.CategoryId == CategoryId);
 
             if (data)
             {
@@ -301,7 +293,7 @@ namespace fmis.Controllers.Accounting
         }
         public JsonResult CheckProjectExist(int project)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.ProjectId == project).SingleOrDefault();
+            var data = _context.Indexofpayment.Where(x => x.ProjectId == project).SingleOrDefault();
 
             if (data != null)
             {
@@ -314,7 +306,7 @@ namespace fmis.Controllers.Accounting
         }
         public JsonResult CheckFromToExist(string fromTo)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.date == fromTo).SingleOrDefault();
+            var data = _context.Indexofpayment.Where(x => x.date == fromTo).SingleOrDefault();
 
             if (data != null)
             {
@@ -327,7 +319,7 @@ namespace fmis.Controllers.Accounting
         }
         public JsonResult CheckSoExist(int so)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.SoNumber == so).SingleOrDefault();
+            var data = _context.Indexofpayment.Where(x => x.SoNumber == so).SingleOrDefault();
 
             if (data != null)
             {
@@ -340,7 +332,7 @@ namespace fmis.Controllers.Accounting
         }
         public JsonResult CheckAccNoExist(string accNo)
         {
-            var data = _MyDbContext.Indexofpayment.Where(x => x.AccountNumber == accNo).SingleOrDefault();
+            var data = _context.Indexofpayment.Where(x => x.AccountNumber == accNo).SingleOrDefault();
 
             if (data != null)
             {
@@ -354,7 +346,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult CheckBillNumberExist(int billnumber, int IndexOfPaymentId)
         {
-            var data = _MyDbContext.BillNumber.Include(x => x.IndexOfPayment).Where(x => x.NumberOfBilling == billnumber && x.IndexOfPaymentId == IndexOfPaymentId || x.IndexOfPayment.NumberOfBill == billnumber).FirstOrDefault();
+            var data = _context.BillNumber.Include(x => x.IndexOfPayment).Where(x => x.NumberOfBilling == billnumber && x.IndexOfPaymentId == IndexOfPaymentId || x.IndexOfPayment.NumberOfBill == billnumber).FirstOrDefault();
 
             if (data != null)
             {
@@ -374,7 +366,7 @@ namespace fmis.Controllers.Accounting
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
 
-            /*ViewBag.ors = _MyDbContext.Indexofpayment.Select(x => new SelectListItem
+            /*ViewBag.ors = _context.Indexofpayment.Select(x => new SelectListItem
             {
                 Value = x.IndexOfPaymentId.ToString(),
                 Text = x.orsNo
@@ -386,7 +378,7 @@ namespace fmis.Controllers.Accounting
                 return NotFound();
             }
 
-            IndexOfPayment index = await _MyDbContext.Indexofpayment
+            IndexOfPayment index = await _context.Indexofpayment
                 .Include(x => x.indexDeductions).ThenInclude(x => x.Deduction)
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
@@ -395,7 +387,7 @@ namespace fmis.Controllers.Accounting
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == id);
 
-            var payee = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeId == index.payeeId)?.PayeeDescription;
+            var payee = _context.Payee.FirstOrDefault(x => x.PayeeId == index.payeeId)?.PayeeDescription;
             ViewBag.payee = payee;
             Console.WriteLine(payee);
 
@@ -464,7 +456,7 @@ namespace fmis.Controllers.Accounting
                         if (!string.IsNullOrEmpty(payee_fname) && !string.IsNullOrEmpty(payee_mname) && !string.IsNullOrEmpty(payee_lname))
                         {
                             var concatenatedPayee = payee_fname + " " + payee_mname + " " + payee_lname;
-                            var existingPayee = await _MyDbContext.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
+                            var existingPayee = await _context.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
 
                             if(existingPayee != null)
                             {
@@ -502,7 +494,7 @@ namespace fmis.Controllers.Accounting
         {
              using (var dbContext = new MyDbContext())
              {
-                 var matchingPayee = _MyDbContext.Payee
+                 var matchingPayee = _context.Payee
                      .FirstOrDefault(p => p.PayeeDescription == payeeDescription);
             
                  return matchingPayee != null;
@@ -546,15 +538,15 @@ namespace fmis.Controllers.Accounting
 
 
 
-                var categoryId = _MyDbContext.Category.FirstOrDefault(x => x.CategoryId == 25).CategoryId;
+                var categoryId = _context.Category.FirstOrDefault(x => x.CategoryId == 25).CategoryId;
                 int dvRow = 9;
                 var data = new List<string>();
                 for (int row = 9; row <= rowCount; row++)
                 {
-                    var deductionTax = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 22).DeductionId;
-                    var deductionPhic = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 23).DeductionId;
-                    var deductionPagibig = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 24).DeductionId;
-                    var deductionCoop = _MyDbContext.Deduction.FirstOrDefault(x => x.DeductionId == 25).DeductionId;
+                    var deductionTax = _context.Deduction.FirstOrDefault(x => x.DeductionId == 22).DeductionId;
+                    var deductionPhic = _context.Deduction.FirstOrDefault(x => x.DeductionId == 23).DeductionId;
+                    var deductionPagibig = _context.Deduction.FirstOrDefault(x => x.DeductionId == 24).DeductionId;
+                    var deductionCoop = _context.Deduction.FirstOrDefault(x => x.DeductionId == 25).DeductionId;
 
                     var deduct_Tax = worksheet.Cells[row, 14].Value?.ToString();
                     var deduct_Phic = worksheet.Cells[row, 15].Value?.ToString();
@@ -569,17 +561,17 @@ namespace fmis.Controllers.Accounting
                     var deduct_CoopCell = worksheet.Cells[row, 17].GetValue<decimal>();
                     var total_deductions = deduct_TaxCell + deduct_PhicCell + deduct_PagibigCell + deduct_CoopCell;
 
-                    var dvId = _MyDbContext.Dv.FirstOrDefault(x => x.DvNo == worksheet.Cells[dvRow, 23].Text).DvId;
-                    var dvDate = _MyDbContext.Dv.FirstOrDefault(x => x.DvId == dvId).Date;
+                    var dvId = _context.Dv.FirstOrDefault(x => x.DvNo == worksheet.Cells[dvRow, 23].Text).DvId;
+                    var dvDate = _context.Dv.FirstOrDefault(x => x.DvId == dvId).Date;
 
                     var payee_fname = worksheet.Cells[row, 5].Text;
                     var payee_lname = worksheet.Cells[row, 4].Text;
                     var concatenatedPayee = payee_fname + " " + payee_lname;
 
-                    var payeeId = _MyDbContext.Payee.FirstOrDefault(x => x.PayeeDescription == concatenatedPayee)?.PayeeId;
+                    var payeeId = _context.Payee.FirstOrDefault(x => x.PayeeDescription == concatenatedPayee)?.PayeeId;
                     var periodCover = worksheet.Cells[dvRow, 24]?.Text is not null ? worksheet.Cells[dvRow, 24]?.Text : null;
 
-                    var existingPayee = await _MyDbContext.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
+                    var existingPayee = await _context.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
                     if (existingPayee == null)
                     {
                         // Data already exists, add it to the existingData list
@@ -595,7 +587,7 @@ namespace fmis.Controllers.Accounting
                             DvDate = dvDate,
                             payeeId = payeeId,
                             CategoryId = categoryId,
-                            Particulars = _MyDbContext.Dv.FirstOrDefault(x => x.DvId == dvId).Particulars,
+                            Particulars = _context.Dv.FirstOrDefault(x => x.DvId == dvId).Particulars,
                             GrossAmount = Convert.ToDecimal(amount),
                             TotalDeduction = Convert.ToDecimal(total_deductions),
                             NetAmount = Convert.ToDecimal(amount) - total_deductions,
@@ -653,8 +645,8 @@ namespace fmis.Controllers.Accounting
                 }
                 else
                 {
-                    await _MyDbContext.AddRangeAsync(index);
-                    var water = await _MyDbContext.SaveChangesAsync();
+                    await _context.AddRangeAsync(index);
+                    var water = await _context.SaveChangesAsync();
 
                     TempData["SuccessMessage"] = "File uploaded successfully!";
                     TempData["NotificationType"] = "success";
@@ -670,7 +662,7 @@ namespace fmis.Controllers.Accounting
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IndexOfPayment index, string daterange)
         {
-            var indexes = await _MyDbContext.Indexofpayment
+            var indexes = await _context.Indexofpayment
                 .Include(x => x.Dv)
                     .ThenInclude(x => x.Payee)
                 .Include(x => x.BillNumbers)
@@ -703,12 +695,12 @@ namespace fmis.Controllers.Accounting
             //indexes.allotmentClassType = index.allotmentClassType;
 
 
-            var ors = (from fundsource in _MyDbContext.FundSources
-                       join obligation in _MyDbContext.Obligation
+            var ors = (from fundsource in _context.FundSources
+                       join obligation in _context.Obligation
                        on fundsource.FundSourceId equals obligation.FundSourceId
-                       join allotmentclass in _MyDbContext.AllotmentClass
+                       join allotmentclass in _context.AllotmentClass
                        on fundsource.AllotmentClassId equals allotmentclass.Id
-                       join fund in _MyDbContext.Fund
+                       join fund in _context.Fund
                        on fundsource.FundId equals fund.FundId
                        where obligation.Id == index.ObligationId
                        select new
@@ -743,16 +735,16 @@ namespace fmis.Controllers.Accounting
             PopulateDvDropDownList();
             PopulateDeductionDropDownList();
 
-            _MyDbContext.Update(indexes);
+            _context.Update(indexes);
             //await Task.Delay(500);
-            await _MyDbContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             //PopulateOrsDropDownList(indexes.IndexFundSourceId);
             return RedirectToAction("Index");
         }
 
         private void PopulateAssignedIndexDeductionData(IndexOfPayment index)
         {
-            var allDeduction = _MyDbContext.IndexDeduction;
+            var allDeduction = _context.IndexDeduction;
             var indexDeduction = new HashSet<int>(index.indexDeductions.Select(c => c.IndexDeductionId));
             var viewModel = new List<IndexDeduction>();
             foreach (var deduction in allDeduction)
@@ -769,7 +761,7 @@ namespace fmis.Controllers.Accounting
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var dvs = await _MyDbContext.Indexofpayment
+            var dvs = await _context.Indexofpayment
                 .Include(x => x.Category)
                 .Include(x => x.Dv)
                     .ThenInclude(x => x.Payee)
@@ -777,15 +769,15 @@ namespace fmis.Controllers.Accounting
                     .ThenInclude(x => x.Deduction)
                 .FirstOrDefaultAsync(x => x.IndexOfPaymentId == ID);
 
-            _MyDbContext.Indexofpayment.Remove(dvs);
+            _context.Indexofpayment.Remove(dvs);
             await Task.Delay(500);
-            await _MyDbContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         private void PopulateCategoryDropDownList(object selected = null)
         {
-            var Query = from d in _MyDbContext.Category
+            var Query = from d in _context.Category
                         orderby d.CategoryId
                         select d;
             ViewBag.CategoryId = new SelectList(Query, "CategoryId", "CategoryDescription", selected);
@@ -793,10 +785,10 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateDvDropDownList(object selected = null)
         {
-            var Query = from d in _MyDbContext.Dv
+            var Query = from d in _context.Dv
                         orderby d.DvId
                         select d;
-            ViewBag.DvId = _MyDbContext.Dv?.Select(x => new SelectListItem
+            ViewBag.DvId = _context.Dv?.Select(x => new SelectListItem
             {
                 Value = x.DvId.ToString(),
                 Text = x.DvNo
@@ -805,10 +797,10 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateOrsDropDownList(object selected = null)
         {
-            var Query = from ors in _MyDbContext.IndexFundSource
+            var Query = from ors in _context.IndexFundSource
                         orderby ors.Id
                         select ors;
-            ViewBag.IndexFund = _MyDbContext.IndexFundSource.Select(x => new SelectListItem
+            ViewBag.IndexFund = _context.IndexFundSource.Select(x => new SelectListItem
             {
                 Value = x.Id.ToString(),
                 Text = x.Title
@@ -817,7 +809,7 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateDeductionDropDownList(object selected = null)
         {
-            var Query = from d in _MyDbContext.Deduction
+            var Query = from d in _context.Deduction
                         orderby d.DeductionId
                         select d;
             ViewBag.DeductionId = new SelectList(Query, "DeductionId", "DeductionDescription", selected);
@@ -825,7 +817,7 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateOrsNoDownList(object selected = null)
         {
-            var Query = from d in _MyDbContext.Indexofpayment
+            var Query = from d in _context.Indexofpayment
                         orderby d.ObligationId
                         select d;
             ViewBag.ObligationId = new SelectList(Query, "IndexOfPaymentId", "ObligationId", selected);
@@ -833,7 +825,7 @@ namespace fmis.Controllers.Accounting
 
         private void PopulateallotmentClassTypeList(object selected = null)
         {
-            var Query = from d in _MyDbContext.Indexofpayment
+            var Query = from d in _context.Indexofpayment
                         orderby d.allotmentClassType
                         select d;
             ViewBag.AllotmentClassType = new SelectList(Query, "IndexOfPaymentId", "allotmentClassType", selected);
@@ -863,7 +855,7 @@ namespace fmis.Controllers.Accounting
                 var currentColumn = 15;
                 var deductColumn = 18;
 
-                var indexData = _MyDbContext.Indexofpayment
+                var indexData = _context.Indexofpayment
                                             .Include(x => x.Category)
                                             .Include(x => x.Dv)
                                                 .ThenInclude(x => x.Payee)
@@ -871,10 +863,10 @@ namespace fmis.Controllers.Accounting
                                                 .ThenInclude(x => x.Deduction)
                                             .Where(x => x.Dv.DvNo == searchString).ToList();
 
-                var subTotalDeduction = _MyDbContext.IndexDeduction.Where(x => x.IndexOfPayment.Dv.DvNo == searchString).Sum(x => x.Amount);
-                var totalGross = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.GrossAmount);
-                var totalDeduction = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.TotalDeduction);
-                var totalnet = _MyDbContext.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.NetAmount);
+                var subTotalDeduction = _context.IndexDeduction.Where(x => x.IndexOfPayment.Dv.DvNo == searchString).Sum(x => x.Amount);
+                var totalGross = _context.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.GrossAmount);
+                var totalDeduction = _context.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.TotalDeduction);
+                var totalnet = _context.Indexofpayment.Where(x => x.Dv.DvNo == searchString).Sum(x => x.NetAmount);
 
 
                 ws.Cell("A1").Style.Font.FontSize = 10;
@@ -981,7 +973,7 @@ namespace fmis.Controllers.Accounting
                 ws.Cell("Q1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
 
-                foreach (var deductions in _MyDbContext.Deduction)
+                foreach (var deductions in _context.Deduction)
                 {
                     ws.Cell(deductRow, deductColumn).Style.Font.FontSize = 10;
                     ws.Cell(deductRow, deductColumn).Style.Font.FontName = "Calibri Light";

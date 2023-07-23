@@ -17,14 +17,12 @@ namespace fmis.Controllers.Budget.silver
     [Authorize(Policy = "BudgetAdmin")]
     public class Requesting_officeController : Controller
     {
-        private readonly RequestingOfficeContext _context;
-        private readonly DesignationContext _DContext;
+        private readonly MyDbContext _context;
         private readonly PersonalInformationMysqlContext _pis_context;
 
-        public Requesting_officeController(RequestingOfficeContext context, DesignationContext DContext, PersonalInformationMysqlContext pis_context)
+        public Requesting_officeController(MyDbContext context, PersonalInformationMysqlContext pis_context)
         {
             _context = context;
-            _DContext = DContext;
             _pis_context = pis_context;
         }
 

@@ -15,13 +15,11 @@ namespace fmis.Controllers.Budget
     [Authorize(Policy = "BudgetAdmin")]
     public class PrexcTrustFundController : Controller
     {
-        private readonly PrexcTrustFundContext _context;
-        private readonly MyDbContext _MyDbContext;
+        private readonly MyDbContext _context;
 
-        public PrexcTrustFundController(PrexcTrustFundContext context, MyDbContext MyDbContext)
+        public PrexcTrustFundController(MyDbContext context)
         {
             _context = context;
-            _MyDbContext = MyDbContext;
         }
 
         public class PrexcTrustFundData

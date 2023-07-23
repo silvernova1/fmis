@@ -23,28 +23,19 @@ using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Authorization;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.InkML;
 
 namespace fmis.Controllers.Budget.John
 {
     [Authorize(Policy = "BudgetAdmin")]
     public class FundSourceController : Controller
     {
-        private readonly FundSourceContext _FundSourceContext;
-        private readonly UacsContext _uContext;
-        private readonly BudgetAllotmentContext _bContext;
-        private readonly PrexcContext _pContext;
-        private readonly RespoCenterContext _rContext;
-        private readonly MyDbContext _MyDbContext;
+        private readonly MyDbContext _context;
         private readonly ILogger<FundSourceController> _logger;
 
-        public FundSourceController(FundSourceContext FundSourceContext, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, BudgetAllotmentContext BudgetAllotmentContext, RespoCenterContext rContext, ILogger<FundSourceController> logger)
+        public FundSourceController(MyDbContext context, ILogger<FundSourceController> logger)
         {
-            _FundSourceContext = FundSourceContext;
-            _uContext = uContext;
-            _bContext = bContext;
-            _pContext = pContext;
-            _MyDbContext = MyDbContext;
-            _rContext = rContext;
+            _context = context;
             _logger = logger;
         }
 
@@ -74,7 +65,7 @@ namespace fmis.Controllers.Budget.John
         #region API
         public ActionResult CheckFundSourceTitle(string title)
         {
-            return Ok(_MyDbContext.FundSources.Any(x => x.FundSourceTitle == title && x.BudgetAllotment.YearlyReferenceId == YearlyRefId));
+            return Ok(_context.FundSources.Any(x => x.FundSourceTitle == title && x.BudgetAllotment.YearlyReferenceId == YearlyRefId));
         }
         #endregion
 
@@ -85,12 +76,12 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
-            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            string year = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             var res = next_year.AddYears(-1);
             var result = res.Year.ToString();
 
-            var budget_allotment = await _MyDbContext.Budget_allotments
+            var budget_allotment = await _context.Budget_allotments
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
                 .ThenInclude(x => x.RespoCenter)
             .Include(x => x.FundSources.Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId))
@@ -106,11 +97,11 @@ namespace fmis.Controllers.Budget.John
 
             budget_allotment.FundSources.ToList().ForEach(x =>
             {
-                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.FundSourceId).Where(x => x.status == "activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+                x.obligated_amount = _context.Obligation.Include(x => x.ObligationAmounts).Where(y => y.FundSourceId == x.FundSourceId).Where(x => x.status == "activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 
-            var fundsourcesLastYr = await _MyDbContext.FundSources
+            var fundsourcesLastYr = await _context.FundSources
                 .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.RespoCenter)
                 .Include(x => x.Prexc)
@@ -122,13 +113,13 @@ namespace fmis.Controllers.Budget.John
 
             budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
 
-            ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.CurrentYrAllotment_obligatedAmount = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
-            ViewBag.LastYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.CurrentYrAllotment_beginningbalance = _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.CurrentYrAllotment_remainingbalance = _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.CurrentYrAllotment_obligatedAmount = _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"));
+            ViewBag.LastYrAllotment_remainingbalance = _context.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == result && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
 
             var fundSource = "";
-            foreach(var funds in _MyDbContext.FundSources)
+            foreach(var funds in _context.FundSources)
             {
                 fundSource = funds.FundSourceTitle;
             }
@@ -147,7 +138,7 @@ namespace fmis.Controllers.Budget.John
         [HttpPost]
         public async Task<ActionResult> CheckNextYear(int fundsourceId, bool addToNext)
         {
-            var fundsources = await _MyDbContext.FundSources.FindAsync(fundsourceId);
+            var fundsources = await _context.FundSources.FindAsync(fundsourceId);
 
             if(fundsources.Remaining_balance != 0)
             {
@@ -162,23 +153,23 @@ namespace fmis.Controllers.Budget.John
                     char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
                     //fundsources.FromPreviousAllotment = true;
                     fundsources.FundSourceTitle = fundsources.FundSourceTitle.TrimStart(trim);
-                    _MyDbContext.Update(fundsources);
-                    await _MyDbContext.SaveChangesAsync();
+                    _context.Update(fundsources);
+                    await _context.SaveChangesAsync();
                 }
             }
             else
             {
                 fundsources.IsAddToNextAllotment = false;
             }
-            _MyDbContext.Update(fundsources);
-            await _MyDbContext.SaveChangesAsync();
-            return Ok(await _MyDbContext.SaveChangesAsync());
+            _context.Update(fundsources);
+            await _context.SaveChangesAsync();
+            return Ok(await _context.SaveChangesAsync());
         }
 
         [HttpPost]
         public async Task<ActionResult> CheckReusedConap(int fundsourceId, bool reusedConap)
         {
-            var fundsources = await _MyDbContext.FundSources.Where(x=>x.IsAddToNextAllotment == true).FirstOrDefaultAsync(x=>x.FundSourceId == fundsourceId);
+            var fundsources = await _context.FundSources.Where(x=>x.IsAddToNextAllotment == true).FirstOrDefaultAsync(x=>x.FundSourceId == fundsourceId);
 
             if (fundsources.Remaining_balance != 0)
             {
@@ -188,9 +179,9 @@ namespace fmis.Controllers.Budget.John
             {
                 fundsources.ReUsedConap = false;
             }
-            _MyDbContext.Update(fundsources);
-            await _MyDbContext.SaveChangesAsync();
-            return Ok(await _MyDbContext.SaveChangesAsync());
+            _context.Update(fundsources);
+            await _context.SaveChangesAsync();
+            return Ok(await _context.SaveChangesAsync());
         }
 
 
@@ -203,7 +194,7 @@ namespace fmis.Controllers.Budget.John
 
             string ac = AllotmentClassId.ToString();
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x => x.uacs_type == AllotmentClassId || x.uacs_type == 4).ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _context.Uacs.Where(x => x.uacs_type == AllotmentClassId || x.uacs_type == 4).ToListAsync());
             ViewBag.uacs = uacs_data;
 
 
@@ -218,7 +209,7 @@ namespace fmis.Controllers.Budget.John
         }
         public IActionResult GetSectionsList(int RespoId)
         {
-            List<Sections> selectList = _MyDbContext.Sections.Where(x => x.RespoId == RespoId).ToList();
+            List<Sections> selectList = _context.Sections.Where(x => x.RespoId == RespoId).ToList();
             ViewBag.Slist = new SelectList(selectList, "SectionId, SectionName");
             return PartialView("DisplaySections");
         }
@@ -233,21 +224,21 @@ namespace fmis.Controllers.Budget.John
             fundSource.UpdatedAt = DateTime.Now;
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-            var result = _MyDbContext.Prexc.Where(x => x.Id == PrexcId).First();
-            var result2 = _MyDbContext.Fund.Where(x => x.FundId == FundId).First();
+            var result = _context.Prexc.Where(x => x.Id == PrexcId).First();
+            var result2 = _context.Fund.Where(x => x.FundId == FundId).First();
 
-            /*if (_MyDbContext.FundSources.Where(x => x.FundSourceTitle == fundSource.FundSourceTitle).Count() > 0)
+            /*if (_context.FundSources.Where(x => x.FundSourceTitle == fundSource.FundSourceTitle).Count() > 0)
             {
                 ModelState.AddModelError("FundSourceTitle", "Duplicate Fund Source Title");
                 return View(fundSource);
             }*/
 
-            var fundsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
+            var fundsource_amount = _context.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
             fundSource.Beginning_balance = fundsource_amount.Sum(x => x.beginning_balance);
             fundSource.Remaining_balance = fundsource_amount.Sum(x => x.beginning_balance);
 
-            var item = _MyDbContext.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).ToList();
+            var item = _context.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).ToList();
             if (ModelState.IsValid)
             {
                 if(item.Count() > 0)
@@ -257,17 +248,17 @@ namespace fmis.Controllers.Budget.John
                 }
                 else
                 {
-                    _FundSourceContext.Add(fundSource);
-                    _FundSourceContext.SaveChanges();
+                    _context.Add(fundSource);
+                    _context.SaveChanges();
                   
 
                     fundsource_amount.ForEach(a => a.FundSourceId = fundSource.FundSourceId);
                     await Task.Delay(500);
-                    this._MyDbContext.SaveChanges();
+                    this._context.SaveChanges();
 
                 }
             }
-            /*var item = _MyDbContext.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).FirstOrDefault();
+            /*var item = _context.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).FirstOrDefault();
             if (item!=null)
             {
                 ModelState.AddModelError("keyName", "Message");
@@ -285,7 +276,7 @@ namespace fmis.Controllers.Budget.John
         //POST
         public IActionResult selectAT(int id)
         {
-            var branches = _MyDbContext.Prexc.ToList();
+            var branches = _context.Prexc.ToList();
             return Json(branches.Where(x => x.Id == id).ToList());
         }
 
@@ -298,13 +289,13 @@ namespace fmis.Controllers.Budget.John
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
-            var fundsourcess = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id)
+            var fundsourcess = _context.FundSources.Where(x => x.FundSourceId == fund_source_id)
                 .Include(x => x.FundSourceAmounts.Where(x => x.status == "activated").OrderBy( x=> x.UacsId))
                 .FirstOrDefault();
 
-            var fundsource = _MyDbContext.FundSources.Where(x => x.FundSourceId == fund_source_id).FirstOrDefault();
+            var fundsource = _context.FundSources.Where(x => x.FundSourceId == fund_source_id).FirstOrDefault();
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _context.Uacs.ToListAsync());
             ViewBag.uacs = uacs_data;
 
             PopulatePrexcsDropDownList(fundsource);
@@ -322,11 +313,11 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Edit(FundSource fundSource)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var funsource_amount = await _MyDbContext.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
+            var funsource_amount = await _context.FundSourceAmount.Where(f => f.FundSourceId == fundSource.FundSourceId && f.status == "activated").AsNoTracking().ToListAsync();
             var beginning_balance = funsource_amount.Sum(x => x.beginning_balance);
             var remaining_balance = funsource_amount.Sum(x => x.remaining_balance);
 
-            var fundsource_data = await _MyDbContext.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).AsNoTracking().FirstOrDefaultAsync();
+            var fundsource_data = await _context.FundSources.Where(s => s.FundSourceId == fundSource.FundSourceId).AsNoTracking().FirstOrDefaultAsync();
             fundsource_data.PrexcId = fundSource.PrexcId;
             fundsource_data.FundId = fundSource.FundId;
             fundsource_data.FundSourceTitle = fundSource.FundSourceTitle;
@@ -338,8 +329,8 @@ namespace fmis.Controllers.Budget.John
             fundsource_data.Original = fundSource.Original;
             fundsource_data.Breakdown = fundSource.Breakdown;
 
-            _MyDbContext.Update(fundsource_data);
-            await _MyDbContext.SaveChangesAsync();
+            _context.Update(fundsource_data);
+            await _context.SaveChangesAsync();
             await Task.Delay(500);
 
             return RedirectToAction("Index", "FundSource", new
@@ -354,7 +345,7 @@ namespace fmis.Controllers.Budget.John
         [HttpPost]
         public IActionResult SaveFundsourceamount(List<FundsourceamountData> data)
         {
-            var data_holder = _MyDbContext.FundSourceAmount;
+            var data_holder = _context.FundSourceAmount;
 
             foreach (var item in data)
             {
@@ -370,8 +361,8 @@ namespace fmis.Controllers.Budget.John
                 fundsource_amount.status = "activated";
                 fundsource_amount.fundsource_amount_token = item.fundsource_amount_token;
                 fundsource_amount.fundsource_token = item.fundsource_token;
-                _MyDbContext.FundSourceAmount.Update(fundsource_amount);
-                this._MyDbContext.SaveChanges();
+                _context.FundSourceAmount.Update(fundsource_amount);
+                this._context.SaveChanges();
             }
 
             return Json(data);
@@ -384,10 +375,10 @@ namespace fmis.Controllers.Budget.John
         private void PopulatePrexcsDropDownList(object selectedDepartment = null)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var departmentsQuery = from d in _pContext.Prexc
+            var departmentsQuery = from d in _context.Prexc
                                    orderby d.pap_title
                                    select d;
-            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList().Where(x=> x.status == "activated")
+            ViewBag.PrexcId = new SelectList((from s in _context.Prexc.ToList().Where(x=> x.status == "activated")
                                               select new
                                               {
                                                   PrexcId = s.Id,
@@ -403,7 +394,7 @@ namespace fmis.Controllers.Budget.John
 
         private void PopulateRespoDropDownList()
         {
-            ViewBag.RespoId = new SelectList((from s in _MyDbContext.RespoCenter.ToList()
+            ViewBag.RespoId = new SelectList((from s in _context.RespoCenter.ToList()
                                               select new
                                               {
                                                   RespoId = s.RespoId,
@@ -416,7 +407,7 @@ namespace fmis.Controllers.Budget.John
         }
         private void PopulateSectionsDropDownList()
         {
-            ViewBag.SectionsId = new SelectList((from s in _MyDbContext.Sections.ToList()
+            ViewBag.SectionsId = new SelectList((from s in _context.Sections.ToList()
                                               select new
                                               {
                                                   SectionId = s.SectionId,
@@ -430,10 +421,10 @@ namespace fmis.Controllers.Budget.John
 
         private void PopulateFundDropDownList()
         {
-            var departmentsQuery = from d in _MyDbContext.Fund
+            var departmentsQuery = from d in _context.Fund
                                    orderby d.Fund_description
                                    select d;
-            ViewBag.FundId = new SelectList((from s in _MyDbContext.Fund.ToList()
+            ViewBag.FundId = new SelectList((from s in _context.Fund.ToList()
                                              select new
                                              {
                                                  FundId = s.FundId,
@@ -452,45 +443,45 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var many in data.many_token)
                 {
-                    var fund_source_amount = _MyDbContext.FundSourceAmount.FirstOrDefault(s => s.fundsource_amount_token == many.many_token);
+                    var fund_source_amount = _context.FundSourceAmount.FirstOrDefault(s => s.fundsource_amount_token == many.many_token);
                     fund_source_amount.status = "deactivated";
 
-                    _MyDbContext.FundSourceAmount.Update(fund_source_amount);
-                    await _MyDbContext.SaveChangesAsync();
+                    _context.FundSourceAmount.Update(fund_source_amount);
+                    await _context.SaveChangesAsync();
 
-                    var fund_source_update = await _MyDbContext.FundSources.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
+                    var fund_source_update = await _context.FundSources.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
                     fund_source_update.Remaining_balance -= fund_source_amount.beginning_balance;
 
                     //detach para ma calculate ang multiple delete
-                    var local = _MyDbContext.Set<FundSource>()
+                    var local = _context.Set<FundSource>()
                             .Local
                             .FirstOrDefault(entry => entry.token.Equals(fund_source_amount.fundsource_token));
                     // check if local is not null 
                     if (local != null)
                     {
                         // detach
-                        _MyDbContext.Entry(local).State = EntityState.Detached;
+                        _context.Entry(local).State = EntityState.Detached;
                     }
                     // set Modified flag in your entry
-                    _MyDbContext.Entry(fund_source_update).State = EntityState.Modified;
+                    _context.Entry(fund_source_update).State = EntityState.Modified;
                     //end detach
 
-                    _MyDbContext.FundSources.Update(fund_source_update);
-                    _MyDbContext.SaveChanges();
+                    _context.FundSources.Update(fund_source_update);
+                    _context.SaveChanges();
                 }
             }
             else
             {
-                var fund_source_amount = _MyDbContext.FundSourceAmount.FirstOrDefault(s => s.fundsource_amount_token == data.single_token);
+                var fund_source_amount = _context.FundSourceAmount.FirstOrDefault(s => s.fundsource_amount_token == data.single_token);
                 fund_source_amount.status = "deactivated";
 
-                _MyDbContext.FundSourceAmount.Update(fund_source_amount);
-                await _MyDbContext.SaveChangesAsync();
+                _context.FundSourceAmount.Update(fund_source_amount);
+                await _context.SaveChangesAsync();
 
-                var fund_source_update = await _MyDbContext.FundSources.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
+                var fund_source_update = await _context.FundSources.AsNoTracking().FirstOrDefaultAsync(s => s.token == fund_source_amount.fundsource_token);
                 fund_source_update.Remaining_balance -= fund_source_amount.beginning_balance;
-                _MyDbContext.FundSources.Update(fund_source_update);
-                _MyDbContext.SaveChanges();
+                _context.FundSources.Update(fund_source_update);
+                _context.SaveChanges();
             }
 
             return Json(data);
@@ -508,7 +499,7 @@ namespace fmis.Controllers.Budget.John
                 return NotFound();
             }
 
-            var fundSource = await _FundSourceContext.FundSource
+            var fundSource = await _context.FundSources
                 .FirstOrDefaultAsync(m => m.FundSourceId == id);
             if (fundSource == null)
             {
@@ -524,15 +515,15 @@ namespace fmis.Controllers.Budget.John
         public async Task<IActionResult> Delete(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            var fundSource = await _MyDbContext.FundSources
+            var fundSource = await _context.FundSources
                 .Include(x => x.FundSourceAmounts)
                 .Include(x => x.FundTransferedTo)
                 .Include(x => x.FundsRealignment)
                 .Include(x => x.Obligations)
                 .FirstOrDefaultAsync(x => x.FundSourceId == id);
 
-            _MyDbContext.Remove(fundSource);
-            await _MyDbContext.SaveChangesAsync();
+            _context.Remove(fundSource);
+            await _context.SaveChangesAsync();
             await Task.Delay(500);
             return RedirectToAction("Index", "FundSource", new
             {
@@ -547,7 +538,7 @@ namespace fmis.Controllers.Budget.John
         private bool FundSourceExists(int id)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
-            return _FundSourceContext.FundSource.Any(e => e.FundSourceId == id);
+            return _context.FundSources.Any(e => e.FundSourceId == id);
         }
 
         #region COOKIES

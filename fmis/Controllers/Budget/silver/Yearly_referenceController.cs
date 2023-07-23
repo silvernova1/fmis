@@ -15,13 +15,11 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class Yearly_referenceController : Controller
     {
-        private readonly Yearly_referenceContext _context;
-        private readonly MyDbContext _MyDbcontext;
+        private readonly MyDbContext _context;
 
-        public Yearly_referenceController(Yearly_referenceContext context, MyDbContext MyDbcontext)
+        public Yearly_referenceController(MyDbContext context)
         {
             _context = context;
-            _MyDbcontext = MyDbcontext;
         }
 
         // GET: Yearly_reference
@@ -73,8 +71,8 @@ namespace fmis.Controllers
             ViewBag.filter = new FilterSidebar("master_data", "yearlyreference", "");
             if (ModelState.IsValid)
             {
-                _MyDbcontext.Add(yearly_reference);
-                await _MyDbcontext.SaveChangesAsync();
+                _context.Add(yearly_reference);
+                await _context.SaveChangesAsync();
                 await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }

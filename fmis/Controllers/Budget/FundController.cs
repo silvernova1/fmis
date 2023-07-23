@@ -14,19 +14,17 @@ namespace fmis.Controllers
     [Authorize(Policy = "BudgetAdmin")]
     public class FundController : Controller
     {
-        private readonly FundContext _fundContext;
-        private readonly MyDbContext _MyDbContext;
+        private readonly MyDbContext _context;
 
-        public FundController(FundContext fundContext, MyDbContext MyDbContext)
+        public FundController(MyDbContext context)
         {
-            _fundContext = fundContext;
-            _MyDbContext = MyDbContext;
+            _context = context;
         }
 
         public async  Task<IActionResult> Index()
         {
             ViewBag.filter = new FilterSidebar("master_data", "Fund", "");
-            return View(await _fundContext.Fund.ToListAsync());
+            return View(await _context.Fund.ToListAsync());
         }
 
 
@@ -55,8 +53,8 @@ namespace fmis.Controllers
                     fund.AppropriationID = 2;
                 }*/
             
-                _fundContext.Add(fund);
-                await _fundContext.SaveChangesAsync();
+                _context.Add(fund);
+                await _context.SaveChangesAsync();
                 await Task.Delay(500);
                 return RedirectToAction(nameof(Index));
             }
@@ -73,7 +71,7 @@ namespace fmis.Controllers
                 return NotFound();
             }
 
-            var fund = await _fundContext.Fund.FindAsync(id);
+            var fund = await _context.Fund.FindAsync(id);
             if (fund == null)
             {
                 return NotFound();
@@ -87,13 +85,13 @@ namespace fmis.Controllers
         {
 
 
-            var funds = await _fundContext.Fund.Where(x => x.FundId == fund.FundId).AsNoTracking().FirstOrDefaultAsync();
+            var funds = await _context.Fund.Where(x => x.FundId == fund.FundId).AsNoTracking().FirstOrDefaultAsync();
             funds.Fund_code_conap = fund.Fund_code_conap;
             funds.Fund_code_current = fund.Fund_code_current;
             funds.Fund_description = fund.Fund_description;
 
-            _fundContext.Update(funds);
-            await _fundContext.SaveChangesAsync();
+            _context.Update(funds);
+            await _context.SaveChangesAsync();
             await Task.Delay(500);
             return RedirectToAction("Index");
         }
@@ -101,9 +99,9 @@ namespace fmis.Controllers
         public async Task<ActionResult> Delete(String id)
         {
             Int32 ID = Convert.ToInt32(id);
-            var fund = await _fundContext.Fund.Include(x=>x.Sub_Allotments).ThenInclude(x=>x.SubAllotmentAmounts).Where(p => p.FundId == ID).FirstOrDefaultAsync();
-            _fundContext.Fund.Remove(fund);
-            await _fundContext.SaveChangesAsync();
+            var fund = await _context.Fund.Include(x=>x.Sub_Allotments).ThenInclude(x=>x.SubAllotmentAmounts).Where(p => p.FundId == ID).FirstOrDefaultAsync();
+            _context.Fund.Remove(fund);
+            await _context.SaveChangesAsync();
             await Task.Delay(500);
             return RedirectToAction("Index");
         }

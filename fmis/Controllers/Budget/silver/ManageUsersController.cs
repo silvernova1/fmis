@@ -19,7 +19,7 @@ namespace fmis.Controllers.Budget.silver
 {
     public class ManageUsersController : Controller
     {
-        private readonly ManageUsersContext _Context;
+        private readonly MyDbContext _context;
         private readonly PersonalInformationMysqlContext _pis_context;
         private UserManager<FmisUser> userManager;
         private SignInManager<FmisUser> signinManager;
@@ -28,9 +28,9 @@ namespace fmis.Controllers.Budget.silver
 
         //UserContext context = new UserContext();
 
-        public ManageUsersController(ManageUsersContext Context, PersonalInformationMysqlContext pis_context, UserManager<FmisUser> usrMgr, SignInManager<FmisUser> signManager, RoleManager<IdentityRole> roleMgr)
+        public ManageUsersController(MyDbContext context, PersonalInformationMysqlContext pis_context, UserManager<FmisUser> usrMgr, SignInManager<FmisUser> signManager, RoleManager<IdentityRole> roleMgr)
         {
-            _Context = Context;
+            _context = context;
             _pis_context = pis_context;
             userManager = usrMgr;
             signinManager = signManager;
@@ -42,7 +42,7 @@ namespace fmis.Controllers.Budget.silver
             ViewBag.layout = "_Layout";
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
 
-            var ManageUsers = _Context.ManageUsers.ToList();
+            var ManageUsers = _context.ManageUsers.ToList();
 
             
 
@@ -116,10 +116,10 @@ namespace fmis.Controllers.Budget.silver
                 var result = await userManager.CreateAsync(user, model.Password = "123");
                 await userManager.AddToRoleAsync(user, role.Name);
                 //
-                _Context.Add(model);
+                _context.Add(model);
                 user.Username = model.UserId;
                 model.Password = model.Password;
-                await _Context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
 
                 // If user is successfully created, sign-in the user using
@@ -143,7 +143,7 @@ namespace fmis.Controllers.Budget.silver
         public async Task<IActionResult> Edit(string UserId)
         {
             ViewBag.filter = new FilterSidebar("master_data", "ManageUsers", "");
-            var ManageUsers = await _Context.ManageUsers
+            var ManageUsers = await _context.ManageUsers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.UserId == UserId);
 
@@ -170,8 +170,8 @@ namespace fmis.Controllers.Budget.silver
             {
                 try
                 {
-                    _Context.Update(ManageUsers);
-                    await _Context.SaveChangesAsync();
+                    _context.Update(ManageUsers);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -194,7 +194,7 @@ namespace fmis.Controllers.Budget.silver
         private void PopulatePsDropDownList()
         {
             ViewBag.UserId = new SelectList((from s in _pis_context.allPersonalInformation()
-                                             where !_Context.ManageUsers.Any(ro => ro.UserId == s.userid)
+                                             where !_context.ManageUsers.Any(ro => ro.UserId == s.userid)
                                              select new
                                              {
                                                  UserId = s.userid,
@@ -215,7 +215,7 @@ namespace fmis.Controllers.Budget.silver
 
             //return Json(ViewBag.pi_userid_existing.full_name);
 
-            var ManageUsers = await _Context.ManageUsers
+            var ManageUsers = await _context.ManageUsers
                 .FirstOrDefaultAsync(m => m.UserId == UserId);
 
             PopulatePsDropDownList();
@@ -233,15 +233,15 @@ namespace fmis.Controllers.Budget.silver
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ManageUsers = await _Context.ManageUsers.FindAsync(id);
-            _Context.ManageUsers.Remove(ManageUsers);
-            await _Context.SaveChangesAsync();
+            var ManageUsers = await _context.ManageUsers.FindAsync(id);
+            _context.ManageUsers.Remove(ManageUsers);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ManageUsersExists(int id)
         {
-            return _Context.ManageUsers.Any(e => e.Id == id);
+            return _context.ManageUsers.Any(e => e.Id == id);
         }
 
 

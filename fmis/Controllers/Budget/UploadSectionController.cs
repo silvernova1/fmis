@@ -19,9 +19,9 @@ namespace fmis.Controllers
 {
     public class UploadSectionController : Controller
     {
-        private SectionContext Context { get; }
+        private MyDbContext Context { get; }
 
-        public UploadSectionController(SectionContext _context)
+        public UploadSectionController(MyDbContext _context)
         {
             this.Context = _context;
         }

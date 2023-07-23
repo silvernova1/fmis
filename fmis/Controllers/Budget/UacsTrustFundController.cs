@@ -15,14 +15,11 @@ namespace fmis.Controllers.Budget
     [Authorize(Policy = "BudgetAdmin")]
     public class UacsTrustFundController : Controller
     {
+        private readonly MyDbContext _context;
 
-        private readonly UacsTrustFundContext _context;
-        private readonly MyDbContext _MyDbContext;
-
-        public UacsTrustFundController(UacsTrustFundContext context, MyDbContext MyDbContext)
+        public UacsTrustFundController(MyDbContext context)
         {
             _context = context;
-            _MyDbContext = MyDbContext;
         }
 
         public class UacsDataTrustFund
@@ -50,7 +47,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "ps_trust_fund");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 1).ToListAsync());
+            var json = JsonSerializer.Serialize(await _context.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 1).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/UacsTrustFund/PS_Trust_Fund.cshtml");
@@ -61,7 +58,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "mooe_trust_fund");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 2).ToListAsync());
+            var json = JsonSerializer.Serialize(await _context.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 2).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/UacsTrustFund/MOOE_Trust_Fund.cshtml");
@@ -73,7 +70,7 @@ namespace fmis.Controllers.Budget
         {
             ViewBag.filter = new FilterSidebar("trust_fund", "uacs_trust_fund", "co_trust_fund");
             ViewBag.layout = "_Layout";
-            var json = JsonSerializer.Serialize(await _MyDbContext.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 3).ToListAsync());
+            var json = JsonSerializer.Serialize(await _context.UacsTrustFund.Where(s => s.status == "activated" && s.uacs_type == 3).ToListAsync());
             ViewBag.temp = json;
 
             return View("~/Views/UacsTrustFund/CO_Trust_Fund.cshtml");
@@ -211,7 +208,7 @@ namespace fmis.Controllers.Budget
         // GET: Uacs/Edit/5
         public async Task<IActionResult> Edit(UacsTrustFund uacs_trustfund)
         {
-            var uacs_trust_fund = await _MyDbContext.UacsTrustFund.Where(x => x.UacsTrustFundId == uacs_trustfund.UacsTrustFundId).AsNoTracking().FirstOrDefaultAsync();
+            var uacs_trust_fund = await _context.UacsTrustFund.Where(x => x.UacsTrustFundId == uacs_trustfund.UacsTrustFundId).AsNoTracking().FirstOrDefaultAsync();
             uacs_trust_fund.Account_title = uacs_trustfund.Account_title;
             uacs_trust_fund.Expense_code = uacs_trustfund.Expense_code;
             uacs_trust_fund.uacs_type = uacs_trustfund.uacs_type;
