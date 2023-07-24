@@ -1,0 +1,439 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">    
+    <div id="my_modal" class="modal-dialog modal-lg" style="width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus"></i></h4>
+            </div>
+            <div class="modal_content">
+                <link href="https://mis.cvchd7.com/dts/resources/assets/css/print.css" rel="stylesheet"><style>
+                                                                                                            #border-top {
+                                                                                                                border-collapse: collapse;
+                                                                                                                border-top: none;
+                                                                                                            }
+
+                                                                                                            #border-bottom {
+                                                                                                                border-collapse: collapse;
+                                                                                                                border-bottom: none;
+                                                                                                            }
+
+                                                                                                            .align {
+                                                                                                                text-align: center;
+                                                                                                            }
+
+                                                                                                            .align-top {
+                                                                                                                vertical-align: top;
+                                                                                                            }
+
+                                                                                                            small {
+                                                                                                                color: red;
+                                                                                                            }
+                </style><form method="post" id="form" action="https://mis.cvchd7.com/dts/prr_supply_post">
+                    <input type="hidden" name="_token" value="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT" autocomplete="off">
+                    <span id="getDesignation" data-link="https://mis.cvchd7.com/dts/getDesignation"></span>
+                    <span id="url" data-link="https://mis.cvchd7.com/dts/prr_supply_append"></span>
+                    <span id="token" data-token="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT"></span>
+                    <input type="hidden" name="doc_type" value="PRR_S" autocomplete="off">
+                    <input type="hidden" value="985241" name="prepared_by" autocomplete="off">
+                    <div class="modal-body">
+                        <div class="content-wrapper">
+                            <!-- Main content -->
+                            <section class="invoice">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="align"><img src="https://mis.cvchd7.com/dts/resources/img/doh.png" width="100"></td>
+                                            <td width="90%">
+                                                <div class="align small-text">
+                                                    Republic of the Philippines<br>
+                                                    DEPARTMENT OF HEALTH<br>
+                                                    <strong>CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT</strong><br>
+                                                    Osmeña Boulevard,Sambag II,Cebu City, 6000 Philippines<br>
+                                                    Regional Director’s Office Tel. No. (032) 253-6355 Fax No. (032) 254-0109<br>
+                                                    Official Website: http://www.ro7.doh.gov.ph Email Address: dohro7@gmail.com<br>
+                                                </div>
+                                            </td>
+                                            <td class="align"><img src="https://mis.cvchd7.com/dts/resources/img/f1.jpg" width="100"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="letter-head" cellpadding="0" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <td colspan="7" class="align">
+                                                <strong>PURCHASE REQUEST</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Department:</td>
+                                            <td colspan="2">Office of the RD / ARD </td>
+                                            <td colspan="3">PR Date: <input class="DatePicker" value="07/24/2023" name="pr_date" required="" autocomplete="off"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Section/Unit:</td>
+                                            <td colspan="5">Information and Communication Technology Unit(RD-ARD)</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Unit:</td>
+                                            <td colspan="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Item No.</b></td>
+                                            <td><b>Unit of Issue</b></td>
+                                            <td width="40%"><b>Item Description</b></td>
+                                            <td><b>Qty</b></td>
+                                            <td colspan="2"><b>Estimated Unit Cost</b></td>
+                                            <td colspan="2"><b>Estimated Cost</b></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="input_fields_wrap">
+                                        <tr>
+                                            <td id="border-bottom"></td>
+                                            <td id="border-bottom" class="issue1 align-top">
+                                                <input type="text" name="issue[]" id="issue1" class="form-control" onkeyup="trapping()" required="" autocomplete="off">
+                                                <small id="E_issue1">required!</small>
+                                            </td>
+                                            <td id="border-bottom" class="description1 align-top">
+                                                <input type="text" name="description[]" id="description1" class="form-control" onkeyup="trapping()" required="" autocomplete="off"><small id="E_description1">required!</small>
+                                                <br><strong><i>Specification(s)</i></strong>
+                                                <ul class="wysihtml5-toolbar" style="">
+                                                    <li class="dropdown">
+                                                        <a class="btn btn-default dropdown-toggle " data-toggle="dropdown">
+
+                                                            <span class="glyphicon glyphicon-font"></span>
+
+                                                            <span class="current-font">Normal text</span>
+                                                            <b class="caret"></b>
+                                                        </a>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Normal text</a></li>
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Heading 1</a></li>
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Heading 2</a></li>
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Heading 3</a></li>
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Heading 4</a></li>
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Heading 5</a></li>
+                                                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Heading 6</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <div class="btn-group">
+                                                            <a class="btn  btn-default" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Bold</a>
+                                                            <a class="btn  btn-default" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Italic</a>
+                                                            <a class="btn  btn-default" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Underline</a>
+
+                                                            <a class="btn  btn-default" data-wysihtml5-command="small" title="CTRL+S" tabindex="-1" href="javascript:;" unselectable="on">Small</a>
+
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <a class="btn  btn-default" data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" data-wysihtml5-display-format-name="false" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                            <span class="glyphicon glyphicon-quote"></span>
+
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <div class="btn-group">
+                                                            <a class="btn  btn-default" data-wysihtml5-command="insertUnorderedList" title="Unordered list" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                                <span class="glyphicon glyphicon-list"></span>
+
+                                                            </a>
+                                                            <a class="btn  btn-default" data-wysihtml5-command="insertOrderedList" title="Ordered list" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                                <span class="glyphicon glyphicon-th-list"></span>
+
+                                                            </a>
+                                                            <a class="btn  btn-default" data-wysihtml5-command="Outdent" title="Outdent" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                                <span class="glyphicon glyphicon-indent-right"></span>
+
+                                                            </a>
+                                                            <a class="btn  btn-default" data-wysihtml5-command="Indent" title="Indent" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                                <span class="glyphicon glyphicon-indent-left"></span>
+
+                                                            </a>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="bootstrap-wysihtml5-insert-link-modal modal fade" data-wysihtml5-dialog="createLink">
+                                                            <div class="modal-dialog ">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <a class="close" data-dismiss="modal">×</a>
+                                                                        <h3>Insert link</h3>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <input value="http://" class="bootstrap-wysihtml5-insert-link-url form-control" data-wysihtml5-dialog-field="href" autocomplete="off">
+                                                                        </div>
+                                                                        <div class="checkbox">
+                                                                            <label>
+                                                                                <input type="checkbox" class="bootstrap-wysihtml5-insert-link-target" checked="" autocomplete="off">Open link in new window
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-default" data-dismiss="modal" data-wysihtml5-dialog-action="cancel" href="#">Cancel</a>
+                                                                        <a href="#" class="btn btn-primary" data-dismiss="modal" data-wysihtml5-dialog-action="save">Insert link</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <a class="btn  btn-default" data-wysihtml5-command="createLink" title="Insert link" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                            <span class="glyphicon glyphicon-share"></span>
+
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <div class="bootstrap-wysihtml5-insert-image-modal modal fade" data-wysihtml5-dialog="insertImage">
+                                                            <div class="modal-dialog ">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <a class="close" data-dismiss="modal">×</a>
+                                                                        <h3>Insert image</h3>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <input value="http://" class="bootstrap-wysihtml5-insert-image-url form-control" data-wysihtml5-dialog-field="src" autocomplete="off">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-default" data-dismiss="modal" data-wysihtml5-dialog-action="cancel" href="#">Cancel</a>
+                                                                        <a class="btn btn-primary" data-dismiss="modal" data-wysihtml5-dialog-action="save" href="#">Insert image</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <a class="btn  btn-default" data-wysihtml5-command="insertImage" title="Insert image" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                                            <span class="glyphicon glyphicon-picture"></span>
+
+                                                        </a>
+                                                    </li>
+                                                </ul><textarea class="textarea" style="width: 100%; font-size: 14px; line-height: 18px; border: 1px solid rgb(221, 221, 221); padding: 10px; display: none;" name="specification[]" id="specification1" onkeyup="trapping()" placeholder="Place some text here"></textarea><input type="hidden" name="_wysihtml5_mode" value="1" autocomplete="off"><iframe class="wysihtml5-sandbox" security="restricted" allowtransparency="true" frameborder="0" width="0" height="0" marginwidth="0" marginheight="0" style="display: inline-block; background-color: rgb(255, 255, 255); border-collapse: collapse; border-color: rgb(221, 221, 221); border-style: solid; border-width: 1px; clear: none; float: none; margin: 0px; outline: rgb(51, 51, 51) none 0px; outline-offset: 0px; padding: 10px; position: static; inset: auto; z-index: auto; vertical-align: baseline; text-align: start; box-sizing: border-box; box-shadow: none; border-radius: 0px; width: 100%; height: auto;"></iframe><small id="E_specification1"></small>
+                                            </td>
+                                            <td id="border-bottom" class="qty1 align-top">
+                                                <input type="text" name="qty[]" id="qty1" class="form-control" onkeydown="trapping(event,true)" onkeyup="trapping(event,true)" required="" autocomplete="off">
+                                                <small id="E_qty1">required!</small>
+                                            </td>
+                                            <td id="border-bottom" class="unit_cost1 align-top" colspan="2"><input type="text" name="unit_cost[]" id="unit_cost1" class="form-control" onkeydown="trapping(event,true)" onkeyup="trapping(event,true)" required="" autocomplete="off"><small id="E_unit_cost1">required!</small></td>
+                                            <td id="border-bottom" class="estimated_cost1 align-top">
+                                                <input type="hidden" name="estimated_cost[]" id="estimated_cost1" class="form-control" autocomplete="off">
+                                                <strong style="color:green;">₱</strong><strong style="color:green" id="e_cost1"></strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody>
+                                        <tr>
+                                            <td id="border-top"></td>
+                                            <td id="border-top"></td>
+                                            <td id="border-top"></td>
+                                            <td id="border-top"></td>
+                                            <td id="border-top" colspan="2"></td>
+                                            <td id="border-top"><a onclick="add();" href="#">Add new</a></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="6"><b style="float: right">GRAND TOTAL</b></td>
+                                            <td class="align-top">
+                                                <input type="hidden" name="amount" id="amount" autocomplete="off">
+                                                <strong style="color: red;">₱</strong><strong style="color:red" id="total"></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" class="align">
+                                                <h3>Certification</h3>
+                                                This is to certify that dilligent efforts have been exerted to ensure that the price/s indicated above(in relation to the specifications) is/are within the prevailing market price/s.
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="purpose">Purpose:</label>
+                                            </td>
+                                            <td colspan="6">
+                                                <textarea class="form-control" id="purpose" name="purpose" required=""></textarea>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Fund Chargeable To:</label>
+                                            </td>
+                                            <td colspan="4">
+                                                <textarea class="form-control" name="charge_to" required=""></textarea>
+                                            </td>
+                                            <td colspan="2">
+                                                <label>Cash Advance of:</label>
+                                                <input type="text" name="cash_advance_of" id="issue1" class="form-control" autocomplete="off">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <table class="letter-head" style="margin-top: 2%">
+                                    <tbody>
+                                        <tr>
+                                            <td width="15%">
+                                                <label for="">Signature:</label><br>
+                                                <label for="">Printed Name:</label><br>
+                                                <label for="">Designation:</label><br>
+                                            </td>
+                                            <td width="23%">
+                                                <label for="">Requested By</label>
+                                                <select class="chosen-select-static form-control" onchange="get_designation($(this),'section',true)" name="requested_by" required="" style="position: absolute; opacity: 0;">
+                                                    <option value="140">Marte S. Manayon</option>
+                                                    <option value="51">Dr. Sophia M. Mancao, MD, DPSP, RN-MAN</option>
+                                                    <option value="207">Jo David Z. Borces</option>
+                                                    <option value="416">Dr. Shelbay G. Blanco</option>
+                                                    <option value="168">Aisha Marie C. Gomez</option>
+                                                    <option value="231">Jera C. Armendarez</option>
+                                                    <option value="6">Stella Renee B. Bacay</option>
+                                                    <option value="91">Maria Chona M. Singco </option>
+                                                    <option value="96">Chevroleta C. Deiparine</option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                    <option value="602">MONETTE . ZUÑIGA</option>
+                                                    <option value="207">Jo David Z. Borces</option>
+                                                    <option value="75">Cheryl B. Obillo</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="231">Jera C. Armendarez</option>
+                                                    <option value="155">Dr. Jaime S.  Bernadas</option>
+                                                    <option value="155">Dr. Jaime S.  Bernadas</option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="442">Sarah B. Anwar</option>
+                                                    <option value="442">Sarah B. Anwar</option>
+                                                    <option value="211792">RONALD JARVIK A. BUSCATO, RN, MD</option>
+                                                    <option value="215">Dr. Jeanette Pauline A. Arellano- Cortes</option>
+                                                    <option value="215">Dr. Jeanette Pauline A. Arellano- Cortes</option>
+                                                    <option value="235">Dr. Chona C. Salang</option>
+                                                    <option value="75">Cheryl B. Obillo</option>
+                                                    <option value="119">Ma. Ligaya I. Moneva </option>
+                                                    <option value="66">Therese Antoniette V. Cuyos </option>
+                                                    <option value="69">Felix N. Evangelista</option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                    <option value="71">Jose Arnel C. Amba </option>
+                                                    <option value="238">Sharon Azenith O. Laurel, MD</option>
+                                                    <option value="238">Sharon Azenith O. Laurel, MD</option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="12">Garizaldy B. Epistola</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="606">STEPHEN . CINCOFLORES</option>
+                                                    <option value="215">Dr. Jeanette Pauline A. Arellano- Cortes</option>
+                                                    <option value="286195">Parolita A. Mission</option>
+                                                    <option value="53">Jocelyn O. Tabotabo</option>
+                                                    <option value="231">Jera C. Armendarez</option>
+                                                    <option value="5">Dr. Ma. Portia D. Reyes</option>
+                                                    <option value="46">Maria Socorro M. Entera </option>
+                                                    <option value="110">Engr. Miguel T. Gerson</option>
+                                                    <option value="163">Jennifer C. Remollo, RN, MDM</option>
+                                                    <option value="145">Zella Maye G. Samson</option>
+                                                    <option value="6">Stella Renee B. Bacay</option>
+                                                    <option value="110">Engr. Miguel T. Gerson</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="442">Sarah B. Anwar</option>
+                                                    <option value="94">Rosavilla O. Russel</option>
+                                                    <option value="6">Stella Renee B. Bacay</option>
+                                                    <option value="11">Roldan A. A. Cubillo</option>
+                                                    <option value="74">Maria Jenda B. Morala </option>
+                                                    <option value="93052">Angieline T. Adlaon ,MBA ,CPA</option>
+                                                    <option value="38">Leonora S. Entoma</option>
+                                                    <option value="27">Josephine D. Vergara</option>
+                                                    <option value="36">Elizabeth P. Tabasa, CPA,MBA,CEO VI</option>
+                                                    <option value="439">Zenaida P Garces</option>
+                                                    <option value="20">Elsa F. Ordoña</option>
+                                                    <option value="114">Constantino A. Fernandez</option>
+                                                    <option value="12">Garizaldy B. Epistola</option>
+                                                    <option value="207">Jo David Z. Borces</option>
+                                                    <option value="15">Joel O. Saquilon, MPA</option>
+                                                    <option value="37">Ramil R. Abrea</option>
+                                                    <option value="17">Theresa Q. Tragico</option>
+                                                    <option value="243">Atty. Marissa C. Gorosin</option>
+                                                    <option value="16">Luche Nicolasa F. Quirante</option>
+                                                    <option value="15">Joel O. Saquilon, MPA</option>
+                                                    <option value="2">Mary Nonna Rose B. Durano</option>
+                                                    <option value="114">Constantino A. Fernandez</option>
+                                                    <option value="172">Boel B. Espinas</option>
+                                                    <option value="173">Jane Michelle E. Raagas</option>
+                                                    <option value="119">Ma. Ligaya I. Moneva </option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                    <option value="602">MONETTE . ZUÑIGA</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="53">Jocelyn O. Tabotabo</option>
+                                                    <option value="416">Dr. Shelbay G. Blanco</option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="215">Dr. Jeanette Pauline A. Arellano- Cortes</option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="602">MONETTE . ZUÑIGA</option>
+                                                    <option value="238">Sharon Azenith O. Laurel, MD</option>
+                                                    <option value="975853">Gerwin D Gorosin</option>
+                                                </select><div class="chosen-container chosen-container-single" style="width: 275px;" title=""><a class="chosen-single"><span>Marte S. Manayon</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off"></div><ul class="chosen-results"></ul></div></div><input id="section_head" class="form-control" readonly="" autocomplete="off">
+
+                                            </td>
+                                            <td>
+                                                <label for="">Recommending Approval:</label>
+                                                <select class="chosen-select-static form-control" onchange="get_designation($(this),'division',true);" name="division_head" required="" style="position: absolute; opacity: 0;">
+                                                    <option value="51">Dr. Sophia M. Mancao, MD, DPSP, RN-MAN</option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="215">Dr. Jeanette Pauline A. Arellano- Cortes</option>
+                                                    <option value="975853">Gerwin D Gorosin</option>
+                                                    <option value="416">Dr. Shelbay G. Blanco</option>
+                                                    <option value="119">Ma. Ligaya I. Moneva </option>
+                                                    <option value="985220">EUGENIA MERCEDES R. CAÑAL, MD, MBA-HA, FPSMS, PHSAE</option>
+                                                    <option value="602">MONETTE . ZUÑIGA</option>
+                                                    <option value="72">Dr. Jonathan Neil V. Erasmo </option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                    <option value="37">Ramil R. Abrea</option>
+                                                    <option value="602">MONETTE . ZUÑIGA</option>
+                                                    <option value="53">Jocelyn O. Tabotabo</option>
+                                                    <option value="238">Sharon Azenith O. Laurel, MD</option>
+                                                    <option value="985950">DR. ANESSA P. PATINDOL</option>
+                                                </select><div class="chosen-container chosen-container-single" style="width: 327px;" title=""><a class="chosen-single"><span>Dr. Sophia M. Mancao, MD, DPSP, RN-MAN</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off"></div><ul class="chosen-results"></ul></div></div>
+                                                <input id="division_head" class="form-control" readonly="" autocomplete="off">
+                                            </td>
+                                            <td class="align" width="35%">
+                                                <label for="">Approved By</label><br>
+                                                <strong>JAIME S. BERNADAS, MD, MGM, CESO III</strong><br>
+                                                Director IV
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-send"></i> Submit
+                                    </button>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.content -->
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+</div>

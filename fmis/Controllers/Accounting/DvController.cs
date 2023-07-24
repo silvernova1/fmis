@@ -40,7 +40,7 @@ using DocumentFormat.OpenXml.Office2010.ExcelAc;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_user, accounting_admin")]
+    //[Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_user, accounting_admin")]
     public class DvController : Controller
     {
         private readonly MyDbContext _MyDbContext;
@@ -52,6 +52,11 @@ namespace fmis.Controllers.Accounting
             _MyDbContext = MyDbContext;
             _autoIncrementGenerator = autoIncrementGenerator;
             _hubContext = hubContext;
+        }
+
+        public IActionResult Pr()
+        {
+            return View();
         }
 
         [Route("Accounting/DisbursementVoucher")]
