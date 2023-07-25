@@ -17,17 +17,16 @@ namespace fmis.Models
     {
         public static void Main(string[] args)
         {
-
             CreateHostBuilder(args).Build().Run();
-
-
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                   webBuilder.UseUrls("").UseStartup<Startup>();
+                   //webBuilder.UseUrls("http://192.168.111.190:52457");
+                   //webBuilder.UseStartup<Startup>();
                 });
     }
 }

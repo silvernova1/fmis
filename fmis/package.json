@@ -32,6 +32,7 @@
     "@vitejs/plugin-vue": "^4.1.0",
     "axios": "^0.26.1",
     "file-saver": "^2.0.5",
-    "unplugin-vue-components": "^0.24.1"
+    "unplugin-vue-components": "^0.24.1",
+    "vue-toast-notification": "3.0"
   }
 }

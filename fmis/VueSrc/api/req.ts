@@ -34,6 +34,7 @@ Axios.interceptors.response.use(
         }
     },
     (error) => {
+        console.log(error)
         let code = 0;
         let customCode = 0;
         try {
@@ -75,8 +76,8 @@ function deletes(url: string, params: any, headers: {} = {}) {
     });
 }
 
-function post(url: string, params: any, headers: {} = {}) {
-    return Axios.post(url, params, headers);
+async function post(url: string, params: any, headers: {} = {}) {
+    return await Axios.post(url, params, headers);
 }
 
 function put(url: string, params: any, headers: {} = {}) {

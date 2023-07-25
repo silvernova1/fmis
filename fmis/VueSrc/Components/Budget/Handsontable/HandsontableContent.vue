@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount } from "../../../api/index"
+    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount, deleteObligation } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
@@ -7,16 +7,14 @@
     import 'handsontable/dist/handsontable.full.css';
     import axios from 'axios';
     import moment from "moment"
-import exp from "constants";
+    import exp from "constants";
 
+    import { useToast } from 'vue-toast-notification';
+    import 'vue-toast-notification/dist/theme-sugar.css';
+
+    
     //register Handsontable's modules
     registerAllModules();
-
-    const userInfo = ref({
-        userid: String,
-        fname: String,
-        lname: String
-    })
 
     const select_push = ref([])
     const user_connected = ref([])
@@ -28,6 +26,13 @@ import exp from "constants";
             xsrf: null,
         }
     });
+
+    const userInfo = ref({
+        userid: String,
+        fname: String,
+        lname: String,
+        color: String
+    })
 
     const _userDetails = async () => {
         const response = await userDetails()
@@ -45,9 +50,11 @@ import exp from "constants";
     const watchUserInfo = computed(() => userInfo.value);
     const urlObject = new URL(window.location.href)
     const domain = urlObject.hostname
+    const $toast = useToast();
+
     watch(watchUserInfo, (value) => {
         userInfoLoaded.value = true
-        const unique_id = userInfo.value.userid + "websocket" + userInfo.value.fname + "websocket" + userInfo.value.lname
+        const unique_id = userInfo.value.userid + "websocket" + userInfo.value.fname + "websocket" + userInfo.value.lname + "websocket" + userInfo.value.color
         socket.value = new WebSocket("ws://" + domain + ":8080", [unique_id.replace(" ", "_")]);
         socket.value.addEventListener('open', (event: Event) => {
             console.log('WebSocket connection established');
@@ -65,7 +72,8 @@ import exp from "constants";
         socket.value.addEventListener('message', (event) => {
             const data = JSON.parse(event.data)
             if (data.selectFlag) {
-                data['color'] = getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid)
+                //data['color'] = getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid)
+                data['color'] = userInfo.value.userid === data.userid ? userInfo.value.color : data.color
                 select_push.value.push(data)
                 const select_checker = JSON.parse(JSON.stringify(select_push.value))
                 if (select_checker[select_checker.length - 2]) {
@@ -73,17 +81,19 @@ import exp from "constants";
                     highlightCellClientReset(dataforReset.row, dataforReset.col, getHighlightColor(data.userid))
                 }
                 previosUserData(select_checker, 2)
-                highlightCellClient(data.row, data.col, getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid))
+                highlightCellClient(data.row, data.col, userInfo.value.userid === data.userid ? userInfo.value.color : data.color)
+                //highlightCellClient(data.row, data.col, getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid))
             }
             else if (data.connected_clients) {
                 user_connected.value = data.data
                 onlineUser.value = data.data.map((item: any, index: any) => {
-                    const [userid, fname = "", lname = ""] = item.split("websocket");
+                    const [userid, fname = "", lname = "", color = ""] = item.split("websocket");
                     return {
                         id: index++,
                         userid: userid,
                         fullname: fname + " " + lname,
-                        color: getHighlightColor(userid)
+                        //color: getHighlightColor(userid)
+                        color: color
                     }
                 })
             }
@@ -101,7 +111,6 @@ import exp from "constants";
                     //need the same token to all users
                     const send_data = { row: data.row+1, col: 12, data: data.data }
                     changeDataCell(send_data);
-                    //
                 } else if (data.removeRow) {
                     removeRow(data.start, data.end);
                 } else if (data.onAfterUndo) {
@@ -132,12 +141,21 @@ import exp from "constants";
 
         });
     })
-    const previosUserData = (select_checker: [{ userid: String, row: any, col: any }], decrement: any) => {
+
+    interface Checker {
+        userid: string;
+        row: number;
+        col: number;
+        color?: string; 
+    }
+
+    const previosUserData = (select_checker: Checker[], decrement: number) => {
         const user_clicking = select_checker[select_checker.length - 1].userid
         if (select_checker[select_checker.length - decrement]) {
             const handler_checker = select_checker[select_checker.length - decrement]
             if (handler_checker.userid == user_clicking) {
-                highlightCellClientReset(handler_checker.row, handler_checker.col, getHighlightColor(handler_checker.userid))
+                highlightCellClientReset(handler_checker.row, handler_checker.col, handler_checker.color)
+                //highlightCellClientReset(handler_checker.row, handler_checker.col, getHighlightColor(handler_checker.userid))
             } else {
                 decrement++;
                 previosUserData(select_checker, decrement)
@@ -186,7 +204,9 @@ import exp from "constants";
         'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
         'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE']
 
+    const totalAmountReadOnly = 9;
 
+    const insertedRowFlag = ref(false);
     const hotSettings = ref({
 
         colWidths: [200, 100, 70, 80, 80, 100, 100, 100, 80, 80, 150, 125, 100, 100,
@@ -204,6 +224,8 @@ import exp from "constants";
             100, 100,
             100, 100, 100,
         ],
+
+
         columns: [
             {
                 //FundSource
@@ -252,6 +274,9 @@ import exp from "constants";
             },
             {
                 //TotalAmount
+                readOnly: function (column) {
+                    return column === totalAmountReadOnly;
+                },
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
@@ -537,7 +562,8 @@ import exp from "constants";
                 type: 'text'
             },
         ],
-
+        //SET MINIMUM ROW
+        //minRows: 10000,
         hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
             indicators: true, // show the indicator in the header
@@ -548,9 +574,6 @@ import exp from "constants";
         manualColumnResize: true,
         height: '600px',
         //fixedColumnsLeft: 6,
-        afterRemoveRow: (index: any, amount: any) => {
-
-        },
         contextMenu: {
             undo: true,
             items:
@@ -572,17 +595,23 @@ import exp from "constants";
                         insertBelowRow(options[0].start.row, obligation_token_get);
                         const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options, data: obligation_token_get }
                         socket.value.send(JSON.stringify(send_data));
-
                     }
                 },
                 'separator': ContextMenu.SEPARATOR,
                 'remove_row': {
                     name: 'Remove row',
-                    callback: function (changes: any, options: any) {
-                        console.log(options)
+                    callback: async function (changes: any, options: any) {
                         const start = options[0].start.row
                         const end = options[0].end.row
-                        removeRow(start, end)
+                        const many_token = [];
+                        for (let j = start; j <= end; j++) {
+                            many_token.push({
+                                many_token: handsondData.value[j][12]
+                            })
+                        }
+
+                        await removeRow(start, end)
+                        await __deleteObligation(many_token)
                         const send_data = { start: start, end: end, removeRow: true, userid: userInfo.value.userid, status: options }
                         socket.value.send(JSON.stringify(send_data));
                     }
@@ -642,11 +671,9 @@ import exp from "constants";
         }
     }
 
-
-
     const tokens = [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
     const insertAboveRow = (row: Number, obligation_token: String) => {
-
+        insertedRowFlag.value = true
         const ObligationAmountToken = () => {
             const s4 = () => {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -680,7 +707,7 @@ import exp from "constants";
     }
 
     const insertBelowRow = (row: Number, obligation_token: String) => {
-
+        insertedRowFlag.value = true
         const ObligationAmountToken = () => {
             const s4 = () => {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -722,7 +749,7 @@ import exp from "constants";
     }
 
     const getHighlightColor = (userid: String) => {
-        const highlight_array = ["highlight_yellow", "highlight_pink", "highlight_blue", "highlight_orange", "highlight_green", "highlight_pink", "highlight_gray", "highlight_salmon"]
+        const highlight_array = ["highlight_yellow", "highlight_pink", "highlight_blue", "highlight_orange", "highlight_green", "highlight_gray", "highlight_salmon", "highlight_seagreen", "highlight_lightyellow"]
         let parse_data = JSON.parse(JSON.stringify(user_connected.value))
         parse_data = parse_data.map((item: any) => item.split("websocket")[0])
         const color_pick = highlight_array[parse_data.indexOf(userid.toString())]
@@ -731,7 +758,7 @@ import exp from "constants";
 
     const highlightCell = () => {
         const selectedCell = hotTableComponent.value.hotInstance.getSelected()[0];
-        const send_data = { row: selectedCell[0], col: selectedCell[1], selectFlag: true, userid: userInfo.value.userid }
+        const send_data = { row: selectedCell[0], col: selectedCell[1], selectFlag: true, userid: userInfo.value.userid, color: userInfo.value.color }
         socket.value.send(JSON.stringify(send_data));
     }
 
@@ -750,22 +777,30 @@ import exp from "constants";
     }
 
     const changeDataCell = (data: any) => {
-        const cell = hotTableComponent.value.hotInstance;
-        cell.setDataAtCell(data.row, data.col, data.data);
+        //const cell = hotTableComponent.value.hotInstance;
+        //cell.setDataAtCell(data.row, data.col, data.data);
+        handsondData.value[data.row][data.col] = data.data;
     }
 
     const afterChangeFlag = ref(false)
-    const afterChange = (changes: any, source: any) => {
-        if (changes && source === 'edit' && !afterChangeFlag.value) {
-            console.log("haha");
+    const afterChange = async (changes: any, source: any) => {
+        //if (changes && source === 'edit' && !afterChangeFlag.value) {
+        if (changes && source === 'edit') {
+            console.log("executed!");
             const [row, col, oldValue, newValue] = changes[0];
             const hot = hotTableComponent.value.hotInstance;
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
-            console.log(col);
-            if (!hot.getDataAtCell(row, 0)) {
-                console.log("stop if col 0 no value");
+
+            if (insertedRowFlag.value) {
+                insertedRowFlag.value = false;
                 return;
             }
+
+            if (!hot.getDataAtCell(row, 0)) {
+                alert("Please Select FundSource or Sub Allotment");
+                return;
+            }
+
             let obligation_data = new FormData();
 
             obligation_data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
@@ -779,10 +814,10 @@ import exp from "constants";
             obligation_data.append('particulars', hot.getDataAtCell(row, 7) ? hot.getDataAtCell(row, 7) : "");
             obligation_data.append('ors_no', hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "");
             obligation_data.append('created_by', "");
-            obligation_data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : ""); 
+            obligation_data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
             obligation_data.append('obligation_token', hot.getDataAtCell(row, 12));
 
-            __saveObligation(obligation_data, row)
+            await __saveObligation(obligation_data, row)
 
             if (col >= 14 && col <= 48 && hot.getDataAtCell(row, 0)) {
                 console.log(col)
@@ -791,15 +826,15 @@ import exp from "constants";
                 obligation_amount_data.append('obligation_token', hot.getDataAtCell(row, 12));
                 if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'expense') {
                     obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col));
-                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col-1));
+                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 1));
                 } else if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'amount') {
                     obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col - 1));
                     obligation_amount_data.append('amount', hot.getDataAtCell(row, col));
-                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col-2));
+                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 2));
                 }
                 __saveObligationAmount(obligation_amount_data)
             }
-
+            $toast.success('Successfully Changed!');
             socket.value.send(JSON.stringify(send_data));
         }
     }
@@ -924,7 +959,7 @@ import exp from "constants";
     }
     
     const __saveObligation = async (data: {}, row: number) => {
-        //console.log(data);
+        /*console.log(data);*/
         const response = await saveObligation(data);
         const allotmentClassId = response.source_type == "fund_source" ? response.fundSource.allotmentClassId : response.subAllotment.allotmentClassId;
         handsondData.value[row][51] = allotmentClassId;
@@ -936,6 +971,10 @@ import exp from "constants";
         console.log(data);
         const response = await saveObligationAmount(data);
         console.log(response);
+    }
+
+    const __deleteObligation = async (data: {}) => {
+        await deleteObligation(data);
     }
 
     __obligationData()
@@ -966,7 +1005,7 @@ import exp from "constants";
                v-if="handsondData.length > 0">
     </hot-table>
 
-    <h3 v-else>Processing...</h3>
+    <h3 v-else>Processing....</h3>
 </template>
 
 <style>
@@ -997,6 +1036,15 @@ import exp from "constants";
     .highlight_salmon {
         background-color: lightsalmon !important;
     }
+
+    .highlight_seagreen {
+        background-color: lightseagreen !important;
+    }
+
+    .highlight_lightyellow {
+        background-color: lightyellow !important;
+    }
+
 
     div.online-indicator {
         width: 15px;

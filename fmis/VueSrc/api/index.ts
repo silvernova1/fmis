@@ -26,6 +26,10 @@ export function saveObligationAmount(params: {}) {
     return req.post(domainExtension + "/ObligationAmount/SaveObligationAmountFromVue", params);
 }
 
+export function deleteObligation(params: {}) {
+    return req.post(domainExtension + "/Obligations/DeleteObligation", params);
+}
+
 
 
 

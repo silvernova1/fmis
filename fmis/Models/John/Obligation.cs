@@ -44,6 +44,9 @@ namespace fmis.Models
         public string obligation_token { get; set; }
         public ICollection<ObligationAmount> ObligationAmounts { get; set; }
         public ICollection<Uacs> Uacs { get; set; }
+
+        [ConcurrencyCheck]
+        public int version { get; set; }
     }
 }
 
