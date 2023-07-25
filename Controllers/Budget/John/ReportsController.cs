@@ -31,7 +31,7 @@ using OfficeOpenXml;
 using System.Drawing;
 using fmis.Data.Accounting;
 using MySqlX.XDevAPI.Common;
-
+using OfficeOpenXml.Export.ToCollection.Exceptions;
 
 namespace fmis.Controllers.Budget.John
 {
@@ -44,6 +44,12 @@ namespace fmis.Controllers.Budget.John
         {
             _MyDbContext = MyDbContext;
         }
+
+        //public IActionResult Sample()
+        //{
+        //    var datas = _MyDbContext.FundSources.Include(x => x.AllotmentClass).Include(x => x.Uacs).Include(x => x.Prexc).ToList();
+        //    return Json(datas);
+        //}
 
         public async Task<IActionResult> Index()
         {
@@ -15168,47 +15174,44 @@ namespace fmis.Controllers.Budget.John
         public IActionResult DownloadSaob2()
         {
             ViewBag.filter = new FilterSidebar("budget_report", "saob", "");
-            DownloadExcel();
+           // DownloadExcel();
 
 
             return View();
         }
-
+        [HttpPost]
         //view FundSource/FundSource
         //view FundSource/FundSourceAmount/Uacs
-        public ActionResult DownloadExcel()
+        public IActionResult DownloadExcel(string fn, string date_from, string date_to)
         {
+            var timer = new Stopwatch();
+            timer.Start();
 
-                   DateTime dateFrom = new DateTime(2015, 1, 1); // Example start date
-               DateTime dateTo = new DateTime(2025, 12, 31); // Example end date
+            DateTime date1 = Convert.ToDateTime(date_from);
+            DateTime date2 = Convert.ToDateTime(date_to);
+            DateTime datefilter = Convert.ToDateTime(date_to);
+            String date3 = datefilter.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture);
 
-          //  date1.ToString("yyyy-MM-dd 00:00:00");
-          //  date2.ToString("yyyy-MM-dd 23:59:59");
-            //DateTime date1 = Convert.ToDateTime(date_from);
-            //DateTime date2 = Convert.ToDateTime(date_to);
+           date1 = date1.Date;
+            date2 = date2.Date.AddDays(1).AddTicks(-1);
+            DateTime dateTimeNow = date2;
+            DateTime dateTomorrow = dateTimeNow.Date.AddDays(1);
 
-        //    DateTime date1 = Convert.ToDateTime(date_from);
-        //    DateTime date2 = Convert.ToDateTime(date_to);
-
-            // Set the time part of date1 to the beginning of the day (00:00:00)
-           // date1 = date1.Date;
-
-            // Set the time part of date2 to the end of the day (23:59:59)
-          //  date2 = date2.Date.AddDays(1).AddSeconds(-1);
-
-
+            //LASTDAY OF The MONTH
+            var firstDayOfMonth = new DateTime(date2.Year, date2.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            DateTime lastday = Convert.ToDateTime(lastDayOfMonth);
+            lastday = lastday.Date.AddDays(1).AddTicks(-1);
 
             var funsources = (from fs in _MyDbContext.FundSources
                               join fsa in _MyDbContext.FundSourceAmount on fs.FundSourceId equals fsa.FundSourceId
                               join u in _MyDbContext.Uacs on fsa.UacsId equals u.UacsId
-                             // join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId 
-  
-                            //  where o.Date >= dateFrom && o.Date <= dateTo
+                              join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId
+                              where o.Date >= date1 && o.Date <= date2
                               select new
-                              {
-                                //  FsaUacsId = fsa.UacsId,
-                                  //UacsId = u.UacsId,
-                                 // Date = o.Date,
+                                {
+                                  UacsId = u.UacsId,
+                                  Date = o.Date,
                                   fundsourceId = fs.FundSourceId,
                                   fundsTitle = fs.FundSourceTitle,
                                   Account_title = u.Account_title,
@@ -15372,21 +15375,66 @@ namespace fmis.Controllers.Budget.John
             Range22.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
 
-            //worksheet.Cell(9, 1).Style.Fill.BackgroundColor = XLColor.Pink;
-            //worksheet.Cell(9, 1).Value = "P/A/P/ ALLOTMENT CLASS/ \n OBJECT OF EXPENDITURE";
-            //worksheet.Cell(9, 1).Style.Font.FontSize = 10;
-            // Merge four rows
+            ////worksheet.Cell(9, 1).Style.Fill.BackgroundColor = XLColor.Pink;
+            ////worksheet.Cell(9, 1).Value = "P/A/P/ ALLOTMENT CLASS/ \n OBJECT OF EXPENDITURE";
+            ////worksheet.Cell(9, 1).Style.Font.FontSize = 10;
+            //// Merge four rows
             //  Write the data to the worksheet 
+            worksheet.Cell(14, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(14, 1).Value = "|. NEW APPROPRIATION (CURRENT)";
+            worksheet.Cell(14, 1).Style.Font.FontSize = 9;
+            worksheet.Cell(14, 1).Style.Font.SetBold();
 
-            int CurrentRow = 12;
+            worksheet.Cell(15, 1).Style.Font.FontColor = XLColor.Black;
+            worksheet.Cell(15, 1).Value = "A. PROGRAMS";
+            worksheet.Cell(15, 1).Style.Font.FontSize = 9;
+            worksheet.Cell(15, 1).Style.Font.SetBold();
+
+            worksheet.Cell(16, 1).Style.Font.FontColor = XLColor.Black;
+            worksheet.Cell(16, 1).Value = "|. GENERAL ADMINISTRATION AND SUPPORT";
+            worksheet.Cell(16, 1).Style.Font.FontSize = 9;
+            worksheet.Cell(16, 1).Style.Font.SetBold();
+            //P/A/P/ ALLOTMENTS CLASS OBJECT OF EXPENDITURE
+
+            var Datas = _MyDbContext.FundSources
+                  .Include(x => x.Prexc)
+                  .Include(x => x.AllotmentClass)
+                  .Include(x => x.Uacs)
+                  .ToList();
+                
+     
+              
+
+            int CurrentRow = 16;
             IXLRow row = worksheet.Row(CurrentRow);
             int startingRow = CurrentRow;
             CurrentRow++;
 
-            //var filteredFunsources = funsources.Where(o => o.Date >= dateFrom && o.Date <= dateTo).ToList();
-            var filteredFunsources = funsources.Where(sa => sa.fundsourceId == sa.fundsourceId).ToList();
+
+            foreach(var fundSource in Datas)
+            {
+
+                var prexc = fundSource.Prexc;
+                
+                if(prexc != null)
+                {
+                    var prexPap_code1 = prexc.pap_code1;
+                    var prexcPap_title = prexc.pap_title;
+                    var uniquePap_title = new List<string>();
+
+                    worksheet.Cell(CurrentRow, 1).Value = prexcPap_title;
+                    worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
+ 
+                    worksheet.Cell(CurrentRow, 2).Value = prexPap_code1;
+                    worksheet.Cell(CurrentRow, 2).Style.Font.FontSize = 8;
+                    worksheet.Cell(CurrentRow, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    CurrentRow++;
+                }
+            } 
+           //var filteredFunsources = funsources.Where(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday).ToList();
+           // var filteredFunsources = funsources.Where(sa => sa.fundsourceId == sa.fundsourceId).ToList();
             // Get distinct category names
-            var fundsTitle = filteredFunsources.Select(fs => fs.fundsTitle).Distinct().ToList();
+            var fundsTitle = funsources.Select(fs => fs.fundsTitle).Distinct().ToList();
 
             // Iterate through the fundsTitle and display each value in a separate row
             foreach (var title in fundsTitle)
@@ -15400,8 +15448,10 @@ namespace fmis.Controllers.Budget.John
                 worksheet.Cell(CurrentRow, 1).Style.Font.FontSize = 8;
                 CurrentRow++;
 
+
+
                 // Get the items belonging to the current category
-                var itemsInCategory = filteredFunsources.Where(fs => fs.fundsTitle == title).ToList();
+                var itemsInCategory = funsources.Where(fs => fs.fundsTitle == title).ToList();
 
                 // Create separate lists to store unique Account_title and expensesCode
                 var uniqueAccountTitles = new List<string>();

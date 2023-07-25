@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj": {}
+    "D:\\fmis\\fmis\\fmis.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj": {
+    "D:\\fmis\\fmis\\fmis.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj",
+        "projectUniqueName": "D:\\fmis\\fmis\\fmis.csproj",
         "projectName": "fmis",
-        "projectPath": "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\fmis.csproj",
+        "projectPath": "D:\\fmis\\fmis\\fmis.csproj",
         "packagesPath": "C:\\Users\\Jondy Gonzalez\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jondy Gonzalez\\Desktop\\fmis\\obj\\",
+        "outputPath": "D:\\fmis\\fmis\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Jondy Gonzalez\\AppData\\Roaming\\NuGet\\NuGet.Config",
