@@ -113,8 +113,8 @@ namespace fmis.Controllers
 
         public class DeleteData
         {
-            public string single_token { get; set; }
-            public List<ManyId> many_token { get; set; }
+            //public string single_token { get; set; }
+            public String many_token { get; set; }
         }
 
         public async Task<ActionResult> GetExpenseCode(int allotmentId)
@@ -389,7 +389,8 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> saveObligationFromVue(ObligationData item)
         {
-            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            Yearly_reference yearlyHolder = await _MyDbContext.Yearly_reference.Where(x => x.YearlyReferenceId == YearlyRefId).FirstOrDefaultAsync();
+            string year = yearlyHolder.YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             next_year.ToString("yyyy-MM-dd 00:00:00");
             var res = next_year.AddYears(-1);
@@ -447,7 +448,6 @@ namespace fmis.Controllers
 
             _context.Update(obligation);
             await _context.SaveChangesAsync();
-
 
             if (item.source_type == "fund_source")
                 obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
@@ -606,20 +606,10 @@ namespace fmis.Controllers
 
         // POST: Obligations/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteObligation(DeleteData data)
+        public IActionResult DeleteObligation([FromBody] DeleteData[] data)
         {
-
-            foreach (var many in data.many_token)
+            foreach (var many in data)
                 setUpDeleteData(many.many_token);
-            /*
-            if (data.many_token.Count > 1)
-            {
-                foreach (var many in data.many_token)
-                    setUpDeleteData(many.many_token);
-            }
-            else
-                setUpDeleteData(data.single_token);*/
 
             return Json(data);
         }
