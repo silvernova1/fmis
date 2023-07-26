@@ -37,6 +37,8 @@ using DocumentFormat.OpenXml.InkML;
 using fmis.Data.Accounting;
 using System.Text;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using System.Runtime.InteropServices.WindowsRuntime;
+using fmis.Models.ppmp;
 
 namespace fmis.Controllers.Accounting
 {
@@ -46,12 +48,33 @@ namespace fmis.Controllers.Accounting
         private readonly MyDbContext _MyDbContext;
         private readonly AutoIncrementGenerator _autoIncrementGenerator;
         private readonly IHubContext<DvHub> _hubContext;
+        private readonly PpmpContext _ppmpContext;
 
-        public DvController(MyDbContext MyDbContext, AutoIncrementGenerator autoIncrementGenerator, IHubContext<DvHub> hubContext)
+        public DvController(MyDbContext MyDbContext, AutoIncrementGenerator autoIncrementGenerator, IHubContext<DvHub> hubContext, PpmpContext ppmpContext)
         {
             _MyDbContext = MyDbContext;
             _autoIncrementGenerator = autoIncrementGenerator;
             _hubContext = hubContext;
+            _ppmpContext = ppmpContext;
+        }
+
+        public IActionResult GetPrograms()
+        {
+            var programs = _ppmpContext.item.ToList();
+
+            return Json(programs);
+        }
+
+        public IActionResult Pr()
+        {
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+
+            var item = from e in _ppmpContext.item
+                          orderby e.Id
+                          select e;
+            ViewBag.Item = new SelectList(item, "Id", "Description");
+
+            return View();
         }
 
         [Route("Accounting/DisbursementVoucher")]
@@ -70,6 +93,7 @@ namespace fmis.Controllers.Accounting
                 .Include(x=>x.InfraAdvancePayment)
                 .Include(x=>x.InfraRetentions)
                 .Include(x=>x.InfraProgress)
+                .Include(x=>x.indexOfPayment)
                 .Include(x => x.dvDeductions).ThenInclude(x=>x.Deduction)
                 .AsNoTracking()
                 .ToListAsync();
@@ -153,6 +177,12 @@ namespace fmis.Controllers.Accounting
                 dv.NetAmount = advancepayment_percentage * dv.GrossAmount;
                 dv.TotalDeduction = dv.GrossAmount - dv.NetAmount;
             }
+            if(dv.DvSupType == "2")
+            {
+                dv.GrossAmount = dv.InfraProgress.Where(x => x.bulletNo.Contains("b.1") || x.bulletNo.Contains("b.2") || x.bulletNo.Contains("b.3") || x.bulletNo.Contains("b.4")).Sum(x => x.Amount);
+                dv.TotalDeduction = dv.InfraProgress.Where(x=>x.bulletNo.Contains("c.4") || x.bulletNo.Contains("c.5")).Sum(x=>x.Amount) + dv.dvDeductions.Sum(x => x.Amount);
+                dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
+            }    
             if(dv.DvSupType == "3")
             {
                 dv.GrossAmount = dv.InfraRetentions.Sum(x=>x.Amount);
@@ -795,10 +825,10 @@ namespace fmis.Controllers.Accounting
                     foreach (var dvDeductions in item.Where(x => x.DvId == id))
                     {
                     var deduct = fundCluster?.FirstOrDefault()?.dvNetAmount - (dvDeductions?.dvDeductions?.FirstOrDefault()?.Amount ?? 0);
-                        foreach (var deductions in dvDeductions.dvDeductions)
+                        foreach (var deductions in dvDeductions.dvDeductions.Where(x=>x.Amount != null))
                         {
                             deductionsAmount.Add(deductions.Amount);
-                            string description = deductions?.Deduction.DeductionDescription.PadRight(15);
+                            string description = deductions?.Deduction?.DeductionDescription.PadRight(15);
                             string netDeduct = deduct?.ToString("##,#00.00").PadRight(12);
                             string amount = deductions?.Amount?.ToString("##,#00.00").PadLeft(15);
 

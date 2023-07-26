@@ -115,9 +115,15 @@
                 <th>
                     Net Amount
                 </th>
+                @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_user")
+                {
+                    <th>
+                        Adjusted Amount
+                    </th>
+                }
                 <th>
                     Action
-                </th>
+                </th>               
             </tr>
         </thead>
         <tbody>
@@ -309,45 +315,34 @@
                         {
                             <td>
                                 <select class="form-control">
-                                    @foreach (var deduction in item.dvDeductions)
+                                    @foreach (var deduction in item.dvDeductions.Where(x=>x.Amount != null))
                                     {
-                                        <option>@deduction.Deduction.DeductionDescription -- ₱@deduction.Amount?.ToString("##,##0.00")</option>
+                                        <option>@deduction?.Deduction?.DeductionDescription -- @deduction?.Amount?.ToString("C", new CultureInfo("en-PH"))</option>
                                     }
                                 </select>
                             </td>
                         }
                         
                         <td>
-                            ₱@item.TotalDeduction?.ToString("C", new CultureInfo("en-PH"))
+                            @item.TotalDeduction?.ToString("C", new CultureInfo("en-PH"))
                         </td>
                         <td>
-                            ₱@item.NetAmount?.ToString("C", new CultureInfo("en-PH"))
+                            @item.NetAmount?.ToString("C", new CultureInfo("en-PH"))
+                        </td>
+                        @{
+                            var adjustedAmount = item?.indexOfPayment?.GrossAmount.ToString("C", new CultureInfo("en-PH")) ?? 0.ToString("C", new CultureInfo("en-PH"));
+                        }
+                        <td style="font-weight:bold">
+                                @adjustedAmount
                         </td>
                         <td>
-
-                            @*<a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal" asp-route-id="@item.DvId" data-bs-toggle="tooltip" title="Edit">
-                                <i class="ace-icon fa fa-edit"></i>
-                            </a>*@
                             <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDv","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Print">
                                 <i class="ace-icon fa fa-file-pdf-o"></i>
                             </a>
-                            @*<a class="btn btn-xs btn-warning" target="_blank" href="@Url.Action("PrintAdvancePayment","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Advance Payment">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>*@
-
-                           @* <a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintFinalBilling","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Progress Final Billing">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>*@
-
-                            @*<a class="btn btn-xs btn-danger" target="_blank" href="@Url.Action("PrintRetention","DV",new { id = @item.DvId })" data-bs-toggle="print" title="Retention">
-                                <i class="ace-icon fa fa-file-pdf-o"></i>
-                            </a>*@
-
                         </td>
                     </tr>
                 }
             }
-
         </tbody>
     </table>
 }

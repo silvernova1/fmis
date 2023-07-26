@@ -59,6 +59,8 @@ namespace fmis.Models.Accounting
         [JsonIgnore]
         public List<InfraProgress>? InfraProgress { get; set; }
 
+        public IndexOfPayment indexOfPayment { get; set; }
+
 
     }
 }

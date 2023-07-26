@@ -322,6 +322,20 @@
             </div>
             <div class="col-md-12">
                 <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction -</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" />
+                    </div>
+                </div>
+                <button type="button" onclick="addDeduction()">+</button>
+            </div>
+            <div id="deduction-container"></div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
                     <label>Total Deduction</label>
                 </div>
                 <div class="col-md-2">
@@ -530,16 +544,27 @@
     }
     //
     //TOTAL DEDUCTIONS
+    function parseNumberWithCommas(input) {
+    return parseFloat(input.replace(/,/g, ''));
+  }
+
     function calculateTotalDeductions() {
         var totalDeductions = 0.0;
         var deductionInputs = document.querySelectorAll('[name^="dvDeductions["][name$="].Amount"]');
+        var c4 = document.getElementById('c4').value;
+        var c5 = document.getElementById('c5').value;
+        const number1 = parseNumberWithCommas(c4);
+        const number2 = parseNumberWithCommas(c5);
+        const totalValue = number1 + number2;
         for (var i = 0; i < deductionInputs.length; i++) {
             var amount = parseFloat(deductionInputs[i].value);
             if (!isNaN(amount)) {
                 totalDeductions += amount;
             }
         }
+        var totalDeductionsProgress = totalDeductions + totalValue;
         document.getElementById("ret_deductions").value = totalDeductions.toFixed(2).toLocaleString();
+        document.getElementById("total_deductions").value = totalDeductionsProgress.toFixed(2).toLocaleString();;
 
 
         var totalBilling = 0.0;
@@ -686,7 +711,7 @@
             retention.style.display = "none";
         }
         else if (selectedOption === "2") {
-            containerElement.style.height = "1100px";
+            containerElement.style.height = "1200px";
             progress.style.display = "block";
             advance.style.display = "none";
             retention.style.display = "none";
