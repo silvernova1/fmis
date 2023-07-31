@@ -30,6 +30,10 @@ export function deleteObligation(params: {}) {
     return req.post(domainExtension + "/Obligations/DeleteObligation", params);
 }
 
+export function getRemainingObligated(params: {}) {
+    return req.post(domainExtension + "/ObligationAmount/getRemainigAndObligated", params);
+}
+
 
 
 

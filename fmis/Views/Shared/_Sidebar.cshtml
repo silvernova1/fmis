@@ -171,18 +171,6 @@
 
                         <b class="arrow"></b>
                     </li>
-                    <li class="@if (ViewBag.filter.sub == "Handsontable")
-                @Html.Raw("active")
-
-
-">
-                        <a asp-controller="Handsontable" asp-action="Index">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Handsontable
-                        </a>
-
-                        <b class="arrow"></b>
-                    </li>
                     <li class="@if (ViewBag.filter.sub == "respocenter")
                 @Html.Raw("active")
 
@@ -345,7 +333,7 @@
 
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li class="@if (ViewBag.filter.sub == "obligation")
+                  @*  <li class="@if (ViewBag.filter.sub == "obligation")
                 @Html.Raw("active")
 
 ">
@@ -355,7 +343,17 @@
                         </a>
 
                         <b class="arrow"></b>
+                    </li>*@
+
+                    <li class="@if (ViewBag.filter.sub == "handsontable")
+                @Html.Raw("active") ">
+                        <a asp-controller="Handsontable" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Obligation (ORS) v2
+                        </a>
+                        <b class="arrow"></b>
                     </li>
+
 
                     <li class="@if (ViewBag.filter.sub == "upload")
                 @Html.Raw("active")
