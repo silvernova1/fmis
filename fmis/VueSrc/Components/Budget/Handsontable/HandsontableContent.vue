@@ -1,7 +1,8 @@
-<script setup lang="ts">
-    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount, deleteObligation } from "../../../api/index"
+﻿<script setup lang="ts">
+    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount, deleteObligation, getRemainingObligated } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
+    import Handsontable from 'handsontable';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
     import { registerAllModules } from 'handsontable/registry';
     import 'handsontable/dist/handsontable.full.css';
@@ -52,6 +53,17 @@
     const domain = urlObject.hostname
     const $toast = useToast();
 
+    const watchHotTableComponent = computed(() => hotTableComponent.value);
+    watch(watchHotTableComponent, (value) => {
+        const cellValue = hotTableComponent.value.hotInstance.getDataAtCol(8);
+        console.log(totalRowFetchFromBackend.value);
+        let ors_number: any = incrementORS(cellValue);
+        for (let i = totalRowFetchFromBackend.value; i < 10000; i++) {
+            handsondData.value[i][8] = ors_number.toString().padStart(4, '0');
+            ors_number++;
+        }
+    });
+
     watch(watchUserInfo, (value) => {
         userInfoLoaded.value = true
         const unique_id = userInfo.value.userid + "websocket" + userInfo.value.fname + "websocket" + userInfo.value.lname + "websocket" + userInfo.value.color
@@ -69,7 +81,7 @@
             console.error('WebSocket error.:', event);
         });
 
-        socket.value.addEventListener('message', (event) => {
+        socket.value.addEventListener('message', async (event) => {
             const data = JSON.parse(event.data)
             if (data.selectFlag) {
                 //data['color'] = getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid)
@@ -101,16 +113,16 @@
             if (userInfo.value.userid !== data.userid) {
                 afterChangeFlag.value = true;
                 if (data.afterChange) {
-                    changeDataCell(data);
+                    await changeDataCell(data);
                 } else if (data.insertedAbove) {
                     insertAboveRow(data.row,data.data);
                     const send_data = { row: data.row , col: 12, data: data.data }
-                    changeDataCell(send_data);
+                    await changeDataCell(send_data);
                 } else if (data.insertedBelow) {
                     insertBelowRow(data.row, data.data);
                     //need the same token to all users
                     const send_data = { row: data.row+1, col: 12, data: data.data }
-                    changeDataCell(send_data);
+                    await changeDataCell(send_data);
                 } else if (data.removeRow) {
                     removeRow(data.start, data.end);
                 } else if (data.onAfterUndo) {
@@ -128,7 +140,7 @@
                             count++
                         }
                     } else if (actionType === 'change') {
-                        changeDataCell({ row: data.row, col: data.col, data: data.data })
+                        await changeDataCell({ row: data.row, col: data.col, data: data.data })
                     } else if (actionType === 'insert_row') {
                         removeRow(data.row, data.row)
                     }
@@ -187,8 +199,8 @@
         });
     }
 
-    const handsondData = ref([])
 
+    const handsondData = ref([])
     const colHeaders = ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
         'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
         'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -206,9 +218,53 @@
 
     const totalAmountReadOnly = 9;
 
+    const debounceFnWrapper = (colIndex: number, event: Event) => {
+        const debounceFn: () => void = Handsontable.helper.debounce(() => {
+            const filtersPlugin = hotTableComponent.value.hotInstance.getPlugin('filters');
+
+            filtersPlugin.removeConditions(colIndex);
+            filtersPlugin.addCondition(colIndex, 'contains', [event.target['value']]);
+            filtersPlugin.filter();
+        }, 100);
+
+        debounceFn(); // Call the actual debounce function inside the wrapper.
+    };
+
+
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFnWrapper(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
+        div.className = 'filterHeader';
+
+        addEventListeners(input, colIndex);
+
+        div.appendChild(input);
+
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
     const insertedRowFlag = ref(false);
     const hotSettings = ref({
-
         colWidths: [200, 100, 70, 80, 80, 100, 100, 100, 80, 80, 150, 125, 100, 100,
             100, 100, 100,
             100, 100, 100,
@@ -563,16 +619,29 @@
             },
         ],
         //SET MINIMUM ROW
-        //minRows: 10000,
+        minRows: 10000,
         hiddenColumns: {
-            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
+            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46 ],
             indicators: true, // show the indicator in the header
         },
-
         wordWrap: false,
         manualRowResize: true,
         manualColumnResize: true,
         height: '600px',
+        filters: true,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
+        afterFilter: () => {
+            const cellValue: any[][] = hotTableComponent.value.hotInstance.getData();
+            const totalSumObligation: number = cellValue.reduce((acc: number, curr: any[]) => acc + curr[10], 0);
+            totalObligation.value = totalSumObligation;
+        },
         //fixedColumnsLeft: 6,
         contextMenu: {
             undo: true,
@@ -613,6 +682,7 @@
                         await removeRow(start, end)
                         await __deleteObligation(many_token)
                         const send_data = { start: start, end: end, removeRow: true, userid: userInfo.value.userid, status: options }
+                        $toast.error('Successfully Deleted!');
                         socket.value.send(JSON.stringify(send_data));
                     }
                 },
@@ -671,17 +741,26 @@
         }
     }
 
+    const ObligationAmountToken = () => {
+        const s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
     const tokens = [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
     const insertAboveRow = (row: Number, obligation_token: String) => {
         insertedRowFlag.value = true
-        const ObligationAmountToken = () => {
-            const s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
-            };
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        };
+        //const ObligationAmountToken = () => {
+        //    const s4 = () => {
+        //        return Math.floor((1 + Math.random()) * 0x10000)
+        //            .toString(16)
+        //            .substring(1);
+        //    };
+        //    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        //};
 
         const cell = hotTableComponent.value.hotInstance;
 
@@ -708,14 +787,14 @@
 
     const insertBelowRow = (row: Number, obligation_token: String) => {
         insertedRowFlag.value = true
-        const ObligationAmountToken = () => {
-            const s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
-            };
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        };
+        //const ObligationAmountToken = () => {
+        //    const s4 = () => {
+        //        return Math.floor((1 + Math.random()) * 0x10000)
+        //            .toString(16)
+        //            .substring(1);
+        //    };
+        //    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        //};
 
         const cell = hotTableComponent.value.hotInstance;
         const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
@@ -759,7 +838,11 @@
     const highlightCell = () => {
         const selectedCell = hotTableComponent.value.hotInstance.getSelected()[0];
         const send_data = { row: selectedCell[0], col: selectedCell[1], selectFlag: true, userid: userInfo.value.userid, color: userInfo.value.color }
-        socket.value.send(JSON.stringify(send_data));
+        try {
+            displayCellTop.value = handsondData.value[selectedCell[0]][selectedCell[1]]
+            socket.value.send(JSON.stringify(send_data));
+        } catch (e) {
+        }
     }
 
     const highlightCellClient = (row: Number, col: Number, highlight_color: String) => {
@@ -776,12 +859,32 @@
         } catch (e) { }
     }
 
-    const changeDataCell = (data: any) => {
+    const changeDataCell = async (data: any) => {
         //const cell = hotTableComponent.value.hotInstance;
         //cell.setDataAtCell(data.row, data.col, data.data);
         handsondData.value[data.row][data.col] = data.data;
     }
 
+    const checkTheColumnToken = (row: number, column: number) => {
+        const cellValue = handsondData.value[row][column]?.trim() ?? '';
+        if (!cellValue) {
+            const token = ObligationAmountToken();
+            handsondData.value[row][column] = token;
+            if (column === 12) {
+                const send_data = { row: row, col: column, afterChange: true, userid: userInfo.value.userid, data: token }
+                socket.value.send(JSON.stringify(send_data));
+            }
+        }
+    }
+
+    const addTokenIfColumnIsEmpty = (row: number) => {
+        checkTheColumnToken(row, 12);
+        for (const column of tokens) {
+            checkTheColumnToken(row,column)
+        }
+    }
+
+    const displayCellTop = ref("")
     const afterChangeFlag = ref(false)
     const afterChange = async (changes: any, source: any) => {
         //if (changes && source === 'edit' && !afterChangeFlag.value) {
@@ -800,6 +903,7 @@
                 alert("Please Select FundSource or Sub Allotment");
                 return;
             }
+            addTokenIfColumnIsEmpty(row)
 
             let obligation_data = new FormData();
 
@@ -831,8 +935,9 @@
                     obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col - 1));
                     obligation_amount_data.append('amount', hot.getDataAtCell(row, col));
                     obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 2));
+                    handsondData.value[row][10] += newValue;
                 }
-                __saveObligationAmount(obligation_amount_data)
+                await __saveObligationAmount(obligation_amount_data)
             }
             $toast.success('Successfully Changed!');
             socket.value.send(JSON.stringify(send_data));
@@ -871,16 +976,6 @@
         }
     }
 
-    const ObligationAmountToken = () => {
-        const s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-
     const get_fund_sub = ref([]);
     const fund_sub_data_array = ref([]);
     const __fundSub = async () => {
@@ -898,6 +993,7 @@
     }
 
     const totalObligation = ref(0)
+    const totalRowFetchFromBackend = ref(0)
     const __obligationData = async () => {
         await __fundSub();
         const response = await obligationData()
@@ -944,10 +1040,11 @@
                 item.source_type == "fund_source" ? item.fundSource.allotmentClassId : 0
             ]
             //console.log(dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody))
-            return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
             totalObligation.value += obligation_amount
+            return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
         }))
 
+        totalRowFetchFromBackend.value = data.length
         handsondData.value = data
     }
 
@@ -977,6 +1074,11 @@
         await deleteObligation(data);
     }
 
+    const __getRemainingObligated = async (data: {}) => {
+        const response = await getRemainingObligated(data);
+        console.log(response)
+    }
+
     __obligationData()
 </script>
 
@@ -990,25 +1092,45 @@
             <small>{{ online.fullname }}</small>
         </div>
     </div>
-    <hot-table ref="hotTableComponent"
-               :data="handsondData"
-               :colHeaders="colHeaders"
-               :colWidth="true"
-               :rowHeaders="true"
-               stretchH="all"
-               :settings="hotSettings"
-               :afterSelection="highlightCell"
-               :afterChange="afterChange"
-               :afterRender="afterRender"
-               :afterOnCellMouseDown="afterOnCellMouseDown"
-               :afterUndo="onAfterUndo"
-               v-if="handsondData.length > 0">
-    </hot-table>
-
+    <b>{{ displayCellTop }}</b>
+    <br>
+    <br>
+    <div  v-if="handsondData.length > 0">
+        <hot-table ref="hotTableComponent"
+                   :data="handsondData"
+                   :colHeaders="colHeaders"
+                   :colWidth="true"
+                   :rowHeaders="true"
+                   stretchH="all"
+                   :settings="hotSettings"
+                   :afterSelection="highlightCell"
+                   :afterChange="afterChange"
+                   :afterRender="afterRender"
+                   :afterOnCellMouseDown="afterOnCellMouseDown"
+                   :afterUndo="onAfterUndo">
+        </hot-table>
+        <br>
+        <br>
+        <div class="infobox infobox-blue2 pull-right" style="width: 230px">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span id="sub_total_amt">₱{{ totalObligation }}</span>
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <h3 v-else>Processing....</h3>
 </template>
 
 <style>
+
+
     .highlight_yellow {
         background-color: yellow !important;
     }
@@ -1074,5 +1196,13 @@
 
     .wtHider {
         margin-bottom: 200px;
+    }
+
+    .filterHeader {
+        color: black;
+    }
+
+    input {
+        width: 750px;
     }
 </style>
