@@ -120,7 +120,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input asp-for="dvDeductions[x].Amount" value="@Model.dvDeductions[x].Amount.ToString("##,#00.00")" class="form-control deduction_amount" type="text" />
+                        <input asp-for="dvDeductions[x].Amount" value="@Model.dvDeductions[x].Amount?.ToString("##,#00.00")" class="form-control deduction_amount" type="text" />
                     </div>
                 </div>
             </div>
