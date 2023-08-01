@@ -249,35 +249,28 @@
     });
 
     $(document).ready(function () {
-        // Listen for changes in the dropdown
         $("#items").on("change", function () {
-            // Get the selected value from the dropdown
             var selectedValue = $(this).val();
 
-            // Make an AJAX request to the server to get the value of another column
             $.ajax({
                 type: "GET",
-                url: "/Employee/GetUnit", // Replace with your controller and action name
+                url: '@Url.Action("GetItemsId","Employee")',
                 data: { id: selectedValue },
                 success: function (response) {
-                    // Update the input field with the retrieved value
                     $("#unit").val(response);
                 },
                 error: function (xhr, status, error) {
-                    // Optional: Handle errors if the request fails
                 }
             });
 
             $.ajax({
                 type: "GET",
-                url: "/Employee/GetUnitCost", // Replace with your controller and action name
+                url: '@Url.Action("GetUnitCost","Employee")',
                 data: { id: selectedValue },
                 success: function (response) {
-                    // Update the input field with the retrieved value
                     $("#unitCost").val(response);
                 },
                 error: function (xhr, status, error) {
-                    // Optional: Handle errors if the request fails
                 }
             });
 
@@ -311,7 +304,7 @@
             if (selectedExpenseId !== "") {
                 $.ajax({
                     type: "GET",
-                    url: @Url.Action("GetItemsId", "Employee"),
+                    url: '@Url.Action("GetItemsId","Employee")',
                     data: { expenseId: selectedExpenseId },
                     success: function (data) {
                         $("#items").empty();
@@ -320,7 +313,6 @@
                         });
                     },
                     error: function (xhr, status, error) {
-                        // Handle error
                     }
                 });
             } else {
@@ -333,61 +325,53 @@
     function add() {
         const newRow = document.querySelector('.input_fields_wrap tr:first-child').cloneNode(true);
 
-        // Clear the input values in the new row (if needed)
         const inputs = newRow.querySelectorAll('input, select');
         inputs.forEach(input => {
             input.value = '';
         });
 
-        // Fetch data for the new select element using AJAX
         const selectedExpenseId = newRow.querySelector('#expenses').value;
         if (selectedExpenseId !== "") {
             $.ajax({
                 type: "GET",
-                url: @Url.Action("GetItemsId", "Employee"),
+                url: '@Url.Action("GetItemsId","Employee")',
                 data: { expenseId: selectedExpenseId },
                 success: function (data) {
                     const newSelect = newRow.querySelector('#items');
-                    newSelect.innerHTML = '<option value="">Select Item</option>'; // Reset options
+                    newSelect.innerHTML = '<option value="">Select Item</option>';
                     data.forEach(item => {
                         newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
                     });
 
-                    // Append the new row to the table
                     const tableBody = document.querySelector('.input_fields_wrap');
                     tableBody.appendChild(newRow);
                 },
                 error: function (xhr, status, error) {
-                    // Handle error
                 }
             });
         } else {
-            // If no expense is selected, just append the new row without populating items.
             const tableBody = document.querySelector('.input_fields_wrap');
             tableBody.appendChild(newRow);
         }
 
-        // Add an event listener to the new row's expenses dropdown
         newRow.querySelector('#expenses').addEventListener('change', function () {
             const selectedExpenseId = this.value;
             if (selectedExpenseId !== "") {
                 $.ajax({
                     type: "GET",
-                    url: @Url.Action("GetItemsId", "Employee"),
+                    url: '@Url.Action("GetItemsId","Employee")',
                     data: { expenseId: selectedExpenseId },
                     success: function (data) {
                         const newSelect = newRow.querySelector('#items');
-                        newSelect.innerHTML = '<option value="">Select Item</option>'; // Reset options
+                        newSelect.innerHTML = '<option value="">Select Item</option>';
                         data.forEach(item => {
                             newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
                         });
                     },
                     error: function (xhr, status, error) {
-                        // Handle error
                     }
                 });
             } else {
-                // If no expense is selected, reset the items dropdown.
                 const newSelect = newRow.querySelector('#items');
                 newSelect.innerHTML = '<option value="">Select Item</option>';
             }
