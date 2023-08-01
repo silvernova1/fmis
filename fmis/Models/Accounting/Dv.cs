@@ -12,12 +12,14 @@ namespace fmis.Models.Accounting
     {
         public int DvId { get; set; }
         public string DvNo { get; set; }
+        public string? PaymentOf { get; set; }
         public decimal? GrossAmount { get; set; }
         public decimal? TotalDeduction { get; set; }
         public decimal? NetAmount { get; set; }
 
         public List<DvDeduction>? dvDeductions { get; set; }
 
+        [RegularExpression(@"^[^<>/]*$", ErrorMessage = "HTML tags are not allowed.")]
         public string Particulars { get; set; }
 
         [DataType(DataType.Date)]

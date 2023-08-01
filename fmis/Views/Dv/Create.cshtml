@@ -41,17 +41,17 @@
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
             </div>
-            <div class="1stcol col-md-2" style="width: 250px;">
+            @*<div class="1stcol col-md-2" style="width: 250px;">
                 <h5>Dv Category: </h5>
                 <input type="text" class="form-control" readonly value="INDIVIDUAL" />
-            </div>
-            @*<div class="col-md-2" style="width: 200px;">
-                <h5>Dv Type: </h5>
-                <select class="form-control" id="dv_type" asp-for="DvType" required>
-                    <option value="S">SUPPLIER/CONTRACTOR</option>
-                    <option value="T">INDIVIDUAL CLAIM/PAYROLL</option>
-                </select>
             </div>*@
+            <div class="col-md-2" style="width: 200px;">
+                <h5>Dv Category: </h5>
+                <select class="form-control" id="dv_type" asp-for="DvType" required>
+                    <option value="T">INDIVIDUAL CLAIM</option>
+                    <option value="S">SUPPLIER</option>
+                </select>
+            </div>
             @*<div class="1stcol col-md-2" style="width: 150px;" name="hidden-stype" id="hidden-stype">
                 <h5>Supplier Type: </h5>
                 <select asp-for="DvSupType" class="form-control" id="stype">

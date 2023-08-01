@@ -7,6 +7,11 @@ using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.IO;
 using fmis.Data.MySql;
+using fmis.ViewModel;
+using System;
+using DocumentFormat.OpenXml.Bibliography;
+using System.Collections.Generic;
+using fmis.Models.ppmp;
 
 namespace fmis.Controllers.Employee
 {
@@ -39,8 +44,49 @@ namespace fmis.Controllers.Employee
                            };
             ViewBag.Approval = new SelectList(employee, "Id", "Fullname");
 
-            return View();
+
+            var viewModel = GetCascadingDropdownData();
+            if (viewModel.Expenses == null)
+            {
+                // If the Countries collection is null, initialize it to an empty list
+                viewModel.Expenses = new List<Expense>();
+            }
+            if (viewModel.Items == null)
+            {
+                // If the Countries collection is null, initialize it to an empty list
+                viewModel.Items = new List<Item>();
+            }
+
+            return View(viewModel);
         }
+
+        public PrViewModel GetCascadingDropdownData()
+        {
+            var viewModel = new PrViewModel
+            {
+                Expenses = _ppmpContext.expense.ToList()
+            };
+
+            return viewModel;
+        }
+
+        public List<Item> GetItemsId(int expenseId)
+        {
+            return _ppmpContext.item.Where(c => c.Expense_id == expenseId).ToList();
+        }
+
+        /*[HttpGet]
+        public IActionResult LoadItem(int expenseId)
+        {
+            var childOptions = _ppmpContext.item
+                .Where(x => x.Expense_id == 1)
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Description })
+                .ToList();
+
+            Console.WriteLine(childOptions);
+
+            return Json(childOptions);
+        }*/
 
         [HttpGet]
         public IActionResult GetUnit(int id)

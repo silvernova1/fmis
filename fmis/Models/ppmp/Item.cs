@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.ppmp
 {
@@ -13,7 +14,7 @@ namespace fmis.Models.ppmp
         [MaxLength(45)]
         public string Userid { get; set; }
 
-        public int Expense_id { get; set; }
+        public int? Expense_id { get; set; }
 
         public int? Division { get; set; }
 
@@ -69,6 +70,9 @@ namespace fmis.Models.ppmp
         public int? Nov { get; set; }
 
         public int? Dece { get; set; }
+
+        [ForeignKey("Expense_id")]
+        public Expense Expense { get; set; }
 
     }
 }

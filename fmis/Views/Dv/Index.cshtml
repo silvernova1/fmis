@@ -211,22 +211,14 @@
                         }
                         else
                         {
-                            if(String.IsNullOrEmpty(item.dvDeductions.ToString()))
-                            {
                                 <td>
                                     <select class="form-control">
-                                        @foreach (var deduction in item?.dvDeductions)
+                                        @foreach (var deduction in item?.dvDeductions.Where(x=>x.Amount != null))
                                         {
-                                            <option>@deduction.Deduction.DeductionDescription -- @deduction.Amount?.ToString("N2")</option>
+                                            <option>@deduction?.Deduction?.DeductionDescription -- @deduction?.Amount?.ToString("N2")</option>
                                         }
                                     </select>
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                </td>
-                            }
                         }
                         
                         <td>

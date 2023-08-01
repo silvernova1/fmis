@@ -16,6 +16,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Xml;
+using fmis.Models.pr;
 
 namespace fmis.Data
 {
@@ -88,6 +89,8 @@ namespace fmis.Data
         public DbSet<InfraAdvancePayment> InfraAdvancePayment { get; set; }
         public DbSet<InfraRetention> InfraRetentions { get; set; }
         public DbSet<InfraProgress> InfraProgress { get; set; }
+        public DbSet<Pr> Pr { get; set; }
+        public DbSet<PrItems> PrItems { get; set; }
 
 
         public class MyEntityConfiguration : IEntityTypeConfiguration<InfraProgress>

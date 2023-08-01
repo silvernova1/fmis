@@ -1,4 +1,4 @@
-﻿@model fmis.Models.ppmp.Expense
+﻿@model fmis.ViewModel.PrViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -24,7 +24,7 @@
 </button>
 
 <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div id="my_modal" class="modal-dialog modal-lg" style="width: 70%" role="document">
+    <div id="my_modal" class="modal-dialog modal-lg" style="width: 90%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -95,23 +95,23 @@
                                         <tr>
                                             <td colspan="2">Division:</td>
                                             <td colspan="2">Office of the RD / ARD </td>
-                                            <td colspan="2">PR NO.:</td>
-                                            <td colspan="5">Date: <input class="DatePicker" value="07/24/2023" name="pr_date" required="" autocomplete="off"></td>
+                                            <td colspan="2">PR NO.: <input type="text" asp-for="Pr.Prno" autocomplete="off" style="width: 140px"></td>
+                                            <td colspan="5">Date: <input type="date" name="pr_date" required="" autocomplete="off" style="width: 120px"></td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">Section/Unit:</td>
                                             <td colspan="2">Information and Communication Technology Unit(RD-ARD)</td>
                                             <td colspan="2">SAI NO.:</td>
-                                            <td colspan="5">Date: <input type="text"></td>
+                                            <td colspan="5">Date: <input type="date" name="pr_date" required="" autocomplete="off" style="width: 120px"></td>
                                         </tr>
                                         <tr>
                                             <td colspan="2" class="td-height"></td>
                                             <td colspan="2" class="td-height"></td>
                                             <td colspan="2" class="td-height">ALOBS NO.:</td>
-                                            <td colspan="5" class="td-height">Date: <input type="text"></td>
+                                            <td colspan="5" class="td-height">Date: <input type="date" name="pr_date" required="" autocomplete="off" style="width: 120px"></td>
                                         </tr>
                                         <tr>
-                                            <td><b>Item No.</b></td>
+                                            <td><b>Expense Type</b></td>
                                             <td><b>Unit of Issue</b></td>
                                             <td width="40%"><b>Item Description</b></td>
                                             <td><b>Quantity</b></td>
@@ -121,15 +121,21 @@
                                     </thead>
                                     <tbody class="input_fields_wrap">
                                         <tr>
-                                            <td id="border-bottom"><strong>1</strong></td>
+                                            <td id="border-bottom">
+                                                <select id="expenses" asp-for="SelectedExpenseId" asp-items="@(new SelectList(Model.Expenses, "Id", "Description"))" style="width: 200px; height: 37px">
+                                                    <option value="">Select Expense</option>
+                                                </select>
+                                            </td>
                                             <td id="border-bottom" class="issue1 align-top">
                                                 <br>
                                                 <input type="text" id="unit" autocomplete="off">
                                                 <small>required!</small>
                                             </td>
                                             <td id="border-bottom" class="description1 align-top">
-                                                <strong><i>Specification(s)</i></strong><br>
-                                                <select class="form-control" id="items" asp-items="ViewBag.Item"></select>
+                                                <br>
+                                                <select id="items" asp-for="SelectedItemId" asp-items="@(new SelectList(Model.Items, "Id", "Description"))" style="width: 350px; height: 37px">
+                                                    <option value="">Select Item</option>
+                                                </select>
                                             </td>
                                             <td id="border-bottom" class="qty1 align-top">
                                                 <br>
@@ -154,7 +160,7 @@
                                             <td id="border-top"></td>
                                             <td id="border-top"></td>
                                             <td id="border-top" colspan="2"></td>
-                                            <td id="border-top"><a onclick="add();">Add new</a></td>
+                                            <td id="border-top"><button onclick="add();">Add new</button></td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -297,4 +303,95 @@
             estimatedCostInput.value = '';
         }
     }
+
+    //items
+    $(document).ready(function () {
+        $("#expenses").change(function () {
+            var selectedExpenseId = $(this).val();
+            if (selectedExpenseId !== "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Employee/GetItemsId",
+                    data: { expenseId: selectedExpenseId },
+                    success: function (data) {
+                        $("#items").empty();
+                        $.each(data, function (index, item) {
+                            $("#items").append('<option value="' + item.id + '">' + item.description + '</option>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                    }
+                });
+            } else {
+                $("#items").empty();
+            }
+        });
+    });
+    //
+    //new items
+    function add() {
+        const newRow = document.querySelector('.input_fields_wrap tr:first-child').cloneNode(true);
+
+        // Clear the input values in the new row (if needed)
+        const inputs = newRow.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.value = '';
+        });
+
+        // Fetch data for the new select element using AJAX
+        const selectedExpenseId = newRow.querySelector('#expenses').value;
+        if (selectedExpenseId !== "") {
+            $.ajax({
+                type: "GET",
+                url: "/Employee/GetItemsId",
+                data: { expenseId: selectedExpenseId },
+                success: function (data) {
+                    const newSelect = newRow.querySelector('#items');
+                    newSelect.innerHTML = '<option value="">Select Item</option>'; // Reset options
+                    data.forEach(item => {
+                        newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+                    });
+
+                    // Append the new row to the table
+                    const tableBody = document.querySelector('.input_fields_wrap');
+                    tableBody.appendChild(newRow);
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                }
+            });
+        } else {
+            // If no expense is selected, just append the new row without populating items.
+            const tableBody = document.querySelector('.input_fields_wrap');
+            tableBody.appendChild(newRow);
+        }
+
+        // Add an event listener to the new row's expenses dropdown
+        newRow.querySelector('#expenses').addEventListener('change', function () {
+            const selectedExpenseId = this.value;
+            if (selectedExpenseId !== "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Employee/GetItemsId",
+                    data: { expenseId: selectedExpenseId },
+                    success: function (data) {
+                        const newSelect = newRow.querySelector('#items');
+                        newSelect.innerHTML = '<option value="">Select Item</option>'; // Reset options
+                        data.forEach(item => {
+                            newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                    }
+                });
+            } else {
+                // If no expense is selected, reset the items dropdown.
+                const newSelect = newRow.querySelector('#items');
+                newSelect.innerHTML = '<option value="">Select Item</option>';
+            }
+        });
+    }
+    //
 </script>

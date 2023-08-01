@@ -66,6 +66,11 @@
                 <input asp-for="DvNo" type="text" id="dv_no" class="form-control" value="S07-0030" />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
             </div>
+            <div id="payment_of" class="1stcol col-md-2" style="width: 150px;">
+                <h5>For Payment of: </h5>
+                <input asp-for="PaymentOf" type="text" id="payment_of" class="form-control" />
+                <span asp-validation-for="PaymentOf" class="text-danger"></span>
+            </div>
         </div>
         <div class="col-md-12">
             <div class="col-md-4">
@@ -331,9 +336,9 @@
                         <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" />
                     </div>
                 </div>
-                <button type="button" onclick="addDeduction()">+</button>
+                <button type="button" onclick="addDeductionProgress()">+</button>
             </div>
-            <div id="deduction-container"></div>
+            <div id="deduction-container-progress"></div>
             <div class="col-md-12">
                 <div class="col-md-2" style="width: 250px;">
                     <label>Total Deduction</label>
@@ -387,13 +392,13 @@
             <div id="billing-container"></div>
             <div class="col-md-12">
                 <div class="col-md-2" style="width: 250px;">
-                    <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
+                    <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[1].DeductionId" class="form-control select2">
                         <option value=""> - Select Deduction -</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" />
+                        <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="text" />
                     </div>
                 </div>
                 <button type="button" onclick="addDeduction()">+</button>
@@ -431,8 +436,53 @@
 
 
 <script>
-    // New deductions
+    // New deductions Progress
     var deductionCount = 1;
+
+    function addDeductionProgress() {
+        var container = document.getElementById("deduction-container-progress");
+        var deductionDiv = document.createElement("div");
+        deductionDiv.className = "col-md-12";
+
+        var deductionSelectDiv = document.createElement("div");
+        deductionSelectDiv.className = "col-md-2";
+        deductionSelectDiv.style.width = "250px";
+        var deductionSelect = document.createElement("select");
+        deductionSelect.className = "form-control select2";
+        deductionSelect.name = "dvDeductions[" + deductionCount + "].DeductionId";
+
+        var options = @Html.Raw(deductionOptions);
+        options.forEach(function (option) {
+            var optionElement = document.createElement("option");
+            optionElement.value = option.Value;
+            optionElement.textContent = option.Text;
+            deductionSelect.appendChild(optionElement);
+        });
+
+        deductionSelectDiv.appendChild(deductionSelect);
+
+        var deductionInputDiv = document.createElement("div");
+        deductionInputDiv.className = "col-md-2";
+        var deductionInputFormGroup = document.createElement("div");
+        deductionInputFormGroup.className = "form-group";
+        var deductionInput = document.createElement("input");
+        deductionInput.className = "form-control deduction_amount";
+        deductionInput.type = "text";
+        deductionInput.name = "dvDeductions[" + deductionCount + "].Amount";
+        deductionInputDiv.appendChild(deductionInputFormGroup);
+        deductionInputFormGroup.appendChild(deductionInput);
+
+        deductionDiv.appendChild(deductionSelectDiv);
+        deductionDiv.appendChild(deductionInputDiv);
+        container.appendChild(deductionDiv);
+        deductionInput.addEventListener("input", calculateTotalDeductions);
+
+        deductionCount++;
+        adjustContainerHeight();
+    }
+    //
+    // New deductions Retention
+    var deductionCount = 2;
 
     function addDeduction() {
         var container = document.getElementById("deduction-container");
@@ -692,16 +742,19 @@
     var advanceDiv = document.getElementById('advance');
     var progressDiv = document.getElementById('progress');
     var retentionDiv = document.getElementById('retention');
+    var payment_of = document.getElementById('payment_of');
 
     advanceDiv.style.display = 'block';
     progressDiv.style.display = 'none';
     retentionDiv.style.display = 'none';
+    payment_of.style.display = 'none';
 
     document.getElementById("stype").addEventListener("change", function () {
         var selectedOption = this.value;
         var advance = document.getElementById("advance");
         var progress = document.getElementById("progress");
         var retention = document.getElementById("retention");
+        var payment_of = document.getElementById("payment_of");
         var containerElement = document.getElementsByClassName("container")[0];
         console.log(progress);
         if (selectedOption === "1") {
@@ -709,9 +762,11 @@
             advance.style.display = "block";
             progress.style.display = "none";
             retention.style.display = "none";
+            payment_of.style.display = "none";
         }
         else if (selectedOption === "2") {
             containerElement.style.height = "1200px";
+            payment_of.style.display = "block";
             progress.style.display = "block";
             advance.style.display = "none";
             retention.style.display = "none";
@@ -721,11 +776,13 @@
             retention.style.display = "block";
             advance.style.display = "none";
             progress.style.display = "none";
+            payment_of.style.display = "none";
         }
         else {
             advance.style.display = "none";
             retention.style.display = "none";
             progress.style.display = "none";
+            payment_of.style.display = "none";
         }
     });
 
