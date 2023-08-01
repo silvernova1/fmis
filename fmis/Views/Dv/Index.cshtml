@@ -322,7 +322,7 @@
                             @item.NetAmount?.ToString("C", new CultureInfo("en-PH"))
                         </td>
                         @{
-                            var adjustedAmount = item?.indexOfPayment?.GrossAmount.ToString("C", new CultureInfo("en-PH")) ?? 0.ToString("C", new CultureInfo("en-PH"));
+                            var adjustedAmount = item?.indexOfPayment?.NetAmount.ToString("C", new CultureInfo("en-PH")) ?? 0.ToString("C", new CultureInfo("en-PH"));
                         }
                         <td style="font-weight:bold">
                                 @adjustedAmount

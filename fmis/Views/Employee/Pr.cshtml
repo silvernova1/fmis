@@ -311,7 +311,7 @@
             if (selectedExpenseId !== "") {
                 $.ajax({
                     type: "GET",
-                    url: "/Employee/GetItemsId",
+                    url: @Url.Action("GetItemsId", "Employee"),
                     data: { expenseId: selectedExpenseId },
                     success: function (data) {
                         $("#items").empty();
@@ -344,7 +344,7 @@
         if (selectedExpenseId !== "") {
             $.ajax({
                 type: "GET",
-                url: "/Employee/GetItemsId",
+                url: @Url.Action("GetItemsId", "Employee"),
                 data: { expenseId: selectedExpenseId },
                 success: function (data) {
                     const newSelect = newRow.querySelector('#items');
@@ -373,7 +373,7 @@
             if (selectedExpenseId !== "") {
                 $.ajax({
                     type: "GET",
-                    url: "/Employee/GetItemsId",
+                    url: @Url.Action("GetItemsId", "Employee"),
                     data: { expenseId: selectedExpenseId },
                     success: function (data) {
                         const newSelect = newRow.querySelector('#items');
