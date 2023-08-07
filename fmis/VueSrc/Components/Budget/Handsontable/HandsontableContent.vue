@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount, deleteObligation, getRemainingObligated } from "../../../api/index"
+    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount, deleteObligation, getRemainingObligated, calculateObligatedAmount } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
     import Handsontable from 'handsontable';
@@ -58,7 +58,7 @@
         const cellValue = hotTableComponent.value.hotInstance.getDataAtCol(8);
         console.log(totalRowFetchFromBackend.value);
         let ors_number: any = incrementORS(cellValue);
-        for (let i = totalRowFetchFromBackend.value; i < 10000; i++) {
+        for (let i = totalRowFetchFromBackend.value; i < 8000; i++) {
             handsondData.value[i][8] = ors_number.toString().padStart(4, '0');
             ors_number++;
         }
@@ -134,7 +134,7 @@
                         for (var i = rowStart; i < rowEnd; i++) {
                             console.log("row=" + i)
                             insertAboveRow(i, data.data)
-                            data.data[count].forEach((item: any, column: Number) => {
+                            data.data[count].forEach((item: any, column: number) => {
                                 changeDataCell({ row: i, col: column, data: item })
                             })
                             count++
@@ -199,8 +199,29 @@
         });
     }
 
+    function generateUniqueToken(length: number): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randomIndex);
+        }
+        return result;
+    }
 
     const handsondData = ref([])
+    /*const watchHandsonddata = computed(() => handsondData.value);
+    const executeWithInterval = (length, index) => {
+        if (index < length) {
+            handsondData.value[index][3] = generateUniqueToken(4);
+            console.log("executing...");
+            setTimeout(() => executeWithInterval(length, index + 1), 2000);
+        }
+    }
+    watch(watchHandsonddata, (newData) => {
+        executeWithInterval(handsondData.value.length, 0);
+    })*/
+
     const colHeaders = ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
         'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
         'OBLIGATION AMOUNT TOKEN 2', 'EXP CODE 2', 'AMOUNT 2',
@@ -214,18 +235,17 @@
         'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
         'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
         'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
-        'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE']
+        'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE', 'OBLIGATED BALANCE']
 
     const totalAmountReadOnly = 9;
 
     const debounceFnWrapper = (colIndex: number, event: Event) => {
         const debounceFn: () => void = Handsontable.helper.debounce(() => {
             const filtersPlugin = hotTableComponent.value.hotInstance.getPlugin('filters');
-
             filtersPlugin.removeConditions(colIndex);
             filtersPlugin.addCondition(colIndex, 'contains', [event.target['value']]);
             filtersPlugin.filter();
-        }, 100);
+        }, 1000);
 
         debounceFn(); // Call the actual debounce function inside the wrapper.
     };
@@ -278,7 +298,7 @@
             100, 100, 100,
             100, 100, 100,
             100, 100,
-            100, 100, 100,
+            100, 100, 100,100
         ],
 
 
@@ -592,7 +612,7 @@
                     }
                 }
             },
-            {
+            {  //48
                 //Amount 12
                 type: 'numeric',
                 numericFormat: {
@@ -600,6 +620,7 @@
                 }
             },
             {
+                //49
                 //Begenning Balance
                 type: 'numeric',
                 numericFormat: {
@@ -607,21 +628,32 @@
                 }
             },
             {
+                //50
                 //Remaining Balance
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
                 }
             },
+            
             {
+                //51
                 //ALLOTMENT CLASS
                 type: 'text'
             },
+            {
+                //52
+                //Obligated Balance
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
         ],
         //SET MINIMUM ROW
-        minRows: 10000,
+        minRows: 8000,
         hiddenColumns: {
-            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46 ],
+            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51, 52 ],
             indicators: true, // show the indicator in the header
         },
         wordWrap: false,
@@ -753,14 +785,6 @@
     const tokens = [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
     const insertAboveRow = (row: Number, obligation_token: String) => {
         insertedRowFlag.value = true
-        //const ObligationAmountToken = () => {
-        //    const s4 = () => {
-        //        return Math.floor((1 + Math.random()) * 0x10000)
-        //            .toString(16)
-        //            .substring(1);
-        //    };
-        //    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        //};
 
         const cell = hotTableComponent.value.hotInstance;
 
@@ -787,14 +811,7 @@
 
     const insertBelowRow = (row: Number, obligation_token: String) => {
         insertedRowFlag.value = true
-        //const ObligationAmountToken = () => {
-        //    const s4 = () => {
-        //        return Math.floor((1 + Math.random()) * 0x10000)
-        //            .toString(16)
-        //            .substring(1);
-        //    };
-        //    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        //};
+
 
         const cell = hotTableComponent.value.hotInstance;
         const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
@@ -835,7 +852,8 @@
         return color_pick
     }
 
-    const highlightCell = () => {
+    const highlightCell = (source: any) => {
+        console.log(source)
         const selectedCell = hotTableComponent.value.hotInstance.getSelected()[0];
         const send_data = { row: selectedCell[0], col: selectedCell[1], selectFlag: true, userid: userInfo.value.userid, color: userInfo.value.color }
         try {
@@ -859,9 +877,13 @@
         } catch (e) { }
     }
 
+    interface CellData {
+        row: number;
+        col: number;
+        data: any; // Replace 'any' with the specific data type you expect to handle in the cells
+    }
+
     const changeDataCell = async (data: any) => {
-        //const cell = hotTableComponent.value.hotInstance;
-        //cell.setDataAtCell(data.row, data.col, data.data);
         handsondData.value[data.row][data.col] = data.data;
     }
 
@@ -889,10 +911,8 @@
     const afterChange = async (changes: any, source: any) => {
         //if (changes && source === 'edit' && !afterChangeFlag.value) {
         if (changes && source === 'edit') {
-            console.log("executed!");
             const [row, col, oldValue, newValue] = changes[0];
             const hot = hotTableComponent.value.hotInstance;
-            const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
 
             if (insertedRowFlag.value) {
                 insertedRowFlag.value = false;
@@ -904,9 +924,72 @@
                 return;
             }
             addTokenIfColumnIsEmpty(row)
+            if (col >= 14 && col <= 48 && hot.getDataAtCell(row, 0)) {
+                let obligation_amount_data = new FormData()
+                obligation_amount_data.append('obligationId', hot.getDataAtCell(row, 11));
+                obligation_amount_data.append('obligation_token', hot.getDataAtCell(row, 12));
+                if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'expense') {
+                    obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col));
+                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 1));
+                } else if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'amount') {
+                    if (!hot.getDataAtCell(row, col - 1)) {
+                        alert("please select expense code!")
+                        return;
+                    }
+                    const send_check_remaining = {
+                        "obligation_id": 0,
+                        "obligation_token": hot.getDataAtCell(row, 12),
+                        "beginning_balance": 0,
+                        "remaining_balance": 0,
+                        "obligated_amount": newValue
+                    };
+                    const checkRemaining = await __getRemainingObligated(send_check_remaining);
+                    console.log(checkRemaining);
+                    if (checkRemaining['remaining_balance'] + oldValue >= newValue || checkRemaining['remaining_balance'] >= newValue) {
+                        let calculated_remaining = 0;
+                        let calculated_obligated = 0;
+                        if (newValue > oldValue) {
+                            calculated_remaining = checkRemaining['remaining_balance'] - (newValue - oldValue);
+                            calculated_obligated = checkRemaining['obligated_amount'] + (newValue - oldValue);
+                        } else if (newValue < oldValue) {
+                            calculated_remaining = checkRemaining['remaining_balance'] + (oldValue - newValue);
+                            calculated_obligated = checkRemaining['obligated_amount'] - (oldValue - newValue);
+                        }
+                        handsondData.value[row][50] = calculated_remaining;
+                        handsondData.value[row][52] = calculated_obligated;
+                        const send_calculated = {
+                            "obligation_id": 0,
+                            "obligation_token": hot.getDataAtCell(row, 12),
+                            "obligation_amount_token": hot.getDataAtCell(row, col - 2),
+                            "remaining_balance": calculated_remaining,
+                            "obligated_amount": calculated_obligated,
+                            "amount": newValue
+                        }
+                        console.log(send_calculated);
+                        const check = await __calculateObligatedAmount(send_calculated);
+                        console.log(check)
+                        obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col - 1));
+                        obligation_amount_data.append('amount', hot.getDataAtCell(row, col));
+                        obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 2));
+                        handsondData.value[row][10] = newValue > oldValue ? handsondData.value[row][10] + (newValue - oldValue) : handsondData.value[row][10] - (oldValue - newValue);
+                        const send_data = { row: row, col: 10, afterChange: true, userid: userInfo.value.userid, data: handsondData.value[row][10] }
+                        socket.value.send(JSON.stringify(send_data));
+                    }
+                    else {
+                        console.log("insufficient");
+                        alert("insufficient balance!");
+                        handsondData.value[row][col] = oldValue;
+                        return;
+                    }
+                }
+                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
+                socket.value.send(JSON.stringify(send_data));
+                await __saveObligationAmount(obligation_amount_data)
+                $toast.success('Successfully Save Obligation Amount!');
+                return;
+            }
 
             let obligation_data = new FormData();
-
             obligation_data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
             obligation_data.append('source_type', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_type : 0);
             obligation_data.append('date', hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "");
@@ -922,24 +1005,8 @@
             obligation_data.append('obligation_token', hot.getDataAtCell(row, 12));
 
             await __saveObligation(obligation_data, row)
-
-            if (col >= 14 && col <= 48 && hot.getDataAtCell(row, 0)) {
-                console.log(col)
-                let obligation_amount_data = new FormData()
-                obligation_amount_data.append('obligationId', hot.getDataAtCell(row, 11));
-                obligation_amount_data.append('obligation_token', hot.getDataAtCell(row, 12));
-                if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'expense') {
-                    obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col));
-                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 1));
-                } else if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'amount') {
-                    obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col - 1));
-                    obligation_amount_data.append('amount', hot.getDataAtCell(row, col));
-                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 2));
-                    handsondData.value[row][10] += newValue;
-                }
-                await __saveObligationAmount(obligation_amount_data)
-            }
-            $toast.success('Successfully Changed!');
+            $toast.success('Successfully Save Obligation!');
+            const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
             socket.value.send(JSON.stringify(send_data));
         }
     }
@@ -993,6 +1060,7 @@
     }
 
     const totalObligation = ref(0)
+
     const totalRowFetchFromBackend = ref(0)
     const __obligationData = async () => {
         await __fundSub();
@@ -1032,23 +1100,33 @@
             ]
 
             const beginningRemainingAllotmentBody = [
-                //item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
-                item.source_type == "fund_source" ? item.fundSource.beginning_balance : 0,
-                //item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
-                item.source_type == "fund_source" ? item.fundSource.remaining_balance : 0,
-                //item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId
-                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : 0
+                item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
+                //item.source_type == "fund_source" ? item.fundSource.beginning_balance : 0,
+                item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
+                //item.source_type == "fund_source" ? item.fundSource.remaining_balance : 0,
+                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId,
+                //item.source_type == "fund_source" ? item.fundSource.allotmentClassId : 0,
+                item.source_type == "fund_source" ? item.fundSource.obligated_amount : item.subAllotment.obligated_amount
             ]
-            //console.log(dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody))
-            totalObligation.value += obligation_amount
+
+
+            totalObligation.value += obligation_amount;
+
             return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
+
         }))
 
         totalRowFetchFromBackend.value = data.length
         handsondData.value = data
     }
 
+
+
     /*console.log(gridAmount.find(item => item[0] === 18)[1]);*/
+    function formatNumber(number: number): string {
+        const formattedNumber = number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return formattedNumber;
+    }
 
     const __expCode = async (allotmentId: Number) => {
         const response = await expCode({ allotmentId: allotmentId })
@@ -1065,9 +1143,9 @@
     };
 
     const __saveObligationAmount = async (data: {}) => {
-        console.log(data);
+        //console.log(data);
         const response = await saveObligationAmount(data);
-        console.log(response);
+        //console.log(response);
     }
 
     const __deleteObligation = async (data: {}) => {
@@ -1075,11 +1153,18 @@
     }
 
     const __getRemainingObligated = async (data: {}) => {
-        const response = await getRemainingObligated(data);
-        console.log(response)
+        return await getRemainingObligated(data);
+    }
+
+    const __calculateObligatedAmount = async (data: {}) => {
+        return await calculateObligatedAmount(data);
     }
 
     __obligationData()
+
+
+
+
 </script>
 
 <template>
@@ -1095,9 +1180,12 @@
     <b>{{ displayCellTop }}</b>
     <br>
     <br>
+    <!--<li v-for="item in handsondData">
+        {{ item[3] }} <input type="text" name="name" :value="item[3]" /><input type="text" name="name" v-model="item[4]" />
+    </li>-->
     <div  v-if="handsondData.length > 0">
         <hot-table ref="hotTableComponent"
-                   :data="handsondData"
+                   v-model:data="handsondData"
                    :colHeaders="colHeaders"
                    :colWidth="true"
                    :rowHeaders="true"
@@ -1117,7 +1205,9 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    <span id="sub_total_amt">₱{{ totalObligation }}</span>
+                    <span>
+                        ₱{{ formatNumber(totalObligation) }}
+                    </span>
                 </span>
                 <div class="infobox-content">
                     <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
