@@ -875,7 +875,7 @@ namespace fmis.Controllers
                     table_row_4.WidthPercentage = 100f;
                     table_row_4.SetWidths(tbt_row4_width);
                     table_row_4.AddCell(new PdfPCell(new Paragraph("Address", times_new_roman_r9)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address.ToString(), times_new_roman_b9)));
+                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address?.ToString(), times_new_roman_b9)));
                     table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 
