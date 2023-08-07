@@ -1,0 +1,244 @@
+﻿@model fmis.Models.ppmp.Expense
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div id="my_modal" class="modal-dialog modal-lg" style="width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal_content">
+                <link href="https://mis.cvchd7.com/dts/resources/assets/css/print.css" rel="stylesheet"><style>
+                                                                                                            #border-top {
+                                                                                                                border-collapse: collapse;
+                                                                                                                border-top: none;
+                                                                                                            }
+
+                                                                                                            #border-bottom {
+                                                                                                                border-collapse: collapse;
+                                                                                                                border-bottom: none;
+                                                                                                            }
+
+                                                                                                            .align {
+                                                                                                                text-align: center;
+                                                                                                            }
+
+                                                                                                            .align-top {
+                                                                                                                vertical-align: top;
+                                                                                                            }
+
+                                                                                                            small {
+                                                                                                                color: red;
+                                                                                                            }
+                </style><form method="post" id="form" action="https://mis.cvchd7.com/dts/prr_supply_post">
+                    <input type="hidden" name="_token" value="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT" autocomplete="off">
+                    <span id="getDesignation" data-link="https://mis.cvchd7.com/dts/getDesignation"></span>
+                    <span id="url" data-link="https://mis.cvchd7.com/dts/prr_supply_append"></span>
+                    <span id="token" data-token="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT"></span>
+                    <input type="hidden" name="doc_type" value="PRR_S" autocomplete="off">
+                    <input type="hidden" value="985241" name="prepared_by" autocomplete="off">
+                    <div class="modal-body">
+                        <div class="content-wrapper">
+                            <!-- Main content -->
+                            <section class="invoice">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        @*<tr>
+                                            <td class="align"><img src="https://mis.cvchd7.com/dts/resources/img/doh.png" width="100"></td>
+                                            <td width="90%">
+                                                <div class="align small-text">
+                                                    Republic of the Philippines<br>
+                                                    DEPARTMENT OF HEALTH<br>
+                                                    <strong>CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT</strong><br>
+                                                    Osmeña Boulevard,Sambag II,Cebu City, 6000 Philippines<br>
+                                                    Regional Director’s Office Tel. No. (032) 253-6355 Fax No. (032) 254-0109<br>
+                                                    Official Website: http://www.ro7.doh.gov.ph Email Address: dohro7@gmail.com<br>
+                                                </div>
+                                            </td>
+                                            <td class="align"><img src="https://mis.cvchd7.com/dts/resources/img/f1.jpg" width="100"></td>
+                                        </tr>*@
+                                    </tbody>
+                                </table>
+                                <table class="letter-head" cellpadding="0" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            @*<td class="align" style="border-right: none;"><img src="https://mis.cvchd7.com/dts/resources/img/doh.png" width="80"></td>*@
+                                            <td colspan="7" class="align" style="text-align: center;">
+                                                <img src="https://mis.cvchd7.com/dts/resources/img/doh.png" width="70" style="float: left; margin-right: 10px;">
+                                                <strong>PURCHASE REQUEST</strong><br><br>
+                                                DOH - Central Visayas Center for Health Development<br>
+                                                <strong>(Agency)</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Division:</td>
+                                            <td colspan="2">Office of the RD / ARD </td>
+                                            <td colspan="3">PR Date: <input class="DatePicker" value="07/24/2023" name="pr_date" required="" autocomplete="off"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Section/Unit:</td>
+                                            <td colspan="5">Information and Communication Technology Unit(RD-ARD)</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Unit:</td>
+                                            <td colspan="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Item No.</b></td>
+                                            <td><b>Unit of Issue</b></td>
+                                            <td width="40%"><b>Item Description</b></td>
+                                            <td><b>Quantity</b></td>
+                                            <td colspan="2"><b>Estimated Unit Cost</b></td>
+                                            <td colspan="2"><b>Estimated Cost</b></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="input_fields_wrap">
+                                        <tr>
+                                            <td id="border-bottom"><strong>1</strong></td>
+                                            <td id="border-bottom" class="issue1 align-top">
+                                                <input type="text" id="inputField" autocomplete="off">
+                                                <small>required!</small>
+                                            </td>
+                                            <td id="border-bottom" class="description1 align-top">
+                                                <select class="form-control select2" id="dropdownField" asp-items="ViewBag.Item"></select>
+                                                <br><strong><i>Specification(s)</i></strong>
+                                            </td>
+                                            <td id="border-bottom" class="qty1 align-top">
+                                                <input type="text" name="qty[]" id="qty1" class="form-control" onkeydown="trapping(event,true)" onkeyup="trapping(event,true)" required="" autocomplete="off">
+                                                <small id="E_qty1">required!</small>
+                                            </td>
+                                            <td id="border-bottom" class="unit_cost1 align-top" colspan="2"><input type="text" name="unit_cost[]" id="unit_cost1" class="form-control" onkeydown="trapping(event,true)" onkeyup="trapping(event,true)" required="" autocomplete="off"><small id="E_unit_cost1">required!</small></td>
+                                            <td id="border-bottom" class="estimated_cost1 align-top">
+                                                <input type="hidden" name="estimated_cost[]" id="estimated_cost1" class="form-control" autocomplete="off">
+                                                <strong style="color:green;">₱</strong><strong style="color:green" id="e_cost1"></strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody>
+                                        <tr>
+                                            <td id="border-top"></td>
+                                            <td id="border-top"></td>
+                                            <td id="border-top"></td>
+                                            <td id="border-top"></td>
+                                            <td id="border-top" colspan="2"></td>
+                                            <td id="border-top"><a onclick="add();" href="#">Add new</a></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="6"><b style="float: right">GRAND TOTAL</b></td>
+                                            <td class="align-top">
+                                                <input type="hidden" name="amount" id="amount" autocomplete="off">
+                                                <strong style="color: red;">₱</strong><strong style="color:red" id="total"></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" class="align">
+                                                <h3>Certification</h3>
+                                                This is to certify that dilligent efforts have been exerted to ensure that the price/s indicated above(in relation to the specifications) is/are within the prevailing market price/s.
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="purpose">Purpose:</label>
+                                            </td>
+                                            <td colspan="6">
+                                                <textarea class="form-control" id="purpose" name="purpose" required=""></textarea>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Fund Chargeable To:</label>
+                                            </td>
+                                            <td colspan="4">
+                                                <textarea class="form-control" name="charge_to" required=""></textarea>
+                                            </td>
+                                            <td colspan="2">
+                                                <label>Cash Advance of:</label>
+                                                <input type="text" name="cash_advance_of" id="issue1" class="form-control" autocomplete="off">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <table class="letter-head" style="margin-top: 2%">
+                                    <tbody>
+                                        <tr>
+                                            <td width="15%">
+                                                <label for="">Signature:</label><br>
+                                                <label for="">Printed Name:</label><br>
+                                                <label for="">Designation:</label><br>
+                                            </td>
+                                            <td width="23%">
+                                                <label for="">Requested By</label>
+                                                <select class="chosen-select-static form-control" onchange="get_designation($(this),'section',true)" name="requested_by" required="" style="position: absolute; opacity: 0;">
+                                                    <option value="140">Marte S. Manayon</option>
+                                                    <option value="51">Dr. Sophia M. Mancao, MD, DPSP, RN-MAN</option>
+                                                </select><div class="chosen-container chosen-container-single" style="width: 275px;" title=""><a class="chosen-single"><span>Marte S. Manayon</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off"></div><ul class="chosen-results"></ul></div></div><input id="section_head" class="form-control" readonly="" autocomplete="off">
+
+                                            </td>
+                                            <td>
+                                                <label for="">Recommending Approval:</label>
+                                                <select class="chosen-select-static form-control" onchange="get_designation($(this),'division',true);" name="division_head" required="" style="position: absolute; opacity: 0;">
+                                                    <option value="51">Dr. Sophia M. Mancao, MD, DPSP, RN-MAN</option>
+                                                    <option value="236">Dr. Nelner  D.  Omus</option>
+                                                </select><div class="chosen-container chosen-container-single" style="width: 327px;" title=""><a class="chosen-single"><span>Dr. Sophia M. Mancao, MD, DPSP, RN-MAN</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off"></div><ul class="chosen-results"></ul></div></div>
+                                                <input id="division_head" class="form-control" readonly="" autocomplete="off">
+                                            </td>
+                                            <td class="align" width="35%">
+                                                <label for="">Approved By</label><br>
+                                                <strong>JAIME S. BERNADAS, MD, MGM, CESO III</strong><br>
+                                                Director IV
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-send"></i> Submit
+                                    </button>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.content -->
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Wait for the DOM to be ready
+    $(document).ready(function () {
+        // Listen for changes in the dropdown
+        $("#dropdownField").on("change", function () {
+            // Get the selected value from the dropdown
+            var selectedValue = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Dv/UpdateAnotherColumn", // Replace with your controller and action name
+                data: { id: selectedValue },
+                success: function (response) {
+                    // Optional: Handle the response from the server if needed
+                },
+                error: function (xhr, status, error) {
+                    // Optional: Handle errors if the request fails
+                }
+            });
+        });
+    });
+</script>

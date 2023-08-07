@@ -25,6 +25,8 @@ using Newtonsoft.Json;
 using fmis;
 using Microsoft.AspNetCore.Authorization;
 using System.Web.Http.Controllers;
+using Org.BouncyCastle.Crypto.Tls;
+using fmis.Data.MySql;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -64,13 +66,29 @@ namespace fmis
 
             #region CONTEXTS
 
-            //no errors on local
+            //dtr uses
             services.AddDbContext<fmisContext>(
                 options=>
                 {
                     options.UseMySql(Configuration.GetConnectionString("UserConnection"),
-                        Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql"));
+                        ServerVersion.Parse("8.0.23-mysql"));
                 
+                });
+            //PPMP table
+            services.AddDbContext<PpmpContext>(
+                options =>
+                {
+                    options.UseMySql(Configuration.GetConnectionString("Ppmp"),
+                        ServerVersion.Parse("8.0.23-mysql"));
+
+                });
+            //DTS table
+            services.AddDbContext<DtsContext>(
+                options =>
+                {
+                    options.UseMySql(Configuration.GetConnectionString("Dts"),
+                        ServerVersion.Parse("8.0.23-mysql"));
+
                 });
 
             /*services.AddDbContext<fmisContext>(options =>

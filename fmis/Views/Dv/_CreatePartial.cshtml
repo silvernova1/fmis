@@ -1,6 +1,9 @@
-﻿@model fmis.Models.Accounting.Dv;
+﻿@using System.Text.Json;
+@model fmis.Models.Accounting.Dv;
 
-
+@{
+  var deductionOptions = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.DeductionId);
+}
 
 <style>
     input::-webkit-outer-spin-button,
@@ -30,11 +33,11 @@
 <button type="button" style="margin-right:15px; margin-top: 10px;" class="close" data-dismiss="modal">×</button>
 <center><h3 class="grey lighter smaller">Create Disbursement Voucher</h3></center>
 <hr />
-<div class="container" style="height: 840px;">
+<div id="content-container" class="container" style="height: 840px;">
     <form asp-action="CreatePartial" style="position:center;" method="post">
         @Html.AntiForgeryToken()
         <div class="col-md-12">
-            <div class="col-md-4" style="width: 200px;">
+            <div class="col-md-2" style="width: 200px;">
                 <div class="form-group">
                     <h5>Fund Cluster: </h5>
                     <select class="form-control" asp-for="FundClusterId" id="fundCluster" asp-items="ViewBag.FundClusterId">
@@ -49,7 +52,7 @@
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
             </div>
-            <div class="1stcol col-md-3" style="width: 250px;">
+            <div class="1stcol col-md-2" style="width: 150px;">
                 <h5>Dv Category: </h5>
                 <select asp-for="DvSupType" class="form-control" id="stype" required>
                     <option value="">Select Supplier Type</option>
@@ -58,10 +61,15 @@
                     <option value="3">Retention</option> 
                 </select>
             </div>
-            <div class="1stcol col-md-3" style="width: 130px;">
+            <div class="1stcol col-md-2" style="width: 130px;">
                 <h5>Dv #: </h5>
                 <input asp-for="DvNo" type="text" id="dv_no" class="form-control" value="S07-0030" />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
+            </div>
+            <div id="payment_of" class="1stcol col-md-2" style="width: 150px;">
+                <h5>For Payment of: </h5>
+                <input asp-for="PaymentOf" type="text" id="payment_of" class="form-control" />
+                <span asp-validation-for="PaymentOf" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-12">
@@ -157,7 +165,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[0].Amount" type="text" id="a0" />
+                        <input class="form-control" asp-for="InfraProgress[0].Amount" type="text" id="a0" oninput="percentageA()" />
                     </div>
                 </div>
             </div>
@@ -168,7 +176,7 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" asp-for="InfraProgress[1].Amount" type="text" id="a1" />
+                        <input class="form-control" asp-for="InfraProgress[1].Amount" type="text" id="a1" oninput="percentageA()" />
                     </div>
                 </div>
             </div>
@@ -319,6 +327,20 @@
             </div>
             <div class="col-md-12">
                 <div class="col-md-2" style="width: 250px;">
+                    <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[0].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction -</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control deduction_amount" asp-for="dvDeductions[0].Amount" type="text" />
+                    </div>
+                </div>
+                <button type="button" onclick="addDeductionProgress()">+</button>
+            </div>
+            <div id="deduction-container-progress"></div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
                     <label>Total Deduction</label>
                 </div>
                 <div class="col-md-2">
@@ -343,8 +365,7 @@
                         <input class="form-control" asp-for="InfraRetentions[0].Amount" type="text" />
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-xs" onclick="addBilling()"> <i class="ace-icon fa fa-plus "></i> </button>
-                <button type="button" class="btn btn-success btn-xs" onclick=""> <i class="ace-icon fa fa-plus "></i> </button>
+                <button type="button" onclick="addBilling()">+</button>
             </div>
             <div class="col-md-12">
                 <div class="col-md-2" style="width: 250px;">
@@ -371,11 +392,35 @@
             <div id="billing-container"></div>
             <div class="col-md-12">
                 <div class="col-md-2" style="width: 250px;">
-                    <label>Total Billing Amount</label>
+                    <select asp-items="ViewBag.DeductionId" asp-for="dvDeductions[1].DeductionId" class="form-control select2">
+                        <option value=""> - Select Deduction -</option>
+                    </select>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input class="form-control" id="total_billing" type="text" placeholder="0.00" readonly />
+                        <input class="form-control deduction_amount" asp-for="dvDeductions[1].Amount" type="text" />
+                    </div>
+                </div>
+                <button type="button" onclick="addDeduction()">+</button>
+            </div>
+            <div id="deduction-container"></div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>TOTAL DEDUCTIONS</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="ret_deductions" type="text" placeholder="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="width: 250px;">
+                    <label>NET AMOUNT</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input class="form-control" id="retnet_amount" type="text" placeholder="0.00" readonly />
                     </div>
                 </div>
             </div>
@@ -391,6 +436,206 @@
 
 
 <script>
+    // New deductions Progress
+    var deductionCount = 1;
+
+    function addDeductionProgress() {
+        var container = document.getElementById("deduction-container-progress");
+        var deductionDiv = document.createElement("div");
+        deductionDiv.className = "col-md-12";
+
+        var deductionSelectDiv = document.createElement("div");
+        deductionSelectDiv.className = "col-md-2";
+        deductionSelectDiv.style.width = "250px";
+        var deductionSelect = document.createElement("select");
+        deductionSelect.className = "form-control select2";
+        deductionSelect.name = "dvDeductions[" + deductionCount + "].DeductionId";
+
+        var options = @Html.Raw(deductionOptions);
+        options.forEach(function (option) {
+            var optionElement = document.createElement("option");
+            optionElement.value = option.Value;
+            optionElement.textContent = option.Text;
+            deductionSelect.appendChild(optionElement);
+        });
+
+        deductionSelectDiv.appendChild(deductionSelect);
+
+        var deductionInputDiv = document.createElement("div");
+        deductionInputDiv.className = "col-md-2";
+        var deductionInputFormGroup = document.createElement("div");
+        deductionInputFormGroup.className = "form-group";
+        var deductionInput = document.createElement("input");
+        deductionInput.className = "form-control deduction_amount";
+        deductionInput.type = "text";
+        deductionInput.name = "dvDeductions[" + deductionCount + "].Amount";
+        deductionInputDiv.appendChild(deductionInputFormGroup);
+        deductionInputFormGroup.appendChild(deductionInput);
+
+        deductionDiv.appendChild(deductionSelectDiv);
+        deductionDiv.appendChild(deductionInputDiv);
+        container.appendChild(deductionDiv);
+        deductionInput.addEventListener("input", calculateTotalDeductions);
+
+        deductionCount++;
+        adjustContainerHeight();
+    }
+    //
+    // New deductions Retention
+    var deductionCount = 2;
+
+    function addDeduction() {
+        var container = document.getElementById("deduction-container");
+        var deductionDiv = document.createElement("div");
+        deductionDiv.className = "col-md-12";
+
+        var deductionSelectDiv = document.createElement("div");
+        deductionSelectDiv.className = "col-md-2";
+        deductionSelectDiv.style.width = "250px";
+        var deductionSelect = document.createElement("select");
+        deductionSelect.className = "form-control select2";
+        deductionSelect.name = "dvDeductions[" + deductionCount + "].DeductionId";
+
+        var options = @Html.Raw(deductionOptions);
+        options.forEach(function (option) {
+            var optionElement = document.createElement("option");
+            optionElement.value = option.Value;
+            optionElement.textContent = option.Text;
+            deductionSelect.appendChild(optionElement);
+        });
+
+        deductionSelectDiv.appendChild(deductionSelect);
+
+        var deductionInputDiv = document.createElement("div");
+        deductionInputDiv.className = "col-md-2";
+        var deductionInputFormGroup = document.createElement("div");
+        deductionInputFormGroup.className = "form-group";
+        var deductionInput = document.createElement("input");
+        deductionInput.className = "form-control deduction_amount";
+        deductionInput.type = "text";
+        deductionInput.name = "dvDeductions[" + deductionCount + "].Amount";
+        deductionInputDiv.appendChild(deductionInputFormGroup);
+        deductionInputFormGroup.appendChild(deductionInput);
+
+        deductionDiv.appendChild(deductionSelectDiv);
+        deductionDiv.appendChild(deductionInputDiv);
+        container.appendChild(deductionDiv);
+        deductionInput.addEventListener("input", calculateTotalDeductions);
+
+        deductionCount++;
+        adjustContainerHeight();
+    }
+    //
+    //new billing
+    var billingCount = 3;
+
+    function addBilling() {
+        billingCount++;
+
+        var container = document.getElementById("billing-container");
+        var billingDiv = document.createElement("div");
+        billingDiv.className = "col-md-12";
+
+        var billingLabelDiv = document.createElement("div");
+        billingLabelDiv.className = "col-md-2";
+        billingLabelDiv.style.width = "250px";
+        var billingLabel = document.createElement("label");
+        billingLabel.textContent = billingCount + "th Progress Billing";
+        billingLabelDiv.appendChild(billingLabel);
+        var billingHiddenInput = document.createElement("input");
+        billingHiddenInput.type = "hidden";
+        billingHiddenInput.name = "InfraRetentions[" + (billingCount - 1) + "].billingNo";
+        billingHiddenInput.value = billingCount + "th Progress Billing";
+        billingLabelDiv.appendChild(billingHiddenInput);
+
+        var billingInputDiv = document.createElement("div");
+        billingInputDiv.className = "col-md-2";
+        var billingInputFormGroup = document.createElement("div");
+        billingInputFormGroup.className = "form-group";
+        var billingInput = document.createElement("input");
+        billingInput.className = "form-control";
+        billingInput.type = "text";
+        billingInput.name = "InfraRetentions[" + (billingCount - 1) + "].Amount";
+        billingInputDiv.appendChild(billingInputFormGroup);
+        billingInputFormGroup.appendChild(billingInput);
+
+        billingDiv.appendChild(billingLabelDiv);
+        billingDiv.appendChild(billingInputDiv);
+        container.appendChild(billingDiv);
+
+        billingInput.addEventListener("input", calculateTotalBilling);
+        adjustContainerHeight();
+    }
+    //
+    function adjustContainerHeight() {
+        var contentContainer = document.getElementById("content-container");
+        var totalContentHeight = contentContainer.scrollHeight;
+
+        contentContainer.style.height = totalContentHeight + "px";
+    }
+    //
+    function calculateTotalBilling() {
+        var total = 0.0;
+
+        var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
+        for (var i = 0; i < billingInputs.length; i++) {
+            var amount = parseFloat(billingInputs[i].value);
+            if (!isNaN(amount)) {
+                total += amount;
+            }
+        }
+        document.getElementById("retnet_amount").value = total.toFixed(2).toLocaleString();
+    }
+
+    calculateTotalBilling();
+    var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
+    for (var i = 0; i < billingInputs.length; i++) {
+        billingInputs[i].addEventListener("input", calculateTotalBilling);
+    }
+    //
+    //TOTAL DEDUCTIONS
+    function parseNumberWithCommas(input) {
+    return parseFloat(input.replace(/,/g, ''));
+  }
+
+    function calculateTotalDeductions() {
+        var totalDeductions = 0.0;
+        var deductionInputs = document.querySelectorAll('[name^="dvDeductions["][name$="].Amount"]');
+        var c4 = document.getElementById('c4').value;
+        var c5 = document.getElementById('c5').value;
+        const number1 = parseNumberWithCommas(c4);
+        const number2 = parseNumberWithCommas(c5);
+        const totalValue = number1 + number2;
+        for (var i = 0; i < deductionInputs.length; i++) {
+            var amount = parseFloat(deductionInputs[i].value);
+            if (!isNaN(amount)) {
+                totalDeductions += amount;
+            }
+        }
+        var totalDeductionsProgress = totalDeductions + totalValue;
+        document.getElementById("ret_deductions").value = totalDeductions.toFixed(2).toLocaleString();
+        document.getElementById("total_deductions").value = totalDeductionsProgress.toFixed(2).toLocaleString();;
+
+
+        var totalBilling = 0.0;
+
+        var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
+        for (var i = 0; i < billingInputs.length; i++) {
+            var amount = parseFloat(billingInputs[i].value);
+            if (!isNaN(amount)) {
+                totalBilling += amount;
+            }
+        }
+        var net = totalBilling - totalDeductions;
+        document.getElementById("retnet_amount").value = net.toFixed(2).toLocaleString();
+    }
+
+    calculateTotalDeductions();
+    var deductionInputs = document.querySelectorAll('[name^="dvDeductions["][name$="].Amount"]');
+    for (var i = 0; i < deductionInputs.length; i++) {
+        deductionInputs[i].addEventListener("input", calculateTotalDeductions);
+    }
+    //
     //percentage A
     function percentageA() {
         var grossAmountInput = document.getElementById("a1").value;
@@ -401,6 +646,12 @@
         var sanitizedGrossAmount = grossAmountInput.replace(/,/g, '');
         var grossAmount = parseFloat(sanitizedGrossAmount);
 
+        // Check if id="a1" value is zero
+        if (grossAmount === 0) {
+            var fallbackGrossAmountInput = document.getElementById("a0").value;
+            var sanitizedFallbackGrossAmount = fallbackGrossAmountInput.replace(/,/g, '');
+            grossAmount = parseFloat(sanitizedFallbackGrossAmount);
+        }
 
         var result = percent * grossAmount;
         var formattedPercentage = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -459,7 +710,7 @@
         var formattedC5Result = c5Result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         var formattedTotalDeductions = total_deductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        document.getElementById("b3").value = result;
+        //document.getElementById("b3").value = result;
         document.getElementById("b5").value = formattedResult;
         document.getElementById("c2").value = c2Result;
         document.getElementById("c3").value = c3Result;
@@ -470,71 +721,6 @@
     }
     //
 
-    //
-    function calculateTotalBilling() {
-        var total = 0.0;
-
-        // Loop through each billing input and add its value to the total
-        var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
-        for (var i = 0; i < billingInputs.length; i++) {
-            var amount = parseFloat(billingInputs[i].value);
-            if (!isNaN(amount)) {
-                total += amount;
-            }
-        }
-
-        // Update the total billing amount in the input field
-        document.getElementById("total_billing").value = total.toFixed(2).toLocaleString();
-    }
-
-    // Call the calculateTotalBilling function initially and whenever a billing amount is changed
-    calculateTotalBilling();
-    var billingInputs = document.querySelectorAll('[name^="InfraRetentions["][name$="].Amount"]');
-    for (var i = 0; i < billingInputs.length; i++) {
-        billingInputs[i].addEventListener("input", calculateTotalBilling);
-    }
-
-    //new billing
-    var billingCount = 3; // Initialize the billing count
-
-    function addBilling() {
-        billingCount++; // Increment the billing count
-
-        var container = document.getElementById("billing-container");
-        var billingDiv = document.createElement("div");
-        billingDiv.className = "col-md-12";
-
-              var billingLabelDiv = document.createElement("div");
-        billingLabelDiv.className = "col-md-2";
-        billingLabelDiv.style.width = "250px";
-        var billingLabel = document.createElement("label");
-        billingLabel.textContent = billingCount + "th Progress Billing";
-        billingLabelDiv.appendChild(billingLabel);
-        var billingHiddenInput = document.createElement("input");
-        billingHiddenInput.type = "hidden";
-        billingHiddenInput.name = "InfraRetentions[" + (billingCount - 1) + "].billingNo";
-        billingHiddenInput.value = billingCount + "th Progress Billing";
-        billingLabelDiv.appendChild(billingHiddenInput);
-
-        var billingInputDiv = document.createElement("div");
-        billingInputDiv.className = "col-md-2";
-        var billingInputFormGroup = document.createElement("div");
-        billingInputFormGroup.className = "form-group";
-        var billingInput = document.createElement("input");
-        billingInput.className = "form-control";
-        billingInput.type = "text";
-        billingInput.name = "InfraRetentions[" + (billingCount - 1) + "].Amount";
-        billingInputDiv.appendChild(billingInputFormGroup);
-        billingInputFormGroup.appendChild(billingInput);
-
-        billingDiv.appendChild(billingLabelDiv);
-        billingDiv.appendChild(billingInputDiv);
-        container.appendChild(billingDiv);
-
-        // Add event listener to the new billing input
-        billingInput.addEventListener("input", calculateTotalBilling);
-    }
-    //
     //percentage
     function calculatePercentage() {
         var grossAmountInput = document.getElementById("GrossAmount").value;
@@ -585,16 +771,19 @@
     var advanceDiv = document.getElementById('advance');
     var progressDiv = document.getElementById('progress');
     var retentionDiv = document.getElementById('retention');
+    var payment_of = document.getElementById('payment_of');
 
     advanceDiv.style.display = 'block';
     progressDiv.style.display = 'none';
     retentionDiv.style.display = 'none';
+    payment_of.style.display = 'none';
 
     document.getElementById("stype").addEventListener("change", function () {
         var selectedOption = this.value;
         var advance = document.getElementById("advance");
         var progress = document.getElementById("progress");
         var retention = document.getElementById("retention");
+        var payment_of = document.getElementById("payment_of");
         var containerElement = document.getElementsByClassName("container")[0];
         console.log(progress);
         if (selectedOption === "1") {
@@ -602,9 +791,11 @@
             advance.style.display = "block";
             progress.style.display = "none";
             retention.style.display = "none";
+            payment_of.style.display = "none";
         }
         else if (selectedOption === "2") {
-            containerElement.style.height = "1100px";
+            containerElement.style.height = "1200px";
+            payment_of.style.display = "block";
             progress.style.display = "block";
             advance.style.display = "none";
             retention.style.display = "none";
@@ -614,11 +805,13 @@
             retention.style.display = "block";
             advance.style.display = "none";
             progress.style.display = "none";
+            payment_of.style.display = "none";
         }
         else {
             advance.style.display = "none";
             retention.style.display = "none";
             progress.style.display = "none";
+            payment_of.style.display = "none";
         }
     });
 

@@ -1,15 +1,16 @@
 ﻿using fmis.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace fmis.Data
+namespace fmis.Data.MySql
 {
-    public class fmisContext : DbContext
+    public class DtsContext : DbContext
     {
-        public fmisContext(DbContextOptions<fmisContext> options)
+        public DtsContext(DbContextOptions<DtsContext> options)
             : base(options)
-        {
+        { 
         }
 
         public DbSet<FmisUser> users { get; set; }
+
     }
 }
