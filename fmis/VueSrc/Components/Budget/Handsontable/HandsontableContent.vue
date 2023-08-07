@@ -1162,9 +1162,6 @@
 
     __obligationData()
 
-
-
-
 </script>
 
 <template>
