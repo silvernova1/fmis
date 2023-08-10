@@ -23,6 +23,6 @@ namespace fmis.Models.pr
 
         public string RecoApproval { get; set; }
 
-        public virtual ICollection<PrItems> PrItems { get; set; }
+        public virtual List<PrItems> PrItems { get; set; }
     }
 }

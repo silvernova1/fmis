@@ -71,6 +71,8 @@ namespace fmis.Models.ppmp
 
         public int? Dece { get; set; }
 
+        public int? Yearly_ref_id { get; set; }
+
         [ForeignKey("Expense_id")]
         public Expense Expense { get; set; }
 

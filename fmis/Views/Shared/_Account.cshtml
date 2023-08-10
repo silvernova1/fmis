@@ -10,6 +10,18 @@
     }
 </style>
 
+<ul class="nav ace-nav">
+    <li class="active" style="font-size: 15pt; margin-right : 15px">
+        @if (User.IsInRole("budget_admin"))
+        {
+            <a>CY: @User.FindFirstValue("YearlyRef")</a>
+        }
+    </li>
+        <a id="logout-link" asp-action="Logout" asp-controller="Account">
+            <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+        </a>
+</ul>
+
 @*<li class="login-logout light-blue dropdown-modal pull-right">
     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
         <img class="nav-user-photo" src="~/assets/images/doh.png" alt="Amal's Photo" />

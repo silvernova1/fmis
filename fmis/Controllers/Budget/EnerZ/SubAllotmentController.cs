@@ -116,8 +116,10 @@ namespace fmis.Controllers
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 
-            var suballotmentsLastYr = await _MyDbContext.SubAllotment
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+            if(lastYear == true)
+            {
+                var suballotmentsLastYr = await _MyDbContext.SubAllotment
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.RespoCenter)
                 .Include(x => x.prexc)
                 .Include(x => x.Appropriation)
@@ -125,9 +127,11 @@ namespace fmis.Controllers
                 .Include(x => x.Budget_allotment)
                     .ThenInclude(x => x.Yearly_reference)
                 .ToListAsync();
-            suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
+                suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
-            budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
+                budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
+            }
+            
 
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.SubAllotment.Where(x=>x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));
@@ -169,13 +173,20 @@ namespace fmis.Controllers
                 subAllotments.IsAddToNextAllotment = addToNext;
                 if (subAllotments.IsAddToNextAllotment)
                 {
-                    subAllotments.Suballotment_title = "CONAP " + subAllotments.Suballotment_title;
+                    if(subAllotments.Suballotment_title.Contains("CONAP "))
+                    {
+                        subAllotments.Suballotment_title = subAllotments.Suballotment_title;
+                    }
+                    else
+                    {
+                        subAllotments.Suballotment_title = "CONAP " + subAllotments.Suballotment_title;
+                    }
                 }
                 else
                 {
-                    char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                    //char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
                     //fundsources.FromPreviousAllotment = true;
-                    subAllotments.Suballotment_title = subAllotments.Suballotment_title.TrimStart(trim);
+                    //subAllotments.Suballotment_title = subAllotments.Suballotment_title.TrimStart(trim);
                     _MyDbContext.Update(subAllotments);
                     await _MyDbContext.SaveChangesAsync();
                 }
@@ -371,7 +382,7 @@ namespace fmis.Controllers
             var departmentsQuery = from d in _pContext.Prexc
                                    orderby d.pap_title
                                    select d;
-            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.ToList()
+            ViewBag.PrexcId = new SelectList((from s in _pContext.Prexc.Where(x=>x.status == "activated").ToList()
                                               select new
                                               {
                                                   prexcId = s.Id,

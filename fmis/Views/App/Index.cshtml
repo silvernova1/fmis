@@ -1,0 +1,32 @@
+﻿@model List<fmis.Models.ppmp.Item>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewData["Title"] = "Inline Editing Data Table";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Procurement Project</th>
+            <th>PMO/End User</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var person in Model)
+        {
+            <tr data-person-id="@person.Id">
+                <td></td>
+                <td><input type="text" value="@person.Description" class="form-control" /></td>
+                <td><input type="text" class="form-control" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="text-align: right;">
+    <button id="saveButton" class="btn btn-primary">Save All Changes</button>
+</div>
