@@ -26,7 +26,7 @@ using DocumentFormat.OpenXml.EMMA;
 
 namespace fmis.Controllers.Budget.John
 {
-    [Authorize(Policy = "BudgetAdmin")]
+    //[Authorize(Policy = "BudgetAdmin")]
     public class FundSourceController : Controller
     {
         private readonly FundSourceContext _FundSourceContext;

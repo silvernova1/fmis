@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
@@ -33,7 +34,7 @@ namespace fmis.Controllers.Budget.Rusel
 
         public IActionResult Index()
         {
-            ViewBag.filter = new FilterSidebar("master_data", "Handsontable", "");
+            ViewBag.filter = new FilterSidebar("ors", "handsontable", "");
             ViewBag.layout = "_Layout";
 
             ViewBag.fullname = FName;
@@ -99,11 +100,30 @@ namespace fmis.Controllers.Budget.Rusel
 
         public IActionResult Details()
         {
+            Dictionary<string, string> color = new Dictionary<string, string>();
+            color["hr_admin"] = "highlight_yellow"; //HR_ADMIN
+            color["201500252"] = "highlight_pink"; // TJ
+            color["201400182"] = "highlight_green"; // JONAH
+            color["2652"] = "highlight_blue"; // MARICAR
+            color["2147"] = "highlight_orange"; // MINIE
+            color["2579"] = "highlight_gray"; //ROZELYN
+            color["0664"] = "highlight_salmon"; // ANNIE
+            color["2543"] = "highlight_seagreen"; //LESLIE
+            color["0848"] = "highlight_lightyellow"; //JEFF
+
+            //color["1729"] = "highlight_blue"; // Alexis
+            //color["2761"] = "highlight_orange"; // JHONDY
+            color["1887"] = "highlight_green"; // CARLO
+            //color["1895"] = "highlight_gray"; // JUDE
+            //color["2760"] = "highlight_salmon"; // ANGELICA
+
             var json = new
             {
                 fname = User.FindFirstValue(ClaimTypes.GivenName),
                 lname = User.FindFirstValue(ClaimTypes.Surname),
                 userid = UserId,
+                username = Username,
+                color = color[Username]
             };
             return Json(json);
         }
