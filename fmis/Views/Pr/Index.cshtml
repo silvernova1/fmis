@@ -1,0 +1,641 @@
+﻿@using fmis.Data
+@using fmis.Data.MySql
+@model List<fmis.Models.pr.Pr>
+@inject PpmpContext PpmpContext
+@inject DtsContext dts
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<style>
+	.select2-container--default .select2-selection--single {
+		width: 350px;
+	}
+
+	table {
+		border-collapse: collapse;
+	}
+
+	.td-height {
+		height: 20px;
+	}
+		.pr-no-link {
+		cursor: pointer;
+	}
+</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<div class="col-xs-12">
+	<button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+		Create New Pr
+		<i class="ace-icon glyphicon-plus  align-top bigger-125 icon-on-right"></i>
+	</button>
+</div>
+<br />
+<br />
+<br />
+
+@if (Model.Count > 0)
+{
+	<div class="col-xs-12">
+		<table id="simple-table" class="table  table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>PR Number</th>
+					<th>
+						<i class="ace-icon fa fa-calendar bigger-110 hidden-480"></i>
+						Pr Date</th>
+					<th>
+						<i class="ace-icon fa fa-money bigger-110 hidden-480"></i>
+						Grand Total</th>
+					<th>
+						Purpose
+					</th>
+					<th class="hidden-480">
+						<i class="ace-icon fa fa-money bigger-110 hidden-480"></i>
+						Fund Source
+					</th>
+					<th>
+						<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
+						Requested by</th>
+					<th>
+						<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
+						Status
+					</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				@foreach (var items in Model)
+				{
+					<tr>
+						<td class="pr-no clickable" data-toggle="modal" data-target="#modal-@items.Id">@items.Prno</td>
+						<td>@items.PrnoDate.ToShortDateString()</td>
+						<td class="hidden-480">@items.GrandTotal</td>
+						<td width="35%">@items.Purpose</td>
+						<td>@items.FundCharging</td>
+						<td>@items.RequestedBy</td>
+						<td><span class="label label-sm label-success">being processed</span></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+else
+{
+	<div class="col-xs-12">
+		<div class="alert alert-block alert-danger">
+			<i class="ace-icon fa fa-warning red"></i>
+			No Records found
+		</div>
+	</div>
+}
+
+@foreach (var items in Model)
+{
+	<div class="modal fade" id="modal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="modalLabel-@items.Id" aria-hidden="true">
+		<div class="modal-dialog modal-lg" style="width: 90%" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+				</div>
+				<div class="modal_content">
+					<link href="https://mis.cvchd7.com/dts/resources/assets/css/print.css" rel="stylesheet">
+					<style>
+						#border-top {
+							border-collapse: collapse;
+							border-top: none;
+						}
+
+						#border-bottom {
+							border-collapse: collapse;
+							border-bottom: none;
+						}
+
+						.align {
+							text-align: center;
+						}
+
+						.align-top {
+							vertical-align: top;
+						}
+
+						small {
+							color: red;
+						}
+					</style>
+					<form asp-controller="Pr" asp-action="Create" method="post">
+						<input type="hidden" name="_token" value="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT" autocomplete="off">
+						<span id="getDesignation" data-link="https://mis.cvchd7.com/dts/getDesignation"></span>
+						<span id="url" data-link="https://mis.cvchd7.com/dts/prr_supply_append"></span>
+						<span id="token" data-token="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT"></span>
+						<input type="hidden" name="doc_type" value="PRR_S" autocomplete="off">
+						<input type="hidden" value="985241" name="prepared_by" autocomplete="off">
+						<div class="modal-body">
+							<div class="content-wrapper">
+								<!-- Main content -->
+								<section class="invoice">
+									<table cellpadding="0" cellspacing="0">
+									</table>
+									<table class="letter-head" cellpadding="0" cellspacing="0" id="itemTable">
+										<thead>
+											<tr>
+												<td colspan="7" class="align" style="text-align: center;">
+													<img src="https://mis.cvchd7.com/dts/resources/img/doh.png" width="70" style="float: left; margin-right: 10px;">
+													<strong>PURCHASE REQUEST</strong><br><br>
+													DOH - Central Visayas Center for Health Development<br>
+													<strong>(Agency)</strong>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">Division:</td>
+												<td colspan="2">Office of the RD / ARD </td>
+												<td colspan="2">PR NO.: <strong>@items.Prno</strong> </td>
+												<td colspan="5">Date: <strong>@items.PrnoDate.ToShortDateString()</strong></td>
+											</tr>
+											<tr>
+												<td colspan="2">Section/Unit:</td>
+												<td colspan="2">Information and Communication Technology Unit(RD-ARD)</td>
+												<td colspan="2">SAI NO.:</td>
+												<td colspan="5">Date:</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="td-height"></td>
+												<td colspan="2" class="td-height"></td>
+												<td colspan="2" class="td-height">ALOBS NO.:</td>
+												<td colspan="5" class="td-height">Date:</td>
+											</tr>
+											<tr>
+												<td><b>Item </b></td>
+												<td><b>Unit of Issue</b></td>
+												<td width="40%"><b>Item Description</b></td>
+												<td><b>Quantity</b></td>
+												<td colspan="2"><b>Estimated Unit Cost</b></td>
+												<td colspan="2"><b>Estimated Cost</b></td>
+											</tr>
+										</thead>
+										<tbody class="input_fields_wrap">
+											@if (items.PrItems != null)
+											{
+
+												@foreach (var prItems in items?.PrItems)
+												{
+													var Items = PpmpContext.item.FirstOrDefault(x => x.Id == Convert.ToInt32(prItems.ItemDescription)).Description;
+													<tr>
+														<td id="border-bottom">
+															<input type="hidden" id="expenses">1
+														</td>
+														<td id="border-bottom" class="issue1 align-top">
+															<i>@prItems.Unit</i>
+														</td>
+														<td id="border-bottom" class="description1 align-top">
+															<i>@Items</i>
+														</td>
+														<td id="border-bottom" class="qty1 align-top">
+															<i>@prItems.Qty</i>
+														</td>
+														<td id="border-bottom" class="unit_cost1 align-top" colspan="2">
+															<i>@prItems.EstUnitCost</i>
+														</td>
+														<td id="border-bottom" class="estimated_cost1 align-top">
+															<i>@prItems.EstCost</i>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+										<tfoot>
+											<tr>
+												<td colspan="6"><b style="float: right">GRAND TOTAL</b></td>
+												<td class="align-top">
+													@{
+														var sumEstCost = items.PrItems.Sum(x => x.EstCost);
+														var phCulture = new System.Globalization.CultureInfo("en-PH");
+														var formattedSum = sumEstCost.ToString("C", phCulture);
+													}
+													<strong>@formattedSum</strong>
+													<strong style="color: red;"></strong><strong style="color:red" id="total"></strong>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="7" class="align">
+													<h3>Certification</h3>
+													This is to certify that dilligent efforts have been exerted to ensure that the price/s indicated above(in relation to the specifications) is/are within the prevailing market price/s.
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<label for="purpose">Purpose:</label>
+												</td>
+												<td colspan="6">
+													<strong>@items.Purpose</strong>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<label>Fund Chargeable To:</label>
+												</td>
+												<td colspan="4">
+													<strong>@items.FundCharging</strong>
+												</td>
+												<td colspan="2">
+													<label>Cash Advance of:</label>
+													<input type="hidden" class="form-control" autocomplete="off">
+												</td>
+											</tr>
+										</tfoot>
+									</table>
+									<table class="letter-head" style="margin-top: 2%">
+										<tbody>
+											<tr>
+												<td width="15%">
+													<label for="">Signature:</label><br>
+													<label for="">Printed Name:</label><br>
+													<label for="">Designation:</label><br>
+												</td>
+												<td width="23%">
+													<label for="">Requested by:</label><br />
+													<strong>@items.RequestedBy</strong>
+												</td>
+												<td>
+													<label for="">Recommending Approval:</label><br />
+													@{
+														var employee = dts.users.Where(x => x.Id == Convert.ToInt32(items.RecoApproval))
+														.Select(x => new
+														{
+															Id = x.Id,
+															Fullname = x.Fname + " " + x.Mname + " " + x.Lname
+														}).FirstOrDefault();
+													}
+													<strong>@employee.Fullname</strong>
+												</td>
+												<td class="align" width="35%">
+													<label for="">Approved By</label><br>
+													<strong>JAIME S. BERNADAS, MD, MGM, CESO III</strong><br>
+													Director IV
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</section>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div id="my_modal" class="modal-dialog modal-lg" style="width: 90%" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+			</div>
+			<div class="modal_content">
+				<link href="https://mis.cvchd7.com/dts/resources/assets/css/print.css" rel="stylesheet">
+				<style>
+					#border-top {
+						border-collapse: collapse;
+						border-top: none;
+					}
+
+					#border-bottom {
+						border-collapse: collapse;
+						border-bottom: none;
+					}
+
+					.align {
+						text-align: center;
+					}
+
+					.align-top {
+						vertical-align: top;
+					}
+
+					small {
+						color: red;
+					}
+				</style>
+				<form asp-controller="Pr" asp-action="Create" method="post">
+					<input type="hidden" name="_token" value="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT" autocomplete="off">
+					<span id="getDesignation" data-link="https://mis.cvchd7.com/dts/getDesignation"></span>
+					<span id="url" data-link="https://mis.cvchd7.com/dts/prr_supply_append"></span>
+					<span id="token" data-token="YravfoTmevuyJdk7TRgaydCKqpzNLHKreK6jktxT"></span>
+					<input type="hidden" name="doc_type" value="PRR_S" autocomplete="off">
+					<input type="hidden" value="985241" name="prepared_by" autocomplete="off">
+					<div class="modal-body">
+						<div class="content-wrapper">
+							<!-- Main content -->
+							<section class="invoice">
+								<table cellpadding="0" cellspacing="0">
+								</table>
+								<table class="letter-head" cellpadding="0" cellspacing="0" id="itemTable">
+									<thead>
+										<tr>
+											<td colspan="7" class="align" style="text-align: center;">
+												<img src="https://mis.cvchd7.com/dts/resources/img/doh.png" width="70" style="float: left; margin-right: 10px;">
+												<strong>PURCHASE REQUEST</strong><br><br>
+												DOH - Central Visayas Center for Health Development<br>
+												<strong>(Agency)</strong>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">Division:</td>
+											<td colspan="2">Office of the RD / ARD </td>
+											<td colspan="2">PR NO.: <input type="text" name="Prno" autocomplete="off" style="width: 140px"></td>
+											<td colspan="5">Date: <input type="date" name="PrnoDate" required="" autocomplete="off" style="width: 120px"></td>
+										</tr>
+										<tr>
+											<td colspan="2">Section/Unit:</td>
+											<td colspan="2">Information and Communication Technology Unit(RD-ARD)</td>
+											<td colspan="2">SAI NO.:</td>
+											<td colspan="5">Date:</td>
+										</tr>
+										<tr>
+											<td colspan="2" class="td-height"></td>
+											<td colspan="2" class="td-height"></td>
+											<td colspan="2" class="td-height">ALOBS NO.:</td>
+											<td colspan="5" class="td-height">Date:</td>
+										</tr>
+										<tr>
+											<td><b>Expense Type</b></td>
+											<td><b>Unit of Issue</b></td>
+											<td width="40%"><b>Item Description</b></td>
+											<td><b>Quantity</b></td>
+											<td colspan="2"><b>Estimated Unit Cost</b></td>
+											<td colspan="2"><b>Estimated Cost</b></td>
+										</tr>
+									</thead>
+									<tbody class="input_fields_wrap">
+										<tr>
+											<td id="border-bottom">
+												<select id="expenses" asp-items="ViewBag.ExpenseId" style="width: 200px; height: 37px">
+													<option value="">Select Expense</option>
+												</select>
+											</td>
+											<td id="border-bottom" class="issue1 align-top">
+												<br>
+												<input type="text" id="unit" name="PrItems[0].Unit" autocomplete="off">
+												<small>required!</small>
+											</td>
+											<td id="border-bottom" class="description1 align-top">
+												<br>
+												<select id="items" name="PrItems[0].ItemDescription" asp-items="ViewBag.ItemId" style="width: 350px; height: 37px">
+													<option value="">Select Item</option>
+												</select>
+											</td>
+											<td id="border-bottom" class="qty1 align-top">
+												<br>
+												<input type="text" name="PrItems[0].Qty" id="qty" autocomplete="off">
+												<small id="E_qty1">required!</small>
+											</td>
+											<td id="border-bottom" class="unit_cost1 align-top" colspan="2">
+												<br>
+												<input type="text" id="unitCost" name="PrItems[0].EstUnitCost" required="" autocomplete="off"><small id="E_unit_cost1">required!</small>
+											</td>
+											<td id="border-bottom" class="estimated_cost1 align-top">
+												<br>
+												<input type="text" id="estimated_cost" name="PrItems[0].EstCost" class="form-control" autocomplete="off">
+												<strong style="color:green;"></strong><strong style="color:green" id="e_cost1"></strong>
+											</td>
+										</tr>
+									</tbody>
+									<tbody>
+										<tr>
+											<td id="border-top"></td>
+											<td id="border-top"></td>
+											<td id="border-top"></td>
+											<td id="border-top"></td>
+											<td id="border-top" colspan="2"></td>
+											<td id="border-top"><button onclick="add();">Add new</button></td>
+										</tr>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="6"><b style="float: right">GRAND TOTAL</b></td>
+											<td class="align-top">
+												<input type="hidden" name="amount" id="amount" autocomplete="off">
+												<strong style="color: red;"></strong><strong style="color:red" id="total"></strong>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="7" class="align">
+												<h3>Certification</h3>
+												This is to certify that dilligent efforts have been exerted to ensure that the price/s indicated above(in relation to the specifications) is/are within the prevailing market price/s.
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="purpose">Purpose:</label>
+											</td>
+											<td colspan="6">
+												<textarea class="form-control" name="Purpose" required=""></textarea>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label>Fund Chargeable To:</label>
+											</td>
+											<td colspan="4">
+												<textarea class="form-control" name="FundCharging" required=""></textarea>
+											</td>
+											<td colspan="2">
+												<label>Cash Advance of:</label>
+												<input type="hidden" class="form-control" autocomplete="off">
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+								<table class="letter-head" style="margin-top: 2%">
+									<tbody>
+										<tr>
+											<td width="15%">
+												<label for="">Signature:</label><br>
+												<label for="">Printed Name:</label><br>
+												<label for="">Designation:</label><br>
+											</td>
+											<td width="23%">
+												<label for="">Requested by:</label><br />
+												<input type="text" name="RequestedBy" class="form-control">
+											</td>
+											<td>
+												<label for="">Recommending Approval:</label><br />
+												<select class="form-control select2basic" name="RecoApproval" asp-items="ViewBag.Approval"></select>
+											</td>
+											<td class="align" width="35%">
+												<label for="">Approved By</label><br>
+												<strong>JAIME S. BERNADAS, MD, MGM, CESO III</strong><br>
+												Director IV
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+									<button type="submit" class="btn btn-success">
+										<i class="fa fa-send"></i> Submit
+									</button>
+								</div>
+							</section>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+
+	$(document).ready(function () {
+		$('.select2basic').select2();
+	});
+
+	$(document).ready(function () {
+		$("#items").on("change", function () {
+			var selectedValue = $(this).val();
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("GetUnit","Pr")',
+				data: { id: selectedValue },
+				success: function (response) {
+					$("#unit").val(response);
+				},
+				error: function (xhr, status, error) {
+				}
+			});
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("GetUnitCost","Pr")',
+				data: { id: selectedValue },
+				success: function (response) {
+					$("#unitCost").val(response);
+				},
+				error: function (xhr, status, error) {
+				}
+			});
+
+		});
+	});
+	//Estimated Unit Cost
+	const unitCostInput = document.getElementById('unitCost');
+	const qtyInput = document.getElementById('qty');
+	const estimatedCostInput = document.getElementById('estimated_cost');
+
+	unitCostInput.addEventListener('input', updateEstimatedCost);
+	qtyInput.addEventListener('input', updateEstimatedCost);
+
+	function updateEstimatedCost() {
+		const unitCost = parseFloat(unitCostInput.value);
+		const qty = parseFloat(qtyInput.value);
+
+		if (!isNaN(unitCost) && !isNaN(qty)) {
+			const estimatedCost = unitCost * qty;
+
+			estimatedCostInput.value = estimatedCost.toLocaleString();
+		} else {
+			estimatedCostInput.value = '';
+		}
+	}
+
+	//items
+	$(document).ready(function () {
+		$("#expenses").change(function () {
+			var selectedExpenseId = $(this).val();
+			if (selectedExpenseId !== "") {
+				$.ajax({
+					type: "GET",
+					url: '@Url.Action("GetItemsId","Pr")',
+					data: { expenseId: selectedExpenseId },
+					success: function (data) {
+						$("#items").empty();
+						$.each(data, function (index, item) {
+							$("#items").append('<option value="' + item.id + '">' + item.description + '</option>');
+						});
+					},
+					error: function (xhr, status, error) {
+					}
+				});
+			} else {
+				$("#items").empty();
+			}
+		});
+	});
+	//
+	//new items
+	let rowIndex = 0; // Initialize the index
+
+	function add() {
+		rowIndex++; // Increment the index
+
+		const newRow = document.querySelector('.input_fields_wrap tr:first-child').cloneNode(true);
+
+		const inputs = newRow.querySelectorAll('input, select');
+		inputs.forEach(input => {
+			input.value = '';
+
+			// Update IDs and names of inputs to include the new index
+			const id = input.getAttribute('id');
+			const name = input.getAttribute('name');
+			if (id) input.setAttribute('id', id.replace('[0]', `[${rowIndex}]`));
+			if (name) input.setAttribute('name', name.replace('[0]', `[${rowIndex}]`));
+		});
+
+		const selectedExpenseId = newRow.querySelector('#expenses').value;
+		if (selectedExpenseId !== "") {
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("GetItemsId","Pr")',
+				data: { expenseId: selectedExpenseId },
+				success: function (data) {
+					const newSelect = newRow.querySelector('#items');
+					newSelect.innerHTML = '<option value="">Select Item</option>';
+					data.forEach(item => {
+						newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+					});
+
+					const tableBody = document.querySelector('.input_fields_wrap');
+					tableBody.appendChild(newRow);
+				},
+				error: function (xhr, status, error) {
+				}
+			});
+		} else {
+			const tableBody = document.querySelector('.input_fields_wrap');
+			tableBody.appendChild(newRow);
+		}
+
+		newRow.querySelector('#expenses').addEventListener('change', function () {
+			const selectedExpenseId = this.value;
+			if (selectedExpenseId !== "") {
+				$.ajax({
+					type: "GET",
+					url: '@Url.Action("GetItemsId","Pr")',
+					data: { expenseId: selectedExpenseId },
+					success: function (data) {
+						const newSelect = newRow.querySelector('#items');
+						newSelect.innerHTML = '<option value="">Select Item</option>';
+						data.forEach(item => {
+							newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+						});
+					},
+					error: function (xhr, status, error) {
+					}
+				});
+			} else {
+				const newSelect = newRow.querySelector('#items');
+				newSelect.innerHTML = '<option value="">Select Item</option>';
+			}
+		});
+	}
+	//
+</script>

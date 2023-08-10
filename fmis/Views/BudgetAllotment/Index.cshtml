@@ -195,8 +195,7 @@
                             <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
 
 
-                            @if (@*appropriation.AppropriationSource == "CURRENT" && *@
-                   Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
+                            @if (Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
                             {
                                 var check = Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.IsAddToNextAllotment == true) ? "checked" : "";
                                 <div class="checkbox">
@@ -241,8 +240,7 @@
                             <b class="orange">@sub_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>*@
 
 
-                            @if (@*appropriation.AppropriationSource == "CURRENT" && *@
-                   Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
+                            @if (Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
                             {
                                 var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.Budget_allotment.Yearly_reference.YearlyReference == currentYear && x.IsAddToNextAllotment == true) ? "checked" : "";
                                 <div class="checkbox">
@@ -253,45 +251,34 @@
                                 </div>
                             }
                         </td>
+
+                        <!--CONAP LAST YEAR-->
                         @if (appropriation.AppropriationSource == "CONAP")
                         {
                             <td>
-                                <a class="btn btn-sm btn-default" asp-controller="SubAllotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-route-AppropriationId="@appropriation.AppropriationId" asp-action="Index" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId" asp-route-lastYear="true">
+                                <a class="btn btn-sm btn-default" asp-controller="SubAllotment" asp-route-AllotmentClassId="@allotment_class.Id" asp-action="Index" asp-route-BudgetAllotmentId="@Model.BudgetAllotmentId" asp-route-lastYear="true">
                                     <i class="ace-icon fa fa-plus"></i>SAA
                                 </a>
                                 <br />
                                 <span class="grey">(ALLOTMENT):</span>
                                 @{
                                     var sub_beginning_balanceConap = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear)?.Sum(x => x.Beginning_balance);
-                                    //total_beginning_balance += sub_beginning_balanceConap;
                                 }
                                 <b class="green">@sub_beginning_balanceConap.Value.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
-
                                 <span class="grey">(OBLIGATED): </span>
                                 @{
                                     var sub_obligated_amountConap = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear)?.Sum(x => x.obligated_amount);
-                                    //total_obligated_amount += sub_obligated_amountConap;
                                 }
                                 <b class="blue">@sub_obligated_amountConap.Value.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
                                 <span class="grey">(BALANCE): </span>
                                 @{
                                     var sub_remaining_balanceConap = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear)?.Sum(x => x.Remaining_balance);
-                                    //total_remaining_balance += sub_beginning_balance;
                                 }
                                 <b class="red">@sub_remaining_balanceConap.Value.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
-                                @*  <span class="grey">(RA): </span>
-                                @{
-                                    var sub_realignment_amountConap  = Model.SubAllotment.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.IsAddToNextAllotment == true).Sum(x => x.realignment_amount);
-                                    total_realignment_amount += sub_realignment_amountConap ;
-                                }
-                                <b class="orange">@sub_realignment_amount.ToString("C", new CultureInfo("en-PH"))</b>*@
-
-
-                                @if (@*appropriation.AppropriationSource == "CURRENT" && *@
-                   Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
+                                @if (Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
                                 {
                                     var check = Model.SubAllotment.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId && x.Budget_allotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true) ? "checked" : "";
                                     <div class="checkbox">
@@ -303,8 +290,7 @@
                                 }
                             </td>
                         }
-
-
+                        <!--CONAP LAST YEAR-->
                     </tr>
                 }
             }

@@ -114,7 +114,7 @@ namespace fmis.Controllers
                 suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
                 fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
-                budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
+                //budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
                 //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
             
             }
