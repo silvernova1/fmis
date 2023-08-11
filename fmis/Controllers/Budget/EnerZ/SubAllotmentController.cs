@@ -118,7 +118,7 @@ namespace fmis.Controllers
                .AsNoTracking()
                .ToList()
                .Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
-
+      
                 var subNegativeAmount = _MyDbContext.SubNegative
                 .Where(y => y.SubAllotmentId == x.SubAllotmentId)
                 .Where(x=> x.status == "activated")
@@ -129,6 +129,8 @@ namespace fmis.Controllers
                 x.Beginning_balance -= subNegativeAmount;
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
+
+
 
             if(lastYear == true)
             {
@@ -144,6 +146,27 @@ namespace fmis.Controllers
                 suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
 
                 budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
+
+
+                budget_allotment.SubAllotment.ToList().ForEach(x =>
+                {
+                    x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts)
+                   .Where(y => y.SubAllotmentId == x.SubAllotmentId)
+                   .Where(x => x.status == "activated")
+                   .AsNoTracking()
+                   .ToList()
+                   .Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+
+                    var subNegativeAmount = _MyDbContext.SubNegative
+                    .Where(y => y.SubAllotmentId == x.SubAllotmentId)
+                    .Where(x => x.status == "activated")
+                    .AsNoTracking()
+                    .ToList()
+                    .Sum(x => x.Amount);
+
+                    x.Beginning_balance -= subNegativeAmount;
+                    x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
+                });
             }
             
 
