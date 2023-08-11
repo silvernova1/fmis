@@ -10,7 +10,7 @@ namespace fmis.ViewModel
     {
 
         public Pr Pr { get; set; }
-        public PrItems PrItems { get; set; }
+        public List<Item> PrItems { get; set; }
         public List<Expense> Expenses { get; set; }
         public List<Item> Items { get; set; }
 

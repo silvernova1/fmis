@@ -1,23 +1,21 @@
-﻿@*    <div id="navbar" class="navbar navbar-default ace-save-state">
-
-        <button type="button" class="btn_navbar navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
-
-            <span class="sr-only">Toggle sidebar</span>
-
-            <span class="icon-bar"></span>
-
-            <span class="icon-bar"></span>
-
-            <span class="icon-bar"></span>
-        </button>
-        <div class="navbar-container ace-save-state" id="navbar-container">
-            <div class="navbar-header">
-                <img src="~/assets/images/fmis-banner.png" class="img-responsive" />
+﻿<header>
+   <div class="header-content" style="background-color:#2F4054;padding:10px;">
+        <div class="">
+            <div class="col-md-4 fa-pull-left">
+                <span class="title-desc" style="color:coral;font-weight:bold">
+                    Welcome,
+                </span>
+                <span class="title-desc" style="color:whitesmoke;font-weight:bold">
+                    @User.FindFirstValue(ClaimTypes.GivenName) @User.FindFirstValue(ClaimTypes.Surname)
+                </span>
             </div>
+            <div class="col-md-4 fa-pull-right text-right">
+                <span class="title-desc" style="color:coral;font-weight:bold">Date: </span><span class="title-desc" style="color:whitesmoke;font-weight:bold">@DateTime.Now.ToString("MMM dd, yyyy") <span id="time-top"></span></span>
+            </div>
+            <div class="clearfix"></div>
         </div>
-    </div>
-*@
-
+   </div>
+</header>
 <div class="row">
     <div id="navbar" class="navbar navbar-default ace-save-state">
         <div class="col-xs-1">

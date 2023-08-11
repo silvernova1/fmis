@@ -202,10 +202,10 @@
     <input type="hidden" name="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
 
     <span class="pull-right">
-        <button type="button" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked();">
+        @*<button type="button" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked();">
             View All
-        </button>
-        <input type="search" placeholder="Enter keyword..." class="form-group" name="search" id="search" value="@ViewBag.Search" style="width: 340px;" />
+        </button>*@
+        <input type="search" placeholder="Enter keyword..." class="form-group" name="search" id="search" value="@ViewBag.Search" style="width: 340px;" oninput="updateTable()" />
         <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
             <i class="ace-icon fa fa-search "></i> Search
         </button>
@@ -459,7 +459,18 @@ else
                 css('display', 'table-row').animate({ opacity: 1 }, 300);
         });
     });
-
+    //search
+    function updateTable() {
+        var searchValue = $('#search').val();
+        $('#data tbody tr').each(function () {
+            var rowData = $(this).text().toLowerCase();
+            if (rowData.indexOf(searchValue.toLowerCase()) === -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    }
 </script>
 
 
