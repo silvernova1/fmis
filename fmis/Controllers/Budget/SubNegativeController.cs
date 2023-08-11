@@ -96,8 +96,11 @@ namespace fmis.Controllers.Budget.Carlo
                 sub_negative.status = "activated";
                 sub_negative.token = item.token;
 
+
                 _MyDbContext.SubNegative.Update(sub_negative);
                 await _MyDbContext.SaveChangesAsync();
+
+             
             }
             return Json(sub_negative);
         }

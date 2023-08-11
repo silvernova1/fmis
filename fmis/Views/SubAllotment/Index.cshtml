@@ -1,7 +1,7 @@
 ﻿@model fmis.Models.silver.BudgetAllotment
 @using System.Globalization;
 @{
-    ViewData["Title"] = "FundSource";
+    ViewData["Title"] = "SubAllotment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var currentYear = User.FindFirstValue("YearlyRef");
@@ -319,7 +319,7 @@
                     </td>
                     <td>
                         <b class="blue">
-                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH"))</span>
+                            <span>@item.obligated_amount.ToString("C", new CultureInfo("en-PH")) </span>
                         </b>
                     </td>
                     <td>

@@ -661,6 +661,7 @@
         manualColumnResize: true,
         height: '600px',
         filters: true,
+        //fixedColumnsStart: 6,
         afterGetColHeader: addInput,
         beforeOnCellMouseDown(event, coords) {
             // Deselect the column after clicking on input.
@@ -674,7 +675,6 @@
             const totalSumObligation: number = cellValue.reduce((acc: number, curr: any[]) => acc + curr[10], 0);
             totalObligation.value = totalSumObligation;
         },
-        //fixedColumnsLeft: 6,
         contextMenu: {
             undo: true,
             items:
@@ -982,11 +982,13 @@
                         return;
                     }
                 }
-                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
+                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue, totalObligation: totalObligation.value }
                 socket.value.send(JSON.stringify(send_data));
+
                 await __saveObligationAmount(obligation_amount_data)
                 $toast.success('Successfully Save Obligation Amount!');
                 return;
+
             }
 
             let obligation_data = new FormData();
@@ -1120,9 +1122,6 @@
         handsondData.value = data
     }
 
-
-
-    /*console.log(gridAmount.find(item => item[0] === 18)[1]);*/
     function formatNumber(number: number): string {
         const formattedNumber = number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return formattedNumber;
@@ -1216,7 +1215,6 @@
 </template>
 
 <style>
-
 
     .highlight_yellow {
         background-color: yellow !important;

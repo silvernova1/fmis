@@ -12,7 +12,7 @@
         <td>
             <a href="#" data-toggle="modal" data-target="#updateModal" class="btn btn-primary btn-xs" @click="onUpdate(allotment)">
                 <i class="ace-icon fa fa-edit"></i>Edit
-            </a> |
+            </a> 
             <button class="btn btn-danger btn-xs" @click="onDelete(allotment.Id)">
                 <i class="ace-icon fa fa-trash"></i>Delete
             </button>
