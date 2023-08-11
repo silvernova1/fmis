@@ -203,7 +203,7 @@ namespace fmis.Controllers
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin") || user.Username.Equals("201500252") || user.Username.Equals("201400182")
                 || user.Username.Equals("2652") || user.Username.Equals("2147") || user.Username.Equals("2579") || user.Username.Equals("0664")
-                || user.Username.Equals("2543") || user.Username.Equals("0848") 
+                || user.Username.Equals("2543") || user.Username.Equals("0848") || user.Username.Equals("1887")
                 ? "budget_admin" : "budget_user"),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
