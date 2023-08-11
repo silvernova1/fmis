@@ -100,7 +100,7 @@ namespace fmis.Controllers
                 var suballotmentsLastYr = await _context.SubAllotment
                     .Include(x => x.AllotmentClass)
                     .Include(x => x.Budget_allotment).ThenInclude(x => x.Yearly_reference)
-                    .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
+                    .Where(x => x.IsAddToNextAllotment == true && x.Budget_allotment.Yearly_reference.YearlyReference == result)
                     .ToListAsync();
 
 
@@ -111,8 +111,8 @@ namespace fmis.Controllers
                     .Include(x => x.AllotmentClass)
                     .ToListAsync();
 
-                suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
-                fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
+                //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
+                //fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
                 //budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
                 //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
