@@ -264,9 +264,18 @@
                     </td>
                     @if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
-                        <td>
-                            CONAP @item.Suballotment_title
-                        </td>
+                        @if(!item.Suballotment_title.Contains("CONAP "))
+                        {
+                            <td>
+                                CONAP @item.Suballotment_title
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                @item.Suballotment_title
+                            </td>
+                        }
                     }
                     else
                     {
