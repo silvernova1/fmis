@@ -113,8 +113,8 @@ namespace fmis.Controllers
 
         public class DeleteData
         {
-            public string single_token { get; set; }
-            public List<ManyId> many_token { get; set; }
+            //public string single_token { get; set; }
+            public String many_token { get; set; }
         }
 
         public async Task<ActionResult> GetExpenseCode(int allotmentId)
@@ -389,7 +389,8 @@ namespace fmis.Controllers
 
         public async Task<IActionResult> saveObligationFromVue(ObligationData item)
         {
-            string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
+            Yearly_reference yearlyHolder = await _MyDbContext.Yearly_reference.Where(x => x.YearlyReferenceId == YearlyRefId).FirstOrDefaultAsync();
+            string year = yearlyHolder.YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
             next_year.ToString("yyyy-MM-dd 00:00:00");
             var res = next_year.AddYears(-1);
@@ -397,6 +398,17 @@ namespace fmis.Controllers
 
             var retObligation = new List<Obligation>();
             var data_holder = _context.Obligation.Where(x => x.status == "activated");
+
+            var obligation = new Obligation(); //CLEAR OBJECT
+            if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
+            {
+                obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
+            }
+
+            if (item.source_type.Equals("fund_source"))
+                obligation.FundSourceId = item.source_id;
+            else if (item.source_type.Equals("sub_allotment"))
+                obligation.SubAllotmentId = item.source_id;
 
             var ors = (from fundsource in _MyDbContext.FundSources
                        join obligations in _MyDbContext.Obligation
@@ -418,17 +430,6 @@ namespace fmis.Controllers
                            allotmentCLassId = fundsource.AllotmentClassId
                        }).ToList();
 
-            var obligation = new Obligation(); //CLEAR OBJECT
-            if (await data_holder.AnyAsync(s => s.obligation_token == item.obligation_token)) //CHECK IF EXIST
-            {
-                obligation = await data_holder.Where(s => s.obligation_token == item.obligation_token).FirstOrDefaultAsync();
-            }
-
-            if (item.source_type.Equals("fund_source"))
-                obligation.FundSourceId = item.source_id;
-            else if (item.source_type.Equals("sub_allotment"))
-                obligation.SubAllotmentId = item.source_id;
-
             obligation.source_type = item.source_type;
             obligation.Date = ToDateTime(item.Date);
             obligation.Dv = item.Dv;
@@ -447,7 +448,6 @@ namespace fmis.Controllers
 
             _context.Update(obligation);
             await _context.SaveChangesAsync();
-
 
             if (item.source_type == "fund_source")
                 obligation.FundSource = await _MyDbContext.FundSources.FirstOrDefaultAsync(x => x.FundSourceId == obligation.FundSourceId);
@@ -606,20 +606,10 @@ namespace fmis.Controllers
 
         // POST: Obligations/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteObligation(DeleteData data)
+        public IActionResult DeleteObligation([FromBody] DeleteData[] data)
         {
-
-            foreach (var many in data.many_token)
+            foreach (var many in data)
                 setUpDeleteData(many.many_token);
-            /*
-            if (data.many_token.Count > 1)
-            {
-                foreach (var many in data.many_token)
-                    setUpDeleteData(many.many_token);
-            }
-            else
-                setUpDeleteData(data.single_token);*/
 
             return Json(data);
         }
@@ -885,7 +875,7 @@ namespace fmis.Controllers
                     table_row_4.WidthPercentage = 100f;
                     table_row_4.SetWidths(tbt_row4_width);
                     table_row_4.AddCell(new PdfPCell(new Paragraph("Address", times_new_roman_r9)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address.ToString(), times_new_roman_b9)));
+                    table_row_4.AddCell(new PdfPCell(new Paragraph(ors.Address?.ToString(), times_new_roman_b9)));
                     table_row_4.AddCell(new PdfPCell(new Paragraph()));
 
 
@@ -989,10 +979,10 @@ namespace fmis.Controllers
                     }
 
                     //table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.fundsource_code + "\n\n" + fundsources.FirstOrDefault()?.respo, FontFactory.GetFont("Arial", 6, Font.NORMAL, BaseColor.BLACK))) { Border = 13, FixedHeight = 150f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, times_new_roman_r8)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_LEFT });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, times_new_roman_r9)) { Border = 13, FixedHeight = 200f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + ors.Particulars, times_new_roman_r8)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_LEFT });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundsources.FirstOrDefault()?.pap, times_new_roman_r9)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + uacs, times_new_roman_r9)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 15f });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + str_amt, times_new_roman_r9)) { Border = 13, FixedHeight = 180f, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 15f });
                     doc.Add(table_row_6);
 
                     var table_row_7 = new PdfPTable(5);

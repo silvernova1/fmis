@@ -112,7 +112,21 @@ namespace fmis.Controllers
             //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
             budget_allotment.SubAllotment.ToList().ForEach(x =>
             {
-                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts).Where(y => y.SubAllotmentId == x.SubAllotmentId).Where(x => x.status == "activated").AsNoTracking().ToList().Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+                x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts)
+               .Where(y => y.SubAllotmentId == x.SubAllotmentId)
+               .Where(x => x.status == "activated")
+               .AsNoTracking()
+               .ToList()
+               .Sum(x => x.ObligationAmounts.Sum(x => x.Amount));
+
+                var subNegativeAmount = _MyDbContext.SubNegative
+                .Where(y => y.SubAllotmentId == x.SubAllotmentId)
+                .Where(x=> x.status == "activated")
+                .AsNoTracking()
+                .ToList()
+                .Sum(x => x.Amount);
+
+                x.Beginning_balance -= subNegativeAmount;
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 

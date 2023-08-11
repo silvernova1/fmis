@@ -1,22 +1,21 @@
-<script setup lang="ts">
-    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount } from "../../../api/index"
+﻿<script setup lang="ts">
+    import { userDetails, obligationData, fundSub, expCode, saveObligation, saveObligationAmount, deleteObligation, getRemainingObligated, calculateObligatedAmount } from "../../../api/index"
     import { computed, ref, onMounted, watch, Ref } from "vue";
     import { HotTable } from '@handsontable/vue3';
+    import Handsontable from 'handsontable';
     import { ContextMenu } from 'handsontable/plugins/contextMenu';
     import { registerAllModules } from 'handsontable/registry';
     import 'handsontable/dist/handsontable.full.css';
     import axios from 'axios';
     import moment from "moment"
-import exp from "constants";
+    import exp from "constants";
 
+    import { useToast } from 'vue-toast-notification';
+    import 'vue-toast-notification/dist/theme-sugar.css';
+
+    
     //register Handsontable's modules
     registerAllModules();
-
-    const userInfo = ref({
-        userid: String,
-        fname: String,
-        lname: String
-    })
 
     const select_push = ref([])
     const user_connected = ref([])
@@ -28,6 +27,13 @@ import exp from "constants";
             xsrf: null,
         }
     });
+
+    const userInfo = ref({
+        userid: String,
+        fname: String,
+        lname: String,
+        color: String
+    })
 
     const _userDetails = async () => {
         const response = await userDetails()
@@ -45,9 +51,22 @@ import exp from "constants";
     const watchUserInfo = computed(() => userInfo.value);
     const urlObject = new URL(window.location.href)
     const domain = urlObject.hostname
+    const $toast = useToast();
+
+    const watchHotTableComponent = computed(() => hotTableComponent.value);
+    watch(watchHotTableComponent, (value) => {
+        const cellValue = hotTableComponent.value.hotInstance.getDataAtCol(8);
+        console.log(totalRowFetchFromBackend.value);
+        let ors_number: any = incrementORS(cellValue);
+        for (let i = totalRowFetchFromBackend.value; i < 8000; i++) {
+            handsondData.value[i][8] = ors_number.toString().padStart(4, '0');
+            ors_number++;
+        }
+    });
+
     watch(watchUserInfo, (value) => {
         userInfoLoaded.value = true
-        const unique_id = userInfo.value.userid + "websocket" + userInfo.value.fname + "websocket" + userInfo.value.lname
+        const unique_id = userInfo.value.userid + "websocket" + userInfo.value.fname + "websocket" + userInfo.value.lname + "websocket" + userInfo.value.color
         socket.value = new WebSocket("ws://" + domain + ":8080", [unique_id.replace(" ", "_")]);
         socket.value.addEventListener('open', (event: Event) => {
             console.log('WebSocket connection established');
@@ -62,10 +81,11 @@ import exp from "constants";
             console.error('WebSocket error.:', event);
         });
 
-        socket.value.addEventListener('message', (event) => {
+        socket.value.addEventListener('message', async (event) => {
             const data = JSON.parse(event.data)
             if (data.selectFlag) {
-                data['color'] = getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid)
+                //data['color'] = getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid)
+                data['color'] = userInfo.value.userid === data.userid ? userInfo.value.color : data.color
                 select_push.value.push(data)
                 const select_checker = JSON.parse(JSON.stringify(select_push.value))
                 if (select_checker[select_checker.length - 2]) {
@@ -73,17 +93,19 @@ import exp from "constants";
                     highlightCellClientReset(dataforReset.row, dataforReset.col, getHighlightColor(data.userid))
                 }
                 previosUserData(select_checker, 2)
-                highlightCellClient(data.row, data.col, getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid))
+                highlightCellClient(data.row, data.col, userInfo.value.userid === data.userid ? userInfo.value.color : data.color)
+                //highlightCellClient(data.row, data.col, getHighlightColor(userInfo.value.userid === data.userid ? userInfo.value.userid : data.userid))
             }
             else if (data.connected_clients) {
                 user_connected.value = data.data
                 onlineUser.value = data.data.map((item: any, index: any) => {
-                    const [userid, fname = "", lname = ""] = item.split("websocket");
+                    const [userid, fname = "", lname = "", color = ""] = item.split("websocket");
                     return {
                         id: index++,
                         userid: userid,
                         fullname: fname + " " + lname,
-                        color: getHighlightColor(userid)
+                        //color: getHighlightColor(userid)
+                        color: color
                     }
                 })
             }
@@ -91,11 +113,16 @@ import exp from "constants";
             if (userInfo.value.userid !== data.userid) {
                 afterChangeFlag.value = true;
                 if (data.afterChange) {
-                    changeDataCell(data);
+                    await changeDataCell(data);
                 } else if (data.insertedAbove) {
-                    insertAboveRow(data.row);
+                    insertAboveRow(data.row,data.data);
+                    const send_data = { row: data.row , col: 12, data: data.data }
+                    await changeDataCell(send_data);
                 } else if (data.insertedBelow) {
-                    insertBelowRow(data.row);
+                    insertBelowRow(data.row, data.data);
+                    //need the same token to all users
+                    const send_data = { row: data.row+1, col: 12, data: data.data }
+                    await changeDataCell(send_data);
                 } else if (data.removeRow) {
                     removeRow(data.start, data.end);
                 } else if (data.onAfterUndo) {
@@ -106,14 +133,14 @@ import exp from "constants";
                         let count = 0
                         for (var i = rowStart; i < rowEnd; i++) {
                             console.log("row=" + i)
-                            insertAboveRow(i)
-                            data.data[count].forEach((item: any, column: Number) => {
+                            insertAboveRow(i, data.data)
+                            data.data[count].forEach((item: any, column: number) => {
                                 changeDataCell({ row: i, col: column, data: item })
                             })
                             count++
                         }
                     } else if (actionType === 'change') {
-                        changeDataCell({ row: data.row, col: data.col, data: data.data })
+                        await changeDataCell({ row: data.row, col: data.col, data: data.data })
                     } else if (actionType === 'insert_row') {
                         removeRow(data.row, data.row)
                     }
@@ -126,12 +153,21 @@ import exp from "constants";
 
         });
     })
-    const previosUserData = (select_checker: [{ userid: String, row: any, col: any }], decrement: any) => {
+
+    interface Checker {
+        userid: string;
+        row: number;
+        col: number;
+        color?: string; 
+    }
+
+    const previosUserData = (select_checker: Checker[], decrement: number) => {
         const user_clicking = select_checker[select_checker.length - 1].userid
         if (select_checker[select_checker.length - decrement]) {
             const handler_checker = select_checker[select_checker.length - decrement]
             if (handler_checker.userid == user_clicking) {
-                highlightCellClientReset(handler_checker.row, handler_checker.col, getHighlightColor(handler_checker.userid))
+                highlightCellClientReset(handler_checker.row, handler_checker.col, handler_checker.color)
+                //highlightCellClientReset(handler_checker.row, handler_checker.col, getHighlightColor(handler_checker.userid))
             } else {
                 decrement++;
                 previosUserData(select_checker, decrement)
@@ -163,7 +199,28 @@ import exp from "constants";
         });
     }
 
+    function generateUniqueToken(length: number): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randomIndex);
+        }
+        return result;
+    }
+
     const handsondData = ref([])
+    /*const watchHandsonddata = computed(() => handsondData.value);
+    const executeWithInterval = (length, index) => {
+        if (index < length) {
+            handsondData.value[index][3] = generateUniqueToken(4);
+            console.log("executing...");
+            setTimeout(() => executeWithInterval(length, index + 1), 2000);
+        }
+    }
+    watch(watchHandsonddata, (newData) => {
+        executeWithInterval(handsondData.value.length, 0);
+    })*/
 
     const colHeaders = ['FUND SOURCE', 'DATE', 'DV', 'PO #', 'PR #', 'PAYEE', 'ADDRESS', 'PARTICULARS', 'ORS #', 'CREATED BY', 'TOTAL AMOUNT', 'ID', 'OBLIGATION TOKEN',
         'OBLIGATION AMOUNT TOKEN 1', 'EXP CODE 1', 'AMOUNT 1',
@@ -178,11 +235,56 @@ import exp from "constants";
         'OBLIGATION AMOUNT TOKEN 10', 'EXP CODE 10', 'AMOUNT 10',
         'OBLIGATION AMOUNT TOKEN 11', 'EXP CODE 11', 'AMOUNT 11',
         'OBLIGATION AMOUNT TOKEN 12', 'EXP CODE 12', 'AMOUNT 12',
-        'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE']
+        'BEGINNING BALANCE', 'REMAINING BALANCE', 'PAP TYPE', 'OBLIGATED BALANCE']
+
+    const totalAmountReadOnly = 9;
+
+    const debounceFnWrapper = (colIndex: number, event: Event) => {
+        const debounceFn: () => void = Handsontable.helper.debounce(() => {
+            const filtersPlugin = hotTableComponent.value.hotInstance.getPlugin('filters');
+            filtersPlugin.removeConditions(colIndex);
+            filtersPlugin.addCondition(colIndex, 'contains', [event.target['value']]);
+            filtersPlugin.filter();
+        }, 1000);
+
+        debounceFn(); // Call the actual debounce function inside the wrapper.
+    };
 
 
+    const addEventListeners = (input, colIndex) => {
+        input.addEventListener('keydown', event => {
+            debounceFnWrapper(colIndex, event);
+        });
+    };
+
+    // Build elements which will be displayed in header.
+    const getInitializedElements = colIndex => {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+
+        div.className = 'filterHeader';
+
+        addEventListeners(input, colIndex);
+
+        div.appendChild(input);
+
+        return div;
+    };
+
+    // Add elements to header on `afterGetColHeader` hook.
+    const addInput = (col, TH) => {
+        // Hooks can return a value other than number (for example `columnSorting` plugin uses this).
+        if (typeof col !== 'number') {
+            return col;
+        }
+
+        if (col >= 0 && TH.childElementCount < 2) {
+            TH.appendChild(getInitializedElements(col));
+        }
+    };
+
+    const insertedRowFlag = ref(false);
     const hotSettings = ref({
-
         colWidths: [200, 100, 70, 80, 80, 100, 100, 100, 80, 80, 150, 125, 100, 100,
             100, 100, 100,
             100, 100, 100,
@@ -196,15 +298,17 @@ import exp from "constants";
             100, 100, 100,
             100, 100, 100,
             100, 100,
-            150, 150, 150,
+            100, 100, 100,100
         ],
+
 
         columns: [
             {
                 //FundSource
                 type: 'dropdown',
                 async source(query, callback) {
-                    callback(await __fundSub())
+                    const response = await __fundSub()
+                    callback(response)
                 }
             },
             {
@@ -246,6 +350,9 @@ import exp from "constants";
             },
             {
                 //TotalAmount
+                readOnly: function (column) {
+                    return column === totalAmountReadOnly;
+                },
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
@@ -268,7 +375,10 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    console.log(data)
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -287,7 +397,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -306,7 +418,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -325,7 +439,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -344,7 +460,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -363,7 +481,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -382,7 +502,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -401,7 +523,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -420,7 +544,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -439,7 +565,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -458,7 +586,9 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
             {
@@ -477,10 +607,12 @@ import exp from "constants";
                 type: 'dropdown',
                 async source(query, callback) {
                     const data = hotTableComponent.value.hotInstance.getDataAtCell(this.row, 51);
-                    callback(await __expCode(data))
+                    if (data) {
+                        callback(await __expCode(data))
+                    }
                 }
             },
-            {
+            {  //48
                 //Amount 12
                 type: 'numeric',
                 numericFormat: {
@@ -488,6 +620,7 @@ import exp from "constants";
                 }
             },
             {
+                //49
                 //Begenning Balance
                 type: 'numeric',
                 numericFormat: {
@@ -495,30 +628,52 @@ import exp from "constants";
                 }
             },
             {
+                //50
                 //Remaining Balance
                 type: 'numeric',
                 numericFormat: {
                     pattern: '0,0.00',
                 }
             },
+            
             {
+                //51
                 //ALLOTMENT CLASS
                 type: 'text'
             },
+            {
+                //52
+                //Obligated Balance
+                type: 'numeric',
+                numericFormat: {
+                    pattern: '0,0.00',
+                }
+            },
         ],
-
-     /*   hiddenColumns: {
-            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51],
+        //SET MINIMUM ROW
+        minRows: 8000,
+        hiddenColumns: {
+            columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51, 52 ],
             indicators: true, // show the indicator in the header
-        },*/
-
+        },
         wordWrap: false,
         manualRowResize: true,
         manualColumnResize: true,
         height: '600px',
-        //fixedColumnsLeft: 6,
-        afterRemoveRow: (index: any, amount: any) => {
-
+        filters: true,
+        //fixedColumnsStart: 6,
+        afterGetColHeader: addInput,
+        beforeOnCellMouseDown(event, coords) {
+            // Deselect the column after clicking on input.
+            if (coords.row === -1 && event.target.nodeName === 'INPUT') {
+                event.stopImmediatePropagation();
+                this.deselectCell();
+            }
+        },
+        afterFilter: () => {
+            const cellValue: any[][] = hotTableComponent.value.hotInstance.getData();
+            const totalSumObligation: number = cellValue.reduce((acc: number, curr: any[]) => acc + curr[10], 0);
+            totalObligation.value = totalSumObligation;
         },
         contextMenu: {
             undo: true,
@@ -528,30 +683,38 @@ import exp from "constants";
                     name: 'Insert row above',
                     callback: function (changes: any, options: any) {
                         console.log(changes)
-                        insertAboveRow(options[0].start.row)
-                        const send_data = { row: options[0].start.row, insertedAbove: true, userid: userInfo.value.userid, status: options }
+                        const obligation_token_get = ObligationAmountToken();
+                        insertAboveRow(options[0].start.row, obligation_token_get)
+                        const send_data = { row: options[0].start.row, insertedAbove: true, userid: userInfo.value.userid, status: options, data: obligation_token_get }
                         socket.value.send(JSON.stringify(send_data));
                     }
                 },
                 'row_below': {
                     name: 'Insert row below',
                     callback: function (changes: any, options: any) {
-                        console.log(changes)
-                        insertBelowRow(options[0].start.row)
-                        const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options }
+                        const obligation_token_get = ObligationAmountToken();
+                        insertBelowRow(options[0].start.row, obligation_token_get);
+                        const send_data = { row: options[0].start.row, insertedBelow: true, userid: userInfo.value.userid, status: options, data: obligation_token_get }
                         socket.value.send(JSON.stringify(send_data));
-
                     }
                 },
                 'separator': ContextMenu.SEPARATOR,
                 'remove_row': {
                     name: 'Remove row',
-                    callback: function (changes: any, options: any) {
-                        console.log(options)
+                    callback: async function (changes: any, options: any) {
                         const start = options[0].start.row
                         const end = options[0].end.row
-                        removeRow(start, end)
+                        const many_token = [];
+                        for (let j = start; j <= end; j++) {
+                            many_token.push({
+                                many_token: handsondData.value[j][12]
+                            })
+                        }
+
+                        await removeRow(start, end)
+                        await __deleteObligation(many_token)
                         const send_data = { start: start, end: end, removeRow: true, userid: userInfo.value.userid, status: options }
+                        $toast.error('Successfully Deleted!');
                         socket.value.send(JSON.stringify(send_data));
                     }
                 },
@@ -610,20 +773,18 @@ import exp from "constants";
         }
     }
 
-    const exp_code = [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47];
-    const amounts = [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
-    const tokens = [12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
+    const ObligationAmountToken = () => {
+        const s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
 
-    const insertAboveRow = (row: Number) => {
-
-        const ObligationAmountToken = () => {
-            const s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
-            };
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        };
+    const tokens = [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46];
+    const insertAboveRow = (row: Number, obligation_token: String) => {
+        insertedRowFlag.value = true
 
         const cell = hotTableComponent.value.hotInstance;
 
@@ -641,22 +802,16 @@ import exp from "constants";
             [rows, 1, dateToday],
             [rows, 6, address],
             [rows, 8, ors_number],
-            ...tokens.map(token => [rows, token, ObligationAmountToken()])
+            [rows, 12, obligation_token],
+            ...tokens.map(token => [rows, token, ObligationAmountToken()]),
         ];
           
         cell.setDataAtCell(autoFill);
     }
 
-    const insertBelowRow = (row: Number) => {
+    const insertBelowRow = (row: Number, obligation_token: String) => {
+        insertedRowFlag.value = true
 
-        const ObligationAmountToken = () => {
-            const s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
-            };
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        };
 
         const cell = hotTableComponent.value.hotInstance;
         const ors_number = incrementORS(cell.getDataAtCol(8)).toString().padStart(4, '0');
@@ -676,6 +831,7 @@ import exp from "constants";
             [rows, 1, dateToday],
             [rows, 6, address],
             [rows, 8, ors_number],
+            [rows, 12, obligation_token],
             ...tokens.map(token => [rows, token, ObligationAmountToken()]),
         ];
 
@@ -689,17 +845,22 @@ import exp from "constants";
     }
 
     const getHighlightColor = (userid: String) => {
-        const highlight_array = ["highlight_yellow", "highlight_pink", "highlight_blue", "highlight_orange", "highlight_green", "highlight_pink", "highlight_gray", "highlight_salmon"]
+        const highlight_array = ["highlight_yellow", "highlight_pink", "highlight_blue", "highlight_orange", "highlight_green", "highlight_gray", "highlight_salmon", "highlight_seagreen", "highlight_lightyellow"]
         let parse_data = JSON.parse(JSON.stringify(user_connected.value))
         parse_data = parse_data.map((item: any) => item.split("websocket")[0])
         const color_pick = highlight_array[parse_data.indexOf(userid.toString())]
         return color_pick
     }
 
-    const highlightCell = () => {
+    const highlightCell = (source: any) => {
+        console.log(source)
         const selectedCell = hotTableComponent.value.hotInstance.getSelected()[0];
-        const send_data = { row: selectedCell[0], col: selectedCell[1], selectFlag: true, userid: userInfo.value.userid }
-        socket.value.send(JSON.stringify(send_data));
+        const send_data = { row: selectedCell[0], col: selectedCell[1], selectFlag: true, userid: userInfo.value.userid, color: userInfo.value.color }
+        try {
+            displayCellTop.value = handsondData.value[selectedCell[0]][selectedCell[1]]
+            socket.value.send(JSON.stringify(send_data));
+        } catch (e) {
+        }
     }
 
     const highlightCellClient = (row: Number, col: Number, highlight_color: String) => {
@@ -716,20 +877,121 @@ import exp from "constants";
         } catch (e) { }
     }
 
-    const changeDataCell = (data: any) => {
-        const cell = hotTableComponent.value.hotInstance;
-        cell.setDataAtCell(data.row, data.col, data.data);
+    interface CellData {
+        row: number;
+        col: number;
+        data: any; // Replace 'any' with the specific data type you expect to handle in the cells
     }
 
+    const changeDataCell = async (data: any) => {
+        handsondData.value[data.row][data.col] = data.data;
+    }
+
+    const checkTheColumnToken = (row: number, column: number) => {
+        const cellValue = handsondData.value[row][column]?.trim() ?? '';
+        if (!cellValue) {
+            const token = ObligationAmountToken();
+            handsondData.value[row][column] = token;
+            if (column === 12) {
+                const send_data = { row: row, col: column, afterChange: true, userid: userInfo.value.userid, data: token }
+                socket.value.send(JSON.stringify(send_data));
+            }
+        }
+    }
+
+    const addTokenIfColumnIsEmpty = (row: number) => {
+        checkTheColumnToken(row, 12);
+        for (const column of tokens) {
+            checkTheColumnToken(row,column)
+        }
+    }
+
+    const displayCellTop = ref("")
     const afterChangeFlag = ref(false)
-    const afterChange = (changes: any, source: any) => {
-        if (changes && source === 'edit' && !afterChangeFlag.value) {
+    const afterChange = async (changes: any, source: any) => {
+        //if (changes && source === 'edit' && !afterChangeFlag.value) {
+        if (changes && source === 'edit') {
             const [row, col, oldValue, newValue] = changes[0];
             const hot = hotTableComponent.value.hotInstance;
-            const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: hot.getDataAtCell(row, col) }
+
+            if (insertedRowFlag.value) {
+                insertedRowFlag.value = false;
+                return;
+            }
+
+            if (!hot.getDataAtCell(row, 0)) {
+                alert("Please Select FundSource or Sub Allotment");
+                return;
+            }
+            addTokenIfColumnIsEmpty(row)
+            if (col >= 14 && col <= 48 && hot.getDataAtCell(row, 0)) {
+                let obligation_amount_data = new FormData()
+                obligation_amount_data.append('obligationId', hot.getDataAtCell(row, 11));
+                obligation_amount_data.append('obligation_token', hot.getDataAtCell(row, 12));
+                if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'expense') {
+                    obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col));
+                    obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 1));
+                } else if (gridExpenseAmountToken().find(item => item[0] === col)[1] === 'amount') {
+                    if (!hot.getDataAtCell(row, col - 1)) {
+                        alert("please select expense code!")
+                        return;
+                    }
+                    const send_check_remaining = {
+                        "obligation_id": 0,
+                        "obligation_token": hot.getDataAtCell(row, 12),
+                        "beginning_balance": 0,
+                        "remaining_balance": 0,
+                        "obligated_amount": newValue
+                    };
+                    const checkRemaining = await __getRemainingObligated(send_check_remaining);
+                    console.log(checkRemaining);
+                    if (checkRemaining['remaining_balance'] + oldValue >= newValue || checkRemaining['remaining_balance'] >= newValue) {
+                        let calculated_remaining = 0;
+                        let calculated_obligated = 0;
+                        if (newValue > oldValue) {
+                            calculated_remaining = checkRemaining['remaining_balance'] - (newValue - oldValue);
+                            calculated_obligated = checkRemaining['obligated_amount'] + (newValue - oldValue);
+                        } else if (newValue < oldValue) {
+                            calculated_remaining = checkRemaining['remaining_balance'] + (oldValue - newValue);
+                            calculated_obligated = checkRemaining['obligated_amount'] - (oldValue - newValue);
+                        }
+                        handsondData.value[row][50] = calculated_remaining;
+                        handsondData.value[row][52] = calculated_obligated;
+                        const send_calculated = {
+                            "obligation_id": 0,
+                            "obligation_token": hot.getDataAtCell(row, 12),
+                            "obligation_amount_token": hot.getDataAtCell(row, col - 2),
+                            "remaining_balance": calculated_remaining,
+                            "obligated_amount": calculated_obligated,
+                            "amount": newValue
+                        }
+                        console.log(send_calculated);
+                        const check = await __calculateObligatedAmount(send_calculated);
+                        console.log(check)
+                        obligation_amount_data.append('expense_code', hot.getDataAtCell(row, col - 1));
+                        obligation_amount_data.append('amount', hot.getDataAtCell(row, col));
+                        obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, col - 2));
+                        handsondData.value[row][10] = newValue > oldValue ? handsondData.value[row][10] + (newValue - oldValue) : handsondData.value[row][10] - (oldValue - newValue);
+                        const send_data = { row: row, col: 10, afterChange: true, userid: userInfo.value.userid, data: handsondData.value[row][10] }
+                        socket.value.send(JSON.stringify(send_data));
+                    }
+                    else {
+                        console.log("insufficient");
+                        alert("insufficient balance!");
+                        handsondData.value[row][col] = oldValue;
+                        return;
+                    }
+                }
+                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue, totalObligation: totalObligation.value }
+                socket.value.send(JSON.stringify(send_data));
+
+                await __saveObligationAmount(obligation_amount_data)
+                $toast.success('Successfully Save Obligation Amount!');
+                return;
+
+            }
 
             let obligation_data = new FormData();
-
             obligation_data.append('source_id', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_id : 0);
             obligation_data.append('source_type', hot.getDataAtCell(row, 0) ? fund_sub_data_array.value[hot.getDataAtCell(row, 0)].source_type : 0);
             obligation_data.append('date', hot.getDataAtCell(row, 1) ? hot.getDataAtCell(row, 1) : "");
@@ -742,22 +1004,24 @@ import exp from "constants";
             obligation_data.append('ors_no', hot.getDataAtCell(row, 8) ? hot.getDataAtCell(row, 8) : "");
             obligation_data.append('created_by', "");
             obligation_data.append('gross', hot.getDataAtCell(row, 10) ? hot.getDataAtCell(row, 10) : "");
-            obligation_data.append('id', hot.getDataAtCell(row, 11) ? hot.getDataAtCell(row, 11) : "");
             obligation_data.append('obligation_token', hot.getDataAtCell(row, 12));
 
-            __saveObligation(obligation_data,row)
-
-        /*    let obligation_amount_data = new FormData()
-
-            obligation_amount_data.append('obligation_amount_token', hot.getDataAtCell(row, 13)),
-            obligation_amount_data.append('expense_code', hot.getDataAtCell(row, 14) ? hot.getDataAtCell(row, 14) : ""),
-            obligation_amount_data.append('amount', hot.getDataAtCell(row, 15) ? hot.getDataAtCell(row, 15) : "")
-
-            __saveObligationAmount(obligation_amount_data)*/
-
+            await __saveObligation(obligation_data, row)
+            $toast.success('Successfully Save Obligation!');
+            const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
             socket.value.send(JSON.stringify(send_data));
         }
+    }
 
+    const gridExpenseAmountToken = () => {
+        return Array.from({ length: 36 }, (_, index) => {
+            const number = index + 13;
+            const label = index % 3 === 0 ? 'token' : '';
+            const attribute = index % 3 === 2 ? 'amount' : 'expense';
+
+            const value = [number, label + (label !== '' ? '' : attribute)];
+            return value;
+        });
     }
 
     const afterRender = () => {
@@ -781,17 +1045,27 @@ import exp from "constants";
         }
     }
 
-    const ObligationAmountToken = () => {
-        const s4 = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    const get_fund_sub = ref([]);
+    const fund_sub_data_array = ref([]);
+    const __fundSub = async () => {
+        const response = await fundSub()
+        const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
+            const json_data: { source_id: string; source_type: string } = {
+                source_id: item.source_id,
+                source_type: item.source_type,
+            };
+            get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
+            fund_sub_data_array.value[item.source_title] = json_data;
+            return item.source_title
+        }));
+        return fundSubDataDropdown
     }
 
     const totalObligation = ref(0)
+
+    const totalRowFetchFromBackend = ref(0)
     const __obligationData = async () => {
+        await __fundSub();
         const response = await obligationData()
         const data = await Promise.all(response.map(async (item: any) => {
 
@@ -828,44 +1102,38 @@ import exp from "constants";
             ]
 
             const beginningRemainingAllotmentBody = [
-                //item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
-                item.source_type == "fund_source" ? item.fundSource.beginning_balance : 0,
-                //item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
-                item.source_type == "fund_source" ? item.fundSource.remaining_balance : 0,
-                //item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId
-                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : 0
+                item.source_type == "fund_source" ? item.fundSource.beginning_balance : item.subAllotment.beginning_balance,
+                //item.source_type == "fund_source" ? item.fundSource.beginning_balance : 0,
+                item.source_type == "fund_source" ? item.fundSource.remaining_balance : item.subAllotment.remaining_balance,
+                //item.source_type == "fund_source" ? item.fundSource.remaining_balance : 0,
+                item.source_type == "fund_source" ? item.fundSource.allotmentClassId : item.subAllotment.allotmentClassId,
+                //item.source_type == "fund_source" ? item.fundSource.allotmentClassId : 0,
+                item.source_type == "fund_source" ? item.fundSource.obligated_amount : item.subAllotment.obligated_amount
             ]
-            //console.log(dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody))
+
+
+            totalObligation.value += obligation_amount;
+
             return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
-            totalObligation.value += obligation_amount
+
         }))
 
+        totalRowFetchFromBackend.value = data.length
         handsondData.value = data
     }
 
-    const get_fund_sub = ref([]);
-    const fund_sub_data_array = ref([]);
-    const __fundSub = async () => {
-        const response = await fundSub()
-        const fundSubDataDropdown: Promise<string[]> = Promise.all(response.map((item: any) => {
-            const json_data: { source_id: string; source_type: string } = {
-                source_id: item.source_id,
-                source_type: item.source_type,
-            };
-            get_fund_sub.value[item.source_id + item.source_type] = item.source_title;
-            fund_sub_data_array.value[item.source_title] = json_data;
-            return item.source_title
-        }));
-        return fundSubDataDropdown
+    function formatNumber(number: number): string {
+        const formattedNumber = number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return formattedNumber;
     }
 
     const __expCode = async (allotmentId: Number) => {
         const response = await expCode({ allotmentId: allotmentId })
         return response.items
     }
-
+    
     const __saveObligation = async (data: {}, row: number) => {
-        //console.log(data);
+        /*console.log(data);*/
         const response = await saveObligation(data);
         const allotmentClassId = response.source_type == "fund_source" ? response.fundSource.allotmentClassId : response.subAllotment.allotmentClassId;
         handsondData.value[row][51] = allotmentClassId;
@@ -874,15 +1142,26 @@ import exp from "constants";
     };
 
     const __saveObligationAmount = async (data: {}) => {
-        const response = await __saveObligationAmount(data);
-        console.log(response);
+        //console.log(data);
+        const response = await saveObligationAmount(data);
+        //console.log(response);
     }
 
-    __fundSub()
+    const __deleteObligation = async (data: {}) => {
+        await deleteObligation(data);
+    }
+
+    const __getRemainingObligated = async (data: {}) => {
+        return await getRemainingObligated(data);
+    }
+
+    const __calculateObligatedAmount = async (data: {}) => {
+        return await calculateObligatedAmount(data);
+    }
+
     __obligationData()
 
 </script>
-
 
 <template>
     <div class="row" style="padding:20px;">
@@ -894,25 +1173,49 @@ import exp from "constants";
             <small>{{ online.fullname }}</small>
         </div>
     </div>
-    <hot-table ref="hotTableComponent"
-               :data="handsondData"
-               :colHeaders="colHeaders"
-               :colWidth="true"
-               :rowHeaders="true"
-               stretchH="all"
-               :settings="hotSettings"
-               :afterSelection="highlightCell"
-               :afterChange="afterChange"
-               :afterRender="afterRender"
-               :afterOnCellMouseDown="afterOnCellMouseDown"
-               :afterUndo="onAfterUndo"
-               v-if="handsondData.length > 0">
-    </hot-table>
-
-    <h3 v-else>Processing...</h3>
+    <b>{{ displayCellTop }}</b>
+    <br>
+    <br>
+    <!--<li v-for="item in handsondData">
+        {{ item[3] }} <input type="text" name="name" :value="item[3]" /><input type="text" name="name" v-model="item[4]" />
+    </li>-->
+    <div  v-if="handsondData.length > 0">
+        <hot-table ref="hotTableComponent"
+                   v-model:data="handsondData"
+                   :colHeaders="colHeaders"
+                   :colWidth="true"
+                   :rowHeaders="true"
+                   stretchH="all"
+                   :settings="hotSettings"
+                   :afterSelection="highlightCell"
+                   :afterChange="afterChange"
+                   :afterRender="afterRender"
+                   :afterOnCellMouseDown="afterOnCellMouseDown"
+                   :afterUndo="onAfterUndo">
+        </hot-table>
+        <br>
+        <br>
+        <div class="infobox infobox-blue2 pull-right" style="width: 230px">
+            <div class="infobox-icon">
+                <i class="ace-icon fa fa-money"></i>
+            </div>
+            <div class="infobox-data">
+                <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span>
+                        ₱{{ formatNumber(totalObligation) }}
+                    </span>
+                </span>
+                <div class="infobox-content">
+                    <span class="label label-info arrowed-in arrowed-in-right"> Total Obligated Amount </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 v-else>Processing....</h3>
 </template>
 
 <style>
+
     .highlight_yellow {
         background-color: yellow !important;
     }
@@ -940,6 +1243,15 @@ import exp from "constants";
     .highlight_salmon {
         background-color: lightsalmon !important;
     }
+
+    .highlight_seagreen {
+        background-color: lightseagreen !important;
+    }
+
+    .highlight_lightyellow {
+        background-color: lightyellow !important;
+    }
+
 
     div.online-indicator {
         width: 15px;
@@ -969,5 +1281,13 @@ import exp from "constants";
 
     .wtHider {
         margin-bottom: 200px;
+    }
+
+    .filterHeader {
+        color: black;
+    }
+
+    input {
+        width: 750px;
     }
 </style>

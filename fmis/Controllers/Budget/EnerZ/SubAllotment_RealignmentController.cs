@@ -13,6 +13,7 @@ using fmis.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace fmis.Controllers
 {
@@ -109,6 +110,11 @@ namespace fmis.Controllers
             //return Json(FundSource);
             return View("~/Views/SubAllotment_Realignment/Index.cshtml", SubAllotment);
         }
+
+
+
+
+
 
         public async Task<IActionResult> realignmentRemaining(int sub_allotment_id, string suballotment_amount_token)
         {

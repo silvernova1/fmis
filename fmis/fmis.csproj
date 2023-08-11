@@ -32,6 +32,7 @@
 		<PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
 		<PackageReference Include="Grpc.Core" Version="2.40.0" />
 		<PackageReference Include="Handsontable" Version="9.0.2" />
+		<PackageReference Include="itext" Version="8.0.1" />
 		<PackageReference Include="itext7" Version="8.0.0" />
 		<PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.0" />
 		<PackageReference Include="itext7.bouncy-castle-fips-adapter" Version="8.0.0" />

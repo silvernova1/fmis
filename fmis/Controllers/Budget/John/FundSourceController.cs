@@ -26,7 +26,7 @@ using DocumentFormat.OpenXml.EMMA;
 
 namespace fmis.Controllers.Budget.John
 {
-    [Authorize(Policy = "BudgetAdmin")]
+    //[Authorize(Policy = "BudgetAdmin")]
     public class FundSourceController : Controller
     {
         private readonly FundSourceContext _FundSourceContext;
@@ -245,7 +245,7 @@ namespace fmis.Controllers.Budget.John
             var fundsource_amount = _MyDbContext.FundSourceAmount.Where(f => f.fundsource_token == fundSource.token).ToList();
 
             fundSource.Beginning_balance = fundsource_amount.Sum(x => x.beginning_balance);
-            fundSource.Remaining_balance = fundsource_amount.Sum(x => x.beginning_balance);
+            fundSource.Remaining_balance = fundsource_amount.Sum(x => x.remaining_balance);
 
             var item = _MyDbContext.FundSources.Where(x => x.FundSourceTitle.Equals(fundSource.FundSourceTitle)).ToList();
             if (ModelState.IsValid)

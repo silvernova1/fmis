@@ -26,6 +26,17 @@ export function saveObligationAmount(params: {}) {
     return req.post(domainExtension + "/ObligationAmount/SaveObligationAmountFromVue", params);
 }
 
+export function deleteObligation(params: {}) {
+    return req.post(domainExtension + "/Obligations/DeleteObligation", params);
+}
+
+export function getRemainingObligated(params: {}) {
+    return req.post(domainExtension + "/ObligationAmount/checkObligatedAmountVue", params);
+}
+
+export function calculateObligatedAmount(params: {}) {
+    return req.post(domainExtension + "/ObligationAmount/calculateObligatedAmount", params);
+}
 
 
 
