@@ -78,12 +78,13 @@ namespace fmis.Controllers.Budget.John
         }
         #endregion
 
-        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search)
+        public async Task<IActionResult> Index(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, string search, bool lastYear = false)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+            ViewBag.LastYear = lastYear;
 
             string year = _MyDbContext.Yearly_reference.FirstOrDefault(x => x.YearlyReferenceId == YearlyRefId).YearlyReference;
             DateTime next_year = DateTime.ParseExact(year, "yyyy", null);
@@ -110,17 +111,20 @@ namespace fmis.Controllers.Budget.John
                 x.Remaining_balance = x.Beginning_balance - x.obligated_amount;
             });
 
-            var fundsourcesLastYr = await _MyDbContext.FundSources
-                .Where(x => x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+            if(lastYear == true)
+            {
+                var fundsourcesLastYr = await _MyDbContext.FundSources
+                .Where(x => x.AllotmentClassId == AllotmentClassId && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                 .Include(x => x.RespoCenter)
                 .Include(x => x.Prexc)
                 .Include(x => x.Appropriation)
                 .Include(x => x.AllotmentClass)
-                .Include(x=>x.BudgetAllotment).ThenInclude(x=>x.Yearly_reference)
+                .Include(x => x.BudgetAllotment).ThenInclude(x => x.Yearly_reference)
                 .ToListAsync();
-            fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
+                fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
-            budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
+                budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
+            }
 
             ViewBag.CurrentYrAllotment_beginningbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"));
             ViewBag.CurrentYrAllotment_remainingbalance = _MyDbContext.FundSources.Where(x => x.BudgetAllotment.Yearly_reference.YearlyReference == year && x.AllotmentClassId == AllotmentClassId && x.AppropriationId == AppropriationId).Sum(x => x.Remaining_balance).ToString("C", new CultureInfo("en-PH"));

@@ -206,9 +206,18 @@
 </form>
 
 <p>
-    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </button>
+    @if (ViewBag.LastYear)
+    {
+        <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotmentlastYear(@Model.BudgetAllotmentId)">
+            <i class="ace-icon fa fa-plus "></i>Create New
+        </button>
+    }
+    else
+    {
+        <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
+            <i class="ace-icon fa fa-plus "></i>Create New
+        </button>
+    }
     <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
@@ -223,7 +232,7 @@
                 <th style="width: 200px">
                     PPA TITLE
                 </th>
-                <th style="width: 250px">
+                <th style="width: 250px" class="sortable">
                     SUB ALLOTMENT TITLE
                 </th>
                 <th style="width: 250px">
@@ -251,7 +260,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.SubAllotment.OrderByDescending(x => x.CreatedAt))
+            @foreach (var item in Model.SubAllotment.OrderByDescending(x=>x.SubAllotmentId))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
                 var checkReusedConap = item.ReUsedConap ? "checked" : "";
@@ -385,7 +394,23 @@ else
             }, 500);
          });
     }
-
+    //lastYear
+    function createSub_allotmentlastYear(BudgetAllotmentId) {
+        $("#createModal").modal({ backdrop: 'static', keyboard: false });
+        $("#suballotment_create").html(loading);
+        var AllotmentClassId = @ViewBag.AllotmentClassId;
+        var AppropriationId = @ViewBag.AppropriationId;
+        var lastYear = true;
+        var url = '@Url.Action("Create", "SubAllotment")';
+        url += "?AllotmentClassId=" + AllotmentClassId + "&AppropriationId=" + AppropriationId + "&BudgetAllotmentId=" + BudgetAllotmentId + "&lastYear=" + lastYear;
+        console.log(url);
+        $.get(url, function (result) {
+            setTimeout(function () {
+                $("#suballotment_create").html(result);
+            }, 500);
+        });
+    }
+    //
     function getEditSub_allotment(BudgetAllotmentId, sub_allotment_id) {
         $("#editModal").modal({ backdrop: 'static', keyboard: false });
         $("#suballotment_edit").html(loading);
@@ -466,4 +491,36 @@ else
             }
         });
     }
+    //sort sub allotment
+    $(document).ready(function () {
+        function toggleSortOrder(order) {
+            return order === 'asc' ? 'desc' : 'asc';
+        }
+
+        $('.sortable').click(function () {
+            var table = $(this).closest('table');
+            var tbody = table.find('tbody');
+            var rows = tbody.find('tr').toArray();
+            var index = $(this).index();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(index).text();
+                var bValue = $(b).find('td').eq(index).text();
+
+                return aValue.localeCompare(bValue);
+            });
+
+            if ($(this).hasClass('desc')) {
+                rows.reverse();
+            }
+
+            table.find('.sortable').removeClass('asc desc');
+            $(this).toggleClass('asc desc');
+
+            tbody.empty();
+            $.each(rows, function (i, row) {
+                tbody.append(row);
+            });
+        });
+    });
 </script>
