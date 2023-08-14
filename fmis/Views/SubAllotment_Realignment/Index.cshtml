@@ -22,7 +22,8 @@
 
 <input type="hidden" class="uacs_from" value="@JsonSerializer.Serialize(Model.SubAllotmentAmounts.Where(x=>x.SubAllotmentId == @Model.SubAllotmentId))">
 <input type="hidden" class="sub_allotment_realignment" value="@JsonSerializer.Serialize(Model.SubAllotmentRealignment.Where(x=>x.SubAllotmentId == @Model.SubAllotmentId))">
-<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.uacs_type == @Model.SubAllotmentId))">
+@*<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(x=>x.uacs_type == @Model.SubAllotmentId ))">*@
+<input type="hidden" class="uacs" value="@JsonSerializer.Serialize(Model.Uacs.Where(s => s.status == "activated" && s.uacs_type == Model.AllotmentClassId))">
 <input type="hidden" id="sub_allotment_id" value="@Model.SubAllotmentId" />
 
 <h3 class="grey lighter smaller">
