@@ -110,7 +110,7 @@ namespace fmis.Controllers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.BudgetAllotmentId == BudgetAllotmentId);
             //Console.WriteLine("budgetallotment sub ctr: "+budget_allotment.SubAllotment.Count());
-            budget_allotment.SubAllotment.ToList().ForEach(x =>
+             budget_allotment.SubAllotment.ToList().ForEach(x =>
             {
                 x.obligated_amount = _MyDbContext.Obligation.Include(x => x.ObligationAmounts)
                .Where(y => y.SubAllotmentId == x.SubAllotmentId)

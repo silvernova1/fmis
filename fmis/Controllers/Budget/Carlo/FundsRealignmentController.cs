@@ -90,8 +90,6 @@ namespace fmis.Controllers.Budget.Carlo
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
-        
-
             FundSource = await _allContext.FundSources
                             .Include(x => x.FundSourceAmounts)
                                 .ThenInclude(x => x.Uacs)
