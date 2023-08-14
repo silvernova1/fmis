@@ -107,16 +107,18 @@ namespace fmis.Controllers
                 budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
 
                 var fundsourcesLastYr = await _context.FundSources
-                    .Where(x => x.AppropriationId == 2 && x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
+                    .Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                     .Include(x => x.AllotmentClass)
                     .ToListAsync();
+
+                budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
 
                 //suballotmentsLastYr.ForEach(x => x.AppropriationId = 2);
                 //fundsourcesLastYr.ForEach(x => x.AppropriationId = 2);
 
                 //budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
                 //budget_allotment.FirstOrDefault().SubAllotment = budget_allotment.FirstOrDefault().SubAllotment.Concat(suballotmentsLastYr).ToList();
-            
+
             }
 
             var CurrentYrAllotment_beginningBalance = _context.FundSources.Where(x => x.BudgetAllotmentId == YearlyRefId).Sum(x => x.Beginning_balance) +

@@ -256,7 +256,7 @@ namespace fmis.Controllers
         }
 
         // GET: Sub_allotment/Create
-        public async Task <IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId)
+        public async Task <IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, bool lastYear)
         {
             ViewBag.filter = new FilterSidebar("master_data", "budgetallotment", "");
 
@@ -266,6 +266,7 @@ namespace fmis.Controllers
             ViewBag.AllotmentClassId = AllotmentClassId;
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
+            ViewBag.lastYear = lastYear;
 
             PopulatePrexcDropDownList();
             PopulateRespoDropDownList();
@@ -305,12 +306,25 @@ namespace fmis.Controllers
             await Task.Delay(500);
             this._MyDbContext.SaveChanges();
 
-            return RedirectToAction("Index", "SubAllotment", new
+            if(subAllotment.lastYear == true)
             {
-                AllotmentClassId = subAllotment.AllotmentClassId,
-                AppropriationId = subAllotment.AppropriationId,
-                BudgetAllotmentId = subAllotment.BudgetAllotmentId
-            });
+                return RedirectToAction("Index", "SubAllotment", new
+                {
+                    AllotmentClassId = subAllotment.AllotmentClassId,
+                    AppropriationId = subAllotment.AppropriationId,
+                    BudgetAllotmentId = subAllotment.BudgetAllotmentId,
+                    lastYear = subAllotment.lastYear
+                });
+            }
+            else
+            {
+                return RedirectToAction("Index", "SubAllotment", new
+                {
+                    AllotmentClassId = subAllotment.AllotmentClassId,
+                    AppropriationId = subAllotment.AppropriationId,
+                    BudgetAllotmentId = subAllotment.BudgetAllotmentId
+                });
+            }
         }
 
         // GET: Sub_allotment/Edit/5
