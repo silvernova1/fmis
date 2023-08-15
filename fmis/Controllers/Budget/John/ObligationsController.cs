@@ -758,15 +758,15 @@ namespace fmis.Controllers
                     if (allotments.FirstOrDefault()?.fundsource == 1 && allotments.FirstOrDefault()?.obligation == "fund_source")
                     {
 
-                        
-                        table3.AddCell(new PdfPCell(new Paragraph("Serial No.", times_new_roman_r9)) {  Border = 0, PaddingTop = 25 });
-                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" /*+ "000"*/ + ors.Ors_no, times_new_roman_r9)) { Border = 0,  PaddingTop = 25 , HorizontalAlignment = Element.ALIGN_CENTER});
+
+                        table3.AddCell(new PdfPCell(new Paragraph("Serial No.", times_new_roman_r9)) { Border = 0, PaddingTop = 25 });
+                        table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" /*+ "000"*/ + ors.Ors_no, times_new_roman_r9)) { Border = 0, PaddingTop = 25, HorizontalAlignment = Element.ALIGN_CENTER });
 
 
-                        table3.AddCell(new PdfPCell(new Paragraph("Date :", times_new_roman_r9)) {  Border = 0, PaddingTop = 10 });
-                        table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), times_new_roman_r9)) { Border = 0, PaddingTop = 10,  HorizontalAlignment = Element.ALIGN_CENTER });
+                        table3.AddCell(new PdfPCell(new Paragraph("Date :", times_new_roman_r9)) { Border = 0, PaddingTop = 10 });
+                        table3.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), times_new_roman_r9)) { Border = 0, PaddingTop = 10, HorizontalAlignment = Element.ALIGN_CENTER });
 
-                        table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster:", times_new_roman_r8)) {  Border = 0, PaddingTop = 10 });
+                        table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster:", times_new_roman_r8)) { Border = 0, PaddingTop = 10 });
                         table3.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent, times_new_roman_r9)) { Border = 0, PaddingTop = 10, HorizontalAlignment = Element.ALIGN_CENTER });
 
                         /*  table3.AddCell(new PdfPCell(new Paragraph("Fund Cluster :", arial_font_10)) { Padding = 6f, Border = 0 });
@@ -776,14 +776,14 @@ namespace fmis.Controllers
 
                         doc.Add(table);
 
-                   
+
 
                     }
 
                     if (allotmentsAA.FirstOrDefault()?.sub_allotment == 1 && allotmentsAA.FirstOrDefault().obligation == "sub_allotment")
                     {
 
-                       
+
 
                         table3.AddCell(new PdfPCell(new Paragraph("Serial No.", times_new_roman_r8)) { Padding = 6f, Border = 0 });
                         table3.AddCell(new PdfPCell(new Paragraph(allotmentsAA.FirstOrDefault().allotment + "-" + allotmentsAA.FirstOrDefault().fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, times_new_roman_r8)) { Border = 2, Padding = 6f, HorizontalAlignment = Element.ALIGN_CENTER, PaddingRight = 5 });
@@ -997,8 +997,8 @@ namespace fmis.Controllers
                     PdfPTable po_dv = new PdfPTable(2);
                     po_dv.WidthPercentage = 100f;
 
-                    po_dv.AddCell(new PdfPCell(new Paragraph("PO No.: " +" "+ ors.Po_no, times_new_roman_r8)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT });
-                    po_dv.AddCell(new PdfPCell(new Paragraph("PR No.: " +" " + ors.Pr_no, times_new_roman_r8)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT });
+                    po_dv.AddCell(new PdfPCell(new Paragraph("PO No.: " + " " + ors.Po_no, times_new_roman_r8)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT });
+                    po_dv.AddCell(new PdfPCell(new Paragraph("PR No.: " + " " + ors.Pr_no, times_new_roman_r8)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT });
 
                     po_dv.AddCell(new PdfPCell(new Paragraph("DV No.: " + " " + ors.Dv, times_new_roman_r8)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT });
                     po_dv.AddCell(new PdfPCell(new Phrase("", table_row_5_font)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
@@ -1041,16 +1041,16 @@ namespace fmis.Controllers
 
 
                     //SIGNATURE 1
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Signature:", times_new_roman_r8)) { Border = 14} ) ;
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("Signature:", times_new_roman_r8)) { Border = 14 });
 
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r8)) { Border = 14 } );
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r8)) { Border = 14 });
 
                     //SIGNATURE 2
                     table_row_8.AddCell(new PdfPCell(new Paragraph("Signature:", times_new_roman_r8)) { Border = 14 });
 
                     table_row_8.AddCell(new PdfPCell(new Paragraph("", times_new_roman_r8)) { Border = 14 });
 
-                    table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name: ", times_new_roman_r8)) );
+                    table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name: ", times_new_roman_r8)));
 
                     var saasignatory = (from rc in _MyDbContext.RespoCenter
                                         join sa in _MyDbContext.SubAllotment
@@ -1067,7 +1067,7 @@ namespace fmis.Controllers
                     {
                         //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
                         table_row_8.AddCell(new PdfPCell(new Paragraph(fundsources.FirstOrDefault()?.signatory, times_new_roman_b8)) { HorizontalAlignment = Element.ALIGN_CENTER });
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name:", times_new_roman_r8) ){ Border = 1});
+                        table_row_8.AddCell(new PdfPCell(new Paragraph("Printed Name:", times_new_roman_r8)) { Border = 1 });
                         table_row_8.AddCell(new PdfPCell(new Paragraph("LEONORA A. ANIEL", times_new_roman_b8)) { HorizontalAlignment = Element.ALIGN_CENTER });
 
 
@@ -1077,11 +1077,11 @@ namespace fmis.Controllers
                         table_row_8.AddCell(new PdfPCell(new Paragraph("Position:", times_new_roman_r8)));
                         table_row_8.AddCell(new PdfPCell(new Paragraph("BUDGET OFFICER III", times_new_roman_r7)) { HorizontalAlignment = Element.ALIGN_CENTER });
 
-/*
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
-                        table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });*/
+                        /*
+                                                table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                                                table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                                                table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });
+                                                table_row_8.AddCell(new PdfPCell(new Paragraph("\n")) { FixedHeight = 30f });*/
 
 
                         //HEAD REQUESTING OFFICE / AUTHORIZED REPRESENTATIVE
@@ -1134,7 +1134,7 @@ namespace fmis.Controllers
                     table_row_9.WidthPercentage = 100f;
                     table_row_9.SetWidths(new float[] { 10, 90 });
                     table_row_9.AddCell(new PdfPCell(new Paragraph("C.", times_new_roman_r9)));
-                    table_row_9.AddCell(new PdfPCell(new Paragraph("STATUS OF OBLIGATION", times_new_roman_b9)) { HorizontalAlignment = Element.ALIGN_CENTER , VerticalAlignment = Element.ALIGN_MIDDLE });
+                    table_row_9.AddCell(new PdfPCell(new Paragraph("STATUS OF OBLIGATION", times_new_roman_b9)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE });
 
                     doc.Add(table_row_9);
 
@@ -1214,7 +1214,7 @@ namespace fmis.Controllers
 
                         table_row_12.AddCell(new PdfPCell(new Paragraph(ors.Date.ToShortDateString(), times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph("Obligation", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
-                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id,  times_new_roman_r8 )) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
+                        table_row_12.AddCell(new PdfPCell(new Paragraph(allotments.FirstOrDefault()?.allotment + "-" + allotments.FirstOrDefault()?.fundCurrent + "-" + ors.Date.ToString("yyyy-MM") + "-" + "000" + ors.Id, times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 150, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph(total_amt > 0 ? total_amt.ToString("C", new CultureInfo("en-PH")) : "", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph(disbursements > 0 ? disbursements.ToString("N", new CultureInfo("en-US")) : "", times_new_roman_r8)) { HorizontalAlignment = Element.ALIGN_CENTER, FixedHeight = 100, Border = 14 });
                         table_row_12.AddCell(new PdfPCell(new Paragraph("\n", times_new_roman_r8)));
@@ -1286,9 +1286,10 @@ namespace fmis.Controllers
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, reader);
                 doc.Close(); return File(stream.ToArray(), "application/pdf");
 
-          
+
             }
         }
+
 
     }
 }

@@ -1179,7 +1179,7 @@
     <!--<li v-for="item in handsondData">
         {{ item[3] }} <input type="text" name="name" :value="item[3]" /><input type="text" name="name" v-model="item[4]" />
     </li>-->
-    <div  v-if="handsondData.length > 0">
+    <div v-if="handsondData.length > 0">
         <hot-table ref="hotTableComponent"
                    v-model:data="handsondData"
                    :colHeaders="colHeaders"
