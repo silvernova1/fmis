@@ -206,13 +206,7 @@
 </form>
 
 <p>
-    @if (ViewBag.LastYear)
-    {
-        <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotmentlastYear(@Model.BudgetAllotmentId)">
-            <i class="ace-icon fa fa-plus "></i>Create New
-        </button>
-    }
-    else
+    @if (ViewBag.LastYear == false)
     {
         <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createSub_allotment(@Model.BudgetAllotmentId)">
             <i class="ace-icon fa fa-plus "></i>Create New
