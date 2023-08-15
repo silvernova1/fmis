@@ -213,9 +213,12 @@
 </form>
 
 <p>
-    <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
-        <i class="ace-icon fa fa-plus "></i>Create New
-    </button> 
+    @if (ViewBag.LastYear == false)
+    {
+        <button type="button" asp-controller="FundSource" asp-action="Create" class="btn btn-success btn-sm" onclick="createFundSource(@Model.BudgetAllotmentId)">
+            <i class="ace-icon fa fa-plus "></i>Create New
+        </button>
+    }
     <a class=" btn btn-primary btn-sm" asp-controller="BudgetAllotment" asp-action="Index">
         <span class="glyphicon glyphicon-arrow-left"></span> Back to Budget Allotment
     </a>
@@ -230,7 +233,7 @@
                 <th>               
                     PAP TITLE
                 </th>
-                <th>
+                <th class="sortable">
                     FUND SOURCE TITLE
                 </th>
                 <th>
@@ -251,7 +254,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.FundSources.OrderByDescending(x => x.CreatedAt))
+            @foreach (var item in Model.FundSources.OrderByDescending(x=>x.FundSourceId))
             {
                 var check = item.IsAddToNextAllotment ? "checked" : "";
                 var checkReusedConap = item.ReUsedConap ? "checked" : "";
@@ -264,14 +267,23 @@
                     </td>
                     @if (item.IsAddToNextAllotment == true && item.BudgetAllotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
-                        </td>
+                        @if (!item.FundSourceTitle.Contains("CONAP "))
+                        {
+                            <td>
+                                CONAP @item.FundSourceTitle
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                @item.FundSourceTitle
+                            </td>
+                        }
                     }
                     else
                     {
                         <td>
-                            @conap
+                            @Html.DisplayFor(modelItem => item.FundSourceTitle)
                         </td>
                     }
                     <td>
@@ -471,6 +483,38 @@ else
             }
         });
     }
+    //sort fundsource title
+    $(document).ready(function () {
+        function toggleSortOrder(order) {
+            return order === 'asc' ? 'desc' : 'asc';
+        }
+
+        $('.sortable').click(function () {
+            var table = $(this).closest('table');
+            var tbody = table.find('tbody');
+            var rows = tbody.find('tr').toArray();
+            var index = $(this).index();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(index).text();
+                var bValue = $(b).find('td').eq(index).text();
+
+                return aValue.localeCompare(bValue);
+            });
+
+            if ($(this).hasClass('desc')) {
+                rows.reverse();
+            }
+
+            table.find('.sortable').removeClass('asc desc');
+            $(this).toggleClass('asc desc');
+
+            tbody.empty();
+            $.each(rows, function (i, row) {
+                tbody.append(row);
+            });
+        });
+    });
 </script>
 
 
