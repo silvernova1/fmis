@@ -66,8 +66,7 @@ namespace fmis.Controllers
 
             var budget_allotment = await _context.Budget_allotments
             .Include(c => c.Yearly_reference)
-            .Include(x => x.FundSources)
-                .ThenInclude(x=>x.Appropriation)
+            .Include(x => x.FundSources).ThenInclude(x=>x.Appropriation)
             .Include(x => x.Yearly_reference)
             .Include(x => x.SubAllotment)
                 .ThenInclude(x => x.SubNegative)
@@ -107,8 +106,9 @@ namespace fmis.Controllers
                 budget_allotment.SubAllotment = budget_allotment.SubAllotment.Concat(suballotmentsLastYr).ToList();
 
                 var fundsourcesLastYr = await _context.FundSources
-                    .Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                     .Include(x => x.AllotmentClass)
+                    .Include(x => x.BudgetAllotment).ThenInclude(x => x.Yearly_reference)
+                    .Where(x => x.IsAddToNextAllotment == true && x.BudgetAllotment.Yearly_reference.YearlyReference == result)
                     .ToListAsync();
 
                 budget_allotment.FundSources = budget_allotment.FundSources.Concat(fundsourcesLastYr).ToList();
@@ -151,7 +151,7 @@ namespace fmis.Controllers
             ViewBag.previousAllotConap = previousAllotConapSaa.ToString("C", new CultureInfo("en-PH"));
 
 
-            ViewBag.AllotmentClass = await _context.AllotmentClass.Include(x => x.BudgetAllotments).AsNoTracking().ToListAsync();
+            ViewBag.AllotmentClass = await _context.AllotmentClass.Include(x => x.BudgetAllotments).ThenInclude(x=>x.Yearly_reference).AsNoTracking().ToListAsync();
             ViewBag.AppropriationSource = await _context.Appropriation.Include(x => x.BudgetAllotments).AsNoTracking().ToListAsync();
 
             return View(budget_allotment);

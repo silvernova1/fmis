@@ -154,24 +154,48 @@
                                 <br />
                                 <span class="grey">(ALLOTMENT): </span>
                                 @{
-                                    var fund_beginning_balance = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Original != true).Sum(x => x.Beginning_balance);
-                                    total_beginning_balance += fund_beginning_balance;
+                                    var fund_beginning_balance = Model?.FundSources
+                                        .Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment != null && x.BudgetAllotment.Yearly_reference != null &&
+                                            x.AppropriationId == appropriation.AppropriationId &&
+                                            x.Original != true &&
+                                            x.BudgetAllotment.Yearly_reference.YearlyReference == currentYear)
+                                            .Sum(x => x?.Beginning_balance ?? 0);
+
+                                    if (fund_beginning_balance.HasValue)
+                                    {
+                                        total_beginning_balance += fund_beginning_balance.Value;
+                                    }
                                 }
-                                <b class="green">@fund_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                                <b class="green">@fund_beginning_balance.Value.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
                                 <span class="grey">(OBLIGATED): </span>
                                 @{
-                                    var fund_obligated_amount = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Original != true).Sum(x => x.obligated_amount);
-                                    total_obligated_amount += fund_obligated_amount;
+                                    var fund_obligated_amount = Model?.FundSources
+                                        .Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment != null && x.BudgetAllotment.Yearly_reference != null &&
+                                            x.AppropriationId == appropriation.AppropriationId &&
+                                            x.Original != true)
+                                            .Sum(x => x?.obligated_amount ?? 0);
+
+                                    if(fund_obligated_amount.HasValue)
+                                    {
+                                        total_obligated_amount += fund_obligated_amount.Value;
+                                    }
                                 }
-                                <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
+                                <b class="blue">@fund_obligated_amount.Value.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
                                 <span class="grey">(BALANCE): </span>
                                 @{
-                                    var fund_remaining_balance = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.Original != true).Sum(x => x.Remaining_balance);
-                                    total_remaining_balance += fund_remaining_balance;
+                                    var fund_remaining_balance = Model?.FundSources
+                                        .Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment != null && x.BudgetAllotment.Yearly_reference != null &&
+                                            x.AppropriationId == appropriation.AppropriationId &&
+                                            x.Original != true)
+                                            .Sum(x => x?.Remaining_balance ?? 0);
+                                    if(fund_remaining_balance.HasValue)
+                                    {
+                                        total_remaining_balance += fund_remaining_balance.Value;
+                                    }
                                 }
-                                <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                                <b class="red">@fund_remaining_balance.Value.ToString("C", new CultureInfo("en-PH"))</b>
 
 
                                 @if (Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))
@@ -195,24 +219,21 @@
                                 <br />
                                 <span class="grey">(ALLOTMENT): </span>
                                 @{
-                                    var fund_beginning_balance = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Beginning_balance);
-                                    total_beginning_balance += fund_beginning_balance;
+                                    var fund_beginning_balance = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true)?.Sum(x => x.Beginning_balance);
                                 }
-                                <b class="green">@fund_beginning_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                                <b class="green">@fund_beginning_balance.Value.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
                                 <span class="grey">(OBLIGATED): </span>
                                 @{
                                     var fund_obligated_amount = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.obligated_amount);
-                                    total_obligated_amount += fund_obligated_amount;
                                 }
                                 <b class="blue">@fund_obligated_amount.ToString("C", new CultureInfo("en-PH"))</b>
                                 <br />
                                 <span class="grey">(BALANCE): </span>
                                 @{
-                                    var fund_remaining_balance = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x.Remaining_balance);
-                                    total_remaining_balance += fund_remaining_balance;
+                                    var fund_remaining_balance = Model.FundSources.Where(x => x.AllotmentClassId == allotment_class.Id && x.BudgetAllotment.Yearly_reference.YearlyReference == lastYear && x.IsAddToNextAllotment == true).Sum(x => x?.Remaining_balance);
                                 }
-                                <b class="red">@fund_remaining_balance.ToString("C", new CultureInfo("en-PH"))</b>
+                                <b class="red">@fund_remaining_balance.Value.ToString("C", new CultureInfo("en-PH"))</b>
 
 
                                 @if (Model.FundSources.Any(x => x.AllotmentClassId == allotment_class.Id && x.AppropriationId == appropriation.AppropriationId && x.BudgetAllotmentId == Model.BudgetAllotmentId))

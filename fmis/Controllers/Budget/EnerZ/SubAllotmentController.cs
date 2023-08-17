@@ -340,7 +340,7 @@ namespace fmis.Controllers
             ViewBag.AppropriationId = AppropriationId;
             ViewBag.BudgetAllotmentId = BudgetAllotmentId;
 
-            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.ToListAsync());
+            var uacs_data = JsonSerializer.Serialize(await _MyDbContext.Uacs.Where(x=>x.uacs_type == AllotmentClassId).ToListAsync());
             ViewBag.uacs = uacs_data;
 
 
