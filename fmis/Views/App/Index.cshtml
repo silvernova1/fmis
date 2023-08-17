@@ -1,32 +1,70 @@
-﻿@model List<fmis.Models.ppmp.Item>
+﻿@model List<fmis.Models.ppmp.Expense>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-@{
     ViewData["Title"] = "Inline Editing Data Table";
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Procurement Project</th>
-            <th>PMO/End User</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var person in Model)
-        {
-            <tr data-person-id="@person.Id">
-                <td></td>
-                <td><input type="text" value="@person.Description" class="form-control" /></td>
-                <td><input type="text" class="form-control" /></td>
+<style>
+      .custom-table td {
+      padding: 5px;
+    }
+</style>
+
+@using (Html.BeginForm("Create", "App", FormMethod.Post))
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Procurement Project</th>
+                <th>PMO/End User</th>
+                <th>Yes</th>
+                <th>No</th>
+                <th>Mode of Procurement</th>
+                <th>Advertising/Posting IB/REI</th>
+                <th>Submission/ Opening of Bids</th>
+                <th>Notice of Award</th>
+                <th>Contract Signing</th>
+                <th>Source of Funds</th>
+                <th>Total</th>
+                <th>MOOE</th>
+                <th>CO</th>
+                <th>Remarks (Brief description of the Project</th>
             </tr>
-        }
-    </tbody>
-</table>
-<div style="text-align: right;">
-    <button id="saveButton" class="btn btn-primary">Save All Changes</button>
-</div>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr data-person-id="@Model[i].Id">
+                    <td style="width: 100px;"></td>
+                    <td style="width: 250px;"><input type="text" asp-for="@Model[i].Description" value="@Model[i].Description" class="form-control" /></td>
+                </tr>
+                @for (var j = 0; j < Model[i].Items.Count && j < 5; j++)
+                {
+                    <tr data-person-id="@Model[i].Items[j].Id">
+                        <td style="width: 100px;"></td>
+                        <td style="width: 250px;"><input type="text" asp-for="@Model[i].Items[j].Description" value="@Model[i].Items[j].Description" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" value="@Model[i].Items[j].Userid" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 140px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 140px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 140px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 160px;"><input type="text" class="form-control" /></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div style="text-align: right;">
+        <button id="saveButton" class="btn btn-primary">Save All Changes</button>
+    </div>
+}
+
+

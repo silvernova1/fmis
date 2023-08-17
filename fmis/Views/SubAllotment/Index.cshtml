@@ -226,7 +226,7 @@
                 <th style="width: 200px">
                     PPA TITLE
                 </th>
-                <th style="width: 250px" class="sortable">
+                <th style="width: 250px" id="subAllotmentTitleHeader" onclick="sortTable('subAllotmentTitle')">
                     SUB ALLOTMENT TITLE
                 </th>
                 <th style="width: 250px">
@@ -293,8 +293,12 @@
                         @item.RespoCenter.Respo
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)" data-bs-toggle="tooltip" title="Edit"> <span class="glyphicon glyphicon-edit"></span>  </button>
-                        <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a>
+                        @*<button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)" data-bs-toggle="tooltip" title="Edit"> 
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> 
+                            <span class="glyphicon glyphicon-trash"></span> 
+                        </a>*@
                         <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="SAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a>
                         <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="SAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a>
 
@@ -517,4 +521,31 @@ else
             });
         });
     });
+    //
+    function sortTable(column) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("data");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[column];
+                y = rows[i + 1].getElementsByTagName("TD")[column];
+
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
 </script>
