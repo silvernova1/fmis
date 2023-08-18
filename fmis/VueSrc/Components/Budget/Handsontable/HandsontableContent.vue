@@ -58,7 +58,7 @@
         const cellValue = hotTableComponent.value.hotInstance.getDataAtCol(8);
         console.log(totalRowFetchFromBackend.value);
         let ors_number: any = incrementORS(cellValue);
-        for (let i = totalRowFetchFromBackend.value; i < 8000; i++) {
+        for (let i = totalRowFetchFromBackend.value; i < 10000; i++) {
             handsondData.value[i][8] = ors_number.toString().padStart(4, '0');
             ors_number++;
         }
@@ -651,7 +651,7 @@
             },
         ],
         //SET MINIMUM ROW
-        minRows: 8000,
+        minRows: 10000,
         hiddenColumns: {
             columns: [9, 11, 12, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 50, 51, 52 ],
             indicators: true, // show the indicator in the header

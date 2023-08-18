@@ -42,46 +42,44 @@
 
 
 
-@*<h2>UploadObligation</h2>
-
-<div>
-    <form asp-action="ImportObligations"
-          enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
-          method="post">
-        <dl>
-            <dt>
-                <label for="FileUpload_FormFile">File</label>
-            </dt>
-            <dd>
-                <input id="FileUpload_FormFile" type="file"
-                       name="FileUpload.FormFile" />
-            </dd>
-        </dl>
-
-        <input class="btn" type="submit" value="Upload" />
-
-        <div style="margin-top:15px">
-            <output name="result"></output>
-        </div>
-    </form>
-</div>*@
 <script>
     async function AJAXSubmit(oFormElement) {
         var resultElement = oFormElement.elements.namedItem("result");
         const formData = new FormData(oFormElement);
 
         try {
+            // Show Lobibox loading notification
+            var loadingNotification = Lobibox.notify('info', {
+                msg: 'Uploading Ors...',
+                position: 'bottom right',
+                delay: false // Prevent automatic dismissal
+            });
+
             const response = await fetch(oFormElement.action, {
                 method: 'POST',
                 body: formData
             });
 
-            @*if (response.ok) {
-                window.location.href = '/';
-            }*@
+            loadingNotification.remove(); // Remove the loading notification
 
-            resultElement.value = 'Result: ' + response.status + ' | ' +
-                response.statusText;
+            if (response.ok) {
+                // Show Lobibox success notification
+                Lobibox.notify('success', {
+                    title: 'Success',
+                    msg: 'Successfully Uploaded!',
+                    position: 'bottom right'
+                });
+
+            } else {
+                // Show Lobibox danger notification
+                Lobibox.notify('error', {
+                    title: 'Error',
+                    msg: 'Upload ORS failed!',
+                    position: 'bottom right'
+                });
+            }
+            // resultElement.value = 'Result: ' + response.status + ' | ' +
+            // response.statusText;
             return false;
         } catch (error) {
             console.error('Error:', error);

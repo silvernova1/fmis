@@ -160,6 +160,7 @@ namespace fmis.Controllers.Budget.John
                 if (fundsources.IsAddToNextAllotment)
                 {
                     fundsources.FundSourceTitle = "CONAP "+ fundsources.FundSourceTitle;
+
                 }
                 else
                 {
