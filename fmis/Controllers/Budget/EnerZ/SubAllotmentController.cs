@@ -221,11 +221,10 @@ namespace fmis.Controllers
                 }
                 else
                 {
-                    //char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
-                    //fundsources.FromPreviousAllotment = true;
-                    //subAllotments.Suballotment_title = subAllotments.Suballotment_title.TrimStart(trim);
-                    _MyDbContext.Update(subAllotments);
-                    await _MyDbContext.SaveChangesAsync();
+                    if (subAllotments.Suballotment_title.StartsWith("CONAP ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        subAllotments.Suballotment_title = subAllotments.Suballotment_title.Substring(6).Trim();
+                    }
                 }
             }
             else
