@@ -20,27 +20,19 @@
                       enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
                       method="post">
                     <dl>
-
                         <dd>
-                            <input id="FileUpload_FormFile" type="file"
-                                   name="FileUpload.FormFile" />
+                            <input id="FileUpload_FormFile" type="file" name="FileUpload.FormFile" />
                         </dd>
                     </dl>
-
                     <input class="btn btn-success btn-sm" type="submit" value="Upload" />
-
                     <div style="margin-top:15px">
                         <output name="result"></output>
                     </div>
                 </form>
             </div>
-
-
         </div>
     </div>
 </div>
-
-
 
 <script>
     async function AJAXSubmit(oFormElement) {
