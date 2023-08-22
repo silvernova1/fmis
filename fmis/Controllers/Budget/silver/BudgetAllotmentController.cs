@@ -393,7 +393,19 @@ namespace fmis.Controllers
         {
             var subAllotments = await _context.SubAllotment.Where(x => x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationId && x.BudgetAllotmentId == budgetAllotmentId).ToListAsync();
 
-            subAllotments.ForEach(x => x.IsAddToNextAllotment = addToNext);
+            subAllotments.ForEach(x => {
+
+                x.IsAddToNextAllotment = addToNext;
+                if(addToNext == true && !x.Suballotment_title.StartsWith("CONAP "))
+                {
+                    x.Suballotment_title = "CONAP " + x.Suballotment_title;
+                }
+                else
+                {
+                    x.Suballotment_title = x.Suballotment_title;
+                }
+
+            });
 
             _context.UpdateRange(subAllotments);
             await _context.SaveChangesAsync();
@@ -407,7 +419,13 @@ namespace fmis.Controllers
         {
             var fundSources = await _context.FundSources.Where(x => x.AllotmentClassId == allotmentClassId && x.AppropriationId == appropriationId && x.BudgetAllotmentId == budgetAllotmentId).ToListAsync();
 
+
+            if(addToNext == true)
+            {
+
+            }
             fundSources.ForEach(x => x.IsAddToNextAllotment = addToNext);
+            
 
             _context.UpdateRange(fundSources);
             await _context.SaveChangesAsync();

@@ -73,6 +73,13 @@
     .pbutton {
         margin-left: 1px;
     }
+
+    .sort-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 </style>
 
 @if (Model.SubAllotment.Count() > 0)
@@ -226,8 +233,11 @@
                 <th style="width: 200px">
                     PPA TITLE
                 </th>
-                <th style="width: 250px" id="subAllotmentTitleHeader" onclick="sortTable('subAllotmentTitle')">
+                <th style="width: 250px; position: relative;" id="subAllotmentTitleHeader" class="sortable-header">
                     SUB ALLOTMENT TITLE
+                    <span class="sort-icon">
+                        <i class="fa fa-sort"></i>
+                    </span>
                 </th>
                 <th style="width: 250px">
                     DESCRIPTION
@@ -261,16 +271,31 @@
 
                 char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
                 var conap = item.Suballotment_title.TrimStart(trim);
+                
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.prexc.pap_title)
                     </td>
                     @if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Suballotment_title)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @conap
+                        </td>
+                    }
+                    @*@if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    {
+                        char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                        var conap = item.Suballotment_title.TrimStart(trim);
                         @if(!item.Suballotment_title.Contains("CONAP "))
                         {
                             <td>
-                                CONAP @item.Suballotment_title
+                                @conap
                             </td>
                         }
                         else
@@ -285,7 +310,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Suballotment_title)
                         </td>
-                    }
+                    }*@
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
@@ -522,30 +547,29 @@ else
         });
     });
     //
-    function sortTable(column) {
-        var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.getElementById("data");
-        switching = true;
+    $(document).ready(function () {
+        $(".sortable-header").click(function () {
+            var $table = $(this).closest("table");
+            var columnIndex = $(this).index();
+            var sortDirection = $(this).data("sort-direction") || "asc";
 
-        while (switching) {
-            switching = false;
-            rows = table.rows;
+            $table.find(".sortable-header").not(this).data("sort-direction", null);
+            $(this).data("sort-direction", sortDirection === "asc" ? "desc" : "asc");
 
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-                x = rows[i].getElementsByTagName("TD")[column];
-                y = rows[i + 1].getElementsByTagName("TD")[column];
-
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
+            var rows = $table.find("tbody > tr").get();
+            rows.sort(function (a, b) {
+                var keyA = $(a).children("td").eq(columnIndex).text();
+                var keyB = $(b).children("td").eq(columnIndex).text();
+                if (sortDirection === "asc") {
+                    return keyA.localeCompare(keyB);
+                } else {
+                    return keyB.localeCompare(keyA);
                 }
-            }
+            });
 
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
-        }
-    }
+            $.each(rows, function (index, row) {
+                $table.children("tbody").append(row);
+            });
+        });
+    });
 </script>

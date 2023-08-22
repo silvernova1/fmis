@@ -155,20 +155,24 @@ namespace fmis.Controllers.Budget.John
 
             if(fundsources.Remaining_balance != 0)
             {
-                
                 fundsources.IsAddToNextAllotment = addToNext;
                 if (fundsources.IsAddToNextAllotment)
                 {
-                    fundsources.FundSourceTitle = "CONAP "+ fundsources.FundSourceTitle;
-
+                    if (fundsources.FundSourceTitle.Contains("CONAP "))
+                    {
+                        fundsources.FundSourceTitle = fundsources.FundSourceTitle;
+                    }
+                    else
+                    {
+                        fundsources.FundSourceTitle = "CONAP " + fundsources.FundSourceTitle;
+                    }
                 }
                 else
                 {
-                    char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
-                    //fundsources.FromPreviousAllotment = true;
-                    fundsources.FundSourceTitle = fundsources.FundSourceTitle.TrimStart(trim);
-                    _MyDbContext.Update(fundsources);
-                    await _MyDbContext.SaveChangesAsync();
+                    if (fundsources.FundSourceTitle.StartsWith("CONAP ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fundsources.FundSourceTitle = fundsources.FundSourceTitle.Substring(6).Trim();
+                    }
                 }
             }
             else
