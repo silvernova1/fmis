@@ -95,6 +95,7 @@ namespace fmis.Controllers.Budget.Rusel
                 source_type = "sub_allotment", 
                 obligated_amount = y.obligated_amount });
 
+
             return Json(fund_sub_data);
         }
 

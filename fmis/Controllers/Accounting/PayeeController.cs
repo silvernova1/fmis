@@ -364,8 +364,6 @@ namespace fmis.Controllers.Accounting
                 int ColCount = worksheet.Dimension.Columns;
                 List<Payee> payee = new();
 
-
-
                 timer.Start();
                 for (int row = 1; row <= rowCount; row++)
                 {
