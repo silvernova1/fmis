@@ -10,8 +10,6 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using fmis.Models.ppmp;
-
-
 using System;
 using fmis.Models;
 using fmis.Models.Accounting;
@@ -147,10 +145,7 @@ namespace fmis.Controllers.Employee
 				PdfWriter writer = PdfWriter.GetInstance(doc, stream);
 				doc.Open();
 
-
 				doc.NewPage();
-
-
 
 				Paragraph nextline = new Paragraph("\n");
 				doc.Add(nextline);
@@ -177,7 +172,9 @@ namespace fmis.Controllers.Employee
 				Font italic_font_7 = FontFactory.GetFont("", 7, Font.ITALIC, BaseColor.BLACK);
 				Font arial_font_9 = FontFactory.GetFont("", 9, Font.NORMAL, BaseColor.BLACK);
 				Font arial_font_7 = FontFactory.GetFont("", 7, Font.NORMAL, BaseColor.BLACK);
+				Font arial_font_7b = FontFactory.GetFont("", 7, Font.BOLD, BaseColor.BLACK);
 				Font arial_font_6 = FontFactory.GetFont("", 6, Font.NORMAL, BaseColor.BLACK);
+				Font arial_font_6b = FontFactory.GetFont("", 6, Font.BOLD, BaseColor.BLACK);
 				Font arial_font_9b = FontFactory.GetFont("", 9, Font.BOLD, BaseColor.BLACK);
 				Font arial_font_10 = FontFactory.GetFont("Times New Roman", 10, Font.NORMAL, BaseColor.BLACK);
 				Font arial_font_11 = FontFactory.GetFont("Times New Roman", 11, Font.NORMAL, BaseColor.BLACK);
@@ -228,14 +225,15 @@ namespace fmis.Controllers.Employee
 				PdfPCell cell = new PdfPCell(myImage);
 
 				var table_row_3 = new PdfPTable(4);
-				float[] tbt_row3_width = { 25, 16, 7, 8 };
+				float[] tbt_row3_width = { 20, 11, 5, 6 };
 				table_row_3.WidthPercentage = 100f;
 				table_row_3.SetWidths(tbt_row3_width);
-				table_row_3.AddCell(new PdfPCell(new Paragraph("Division:", arial_font_8))
+
+				table_row_3.AddCell(new PdfPCell(new Paragraph("Division: RD/ARD", arial_font_8))
 				{
 					HorizontalAlignment = Element.ALIGN_LEFT,
 					FixedHeight = 15,
-					VerticalAlignment = Element.ALIGN_MIDDLE
+					VerticalAlignment = Element.ALIGN_MIDDLE,
 				});
 
 				table_row_3.AddCell(new PdfPCell(new Paragraph("PR No.: ", arial_font_8))
@@ -256,11 +254,11 @@ namespace fmis.Controllers.Employee
 					FixedHeight = 15,
 					VerticalAlignment = Element.ALIGN_MIDDLE
 				});
-				table_row_3.AddCell(new PdfPCell(new Paragraph("Section/Unit: ", arial_font_8))
+				table_row_3.AddCell(new PdfPCell(new Paragraph("Section/Unit: ICTU ", arial_font_8))
 				{
 					HorizontalAlignment = Element.ALIGN_LEFT,
 					FixedHeight = 15,
-					VerticalAlignment = Element.ALIGN_MIDDLE
+					VerticalAlignment = Element.ALIGN_MIDDLE,
 				});
 
 				table_row_3.AddCell(new PdfPCell(new Paragraph("SAI No.: ", arial_font_8))
@@ -281,11 +279,12 @@ namespace fmis.Controllers.Employee
 					FixedHeight = 15,
 					VerticalAlignment = Element.ALIGN_MIDDLE
 				});
+
 				table_row_3.AddCell(new PdfPCell(new Paragraph("", arial_font_8))
 				{
 					HorizontalAlignment = Element.ALIGN_LEFT,
 					FixedHeight = 15,
-					VerticalAlignment = Element.ALIGN_MIDDLE
+					VerticalAlignment = Element.ALIGN_MIDDLE,
 				});
 
 				table_row_3.AddCell(new PdfPCell(new Paragraph("ALOBS No.: ", arial_font_8))
@@ -468,8 +467,63 @@ namespace fmis.Controllers.Employee
 					HorizontalAlignment = Element.ALIGN_LEFT,
 					VerticalAlignment = Element.ALIGN_MIDDLE,
 					FixedHeight = 40f,
+					BorderWidthBottom = 0f,
 				});
-				table_row_17.AddCell(new PdfPCell(new Paragraph("Requested By:" + "\n\n\n\n" + "Eugenia Mercedes R. Cañal, MD, MBHA-HA, FPSMS, PHSAE", arial_font_7))
+
+				Paragraph recommendingText = new Paragraph();
+				Chunk chunk1 = new Chunk("Recommending Approval By:", arial_font_6);
+				Chunk chunk2 = new Chunk("\n\n\n\nEugenia Mercedes R. Cañal, MD, MBA-HA, FPSMS, PHSAE", arial_font_7b);
+				recommendingText.Add(chunk1);
+				recommendingText.Add(chunk2);
+
+
+				// Create the cell with the paragraph
+				PdfPCell cellz = new PdfPCell(recommendingText)
+				{
+					VerticalAlignment = Element.ALIGN_CENTER,
+					FixedHeight = 40f
+				};
+
+				// Add the cell to the table_row_17
+				table_row_17.AddCell(cellz);
+
+
+				Paragraph recommendingText1 = new Paragraph();
+				Chunk chunk3 = new Chunk("Recommending Approval By:", arial_font_6);
+				Chunk chunk4 = new Chunk("\n\n\n\nSophia M. Mancao, MD, DPSP, RN-MAN", arial_font_7b);
+				recommendingText1.Add(chunk3);
+				recommendingText1.Add(chunk4);
+
+	
+
+				// Create the cell with the paragraph
+				PdfPCell cellz1 = new PdfPCell(recommendingText1)
+				{
+					VerticalAlignment = Element.ALIGN_CENTER,
+					FixedHeight = 40f
+				};
+
+				// Add the cell to the table_row_17
+				table_row_17.AddCell(cellz1);
+
+
+				Paragraph recommendingText2 = new Paragraph();
+				Chunk chunk5 = new Chunk("Recommending Approval By:", arial_font_6);
+				Chunk chunk6 = new Chunk("\n\n\n\nJaime S. Bernadas, MD, MGM, CESO III", arial_font_7b);
+				recommendingText2.Add(chunk5);
+				recommendingText2.Add(chunk6);
+
+				// Create the cell with the paragraph
+				PdfPCell cellz2 = new PdfPCell(recommendingText2)
+				{
+					VerticalAlignment = Element.ALIGN_CENTER,
+					FixedHeight = 40f
+				};
+				// Add the cell to the table_row_17
+				table_row_17.AddCell(cellz2);
+				// Add the cell to the table_row_17
+
+				/*table_row_17.AddCell(new PdfPCell(new Paragraph("Requested By:" + "\n\n\n\n" + "Eugenia Mercedes R. Cañal, MD, MBHA-HA, FPSMS, PHSAE", arial_font_7b))
 				{
 					Border = 13,
 					VerticalAlignment = Element.ALIGN_LEFT,
@@ -482,11 +536,13 @@ namespace fmis.Controllers.Employee
 					VerticalAlignment = Element.ALIGN_LEFT,
 					FixedHeight = 40f
 				});
+
+
 				table_row_17.AddCell(new PdfPCell(new Paragraph("Approved:" + "\n\n\n\n" + "Jaime S. Bernadas, MD, MGM, CESO III", arial_font_7))
 				{
 					VerticalAlignment = Element.ALIGN_LEFT,
 					FixedHeight = 40f
-				});
+				});*/
 
 				doc.Add(table_row_17);
 
@@ -500,6 +556,7 @@ namespace fmis.Controllers.Employee
 				{
 					HorizontalAlignment = Element.ALIGN_LEFT,
 					VerticalAlignment = Element.ALIGN_MIDDLE,
+					BorderWidthTop = 0f,
 					FixedHeight = 15f,
 					Padding = 1
 				});
