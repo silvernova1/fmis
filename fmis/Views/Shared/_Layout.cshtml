@@ -89,8 +89,10 @@
         <script type="text/javascript">
             try { ace.settings.loadState('main-container') } catch (e) { }
         </script>
-
-        <partial name="~/Views/Shared/_Sidebar.cshtml" />
+        @if(!User.IsInRole("app_admin"))
+        {
+            <partial name="~/Views/Shared/_Sidebar.cshtml" />
+        }
 
         <div class="main-content">
             <div class="main-content-inner">
@@ -99,15 +101,25 @@
                         <div class="col-md-6">
                             <ul class="breadcrumb">
                                 <li>
-                                    @if (User.FindFirstValue(ClaimTypes.Role) == "user")
+                                    @if (User.FindFirstValue(ClaimTypes.Role) == "budget_admin")
                                     {
                                             <i class="ace-icon fa fa-home home-icon"></i>
-                                            <a asp-controller="Dv" asp-action="Index">Home</a>
+                                            <a asp-controller="BudgetAllotment" asp-action="Index">Home</a>
+                                    }
+                                    else if (User.IsInRole("accounting_admin"))
+                                    {
+                                            <i class="ace-icon fa fa-home home-icon"></i>
+                                            <a asp-controller="IndexOfPayment" asp-action="Index">Home</a>
+                                    }
+                                    else if (User.IsInRole("accounting_user"))
+                                    {
+                                        <i class="ace-icon fa fa-home home-icon"></i>
+                                        <a asp-controller="Dv" asp-action="Index">Home</a>
                                     }
                                     else
                                     {
                                             <i class="ace-icon fa fa-home home-icon"></i>
-                                            <a asp-controller="Home" asp-action="Dashboard">Home</a>
+                                            <a href="#">Home</a>
                                     }
                                     
                                 </li>

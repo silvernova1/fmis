@@ -238,7 +238,16 @@ namespace fmis
                     options.AccessDeniedPath = "/Index/NotFound";
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
-                }); ;
+                })
+                .AddCookie("Scheme3", options =>
+                {
+                    options.Cookie.Name = "Scheme3";
+                    options.LoginPath = "/App/Login";
+                    options.LogoutPath = "/App/Logout";
+                    options.AccessDeniedPath = "/App/NotFound";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(5);
+                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                });
 
 
             services.AddAuthorization(options =>

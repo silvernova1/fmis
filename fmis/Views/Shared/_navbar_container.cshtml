@@ -40,6 +40,22 @@
                 </div>
             </div>
         }
+        else if (User.FindFirstValue(ClaimTypes.Role) == "app_admin")
+        {
+            <div class="navbar-container ace-save-state" id="navbar-container">
+                <div class="navbar-header" style="padding: 10px">
+                    <img src="~/assets/images/App_Banner.png" class="img-responsive" />
+                </div>
+            </div>
+        }
+        else if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+        {
+            <div class="navbar-container ace-save-state" id="navbar-container">
+                <div class="navbar-header" style="padding: 10px">
+                    <img src="~/assets/images/Iop_Banner.png" class="img-responsive" />
+                </div>
+            </div>
+        }
         else
         {
             <div class="navbar-container ace-save-state" id="navbar-container">

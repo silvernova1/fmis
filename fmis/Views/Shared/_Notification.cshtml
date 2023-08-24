@@ -87,10 +87,22 @@
                         </form>
                     </li>
                 }
-                else
+                else if (Context.Request.Cookies.ContainsKey("Scheme2"))
                 {
                     <li>
                         <form method="post" asp-controller="Index" asp-action="Logout">
+                            <button type="submit" style="width:auto;"
+                                class="nav-link btn btn-link py-0">
+                                <i class="ace-icon fa fa-sign-out"></i>
+                                Logout @User.FindFirstValue(ClaimTypes.GivenName) @User.FindFirstValue(ClaimTypes.Surname)
+                            </button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <form method="post" asp-controller="App" asp-action="Logout">
                             <button type="submit" style="width:auto;"
                                 class="nav-link btn btn-link py-0">
                                 <i class="ace-icon fa fa-sign-out"></i>
