@@ -12,14 +12,30 @@
 
 <ul class="nav ace-nav">
     <li class="active" style="font-size: 15pt; margin-right : 15px">
-        @if (User.IsInRole("budget_admin"))
+        @if (User.IsInRole("budget_admin") || User.IsInRole("app_admin"))
         {
             <a>CY: @User.FindFirstValue("YearlyRef")</a>
         }
     </li>
+        @if (User.IsInRole("budget_admin"))
+        {
         <a id="logout-link" asp-action="Logout" asp-controller="Account">
+             <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+        </a>
+        }
+        else if (User.IsInRole("accounting_admin") || User.IsInRole("user"))
+        {
+        <a id="logout-link" asp-action="Logout" asp-controller="Index">
             <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
         </a>
+        }
+        else if (User.IsInRole("app_admin"))
+        {
+            <a id="logout-link" asp-action="Logout" asp-controller="App">
+                <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+            </a>
+        }
+        
 </ul>
 
 @*<li class="login-logout light-blue dropdown-modal pull-right">
