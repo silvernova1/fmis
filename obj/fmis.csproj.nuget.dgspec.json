@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\fmis\\fmis\\fmis.csproj": {}
+    "D:\\fmis\\fmis.csproj": {}
   },
   "projects": {
-    "D:\\fmis\\fmis\\fmis.csproj": {
+    "D:\\fmis\\fmis.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\fmis\\fmis\\fmis.csproj",
+        "projectUniqueName": "D:\\fmis\\fmis.csproj",
         "projectName": "fmis",
-        "projectPath": "D:\\fmis\\fmis\\fmis.csproj",
-        "packagesPath": "C:\\Users\\Jondy Gonzalez\\.nuget\\packages\\",
-        "outputPath": "D:\\fmis\\fmis\\obj\\",
+        "projectPath": "D:\\fmis\\fmis.csproj",
+        "packagesPath": "C:\\Users\\Keith\\.nuget\\packages\\",
+        "outputPath": "D:\\fmis\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Jondy Gonzalez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Keith\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -284,11 +283,16 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[5.0.13, 5.0.13]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -297,7 +301,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewData["Title"] = "SAOB";
+}
+
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="submit-progress hidden">
+    <i class="fa fa-2x fa-spinner fa-spin"></i>
+    <label>Please wait while Downloading Data...</label>
+</div>
+
+<div class="space space-10"></div>
+<div class="col-md-3" style="margin-left: 25px">
+    <div class="widget-box">
+        <div class="widget-header">
+
+            <h4 class="widget-title"> <span class="glyphicon glyphicon-list-alt"></span> Saob Reports</h4>
+
+            <span class="widget-toolbar">
+                <a href="#" data-action="collapse">
+                    <i class="ace-icon fa fa-chevron-up"></i>
+                </a>
+            </span>
+        </div>
+        <div class="widget-body">
+            <div class="widget-main">
+                <form action="@Url.Action("DownloadExcel","ReportSaob")" method="post">
+                    @Html.AntiForgeryToken()
+                    <label>Format: </label>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <select name="format" class="form-control" tabindex="-1" aria-disabled="true" disabled>
+                                <option value="excel">EXCEL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space space-8"></div>
+                    <label>Date From: </label>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div>
+                                <input class="form-control" type="date" name="date_from" id="dateFrom" data-date-format="dd-mm-yyyy" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space space-8"></div>
+                    <label>Date To: </label>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div>
+                                <input class="form-control" type="date" name="date_to" id="dateTo" data-date-format="dd-mm-yyyy" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space space-8"></div>
+                    <div class="row">
+                        <div class="">
+                            <div class="col-xs-12 col-sm-12">
+                                <button type="submit" onclick="return DisplayProgressMessage(this, 'Downloading...');" class="btn btn-success btn-sm pull-right"> <span class="glyphicon glyphicon-download-alt"></span> Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Add previous conap to the current allotment?</label>
+                    @Html.DropDownList("Conap", null, htmlAttributes: new { @class = "js-example-basic-multiple form-control", @multiple = "multiple" })
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+<style>
+    .submit-progress-bg {
+        background-color: lightgray;
+        opacity: .5;
+    }
+
+    .submit-progress {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        height: 6em;
+        padding-top: 2.3em;
+        z-index: 1;
+        /* The following properties are the ones most likely to change */
+        width: 20em;
+        /* Set 'margin-left' to a negative number that is 1/2 of 'width' */
+        margin-left: -10em;
+        padding-left: 2.1em;
+        background-color: black;
+        color: white;
+        -webkit-border-radius: 0.4em;
+        -moz-border-radius: 0.4em;
+        border-radius: 0.4em;
+        box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
+        -webkit-box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
+        -moz-box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
+    }
+
+    /* Changing style for spinner */
+    .submit-progress {
+        padding-top: 2em;
+        width: 23em;
+        margin-left: -11.5em; /* Set to a negative number that is 1/2 of the width */
+    }
+
+        .submit-progress i {
+            margin-right: 0.5em;
+        }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        function DisplayProgressMessage(ctl, msg) {
+            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
+            event.preventDefault();
+            // Turn off the "Save" button and change text
+            $(ctl).prop("disabled", true).val(msg);
+            // Gray out background on page
+            $("body").addClass("submit-progress-bg");
+            // Wrap in setTimeout so the UI can update the spinners
+            $(".submit-progress").removeClass("hidden");
+            //submit the form.
+            setTimeout(function () {
+                $("form").submit();
+            }, 1);
+            return true;
+
+        }
+    </script>
+}
