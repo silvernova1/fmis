@@ -616,58 +616,7 @@ namespace fmis.Controllers.Budget.John
             //                    .ToList();
 
             //eager Loading in EF Core
-            var prexcs= _MyDbContext.SubAllotment
-                     .Include(x => x.prexc)
-                     .ToList();
-                       
-
-
-            var subAllotments = _MyDbContext.SubAllotment
-                                .Include(x => x.SubAllotmentAmounts)
-                                    .ThenInclude(x=>x.Uacs)
-                                .OrderByDescending(x => x.Suballotment_title)
-                                .ToList();
-
-
             
-            foreach (var item in subAllotments)
-            {
-                var uniquePrexcIds = prexcs.Select(x => x.prexcId).Distinct();
-                foreach (var prexcId in uniquePrexcIds)
-                {
-                    var matchingPrexc = prexcs.FirstOrDefault(x => x.prexcId == prexcId);
-
-                    if (matchingPrexc != null)
-                    {
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                        worksheet.Cell(currentRow, 1).Value = matchingPrexc.prexc.pap_title;
-
-                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                        worksheet.Cell(currentRow, 2).Value = matchingPrexc.prexc.pap_code1;
-                        worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
-                        currentRow++;
-
-
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                        worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
-                        worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
-                        currentRow++;
-
-                        foreach (var uacs in item.SubAllotmentAmounts.ToList())
-                        {
-                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                            worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
-
-                            worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                            worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-                            currentRow++;
-                            //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                            //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-
-                        }
-                    }
-                }
-            }
 
 
 
