@@ -83,6 +83,7 @@ namespace fmis.Controllers.Budget.John
                               join fsa in _MyDbContext.FundSourceAmount on fs.FundSourceId equals fsa.FundSourceId
                               join u in _MyDbContext.Uacs on fsa.UacsId equals u.UacsId
                               join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId
+                          //  where   o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                               where o.Date >= date1 && o.Date <= date2
                               select new
                               {
@@ -686,7 +687,70 @@ namespace fmis.Controllers.Budget.John
                     }
                 }
             }
-            
+
+
+
+
+
+
+            //var filteredFunsources = funsources.Where(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday).ToList();
+            // var filteredFunsources = funsources.Where(sa => sa.fundsourceId == sa.fundsourceId).ToList();
+            // Get distinct category names
+            var fundsTitle = funsources.Select(fs => fs.fundsTitle).Distinct().ToList();
+
+            // Iterate through the fundsTitle and display each value in a separate row
+            foreach (var title in fundsTitle)
+            {
+                if (string.IsNullOrEmpty(title)) // Skip empty or null titles
+                    continue;
+
+                worksheet.Cell(currentRow, 1).Value = title;
+                worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+                worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                currentRow++;
+
+
+
+                // Get the items belonging to the current category
+                var itemsInCategory = funsources.Where(fs => fs.fundsTitle == title).ToList();
+
+                // Create separate lists to store unique Account_title and expensesCode
+                var uniqueAccountTitles = new List<string>();
+                var uniqueExpensesCodes = new List<string>();
+
+                // Iterate through the items and store unique Account_title and expensesCode
+                foreach (var item in itemsInCategory)
+                {
+                    if (!uniqueAccountTitles.Contains(item.Account_title))
+                        uniqueAccountTitles.Add(item.Account_title);
+
+                    if (!uniqueExpensesCodes.Contains(item.expensesCode))
+                        uniqueExpensesCodes.Add(item.expensesCode);
+                }
+
+                // Display the items and expensesCode in the same row for the current category
+                foreach (var accountTitle in uniqueAccountTitles)
+                {
+                    worksheet.Cell(currentRow, 1).Value = accountTitle;
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8; // Replace 8 with the desired font size
+
+                    // Find the corresponding expensesCode for the accountTitle
+                    var expensesCode = itemsInCategory.FirstOrDefault(item => item.Account_title == accountTitle)?.expensesCode;
+                    worksheet.Cell(currentRow, 2).Value = expensesCode;
+                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8; // Replace 8 with the desired font size
+
+                    currentRow++;
+                }
+
+                // Increment row to leave a blank row between each category
+                currentRow++;
+            }
+
+
+
+
+
 
             // Create a memory stream to hold the Excel file content
             var stream = new System.IO.MemoryStream();
