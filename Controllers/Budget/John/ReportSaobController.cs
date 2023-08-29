@@ -620,59 +620,47 @@ namespace fmis.Controllers.Budget.John
             //var prexcs = _MyDbContext.SubAllotment
             //         .Include(x => x.prexc)
             //         .ToList();
-           
-                   
+
 
 
 
             var subAllotments = _MyDbContext.SubAllotment
-                                .Include(x => x.SubAllotmentAmounts)
-                                    .ThenInclude(x=>x.Uacs)
-                                .Include(x => x.prexc)
-                               // .OrderByDescending(x => x.Suballotment_title)
-                                .ToList();
+     .Include(x => x.SubAllotmentAmounts)
+         .ThenInclude(x => x.Uacs)
+     .Include(x => x.prexc)
+     .OrderBy(x => x.prexc.pap_title)
+     .ThenByDescending(x => x.Suballotment_title)
+     .ToList();
 
-           
-            //foreach (var prex in prexcs.Where(x => x.prexcId == x.prexc.Id))
-            //{
-
-          
-                
-            //        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-            //    worksheet.Cell(currentRow, 1).Value = prex.prexc.pap_title;
-
-            //        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-            //    worksheet.Cell(currentRow, 2).Value = prex.prexc.pap_code1;
-            //        worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
-            //        currentRow++;
-            //}
-
-
-
+            string previousPapTitle = null;
 
             foreach (var item in subAllotments)
-                 {
-
-                bool getallprexc = _MyDbContext.Prexc.All(x => x.Id == item.prexcId);
-                bool getallsub = _MyDbContext.SubAllotment.All(x => x.prexcId == item.prexc.Id);
-                if (getallprexc == getallsub)
+            {
+                if (item.prexc.pap_title != previousPapTitle)
                 {
-
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == item.prexcId).pap_title;
+                    worksheet.Cell(currentRow, 1).Value = item.prexc.pap_title;
 
                     worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Prexc.FirstOrDefault(x => x.Id == item.prexcId).pap_code1;
+                    worksheet.Cell(currentRow, 2).Value = item.prexc.pap_code1;
                     worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
                     currentRow++;
 
+                    previousPapTitle = item.prexc.pap_title;
+
+                    // Reset Suballotment_title tracker
+                    HashSet<string> displayedSubAllotments = new HashSet<string>();
+                }
+
+             
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                        worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
-                        worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
-                        currentRow++;
+                    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                    worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
+                    currentRow++;
 
 
-                    foreach (var uacs in item.SubAllotmentAmounts.ToList())
+
+                foreach (var uacs in item.SubAllotmentAmounts.ToList())
                     {
 
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
@@ -684,11 +672,11 @@ namespace fmis.Controllers.Budget.John
                         //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
                         //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
 
-                    }
+                    
                 }
-            }
+            
 
-
+       }
 
 
 
