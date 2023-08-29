@@ -636,6 +636,32 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var item in subAllotments)
             {
+
+            
+                if (item.prexc.Id == 1 && item.SubAllotmentId == 402 )
+                {
+                    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                    worksheet.Cell(currentRow, 1).Value = "Personnel Services";
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                    worksheet.Cell(currentRow, 1).Value = "Maintenance & Other Operating Expenses";
+                    currentRow++;
+
+                }
+                 if(item.prexc.Id == 8 && item.SubAllotmentId == 363)
+                {
+                    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                    worksheet.Cell(currentRow, 1).Value = "Maintenance & Other Operating Expenses";
+                    currentRow++;
+                }
+
+                       
+                   
+
+
                 if (item.prexc.pap_title != previousPapTitle)
                 {
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
@@ -657,8 +683,6 @@ namespace fmis.Controllers.Budget.John
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
                     worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
                     currentRow++;
-
-
 
                 foreach (var uacs in item.SubAllotmentAmounts.ToList())
                     {
