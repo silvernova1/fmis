@@ -73,6 +73,13 @@
     .pbutton {
         margin-left: 1px;
     }
+
+    .sort-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 </style>
 
 @if (Model.SubAllotment.Count() > 0)
@@ -136,7 +143,7 @@
                     <i class="ace-icon fa fa-money"></i>
                 </div>
                 <div class="infobox-data">
-                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span id="beginning-balance" class="infobox-data-number" style="font-size:11pt; color:grey;">
                         @Model.SubAllotment.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
@@ -149,7 +156,7 @@
                     <i class="ace-icon fa fa-bar-chart-o"></i>
                 </div>
                 <div class="infobox-data">
-                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span id="obligated-amount" class="infobox-data-number" style="font-size:11pt; color:grey;">
                         @Model.SubAllotment.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
@@ -189,7 +196,7 @@
     </div>
 </div>
 
-<form method="get" asp-action="Index" asp-controller="FundSource" id="search_form">
+<form method="get" asp-action="Index" asp-controller="SubAllotment" id="search_form">
     <input type="hidden" name="AllotmentClassId" value="@ViewBag.AllotmentClassId" />
     <input type="hidden" name="AppropriationId" value="@ViewBag.AppropriationId" />
     <input type="hidden" name="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
@@ -199,7 +206,7 @@
             View All
         </button>*@
         <input type="search" placeholder="Enter keyword..." class="form-group" name="search" id="search" value="@ViewBag.Search" style="width: 340px;" oninput="updateTable()" />
-        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;" disabled>
             <i class="ace-icon fa fa-search "></i> Search
         </button>
     </span>
@@ -226,8 +233,11 @@
                 <th style="width: 200px">
                     PPA TITLE
                 </th>
-                <th style="width: 250px" id="subAllotmentTitleHeader" onclick="sortTable('subAllotmentTitle')">
+                <th style="width: 250px; position: relative;" id="subAllotmentTitleHeader" class="sortable-header">
                     SUB ALLOTMENT TITLE
+                    <span class="sort-icon">
+                        <i class="fa fa-sort"></i>
+                    </span>
                 </th>
                 <th style="width: 250px">
                     DESCRIPTION
@@ -261,16 +271,31 @@
 
                 char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
                 var conap = item.Suballotment_title.TrimStart(trim);
+                
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.prexc.pap_title)
                     </td>
                     @if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
                     {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Suballotment_title)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @conap
+                        </td>
+                    }
+                    @*@if (item.IsAddToNextAllotment == true && item.Budget_allotment.Yearly_reference.YearlyReference == lastYear.ToString())
+                    {
+                        char[] trim = { 'C', 'O', 'N', 'A', 'P', ' ' };
+                        var conap = item.Suballotment_title.TrimStart(trim);
                         @if(!item.Suballotment_title.Contains("CONAP "))
                         {
                             <td>
-                                CONAP @item.Suballotment_title
+                                @conap
                             </td>
                         }
                         else
@@ -285,7 +310,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Suballotment_title)
                         </td>
-                    }
+                    }*@
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
@@ -477,18 +502,59 @@ else
                 css('display', 'table-row').animate({ opacity: 1 }, 300);
         });
     });
-    //search
+    //FILTER
+    function calculateBeginningBalanceSum() {
+        var sum = 0;
+        $('#data tbody tr:visible').each(function () {
+            var beginningBalanceText = $(this).find('.green span').text();
+            var beginningBalanceValue = parseFloat(beginningBalanceText.replace(/[^0-9.-]+/g, ""));
+            sum += beginningBalanceValue;
+        });
+        return formatCurrency(sum);
+    }
+
+    function calculateObligatedAmountSum() {
+        var sum = 0;
+        $('#data tbody tr:visible').each(function () {
+            var obligatedAmountText = $(this).find('.blue span').text();
+            var obligatedAmountValue = parseFloat(obligatedAmountText.replace(/[^0-9.-]+/g, ""));
+            sum += obligatedAmountValue;
+        });
+        return formatCurrency(sum);
+    }
+
+    function formatCurrency(amount) {
+        return amount.toLocaleString("en-PH", { style: "currency", currency: "PHP" });
+    }
+
+
     function updateTable() {
-        var searchValue = $('#search').val();
+        var searchValue = $('#search').val().toLowerCase();
+
         $('#data tbody tr').each(function () {
             var rowData = $(this).text().toLowerCase();
-            if (rowData.indexOf(searchValue.toLowerCase()) === -1) {
+            if (rowData.indexOf(searchValue) === -1) {
                 $(this).hide();
             } else {
                 $(this).show();
             }
         });
+
+        var beginningBalanceSum = calculateBeginningBalanceSum();
+        $('#beginning-balance').text(beginningBalanceSum);
+
+        // Update the obligated amount sum
+        var obligatedAmountSum = calculateObligatedAmountSum();
+        $('#obligated-amount').text(obligatedAmountSum);
     }
+
+    $('#search').on('input', function () {
+        updateTable();
+    });
+    //END OF FILTER
+
+
+
     //sort sub allotment
     $(document).ready(function () {
         function toggleSortOrder(order) {
@@ -522,30 +588,29 @@ else
         });
     });
     //
-    function sortTable(column) {
-        var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.getElementById("data");
-        switching = true;
+    $(document).ready(function () {
+        $(".sortable-header").click(function () {
+            var $table = $(this).closest("table");
+            var columnIndex = $(this).index();
+            var sortDirection = $(this).data("sort-direction") || "asc";
 
-        while (switching) {
-            switching = false;
-            rows = table.rows;
+            $table.find(".sortable-header").not(this).data("sort-direction", null);
+            $(this).data("sort-direction", sortDirection === "asc" ? "desc" : "asc");
 
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-                x = rows[i].getElementsByTagName("TD")[column];
-                y = rows[i + 1].getElementsByTagName("TD")[column];
-
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
+            var rows = $table.find("tbody > tr").get();
+            rows.sort(function (a, b) {
+                var keyA = $(a).children("td").eq(columnIndex).text();
+                var keyB = $(b).children("td").eq(columnIndex).text();
+                if (sortDirection === "asc") {
+                    return keyA.localeCompare(keyB);
+                } else {
+                    return keyB.localeCompare(keyA);
                 }
-            }
+            });
 
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
-        }
-    }
+            $.each(rows, function (index, row) {
+                $table.children("tbody").append(row);
+            });
+        });
+    });
 </script>

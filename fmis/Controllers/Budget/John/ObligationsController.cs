@@ -322,9 +322,9 @@ namespace fmis.Controllers
                 timer.Start();
                 for (int row = 3; row <= rowCount; row++)
                 {
-                    if (!string.IsNullOrEmpty(worksheet.Cells[row, 9].Text))
+                    if (!string.IsNullOrEmpty (worksheet.Cells[row, 9].Text))
                     {
-                        var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "";
+                        var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "" ;
                         var fundSrcId = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceTitle == fundSrcTxt)?.FundSourceId;
                         var subAlltId = _MyDbContext.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
                         List<ObligationAmount> OAs = new();
