@@ -1,0 +1,80 @@
+﻿@model fmis.ViewModel.LoginViewModel
+
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_IndexLogin.cshtml";
+    var year = (List<Yearly_reference>)ViewData["Year"];
+}
+<style>
+    .centered-label {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .specific-label {
+        font-size: 24px;
+    }
+</style>
+
+<div class="login-logo">
+    <center>
+        <img src="~/assets/images/DOHLOGO.png" style="width: 25%" /><br>
+    </center>
+</div>
+<div class="centered-label">
+    <label class="specific-label">ANNUAL PROCUREMENT PLAN</label>
+</div>
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+
+        <form method="post" asp-action="Login">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="input-group mb-3">
+                <input type="text" asp-for="Username" class="form-control" placeholder="User ID">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" asp-for="Password" class="form-control" placeholder="Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" asp-for="Year" class="form-control" placeholder="Year">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fa fa-calendar" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" asp-for="RememberMe" id="remember">
+                        <label for="remember">
+                            Remember Me
+                        </label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+            </div>
+            <div class="text-danger text-sm" asp-validation-summary="All"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

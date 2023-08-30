@@ -318,12 +318,15 @@
                         @item.RespoCenter.Respo
                     </td>
                     <td>
-                        @*<button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)" data-bs-toggle="tooltip" title="Edit"> 
+                        @if (ViewBag.LastYear != true)
+                        {
+                            <button class="btn btn-primary btn-xs" onclick="getEditSub_allotment(@Model.BudgetAllotmentId,@item.SubAllotmentId)" data-bs-toggle="tooltip" title="Edit"> 
                             <span class="glyphicon glyphicon-edit"></span>
-                        </button>
-                        <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> 
-                            <span class="glyphicon glyphicon-trash"></span> 
-                        </a>*@
+                            </button>
+                            <a asp-controller="SubAllotment" asp-action="Delete" asp-route-id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModalCenter" data-bs-toggle="tooltip" title="Delete"> 
+                                <span class="glyphicon glyphicon-trash"></span> 
+                            </a>
+                        }
                         <a asp-controller="SubAllotment_Realignment" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-budget_id="@ViewBag.budget_id" asp-action="Index" class="btn btn-info btn-xs" data-bs-toggle="tooltip" title="SAA Realignment"><span class="glyphicon glyphicon-transfer"></span>  </a>
                         <a asp-controller="SubTransferedTo" asp-route-sub_allotment_id="@item.SubAllotmentId" asp-route-BudgetId="@ViewBag.budget_id" asp-action="Index" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" title="SAA TransferedTo"> <span class="glyphicon glyphicon-share-alt"></span></a>
 
@@ -478,8 +481,8 @@ else
     $(document).ready(function () {
         $('.select2').select2();
     });
-
-    $(document).ready(function () {
+    //pagination
+    /*$(document).ready(function () {
         $('#data').after('<div id="nav"></div>');
         var rowsShown = 10;
         var rowsTotal = $('#data tbody tr').length;
@@ -501,8 +504,8 @@ else
             $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
                 css('display', 'table-row').animate({ opacity: 1 }, 300);
         });
-    });
-    //FILTER
+        */
+
     function calculateBeginningBalanceSum() {
         var sum = 0;
         $('#data tbody tr:visible').each(function () {
@@ -551,7 +554,6 @@ else
     $('#search').on('input', function () {
         updateTable();
     });
-    //END OF FILTER
 
 
 

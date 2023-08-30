@@ -1,118 +1,106 @@
 ﻿using fmis.Data;
-using fmis.Models;
+using fmis.Data.MySql;
+using fmis.Filters;
+using fmis.Models.ppmp;
 using fmis.Models.UserModels;
-using fmis.Models.Budget;
-using fmis.Models.silver;
 using fmis.Services;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using fmis.Filters;
-using Microsoft.AspNetCore.Authorization;
 
-namespace fmis.Controllers
+namespace fmis.Controllers.App
 {
-
-    public class AccountController : Controller
+    
+    public class AppController : Controller
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
         private readonly MyDbContext _context;
-        
-        public AccountController(MyDbContext context, IUserService userService, IHttpContextAccessor httpContextAccessor)
+        private readonly PpmpContext _ppmpContext;
+        private readonly DtsContext _dts;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userService = userService;
+            _ppmpContext = ppmpContext;
+            _dts = dts;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet]
+        [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
         public IActionResult Index()
         {
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
-            ViewBag.filter = new FilterSidebar("user_main", "users", "");
-            ViewBag.layout = "_Layout";
-            return View(_context.FmisUsers.ToList());
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-
-            ViewBag.filter = new FilterSidebar("user_main", "new_user", "");
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult CreateUser()
-        {
-
-            ViewBag.filter = new FilterSidebar("user_main", "new_user", "");
-            ViewBag.layout = "_Layout";
-            return View("~/Views/Account/CreateUser.cshtml");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Create(FmisUser fmisUser)
-        {
-
-            fmisUser.Password = _userService.HashPassword(fmisUser, fmisUser.Password);
-            _context.Add(fmisUser);
-            _context.SaveChanges();
-            await Task.Delay(500);
-            ViewBag.filter = new FilterSidebar("user_main", "user_sub");
-            ViewBag.layout = "_Layout";
-            return RedirectToAction("Index");
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
+            var expenses = new List<Expense>();
+            if (_context.Expense.Count() > 0)
             {
-                return NotFound();
+                expenses = _context.Expense.Include(x => x.Items).Take(2).ToList();
             }
-            var user = await _context.FmisUsers.FindAsync(id);
-            if(user == null)
+            else
             {
-                return NotFound();
+                expenses = _ppmpContext.expense.Include(x => x.Items).Take(2).ToList();
             }
-            return View(user);
 
+            return View(expenses);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(FmisUser user)
+        public async Task<IActionResult> Create(List<Expense> expenses)
         {
-            user.Password = _userService.HashPassword(user, user?.Password);
-            _context.Update(user);
+
+            foreach (var expense in expenses)
+            {
+                var existingExpense = _context.Expense.FirstOrDefault(e => e.Id == expense.Id);
+
+                if (existingExpense != null)
+                {
+                    existingExpense.Description = expense.Description;
+
+                    existingExpense.Items.Clear();
+                    foreach (var newItem in expense.Items)
+                    {
+                        var item = new Item
+                        {
+                            Description = newItem.Description,
+                        };
+                        existingExpense.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    var newExpense = new Expense
+                    {
+                        Description = expense.Description,
+                        Items = new List<Item>()
+                    };
+                    foreach (var newItem in expense.Items)
+                    {
+                        var item = new Item
+                        {
+                            Description = newItem.Description
+                        };
+                        newExpense.Items.Add(item);
+                    }
+                    _context.Expense.Add(newExpense);
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
-
-        public async Task<IActionResult> Delete(int id)
-        {
-            var user = await _context.FmisUsers.FirstOrDefaultAsync(x=>x.Id == id);
-            _context.Remove(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
 
         #region LOGIN
         [HttpGet]
-        //[Authorize(Policy = "Policy1")]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             ViewData["Year"] = _context.Yearly_reference.OrderByDescending(x => x.YearlyReference).ToList();
@@ -122,7 +110,7 @@ namespace fmis.Controllers
             {
                 switch (User.FindFirstValue(ClaimTypes.Role))
                 {
-                    case "budget_admin":
+                    case "app_admin":
                         return RedirectToAction("Index", "BudgetAllotment");
                     default:
                         return RedirectToAction("Dashboard", "Home");
@@ -144,18 +132,18 @@ namespace fmis.Controllers
                 var user = await _userService.ValidateUserCredentialsAsync(model.Username, model.Password);
                 if (user is not null)
                 {
-                    user.Year = (await _context.Yearly_reference.FirstOrDefaultAsync(x => x.YearlyReferenceId == model.Year))?.YearlyReference;
-                    user.YearId = model.Year;
+                    user.Year = model.Year.ToString();
+                    user.YearId = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReference == user.Year).YearlyReferenceId;
                     await LoginAsync(user, model.RememberMe);
 
-                    
+
                     if (user.Username == "hr_admin")
                     {
-                        return RedirectToAction("Index", "BudgetAllotment");
+                        return RedirectToAction("Index", "App");
                     }
                     else
                     {
-                        return RedirectToAction("Dashboard", "Home");
+                        return NotFound();
                     }
                 }
                 else
@@ -179,8 +167,8 @@ namespace fmis.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync("Scheme1");
-            return RedirectToAction("Login", "Account");
+            await HttpContext.SignOutAsync("Scheme3");
+            return RedirectToAction("Login", "App");
         }
         #endregion
 
@@ -205,20 +193,17 @@ namespace fmis.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin") || user.Username.Equals("201500252") || user.Username.Equals("201400182")
-                || user.Username.Equals("2652") || user.Username.Equals("2147") || user.Username.Equals("2579") || user.Username.Equals("0664")
-                || user.Username.Equals("2543") || user.Username.Equals("0848") || user.Username.Equals("1887")
-                ? "budget_admin" : "budget_user"),
+                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin") ? "app_admin" : null),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
                 new Claim("YearlyRef", user.Year),
                 new Claim("YearlyRefId", user.YearId.ToString())
             };
 
-            var identity1 = new ClaimsIdentity(claims, "Scheme1");
+            var identity1 = new ClaimsIdentity(claims, "Scheme3");
             var principal1 = new ClaimsPrincipal(identity1);
 
-            await HttpContext.SignInAsync("Scheme1", principal1);
+            await HttpContext.SignInAsync("Scheme3", principal1);
         }
         #endregion
 
