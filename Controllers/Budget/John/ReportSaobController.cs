@@ -84,7 +84,7 @@ namespace fmis.Controllers.Budget.John
                               join u in _MyDbContext.Uacs on fsa.UacsId equals u.UacsId
                               join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId
                           //  where   o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
-                              where o.Date >= date1 && o.Date <= date2
+                             // where o.Date >= date1 && o.Date <= date2
                               select new
                               {
                                   UacsId = u.UacsId,
@@ -132,7 +132,6 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(4, 1).Value = "Department:";
             worksheet.Cell(5, 1).Value = "Agency:";
             worksheet.Cell(6, 1).Value = "Fund:";
-
 
 
             //ws.Cell(14, 1).Style.Font.SetBold();
@@ -590,118 +589,157 @@ namespace fmis.Controllers.Budget.John
             worksheet.SheetView.FreezeColumns(2);
 
 
-
-
-            // Set the background color for rows nine, ten, eleven, twelve
-            /* var rowRange = worksheet.Cells["A9:H12"];
-             rowRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-             rowRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Pink);*/
-            //2nd option
-            //  ExcelFill fill = worksheetCells["A9:H12"].Style.Fill;
-            // fill.PatternType = ExcelFillStyle.Solid; // Apply a solid fill style
-            // fill.BackgroundColor.SetColor(System.Drawing.Color.Pink); // Set the fill color
-            //Autofit all rows
-
-            //var subAllotment = (from s in _MyDbContext.SubAllotment
-            //                    join sa in _MyDbContext.Suballotment_amount
-            //                    on s.SubAllotmentId equals sa.SubAllotmentId
-            //                    join u in _MyDbContext.Uacs
-            //                    on sa.UacsId equals u.UacsId
-            //                    select new
-            //                    {
-            //                        SuballotmentTitle = s.Suballotment_title,
-            //                        AccountTitle = u.Account_title,
-            //                        ExpenseCode = u.Expense_code
-            //                    })
-
+            //var subAllotments = _MyDbContext.SubAllotment
+            //                    .Include(x => x.SubAllotmentAmounts)
+            //                        .ThenInclude(x=>x.Uacs)
+            //                    .Include(x => x.prexc)
+            //                    .OrderByDescending(x => x.Suballotment_title)
             //                    .ToList();
 
-            //eager Loading in EF Core
-            //var prexcs = _MyDbContext.SubAllotment
-            //         .Include(x => x.prexc)
-            //         .ToList();
-
-
-
-
             var subAllotments = _MyDbContext.SubAllotment
-     .Include(x => x.SubAllotmentAmounts)
-         .ThenInclude(x => x.Uacs)
-     .Include(x => x.prexc)
-     .OrderBy(x => x.prexc.pap_title)
-     .ThenByDescending(x => x.Suballotment_title)
-     .ToList();
+                .Include(X => X.AllotmentClass)
+                .Include(x => x.SubAllotmentAmounts)
+                     .ThenInclude(x => x.Uacs)
+                .Include(x => x.prexc)
+               // .Where(x=>x.AllotmentClassId == 2 && x.Budget_allotment.YearlyReferenceId == )
+                .OrderBy(x => x.prexc.pap_title)
+                .ThenByDescending(x => x.Suballotment_title)
+                .ToList();
+
+           
+            void ItemSubPrexc(IXLWorksheet worksheet, ref int currentRow, string value)
+            {
+
+                var rangeAU = worksheet.Range("A:U");
+                rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+                rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+                rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                rangeAU.Cell(currentRow, 1).Value = value;
+                currentRow++;
+            }
+
 
             string previousPapTitle = null;
 
             foreach (var item in subAllotments)
             {
+                //if (item.prexc.Id == 30 && item.SubAllotmentId == 328)
+                //{
+                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                //}
+                //if (item.prexc.Id == 33 && item.SubAllotmentId == 211)
+                //{
+                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                //}
+                //if (item.prexc.Id == 38 && item.SubAllotmentId == 417)
+                //{
+                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                //}
+                //if(item.prexc.Id == 24 && item.SubAllotmentId == 376)
+                //{
+                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                //}
+                //if (item.prexc.Id == 16 && item.SubAllotmentId == 384)
+                //{
+                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                //}
 
-            
-                if (item.prexc.Id == 1 && item.SubAllotmentId == 402 )
-                {
-                    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                    worksheet.Cell(currentRow, 1).Value = "Personnel Services";
-                    currentRow++;
-                    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                    worksheet.Cell(currentRow, 1).Value = "Maintenance & Other Operating Expenses";
-                    currentRow++;
-
-                }
-                 if(item.prexc.Id == 8 && item.SubAllotmentId == 363)
-                {
-                    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                    worksheet.Cell(currentRow, 1).Value = "Maintenance & Other Operating Expenses";
-                    currentRow++;
-                }
-
-                       
-                   
-
-
+               
                 if (item.prexc.pap_title != previousPapTitle)
                 {
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                  
+                    if(item.Suballotment_title != null)
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = "TOTAL SAA'S ";
+                        currentRow++;
+                        currentRow++;
+                    }
+                    
+
+                    worksheet.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
                     worksheet.Cell(currentRow, 1).Value = item.prexc.pap_title;
 
-                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
+                    worksheet.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
+                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
                     worksheet.Cell(currentRow, 2).Value = item.prexc.pap_code1;
                     worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
+                    currentRow++;
+
+             
+                   
+                   
+                    if (item.prexc.Id == 1 && item.SubAllotmentId == 402)
+                    {
+                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                        //ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                        
+                    }     
+                    if (item.prexc.Id == 3 && item.SubAllotmentId == 298)
+                    {
+                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                        //  ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+                    }
+                    if (item.prexc.Id == 7 && item.SubAllotmentId == 371)
+                    {
+                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                        //  ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                    }
+                    if(item.prexc.Id == 43 && item.SubAllotmentId == 335)
+                    {
+                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                    }
+                    var rangeAU = worksheet.Range("A1:U1");
+                    rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+                    rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+                    rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                    rangeAU.Cell(currentRow, 1).Value = item.AllotmentClass.Desc;
                     currentRow++;
 
                     previousPapTitle = item.prexc.pap_title;
 
                     // Reset Suballotment_title tracker
                     HashSet<string> displayedSubAllotments = new HashSet<string>();
+
+
+                     
+                    //if (item.prexc.Id == 8 && item.SubAllotmentId == 363)
+                    //{
+                    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                    //}
+           
+
+
+
                 }
 
-             
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
-                    worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
-                    currentRow++;
+
+                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
+                currentRow++;
 
                 foreach (var uacs in item.SubAllotmentAmounts.ToList())
-                    {
+                {
 
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
-                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
 
-                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-                        currentRow++;
-                        //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                        //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+                    currentRow++;
 
-                    
+
+                    //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
+                    //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+
                 }
-            
 
-       }
 
+            }
 
 
 
@@ -719,7 +757,7 @@ namespace fmis.Controllers.Budget.John
                 worksheet.Cell(currentRow, 1).Value = title;
                 worksheet.Cell(currentRow, 1).Style.Font.SetBold();
                 worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
-                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8;
+                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
                 currentRow++;
 
 
@@ -745,12 +783,12 @@ namespace fmis.Controllers.Budget.John
                 foreach (var accountTitle in uniqueAccountTitles)
                 {
                     worksheet.Cell(currentRow, 1).Value = accountTitle;
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 8; // Replace 8 with the desired font size
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9; // Replace 8 with the desired font size
 
                     // Find the corresponding expensesCode for the accountTitle
                     var expensesCode = itemsInCategory.FirstOrDefault(item => item.Account_title == accountTitle)?.expensesCode;
                     worksheet.Cell(currentRow, 2).Value = expensesCode;
-                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8; // Replace 8 with the desired font size
+                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9; // Replace 8 with the desired font size
 
                     currentRow++;
                 }
