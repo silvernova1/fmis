@@ -34,7 +34,6 @@ using OfficeOpenXml;
 using System.Text;
 using System.Diagnostics;
 using fmis.Models.Accounting;
-using MySqlX.XDevAPI.Common;
 
 
 //SAMPLE
@@ -179,9 +178,7 @@ namespace fmis.Controllers
                                     .AsNoTracking()
                                     .ToListAsync();
 
-
-
-			var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.Original != true || x.FundSourceTitle == "CANCELLED" || x.IsAddToNextAllotment == true && x.FundSourceTitle.Contains("CONAP")).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
+            var fund_sub_data = (from x in _MyDbContext.FundSources.Where(x => x.BudgetAllotment.YearlyReferenceId == YearlyRefId && x.Original != true || x.FundSourceTitle == "CANCELLED" || x.IsAddToNextAllotment == true && x.FundSourceTitle.Contains("CONAP")).ToList() select new { source_id = x.FundSourceId, source_title = x.FundSourceTitle, remaining_balance = x.Remaining_balance, source_type = "fund_source", obligated_amount = x.obligated_amount })
                                     .Concat(from y in _MyDbContext.SubAllotment.Where(x => x.Budget_allotment.YearlyReferenceId == YearlyRefId || x.IsAddToNextAllotment == true || x.Suballotment_title == "CANCELLED").ToList() select new { source_id = y.SubAllotmentId, source_title = y.Suballotment_title, remaining_balance = y.Remaining_balance, source_type = "sub_allotment", obligated_amount = y.obligated_amount });
 
             ViewBag.fund_sub = JsonSerializer.Serialize(fund_sub_data.ToList());
@@ -325,9 +322,9 @@ namespace fmis.Controllers
                 timer.Start();
                 for (int row = 3; row <= rowCount; row++)
                 {
-                    if (!string.IsNullOrEmpty(worksheet.Cells[row, 9].Text))
+                    if (!string.IsNullOrEmpty (worksheet.Cells[row, 9].Text))
                     {
-                        var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "";
+                        var fundSrcTxt = worksheet.Cells[row, 12].Text.Trim() ?? "" ;
                         var fundSrcId = _MyDbContext.FundSources.FirstOrDefault(x => x.FundSourceTitle == fundSrcTxt)?.FundSourceId;
                         var subAlltId = _MyDbContext.SubAllotment.FirstOrDefault(x => x.Suballotment_title == fundSrcTxt)?.SubAllotmentId;
                         List<ObligationAmount> OAs = new();

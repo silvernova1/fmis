@@ -141,7 +141,7 @@
                     <i class="ace-icon fa fa-money"></i>
                 </div>
                 <div class="infobox-data">
-                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span id="beginning-balance"  class="infobox-data-number" style="font-size:11pt; color:grey;">
                         @Model.FundSources.Sum(x => x.Beginning_balance).ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
@@ -154,7 +154,7 @@
                     <i class="ace-icon fa fa-bar-chart-o"></i>
                 </div>
                 <div class="infobox-data">
-                    <span class="infobox-data-number" style="font-size:11pt; color:grey;">
+                    <span id="obligated-amount" class="infobox-data-number" style="font-size:11pt; color:grey;">
                         @Model.FundSources.Sum(x => x.obligated_amount).ToString("C", new CultureInfo("en-PH"))
                     </span>
                     <div class="infobox-content">
@@ -202,11 +202,9 @@
     <input type="hidden" name="BudgetAllotmentId" value="@ViewBag.BudgetAllotmentId" />
 
     <span class="pull-right">
-        @*<button type="button" class="btn btn-sm btn-success btn-default" style="margin-bottom: 3px;" onclick="viewAllClicked();">
-            View All
-        </button>*@
+
         <input type="search" placeholder="Enter keyword..." class="form-group" name="search" id="search" value="@ViewBag.Search" style="width: 340px;" oninput="updateTable()" />
-        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;">
+        <button type="submit" class="btn btn-sm btn-default" style="margin-bottom: 3px;" disabled>
             <i class="ace-icon fa fa-search "></i> Search
         </button>
     </span>
@@ -471,20 +469,61 @@ else
             var endItem = startItem + rowsShown;
             $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
                 css('display', 'table-row').animate({ opacity: 1 }, 300);
+        });*/
+
+
+    function calculateBeginningBalanceSum() {
+        var sum = 0;
+        $('#data tbody tr:visible').each(function () {
+            var beginningBalanceText = $(this).find('.green span').text();
+            var beginningBalanceValue = parseFloat(beginningBalanceText.replace(/[^0-9.-]+/g, ""));
+            sum += beginningBalanceValue;
         });
-    });*/
-    //search
+        return formatCurrency(sum);
+    }
+
+    function calculateObligatedAmountSum() {
+        var sum = 0;
+        $('#data tbody tr:visible').each(function () {
+            var obligatedAmountText = $(this).find('.blue span').text();
+            var obligatedAmountValue = parseFloat(obligatedAmountText.replace(/[^0-9.-]+/g, ""));
+            sum += obligatedAmountValue;
+        });
+        return formatCurrency(sum);
+    }
+
+    function formatCurrency(amount) {
+        return amount.toLocaleString("en-PH", { style: "currency", currency: "PHP" });
+    }
+
+
     function updateTable() {
-        var searchValue = $('#search').val();
+        var searchValue = $('#search').val().toLowerCase();
+
         $('#data tbody tr').each(function () {
             var rowData = $(this).text().toLowerCase();
-            if (rowData.indexOf(searchValue.toLowerCase()) === -1) {
+            if (rowData.indexOf(searchValue) === -1) {
                 $(this).hide();
             } else {
                 $(this).show();
             }
         });
+
+        var beginningBalanceSum = calculateBeginningBalanceSum();
+        $('#beginning-balance').text(beginningBalanceSum);
+
+        // Update the obligated amount sum
+        var obligatedAmountSum = calculateObligatedAmountSum();
+        $('#obligated-amount').text(obligatedAmountSum);
     }
+
+    $('#search').on('input', function () {
+        updateTable();
+    });
+
+
+
+
     //sort fundsource title
     $(document).ready(function () {
         function toggleSortOrder(order) {
