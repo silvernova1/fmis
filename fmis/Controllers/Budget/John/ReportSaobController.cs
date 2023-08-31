@@ -592,13 +592,12 @@ namespace fmis.Controllers.Budget.John
             //                    .Include(x => x.prexc)
             //                    .OrderByDescending(x => x.Suballotment_title)
             //                    .ToList();
-
+      
             var subAllotments = _MyDbContext.SubAllotment
                 .Include(X => X.AllotmentClass)
                 .Include(x => x.SubAllotmentAmounts)
                      .ThenInclude(x => x.Uacs)
                 .Include(x => x.prexc)
-               //  .Where(x=>x.AllotmentClassId == 2 && x.Budget_allotment.YearlyReferenceId == 2021)
                 .OrderBy(x => x.prexc.pap_title)
                 .ThenByDescending(x => x.Suballotment_title)
                 .ToList();
@@ -616,10 +615,92 @@ namespace fmis.Controllers.Budget.John
             }
 
 
+            bool totalSaa = false;
+            string paptitle = null;
+            string papcode = null;
+            string previousPapTitle1 = null;
+            foreach (var prex in subAllotments)
+            
+            {
+                if (prex.AllotmentClassId == 2 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3)
+               {
+
+                if (prex.AllotmentClassId == 2 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 1)
+                {
+                    if(prex.prexc.pap_title != paptitle || prex.prexc.pap_code1 != papcode)
+                    {
+
+                    
+                       worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                       worksheet.Cell(currentRow, 1).Value = prex.prexc.pap_title;
+
+                       worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
+                       worksheet.Cell(currentRow, 2).Value = prex.prexc.pap_code1;
+                       worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
+                       currentRow++;
+
+                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+
+                        var rangeAU = worksheet.Range("A1:U1");
+                        rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+                        rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+                        rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                        rangeAU.Cell(currentRow, 1).Value = prex.AllotmentClass.Desc;
+                        currentRow++;
+
+                        paptitle  = prex.prexc.pap_title;
+                        papcode  = prex.prexc.pap_code1;
+                    }
+
+               
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                    worksheet.Cell(currentRow, 1).Value = prex.Suballotment_title;
+                    currentRow++;
+             
+                      foreach (var uacs in prex.SubAllotmentAmounts.ToList())
+                      {
+
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+                        currentRow++;
+
+
+                        //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
+                        //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+                      }
+
+                        if (!totalSaa && prex.SubAllotmentId == 326 && prex.SubAllotmentAmounts.FirstOrDefault(x => x.UacsId == x.UacsId) != null)
+                        {
+                            totalSaa = true;
+                            ItemSubPrexc(worksheet, ref currentRow, "COTAL SAA'S 2023");
+                            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                            currentRow++;
+                        }
+
+
+                    }// end of if statement 
+
+                } // calculating year
+              
+
+            }// end of a foreach loop
+
+
+
+
+
+
             string previousPapTitle = null;
 
             foreach (var item in subAllotments)
             {
+                
+
+
                 //if (item.prexc.Id == 30 && item.SubAllotmentId == 328)
                 //{
                 //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
@@ -631,7 +712,7 @@ namespace fmis.Controllers.Budget.John
                 //if (item.prexc.Id == 38 && item.SubAllotmentId == 417)
                 //{
                 //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                //}
+                //} 
                 //if(item.prexc.Id == 24 && item.SubAllotmentId == 376)
                 //{
                 //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
@@ -640,22 +721,13 @@ namespace fmis.Controllers.Budget.John
                 //{
                 //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
                 //}
-
+                //   where ba.BudgetAllotmentId == 2 && sub.AllotmentClassId == 2 && sub.AppropriationId == 2
 
                 if (item.prexc.pap_title != previousPapTitle)
                 {
 
-                    if (item.Suballotment_title != null)
-                    {
-                        worksheet.Cell(currentRow, 1).Style.Font.SetBold();
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 1).Value = "TOTAL SAA'S ";
-                        currentRow++;
-                        currentRow++;
-                    }
 
-
-                    worksheet.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
+                        worksheet.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
                     worksheet.Cell(currentRow, 1).Value = item.prexc.pap_title;
 
@@ -664,8 +736,6 @@ namespace fmis.Controllers.Budget.John
                     worksheet.Cell(currentRow, 2).Value = item.prexc.pap_code1;
                     worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
                     currentRow++;
-
-
 
 
                     if (item.prexc.Id == 1 && item.SubAllotmentId == 402)
@@ -702,15 +772,16 @@ namespace fmis.Controllers.Budget.John
 
 
 
-                    //if (item.prexc.Id == 8 && item.SubAllotmentId == 363)
-                    //{
-                    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                    //}
+                        //if (item.prexc.Id == 8 && item.SubAllotmentId == 363)
+                        //{
+                        //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+                        //}
 
 
+                    
 
+                } //end of item.prexc.pap_titl
 
-                }
 
 
                 worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
@@ -734,7 +805,7 @@ namespace fmis.Controllers.Budget.John
 
 
                 }
-
+            
 
             }
 
