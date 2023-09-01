@@ -80,17 +80,39 @@ namespace fmis.Controllers.Budget.John
                               join fsa in _MyDbContext.FundSourceAmount on fs.FundSourceId equals fsa.FundSourceId
                               join u in _MyDbContext.Uacs on fsa.UacsId equals u.UacsId
                               join o in _MyDbContext.Obligation on fs.FundSourceId equals o.FundSourceId
+                              join pr in _MyDbContext.Prexc on fs.PrexcId equals pr.Id
+                              join ba in _MyDbContext.Budget_allotments on fs.BudgetAllotmentId equals ba.BudgetAllotmentId
+                              join Ap in _MyDbContext.Appropriation on fs.AppropriationId equals Ap.AppropriationId
+                              join al in _MyDbContext.AllotmentClass on fs.AllotmentClassId equals al.Id
                               //  where   o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday
                               // where o.Date >= date1 && o.Date <= date2
                               select new
                               {
+                                 
+                                  FundAppropriationId = fs.AppropriationId,
+                                  AppropriationId = Ap.AppropriationId,
+                                  FundPrexcId = fs.PrexcId,
+                                  prexcId = pr.Id,
+                                  FundAllotmentClassId = fs.AllotmentClassId,
+                                  AllotmentClassId = al.Id,
+                                  AllotmentDesc = al.Desc,
+                                  budgetAllotmentId = ba.BudgetAllotmentId,
+                                  FundBudgetAllotmentId = fs.BudgetAllotmentId,
                                   UacsId = u.UacsId,
+                                  funsoureAmountUacsId = fsa.UacsId,
+                                  FundAmountUacsId = fsa.UacsId,
                                   Date = o.Date,
+                                  prexPap_title = pr.pap_title,
+                                  prexPap_code = pr.pap_code1,
                                   fundsourceId = fs.FundSourceId,
                                   fundsTitle = fs.FundSourceTitle,
                                   Account_title = u.Account_title,
                                   expensesCode = u.Expense_code
                               }).Distinct().ToList();
+
+            var suballotmentAmount = _MyDbContext.FundSources
+                                   .Include(x => x.FundSourceAmounts)
+                                   .Include(x => x.Uacs).ToList();
 
 
             // var fundsource3 = (from fs in _MyDbContext.FundSources
@@ -602,16 +624,21 @@ namespace fmis.Controllers.Budget.John
                 .ThenByDescending(x => x.Suballotment_title)
                 .ToList();
 
-
+            string previousValue = null;
             void ItemSubPrexc(IXLWorksheet worksheet, ref int currentRow, string value)
             {
+                if(value != previousValue)
+                {
+                    var rangeAU = worksheet.Range("A:U");
+                    rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+                    rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+                    rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                    rangeAU.Cell(currentRow, 1).Value = value;
+                    currentRow++;
 
-                var rangeAU = worksheet.Range("A:U");
-                rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
-                rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
-                rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
-                rangeAU.Cell(currentRow, 1).Value = value;
-                currentRow++;
+                    previousValue = value;
+                }
+           
             }
 
 
@@ -673,197 +700,340 @@ namespace fmis.Controllers.Budget.John
                         //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
                       }
 
-                        if (!totalSaa && prex.SubAllotmentId == 326 && prex.SubAllotmentAmounts.FirstOrDefault(x => x.UacsId == x.UacsId) != null)
+                       
+                            
+                        
+                    }// end of if statement 
+
+                } // BudgetAllotment DashBoard year
+
+            }// end of a foreach loop
+            ItemSubPrexc(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            ItemSubPrexc(worksheet, ref currentRow, "Aapital Outlays");
+            currentRow++;
+
+            bool staticDataAdded = false;
+            foreach (var prexAdmin in subAllotments)
+            {
+                if (prexAdmin.AllotmentClassId == 1 && prexAdmin.AppropriationId == 1 && prexAdmin.BudgetAllotmentId == 3)
+                {
+
+
+                    if (prexAdmin.BudgetAllotmentId == 3 && prexAdmin.AppropriationId == 1 && prexAdmin.AllotmentClassId == 1 && prexAdmin.prexcId == 2)
+                    {
+                        if (prexAdmin.prexc.pap_title != paptitle && prexAdmin.prexc.pap_code1 != papcode)
                         {
-                            totalSaa = true;
-                            ItemSubPrexc(worksheet, ref currentRow, "COTAL SAA'S 2023");
-                            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 1).Value = prexAdmin.prexc.pap_title;
+
+                            worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 2).Value = prexAdmin.prexc.pap_code1;
+                            worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
                             currentRow++;
+
+                            var rangeAU = worksheet.Range("A1:U1");
+                            rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+                            rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+                            rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                            rangeAU.Cell(currentRow, 1).Value = prexAdmin.AllotmentClass.Desc;
+                            currentRow++;
+
+                            paptitle = prexAdmin.prexc.pap_title;
+                            papcode = prexAdmin.prexc.pap_code1;
                         }
+                       
+                     
+                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell(currentRow, 1).Value = prexAdmin.Suballotment_title;
+                            currentRow++;
+
+                        
+                        foreach (var uacs in prexAdmin.SubAllotmentAmounts.ToList())
+                            {
+                                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+                                currentRow++;
+
+                             }
+                        
+
+                          
 
 
                     }// end of if statement 
 
-                } // calculating year
-              
+                 
+                }// BudgetAllotment DashBoard year
 
             }// end of a foreach loop
+            ItemSubPrexc(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            currentRow++;
 
-
-
-
-
-
-            string previousPapTitle = null;
-
-            foreach (var item in subAllotments)
+            worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "||. SUPPORT TO OPERATIONS";
+              currentRow++;
+            string preivousFunstitle = null;
+            string PrevaccountTitle = null;
+            string prevExpenseCode = null;
+            string previousPrexPapTitle = null;
+            string previousPrexPapCode = null;
+            string previousAllotmentDesc = null;
+            foreach (var funsource in funsources)
             {
-                
-
-
-                //if (item.prexc.Id == 30 && item.SubAllotmentId == 328)
-                //{
-                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                //}
-                //if (item.prexc.Id == 33 && item.SubAllotmentId == 211)
-                //{
-                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                //}
-                //if (item.prexc.Id == 38 && item.SubAllotmentId == 417)
-                //{
-                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                //} 
-                //if(item.prexc.Id == 24 && item.SubAllotmentId == 376)
-                //{
-                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                //}
-                //if (item.prexc.Id == 16 && item.SubAllotmentId == 384)
-                //{
-                //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                //}
-                //   where ba.BudgetAllotmentId == 2 && sub.AllotmentClassId == 2 && sub.AppropriationId == 2
-
-                if (item.prexc.pap_title != previousPapTitle)
+                if(funsource.FundAllotmentClassId == 1 && funsource.FundAppropriationId == 1 && funsource.FundBudgetAllotmentId == 3)
                 {
 
-
-                        worksheet.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 1).Value = item.prexc.pap_title;
-
-                    worksheet.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
-                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 2).Value = item.prexc.pap_code1;
-                    worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
-                    currentRow++;
-
-
-                    if (item.prexc.Id == 1 && item.SubAllotmentId == 402)
+                    if (funsource.FundAllotmentClassId == 1 && funsource.FundAppropriationId == 1 && funsource.FundBudgetAllotmentId == 3 && funsource.FundPrexcId == 4)
                     {
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-                        //ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
 
-                    }
-                    if (item.prexc.Id == 3 && item.SubAllotmentId == 298)
-                    {
-                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                        //  ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
-                    }
-                    if (item.prexc.Id == 7 && item.SubAllotmentId == 371)
-                    {
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-                        //  ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                    }
-                    if (item.prexc.Id == 43 && item.SubAllotmentId == 335)
-                    {
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-                    }
-                    var rangeAU = worksheet.Range("A1:U1");
-                    rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
-                    rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
-                    rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
-                    rangeAU.Cell(currentRow, 1).Value = item.AllotmentClass.Desc;
-                    currentRow++;
+                        if (funsource.prexPap_title != previousPrexPapTitle || funsource.prexPap_code != previousPrexPapCode || funsource.AllotmentDesc != previousAllotmentDesc)
+                        {
 
-                    previousPapTitle = item.prexc.pap_title;
+                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 1).Value = funsource.prexPap_title;
 
-                    // Reset Suballotment_title tracker
-                    HashSet<string> displayedSubAllotments = new HashSet<string>();
+                            worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 2).Value = funsource.prexPap_code;
+                            worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
+                            currentRow++;
 
+                            var rangeAU = worksheet.Range("A1:U1");
+                             rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+                            rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+                            rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                            rangeAU.Cell(currentRow, 1).Value = funsource.AllotmentDesc;
+                            currentRow++;
 
+                            previousPrexPapTitle = funsource.prexPap_title;
+                            previousPrexPapCode = funsource.prexPap_code;
+                            previousAllotmentDesc = funsource.AllotmentDesc;
+                        }
+                       
+                        
+                         if(funsource.FundAllotmentClassId == 1 && funsource.FundAppropriationId == 1 && funsource.FundBudgetAllotmentId == 3 && funsource.fundsourceId == 56)
+                         {
+                              if (funsource.fundsTitle != preivousFunstitle)
+                             {
+                                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 1).Value = funsource.fundsTitle;
+                                currentRow++;
+                                preivousFunstitle = funsource.fundsTitle;
+                              }
+                           
+                               if(funsource.Account_title != PrevaccountTitle && funsource.expensesCode != prevExpenseCode)
+                            {
 
-                        //if (item.prexc.Id == 8 && item.SubAllotmentId == 363)
-                        //{
-                        //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                        //}
+                                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                worksheet.Cell(currentRow, 1).Value = funsource.Account_title;
 
+                                worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                worksheet.Cell(currentRow, 2).Value = funsource.expensesCode;
+                                currentRow++;
+                                PrevaccountTitle = funsource.Account_title;
+                                prevExpenseCode = funsource.expensesCode;
+                            }
+                            
+                           
 
-                    
+                        }//end of if 2023 STO-ORO-PS
+                        
+                    } // year
 
-                } //end of item.prexc.pap_titl
-
-
-
-                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
-                worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
-                worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
-                currentRow++;
-
-                foreach (var uacs in item.SubAllotmentAmounts.ToList())
-                {
-
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
-
-                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
-                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-                    currentRow++;
-
-
-                    //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
-                    //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+               }
+          }//end of foreach
+            ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
 
 
-                }
-            
 
-            }
+
+
+
+
+
+
+
+
+
+
+
+
+            //string previousPapTitle = null;
+
+            //foreach (var item in subAllotments)
+            //{
+
+
+
+            //    //if (item.prexc.Id == 30 && item.SubAllotmentId == 328)
+            //    //{
+            //    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //    //}
+            //    //if (item.prexc.Id == 33 && item.SubAllotmentId == 211)
+            //    //{
+            //    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //    //}
+            //    //if (item.prexc.Id == 38 && item.SubAllotmentId == 417)
+            //    //{
+            //    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //    //} 
+            //    //if(item.prexc.Id == 24 && item.SubAllotmentId == 376)
+            //    //{
+            //    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //    //}
+            //    //if (item.prexc.Id == 16 && item.SubAllotmentId == 384)
+            //    //{
+            //    //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //    //}
+            //    //   where ba.BudgetAllotmentId == 2 && sub.AllotmentClassId == 2 && sub.AppropriationId == 2
+
+            //    if (item.prexc.pap_title != previousPapTitle)
+            //    {
+
+
+            //        worksheet.Cell(currentRow, 1).Style.Font.FontName = "Calibri Light";
+            //        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            //        worksheet.Cell(currentRow, 1).Value = item.prexc.pap_title;
+
+            //        worksheet.Cell(currentRow, 2).Style.Font.FontName = "Calibri Light";
+            //        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
+            //        worksheet.Cell(currentRow, 2).Value = item.prexc.pap_code1;
+            //        worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = "00";
+            //        currentRow++;
+
+
+            //        if (item.prexc.Id == 1 && item.SubAllotmentId == 402)
+            //        {
+            //            ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+            //            //ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+
+            //        }
+            //        if (item.prexc.Id == 3 && item.SubAllotmentId == 298)
+            //        {
+            //            ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //            //  ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            //        }
+            //        if (item.prexc.Id == 7 && item.SubAllotmentId == 371)
+            //        {
+            //            ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+            //            //  ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //        }
+            //        if (item.prexc.Id == 43 && item.SubAllotmentId == 335)
+            //        {
+            //            ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+            //        }
+            //        var rangeAU = worksheet.Range("A1:U1");
+            //        rangeAU.Cell(currentRow, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
+            //        rangeAU.Cell(currentRow, 1).Style.Font.SetBold();
+            //        rangeAU.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            //        rangeAU.Cell(currentRow, 1).Value = item.AllotmentClass.Desc;
+            //        currentRow++;
+
+            //        previousPapTitle = item.prexc.pap_title;
+
+            //        // Reset Suballotment_title tracker
+            //        HashSet<string> displayedSubAllotments = new HashSet<string>();
+
+
+
+            //        //if (item.prexc.Id == 8 && item.SubAllotmentId == 363)
+            //        //{
+            //        //    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
+            //        //}
+
+
+
+
+            //    } //end of item.prexc.pap_titl
+
+
+
+            //    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            //    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+            //    worksheet.Cell(currentRow, 1).Value = item.Suballotment_title;
+            //    currentRow++;
+
+            //    foreach (var uacs in item.SubAllotmentAmounts.ToList())
+            //    {
+
+            //        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+            //        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+            //        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+            //        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+            //        currentRow++;
+
+
+            //        //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
+            //        //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+
+            //    }
+
+
+            //}
 
 
 
             //var filteredFunsources = funsources.Where(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday).ToList();
             // var filteredFunsources = funsources.Where(sa => sa.fundsourceId == sa.fundsourceId).ToList();
             // Get distinct category names
-            var fundsTitle = funsources.Select(fs => fs.fundsTitle).Distinct().ToList();
+            //var fundsTitle = funsources.Select(fs => fs.fundsTitle).Distinct().ToList();
 
-            // Iterate through the fundsTitle and display each value in a separate row
-            foreach (var title in fundsTitle)
-            {
-                if (string.IsNullOrEmpty(title)) // Skip empty or null titles
-                    continue;
+            //// Iterate through the fundsTitle and display each value in a separate row
+            //foreach (var title in fundsTitle)
+            //{
+            //    if (string.IsNullOrEmpty(title)) // Skip empty or null titles
+            //        continue;
 
-                worksheet.Cell(currentRow, 1).Value = title;
-                worksheet.Cell(currentRow, 1).Style.Font.SetBold();
-                worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
-                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                currentRow++;
+            //    worksheet.Cell(currentRow, 1).Value = title;
+            //    worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+            //    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+            //    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+            //    currentRow++;
 
 
 
-                // Get the items belonging to the current category
-                var itemsInCategory = funsources.Where(fs => fs.fundsTitle == title).ToList();
+            //    // Get the items belonging to the current category
+            //    var itemsInCategory = funsources.Where(fs => fs.fundsTitle == title).ToList();
 
-                // Create separate lists to store unique Account_title and expensesCode
-                var uniqueAccountTitles = new List<string>();
-                var uniqueExpensesCodes = new List<string>();
+            //    // Create separate lists to store unique Account_title and expensesCode
+            //    var uniqueAccountTitles = new List<string>();
+            //    var uniqueExpensesCodes = new List<string>();
 
-                // Iterate through the items and store unique Account_title and expensesCode
-                foreach (var item in itemsInCategory)
-                {
-                    if (!uniqueAccountTitles.Contains(item.Account_title))
-                        uniqueAccountTitles.Add(item.Account_title);
+            //    // Iterate through the items and store unique Account_title and expensesCode
+            //    foreach (var item in itemsInCategory)
+            //    {
+            //        if (!uniqueAccountTitles.Contains(item.Account_title))
+            //            uniqueAccountTitles.Add(item.Account_title);
 
-                    if (!uniqueExpensesCodes.Contains(item.expensesCode))
-                        uniqueExpensesCodes.Add(item.expensesCode);
-                }
+            //        if (!uniqueExpensesCodes.Contains(item.expensesCode))
+            //            uniqueExpensesCodes.Add(item.expensesCode);
+            //    }
 
-                // Display the items and expensesCode in the same row for the current category
-                foreach (var accountTitle in uniqueAccountTitles)
-                {
-                    worksheet.Cell(currentRow, 1).Value = accountTitle;
-                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9; // Replace 8 with the desired font size
+            //    // Display the items and expensesCode in the same row for the current category
+            //    foreach (var accountTitle in uniqueAccountTitles)
+            //    {
+            //        worksheet.Cell(currentRow, 1).Value = accountTitle;
+            //        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9; // Replace 8 with the desired font size
 
-                    // Find the corresponding expensesCode for the accountTitle
-                    var expensesCode = itemsInCategory.FirstOrDefault(item => item.Account_title == accountTitle)?.expensesCode;
-                    worksheet.Cell(currentRow, 2).Value = expensesCode;
-                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9; // Replace 8 with the desired font size
+            //        // Find the corresponding expensesCode for the accountTitle
+            //        var expensesCode = itemsInCategory.FirstOrDefault(item => item.Account_title == accountTitle)?.expensesCode;
+            //        worksheet.Cell(currentRow, 2).Value = expensesCode;
+            //        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9; // Replace 8 with the desired font size
 
-                    currentRow++;
-                }
+            //        currentRow++;
+            //    }
 
-                // Increment row to leave a blank row between each category
-                currentRow++;
-            }
+            //    // Increment row to leave a blank row between each category
+            //    currentRow++;
+            //}
 
 
 
