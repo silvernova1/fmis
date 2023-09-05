@@ -443,7 +443,7 @@
         $("#DvCheck").html("Checking...");
         $.post("@Url.Action("CheckDvNo", "Dv")",
             {
-                invoice: $("#dvno").val()
+                dvno: $("#dvno").val()
             },
             function (data) {
                 if (data == 0) {
