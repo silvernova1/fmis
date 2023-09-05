@@ -82,9 +82,9 @@ namespace fmis.Controllers.Accounting
         }
 
 
-        public JsonResult CheckDvNo(string invoice)
+        public JsonResult CheckDvNo(string dvno)
         {
-            var data = _MyDbContext.Dv.Where(x => x.DvNo == invoice).SingleOrDefault();
+            var data = _MyDbContext.Dv.Where(x => x.DvNo == dvno).SingleOrDefault();
 
             if (data != null)
             {
