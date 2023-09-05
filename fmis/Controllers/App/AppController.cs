@@ -1,6 +1,8 @@
-﻿using fmis.Data;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using fmis.Data;
 using fmis.Data.MySql;
 using fmis.Filters;
+using fmis.Models.Accounting;
 using fmis.Models.ppmp;
 using fmis.Models.UserModels;
 using fmis.Services;
@@ -10,10 +12,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Item = fmis.Models.ppmp.Item;
 
 namespace fmis.Controllers.App
 {
@@ -43,35 +50,37 @@ namespace fmis.Controllers.App
             var expenses = new List<Expense>();
             if (_context.Expense.Count() > 0)
             {
-                expenses = _context.Expense.Include(x => x.Items).Take(2).ToList();
+                expenses = _context.Expense.Include(x=>x.Items).Include(x => x.AppModels).ToList();
             }
             else
             {
-                expenses = _ppmpContext.expense.Include(x => x.Items).Take(2).ToList();
+                //expenses = _ppmpContext.expense.Include(x => x.item_daily.Where(x=> x.yearly_ref_id == 4 && x.status == null)).Take(3).ToList();
+                expenses = _ppmpContext.expense.Include(x=>x.Items).Take(2).ToList();
             }
 
             return View(expenses);
         }
-        [HttpPost]
-        public async Task<IActionResult> Create(List<Expense> expenses)
-        {
 
+
+        [HttpPost]
+        public async Task<IActionResult> Create(List<Expense> expenses, List<int> expenseIds)
+        {
             foreach (var expense in expenses)
             {
-                var existingExpense = _context.Expense.FirstOrDefault(e => e.Id == expense.Id);
+                var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == expense.Id);
 
                 if (existingExpense != null)
                 {
                     existingExpense.Description = expense.Description;
 
-                    existingExpense.Items.Clear();
-                    foreach (var newItem in expense.Items)
+                    existingExpense.AppModels.Clear();
+                    foreach (var newItem in expense.AppModels)
                     {
-                        var item = new Item
+                        var item = new AppModel
                         {
-                            Description = newItem.Description,
+                            ProcurementProject = newItem.ProcurementProject,
                         };
-                        existingExpense.Items.Add(item);
+                        existingExpense.AppModels.Add(item);
                     }
                 }
                 else
@@ -79,15 +88,15 @@ namespace fmis.Controllers.App
                     var newExpense = new Expense
                     {
                         Description = expense.Description,
-                        Items = new List<Item>()
+                        AppModels = new List<AppModel>()
                     };
-                    foreach (var newItem in expense.Items)
+                    foreach (var newItem in expense.AppModels)
                     {
-                        var item = new Item
+                        var item = new AppModel
                         {
-                            Description = newItem.Description
+                            ProcurementProject = newItem.ProcurementProject
                         };
-                        newExpense.Items.Add(item);
+                        newExpense.AppModels.Add(item);
                     }
                     _context.Expense.Add(newExpense);
                 }
@@ -97,6 +106,54 @@ namespace fmis.Controllers.App
 
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public IActionResult CreateOrUpdateExpense(List<Expense> expenses)
+        {
+            foreach (var expense in expenses)
+            {
+                if (expense.Id == 0)
+                {
+                    // This expense is new, add it to the database
+                    AddExpenseToDatabase(expense);
+                }
+                else
+                {
+                    // This expense is existing, update it in the database
+                    UpdateExpenseInDatabase(expense);
+                }
+            }
+
+            SaveChangesToDatabase();
+
+            return RedirectToAction("Index");
+        }
+
+        private void AddExpenseToDatabase(Expense expense)
+        {
+            _context.Expense.Add(expense);
+            _context.SaveChanges();
+        }
+
+        private void UpdateExpenseInDatabase(Expense expense)
+        {
+            var existingExpense = _context.Expense.Find(expense.Id);
+            if (existingExpense != null)
+            {
+                // Update the existing expense properties with values from the new expense
+                existingExpense.Description = expense.Description;
+                // Update other properties as needed
+                _context.SaveChanges();
+            }
+        }
+
+        private void SaveChangesToDatabase()
+        {
+            _context.SaveChanges();
+        }
+
+
+
 
         #region LOGIN
         [HttpGet]
@@ -208,7 +265,7 @@ namespace fmis.Controllers.App
         #endregion
 
         #region COOKIES
-        public string UserRole { get { return User.FindFirstValue(ClaimTypes.Role); } }
+        public string year { get { return User.FindFirstValue("Year"); } }
         #endregion
     }
 }

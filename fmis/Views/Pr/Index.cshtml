@@ -190,7 +190,7 @@ else
 
 												@foreach (var prItems in items?.PrItems)
 												{
-													var Items = PpmpContext.item.FirstOrDefault(x => x.Id == Convert.ToInt32(prItems.ItemDescription)).Description;
+													var Items = PpmpContext.item_daily.FirstOrDefault(x => x.Id == Convert.ToInt32(prItems.ItemDescription)).Description;
 													<tr>
 														<td id="border-bottom">
 															<input type="hidden" id="expenses">1

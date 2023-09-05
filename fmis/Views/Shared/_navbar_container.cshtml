@@ -48,7 +48,7 @@
                 </div>
             </div>
         }
-        else if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+        else if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin" || User.FindFirstValue(ClaimTypes.Role) == "accounting_user")
         {
             <div class="navbar-container ace-save-state" id="navbar-container">
                 <div class="navbar-header" style="padding: 10px">
