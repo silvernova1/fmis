@@ -63,8 +63,9 @@
             </div>
             <div class="1stcol col-md-2" style="width: 130px;">
                 <h5>Dv #: </h5>
-                <input asp-for="DvNo" type="text" id="dv_no" class="form-control" value="S07-0030" />
+                <input asp-for="DvNo" type="text" id="dvno" class="form-control" value="@ViewData["DvNo"]" onchange="DvCheck()" />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
+                <p id="DvCheck" />
             </div>
             <div id="payment_of" class="1stcol col-md-2" style="width: 150px;">
                 <h5>For Payment of: </h5>
@@ -436,6 +437,28 @@
 
 
 <script>
+    //Dv Check
+
+    function DvCheck() {
+        $("#DvCheck").html("Checking...");
+        $.post("@Url.Action("CheckDvNo", "Dv")",
+            {
+                invoice: $("#dvno").val()
+            },
+            function (data) {
+                if (data == 0) {
+                    $("#DvCheck").html('<font color="Green">Available</font>');
+                    $("#dvno").css("border-color", "Green");
+
+                }
+                else {
+                    $("#DvCheck").html('<font color="Red">Already Exist!</font>');
+                    $("#dvno").css("border-color", "Red");
+                }
+            });
+    }
+
+    //
     // New deductions Progress
     var deductionCount = 1;
 

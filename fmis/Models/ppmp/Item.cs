@@ -16,9 +16,9 @@ namespace fmis.Models.ppmp
 
         public int? Expense_id { get; set; }
 
-        public int? Division { get; set; }
+        public int? Division_id { get; set; }
 
-        public int? Section { get; set; }
+        public int? Section_id { get; set; }
 
         [MaxLength(45)]
         public string? Tranche { get; set; }
@@ -36,7 +36,7 @@ namespace fmis.Models.ppmp
         public string? Qty { get; set; }
 
         [MaxLength]
-        public string? Unit_cost { get; set; }
+        public string Unit_cost { get; set; }
 
         [MaxLength]
         public string? Estimated_budget { get; set; }
@@ -47,31 +47,31 @@ namespace fmis.Models.ppmp
         [MaxLength(45)]
         public string? Status { get; set; }
 
-        public int? Jan { get; set; }
+        public int Jan { get; set; }
 
-        public int? Feb { get; set; }
+        public int Feb { get; set; }
 
-        public int? Mar { get; set; }
+        public int Mar { get; set; }
 
-        public int? Apr { get; set; }
+        public int Apr { get; set; }
 
-        public int? May { get; set; }
+        public int May { get; set; }
 
-        public int? Jun { get; set; }
+        public int Jun { get; set; }
 
-        public int? Jul { get; set; }
+        public int Jul { get; set; }
 
-        public int? Aug { get; set; }
+        public int Aug { get; set; }
 
-        public int? Sep { get; set; }
+        public int Sep { get; set; }
 
-        public int? Oct { get; set; }
+        public int Oct { get; set; }
 
-        public int? Nov { get; set; }
+        public int Nov { get; set; }
 
-        public int? Dece { get; set; }
+        public int Dece { get; set; }
 
-        public int? Yearly_ref_id { get; set; }
+        public int Yearly_ref_id { get; set; }
 
         [ForeignKey("Expense_id")]
         public Expense Expense { get; set; }

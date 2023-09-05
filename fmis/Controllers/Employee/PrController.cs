@@ -67,7 +67,7 @@ namespace fmis.Controllers.Employee
             UsersDropDownList();
 
             var pr = await _context.Pr.Include(x => x.PrItems).ToListAsync();
-            ViewBag.ItemDesc = _ppmpContext.item.FirstOrDefault();
+            ViewBag.ItemDesc = _ppmpContext.item_daily.FirstOrDefault();
 
 
             return View(pr);
@@ -85,7 +85,7 @@ namespace fmis.Controllers.Employee
         public IActionResult GetUnit(int id)
         {
 
-            var item = _ppmpContext.item.FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item_daily.FirstOrDefault(i => i.Id == id);
             if (item != null)
             {
                 return Ok(item.Unit_measurement);
@@ -96,7 +96,7 @@ namespace fmis.Controllers.Employee
         public IActionResult GetUnitCost(int id)
         {
 
-            var item = _ppmpContext.item.FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item_daily.FirstOrDefault(i => i.Id == id);
             if (item != null)
             {
                 return Ok(item.Unit_cost);
@@ -112,7 +112,7 @@ namespace fmis.Controllers.Employee
         }
         public void ItemsDropDownList(object selected = null)
         {
-            var Query = from i in _ppmpContext.item
+            var Query = from i in _ppmpContext.item_daily
                         orderby i.Id
                         select i;
             ViewBag.ItemId = new SelectList(Query, "Id", "Description", selected);
@@ -130,7 +130,7 @@ namespace fmis.Controllers.Employee
         }
         public List<Item> GetItemsId(int expenseId)
         {
-            return _ppmpContext.item.Where(c => c.Expense_id == expenseId).ToList();
+            return _ppmpContext.item_daily.Where(c => c.Expense_id == expenseId).ToList();
         }
 
 

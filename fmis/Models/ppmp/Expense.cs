@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using System.Collections.Generic;
 
 namespace fmis.Models.ppmp
 {
@@ -13,6 +14,8 @@ namespace fmis.Models.ppmp
         public string Description { get; set; }
 
         public List<Item> Items { get; set; }
+
+        public List<AppModel> AppModels { get; set; }
 
     }
 }
