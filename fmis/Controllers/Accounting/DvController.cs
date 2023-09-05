@@ -336,62 +336,43 @@ namespace fmis.Controllers.Accounting
 
         public async Task<IActionResult> GetLatestDvType(string type)
         {
-            var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
+            var lastRecord = _MyDbContext.Dv
+            .OrderByDescending(e => e.DvId)
+            .FirstOrDefault();
 
-            if (type == "S")
+            string newDvNo;
+
+            if (type == "T")
             {
-                string currentMonth = DateTime.Now.Month.ToString();
-                var dvCtr = "0816";
-                var dvNo = $"{type}{currentMonth}-{dvCtr}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                if (lastRecord != null && lastRecord.DvNo.Contains("T"))
                 {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                    int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                    lastDvNo++;
+
+                    newDvNo = $"T09-{lastDvNo:D4}";
+                    ViewData["DvNo"] = newDvNo;
                 }
                 else
                 {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                    newDvNo = "T09-4275";
                 }
-
-                if (latest == null) return Ok(dvNo);
-                dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
-                {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
-                }
-                else
-                {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
-                }
-                return Ok(dvNo);
+                return Ok(newDvNo);
             }
             else
             {
-                string currentMonth = DateTime.Now.Month.ToString();
-                var dvCtr = "0751";
-                var dvNo = $"{type}{currentMonth}-{dvCtr}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                if (lastRecord != null && lastRecord.DvNo.Contains("S"))
                 {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                    int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                    lastDvNo++;
+
+                    newDvNo = $"S09-{lastDvNo:D4}";
+                    ViewData["DvNo"] = newDvNo;
                 }
                 else
                 {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                    newDvNo = "S09-2872";
                 }
-                if (latest == null) return Ok(dvNo);
-                dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
-                {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
-                }
-                else
-                {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
-                }
-                return Ok(dvNo);
+                return Ok(newDvNo);
             }
             
         }
