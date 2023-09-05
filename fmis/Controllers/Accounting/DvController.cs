@@ -41,6 +41,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using fmis.Models.ppmp;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
+using iText.Commons.Actions.Contexts;
+using fmis.Data.MySql;
 
 namespace fmis.Controllers.Accounting
 {
@@ -62,7 +64,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult GetPrograms()
         {
-            var programs = _ppmpContext.item.ToList();
+            var programs = _ppmpContext.item_daily.ToList();
 
             return Json(programs);
         }
@@ -71,13 +73,29 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
-            var item = from e in _ppmpContext.item
-                          orderby e.Id
+            var item = from e in _ppmpContext.item_daily
+                       orderby e.Id
                           select e;
             ViewBag.Item = new SelectList(item, "Id", "Description");
 
             return View();
         }
+
+
+        public JsonResult CheckDvNo(string invoice)
+        {
+            var data = _MyDbContext.Dv.Where(x => x.DvNo == invoice).SingleOrDefault();
+
+            if (data != null)
+            {
+                return Json(1);
+            }
+            else
+            {
+                return Json(0);
+            }
+        }
+
 
         [Route("Accounting/DisbursementVoucher")]
         public async Task<IActionResult> Index(string searchString)
@@ -144,19 +162,23 @@ namespace fmis.Controllers.Accounting
 
 
             var dvList = _MyDbContext.Dv.Include(x => x.InfraAdvancePayment).Include(x => x.InfraProgress).Include(x => x.InfraRetentions).ToList();
-            var dvNo = _autoIncrementGenerator.GenerateSupplier();
-            foreach (var dv in dvList)
-            {
-                var stype = dv.DvSupType;
-                dv.DvNo = _autoIncrementGenerator.GenerateSupplier();
-                if (!string.IsNullOrEmpty(dv.DvNo))
-                {
-                    dvNo = dv.DvNo;
-                    break;
-                }
-            }
 
-            ViewBag.DvNo = dvNo;
+            var lastRecord = _MyDbContext.Dv
+            .OrderByDescending(e => e.DvId)
+            .FirstOrDefault();
+
+            if (lastRecord != null)
+            {
+                int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                lastDvNo++;
+
+                string newDvNo = $"S09-{lastDvNo:D4}";
+                ViewData["DvNo"] = newDvNo;
+            }
+            else
+            {
+                ViewData["DvNo"] = "S09-0030";
+            }
 
             return PartialView("_CreatePartial");
         }
@@ -192,6 +214,7 @@ namespace fmis.Controllers.Accounting
                 dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             }
 
+            var dvExist = _MyDbContext.Dv.FirstOrDefault(x=>x.DvNo == dv.DvNo);
             if (ModelState.IsValid)
             {
                 if (dv.InfraProgress != null || dv.InfraRetentions != null || dv.dvDeductions != null)
@@ -230,18 +253,27 @@ namespace fmis.Controllers.Accounting
             var stype = newDv.DvSupType;
             newDv.InfraAdvancePayment = newDv.InfraAdvancePayment;
             newDv.InfraRetentions = newDv.InfraRetentions;
-            newDv.DvNo = _autoIncrementGenerator.GenerateIndividual();
-
-            if (newDv.DvNo != null)
-            {
-                // DvNo exists, notify clients via SignalR
-                _hubContext.Clients.All.SendAsync("DvNoExists", newDv.DvNo);
-            }
-
 
             for (int x = 0; x < 7; x++)
             {
                 newDv.dvDeductions.Add(new DvDeduction());
+            }
+
+            var lastRecord = _MyDbContext.Dv.Where(x=>x.DvNo.Contains("T"))
+            .OrderByDescending(e => e.DvId)
+            .FirstOrDefault();
+
+            if (lastRecord != null)
+            {
+                int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                lastDvNo++;
+
+                string newDvNo = $"T09-{lastDvNo:D4}";
+                ViewData["DvNo"] = newDvNo;
+            }
+            else
+            {
+                ViewData["DvNo"] = "T09-0030";
             }
 
             return View(newDv);

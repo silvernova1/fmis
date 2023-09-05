@@ -29,7 +29,7 @@ namespace fmis.Data
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
-            
+
         {
         }
 
@@ -96,6 +96,7 @@ namespace fmis.Data
         public DbSet<Programs> Programs { get; set; }
         public DbSet<Expense> Expense { get; set; }
         public DbSet<Item> Item { get; set; }
+        public DbSet<AppModel> AppModel { get; set; }
 
 
         public class MyEntityConfiguration : IEntityTypeConfiguration<InfraProgress>

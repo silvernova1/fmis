@@ -1,4 +1,5 @@
-﻿using fmis.Models.UserModels;
+﻿using fmis.Models.ppmp;
+using fmis.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace fmis.Data.MySql
@@ -11,6 +12,7 @@ namespace fmis.Data.MySql
         }
 
         public DbSet<FmisUser> users { get; set; }
+        public DbSet<section> section { get; set; }
 
     }
 }
