@@ -84,7 +84,8 @@ namespace fmis.Controllers.Accounting
 
         public JsonResult CheckDvNo(string dvno)
         {
-            var data = _MyDbContext.Dv.Where(x => x.DvNo == dvno).SingleOrDefault();
+
+            var data = _MyDbContext.Dv.Where(x => x.DvNo == dvno && x.UserId == UserId).SingleOrDefault();
 
             if (data != null)
             {

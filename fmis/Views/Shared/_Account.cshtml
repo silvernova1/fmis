@@ -17,13 +17,13 @@
             <a>CY: @User.FindFirstValue("YearlyRef")</a>
         }
     </li>
-        @if (User.IsInRole("budget_admin"))
+        @if (User.IsInRole("budget_admin") || User.IsInRole("budget_user"))
         {
         <a id="logout-link" asp-action="Logout" asp-controller="Account">
              <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
         </a>
         }
-        else if (User.IsInRole("accounting_admin") || User.IsInRole("user"))
+        else if (User.IsInRole("accounting_admin") || User.IsInRole("accounting_user"))
         {
         <a id="logout-link" asp-action="Logout" asp-controller="Index">
             <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
