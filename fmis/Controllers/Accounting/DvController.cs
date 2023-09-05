@@ -178,7 +178,7 @@ namespace fmis.Controllers.Accounting
             }
             else
             {
-                ViewData["DvNo"] = "S09-0030";
+                ViewData["DvNo"] = "S09-2872";
             }
 
             return PartialView("_CreatePartial");
@@ -274,7 +274,7 @@ namespace fmis.Controllers.Accounting
             }
             else
             {
-                ViewData["DvNo"] = "T09-0030";
+                ViewData["DvNo"] = "T09-4274";
             }
 
             return View(newDv);
