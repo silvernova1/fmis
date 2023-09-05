@@ -1151,9 +1151,6 @@
         totalObligation.value = totalSumObligation;
 
         const response = await saveObligationAmount(data);
-
-        const send_data = { afterChange: true, userid: userInfo.value.userid, totalObligation: totalObligation.value }
-        socket.value.send(JSON.stringify(send_data));
     }
 
     const __deleteObligation = async (data: {}) => {
