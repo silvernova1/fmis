@@ -2003,11 +2003,44 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU20.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             currentRow++;
 
+            //Retirement and Life Insurance Premium
+            //2023 STO-ORO-RLIP
+            //2023 PHM-RLIP
+            //2023 RRHFS-RLIP
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL CURRENT APPROPRIATION";
+            var rangeAtoU21 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU21.Style.Fill.BackgroundColor = XLColor.FromHtml("#EEC20C");
+            rangeAtoU21.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL CURRENT APPROPRIATION";
+            var rangeAtoU22 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU22.Style.Fill.BackgroundColor = XLColor.FromHtml("#151410");
+            rangeAtoU22.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
 
 
 
-
-
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(currentRow, 1).Value = "|. NEW APPROPRIATION (CONAP)";
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Black;
+            worksheet.Cell(currentRow, 1).Value = "A. PROGRAMS";
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Black;
+            worksheet.Cell(currentRow, 1).Value = "|. GENERAL ADMINISTRATION AND SUPPORT";
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+            currentRow++;
 
             // Create a memory stream to hold the Excel file content
             var stream = new System.IO.MemoryStream();
