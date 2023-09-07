@@ -2003,10 +2003,15 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU20.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             currentRow++;
 
+
+
             //Retirement and Life Insurance Premium
             //2023 STO-ORO-RLIP
             //2023 PHM-RLIP
             //2023 RRHFS-RLIP
+
+
+
             worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
             worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
@@ -2041,6 +2046,121 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
             currentRow++;
+
+            foreach(var conapsub in subAllotments)
+            {
+                if(conapsub.AllotmentClassId == 2 && conapsub.AppropriationId == 1 && conapsub.BudgetAllotmentId == 1 && conapsub.prexcId == 1)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, conapsub.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, conapsub.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, conapsub.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, conapsub.Suballotment_title);
+
+                    foreach (var uacs in conapsub.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                        currentRow++;
+                    }
+                }
+            }//end of foreach
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            
+           
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL, GAS";
+            var rangeAtoU23 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU23.Style.Fill.BackgroundColor = XLColor.FromHtml("6DCAE3");
+            rangeAtoU23.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "II. SUPPORT TO OPERATIONS";
+            currentRow++;
+
+            //Health Information Technolog / 200000100001000
+            //CONAP SAA 2022-10-4920
+         
+            foreach (var conapSub in subAllotments)
+                {
+                    if (conapSub.AllotmentClassId == 2 && conapSub.AppropriationId == 1 && conapSub.BudgetAllotmentId == 1 && conapSub.prexcId == 35)
+                    {
+                        Prexc_papTitle(worksheet, ref currentRow, conapSub.prexc.pap_title);
+                        Prexc_papcode(worksheet, ref currentRow, conapSub.prexc.pap_code1);
+                        ItemSubPrexc(worksheet, ref currentRow, conapSub.AllotmentClass.Desc);
+
+                        SubAllotTitleRed(worksheet, ref currentRow, conapSub.Suballotment_title);
+
+                        foreach (var uacs in conapSub.SubAllotmentAmounts.ToList())
+                        {
+                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                            worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                            currentRow++;
+                        }          
+
+                }
+
+                 }//end of foreach 
+
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
+                currentRow++;
+                currentRow++;
+            foreach (var conapSub in subAllotments)
+            {
+                if (conapSub.AllotmentClassId == 2 && conapSub.AppropriationId == 2 && conapSub.BudgetAllotmentId == 3 && conapSub.prexcId == 35)
+                {
+                    SubAllotTitleRed(worksheet, ref currentRow, conapSub.Suballotment_title);
+
+                    foreach (var uacs in conapSub.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+
+            }// end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
+            currentRow++;
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            //Capital Outlays 
+            //CONAP SAA 2022-03-0961 
+            currentRow++;
+
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL, GAS";
+            var rangeAtoU26 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU26.Style.Fill.BackgroundColor = XLColor.FromHtml("6DCAE3");
+            rangeAtoU26.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            currentRow++;
+
 
             // Create a memory stream to hold the Excel file content
             var stream = new System.IO.MemoryStream();
