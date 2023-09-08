@@ -2748,6 +2748,39 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             currentRow++;
 
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "PUBLIC HEALTH PROGRAM";
+            var rangeAtoU36 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU36.Style.Fill.BackgroundColor = XLColor.FromHtml("#DD96D7");
+            rangeAtoU36.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 2 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 24)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
 
 
             // Create a memory stream to hold the Excel file content
