@@ -632,25 +632,35 @@ namespace fmis.Controllers.Budget.John
                 .ToList();
 
             string previousValue = null;
+
             void ItemSubPrexc(IXLWorksheet worksheet, ref int currentRow, string value)
             {
                 if (value != previousValue)
-                {// Define the range from cell A to U in the row
+                {
+                    // Define the range from cell A to U in the row
                     var rangeAtoU = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21)); // Columns A to U (1 to 21)
+
                     // Set the background color for each cell within the range
                     for (int col = 1; col <= 21; col++) // Loop through columns A to U
                     {
                         var cell = rangeAtoU.Cell(1, col);
                         cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#fca1de");
                     }
+
                     // Set the value in the first cell of the row (column A)
                     rangeAtoU.FirstCell().Value = value;
+
                     // Apply a thin border to the entire range
                     rangeAtoU.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+                    // Increment currentRow for the next row
                     currentRow++;
+
+                    // Update the previousValue
                     previousValue = value;
                 }
             }
+
 
 
             string previousValue2 = null;
@@ -743,6 +753,11 @@ namespace fmis.Controllers.Budget.John
                             Prexc_papTitle(worksheet, ref currentRow, prex.prexc.pap_title);
                             Prexc_papcode(worksheet, ref currentRow, prex.prexc.pap_code1);
                             ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+
+                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", prex.Beginning_balance);
+                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
                             ItemSubPrexc(worksheet, ref currentRow, prex.AllotmentClass.Desc);
                             paptitle = prex.prexc.pap_title;
                             papcode = prex.prexc.pap_code1;
@@ -752,6 +767,11 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
                         worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
                         worksheet.Cell(currentRow, 1).Value = prex.Suballotment_title;
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", prex.Beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
 
                         foreach (var uacs in prex.SubAllotmentAmounts.ToList())
@@ -762,7 +782,14 @@ namespace fmis.Controllers.Budget.John
 
                             worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
                             worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                         
+                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", _MyDbContext.Suballotment_amount.FirstOrDefault(x => x.UacsId == uacs.UacsId).beginning_balance);
+                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             currentRow++;
+                            
+                          
                             //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
                             //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
                         }
@@ -840,36 +867,61 @@ namespace fmis.Controllers.Budget.John
             string previousAllotmentDesc = null;
             var uniqueValues3 = new HashSet<string>();
             var uniqueValues2 = new HashSet<string>();
+           
+
             foreach (var funsource in funsources1)
             {
+                if (funsource.AllotmentClassId == 1 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
+                {
+                    Prexc_papTitle(worksheet, ref currentRow, funsource.Prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, funsource.Prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, funsource.AllotmentClass.Desc);
+                    worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+                    worksheet.Cell(currentRow, 1).Value = funsource.FundSourceTitle;
+                    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                    currentRow++;
+                    foreach (var uacs in funsource.FundSourceAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+                        currentRow++;
+                    }
+                } // year condition
 
                 if (funsource.AllotmentClassId == 2 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
-                {
+                   {
 
-                    if (funsource.Prexc.pap_title != previousPrexPapTitle || funsource.Prexc.pap_code1 != previousPrexPapCode || funsource.AllotmentClass.Desc != previousAllotmentDesc)
-                    {
-                        Prexc_papTitle(worksheet, ref currentRow, funsource.Prexc.pap_title);
-                        Prexc_papcode(worksheet, ref currentRow, funsource.Prexc.pap_code1);
-                        ItemSubPrexc(worksheet, ref currentRow, funsource.AllotmentClass.Desc);
+                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", funsource.Beginning_balance);
+                    ItemSubPrexc(worksheet, ref currentRow, funsource.AllotmentClass.Desc); 
 
-                        previousPrexPapTitle = funsource.Prexc.pap_title;
-                        previousPrexPapCode = funsource.Prexc.pap_code1;
-                        previousAllotmentDesc = funsource.AllotmentClass.Desc;
-                    }
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                    worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
                     worksheet.Cell(currentRow, 1).Value = funsource.FundSourceTitle;
+
+                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", funsource.Beginning_balance);
+                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     currentRow++;
 
                     foreach (var uacs in funsource.FundSourceAmounts.ToList())
                     {
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
 
                         worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
 
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", _MyDbContext.FundSourceAmount.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
+                        
+
                     }
 
                 } // year
@@ -1823,6 +1875,9 @@ namespace fmis.Controllers.Budget.John
 
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "OO : Access to safe and quality health commodities, devices and facilities ensured";
+            var rangeAtoU11A = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU11A.Style.Fill.BackgroundColor = XLColor.FromHtml("#13ecec"); //skyblue
+            rangeAtoU11A.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             currentRow++;
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "HEALTH REGULATORY PROGRAM";
@@ -1992,12 +2047,12 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU20.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             currentRow++;
 
-            foreach(var funsorce in funsources1)
+            foreach (var funsorce in funsources1)
             {
                 //FOR Retirement and Life Insurance Premium
                 if (funsorce.AllotmentClassId == 1 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 4)
                 {
-                    if(funsorce.FundSourceId == 60)
+                    if (funsorce.FundSourceId == 60)
                     {
                         SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
 
@@ -2017,41 +2072,15 @@ namespace fmis.Controllers.Budget.John
                             currentRow++;
                         }
                     }
-                    }
-                    if (funsorce.AllotmentClassId == 1 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 15)
-                    {
-                        if (funsorce.FundSourceId == 62)
-                        {
-                            SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
-                            foreach (var uacs in funsorce.FundSourceAmounts.ToList())
-                            {
-
-                                var rangeAtoU31 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
-                                rangeAtoU31.Style.Fill.BackgroundColor = XLColor.FromHtml("#FCC3FF"); //pink
-                                rangeAtoU31.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                                worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
-                                worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
-
-                                worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
-                                worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
-                                worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-
-                                currentRow++;
-                            }
-                        }
-                    }
-
-                 
-              if(funsorce.AllotmentClassId == 1 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 29)
+                }
+                if (funsorce.AllotmentClassId == 1 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 15)
                 {
-                    if (funsorce.FundSourceId == 61)
+                    if (funsorce.FundSourceId == 62)
                     {
                         SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
-                    
-                    foreach (var uacs in funsorce.FundSourceAmounts.ToList())
-                    {
-                        
+                        foreach (var uacs in funsorce.FundSourceAmounts.ToList())
+                        {
+
                             var rangeAtoU31 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
                             rangeAtoU31.Style.Fill.BackgroundColor = XLColor.FromHtml("#FCC3FF"); //pink
                             rangeAtoU31.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -2065,11 +2094,37 @@ namespace fmis.Controllers.Budget.John
 
                             currentRow++;
                         }
-                        
                     }
                 }
 
-              }//end of foreach
+
+                if (funsorce.AllotmentClassId == 1 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 29)
+                {
+                    if (funsorce.FundSourceId == 61)
+                    {
+                        SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
+
+                        foreach (var uacs in funsorce.FundSourceAmounts.ToList())
+                        {
+
+                            var rangeAtoU31 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+                            rangeAtoU31.Style.Fill.BackgroundColor = XLColor.FromHtml("#FCC3FF"); //pink
+                            rangeAtoU31.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+                            worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                            worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+                            worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                            currentRow++;
+                        }
+
+                    }
+                }
+
+            }//end of foreach
 
             //Retirement and Life Insurance Premium
             //2023 STO-ORO-RLIP
@@ -2134,7 +2189,7 @@ namespace fmis.Controllers.Budget.John
 
                         currentRow++;
                     }
-                 }
+                }
 
 
             }//end of foreach
@@ -2522,7 +2577,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments)
             {
-                
+
                 if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 38)
                 {
 
@@ -2542,11 +2597,11 @@ namespace fmis.Controllers.Budget.John
 
                         currentRow++;
                     }
-                   
-                }
-               
 
-             }//end of foreach
+                }
+
+
+            }//end of foreach
             TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
             currentRow++;
             currentRow++;
@@ -2575,9 +2630,9 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             currentRow++;
 
-           foreach(var suballot in subAllotments)
+            foreach (var suballot in subAllotments)
             {
-                if(suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 31)
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 31)
                 {
 
                     Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
@@ -2715,7 +2770,7 @@ namespace fmis.Controllers.Budget.John
 
             } //end of foreach
             TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
-           
+
             currentRow++;
             currentRow++;
             foreach (var suballot in subAllotments)
@@ -2746,7 +2801,7 @@ namespace fmis.Controllers.Budget.John
             TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
             ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
             currentRow++;
-            currentRow++;
+
 
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "PUBLIC HEALTH PROGRAM";
@@ -2781,6 +2836,457 @@ namespace fmis.Controllers.Budget.John
                 }
 
             } //end of foreach
+            //SAA # 2023 - No data in database
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            currentRow++;
+
+            //CONAP SAA 2022-05-2673 - No data in database
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "HEALTH EMERGENCY MANAGEMENT PROGRAM";
+            var rangeAtoU34 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU34.Style.Fill.BackgroundColor = XLColor.FromHtml("#DD96D7");
+            rangeAtoU34.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 25)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            currentRow++;
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 26)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "OO : Access to curative and rehabilitative health care services improved";
+            var rangeAtoU11C = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU11C.Style.Fill.BackgroundColor = XLColor.FromHtml("#13ecec"); //skyblue
+            rangeAtoU11C.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "HEALTH FACILITIES OPERATION PROGRAM";
+            var rangeAtoU836 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU836.Style.Fill.BackgroundColor = XLColor.FromHtml("#DD96D7");
+            rangeAtoU836.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "CURATIVE HEALTH CARE SUB - PROGRAM";
+            var rangeAtoU37 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU37.Style.Fill.BackgroundColor = XLColor.FromHtml("#F8FBE8"); //yellow
+            rangeAtoU37.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 27)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            currentRow++;
+
+
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 34)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "REHABILITATIVE HEALTH CARE SUB - PROGRAM";
+            var rangeAtoU38 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU38.Style.Fill.BackgroundColor = XLColor.FromHtml("#F8FBE8"); //yellow
+            rangeAtoU38.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 28)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "OO : Access to safe and quality health commodities, devices and facilities ensured";
+            var rangeAtoU11B = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU11B.Style.Fill.BackgroundColor = XLColor.FromHtml("#13ecec"); //skyblue
+            rangeAtoU11B.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "HEALTH REGULATORY PROGRAM";
+            var rangeAtoU39 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU39.Style.Fill.BackgroundColor = XLColor.FromHtml("#DD96D7");
+            rangeAtoU39.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "HEALTH FACILITIES AND SERVICES REGULATION SUB - PROGRAM";
+            var rangeAtoU40 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU40.Style.Fill.BackgroundColor = XLColor.FromHtml("#F8FBE8"); //yellow
+            rangeAtoU40.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 41)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "OO : Access to social health protection assured";
+            var rangeAtoU11D = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU11D.Style.Fill.BackgroundColor = XLColor.FromHtml("#13ecec"); //skyblue
+            rangeAtoU11D.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "SOCIAL HEALTH PROTECTION PROGRAM";
+            var rangeAtoUE = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoUE.Style.Fill.BackgroundColor = XLColor.FromHtml("#DD96D7");
+            rangeAtoUE.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+
+
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 1 && suballot.prexcId == 30)
+                {
+
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                    ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2022");
+            currentRow++;
+            currentRow++;
+
+
+            foreach (var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 2 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 30)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        currentRow++;
+                    }
+
+                }
+
+            } //end of foreach
+            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            currentRow++;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL, OPERATIONS";
+            var rangeAtoU15A = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU15A.Style.Fill.BackgroundColor = XLColor.FromHtml("6DCAE3");
+            rangeAtoU15A.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL NEW APPROPRIATIONS";
+            var rangeAtoU16A = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU16A.Style.Fill.BackgroundColor = XLColor.FromHtml("E1D9D9");
+            rangeAtoU16A.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "Maintenance & Other Operating Expenses ";
+            var rangeAtoU17A = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU17A.Style.Fill.BackgroundColor = XLColor.FromHtml("E1D9D9");
+            rangeAtoU17A.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "Capital Outlays ";
+            var rangeAtoU18A = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU18A.Style.Fill.BackgroundColor = XLColor.FromHtml("E1D9D9");
+            rangeAtoU18A.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+            currentRow++;
+
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL CURRENT APPROPRIATION";
+            var rangeAtoU21A = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU21A.Style.Fill.BackgroundColor = XLColor.FromHtml("#EEC20C");
+            rangeAtoU21A.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 12;
+            worksheet.Row(1).Height = 40;
+            worksheet.Cell(currentRow, 1).Value = "GRAND TOTAL ";
+            var rangeAtoUA = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoUA.Style.Fill.BackgroundColor = XLColor.FromHtml("#33FFBD");
+            rangeAtoUA.Style.Border.BottomBorder = XLBorderStyleValues.Double;
+            currentRow++;
+            currentRow++;
+
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 1).Value = "Prepared by:";
+
+            worksheet.Cell(currentRow, 6).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 6).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 6).Value = "Certified Correct:";
+
+            worksheet.Cell(currentRow, 12).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 12).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 12).Value = "Recommending Approval:";
+
+            worksheet.Cell(currentRow, 18).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 18).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 18).Value = "Approved by:";
+            currentRow++;
+            currentRow++;
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 1).Value = "TIMOTHY JOHN ARRIESGADO";
+
+            worksheet.Cell(currentRow, 3).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 3).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 3).Value = "PHILLIP NIERRAS";
+
+            worksheet.Cell(currentRow, 6).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 6).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 6).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 6).Value = "LEONORA A. ANIEL";
+
+            worksheet.Cell(currentRow, 12).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 12).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 12).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 12).Value = "RAMIL R. ABREA, CPA, MBA";
+
+            worksheet.Cell(currentRow, 18).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 18).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 18).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 18).Value = "JAIME S. BERNADAS, MD, MGM, CESO lll";
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 1).Value = "Administrative Assistant III";
+
+            worksheet.Cell(currentRow, 3).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 3).Value = "Accountant I";
+
+            worksheet.Cell(currentRow, 6).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 6).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 6).Value = "Budget Officer III";
+
+            worksheet.Cell(currentRow, 12).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 12).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 12).Value = "Chief, Management Support Division";
+
+            worksheet.Cell(currentRow, 18).Style.Font.FontName = "Times New Roman";
+            worksheet.Cell(currentRow, 18).Style.Font.FontSize = 12;
+            worksheet.Cell(currentRow, 18).Value = "Director IV";
+            currentRow++;
+
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Times New Roman";
+            worksheet.Row(1).Height = 20;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 12;
+            var richText2 = worksheet.Cell(currentRow, 3).RichText.AddText("as to obligations.");
+            richText2.Italic = true;
+
+            worksheet.Cell(currentRow, 3).Style.Font.FontName = "Times New Roman";
+            worksheet.Row(1).Height = 20;
+            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 12;
+            var richText1 = worksheet.Cell(currentRow, 3).RichText.AddText("as to Disbursements");
+            richText1.Italic = true;
+            worksheet.Cell(currentRow, 6).Style.Font.FontName = "Times New Roman";
+            worksheet.Row(1).Height = 20;
+            worksheet.Cell(currentRow, 6).Style.Font.FontSize = 12;
+            var richText = worksheet.Cell(currentRow, 6).RichText.AddText("as to obligations.");
+            richText.Italic = true;
+            currentRow++;
+
 
 
             // Create a memory stream to hold the Excel file content
