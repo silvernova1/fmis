@@ -785,7 +785,7 @@ namespace fmis.Controllers.Budget.John
 
                          
                             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", _MyDbContext.Suballotment_amount.FirstOrDefault(x => x.UacsId == uacs.UacsId).beginning_balance);
+                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             currentRow++;
                             
@@ -828,6 +828,11 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
                         worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
                         worksheet.Cell(currentRow, 1).Value = prexAdmin.Suballotment_title;
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", prexAdmin.Beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
 
 
@@ -838,6 +843,10 @@ namespace fmis.Controllers.Budget.John
 
                             worksheet.Cell(currentRow, 2).Style.Font.FontSize = 10.5;
                             worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                             currentRow++;
 
                         }
@@ -871,14 +880,19 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var funsource in funsources1)
             {
-                if (funsource.AllotmentClassId == 1 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
+                if (funsource.AllotmentClassId == 1 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)//2023 STO-ORO-PS
                 {
                     Prexc_papTitle(worksheet, ref currentRow, funsource.Prexc.pap_title);
                     Prexc_papcode(worksheet, ref currentRow, funsource.Prexc.pap_code1);
                     ItemSubPrexc(worksheet, ref currentRow, funsource.AllotmentClass.Desc);
+
                     worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
                     worksheet.Cell(currentRow, 1).Value = funsource.FundSourceTitle;
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+
+                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", funsource.Beginning_balance);
+                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     currentRow++;
                     foreach (var uacs in funsource.FundSourceAmounts.ToList())
                     {
@@ -887,12 +901,16 @@ namespace fmis.Controllers.Budget.John
 
                         worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
                     }
                 } // year condition
 
-                if (funsource.AllotmentClassId == 2 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
-                   {
+                if (funsource.AllotmentClassId == 2 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)//2023 STO-ORO
+                {
 
                     worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                     worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -904,6 +922,7 @@ namespace fmis.Controllers.Budget.John
                     worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
                     worksheet.Cell(currentRow, 1).Value = funsource.FundSourceTitle;
 
+                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
                     worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", funsource.Beginning_balance);
                     worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     currentRow++;
@@ -915,13 +934,12 @@ namespace fmis.Controllers.Budget.John
 
                         worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.Expense_code;
-
+                   
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", _MyDbContext.FundSourceAmount.FirstOrDefault(x => x.UacsId == uacs.UacsId)?.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
-                        
-
+              
                     }
 
                 } // year
