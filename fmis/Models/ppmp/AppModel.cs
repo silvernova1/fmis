@@ -10,6 +10,8 @@ namespace fmis.Models.ppmp
 
         public int UacsId { get; set; }
 
+        public int? Expense_id { get; set; }
+
         public string ProcurementProject { get; set; }
 
         public string EndUser { get; set; }

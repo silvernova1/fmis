@@ -42,7 +42,7 @@ namespace fmis.Controllers.App
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
+        //[Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
         public IActionResult Index()
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
@@ -51,105 +51,62 @@ namespace fmis.Controllers.App
             if (_context.Expense.Count() > 0)
             {
                 expenses = _context.Expense.Include(x=>x.Items).Include(x => x.AppModels).ToList();
+                ViewBag.expenses = expenses;
+
+                ViewBag.appModels = _context.AppModel.ToList();
             }
             else
             {
-                //expenses = _ppmpContext.expense.Include(x => x.item_daily.Where(x=> x.yearly_ref_id == 4 && x.status == null)).Take(3).ToList();
                 expenses = _ppmpContext.expense.Include(x=>x.Items).Take(2).ToList();
             }
 
             return View(expenses);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Create(List<Expense> expenses, List<int> expenseIds)
+        public IActionResult CreateOrUpdateExpense(List<Expense> updatedExpenses)
         {
-            foreach (var expense in expenses)
+            foreach (var updatedExpense in updatedExpenses)
             {
-                var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == expense.Id);
-
-                if (existingExpense != null)
+                if (updatedExpense.Id == 0)
                 {
-                    existingExpense.Description = expense.Description;
-
-                    existingExpense.AppModels.Clear();
-                    foreach (var newItem in expense.AppModels)
-                    {
-                        var item = new AppModel
-                        {
-                            ProcurementProject = newItem.ProcurementProject,
-                        };
-                        existingExpense.AppModels.Add(item);
-                    }
+                    _context.Expense.Add(updatedExpense);
                 }
                 else
                 {
-                    var newExpense = new Expense
+                    var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == updatedExpense.Id);
+                    if (existingExpense != null)
                     {
-                        Description = expense.Description,
-                        AppModels = new List<AppModel>()
-                    };
-                    foreach (var newItem in expense.AppModels)
-                    {
-                        var item = new AppModel
+
+                        foreach(var updatedAppModel in updatedExpense.AppModels)
                         {
-                            ProcurementProject = newItem.ProcurementProject
-                        };
-                        newExpense.AppModels.Add(item);
+                            var existingAppModel = existingExpense.AppModels.FirstOrDefault(am => am.Id == updatedAppModel.Id);
+
+                            if (existingAppModel != null)
+                            {
+                                if (existingAppModel.ProcurementProject != updatedAppModel.ProcurementProject)
+                                {
+                                    existingAppModel.ProcurementProject = updatedAppModel.ProcurementProject;
+                                }
+
+                            }
+                            else
+                            {
+                                existingExpense.AppModels.Add(updatedAppModel);
+                            }
+
+                        }
+
+                        _context.Entry(existingExpense).State = EntityState.Detached;
+
+                        _context.Entry(updatedExpense).State = EntityState.Modified;
                     }
-                    _context.Expense.Add(newExpense);
                 }
             }
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult CreateOrUpdateExpense(List<Expense> expenses)
-        {
-            foreach (var expense in expenses)
-            {
-                if (expense.Id == 0)
-                {
-                    // This expense is new, add it to the database
-                    AddExpenseToDatabase(expense);
-                }
-                else
-                {
-                    // This expense is existing, update it in the database
-                    UpdateExpenseInDatabase(expense);
-                }
-            }
-
-            SaveChangesToDatabase();
-
-            return RedirectToAction("Index");
-        }
-
-        private void AddExpenseToDatabase(Expense expense)
-        {
-            _context.Expense.Add(expense);
-            _context.SaveChanges();
-        }
-
-        private void UpdateExpenseInDatabase(Expense expense)
-        {
-            var existingExpense = _context.Expense.Find(expense.Id);
-            if (existingExpense != null)
-            {
-                // Update the existing expense properties with values from the new expense
-                existingExpense.Description = expense.Description;
-                // Update other properties as needed
-                _context.SaveChanges();
-            }
-        }
-
-        private void SaveChangesToDatabase()
-        {
-            _context.SaveChanges();
         }
 
 
