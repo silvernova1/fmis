@@ -42,6 +42,7 @@ namespace fmis.Controllers.Budget.John
         //view FundSource/FundSourceAmount/Uacs
         public IActionResult DownloadExcel(string fn, string date_from, string date_to, int? post_yearly_reference)
         {
+
             // string fn = Request.Query["fn"];
             date_from = Request.Query["date_from"];
             date_to = Request.Query["date_to"];
@@ -141,6 +142,7 @@ namespace fmis.Controllers.Budget.John
             //worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
 
             var currentRow = 17;
+
 
 
             worksheet.Cell(1, 9).Style.Font.SetBold();
@@ -889,13 +891,18 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa2);
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             currentRow++;
-            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Style.Font.FontName = "Arial Narrow";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "TOTAL, GAS";
+            var rangeAtoU108 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU108.Style.Fill.BackgroundColor = XLColor.FromHtml("6DCAE3");
+            rangeAtoU108.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            currentRow++;
             currentRow++;
 
-            worksheet.Cell(currentRow, 1).Style.Font.SetBold();
-            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 1).Value = "||. SUPPORT TO OPERATIONS";
-            currentRow++;
             string preivousFunstitle = null;
             string PrevaccountTitle = null;
             string prevExpenseCode = null;
@@ -904,7 +911,10 @@ namespace fmis.Controllers.Budget.John
             string previousAllotmentDesc = null;
             var uniqueValues3 = new HashSet<string>();
             var uniqueValues2 = new HashSet<string>();
-
+            worksheet.Cell(currentRow, 1).Style.Font.SetBold();
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "||. SUPPORT TO OPERATIONS";
+            currentRow++;
             bool isAllotmentClassDisplayed = false;
             var STO_Oro_Beginning_balanced = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4).Sum(x => x.Beginning_balance);
             var Sto_Oro_Ps_BeginningBalance = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4).Sum(x => x.Beginning_balance);
@@ -923,17 +933,13 @@ namespace fmis.Controllers.Budget.John
                     }
                         Prexc_papTitle(worksheet, ref currentRow, funsource.Prexc.pap_title);
                         Prexc_papcode(worksheet, ref currentRow, funsource.Prexc.pap_code1);
-                   
-                    
-                    if (funsource.AllotmentClass.Desc != null && !isAllotmentClassDisplayed)
-                    {
+
+                  
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                         worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", Sto_Oro_Ps_BeginningBalance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        ItemSubPrexc(worksheet, ref currentRow, funsource.AllotmentClass.Desc);
-                        isAllotmentClassDisplayed = true;
-                    }
+              
+                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services ");
 
                     worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
                     worksheet.Cell(currentRow, 1).Value = funsource.FundSourceTitle;
@@ -1464,6 +1470,11 @@ namespace fmis.Controllers.Budget.John
                         var rangeAtoU103 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
                         rangeAtoU103.Style.Fill.BackgroundColor = XLColor.FromHtml("#F8FBE8"); //yellow
                         rangeAtoU103.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaaFunsorce);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right); //adding 1
+
                         currentRow++;
                     }
                     worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
@@ -1542,15 +1553,22 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             HashSet<string> uniqueAccountTitles2 = new HashSet<string>();
             HashSet<string> uniqueExpenseCodes2 = new HashSet<string>();
-            var totalfunsorce = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
+
             var totalsaa5 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 32).Sum(x => x.Beginning_balance);
-           // decimal totalSaaFunsorce1 = totalfunsorce + totalsaa5;
+
+            var totalfunsorce = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
+            var NHWSS = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
+            decimal totalfunsorce_NHWSS = totalfunsorce + NHWSS;
+            // decimal totalSaaFunsorce1 = totalfunsorce + totalsaa5;
             foreach (var fundsorce in funsources1) //National Health Workforce Support System (NHWSS) // 310202100003000 //2023 NHWSS-PS
             {
 
                 if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 32)
                 {
-                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title);
+                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalfunsorce_NHWSS);
+                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right); 
+                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title); //National Health Workforce Support System (NHWSS)
                     Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
 
                     worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
@@ -1587,7 +1605,7 @@ namespace fmis.Controllers.Budget.John
                 }
             } //end of foreach
         
-            foreach (var suballot in subAllotments)
+            foreach (var suballot in subAllotments) // 2023 NHWSS
             {
                 if (suballot.AllotmentClassId == 1 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 32)
                 {
@@ -1620,6 +1638,7 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalsaa5);
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             currentRow++;
+              
 
             HashSet<string> uniqueAccountTitles3 = new HashSet<string>();  HashSet<string> uniqueExpenseCodes3 = new HashSet<string>();
             var totalFunsorce = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
@@ -1630,7 +1649,7 @@ namespace fmis.Controllers.Budget.John
                 if (funsoce.AllotmentClassId == 2 && funsoce.AppropriationId == 1 && funsoce.BudgetAllotmentId == 3 && funsoce.PrexcId == 32)
                 {
                     worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalFunsorce);
+                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalFunsorce); // adding 3
                     worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     worksheet.Cell(currentRow, 3).Style.Font.SetBold();
                     ItemSubPrexc(worksheet, ref currentRow, funsoce.AllotmentClass.Desc);
@@ -1667,7 +1686,7 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             string duplicate4 = null;
             string duplicate5 = null;
-            foreach (var suballot in subAllotments) //SAA 2023-08-004078 // SAA 2023-08-004055 //2023 NHWSS
+            foreach (var suballot in subAllotments) //SAA 2023-08-004078 // SAA 2023-03-000897 
             {
                 if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 32)
                 {
@@ -1701,6 +1720,7 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 3).Style.Font.SetBold();
             currentRow++;
 
+            ItemSubPrexc(worksheet, ref currentRow, "Capitaln Outlays");
 
             HashSet<string> uniqueAccountTitles4 = new HashSet<string>();
             HashSet<string> uniqueExpenseCodes4 = new HashSet<string>();
