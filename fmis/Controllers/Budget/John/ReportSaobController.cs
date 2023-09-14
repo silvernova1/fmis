@@ -27,7 +27,7 @@ namespace fmis.Controllers.Budget.John
         public ReportSaobController(MyDbContext MyDbContext)
         {
             _MyDbContext = MyDbContext;
-        }
+        } 
 
         [Route("Dv/Saob2")]
         public IActionResult Index()
@@ -1456,7 +1456,7 @@ namespace fmis.Controllers.Budget.John
             HashSet<string> uniqueAccountTitles = new HashSet<string>(); HashSet<string> uniqueExpenseCodes = new HashSet<string>();
             var SaaFunsourceTotal = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13).Sum(x => x.Beginning_balance);
             var SaaFunsourceTotal1 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 13).Sum(x => x.Beginning_balance);
-            decimal totalSaaFunsorce = SaaFunsourceTotal + SaaFunsourceTotal1;
+            decimal totalSaaFunsorce = SaaFunsourceTotal + SaaFunsourceTotal;
             foreach (var funsource in funsources1) // 310202100002000 // 2023 HRHICM
             {
                 if (funsource.AllotmentClassId == 2 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 13)
@@ -1553,12 +1553,12 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             HashSet<string> uniqueAccountTitles2 = new HashSet<string>();
             HashSet<string> uniqueExpenseCodes2 = new HashSet<string>();
-
+           
             var totalsaa5 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 32).Sum(x => x.Beginning_balance);
 
             var totalfunsorce = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
             var NHWSS = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
-            decimal totalfunsorce_NHWSS = totalfunsorce + NHWSS;
+            decimal totalfunsorce_NHWSS = totalfunsorce + NHWSS; //naa pay Capital Outlays Butang
             // decimal totalSaaFunsorce1 = totalfunsorce + totalsaa5;
             foreach (var fundsorce in funsources1) //National Health Workforce Support System (NHWSS) // 310202100003000 //2023 NHWSS-PS
             {
@@ -1719,6 +1719,7 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             worksheet.Cell(currentRow, 3).Style.Font.SetBold();
             currentRow++;
+
 
             ItemSubPrexc(worksheet, ref currentRow, "Capitaln Outlays");
 
