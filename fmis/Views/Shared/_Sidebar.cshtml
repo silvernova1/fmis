@@ -961,13 +961,16 @@
                 <b class="arrow"></b>
                 <ul class="submenu">
                     <li class="@if (ViewBag.filter.sub == "DV")
-                    @Html.Raw("active")
+                    @Html.Raw("active")">
 
-
-">
                         <a asp-area="" asp-controller="DV" asp-action="Index">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Disbursement Voucher
+                        </a>
+
+                        <a asp-area="" asp-controller="Users" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Users
                         </a>
 
                         <b class="arrow"></b>

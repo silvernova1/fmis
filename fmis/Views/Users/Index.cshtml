@@ -1,0 +1,123 @@
+﻿@model List<fmis.Models.UserModels.FmisUser>
+
+@{
+    ViewData["Title"] = "Users";
+
+}
+
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
+<script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
+<script src="~/assets/plugin/daterangepicker/daterangepicker.js"></script>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
+
+<style>
+    .hr {
+        border: 1px solid black;
+    }
+
+    #nav {
+        font-size: 12pt;
+    }
+
+    .pbutton {
+        margin-left: 3px;
+    }
+</style>
+
+
+<!-- Button trigger modal -->
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="">
+        Launch demo modal
+    </button>*@
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Select Accounting Users</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="get" id="employeeSearchForm">
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label for="employeeDropdown">Select Employee:</label>
+                        <select id="employeeDropdown" name="selectedEmployee" class="form-control select2">
+                            <option value="">All Employees</option>
+                            @foreach (var employee in Model)
+                            {
+                                <option value="@employee.Id">@employee.Fname</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#').select2({
+            placeholder: "Search for an employee",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+
+</script>
+
+
+<!--<form method="get">
+    <div class="form-group">
+        <input type="text" name="searchQuery" class="form-control" placeholder="Search by username or email">
+    </div>
+    <div class="form-group">
+        <label for="employeeDropdown">Select Employee:</label>
+        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
+            <option value="">All Employees</option>-->
+<!-- Add an option for all employees -->
+<!--@foreach (var employee in Model)
+            {
+                <option value="@employee.Id">@employee.Fname</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>-->
+
+
+<h3 class="grey lighter smaller">
+    Accounting Users
+</h3>
+<hr>
+
+<div class="row">
+    <div class="col-md-1">
+        <div class="form-group form-inline" style="margin-bottom: 10px;">
+            <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal">
+                <i class="ace-icon fa fa-plus "></i>Create New Users
+            </a>
+        </div>
+    </div>
+</div>
+<br />
+
+
