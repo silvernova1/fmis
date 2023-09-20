@@ -48,22 +48,24 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="get" id="employeeSearchForm">
+            <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
                 <div class="modal-body">
                     <div class="input-group">
                         <label for="employeeDropdown">Select Employee:</label>
-                        <select id="employeeDropdown" name="selectedEmployee" class="form-control select2">
-                            <option value="">All Employees</option>
+                       
+                        <select id="employeeDropdown" name="selectedEmployee" class="form-control">
                             @foreach (var employee in Model)
                             {
-                                <option value="@employee.Id">@employee.Fname</option>
+
+                                <option value="@employee.Id">@employee.Fname, @employee.Lname</option>
                             }
                         </select>
-                    </div>
+
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
 
@@ -73,13 +75,7 @@
 
 <script>
 
-    $(document).ready(function () {
-        $('#').select2({
-            placeholder: "Search for an employee",
-            allowClear: true,
-            width: '100%'
-        });
-    });
+    
 
 </script>
 
@@ -160,6 +156,16 @@
                 </a>
             </td>
         </tr>
-        
+
     </tbody>
 </table>
+
+
+
+@*<input type="hidden" id="selectedEmployeeFname" name="Fname" value="@employee.Fname" />
+    <input type="hidden" id="selectedEmployeeLname" name="Lname" value="@employee.Lname" />
+    <input type="hidden" id="selectedEmployeeId" name="Id_number" value="@employee.Id" />
+    <input type="hidden" id="selectedEmployeerole" name="email" value="@employee.Email" />
+    <input type="hidden" id="selectedEmployeeUsername" name="username" value="@employee.Username" />
+    <input type="hidden" id="selectedEmployeepassword" name="password" value="@employee.Password" />
+    <input type="hidden" id="selectedEmployeerole" name="role" value="@employee.Role" />*@

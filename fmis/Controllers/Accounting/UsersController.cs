@@ -19,14 +19,15 @@ namespace fmis.Controllers.Accounting
     {
         
         private readonly fmisContext _fmisContext;
-     //   private readonly UserContext _userContext;
-        public UsersController(fmisContext FmisContext)
+        private readonly MyDbContext _myDbContext;
+        public UsersController(fmisContext FmisContext, MyDbContext myDbContext)
         {
             _fmisContext = FmisContext;
+            _myDbContext = myDbContext;
           
         }
 
-
+        
         [Route("Accounting/Users")]
         public async Task<IActionResult> Index(string searchEmployee)
         {
@@ -35,10 +36,20 @@ namespace fmis.Controllers.Accounting
             var users = _fmisContext.users
                 .Where(u => string.IsNullOrEmpty(searchEmployee) || u.Username.Contains(searchEmployee) || u.Email.Contains(searchEmployee))
                 .ToList();
+             
 
             return  View(users);
         }
+        [HttpPost]
+        public async Task<IActionResult> SaveUsers(int selectedEmployee)
+        {
+            var user = _fmisContext.users.FirstOrDefault(x => x.Id == selectedEmployee);
 
+            return Json(user);
+
+        }
+
+      
       
 
     }
