@@ -1,4 +1,4 @@
-﻿@model List<fmis.Models.UserModels.FmisUser>
+﻿@model fmis.Models.UserModels.CombineIndexFmisUser
 
 @{
     ViewData["Title"] = "Users";
@@ -52,16 +52,21 @@
                 <div class="modal-body">
                     <div class="input-group">
                         <label for="employeeDropdown">Select Employee:</label>
-                       
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search employees" oninput="filterDropdown()">
                         <select id="employeeDropdown" name="selectedEmployee" class="form-control">
-                            @foreach (var employee in Model)
+                            @foreach (var user in Model.Users)
                             {
 
-                                <option value="@employee.Id">@employee.Fname, @employee.Lname</option>
+                                <option value="@user.Id" data-employee-name="@user.Fname, @user.Lname">@user.Fname, @user.Lname</option>
                             }
                         </select>
-
-                        </div>
+                        @if (ViewData.ModelState.ContainsKey("Username"))
+            {
+                <div class="alert alert-danger">
+                   @Html.ValidationMessage("Username");
+                </div>
+            }
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -75,7 +80,25 @@
 
 <script>
 
-    
+    function filterDropdown() {
+        var input, filter, select, options, option, i;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        select = document.getElementById("employeeDropdown");
+        options = select.getElementsByTagName("option");
+
+        for (i = 0; i < options.length; i++) {
+            option = options[i];
+            if (option.text.toUpperCase().indexOf(filter) > -1) {
+                option.style.display = "";
+            } else {
+                option.style.display = "none";
+            }
+        }
+    }
+
+
+
 
 </script>
 
@@ -89,15 +112,8 @@
         <select class="form-control" id="employeeDropdown" name="selectedEmployee">
             <option value="">All Employees</option>-->
 <!-- Add an option for all employees -->
-<!--@foreach (var employee in Model)
-            {
-                <option value="@employee.Id">@employee.Fname</option>
-            }
-        </select>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>-->
+
 
 
 <h3 class="grey lighter smaller">
@@ -121,10 +137,10 @@
     <thead>
         <tr>
             <th>
-                Employee Number
+                Username
             </th>
             <th>
-                Employee Name
+                Email
             </th>
             <th>
                 Action
@@ -132,31 +148,39 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>
-                0009
-            </td>
-            <td>
-                joven D.
-            </td>
-            <td>
 
-                <a class="btn btn-xs btn-danger" href="/FundCluster/Delete/1" onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
+        @foreach (var item in Model.ListUser)
+        {
+            <tr>
+                <td>@item.Username</td>
+                <td>
+                    @if (item.Email is null)
+                    {
+                        @("-");
+                    }
+                    else
+                    {
+                        @item.Email
+                    }
+                </td>
+                <td>
+
+                    <a class="btn btn-xs btn-danger" href="/Users/DeleteUser/@item.Id" onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
                           // Save it!
                          Lobibox.notify('error', {
                                title: 'Deleted',
-                                msg: 'Fund Cluster Successfully Deleted!',
+                                msg: 'User Successfully Deleted!',
                         });
                         }
                             else
                         {
                           return false
                         };">
-                    <i class="ace-icon fa fa-trash"></i>
-                </a>
-            </td>
-        </tr>
-
+                        <i class="ace-icon fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

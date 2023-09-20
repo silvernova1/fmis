@@ -42,16 +42,20 @@ namespace fmis.Controllers.Accounting
 
             var list_user = await _myDbContext.IndexUser.ToListAsync();
 
-            return View(list_user);
+            var viewModel = new CombineIndexFmisUser
+            {
+                Users = users,
+                ListUser = list_user
+            };
 
-            return View(users);
+            return View(viewModel);
         }
         [HttpPost]
         public async Task<IActionResult> SaveUsers(int selectedEmployee)
         {
 
               var userToSave = _fmisContext.users.FirstOrDefault(x => x.Id == selectedEmployee);
-
+            
             /* var userToSave = _fmisContext.users
                .Where(u => u.Id == selectedEmployee)
                .Select(u => new
@@ -64,8 +68,12 @@ namespace fmis.Controllers.Accounting
 
             if (userToSave != null)
             {
-                // Create a copy of the userToSave object
-                var indexUser = new IndexUser
+               
+                var uniqueEmail = await _myDbContext.IndexUser.FirstOrDefaultAsync(x => x.Username == userToSave.Username);
+
+             if(uniqueEmail == null)
+              { 
+              var indexUser = new IndexUser
                 {
                     Username = userToSave.Username,
                     Password = userToSave.Password,
@@ -74,21 +82,35 @@ namespace fmis.Controllers.Accounting
 
                 await _myDbContext.IndexUser.AddAsync(indexUser);
                 await _myDbContext.SaveChangesAsync();
+                   
+                }
+                else
+                {
+                    var model = new CombineIndexFmisUser();
+                    ModelState.AddModelError("Username", "this data are already exists!");
+                    return View("Index", model);
+                }
+
             }
 
             return RedirectToAction("Index");
-
         }// end of metod
-     
 
-        //public async Task<IActionResult> ListUser()
-        //{
-        //    var list_user = await _myDbContext.IndexUser.ToListAsync();
 
-        //    return View(list_user);
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            //var list_user = await _mydbcontext.indexuser.tolistasync();
+            var deleteUser = await _myDbContext.IndexUser.FindAsync(id);
+            if(deleteUser != null)
+            {
+                _myDbContext.IndexUser.Remove(deleteUser);
+                await _myDbContext.SaveChangesAsync();
+            }
+            
+           return RedirectToAction("Index");
+           
+        }
 
-        //}
-      
 
     }
 }
