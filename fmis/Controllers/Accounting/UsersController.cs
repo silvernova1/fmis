@@ -7,10 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Text;
+using fmis.Models.UserModels;
 using System.Data;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using fmis.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace fmis.Controllers.Accounting
 {
@@ -32,24 +34,60 @@ namespace fmis.Controllers.Accounting
         public async Task<IActionResult> Index(string searchEmployee)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "index");
-            
+
             var users = _fmisContext.users
                 .Where(u => string.IsNullOrEmpty(searchEmployee) || u.Username.Contains(searchEmployee) || u.Email.Contains(searchEmployee))
+                .OrderBy(x => x.Fname)
                 .ToList();
-             
 
-            return  View(users);
+            var list_user = await _myDbContext.IndexUser.ToListAsync();
+
+            return View(list_user);
+
+            return View(users);
         }
         [HttpPost]
         public async Task<IActionResult> SaveUsers(int selectedEmployee)
         {
-            var user = _fmisContext.users.FirstOrDefault(x => x.Id == selectedEmployee);
 
-            return Json(user);
+              var userToSave = _fmisContext.users.FirstOrDefault(x => x.Id == selectedEmployee);
 
-        }
+            /* var userToSave = _fmisContext.users
+               .Where(u => u.Id == selectedEmployee)
+               .Select(u => new
+               {
+                   u.Id,
+                   u.Username,
+                   u.Password,
+                   u.Email
+               }).FirstOrDefault();*/
 
-      
+            if (userToSave != null)
+            {
+                // Create a copy of the userToSave object
+                var indexUser = new IndexUser
+                {
+                    Username = userToSave.Username,
+                    Password = userToSave.Password,
+                    Email = userToSave.Email,
+                };
+
+                await _myDbContext.IndexUser.AddAsync(indexUser);
+                await _myDbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
+
+        }// end of metod
+     
+
+        //public async Task<IActionResult> ListUser()
+        //{
+        //    var list_user = await _myDbContext.IndexUser.ToListAsync();
+
+        //    return View(list_user);
+
+        //}
       
 
     }
