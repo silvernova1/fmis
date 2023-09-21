@@ -1,4 +1,6 @@
-﻿namespace fmis.Models.pr
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace fmis.Models.pr
 {
     public class PrItems
     {
@@ -10,10 +12,13 @@
 
         public string ItemDescription { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Qty { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal EstUnitCost { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal EstCost { get; set; }
 
         public int PrId { get; set; }

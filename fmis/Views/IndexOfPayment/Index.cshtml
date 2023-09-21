@@ -179,28 +179,20 @@
                                 @Html.DisplayFor(modelItem => item.Particulars)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.PoNumber)
+                                @if (item.PoNumbers.Any())
+                                {
+                                    @String.Join(", ", item.PoNumbers.Select(x=>x.PoNum))
+                                }
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.InvoiceNumber)
+                                @if (item.Invoices.Any())
+                                {
+                                    @String.Join(", ", item.Invoices.Select(x => x.InvoiceNumber))
+                                }
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.ProjectId)
                             </td>
-                            @*@if (item.BillNumbers.Any())
-                {
-                <td>
-                @Html.DisplayFor(modelItem => item.NumberOfBill),
-
-                @String.Join(", ", item.BillNumbers.Select(p => p.NumberOfBilling).ToArray())
-                </td>
-                }
-                else
-                {
-                <td>
-                @Html.DisplayFor(modelItem => item.NumberOfBill)
-                </td>
-                }*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.PeriodCover)
                             </td>

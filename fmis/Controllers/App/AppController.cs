@@ -7,6 +7,8 @@ using fmis.Models.ppmp;
 using fmis.Models.UserModels;
 using fmis.Services;
 using fmis.ViewModel;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +19,13 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Item = fmis.Models.ppmp.Item;
+using Font = iTextSharp.text.Font;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace fmis.Controllers.App
 {
@@ -42,7 +47,7 @@ namespace fmis.Controllers.App
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //[Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
+        [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
         public IActionResult Index()
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
@@ -57,59 +62,238 @@ namespace fmis.Controllers.App
             }
             else
             {
-                expenses = _ppmpContext.expense.Include(x=>x.Items).Take(2).ToList();
+                expenses = _ppmpContext.expense.Include(x=>x.Items.Where(x=>x.Yearly_ref_id == 4 && x.Status != null)).ToList();
+
+                ViewBag.expenses = expenses;
             }
+
+           /* var matchingExpenseCodes = _context.Uacs
+            .Where(uac => _context.Expense.Any(expense =>
+                uac.Account_title.Contains(expense.Description.Replace("I. ", "").Replace("II. ", ""))))
+            .Select(uac => uac.Expense_code)
+            .ToList();*/
 
             return View(expenses);
         }
 
         [HttpPost]
-        public IActionResult CreateOrUpdateExpense(List<Expense> updatedExpenses)
+        public async Task<IActionResult> CreateOrUpdateExpense(List<Expense> expenses)
         {
-            foreach (var updatedExpense in updatedExpenses)
+            foreach(var expense in expenses)
             {
-                if (updatedExpense.Id == 0)
+                var existingExpenseId = _context.Expense.FirstOrDefault(x=>x.Id == expense.Id)?.Id ?? null;
+
+                if(expense.Id != existingExpenseId)
                 {
-                    _context.Expense.Add(updatedExpense);
+                    expense.Id = 0;
+                    await _context.Expense.AddAsync(expense);
                 }
                 else
                 {
-                    var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == updatedExpense.Id);
+                    var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == expense.Id);
                     if (existingExpense != null)
                     {
-
-                        foreach(var updatedAppModel in updatedExpense.AppModels)
+                        if (expense.AppModels != null)
                         {
-                            var existingAppModel = existingExpense.AppModels.FirstOrDefault(am => am.Id == updatedAppModel.Id);
-
-                            if (existingAppModel != null)
+                            foreach (var updatedAppModel in expense.AppModels)
                             {
-                                if (existingAppModel.ProcurementProject != updatedAppModel.ProcurementProject)
+                                if (updatedAppModel == null)
                                 {
-                                    existingAppModel.ProcurementProject = updatedAppModel.ProcurementProject;
+                                    continue;
+                                }
+                                var existingAppModel = existingExpense.AppModels.FirstOrDefault(am => am.Id == updatedAppModel.Id);
+
+                                if (existingAppModel != null)
+                                {
+                                    if (existingAppModel.ProcurementProject != updatedAppModel.ProcurementProject
+                                        || existingAppModel.EndUser != updatedAppModel.EndUser
+                                        || existingAppModel.ModeOfProcurement != updatedAppModel.ModeOfProcurement
+                                        || existingAppModel.Advertising != updatedAppModel.Advertising
+                                        || existingAppModel.Submission != updatedAppModel.Submission
+                                        || existingAppModel.NoticeOfAward != updatedAppModel.NoticeOfAward
+                                        || existingAppModel.ContractSigning != updatedAppModel.ContractSigning
+                                        || existingAppModel.FundSource != updatedAppModel.FundSource
+                                        || existingAppModel.Total != updatedAppModel.Total
+                                        || existingAppModel.Mooe != updatedAppModel.Mooe
+                                        || existingAppModel.Co != updatedAppModel.Co
+                                        || existingAppModel.Remarks != updatedAppModel.Remarks)
+                                    {
+                                        existingAppModel.ProcurementProject = updatedAppModel.ProcurementProject;
+                                        existingAppModel.EndUser = updatedAppModel.EndUser;
+                                        existingAppModel.ModeOfProcurement = updatedAppModel.ModeOfProcurement;
+                                        existingAppModel.Advertising = updatedAppModel.Advertising;
+                                        existingAppModel.Submission = updatedAppModel.Submission;
+                                        existingAppModel.NoticeOfAward = updatedAppModel.NoticeOfAward;
+                                        existingAppModel.ContractSigning = updatedAppModel.ContractSigning;
+                                        existingAppModel.FundSource = updatedAppModel.FundSource;
+                                        existingAppModel.Total = updatedAppModel.Total;
+                                        existingAppModel.Mooe = updatedAppModel.Mooe;
+                                        existingAppModel.Co = updatedAppModel.Co;
+                                        existingAppModel.Remarks = updatedAppModel.Remarks;
+                                    }
+
+                                }
+                                else
+                                {
+                                    existingExpense.AppModels.Add(updatedAppModel);
                                 }
 
                             }
-                            else
-                            {
-                                existingExpense.AppModels.Add(updatedAppModel);
-                            }
-
                         }
+                        
 
                         _context.Entry(existingExpense).State = EntityState.Detached;
 
-                        _context.Entry(updatedExpense).State = EntityState.Modified;
+                        _context.Entry(expense).State = EntityState.Modified;
                     }
                 }
+
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
 
+
+
+        [HttpPost]
+        public IActionResult GenerateApp()
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Document document = new Document(PageSize.LEGAL.Rotate());
+
+                PdfWriter pdfWriter = PdfWriter.GetInstance(document, memoryStream);
+
+                document.Open();
+
+                document.Add(new Paragraph("Department of Health-Central Visayas-Center for Health Development Revised Annual Procurement Plan for FY 2023 \n\n"));
+
+                PdfPTable table = new PdfPTable(15);
+                table.WidthPercentage = 100;
+
+                string[] headers = new string[]
+                {
+                "Code", "Procurement Project", "PMO/End User", "Yes", "No",
+                "Mode of Procurement", "Advertising/Posting IB/REI", "Submission/Opening of Bids", "Notice of Award", "Contract Signing",
+                "Source of Funds", "Total", "MOOE", "CO", "Remarks (Brief Description of the Project)"
+                };
+                int[] mergedColumns = new int[] { 0, 1, 2, 3, 4, 5 };
+
+                Font headerFont = new Font(Font.FontFamily.COURIER, 9, Font.BOLD, BaseColor.BLACK);
+                Font cellFont = new Font(Font.FontFamily.COURIER, 9, Font.NORMAL, BaseColor.BLACK);
+
+                float[] columnWidths = new float[] { 35f, 250f, 60f, 40f, 40f, 80f, 80f, 75f, 70f, 70f, 70f, 80f, 80f, 80f, 150f };
+                table.SetWidths(columnWidths);
+
+                foreach (string header in headers)
+                {
+                    PdfPCell headerCell = new PdfPCell(new Phrase(header, headerFont));
+                    headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    headerCell.FixedHeight = 80f;
+                    table.AddCell(headerCell);
+                }
+
+                var items = _context.AppModel.OrderBy(x=>x.Expense_id).ToList();
+
+                for (int row = 0; row < items.Count; row++)
+                {
+                    string itemDescription = items[row].ProcurementProject;
+                    string endUser = items[row].EndUser;
+                    string modeofProcurement = items[row].ModeOfProcurement;
+                    string advertising = items[row].Advertising?.ToString("MM-dd-yy");
+                    string submission = items[row].Submission?.ToString("MM-dd-yy");
+                    string noticeOfAward = items[row].NoticeOfAward?.ToString("MM-dd-yy");
+                    string contractSigning = items[row].ContractSigning?.ToString("MM-dd-yy");
+                    string fundSource = items[row].FundSource;
+                    string total = items[row].Total.ToString();
+                    string mooe = items[row].Mooe.ToString();
+                    string co = items[row].Co.ToString();
+                    string remarks = items[row].Remarks;
+
+                    for (int col = 0; col < headers.Length; col++)
+                    {
+                        PdfPCell cell;
+
+                        if (col == 1)
+                        {
+                            cell = new PdfPCell(new Phrase(itemDescription, cellFont));
+                        }
+                        else if(col == 2)
+                        {
+                            cell = new PdfPCell(new Phrase(endUser, cellFont));
+                        }
+                        else if (col == 5)
+                        {
+                            cell = new PdfPCell(new Phrase(modeofProcurement, cellFont));
+                        }
+                        else if (col == 6)
+                        {
+                            cell = new PdfPCell(new Phrase(advertising, cellFont));
+                        }
+                        else if (col == 7)
+                        {
+                            cell = new PdfPCell(new Phrase(submission, cellFont));
+                        }
+                        else if (col == 8)
+                        {
+                            cell = new PdfPCell(new Phrase(noticeOfAward, cellFont));
+                        }
+                        else if (col == 9)
+                        {
+                            cell = new PdfPCell(new Phrase(contractSigning, cellFont));
+                        }
+                        else if (col == 10)
+                        {
+                            cell = new PdfPCell(new Phrase(fundSource, cellFont));
+                        }
+                        else if (col == 11)
+                        {
+                            cell = new PdfPCell(new Phrase(total, cellFont));
+                        }
+                        else if (col == 12)
+                        {
+                            cell = new PdfPCell(new Phrase(mooe, cellFont));
+                        }
+                        else if (col == 13)
+                        {
+                            cell = new PdfPCell(new Phrase(co, cellFont));
+                        }
+                        else if (col == 14)
+                        {
+                            cell = new PdfPCell(new Phrase(remarks, cellFont));
+                        }
+                        else
+                        {
+                            cell = new PdfPCell(new Phrase(/*$"Row {row + 1}, Cell {col + 1}"*/"", cellFont));
+                        }
+
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        cell.BorderWidthLeft = 1f;
+                        cell.BorderWidthRight = col == headers.Length - 1 ? 1f : 0f;
+                        cell.BorderWidthTop = 0f;
+                        cell.BorderWidthBottom = 0f;
+
+                        table.AddCell(cell);
+                    }
+                }
+
+                document.Add(table);
+
+                document.Close();
+
+                Response.Headers.Add("Content-Disposition", "inline; filename=sample.pdf");
+                Response.ContentType = "application/pdf";
+
+                Response.Body.Write(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
+            }
+
+            return new EmptyResult();
+        }
 
 
         #region LOGIN
