@@ -2,12 +2,9 @@
 
 @{
     ViewData["Title"] = "Users";
-
-}
-
-﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 
 
@@ -25,14 +22,6 @@
         margin-left: 3px;
     }
 </style>
-
-
-<!-- Button trigger modal -->
-@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="">
-        Launch demo modal
-    </button>*@
-
-<!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -106,7 +95,8 @@
                 <td>
                     @if (item.Fname is null && item.Lname is null)
                     {
-                        @("-");
+                        @("-")
+                        ;
                     }
                     else
                     {
@@ -136,7 +126,7 @@
 
 
 @section Scripts
-{
+    {
     <script src="~/lib/select2/js/select2.full.min.js"></script>
     <script src="~/js/select2.js"></script>
 }
