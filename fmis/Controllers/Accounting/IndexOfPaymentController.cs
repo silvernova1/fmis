@@ -39,6 +39,9 @@ using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authentication;
+using System.Net.Mail;
+using System.Net;
+using fmis.Services;
 
 namespace fmis.Controllers.Accounting
 {
@@ -50,15 +53,17 @@ namespace fmis.Controllers.Accounting
         private readonly DeductionContext _DeductionContext;
         private readonly DvContext _DvContext;
         private readonly IndexofpaymentContext _IndexofpaymentContext;
+        private readonly EmailService _emailService;
 
 
-        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext)
+        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext, EmailService emailService)
         {
             _MyDbContext = MyDbContext;
             _CategoryContext = categoryContext;
             _DeductionContext = deductionContext;
             _DvContext = dvContext;
             _IndexofpaymentContext = indexofpaymentContext;
+            _emailService = emailService;
         }
 
         [Route("Accounting/IndexOfPayment")]
@@ -77,6 +82,8 @@ namespace fmis.Controllers.Accounting
                             .Include(x => x.indexDeductions)
                                 .ThenInclude(x => x.Deduction)
                             .Include(x => x.BillNumbers)
+                            .Include(x=>x.PoNumbers)
+                            .Include(x=>x.Invoices)
                             select c;
 
             ViewBag.UserId = UserId;
@@ -113,6 +120,27 @@ namespace fmis.Controllers.Accounting
 
         }
 
+        public IActionResult Email()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Send(string recipient, string subject, string message)
+        {
+            try
+            {
+                _emailService.SendEmail(recipient, subject, message);
+                ViewBag.Message = "Email sent successfully!";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "An error occurred while sending the email: " + ex.Message;
+            }
+
+            return View("Email");
+        }
+
         public IActionResult selectAT(int id)
         {
             var branches = _MyDbContext.Dv.Include(x => x.Payee).ToList();
@@ -145,7 +173,7 @@ namespace fmis.Controllers.Accounting
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment, string daterange)
+        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment, string daterange, List<Invoice> invoice)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;

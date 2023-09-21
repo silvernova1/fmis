@@ -19,7 +19,35 @@
       .custom-table td {
       padding: 5px;
     }
+
+    .text-right {
+        text-align: right;
+    }
+
+    #scroll-down-arrow {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999; /* Ensure the arrow is above other content */
+    }
+    .hidden {
+        display: none;
+    }
 </style>
+
+
+<div class="text-right">
+    <form asp-controller="App" asp-action="GenerateApp" method="post" target="_blank">
+        <button type="submit">Generate PDF</button>
+    </form>
+</div>
+<hr />
+
+<div id="scroll-down-arrow">&#8595;</div>
+
+
 
 @using (Html.BeginForm("CreateOrUpdateExpense", "App", FormMethod.Post))
 {
@@ -58,7 +86,7 @@
                 </tr>
                 @if (Model[i].AppModels != null && Model[i].AppModels.Count() > 0)
                 {
-                    @for (var j = 0; j < Model[i].AppModels.Count && j < 5; j++)
+                    @for (var j = 0; j < Model[i]?.AppModels?.Count && j < 5; j++)
                     {
                         @if (ViewBag.appModels != null && ViewBag.appModels.Count > 0)
                         {
@@ -71,10 +99,12 @@
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].ModeOfProcurement" value="@Model[i].AppModels[j].ModeOfProcurement" class="form-control" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Advertising" value="@Model[i].AppModels[j].Advertising?.ToString("MM-dd-yy")" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Submission" value="@Model[i].AppModels[j].Submission?.ToString("MM-dd-yy")" id="submission@(i)_@(j)" class="form-control submission" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward?.ToString("MM-dd-yy")" id="notice@(i)_@(j)" class="form-control notice" class="form-control" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning?.ToString("MM-dd-yy")" id="contract@(i)_@(j)" class="form-control contract" class="form-control" /></td>
+
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Advertising" value="@Model[i].AppModels[j].Advertising?.ToShortDateString()" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Submission" value="@Model[i].AppModels[j].Submission?.ToShortDateString()" id="submission@(i)_@(j)" class="form-control submission" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward?.ToShortDateString()" id="notice@(i)_@(j)" class="form-control notice" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning?.ToShortDateString()" id="contract@(i)_@(j)" class="form-control contract" /></td>
+
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>
@@ -105,8 +135,21 @@
                         decimal dece = Convert.ToDecimal(Model[i].Items[j].Dece);
 
                         var totalMonth = Model[i].Items[j].Dece + Model[i].Items[j].Jan;
-                        var unit_cost = Convert.ToDecimal(Model[i].Items[j].Unit_cost);
-                        total = unit_cost * totalMonth;
+
+
+
+                        //var unit_cost = Convert.ToDecimal(Model[i].Items[j].Unit_cost);
+                        string unitCostString = Model[i].Items[j].Unit_cost;
+                        decimal unitCost;
+
+                        if (!string.IsNullOrWhiteSpace(unitCostString) && decimal.TryParse(unitCostString, out unitCost))
+                        {
+                            total = unitCost * totalMonth;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid unit cost value: " + unitCostString);
+                        }
 
                         <tr data-person-id="@Model[i].Items[j].Id">
                             <td style="width: 100px;"></td>
@@ -121,7 +164,7 @@
                             <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].ContractSigning" id="contract@(i)_@(j)" class="form-control contract" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Total" value="@total" class="form-control" /></td>
-                            <td style="width: 140px;"><input type="text" value="@total" class="form-control" /></td>
+                            <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Mooe" value="@total" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" class="form-control" /></td>
                             <td style="width: 160px;"><input type="text" asp-for="@Model[i].AppModels[j].Remarks" class="form-control" /></td>
                         </tr>
@@ -130,13 +173,13 @@
             }
         </tbody>
     </table>
-    <div style="text-align: right;">
+    <div style="text-align: right;" id="targetElementID">
         <button class="btn btn-primary">Save All Changes</button>
     </div>
 }
 
 
-
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -161,4 +204,29 @@
             dateFormat: "mm-dd-yy"
         });
     });
+    document.getElementById('scroll-down-arrow').addEventListener('click', function () {
+        const targetElement = document.getElementById('targetElementID');
+
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+            this.classList.add('hidden');
+        }
+    });
+    function checkScrollPosition() {
+        const scrollY = window.scrollY;
+
+        // Replace 'threshold' with the scroll position at which you want to show the arrow
+        const threshold = 200;
+
+        const arrow = document.getElementById('scroll-down-arrow');
+
+        if (scrollY > threshold) {
+            arrow.classList.remove('hidden');
+        } else {
+            arrow.classList.add('hidden');
+        }
+    }
+
+    // Add an event listener to check the scroll position when the user scrolls
+    window.addEventListener('scroll', checkScrollPosition);
 </script>

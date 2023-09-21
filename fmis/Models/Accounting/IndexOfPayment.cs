@@ -17,9 +17,16 @@ namespace fmis.Models.Accounting
         public int? NumberOfBill { get; set; }
         public ICollection<BillNumber> BillNumbers { get; set; }
         public List<IndexDeduction> indexDeductions { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal GrossAmount { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalDeduction { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal NetAmount { get; set; }
+
         public string Particulars { get; set; }
         public string PoNumber { get; set; }
         public int? ProjectId { get; set; }
@@ -60,6 +67,10 @@ namespace fmis.Models.Accounting
 
         /*public int IndexFundSourceId { get; set; }
         public virtual IndexFundSource IndexFundSource { get; set; }*/
+
+        public List<Invoice> Invoices { get; set; }
+
+        public List<PoNumber> PoNumbers { get; set; }
 
     }
 }

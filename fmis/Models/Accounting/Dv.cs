@@ -13,8 +13,14 @@ namespace fmis.Models.Accounting
         public int DvId { get; set; }
         public string DvNo { get; set; }
         public string? PaymentOf { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? GrossAmount { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalDeduction { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? NetAmount { get; set; }
 
         public List<DvDeduction>? dvDeductions { get; set; }

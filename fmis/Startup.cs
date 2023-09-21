@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Web.Http.Controllers;
 using Org.BouncyCastle.Crypto.Tls;
 using fmis.Data.MySql;
+using fmis.Models;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -46,6 +47,8 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<EmailService>();
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddCors();
             services.AddRazorPages();
             services.AddControllersWithViews()
@@ -63,6 +66,8 @@ namespace fmis
 
             services.AddSingleton<AutoIncrementGenerator>();
             services.AddHttpContextAccessor();
+            
+
 
             #region CONTEXTS
 

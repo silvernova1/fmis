@@ -16,9 +16,9 @@ namespace fmis.Models.ppmp
 
         public int? Expense_id { get; set; }
 
-        public int? Division_id { get; set; }
+        //public int? Division_id { get; set; }
 
-        public int? Section_id { get; set; }
+        //public int? Section_id { get; set; }
 
         [MaxLength(45)]
         public string? Tranche { get; set; }

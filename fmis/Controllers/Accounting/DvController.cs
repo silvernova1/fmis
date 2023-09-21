@@ -64,7 +64,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult GetPrograms()
         {
-            var programs = _ppmpContext.item_daily.ToList();
+            var programs = _ppmpContext.item.ToList();
 
             return Json(programs);
         }
@@ -73,7 +73,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
-            var item = from e in _ppmpContext.item_daily
+            var item = from e in _ppmpContext.item
                        orderby e.Id
                           select e;
             ViewBag.Item = new SelectList(item, "Id", "Description");
