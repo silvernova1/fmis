@@ -1557,8 +1557,9 @@ namespace fmis.Controllers.Budget.John
             {
                 if (funsource.AllotmentClassId == 2 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 13)
                 {
-                    if (uniqueValues.Add(valueAdd))
                     var valueAdd = "HEALTH HUMAN RESOURCE SUB - PROGRAM";
+                    if (uniqueValues.Add(valueAdd))
+                 
                     {
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
                         worksheet.Cell(currentRow, 1).Style.Font.SetBold();
@@ -1772,7 +1773,7 @@ namespace fmis.Controllers.Budget.John
             foreach (var funsoce in funsources1) //2023 NHWSS SAA 2023-03-000897
             {
                 if (funsoce.AllotmentClassId == 2 && funsoce.AppropriationId == 1 && funsoce.BudgetAllotmentId == 3 && funsoce.PrexcId == 32)
-                {dddfd
+                {
                     if(MOOE_totalSaa9 == 0)
                     {
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;

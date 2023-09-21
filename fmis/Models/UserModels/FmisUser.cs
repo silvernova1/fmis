@@ -1,5 +1,6 @@
 ﻿using fmis.Data;
 using fmis.Models.Accounting;
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,6 +13,7 @@ namespace fmis.Models.UserModels
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+       // [Remote("IsUsernameUnique", "")]
         public string Email { get; set; }
 
 

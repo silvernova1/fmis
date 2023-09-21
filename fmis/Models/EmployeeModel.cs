@@ -1,5 +1,8 @@
-﻿namespace fmis.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace fmis.Models
 {
+
     public class EmployeeModel
     {
         public string Fname { get; set; }
