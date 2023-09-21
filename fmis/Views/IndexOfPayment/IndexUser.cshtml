@@ -22,30 +22,28 @@
         margin-left: 3px;
     }
 </style>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
-                <div class="modal-body">
-                    <div class="input-group">
-                        <label for="#">Add New User</label>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="select2Input">Add Employee</label>
+                    <br />
                         <br />
-                        <br />
-                        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
-                            @foreach (var user in Model.Users)
-                            {
-                                <option value="@user.Id">@user.Fname, @user.Lname</option>
-                            }
-                        </select>
-
-                    </div>
+                    <select id="select2Input" class="js-example-basic-single" style="width: 100%;" name="selectedEmployee">
+                        @foreach (var user in Model.Users)
+                        {
+                            <option value="@user.Id">@user.Fname, @user.Lname</option>
+                        }
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -65,7 +63,7 @@
 <div class="row">
     <div class="col-md-1">
         <div class="form-group form-inline" style="margin-bottom: 10px;">
-            <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal">
+            <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">
                 <i class="ace-icon fa fa-plus "></i>Create New Users
             </a>
         </div>
@@ -135,3 +133,10 @@
     <script src="~/lib/select2/js/select2.full.min.js"></script>
     <script src="~/js/select2.js"></script>
 }
+    <script>
+        $(document).ready(function () {
+            $('.js-example-basic-single').select2({
+                width: '100%'
+            });
+        });
+    </script>
