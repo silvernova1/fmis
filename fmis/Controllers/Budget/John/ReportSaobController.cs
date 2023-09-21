@@ -1135,9 +1135,11 @@ namespace fmis.Controllers.Budget.John
 
             var SaaFunsourceTotal = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13).Sum(x => x.Beginning_balance);
             decimal SaaFunsourceTotal_SaaTotal1_NHWSS = SaaFunsourceTotal + Saa_SAA_000199 + totalfunsorce + NHWSS; //NHWSS/
-
+            var PS7 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 8).Sum(x => x.Beginning_balance);
             var totalSaa4 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 8).Sum(x => x.Beginning_balance);
-            decimal totalSaa_SaaFunsourceTotal_HHWSS = totalSaa4 + SaaFunsourceTotal_SaaTotal1_NHWSS;
+            var totalCO2 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 8).Sum(x => x.Beginning_balance);
+            decimal totalPSCO = totalSaa4 + PS7 + totalCO2;
+            decimal totalSaa_SaaFunsourceTotal_HHWSS = totalPSCO + SaaFunsourceTotal_SaaTotal1_NHWSS;
             foreach (var saaSub in subAllotments) //Health Facility Policy and Plan Development  310201100001000
             {
 
@@ -1178,7 +1180,7 @@ namespace fmis.Controllers.Budget.John
                     if (!saaDisplayed)
                     {
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa4);
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPSCO);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         saaDisplayed = true;
                     }
@@ -1186,19 +1188,36 @@ namespace fmis.Controllers.Budget.John
                     Prexc_papTitle(worksheet, ref currentRow, saaSub.prexc.pap_title);
                     Prexc_papcode(worksheet, ref currentRow, saaSub.prexc.pap_code1);
 
-                    if (saaSub.AllotmentClass.Desc != null && !SaaDiplayed)
+                    if(PS7 == 0)
                     {
+                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa4);
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    }else
+                    {
+                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS7);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        ItemSubPrexc(worksheet, ref currentRow, saaSub.AllotmentClass.Desc);
-
-                        SaaDiplayed = true;
-                      
                     }
 
-                    SubAllotTitleRed(worksheet, ref currentRow, saaSub.Suballotment_title);
+                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+
+                  
+                     worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                     worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa4);
+                     worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                     ItemSubPrexc(worksheet, ref currentRow, saaSub.AllotmentClass.Desc);
+
+                        
+                      
+                    
+
+                    if (saaSub.Suballotment_title != duplicate1)
+                    {
+                        SubAllotTitleRed(worksheet, ref currentRow, saaSub.Suballotment_title);
+                    }         
                     currentRow++;
                     foreach (var uacs in saaSub.SubAllotmentAmounts.ToList())
                     {
@@ -1226,7 +1245,7 @@ namespace fmis.Controllers.Budget.John
 
             currentRow++;
             currentRow++;
-
+            var PS6 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance);
             var totalSaa5 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance);
             foreach (var subUacs in subAllotments)//Health Facilities Enhancement Program  310201100002000 /SAA 2023-02-000451
             {
@@ -1238,10 +1257,26 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa5);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                     }
-                    
+                 
 
                     Prexc_papTitle(worksheet, ref currentRow, subUacs.prexc.pap_title);
                     Prexc_papcode(worksheet, ref currentRow, subUacs.prexc.pap_code1);
+                    if (PS6 == 0)
+                    {
+                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    }
+                    else
+                    {
+                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS6);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    }
+
+                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
 
                     worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                     worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa5);
