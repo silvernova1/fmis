@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     <div class="input-group">
                         <label for="#">Select Employee:</label>
-                        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
+                        <select class="form-control select2" id="employeeDropdown" name="selectedEmployee">
                             @foreach (var user in Model.Users)
                             {
                                 <option value="@user.Id">@user.Fname, @user.Lname</option>
@@ -67,8 +67,9 @@
 
 
 <script>
-
-
+    jQuery(document).ready(function () {
+        jQuery("#employeeDropdown").select2();
+    });
 </script>
 
 
