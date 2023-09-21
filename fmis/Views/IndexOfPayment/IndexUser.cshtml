@@ -32,10 +32,10 @@
                     <br />
                         <br />
                     <select id="select2Input" class="js-example-basic-single" style="width: 100%;" name="selectedEmployee">
-                        @foreach (var user in Model.Users)
-                        {
-                            <option value="@user.Id">@user.Fname, @user.Lname</option>
-                        }
+                            @foreach (var user in Model.Users.Where(x => !ViewBag.userId.Contains(x.Id.ToString())))
+                            {
+                                <option value="@user.Id">@user.Fname, @user.Lname</option>
+                            }
                     </select>
                 </div>
             </div>

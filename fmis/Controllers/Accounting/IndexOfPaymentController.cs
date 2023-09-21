@@ -146,6 +146,8 @@ namespace fmis.Controllers.Accounting
                 ListUser = list_user
             };
 
+            ViewBag.userId = _MyDbContext.IndexUser.Select(x=>x.UserId).ToList();
+
             return View(viewModel);
         }
 
