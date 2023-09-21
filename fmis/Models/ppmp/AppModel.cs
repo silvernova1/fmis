@@ -10,6 +10,8 @@ namespace fmis.Models.ppmp
 
         public int UacsId { get; set; }
 
+        public int? Expense_id { get; set; }
+
         public string ProcurementProject { get; set; }
 
         public string EndUser { get; set; }
@@ -28,10 +30,13 @@ namespace fmis.Models.ppmp
 
         public string FundSource { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Total { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Mooe { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Co { get; set; }
 
         public string Remarks { get; set; }

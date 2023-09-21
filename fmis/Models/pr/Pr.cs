@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.pr
 {
@@ -11,6 +12,7 @@ namespace fmis.Models.pr
 
         public DateTime PrnoDate { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal GrandTotal { get; set; }
 
         public string Purpose { get; set; }

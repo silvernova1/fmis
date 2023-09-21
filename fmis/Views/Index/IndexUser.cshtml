@@ -1,0 +1,132 @@
+﻿@model fmis.Models.UserModels.CombineIndexFmisUser
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<style>
+    .hr {
+        border: 1px solid black;
+    }
+
+    #nav {
+        font-size: 12pt;
+    }
+
+    .pbutton {
+        margin-left: 3px;
+    }
+</style>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label for="#">Add New User</label>
+                        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
+                            @foreach (var user in Model.Users)
+                            {
+                                <option value="@user.Id">@user.Fname, @user.Lname</option>
+                            }
+                        </select>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<h3 class="grey lighter smaller">
+    Index of Payment Users
+</h3>
+<hr>
+
+<div class="row">
+    <div class="col-md-1">
+        <div class="form-group form-inline" style="margin-bottom: 10px;">
+            <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal">
+                <i class="ace-icon fa fa-plus "></i>Create New Users
+            </a>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<table class="table table-striped" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.ListUser)
+        {
+            <tr>
+                <td>@item.Username</td>
+                <td>
+                    @if (item.Fname is null && item.Lname is null)
+                    {
+                        @("-")
+                        ;
+                    }
+                    else
+                    {
+                        @(@item.Fname + " " + @item.Lname)
+                    }
+                </td>
+                <td>
+
+                    <a class="btn btn-xs btn-danger" href="/Users/DeleteUser/@item.Id" onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
+                          // Save it!
+                         Lobibox.notify('error', {
+                               title: 'Deleted',
+                                msg: 'User Successfully Deleted!',
+                        });
+                        }
+                            else
+                        {
+                          return false
+                        };">
+                        <i class="ace-icon fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts
+    {
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/js/select2.js"></script>
+}

@@ -33,7 +33,6 @@ namespace fmis.Data
         {
         }
 
-
         public DbSet<FmisUser> FmisUsers { get; set; }
         public DbSet<Account> Account { get; set; }
         public DbSet<Sections> Sections { get; set; }
@@ -96,7 +95,9 @@ namespace fmis.Data
         public DbSet<Programs> Programs { get; set; }
         public DbSet<Expense> Expense { get; set; }
         public DbSet<Item> Item { get; set; }
+        public DbSet<IndexUser> IndexUser { get; set; }
         public DbSet<AppModel> AppModel { get; set; }
+
 
 
         public class MyEntityConfiguration : IEntityTypeConfiguration<InfraProgress>
