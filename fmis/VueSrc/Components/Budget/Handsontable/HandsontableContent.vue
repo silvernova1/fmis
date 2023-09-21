@@ -907,9 +907,12 @@
 
     const displayCellTop = ref("")
     const afterChangeFlag = ref(false)
+
     const afterChange = async (changes: any, source: any) => {
         //if (changes && source === 'edit' && !afterChangeFlag.value) {
+
         if (changes && source === 'edit') {
+
             const [row, col, oldValue, newValue] = changes[0];
             const hot = hotTableComponent.value.hotInstance;
 
@@ -981,7 +984,8 @@
                         return;
                     }
                 }
-                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue, totalObligation: totalObligation.value }
+
+                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
                 socket.value.send(JSON.stringify(send_data));
 
                 await __saveObligationAmount(obligation_amount_data)
@@ -1007,6 +1011,7 @@
 
             await __saveObligation(obligation_data, row)
             $toast.success('Successfully Save Obligation!');
+
             const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
             socket.value.send(JSON.stringify(send_data));
         }
@@ -1110,7 +1115,6 @@
                 item.source_type == "fund_source" ? item.fundSource.obligated_amount : item.subAllotment.obligated_amount
             ]
 
-
             totalObligation.value += obligation_amount;
 
             return dataBody.concat(...obligationAmountBody, ...ObligationAmountTokenBody, ...beginningRemainingAllotmentBody)
@@ -1141,9 +1145,12 @@
     };
 
     const __saveObligationAmount = async (data: {}) => {
-        //console.log(data);
+
+        const cellValue: any[][] = hotTableComponent.value.hotInstance.getData();
+        const totalSumObligation: number = cellValue.reduce((acc: number, curr: any[]) => acc + curr[10], 0);
+        totalObligation.value = totalSumObligation;
+
         const response = await saveObligationAmount(data);
-        //console.log(response);
     }
 
     const __deleteObligation = async (data: {}) => {
@@ -1200,7 +1207,7 @@
             </div>
             <div class="infobox-data">
                 <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                    <span>
+                    <span >
                         ₱{{ formatNumber(totalObligation) }}
                     </span>
                 </span>

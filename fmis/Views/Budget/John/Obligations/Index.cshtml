@@ -963,7 +963,10 @@
             $.each(this.getData(), function () {
                 total_obligation += this[10];
             });
+
+            // Update the total in the HTML element
             $('#sub_total_amt').html(str + total_obligation.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+      
 
             if (!changes || source === 'loadData' || CHECK_AFTER_ROW) {
                 console.log("first trap");
@@ -1125,7 +1128,7 @@
                         else {
                             //do the calculalation
                             console.log("do the calculation!");
-                            post_remaining_balance = post_remaining_balance - AMOUNT;
+                            post_remaining_balance = post_remaining_balance - AMOUNT;-
                             post_obligated_amount = post_obligated_amount + AMOUNT;
                             var calculated_amount_data = {
                                 "obligation_id": 0,
