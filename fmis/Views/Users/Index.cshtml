@@ -9,14 +9,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/assets/plugin/daterangepicker/daterangepicker.css">
-<script src="~/assets/plugin/daterangepicker/moment.min.js"></script>
-<script src="~/assets/plugin/daterangepicker/daterangepicker.js"></script>
 
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
 
 <style>
     .hr {
@@ -51,21 +45,14 @@
             <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
                 <div class="modal-body">
                     <div class="input-group">
-                        <label for="employeeDropdown">Select Employee:</label>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search employees" oninput="filterDropdown()">
-                        <select id="employeeDropdown" name="selectedEmployee" class="form-control">
+                        <label for="#">Select Employee:</label>
+                        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
                             @foreach (var user in Model.Users)
                             {
-
-                                <option value="@user.Id" data-employee-name="@user.Fname, @user.Lname">@user.Fname, @user.Lname</option>
+                                <option value="@user.Id">@user.Fname, @user.Lname</option>
                             }
                         </select>
-                        @if (ViewData.ModelState.ContainsKey("Username"))
-            {
-                <div class="alert alert-danger">
-                   @Html.ValidationMessage("Username");
-                </div>
-            }
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -78,40 +65,9 @@
     </div>
 </div>
 
-<script>
-
-    function filterDropdown() {
-        var input, filter, select, options, option, i;
-        input = document.getElementById("searchInput");
-        filter = input.value.toUpperCase();
-        select = document.getElementById("employeeDropdown");
-        options = select.getElementsByTagName("option");
-
-        for (i = 0; i < options.length; i++) {
-            option = options[i];
-            if (option.text.toUpperCase().indexOf(filter) > -1) {
-                option.style.display = "";
-            } else {
-                option.style.display = "none";
-            }
-        }
-    }
 
 
 
-
-</script>
-
-
-<!--<form method="get">
-    <div class="form-group">
-        <input type="text" name="searchQuery" class="form-control" placeholder="Search by username or email">
-    </div>
-    <div class="form-group">
-        <label for="employeeDropdown">Select Employee:</label>
-        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
-            <option value="">All Employees</option>-->
-<!-- Add an option for all employees -->
 
 
 
@@ -185,11 +141,8 @@
 </table>
 
 
-
-@*<input type="hidden" id="selectedEmployeeFname" name="Fname" value="@employee.Fname" />
-    <input type="hidden" id="selectedEmployeeLname" name="Lname" value="@employee.Lname" />
-    <input type="hidden" id="selectedEmployeeId" name="Id_number" value="@employee.Id" />
-    <input type="hidden" id="selectedEmployeerole" name="email" value="@employee.Email" />
-    <input type="hidden" id="selectedEmployeeUsername" name="username" value="@employee.Username" />
-    <input type="hidden" id="selectedEmployeepassword" name="password" value="@employee.Password" />
-    <input type="hidden" id="selectedEmployeerole" name="role" value="@employee.Role" />*@
+@section Scripts
+{
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/js/select2.js"></script>
+}

@@ -31,12 +31,12 @@ namespace fmis.Controllers.Accounting
 
         
         [Route("Accounting/Users")]
-        public async Task<IActionResult> Index(string searchEmployee)
+        public async Task<IActionResult> Index(string selectedEmployee)
         {
             ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "index");
 
             var users = _fmisContext.users
-                .Where(u => string.IsNullOrEmpty(searchEmployee) || u.Username.Contains(searchEmployee) || u.Email.Contains(searchEmployee))
+                .Where(u => string.IsNullOrEmpty(selectedEmployee) || u.Username.Contains(selectedEmployee) || u.Email.Contains(selectedEmployee))
                 .OrderBy(x => x.Fname)
                 .ToList();
 
@@ -84,12 +84,7 @@ namespace fmis.Controllers.Accounting
                 await _myDbContext.SaveChangesAsync();
                    
                 }
-                else
-                {
-                    var model = new CombineIndexFmisUser();
-                    ModelState.AddModelError("Username", "this data are already exists!");
-                    return View("Index", model);
-                }
+           
 
             }
 
