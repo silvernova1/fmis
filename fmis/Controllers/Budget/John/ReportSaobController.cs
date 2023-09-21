@@ -1282,9 +1282,25 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             currentRow++;
-            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
 
             var totalSaa6 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance);
+            var totalCO1 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance);
+            if (totalCO1 == 0)
+            {
+                worksheet.Cell(currentRow, 3).Style.Font.SetBold();
+                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
+                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            }
+            else
+            {
+                worksheet.Cell(currentRow, 3).Style.Font.SetBold();
+                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalCO1);
+                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            }
+            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+
             foreach (var listUacs in subAllotments) //SAA 2023-02-000162-INFRA //SAA 2023-02-000680-INFRA// SAA 2023-02-000680-INFRA
             {
                 if (listUacs.AllotmentClassId == 3 && listUacs.AppropriationId == 1 && listUacs.BudgetAllotmentId == 3 && listUacs.prexcId == 9)

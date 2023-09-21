@@ -10,7 +10,10 @@
 }
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
 
 <style>
     .hr {
@@ -33,20 +36,18 @@
     </button>*@
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Select Accounting Users</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
             </div>
             <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
                 <div class="modal-body">
                     <div class="input-group">
                         <label for="#">Select Employee:</label>
-                        <select class="form-control select2" id="employeeDropdown" name="selectedEmployee">
+                        <select class="select2" id="employeeDropdown" name="selectedEmployee">
                             @foreach (var user in Model.Users)
                             {
                                 <option value="@user.Id">@user.Fname, @user.Lname</option>
@@ -67,14 +68,10 @@
 
 
 <script>
-    jQuery(document).ready(function () {
-        jQuery("#employeeDropdown").select2();
+    $(document).ready(function () {
+        $('.select2').select2();
     });
 </script>
-
-
-
-
 
 <h3 class="grey lighter smaller">
     Accounting Users
@@ -145,8 +142,6 @@
 </table>
 
 
-@section Scripts
-{
-    <script src="~/lib/select2/js/select2.full.min.js"></script>
-    <script src="~/js/select2.js"></script>
-}
+
+<!-- Select2 JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 
 namespace fmis.Models.UserModels
 {
@@ -11,9 +12,9 @@ namespace fmis.Models.UserModels
     {
 
         public int Id { get; set; }
+        //[Remote("IsUsernameUnique", "Users", ErrorMessage = "This username is already in use.")]
         public string Username { get; set; }
         public string Password { get; set; }
-       // [Remote("IsUsernameUnique", "")]
         public string Email { get; set; }
 
 
