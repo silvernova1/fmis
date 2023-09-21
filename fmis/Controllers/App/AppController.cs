@@ -1,6 +1,8 @@
-﻿using fmis.Data;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using fmis.Data;
 using fmis.Data.MySql;
 using fmis.Filters;
+using fmis.Models.Accounting;
 using fmis.Models.ppmp;
 using fmis.Models.UserModels;
 using fmis.Services;
@@ -10,10 +12,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Item = fmis.Models.ppmp.Item;
 
 namespace fmis.Controllers.App
 {
@@ -35,7 +42,7 @@ namespace fmis.Controllers.App
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
+        //[Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
         public IActionResult Index()
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
@@ -43,60 +50,67 @@ namespace fmis.Controllers.App
             var expenses = new List<Expense>();
             if (_context.Expense.Count() > 0)
             {
-                expenses = _context.Expense.Include(x => x.Items).Take(2).ToList();
+                expenses = _context.Expense.Include(x=>x.Items).Include(x => x.AppModels).ToList();
+                ViewBag.expenses = expenses;
+
+                ViewBag.appModels = _context.AppModel.ToList();
             }
             else
             {
-                expenses = _ppmpContext.expense.Include(x => x.Items).Take(2).ToList();
+                expenses = _ppmpContext.expense.Include(x=>x.Items).Take(2).ToList();
             }
 
             return View(expenses);
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(List<Expense> expenses)
+        public IActionResult CreateOrUpdateExpense(List<Expense> updatedExpenses)
         {
-
-            foreach (var expense in expenses)
+            foreach (var updatedExpense in updatedExpenses)
             {
-                var existingExpense = _context.Expense.FirstOrDefault(e => e.Id == expense.Id);
-
-                if (existingExpense != null)
+                if (updatedExpense.Id == 0)
                 {
-                    existingExpense.Description = expense.Description;
-
-                    existingExpense.Items.Clear();
-                    foreach (var newItem in expense.Items)
-                    {
-                        var item = new Item
-                        {
-                            Description = newItem.Description,
-                        };
-                        existingExpense.Items.Add(item);
-                    }
+                    _context.Expense.Add(updatedExpense);
                 }
                 else
                 {
-                    var newExpense = new Expense
+                    var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == updatedExpense.Id);
+                    if (existingExpense != null)
                     {
-                        Description = expense.Description,
-                        Items = new List<Item>()
-                    };
-                    foreach (var newItem in expense.Items)
-                    {
-                        var item = new Item
+
+                        foreach(var updatedAppModel in updatedExpense.AppModels)
                         {
-                            Description = newItem.Description
-                        };
-                        newExpense.Items.Add(item);
+                            var existingAppModel = existingExpense.AppModels.FirstOrDefault(am => am.Id == updatedAppModel.Id);
+
+                            if (existingAppModel != null)
+                            {
+                                if (existingAppModel.ProcurementProject != updatedAppModel.ProcurementProject)
+                                {
+                                    existingAppModel.ProcurementProject = updatedAppModel.ProcurementProject;
+                                }
+
+                            }
+                            else
+                            {
+                                existingExpense.AppModels.Add(updatedAppModel);
+                            }
+
+                        }
+
+                        _context.Entry(existingExpense).State = EntityState.Detached;
+
+                        _context.Entry(updatedExpense).State = EntityState.Modified;
                     }
-                    _context.Expense.Add(newExpense);
                 }
             }
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
+
+
+
 
         #region LOGIN
         [HttpGet]
@@ -208,7 +222,7 @@ namespace fmis.Controllers.App
         #endregion
 
         #region COOKIES
-        public string UserRole { get { return User.FindFirstValue(ClaimTypes.Role); } }
+        public string year { get { return User.FindFirstValue("Year"); } }
         #endregion
     }
 }

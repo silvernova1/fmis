@@ -41,6 +41,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using fmis.Models.ppmp;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
+using iText.Commons.Actions.Contexts;
+using fmis.Data.MySql;
 
 namespace fmis.Controllers.Accounting
 {
@@ -62,7 +64,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult GetPrograms()
         {
-            var programs = _ppmpContext.item.ToList();
+            var programs = _ppmpContext.item_daily.ToList();
 
             return Json(programs);
         }
@@ -71,13 +73,30 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
-            var item = from e in _ppmpContext.item
-                          orderby e.Id
+            var item = from e in _ppmpContext.item_daily
+                       orderby e.Id
                           select e;
             ViewBag.Item = new SelectList(item, "Id", "Description");
 
             return View();
         }
+
+
+        public JsonResult CheckDvNo(string dvno)
+        {
+
+            var data = _MyDbContext.Dv.Where(x => x.DvNo == dvno && x.UserId == UserId).SingleOrDefault();
+
+            if (data != null)
+            {
+                return Json(1);
+            }
+            else
+            {
+                return Json(0);
+            }
+        }
+
 
         [Route("Accounting/DisbursementVoucher")]
         public async Task<IActionResult> Index(string searchString)
@@ -144,19 +163,23 @@ namespace fmis.Controllers.Accounting
 
 
             var dvList = _MyDbContext.Dv.Include(x => x.InfraAdvancePayment).Include(x => x.InfraProgress).Include(x => x.InfraRetentions).ToList();
-            var dvNo = _autoIncrementGenerator.GenerateSupplier();
-            foreach (var dv in dvList)
-            {
-                var stype = dv.DvSupType;
-                dv.DvNo = _autoIncrementGenerator.GenerateSupplier();
-                if (!string.IsNullOrEmpty(dv.DvNo))
-                {
-                    dvNo = dv.DvNo;
-                    break;
-                }
-            }
 
-            ViewBag.DvNo = dvNo;
+            var lastRecord = _MyDbContext.Dv
+            .OrderByDescending(e => e.DvId)
+            .FirstOrDefault();
+
+            if (lastRecord != null)
+            {
+                int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                lastDvNo++;
+
+                string newDvNo = $"S09-{lastDvNo:D4}";
+                ViewData["DvNo"] = newDvNo;
+            }
+            else
+            {
+                ViewData["DvNo"] = "S09-2872";
+            }
 
             return PartialView("_CreatePartial");
         }
@@ -192,6 +215,7 @@ namespace fmis.Controllers.Accounting
                 dv.NetAmount = dv.GrossAmount - dv.TotalDeduction;
             }
 
+            var dvExist = _MyDbContext.Dv.FirstOrDefault(x=>x.DvNo == dv.DvNo);
             if (ModelState.IsValid)
             {
                 if (dv.InfraProgress != null || dv.InfraRetentions != null || dv.dvDeductions != null)
@@ -230,18 +254,27 @@ namespace fmis.Controllers.Accounting
             var stype = newDv.DvSupType;
             newDv.InfraAdvancePayment = newDv.InfraAdvancePayment;
             newDv.InfraRetentions = newDv.InfraRetentions;
-            newDv.DvNo = _autoIncrementGenerator.GenerateIndividual();
-
-            if (newDv.DvNo != null)
-            {
-                // DvNo exists, notify clients via SignalR
-                _hubContext.Clients.All.SendAsync("DvNoExists", newDv.DvNo);
-            }
-
 
             for (int x = 0; x < 7; x++)
             {
                 newDv.dvDeductions.Add(new DvDeduction());
+            }
+
+            var lastRecord = _MyDbContext.Dv.Where(x=>x.DvNo.Contains("T"))
+            .OrderByDescending(e => e.DvId)
+            .FirstOrDefault();
+
+            if (lastRecord != null)
+            {
+                int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                lastDvNo++;
+
+                string newDvNo = $"T09-{lastDvNo:D4}";
+                ViewData["DvNo"] = newDvNo;
+            }
+            else
+            {
+                ViewData["DvNo"] = "T09-4274";
             }
 
             return View(newDv);
@@ -303,62 +336,43 @@ namespace fmis.Controllers.Accounting
 
         public async Task<IActionResult> GetLatestDvType(string type)
         {
-            var latest = await _MyDbContext.Dv.Where(x => x.DvNo.Contains(type)).OrderBy(x=>x.DvNo).LastOrDefaultAsync();
+            var lastRecord = _MyDbContext.Dv
+            .OrderByDescending(e => e.DvId)
+            .FirstOrDefault();
 
-            if (type == "S")
+            string newDvNo;
+
+            if (type == "T")
             {
-                string currentMonth = DateTime.Now.Month.ToString();
-                var dvCtr = "0816";
-                var dvNo = $"{type}{currentMonth}-{dvCtr}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                if (lastRecord != null && lastRecord.DvNo.Contains("T"))
                 {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                    int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                    lastDvNo++;
+
+                    newDvNo = $"T09-{lastDvNo:D4}";
+                    ViewData["DvNo"] = newDvNo;
                 }
                 else
                 {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                    newDvNo = "T09-4275";
                 }
-
-                if (latest == null) return Ok(dvNo);
-                dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
-                {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
-                }
-                else
-                {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
-                }
-                return Ok(dvNo);
+                return Ok(newDvNo);
             }
             else
             {
-                string currentMonth = DateTime.Now.Month.ToString();
-                var dvCtr = "0751";
-                var dvNo = $"{type}{currentMonth}-{dvCtr}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
+                if (lastRecord != null && lastRecord.DvNo.Contains("S"))
                 {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
+                    int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
+                    lastDvNo++;
+
+                    newDvNo = $"S09-{lastDvNo:D4}";
+                    ViewData["DvNo"] = newDvNo;
                 }
                 else
                 {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
+                    newDvNo = "S09-2872";
                 }
-                if (latest == null) return Ok(dvNo);
-                dvCtr = $"{int.Parse(latest.DvNo.Split('-')[1]) + 1:0000}";
-
-                if (currentMonth == "10" || currentMonth == "11" || currentMonth == "12")
-                {
-                    dvNo = $"{type}{currentMonth}-{dvCtr}";
-                }
-                else
-                {
-                    dvNo = $"{type}0{currentMonth}-{dvCtr}";
-                }
-                return Ok(dvNo);
+                return Ok(newDvNo);
             }
             
         }
