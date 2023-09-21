@@ -92,21 +92,23 @@
 
         @foreach (var item in Model.ListUser)
         {
-            <tr>
-                <td>@item.Username</td>
-                <td>
-                    @if (item.Fname is null && item.Lname is null)
-                    {
-                        @("-")
-                        ;
-                    }
-                    else
-                    {
-                        @(@item.Fname + " " + @item.Lname)
-                    }
-                </td>
-                <td>
-                    <a class="btn btn-xs btn-danger" href="@Url.Action("DeleteUser","IndexOfPayment",new { id = @item.Id })"
+            @if(item.Username != "hr_admin")
+            {
+                <tr>
+                    <td>@item.Username</td>
+                    <td>
+                        @if (item.Fname is null && item.Lname is null)
+                        {
+                            @("-")
+                            ;
+                        }
+                        else
+                        {
+                            @(@item.Fname + " " + @item.Lname)
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-danger" href="@Url.Action("DeleteUser","IndexOfPayment",new { id = @item.Id })"
                    onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
                                           // Save it!
                                          Lobibox.notify('error', {
@@ -118,10 +120,11 @@
                                         {
                                           return false
                                         };">
-                        <i class="ace-icon fa fa-trash"></i>Delete
-                    </a>
-                </td>
-            </tr>
+                            <i class="ace-icon fa fa-trash"></i>Delete
+                        </a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
