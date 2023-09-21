@@ -108,19 +108,19 @@
                     <label>PO #:</label>
                     <div class="row">
                         <div class="col-md-8">
-                            <textarea asp-for="PoNumbers[0].PoNum" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px" />
+                            <textarea asp-for="PoNumbers[0].PoNum" id="poNumber" class="form-control" style="resize: none; overflow: auto; height:35px" />
                         </div>
                         <div class="col-md-4">
                             <button type="button" onclick="addNewPo()">+</button>
                         </div>
                      </div>
                 </div>
-                <div class="row">
+                @*<div class="row">
                     <label class="col-sm-2"></label>
                     <div class="col-sm-10">
                         <p id="Status" />
                     </div>
-                </div>
+                </div>*@
             </div>
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
@@ -139,19 +139,19 @@
                     <label>INVOICE #:</label>
                     <div class="row">
                         <div class="col-md-8">
-                            <textarea asp-for="Invoices[0].InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" style="resize: none; overflow: auto; height: 35px"></textarea>
+                            <textarea asp-for="Invoices[0].InvoiceNumber" id="invoice" type="text" class="form-control" style="resize: none; overflow: auto; height: 35px"></textarea>
                         </div>
                         <div class="col-md-4">
                             <button type="button" onclick="addNewTextarea()">+</button>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                @*<div class="row">
                     <label class="col-sm-2"></label>
                     <div class="col-sm-10">
                         <p id="InvoiceCheck"></p>
                     </div>
-                </div>
+                </div>*@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
