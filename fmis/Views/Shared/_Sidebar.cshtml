@@ -967,10 +967,13 @@
                             Disbursement Voucher
                         </a>
 
-                        <a asp-area="" asp-controller="Users" asp-action="Index">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Users
-                        </a>
+                        @if(User.IsInRole("accounting_admin"))
+                        {
+                            <a asp-area="" asp-controller="IndexOfPayment" asp-action="IndexUser">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                Users
+                            </a>
+                        }
 
                         <b class="arrow"></b>
                     </li>

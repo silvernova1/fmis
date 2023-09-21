@@ -42,6 +42,9 @@ using Microsoft.AspNetCore.Authentication;
 using System.Net.Mail;
 using System.Net;
 using fmis.Services;
+using fmis.Data.MySql;
+using fmis.Models.UserModels;
+using iText.Commons.Actions.Contexts;
 
 namespace fmis.Controllers.Accounting
 {
@@ -54,9 +57,10 @@ namespace fmis.Controllers.Accounting
         private readonly DvContext _DvContext;
         private readonly IndexofpaymentContext _IndexofpaymentContext;
         private readonly EmailService _emailService;
+        private readonly fmisContext _dtsContext;
 
 
-        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext, EmailService emailService)
+        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext, EmailService emailService, fmisContext dtsContext)
         {
             _MyDbContext = MyDbContext;
             _CategoryContext = categoryContext;
@@ -64,6 +68,7 @@ namespace fmis.Controllers.Accounting
             _DvContext = dvContext;
             _IndexofpaymentContext = indexofpaymentContext;
             _emailService = emailService;
+            _dtsContext = dtsContext;
         }
 
         [Route("Accounting/IndexOfPayment")]
@@ -119,6 +124,75 @@ namespace fmis.Controllers.Accounting
             return View(await indexData.ToListAsync());
 
         }
+
+        #region IndexUser
+        [Route("Accounting/Users")]
+        public async Task<IActionResult> IndexUser(string selectedEmployee)
+        {
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+
+            var user = UserRole;
+
+            var users = _dtsContext.users
+                .Where(u => string.IsNullOrEmpty(selectedEmployee) || u.Username.Contains(selectedEmployee) || u.Email.Contains(selectedEmployee))
+            .OrderBy(x => x.Fname)
+                .ToList();
+
+            var list_user = await _MyDbContext.IndexUser.ToListAsync();
+
+            var viewModel = new CombineIndexFmisUser
+            {
+                Users = users,
+                ListUser = list_user
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveUsers(int selectedEmployee)
+        {
+
+            var userToSave = _dtsContext.users.FirstOrDefault(x => x.Id == selectedEmployee);
+
+            if (userToSave != null)
+            {
+
+                var uniqueEmail = await _MyDbContext.IndexUser.FirstOrDefaultAsync(x => x.Username == userToSave.Username);
+
+                if (uniqueEmail == null)
+                {
+                    var indexUser = new IndexUser
+                    {
+                        Username = userToSave.Username,
+                        Password = userToSave.Password,
+                        Email = userToSave.Email,
+                        Fname = userToSave.Fname,
+                        Lname = userToSave.Lname,
+                        UserId = userToSave.Id.ToString()
+                    };
+
+                    await _MyDbContext.IndexUser.AddAsync(indexUser);
+                    await _MyDbContext.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("IndexUser");
+        }
+
+
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var deleteUser = await _MyDbContext.IndexUser.FindAsync(id);
+            if (deleteUser != null)
+            {
+                _MyDbContext.IndexUser.Remove(deleteUser);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("IndexUser");
+
+        }
+        #endregion
 
         public IActionResult Email()
         {
