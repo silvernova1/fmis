@@ -46,8 +46,8 @@
             <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
                 <div class="modal-body">
                     <div class="input-group">
-                        <label for="#">Select Employee:</label>
-                        <select class="select2" id="employeeDropdown" name="selectedEmployee">
+                        @*<label for="#">Select Employee:</label>*@
+                        <select class="select2" id="employeeDropdown" name="selectedEmployee" style="width: 530px">
                             @foreach (var user in Model.Users)
                             {
                                 <option value="@user.Id">@user.Fname, @user.Lname</option>
