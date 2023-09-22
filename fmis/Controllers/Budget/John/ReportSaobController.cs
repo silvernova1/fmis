@@ -2799,8 +2799,15 @@ namespace fmis.Controllers.Budget.John
             }
             ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
             currentRow++;
-
-            Console.WriteLine("some");
+            foreach(var suballot in subAllotments)
+            {
+                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 25)
+                {
+                    Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                    Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                }
+            }
+                Console.WriteLine("some");
 
             var totalFunsource4 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 27).Sum(x => x.Beginning_balance);
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
