@@ -1302,12 +1302,11 @@ namespace fmis.Controllers.Budget.John
                 {
                     if (funsorce.Prexc.pap_title != duplicate1 && funsorce.Prexc.pap_code1 != duplicate2 && funsorce.AllotmentClass.Desc != duplicate3)
                     {
-                        if (totalsaa3 != null) 
-                        {
+                    
                             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                             worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", total_prexc_CO7);
                             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        }
+                        
                        
 
                         Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
@@ -1328,13 +1327,10 @@ namespace fmis.Controllers.Budget.John
                         }
                         ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
 
-                        if (totalsaa3 != null)
-                        {
+                
                             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                             worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalsaa3);
                             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        }
 
                         ItemSubPrexc(worksheet, ref currentRow, funsorce.AllotmentClass.Desc);
                         duplicate1 = funsorce.Prexc.pap_title;
