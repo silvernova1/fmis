@@ -763,6 +763,7 @@ namespace fmis.Controllers.Budget.John
                     {
                         if (prex.prexc.pap_title != paptitle || prex.prexc.pap_code1 != papcode)
                         {
+                            
                             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                             worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", MOOE2);
                             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -961,23 +962,25 @@ namespace fmis.Controllers.Budget.John
             {
                 if (funsource.AllotmentClassId == 1 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
                 {
-                    if (!sto_oro_displayed)
+                    if (funsource.Prexc.pap_title != paptitle || funsource.Prexc.pap_code1 != papcode)
                     {
+                        
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                         worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSumSto_Oro);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         sto_oro_displayed = true;
-                    }
+                 
                         Prexc_papTitle(worksheet, ref currentRow, funsource.Prexc.pap_title);
                         Prexc_papcode(worksheet, ref currentRow, funsource.Prexc.pap_code1);
-
                   
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
                         worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", Sto_Oro_Ps_BeginningBalance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
               
-                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services ");
-
+                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services ");
+                        paptitle = funsource.Prexc.pap_title;
+                        papcode = funsource.Prexc.pap_code1;
+                    }
                     worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
                     worksheet.Cell(currentRow, 1).Value = funsource.FundSourceTitle;
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
