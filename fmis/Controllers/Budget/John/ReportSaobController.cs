@@ -1283,11 +1283,11 @@ namespace fmis.Controllers.Budget.John
 
             currentRow++;
 
-        if(funsources1.Any(x =>x.AllotmentClassId == 1 && x.AllotmentClassId == 2 && x.AllotmentClassId == 3  && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4))
+        if(funsources1.Any(x =>x.AllotmentClassId == 1  && x.AllotmentClassId == 2 && x.AllotmentClassId == 3  && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4))
             {
                 foreach (var funsource in funsources1)//Operations of Regional Offices 200000100002000 //2023 STO-ORO-PS
                 {
-                    if (funsource.AllotmentClassId == 1 && funsource.AllotmentClassId == 2 && funsource.AllotmentClassId == 3 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
+                    if (funsource.AllotmentClassId == 1 || funsource.AllotmentClassId == 2 || funsource.AllotmentClassId == 3  && funsource.AllotmentClassId == 3 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 4)
                     {
                         if (funsource.Prexc.pap_title != paptitle || funsource.Prexc.pap_code1 != papcode)
                         {
@@ -1350,7 +1350,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)
                 {
-                    if (suballot.AllotmentClassId == 1 && suballot.AllotmentClassId == 2 && suballot.AllotmentClassId == 3 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 4)
+                    if (suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3 && suballot.AllotmentClassId == 2 && suballot.AllotmentClassId == 3 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 4)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -1388,7 +1388,7 @@ namespace fmis.Controllers.Budget.John
             } // end of else
             foreach (var suballot in subAllotments)//Operations of Regional Offices 200000100002000 //suballotments
             {
-                if (suballot.AllotmentClassId == 1 && suballot.AllotmentClassId == 2 && suballot.AllotmentClassId == 3 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 4)
+                if (suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3 && suballot.AllotmentClassId == 2 && suballot.AllotmentClassId == 3 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 4)
                 {
                     if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                     {
