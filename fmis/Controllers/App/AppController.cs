@@ -55,108 +55,171 @@ namespace fmis.Controllers.App
             var expenses = new List<Expense>();
             if (_context.Expense.Count() > 0)
             {
-                expenses = _context.Expense.Include(x=>x.Items).Include(x => x.AppModels).ToList();
+                expenses = _context.Expense
+                    .Include(x => x.Items)
+                        .ThenInclude(x => x.Item_Daily)
+                    .Include(x => x.AppModels)
+                    .ToList();
+
                 ViewBag.expenses = expenses;
 
                 ViewBag.appModels = _context.AppModel.ToList();
             }
             else
             {
-                expenses = _ppmpContext.expense.Include(x=>x.Items.Where(x=>x.Yearly_ref_id == 4 && x.Status != null)).ToList();
+                expenses = _ppmpContext.expense
+                    .Include(x => x.Items.Where(x => x.Yearly_ref_id == 4 && x.Status == null))
+                        .ThenInclude(x => x.Item_Daily)
+                    .Where(x => x.Uacs != null && x.Items != null)
+                    .OrderBy(x => x.Uacs)
+                    .ToList();
 
                 ViewBag.expenses = expenses;
-            }
 
-           /* var matchingExpenseCodes = _context.Uacs
-            .Where(uac => _context.Expense.Any(expense =>
-                uac.Account_title.Contains(expense.Description.Replace("I. ", "").Replace("II. ", ""))))
-            .Select(uac => uac.Expense_code)
-            .ToList();*/
+
+                var uacs = expenses
+                .Select(x => x.Uacs)
+                .ToList();
+
+                ViewBag.uacs = uacs;
+
+
+            }
 
             return View(expenses);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdateExpense(List<Expense> expenses)
+        public IActionResult UpdateExpenses(List<Expense> expenses)
         {
-            foreach(var expense in expenses)
+            if (ModelState.IsValid)
             {
-                var existingExpenseId = _context.Expense.FirstOrDefault(x=>x.Id == expense.Id)?.Id ?? null;
-
-                if(expense.Id != existingExpenseId)
+                foreach (var expense in expenses)
                 {
-                    expense.Id = 0;
-                    await _context.Expense.AddAsync(expense);
-                }
-                else
-                {
-                    var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == expense.Id);
-                    if (existingExpense != null)
+                    // Check if the expense object is valid
+                    if (expense != null)
                     {
+                        // Check if the expense object itself needs an update
+                        if (expense.Id > 0)
+                        {
+                            _context.Expense.Update(expense);
+                        }
+                        else
+                        {
+                            // Handle new expense creation if necessary
+                            _context.Expense.Add(expense);
+                        }
+
+                        // If you also want to update the collection (e.g., AppModels) within each expense:
                         if (expense.AppModels != null)
                         {
-                            foreach (var updatedAppModel in expense.AppModels)
+                            foreach (var appModel in expense.AppModels)
                             {
-                                if (updatedAppModel == null)
+                                if (appModel != null)
                                 {
-                                    continue;
-                                }
-                                var existingAppModel = existingExpense.AppModels.FirstOrDefault(am => am.Id == updatedAppModel.Id);
-
-                                if (existingAppModel != null)
-                                {
-                                    if (existingAppModel.ProcurementProject != updatedAppModel.ProcurementProject
-                                        || existingAppModel.EndUser != updatedAppModel.EndUser
-                                        || existingAppModel.ModeOfProcurement != updatedAppModel.ModeOfProcurement
-                                        || existingAppModel.Advertising != updatedAppModel.Advertising
-                                        || existingAppModel.Submission != updatedAppModel.Submission
-                                        || existingAppModel.NoticeOfAward != updatedAppModel.NoticeOfAward
-                                        || existingAppModel.ContractSigning != updatedAppModel.ContractSigning
-                                        || existingAppModel.FundSource != updatedAppModel.FundSource
-                                        || existingAppModel.Total != updatedAppModel.Total
-                                        || existingAppModel.Mooe != updatedAppModel.Mooe
-                                        || existingAppModel.Co != updatedAppModel.Co
-                                        || existingAppModel.Remarks != updatedAppModel.Remarks)
+                                    if (appModel.Id > 0)
                                     {
-                                        existingAppModel.ProcurementProject = updatedAppModel.ProcurementProject;
-                                        existingAppModel.EndUser = updatedAppModel.EndUser;
-                                        existingAppModel.ModeOfProcurement = updatedAppModel.ModeOfProcurement;
-                                        existingAppModel.Advertising = updatedAppModel.Advertising;
-                                        existingAppModel.Submission = updatedAppModel.Submission;
-                                        existingAppModel.NoticeOfAward = updatedAppModel.NoticeOfAward;
-                                        existingAppModel.ContractSigning = updatedAppModel.ContractSigning;
-                                        existingAppModel.FundSource = updatedAppModel.FundSource;
-                                        existingAppModel.Total = updatedAppModel.Total;
-                                        existingAppModel.Mooe = updatedAppModel.Mooe;
-                                        existingAppModel.Co = updatedAppModel.Co;
-                                        existingAppModel.Remarks = updatedAppModel.Remarks;
+                                        // Update an existing AppModel
+                                        _context.AppModel.Update(appModel);
                                     }
-
+                                    else
+                                    {
+                                        // Handle new AppModel creation if necessary
+                                        _context.AppModel.Add(appModel);
+                                    }
                                 }
-                                else
-                                {
-                                    existingExpense.AppModels.Add(updatedAppModel);
-                                }
-
                             }
                         }
-                        
-
-                        _context.Entry(existingExpense).State = EntityState.Detached;
-
-                        _context.Entry(expense).State = EntityState.Modified;
                     }
                 }
 
+                _context.SaveChanges();
             }
-
-            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateOrUpdateExpense(List<Expense> expenses)
+        {
+            if(ModelState.IsValid)
+            { 
+                foreach (var expense in expenses)
+                {
+                    var existingExpenseId = _context.Expense.FirstOrDefault(x => x.Id == expense.Id)?.Id ?? null;
+
+                    if (expense.Id != existingExpenseId)
+                    {
+                        expense.Id = 0;
+                        await _context.Expense.AddAsync(expense);
+                    }
+                    else
+                    {
+                        var existingExpense = _context.Expense.Include(x => x.AppModels).FirstOrDefault(e => e.Id == expense.Id);
+                        if (existingExpense != null)
+                        {
+                            if (expense.AppModels != null)
+                            {
+                                foreach (var updatedAppModel in expense.AppModels)
+                                {
+                                    if (updatedAppModel == null)
+                                    {
+                                        continue;
+                                    }
+                                    var existingAppModel = existingExpense.AppModels.FirstOrDefault(am => am.Id == updatedAppModel.Id);
+
+                                    if (existingAppModel != null)
+                                    {
+                                        if (existingAppModel.Uacs != updatedAppModel.Uacs
+                                            || existingAppModel.ProcurementProject != updatedAppModel.ProcurementProject
+                                            || existingAppModel.EndUser != updatedAppModel.EndUser
+                                            || existingAppModel.ModeOfProcurement != updatedAppModel.ModeOfProcurement
+                                            || existingAppModel.Advertising != updatedAppModel.Advertising
+                                            || existingAppModel.Submission != updatedAppModel.Submission
+                                            || existingAppModel.NoticeOfAward != updatedAppModel.NoticeOfAward
+                                            || existingAppModel.ContractSigning != updatedAppModel.ContractSigning
+                                            || existingAppModel.FundSource != updatedAppModel.FundSource
+                                            || existingAppModel.Total != updatedAppModel.Total
+                                            || existingAppModel.Mooe != updatedAppModel.Mooe
+                                            || existingAppModel.Co != updatedAppModel.Co
+                                            || existingAppModel.Remarks != updatedAppModel.Remarks)
+                                        {
+                                            existingAppModel.Uacs = updatedAppModel.Uacs;
+                                            existingAppModel.ProcurementProject = updatedAppModel.ProcurementProject;
+                                            existingAppModel.EndUser = updatedAppModel.EndUser;
+                                            existingAppModel.ModeOfProcurement = updatedAppModel.ModeOfProcurement;
+                                            existingAppModel.Advertising = updatedAppModel.Advertising;
+                                            existingAppModel.Submission = updatedAppModel.Submission;
+                                            existingAppModel.NoticeOfAward = updatedAppModel.NoticeOfAward;
+                                            existingAppModel.ContractSigning = updatedAppModel.ContractSigning;
+                                            existingAppModel.FundSource = updatedAppModel.FundSource;
+                                            existingAppModel.Total = updatedAppModel.Total;
+                                            existingAppModel.Mooe = updatedAppModel.Mooe;
+                                            existingAppModel.Co = updatedAppModel.Co;
+                                            existingAppModel.Remarks = updatedAppModel.Remarks;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        existingExpense.AppModels.Add(updatedAppModel);
+                                    }
+
+                                }
+                            }
 
 
+                            _context.Entry(existingExpense).State = EntityState.Detached;
+
+                            _context.Entry(expense).State = EntityState.Modified;
+                        }
+                    }
+
+                }
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
+        }
 
         [HttpPost]
         public IActionResult GenerateApp()
@@ -197,7 +260,7 @@ namespace fmis.Controllers.App
                     table.AddCell(headerCell);
                 }
 
-                var items = _context.AppModel.OrderBy(x=>x.Expense_id).ToList();
+                var items = _context.AppModel.ToList();
 
                 for (int row = 0; row < items.Count; row++)
                 {

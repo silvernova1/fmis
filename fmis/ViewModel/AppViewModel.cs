@@ -7,5 +7,6 @@ namespace fmis.ViewModel
     {
         public List<Expense> Expenses { get; set; }
         public List<AppModel> AppModels { get; set; }
+        public List<Item> Items { get; set; }
     }
 }

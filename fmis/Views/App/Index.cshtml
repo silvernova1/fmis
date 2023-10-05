@@ -1,5 +1,6 @@
 ﻿@model List<fmis.Models.ppmp.Expense>
-
+@using fmis.Data;
+@inject PpmpContext _ppmpContext
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Generate APP";
@@ -12,12 +13,18 @@
         var expenseId = Model[i].Id;
         expenseIdList.Add(expenseId);
     }
+
+    var query = new
+    {
+        itemId = 0,
+        modeProcurement = string.Empty
+    };
 }
 
 
 <style>
-      .custom-table td {
-      padding: 5px;
+    .custom-table td {
+        padding: 5px;
     }
 
     .text-right {
@@ -32,6 +39,7 @@
         cursor: pointer;
         z-index: 999; /* Ensure the arrow is above other content */
     }
+
     .hidden {
         display: none;
     }
@@ -49,8 +57,7 @@
 
 
 
-@using (Html.BeginForm("CreateOrUpdateExpense", "App", FormMethod.Post))
-{
+<form asp-controller="App" asp-action="CreateOrUpdateExpense" method="post">
     <table class="table">
         <thead>
             <tr>
@@ -81,35 +88,30 @@
                         {
                             <input type="hidden" asp-for="@Model[i].Id" value="@Model[i].Id" />
                         }
-                        <strong><input type="text" asp-for="@Model[i].Description" value="@Model[i].Description" class="form-control" /></strong>
+                        <strong><input type="text" asp-for="@Model[i].Description" value="@(Model[i].Description ?? "")" class="form-control" /></strong>
                     </td>
                 </tr>
                 @if (Model[i].AppModels != null && Model[i].AppModels.Count() > 0)
                 {
-                    @for (var j = 0; j < Model[i]?.AppModels?.Count && j < 5; j++)
+                    @for (var j = 0; j < Model[i].AppModels.Count && j < 5; j++)
                     {
                         @if (ViewBag.appModels != null && ViewBag.appModels.Count > 0)
                         {
                             <input type="hidden" asp-for="@Model[i].AppModels[j].Id" value="@Model[i].AppModels[j].Id" />
                         }
                         <tr>
-                            <td style="width: 100px;"></td>
-                            <td style="width: 250px;"><input type="text" asp-for="@Model[i].AppModels[j].ProcurementProject" value="@Model[i].AppModels[j].ProcurementProject" class="form-control" /></td>
-                            <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].EndUser" value="@Model[i].AppModels[j].EndUser" class="form-control" /></td>
+                            <td style="width: 100px;"><input type="text" asp-for="@Model[i].AppModels[j].Uacs" value="@Model[i].AppModels[j]?.Uacs" /></td>
+                            <td style="width: 250px;"><input type="text" asp-for="@Model[i].AppModels[j].ProcurementProject" value="@Model[i].AppModels[j]?.ProcurementProject" class="form-control" /></td>
+                            <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].EndUser" value="@Model[i].AppModels[j]?.EndUser" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].ModeOfProcurement" value="@Model[i].AppModels[j].ModeOfProcurement" class="form-control" /></td>
-
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Advertising" value="@Model[i].AppModels[j].Advertising?.ToShortDateString()" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Submission" value="@Model[i].AppModels[j].Submission?.ToShortDateString()" id="submission@(i)_@(j)" class="form-control submission" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward?.ToShortDateString()" id="notice@(i)_@(j)" class="form-control notice" /></td>
-                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning?.ToShortDateString()" id="contract@(i)_@(j)" class="form-control contract" /></td>
-
-                            <td style="width: 80px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>
-                            <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>
-                            <td style="width: 140px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 160px;"><input type="text" asp-for="@Model[i].AppModels[j].Remarks" value="@Model[i].AppModels[j].Remarks" class="form-control" /></td>
+                            <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].ModeOfProcurement" value="@Model[i].AppModels[j]?.ModeOfProcurement" class="form-control" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Advertising" value="@Model[i].AppModels[j]?.Advertising?.ToShortDateString()" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Submission" value="@Model[i].AppModels[j]?.Submission?.ToShortDateString()" id="submission@(i)_@(j)" class="form-control submission" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].NoticeOfAward" value="@Model[i].AppModels[j]?.NoticeOfAward?.ToShortDateString()" id="notice@(i)_@(j)" class="form-control notice" /></td>
+                            <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].ContractSigning" value="@Model[i].AppModels[j]?.ContractSigning?.ToShortDateString()" id="contract@(i)_@(j)" class="form-control contract" /></td>
+                            <td style="width: 80px;"><input type="text" asp-for="@Model[i].AppModels[j].FundSource" value="@Model[i].AppModels[j]?.FundSource" class="form-control" /></td>
+                            @*<td style="width: 80px;"><input type="text" asp-for="@Model[i].AppModels[j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>*@
                         </tr>
                     }
                 }
@@ -117,7 +119,6 @@
                 {
                     @for (var j = 0; j < Model[i].Items.Count && j < 5; j++)
                     {
-
 
                         decimal total = 0;
 
@@ -138,7 +139,7 @@
 
 
 
-                        //var unit_cost = Convert.ToDecimal(Model[i].Items[j].Unit_cost);
+                        var unit_cost = Convert.ToDecimal(Model[i].Items[j].Unit_cost);
                         string unitCostString = Model[i].Items[j].Unit_cost;
                         decimal unitCost;
 
@@ -151,13 +152,28 @@
                             Console.WriteLine("Invalid unit cost value: " + unitCostString);
                         }
 
-                        <tr data-person-id="@Model[i].Items[j].Id">
-                            <td style="width: 100px;"></td>
+                        @foreach (var itemId in Model[i].Items[j].Item_Daily)
+                        {
+                            query = (from it_d1 in _ppmpContext.item_daily
+                                     join it_d2 in _ppmpContext.item_daily
+                                     on it_d1.Item_id equals it_d2.Item_id
+                                     where it_d1.Item_id == itemId.Item_id && it_d2.Status == null && it_d1.Yearly_ref_id == 4
+                                     select new
+                                     {
+                                         itemId = it_d1.Item_id,
+                                         modeProcurement = it_d2.Mode_procurement
+                                     }).FirstOrDefault();
+
+                        }
+
+                        <tr>
+
+                            <td style="width: 100px;"><input type="text" asp-for="@Model[i].AppModels[j].Uacs" value="@Model[i].Uacs" /></td>
                             <td style="width: 250px;"><input type="text" asp-for="@Model[i].AppModels[j].ProcurementProject" value="@Model[i].Items[j].Description" class="form-control" /></td>
                             <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].EndUser" value="@Model[i].Items[j].Userid" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].ModeOfProcurement" value="@Model[i].Items[j].Mode_procurement" class="form-control" /></td>
+                            <td style="width: 130px;"><input type="text" asp-for="@Model[i].AppModels[j].ModeOfProcurement" value="@query?.modeProcurement" class="form-control" /></td>
                             <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Advertising" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
                             <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].Submission" id="submission@(i)_@(j)" class="form-control submission" /></td>
                             <td style="width: 120px;"><input type="text" asp-for="@Model[i].AppModels[j].NoticeOfAward" id="notice@(i)_@(j)" class="form-control notice" class="form-control" /></td>
@@ -166,7 +182,7 @@
                             <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Total" value="@total" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" asp-for="@Model[i].AppModels[j].Mooe" value="@total" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 160px;"><input type="text" asp-for="@Model[i].AppModels[j].Remarks" class="form-control" /></td>
+                            <td style="width: 160px;"><input type="text" class="form-control" /></td>
                         </tr>
                     }
                 }
@@ -174,9 +190,9 @@
         </tbody>
     </table>
     <div style="text-align: right;" id="targetElementID">
-        <button class="btn btn-primary">Save All Changes</button>
+        <button type="submit" class="btn btn-primary">Save All Changes</button>
     </div>
-}
+</form>
 
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

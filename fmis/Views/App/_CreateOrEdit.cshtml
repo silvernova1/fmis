@@ -1,0 +1,14 @@
+﻿@model fmis.Models.ppmp.AppModel
+
+<form id="appForm">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <input asp-for="Uacs" class="form-control" />
+        <span asp-validation-for="Uacs"></span>
+    </div>
+    <div class="form-group">
+        <input asp-for="ProcurementProject" class="form-control" />
+        <span asp-validation-for="ProcurementProject"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
