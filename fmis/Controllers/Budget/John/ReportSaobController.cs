@@ -755,25 +755,32 @@ namespace fmis.Controllers.Budget.John
                 .Select(x => x.Id)
                 .ToList();
 
-            var SaaPS2 = subAllotments.Where(prex => prex.AllotmentClassId == 1 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
-            var SaaMOOE1 = subAllotments.Where(prex => prex.AllotmentClassId == 2 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
-            var SaaCO1 = subAllotments.Where(prex => prex.AllotmentClassId == 3 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
+            var budgetallotmentId = _MyDbContext.Budget_allotments
+                                    .Select(x => x.BudgetAllotmentId)
+                                    .ToList();
+            var appropiationId = _MyDbContext.Appropriation
+                                .Select(x => x.AppropriationId)
+                                .ToList();
 
-            var FundsourcePS1 = funsources1.Where(prex => prex.AllotmentClassId == 1 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
-            var FundsourceMOOE1 = funsources1.Where(prex => prex.AllotmentClassId == 2 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
-            var FundsourceCO1 = funsources1.Where(prex => prex.AllotmentClassId == 3 && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
+            var SaaPS2 = subAllotments.Where(prex => prex.AllotmentClassId == 1 && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
+            var SaaMOOE1 = subAllotments.Where(prex => prex.AllotmentClassId == 2 && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
+            var SaaCO1 = subAllotments.Where(prex => prex.AllotmentClassId == 3 && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
+
+            var FundsourcePS1 = funsources1.Where(prex => prex.AllotmentClassId == 1 && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
+            var FundsourceMOOE1 = funsources1.Where(prex => prex.AllotmentClassId == 2 && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
+            var FundsourceCO1 = funsources1.Where(prex => prex.AllotmentClassId == 3 && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
 
             decimal totalPSGeneral = SaaPS2 + FundsourcePS1;
             decimal totalMOOEGeneral = SaaMOOE1 + FundsourceMOOE1;
             decimal totalCOGeneral = SaaCO1 + FundsourceCO1;
             decimal totalPrexcGeneral = totalPSGeneral + totalMOOEGeneral + totalCOGeneral;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 2 || x.AllotmentClassId == 1 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 1)) //General Management and Supervision :: for Funsorce
+            if (funsources1.Any(x => (x.AllotmentClassId == 2 || x.AllotmentClassId == 1 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 1)) //General Management and Supervision :: for Funsorce
             {
 
                 foreach (var allotmentClass in AllotmentClassId)
                 {
-                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClass && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 1).ToList();
+                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClass && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 1).ToList();
                     if (funsorceAllotClass.Count > 0)
                     {
                         foreach (var fundsorce in funsorceAllotClass)
@@ -841,7 +848,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var prex in subAllotments)
                 {
-                    if ((prex.AllotmentClassId == 2 || prex.AllotmentClassId == 1 || prex.AllotmentClassId == 3) && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 1)
+                    if ((prex.AllotmentClassId == 2 || prex.AllotmentClassId == 1 || prex.AllotmentClassId == 3) && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 1)
                     {
 
                         if (prex.prexc.pap_title != paptitle || prex.prexc.pap_code1 != papcode)
@@ -893,7 +900,7 @@ namespace fmis.Controllers.Budget.John
             } // end of else statement
             foreach (var prex in subAllotments)//General Management and Supervision //100000100001000 // SAA 2023-03-001317
             {
-                if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 1)
+                if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 1)
                 {
                     SubAllotTitleRed(worksheet, ref currentRow, prex.Suballotment_title);
 
@@ -939,24 +946,24 @@ namespace fmis.Controllers.Budget.John
             }
 
 
-            var SaaPS1 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 2).Sum(x => x.Beginning_balance);
-            var SaaMOOE = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 2).Sum(x => x.Beginning_balance);
-            var SaaCO = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 2).Sum(x => x.Beginning_balance);
+            var SaaPS1 = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 2).Sum(x => x.Beginning_balance);
+            var SaaMOOE = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 2).Sum(x => x.Beginning_balance);
+            var SaaCO = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 2).Sum(x => x.Beginning_balance);
 
-            var FundsourcePS = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 2).Sum(x => x.Beginning_balance);
-            var FundsourceMOOE = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 2).Sum(x => x.Beginning_balance);
-            var FundsourceCO = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 2).Sum(x => x.Beginning_balance);
+            var FundsourcePS = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 2).Sum(x => x.Beginning_balance);
+            var FundsourceMOOE = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 2).Sum(x => x.Beginning_balance);
+            var FundsourceCO = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 2).Sum(x => x.Beginning_balance);
 
             decimal totalPS_Adminis = SaaPS1 + FundsourcePS;
             decimal totalMOOE_Adminis = SaaMOOE + FundsourceMOOE;
             decimal totalCO_Adminis = SaaCO + FundsourceCO;
             decimal totalPrexc_Adminis = totalPS_Adminis + totalMOOE_Adminis + SaaCO + FundsourceCO;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 2)) // check this data if naa
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 2)) // check this data if naa
             {
                 foreach (var allotmentclass in AllotmentClassId)//Administration of Personnel Benefits// 100000100002000  Fundsorces1
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclass && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 2).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclass && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 2).ToList();
                     //if (funsorce.AllotmentClassId == 1 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 2)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -1020,7 +1027,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var prex in subAllotments) //Administration of Personnel Benefits// 100000100002000 SubAllotment
                 {
-                    if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 2)
+                    if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 2)
                     {
                         if (prex.prexc.pap_title != paptitle && prex.prexc.pap_code1 != papcode)
                         {
@@ -1060,7 +1067,7 @@ namespace fmis.Controllers.Budget.John
             bool staticDataAdded = false;
             foreach (var prex in subAllotments)//Administration of Personnel Benefits// 100000100002000 //SAA 2023-07-003501
             {
-                if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && prex.AppropriationId == 1 && prex.BudgetAllotmentId == 3 && prex.prexcId == 2)
+                if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 2)
                 {
 
                     SubAllotTitleRed(worksheet, ref currentRow, prex.Suballotment_title);
@@ -1109,7 +1116,7 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU108.Style.Fill.BackgroundColor = XLColor.FromHtml("6DCAE3");
             rangeAtoU108.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", TotalGas));
-
+            
             currentRow++;
             currentRow++;
 
@@ -1127,13 +1134,14 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             bool isAllotmentClassDisplayed = false;
 
-            var SaaPS4 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 4).Sum(x => x.Beginning_balance);
-            var SaaMOOE3 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 4).Sum(x => x.Beginning_balance);
-            var SaaCO3 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 4).Sum(x => x.Beginning_balance);
+            var SaaPS4 = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 4).Sum(x => x.Beginning_balance);
+            var SaaMOOE3 = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 4).Sum(x => x.Beginning_balance);
+            var SaaCO3 = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 4).Sum(x => x.Beginning_balance);
 
-            var FundsourcePS3 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4).Sum(x => x.Beginning_balance);
-            var FundsourceMOOE3 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4).Sum(x => x.Beginning_balance);
-            var FundsourceCO3 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4).Sum(x => x.Beginning_balance);
+            var FundsourcePS3 = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 4).Sum(x => x.Beginning_balance);
+            var FundsourceMOOE3 = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 4).Sum(x => x.Beginning_balance);
+            var FundsourceCO3 = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 4).Sum(x => x.Beginning_balance);
+
             decimal totalPS_Operation = SaaPS4 + FundsourcePS3;
             decimal totalMOOE_Operation = SaaMOOE3 + FundsourceMOOE3;
             decimal totalCO_Operation = SaaCO3 + FundsourceCO3;
@@ -1145,26 +1153,26 @@ namespace fmis.Controllers.Budget.John
 
             bool sto_oro_displayed = false;
 
-            var SaaPS3 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 3).Sum(x => x.Beginning_balance);
-            var SaaMOOE2 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 3).Sum(x => x.Beginning_balance);
-            var SaaCO2 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 3).Sum(x => x.Beginning_balance);
+            var SaaPS3 = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 3).Sum(x => x.Beginning_balance);
+            var SaaMOOE2 = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 3).Sum(x => x.Beginning_balance);
+            var SaaCO2 = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 3).Sum(x => x.Beginning_balance);
 
-            var FundsourcePS2 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 3).Sum(x => x.Beginning_balance);
-            var FundsourceMOOE2 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 3).Sum(x => x.Beginning_balance);
-            var FundsourceCO2 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 3).Sum(x => x.Beginning_balance);
+            var FundsourcePS2 = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 3).Sum(x => x.Beginning_balance);
+            var FundsourceMOOE2 = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 3).Sum(x => x.Beginning_balance);
+            var FundsourceCO2 = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 3).Sum(x => x.Beginning_balance);
 
             decimal totalPS_Health = SaaPS3 + FundsourcePS2;
             decimal totalMOOE_Health = SaaMOOE2 + FundsourceMOOE2;
             decimal totalCO_Health = SaaCO2 + FundsourceCO2;
             decimal totalPrexc_Health = totalPS_Health + totalMOOE_Health + totalCO_Health;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 2 || x.AllotmentClassId == 1 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 3))
+            if (funsources1.Any(x => (x.AllotmentClassId == 2 || x.AllotmentClassId == 1 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 3))
             {
                 foreach (var allotmentClass in AllotmentClassId)// Health Information Technology 200000100001000
                 {
                     //if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 3)
                     //{
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentClass && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 3).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentClass && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 3).ToList();
                     if (funsorceAllot.Count > 0)
                     {
                         foreach (var funsorce in funsorceAllot)
@@ -1176,23 +1184,20 @@ namespace fmis.Controllers.Budget.John
                                 Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
                                 Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
 
+
                                 if (totalPS_Health == 0)
                                 {
                                     SaaGaaBalance(worksheet, ref currentRow, "-");
-                                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    ItemSubPrexc(worksheet, ref currentRow, "Personal Services");
                                 }
                                 else
                                 {
                                     SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Health));
-                                    if (funsorce.AllotmentClassId == 1)
-                                    {
-                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-                                    }
+                                    ItemSubPrexc(worksheet, ref currentRow, "Personal Services");
                                 }
                                 if (totalMOOE_Health == 0)
                                 {
-                                    SaaGaaBalance(worksheet, ref currentRow, "-");
-                                    ItemSubPrexc(worksheet, ref currentRow, funsorce.AllotmentClass.Desc);
+                                    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
                                 }
                                 else
                                 {
@@ -1201,7 +1206,6 @@ namespace fmis.Controllers.Budget.John
                                     {
                                         ItemSubPrexc(worksheet, ref currentRow, funsorce.AllotmentClass.Desc);
                                     }
-
                                 }
 
                                 paptitle = funsorce.Prexc.pap_title;
@@ -1241,7 +1245,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)
                 {
-                    if ((suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 3)
+                    if ((suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 3)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -1249,24 +1253,20 @@ namespace fmis.Controllers.Budget.John
                             SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Health));
                             Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
                             Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
-
                             if (totalPS_Health == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
-                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personal Services");
                             }
                             else
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Health));
-                                if (suballot.AllotmentClassId == 1)
-                                {
-                                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-                                }
+                                ItemSubPrexc(worksheet, ref currentRow, "Personal Services");
                             }
                             if (totalMOOE_Health == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
-                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
                             }
                             else
                             {
@@ -1275,7 +1275,6 @@ namespace fmis.Controllers.Budget.John
                                 {
                                     ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
                                 }
-
                             }
 
                             paptitle = suballot.prexc.pap_title;
@@ -1288,7 +1287,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var subaalot in subAllotments)// Health Information Technology 200000100001000 continue::
             {
-                if ((subaalot.AllotmentClassId == 2 || subaalot.AllotmentClassId == 1 || subaalot.AllotmentClassId == 3) && subaalot.AppropriationId == 1 && subaalot.BudgetAllotmentId == 3 && subaalot.prexcId == 3)
+                if ((subaalot.AllotmentClassId == 2 || subaalot.AllotmentClassId == 1 || subaalot.AllotmentClassId == 3) && appropiationId.Contains(subaalot.AppropriationId) && budgetallotmentId.Contains(subaalot.BudgetAllotmentId.GetValueOrDefault()) && subaalot.prexcId == 3)
                 {
                     SubAllotTitleRed(worksheet, ref currentRow, subaalot.Suballotment_title);
                     currentRow++;
@@ -1340,12 +1339,12 @@ namespace fmis.Controllers.Budget.John
 
 
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 4))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 4))
             {
                 foreach (var allotmentClassId in AllotmentClassId) //Operations of Regional Offices 2023 STO-ORO-PS
                 {
                     var funsourcesForAllotmentClass = funsources1
-                        .Where(f => f.AllotmentClassId == allotmentClassId && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 4)
+                        .Where(f => f.AllotmentClassId == allotmentClassId && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 4)
                         .ToList();
 
                     if (funsourcesForAllotmentClass.Count > 0)
@@ -1424,7 +1423,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments) // Operations of Regional Offices
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 4)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 4)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -1465,7 +1464,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments)//Operations of Regional Offices 200000100002000 //suballotments
             {
-                if ((suballot.AllotmentClassId == 1 && suballot.AllotmentClassId == 2 && suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 4)
+                if ((suballot.AllotmentClassId == 1 && suballot.AllotmentClassId == 2 && suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 4)
                 {
                     if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                     {
@@ -1496,9 +1495,228 @@ namespace fmis.Controllers.Budget.John
                 }
             }//end of foreach
 
+            if (totalCO_Operation == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Operation));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+
+            }
             string duplicate1 = null;
             string duplicate2 = null;
             string duplicate3 = null;
+
+            var SaaPS_Chain = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 35).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Chain = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 35).Sum(x => x.Beginning_balance);
+            var SaaCO_Chain = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 35).Sum(x => x.Beginning_balance);
+
+            var funsourcePS_Chain = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 35).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Chain = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 35).Sum(x => x.Beginning_balance);
+            var funsorceCO_Chain = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 35).Sum(x => x.Beginning_balance);
+            decimal totalPS_Chain = SaaPS_Chain + funsourcePS_Chain;
+            decimal totalMOOE_Chain = funsorceMOOE_Chain + SaaMOOE_Chain;
+            decimal totalCO_Chain = SaaCO_Chain + funsorceCO_Chain;
+            decimal totalPrexc_Chain = totalPS_Chain + totalMOOE_Chain + totalCO_Chain;
+            currentRow++;
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 35))
+            {
+                foreach (var allotmentclassId in AllotmentClassId) //Procurement and Supply Chain Management Service
+                {
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclassId && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 35).ToList();
+                    // if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 35)
+                    //{
+                    if (funsorceAllot.Count > 0)
+                    {
+                        foreach (var funsorce in funsorceAllot) //Procurement and Supply Chain Management Service
+                        {
+
+                            if (funsorce.Prexc.pap_title != paptitle || funsorce.Prexc.pap_code1 != papcode)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Chain));
+                                Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
+                                Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
+
+
+                                if (totalPS_Chain == 0)
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, "-");
+
+                                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                }
+                                else
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Chain));
+                                    if (funsorce.AllotmentClassId == 1)
+                                    {
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                }
+
+                                if (totalMOOE_Chain == 0)
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, "-");
+
+                                    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
+
+                                }
+                                else
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Chain));
+                                    if (funsorce.AllotmentClassId == 2)
+                                    {
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
+                                    }
+                                }
+
+                                paptitle = funsorce.Prexc.pap_title;
+                                papcode = funsorce.Prexc.pap_code1;
+                            }
+                            worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.25;
+                            worksheet.Cell(currentRow, 1).Value = funsorce.FundSourceTitle;
+
+                            worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", funsorce.Beginning_balance);
+                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                            currentRow++;
+
+                            foreach (var uacs in funsorce.FundSourceAmounts.ToList())
+                            {
+                                worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+                            }
+
+                            // }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var suballot in subAllotments) //Procurement and Supply Chain Management Service ::
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 35)
+                    {
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Chain));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                           
+                                if (totalPS_Chain == 0)
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, "-");
+
+                                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                }
+                                else
+                                {
+                                     SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Chain));
+                                     if (suballot.AllotmentClassId == 1)
+                                     {
+                                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                     }
+                               }
+                           
+                                if (totalMOOE_Chain == 0)
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, "-");
+
+                                    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
+
+                                }
+                                else
+                                {
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Chain));
+                                   if (suballot.AllotmentClassId == 2)
+                                    {
+                                    ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
+                                    }
+                                }
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
+
+                    }
+
+                }
+
+            }//end of else
+
+
+            foreach (var suballot in subAllotments)//Procurement and Supply Chain Management Service ::
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 35)
+                {
+                    worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
+                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.25;
+                    worksheet.Cell(currentRow, 1).Value = suballot.Suballotment_title;
+
+                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", suballot.Beginning_balance);
+                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    currentRow++;
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts)
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        currentRow++;
+                    }
+
+                   
+                }//end of if statement
+
+            }//end of foreach
+            if (SaaMOOE_Chain == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Chain));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+
+            currentRow++;
+
+            if (totalCO_Chain == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Chain));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+
+            }
+            currentRow++;
 
 
             TOTALSaa(worksheet, ref currentRow, "TOTAL, STO");
@@ -1508,13 +1726,13 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             currentRow++;
 
-            var SaaPS_HSRD = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 7).Sum(x => x.Beginning_balance);
-            var SaaMOOE_HSRD = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 7).Sum(x => x.Beginning_balance);
-            var SaaCO_HSRD = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 7).Sum(x => x.Beginning_balance);
+            var SaaPS_HSRD = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 7).Sum(x => x.Beginning_balance);
+            var SaaMOOE_HSRD = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 7).Sum(x => x.Beginning_balance);
+            var SaaCO_HSRD = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 7).Sum(x => x.Beginning_balance);
 
-            var funsourcePS_HSRD = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 7).Sum(x => x.Beginning_balance);
-            var funsorceMOOE_HSRD = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 7).Sum(x => x.Beginning_balance);
-            var funsorceCO_HSRD = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 7).Sum(x => x.Beginning_balance);
+            var funsourcePS_HSRD = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 7).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_HSRD = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 7).Sum(x => x.Beginning_balance);
+            var funsorceCO_HSRD = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 7).Sum(x => x.Beginning_balance);
             decimal totalPS_HSRD = SaaPS_HSRD + funsourcePS_HSRD;
             decimal totalMOOE_HSRD = funsorceMOOE_HSRD + SaaMOOE_HSRD;
             decimal totalCO_HSRD = SaaCO_HSRD + funsorceCO_HSRD;
@@ -1526,28 +1744,28 @@ namespace fmis.Controllers.Budget.John
 
             string suballotUacs1 = null;
             string suballotUacs2 = null;
-            var SaaPS_health = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 6).Sum(x => x.Beginning_balance);
-            var SaaMOOE_health = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 6).Sum(x => x.Beginning_balance);
-            var SaaCO_health = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 6).Sum(x => x.Beginning_balance);
+            var SaaPS_health = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 6).Sum(x => x.Beginning_balance);
+            var SaaMOOE_health = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 6).Sum(x => x.Beginning_balance);
+            var SaaCO_health = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 6).Sum(x => x.Beginning_balance);
             //Health Sector Policy and Plan Development  310100100001000 Continue::
 
-            var funsorcePS_health = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 6).Sum(x => x.Remaining_balance);
-            var funsorceMOOE_health = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 6).Sum(x => x.Remaining_balance);
-            var funsorceCO_health = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 6).Sum(x => x.Remaining_balance);
+            var funsorcePS_health = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 6).Sum(x => x.Remaining_balance);
+            var funsorceMOOE_health = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 6).Sum(x => x.Remaining_balance);
+            var funsorceCO_health = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 6).Sum(x => x.Remaining_balance);
 
             decimal totalPS1_heath = SaaPS_health + funsorcePS_health;
             decimal totalMOOE1_health = SaaMOOE_health + funsorceMOOE_health;
             decimal totalCO1_health = SaaCO_health + funsorceCO_health;
             decimal totalPrexc1_Health = totalPS1_heath + totalMOOE1_health + totalCO1_health; //Health Sector Policy and Plan Development  310100100001000
 
-            var SaaPS10 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 5).Sum(x => x.Beginning_balance);
-            var SaaMOOE4 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 5).Sum(x => x.Beginning_balance);
-            var SaaCO5 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 5).Sum(x => x.Beginning_balance);
+            var SaaPS10 = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 5).Sum(x => x.Beginning_balance);
+            var SaaMOOE4 = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 5).Sum(x => x.Beginning_balance);
+            var SaaCO5 = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 5).Sum(x => x.Beginning_balance);
             //International Health Policy Development and Cooperation  310100100001000 continue
 
-            var funsorcePS10 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 5).Sum(x => x.Remaining_balance);
-            var funsorceMOOE = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 5).Sum(x => x.Remaining_balance);
-            var funsorceCO3 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 5).Sum(x => x.Remaining_balance);
+            var funsorcePS10 = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 5).Sum(x => x.Remaining_balance);
+            var funsorceMOOE = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 5).Sum(x => x.Remaining_balance);
+            var funsorceCO3 = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 5).Sum(x => x.Remaining_balance);
 
             decimal totalPS_Inter = SaaPS10 + funsorcePS10;
             decimal totalMOOE_Inter = SaaMOOE4 + funsorceMOOE;
@@ -1585,11 +1803,11 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
 
             //  total_prexc_CO7
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 5))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 5))
             {
                 foreach (var allotmentClass in AllotmentClassId) //International Health Policy Development and Cooperation  310100100001000
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentClass && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 5).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentClass && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 5).ToList();
                     // if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 5)
                     //  {
                     if (funsorceAllot.Count > 0)
@@ -1669,7 +1887,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 5)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 5)
                     {
                         SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Inter));
                         Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
@@ -1714,7 +1932,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments)//International Health Policy Development and Cooperation  310100100001000 continue
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 5)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 5)
                 {
 
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
@@ -1773,11 +1991,11 @@ namespace fmis.Controllers.Budget.John
             }
 
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 6))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 6))
             {
                 foreach (var allotmentclassId in AllotmentClassId) //Health Sector Policy and Plan Development  310100100001000
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclassId && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 6).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclassId && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 6).ToList();
                     // if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 6)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -1853,7 +2071,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 6)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 6)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -1899,7 +2117,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments)//Health Sector Policy and Plan Development  310100100001000 Continue::
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 6)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 6)
                 {
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.25;
@@ -1955,11 +2173,11 @@ namespace fmis.Controllers.Budget.John
             }
 
             currentRow++;
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 7))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 7))
             {
                 foreach (var allotmentClass in AllotmentClassId) //Health Sector Research Development Health Sector Research Development // 2023 HSRD
                 {
-                    var funsorceAllot = funsources1.Where(x => x.AllotmentClassId == allotmentClass && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 7).ToList();
+                    var funsorceAllot = funsources1.Where(x => x.AllotmentClassId == allotmentClass && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 7).ToList();
                     // if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 7)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -2039,7 +2257,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments) //Health Sector Research Development Health Sector Research Development //    2023 HSRD::
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 7)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 7)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -2088,7 +2306,7 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             foreach (var suballot in subAllotments)//Health Sector Research Development Health Sector Research Development //    2023 HSRD::
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 7)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 7)
                 {
 
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
@@ -2150,13 +2368,13 @@ namespace fmis.Controllers.Budget.John
             bool SaaDiplayed = false;
             bool saaDisplayed = false;
 
-            var SaaPS_Health = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 14).Sum(x => x.Beginning_balance);
-            var SaaMOOE_Health = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 14).Sum(x => x.Beginning_balance);
-            var SaaCO_Health =     subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 14).Sum(x => x.Beginning_balance);
+            var SaaPS_Health = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 14).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Health = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 14).Sum(x => x.Beginning_balance);
+            var SaaCO_Health =     subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 14).Sum(x => x.Beginning_balance);
 
-            var funsorcePS_Health = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 14).Sum(x => x.Beginning_balance);
-            var funsorceMOOE_Health = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 14).Sum(x => x.Beginning_balance);
-            var funsorceCO_Health = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 14).Sum(x => x.Beginning_balance);
+            var funsorcePS_Health = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 14).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Health = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 14).Sum(x => x.Beginning_balance);
+            var funsorceCO_Health = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 14).Sum(x => x.Beginning_balance);
             
             decimal totalPS_Health1 = SaaPS_Health + funsorcePS_Health;
             decimal totalMOOE_Health1 = SaaMOOE_Health + funsorceMOOE_Health;
@@ -2164,39 +2382,39 @@ namespace fmis.Controllers.Budget.John
             decimal totalPrexc_Health1 = totalPS_Health1 + totalMOOE_Health1 + totalCO_Health1; ///2023 HEALTH PROMOTION 310203100001000 for Health PromotionSUB - PROGRAM
 
 
-            var SaaPS_Enhanced = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance); // SAA 2023 - 02 - 000162 - INFRA //SAA 2023-02-000680-INFRA
-            var SaaMOOE_Enhanced = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance);
-            var SAACO_Enhanced = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 9).Sum(x => x.Beginning_balance);
+            var SaaPS_Enhanced = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 9).Sum(x => x.Beginning_balance); // SAA 2023 - 02 - 000162 - INFRA //SAA 2023-02-000680-INFRA
+            var SaaMOOE_Enhanced = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 9).Sum(x => x.Beginning_balance);
+            var SAACO_Enhanced = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 9).Sum(x => x.Beginning_balance);
 
-            var funsorcePS_Enhanced = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 9).Sum(x => x.Beginning_balance); // SAA 2023 - 02 - 000162 - INFRA //SAA 2023-02-000680-INFRA
-            var funsorceMOOE_Enhanced = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 9).Sum(x => x.Beginning_balance);
-            var funsorceCO_Enhanced = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 9).Sum(x => x.Beginning_balance);
+            var funsorcePS_Enhanced = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 9).Sum(x => x.Beginning_balance); // SAA 2023 - 02 - 000162 - INFRA //SAA 2023-02-000680-INFRA
+            var funsorceMOOE_Enhanced = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 9).Sum(x => x.Beginning_balance);
+            var funsorceCO_Enhanced = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 9).Sum(x => x.Beginning_balance);
 
             decimal totalPS_Enhanced = SaaPS_Enhanced + funsorcePS_Enhanced;
             decimal totalMOOE_Enhanced = SaaMOOE_Enhanced + funsorceMOOE_Enhanced;
             decimal totalCO_Enhanced = SAACO_Enhanced + funsorceCO_Enhanced;
             decimal totalPrexc_Enhanced = totalPS_Enhanced + totalMOOE_Enhanced + totalCO_Enhanced; //Health Facilities Enhancement Program  310201100002000 /SAA 2023-02-000451
 
-            var SaaPS_Local = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 10).Sum(x => x.Beginning_balance);
-            var SaaMOOE_Local = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 10).Sum(x => x.Beginning_balance);
-            var SaaCO_Local = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 10).Sum(x => x.Beginning_balance);
+            var SaaPS_Local = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 10).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Local = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 10).Sum(x => x.Beginning_balance);
+            var SaaCO_Local = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 10).Sum(x => x.Beginning_balance);
 
-            var fundsourcePS_Local = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 10).Sum(x => x.Beginning_balance);
-            var fundsourceMOOE_Local = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 10).Sum(x => x.Beginning_balance);
-            var fundsourceCO_Local = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 10).Sum(x => x.Beginning_balance);
+            var fundsourcePS_Local = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 10).Sum(x => x.Beginning_balance);
+            var fundsourceMOOE_Local = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 10).Sum(x => x.Beginning_balance);
+            var fundsourceCO_Local = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 10).Sum(x => x.Beginning_balance);
 
             decimal totalPS_Local = SaaPS_Local + fundsourcePS_Local;
             decimal totalMOOE_Local = SaaMOOE_Local + fundsourceMOOE_Local;
             decimal totalCO_Local = SaaCO_Local + fundsourceCO_Local;
             decimal totalPrexc_Local = totalPS_Local + totalMOOE_Local + totalCO_Local; //Local Health Systems Development and Assistance  // 310201100003000 
 
-            var SaaPS_Pharmaceu = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 11).Sum(x => x.Beginning_balance);
-            var SaaMOOE_Pharmaceu = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 11).Sum(x => x.Beginning_balance);
-            var SaaCO_Pharmaceu = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 11).Sum(x => x.Beginning_balance);
+            var SaaPS_Pharmaceu = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 11).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Pharmaceu = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 11).Sum(x => x.Beginning_balance);
+            var SaaCO_Pharmaceu = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 11).Sum(x => x.Beginning_balance);
 
-            var funsorcePS_Pharmaceu = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 11).Sum(x => x.Beginning_balance);
-            var funsorceMOOE_Pharmaceu = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 11).Sum(x => x.Beginning_balance);
-            var funsorceCO_Pharnaceu = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 11).Sum(x => x.Beginning_balance);
+            var funsorcePS_Pharmaceu = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 11).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Pharmaceu = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 11).Sum(x => x.Beginning_balance);
+            var funsorceCO_Pharnaceu = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 11).Sum(x => x.Beginning_balance);
 
             decimal totalPS_Pharmaceu = SaaPS_Pharmaceu + funsorcePS_Pharmaceu;
             decimal totalMOOE_Parmaceu = SaaMOOE_Pharmaceu + funsorceMOOE_Pharmaceu;
@@ -2211,26 +2429,26 @@ namespace fmis.Controllers.Budget.John
             var SaaFunsourceTotal = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13).Sum(x => x.Beginning_balance);
             decimal SaaFunsourceTotal_SaaTotal1_NHWSS = SaaFunsourceTotal + Saa_SAA_000199 + totalfunsorce + NHWSS; //NHWSS/
 
-            var SaaPS_Service = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 8).Sum(x => x.Beginning_balance);
-            var SaaMOOE_Service = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 8).Sum(x => x.Beginning_balance);
-            var SaaCO_Service = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 8).Sum(x => x.Beginning_balance);
+            var SaaPS_Service = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 8).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Service = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 8).Sum(x => x.Beginning_balance);
+            var SaaCO_Service = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 8).Sum(x => x.Beginning_balance);
 
-            var funsorcePS_Service = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 8).Sum(x => x.Beginning_balance);
-            var funsorcesMOOE_Service = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 8).Sum(x => x.Beginning_balance);
-            var funsorceCO_Service = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 8).Sum(x => x.Beginning_balance);
+            var funsorcePS_Service = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 8).Sum(x => x.Beginning_balance);
+            var funsorcesMOOE_Service = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 8).Sum(x => x.Beginning_balance);
+            var funsorceCO_Service = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 8).Sum(x => x.Beginning_balance);
 
             decimal totalPS_Service = SaaPS_Service + funsorcePS_Service;
             decimal totalMOOE_Service = SaaMOOE_Service + funsorcesMOOE_Service;
             decimal totalCO_Service = SaaCO_Service + funsorceCO_Service;
             decimal totalPrexc_Service = totalPS_Service + totalMOOE_Service + totalCO_Service; //HEALTH SYSTEMS STRENGTHENING PROGRAM
 
-            var SaaPS_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 32).Sum(x => x.Beginning_balance);
-            var SaaMOOE_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 32).Sum(x => x.Beginning_balance);
-            var SaaCO_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 32).Sum(x => x.Beginning_balance);
+            var SaaPS_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 32).Sum(x => x.Beginning_balance);
+            var SaaMOOE_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 32).Sum(x => x.Beginning_balance);
+            var SaaCO_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 32).Sum(x => x.Beginning_balance);
 
-            var fundsorcePS_NHWSS = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
-            var fundsorceMOOE_NHWSS = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32).Sum(x => x.Beginning_balance);
-            var fundsorceCO_NHWSS = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 32).Sum(x => x.Beginning_balance);
+            var fundsorcePS_NHWSS = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 32).Sum(x => x.Beginning_balance);
+            var fundsorceMOOE_NHWSS = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 32).Sum(x => x.Beginning_balance);
+            var fundsorceCO_NHWSS = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 32).Sum(x => x.Beginning_balance);
 
             decimal totalPS_NHWSS = SaaPS_NHWSS + fundsorcePS_NHWSS;
             decimal totalMOOE_NHWSS = SaaMOOE_NHWSS + fundsorceMOOE_NHWSS;
@@ -2239,13 +2457,13 @@ namespace fmis.Controllers.Budget.John
 
 
 
-            var SaaPS_HRH = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 13).Sum(x => x.Beginning_balance);
-            var SaaMOOE_HRH = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 13).Sum(x => x.Beginning_balance);
-            var SaaCO_HRH = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 13).Sum(x => x.Beginning_balance);
+            var SaaPS_HRH = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 13).Sum(x => x.Beginning_balance);
+            var SaaMOOE_HRH = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 13).Sum(x => x.Beginning_balance);
+            var SaaCO_HRH = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 13).Sum(x => x.Beginning_balance);
 
-            var funsourcePS_HRH = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13).Sum(x => x.Beginning_balance);
-            var funsourceMOOE_HRH = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13).Sum(x => x.Beginning_balance);
-            var funsourceCO_HRH = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13).Sum(x => x.Beginning_balance);
+            var funsourcePS_HRH = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 13).Sum(x => x.Beginning_balance);
+            var funsourceMOOE_HRH = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 13).Sum(x => x.Beginning_balance);
+            var funsourceCO_HRH = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 13).Sum(x => x.Beginning_balance);
             decimal totalPS_HRH = SaaPS_HRH + funsourcePS_HRH;
             decimal totalMOOE_HRH = SaaMOOE_HRH + funsourceMOOE_HRH;
             decimal totalCO_HRH = SaaCO_HRH + funsourceCO_HRH;
@@ -2276,13 +2494,13 @@ namespace fmis.Controllers.Budget.John
             SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", service_delivery_sub_Prexc));
             currentRow++;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 8))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 8))
             {
                 // if (saaSub.AllotmentClassId == 2 && saaSub.AppropriationId == 1 && saaSub.BudgetAllotmentId == 3 && saaSub.prexcId == 8)
                 // {  
                 foreach (var allotmentClassId in AllotmentClassId) //Health Facility Policy and Plan Development  310201100001000 HEALTH SYSTEMS STRENGTHENING PROGRAM
                 {
-                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClassId && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 8).ToList();
+                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClassId && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 8).ToList();
                     if (funsorceAllotClass.Count > 0)
                     {
                         foreach (var funsorce in funsorceAllotClass)
@@ -2350,7 +2568,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments) //Health Facility Policy and Plan Development  310201100001000 ::  HEALTH SYSTEMS STRENGTHENING PROGRAM
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 8)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 8)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -2398,7 +2616,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments) //Health Facility Policy and Plan Development  310201100001000 ::  HEALTH SYSTEMS STRENGTHENING PROGRAM
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 8)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 8)
                 {
 
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
@@ -2453,11 +2671,11 @@ namespace fmis.Controllers.Budget.John
             }
             currentRow++;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 9))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 9))
             {
                 foreach (var allotmentClassid in AllotmentClassId)//Health Facilities Enhancement Program  310201100002000 /SAA 2023-02-000451
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentClassid && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 9).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 9).ToList();
 
                     // if (subUacs.AllotmentClassId == 2 && subUacs.AppropriationId == 1 && subUacs.BudgetAllotmentId == 3 && subUacs.prexcId == 9)
                     // {
@@ -2530,7 +2748,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments) //Health Facilities Enhancement Program  310201100002000 SAA 2023-03-001503 //SAA 2023-04-002179
                 {
-                    if ((suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 9)
+                    if ((suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 9)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -2574,7 +2792,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments) //Health Facilities Enhancement Program  310201100002000 SAA 2023-03-001503 //SAA 2023-04-002179
             {
-                if ((suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 9)
+                if ((suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 9)
                 {
 
                     SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
@@ -2622,13 +2840,13 @@ namespace fmis.Controllers.Budget.John
             }
             currentRow++;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 10))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 10))
             {
                 foreach (var allotmentClassid in AllotmentClassId) // Local Health Systems Development and Assistance  // 310201100003000 // 2023 LHSDA
                 {
                     // if (fundsorce.AllotmentClassId == 2 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 10)
                     //{
-                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClassid && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 10).ToList();
+                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 10).ToList();
                     if (funsorceAllotClass.Count > 0)
                     {
                         foreach (var fundsorce in funsorceAllotClass)
@@ -2696,7 +2914,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)  // Local Health Systems Development and Assistance  // 310201100003000 // 2023 LHSDA
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 10)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 10)
                     {
 
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
@@ -2742,7 +2960,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot in subAllotments) // Local Health Systems Development and Assistance  // 310201100003000 // 2023 LHSDA ::
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 10)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 10)
                 {
                     //  if (suballot.Suballotment_title != duplicate1)
                     if (suballot.Suballotment_title != duplicate1)
@@ -2800,13 +3018,13 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             bool saadisplayed = false; bool saadisplayed1 = false;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 11))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 11))
             {
                 foreach (var allotmentclassId in AllotmentClassId) //Pharmaceutical Management // 310201100004000 // SAA 2023-03-000952
                 {
                     // if (subaalot.AllotmentClassId == 2 && subaalot.AppropriationId == 1 && subaalot.BudgetAllotmentId == 3 && subaalot.prexcId == 11)
                     //{
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclassId && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 11).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotmentclassId && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 11).ToList();
                     if (funsorceAllot.Count > 0)
                     {
                         foreach (var funsorce in funsorceAllot)
@@ -2875,7 +3093,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)//Pharmaceutical Management // 310201100004000 // SAA 2023-03-000952
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 11)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 11)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -2918,9 +3136,9 @@ namespace fmis.Controllers.Budget.John
                 }
             }//end else
 
-            foreach (var suballot in subAllotments)//Health Sector Research Development Health Sector Research Development //    2023 HSRD::
+            foreach (var suballot in subAllotments)//Pharmaceutical Management // 310201100004000 // SAA 2023-03-000952
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 11)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 11)
                 {
                     worksheet.Cell(currentRow, 1).Style.Font.FontColor = XLColor.Red;
                     worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.25;
@@ -2984,11 +3202,11 @@ namespace fmis.Controllers.Budget.John
             SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", total_Health_HumanSub));
             currentRow++;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 13))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 13))
             {
                 foreach (var AllotmentclassId in AllotmentClassId) // 310202100002000 // 2023 HRHICM 
                 {
-                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == AllotmentclassId && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 13).ToList();
+                    var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == AllotmentclassId && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 13).ToList();
                     //if (funsource.AllotmentClassId == 2 && funsource.AppropriationId == 1 && funsource.BudgetAllotmentId == 3 && funsource.PrexcId == 13)
                     //{
                     if (funsorceAllotClass.Count > 0)
@@ -3061,7 +3279,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments) // 310202100002000 // 2023 HRHICM ::
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 13)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 13)
                     {
 
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
@@ -3112,7 +3330,7 @@ namespace fmis.Controllers.Budget.John
 
             foreach (var suballot1 in subAllotments) // 310202100002000 // 2023 HRHICM continue::
             {
-                if ((suballot1.AllotmentClassId == 2 || suballot1.AllotmentClassId == 1 || suballot1.AllotmentClassId == 3) && suballot1.AppropriationId == 1 && suballot1.BudgetAllotmentId == 3 && suballot1.prexcId == 13)
+                if ((suballot1.AllotmentClassId == 2 || suballot1.AllotmentClassId == 1 || suballot1.AllotmentClassId == 3) && appropiationId.Contains(suballot1.AppropriationId) && budgetallotmentId.Contains(suballot1.BudgetAllotmentId.GetValueOrDefault()) && suballot1.prexcId == 13)
                 {
                     SubAllotTitleRed(worksheet, ref currentRow, suballot1.Suballotment_title);
                     currentRow++;
@@ -3160,11 +3378,11 @@ namespace fmis.Controllers.Budget.John
 
             currentRow++;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 32))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 32))
             {
                 foreach (var allotClassid in AllotmentClassId) //National Health Workforce Support System (NHWSS) // 310202100003000 //2023 NHWSS-PS
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 32).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 32).ToList();
                     //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 32)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -3242,7 +3460,7 @@ namespace fmis.Controllers.Budget.John
             {
               foreach(var suballot in subAllotments)
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 32)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 32)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -3281,7 +3499,7 @@ namespace fmis.Controllers.Budget.John
             }//end of else
             foreach (var suballot in subAllotments) // part -SAA 2023-03-000988 2023 NHWSS-PS
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 32)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 32)
                 {
                     
                     SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
@@ -3343,11 +3561,11 @@ namespace fmis.Controllers.Budget.John
             currentRow++;
             //start
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 14))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 14))
             {
                 foreach (var allotClassid in AllotmentClassId) //2023 HEALTH PROMOTION 310203100001000
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 14).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 14).ToList();
                     //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 14)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -3425,7 +3643,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments) //2023 HEALTH PROMOTION 310203100001000 contenue:: SAA 2023-03-001447
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 14)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 14)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -3467,7 +3685,7 @@ namespace fmis.Controllers.Budget.John
             }//end of else
             foreach (var suballot in subAllotments)  //2023 HEALTH PROMOTION 310203100001000 contenue:: SAA 2023-03-001447
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 14)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 14)
                 {
 
                     SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
@@ -3515,36 +3733,63 @@ namespace fmis.Controllers.Budget.John
                 ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
             }
             currentRow++;
+            var SaaPS_SubProgram = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 23).Sum(x => x.Beginning_balance);
+            var SaaMOOE_SubProgram = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 23).Sum(x => x.Beginning_balance);
+            var SaaCO_SubProgram = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 23).Sum(x => x.Beginning_balance);
 
+            var funsorcePS_SubProgram = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 23).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_SubProgram = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 23).Sum(x => x.Beginning_balance);
+            var funsorceCO_SubProgram = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 23).Sum(x => x.Beginning_balance);
+            decimal totalPS_SubProgram = SaaPS_SubProgram + funsorcePS_SubProgram;
+            decimal totalMOOE_SubProgram = funsorceMOOE_SubProgram + SaaMOOE_SubProgram;
+            decimal totalCO_Subprogram = funsorceCO_SubProgram + SaaCO_SubProgram;
+            decimal totalPrexc_SubProgram = totalPS_SubProgram + totalMOOE_SubProgram + totalCO_Subprogram;  //PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM
 
-            var PS15 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 23).Sum(x => x.Beginning_balance);
-            var CO14 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 23).Sum(x => x.Beginning_balance);
-            var MOOE3 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 23).Sum(x => x.Beginning_balance);
-            decimal totalprexc_PS_CO_MOOE = PS15 + MOOE3 + CO14;  //PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM
+            var SaaPS_Control = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 37).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Control = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 37).Sum(x => x.Beginning_balance);
+            var SaaCO_Control = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 37).Sum(x => x.Beginning_balance);
 
-            var PS17 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 37).Sum(x => x.Beginning_balance);
-            var OL3 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 37).Sum(x => x.Beginning_balance);
+            var funsorcePS_Control = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 37).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Control = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 37).Sum(x => x.Beginning_balance);
+            var funsorceCO_Control = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 37).Sum(x => x.Beginning_balance);
 
-            var totalFuncorce = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 37).Sum(x => x.Beginning_balance);
-            decimal total_prevention = PS17 + OL3 + totalFuncorce; //Prevention and Control of Communicable Disea // 310308100001000 // 2023 PCCD
+            decimal totalPS_Control = SaaPS_Control + funsorcePS_Control;
+            decimal totalMOOE_Control = funsorceMOOE_Control + SaaMOOE_Control;
+            decimal totalCO_Control = SaaCO_Control + funsorceCO_Control;
+            decimal totalPrexc_Control = totalPS_Control + totalMOOE_Control + totalCO_Control;//Prevention and Control of Communicable Disea // 310308100001000 // 2023 PCCD
 
-            var CO11 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 18).Sum(x => x.Beginning_balance);
-            var PS16 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 18).Sum(x => x.Beginning_balance);
-            var totalSaa12 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 18).Sum(x => x.Beginning_balance);
-            Decimal totalPrex_co_ps = CO11 + PS16 + totalSaa12; //Family Health, Nutrition and Responsible Parenting // 2023 FHINRP
+            var SaaPS_Family = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 18).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Family = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 18).Sum(x => x.Beginning_balance);
+            var SaaCO_Family = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 18).Sum(x => x.Beginning_balance);
 
-            var PS19 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 16).Sum(x => x.Beginning_balance);
-            var totalSaa11 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 16).Sum(x => x.Beginning_balance);
-            var CO13 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 16).Sum(x => x.Beginning_balance);
-            decimal totalPS19_CO123 = PS19 + CO13 + totalSaa11;  //Environmental and Occupational Health // 310302100001000 // SAA 2023-04-002044
+            var funsorcePS_Family = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 18).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Family = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 18).Sum(x => x.Beginning_balance);
+            var funsorceCO_Family = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 18).Sum(x => x.Beginning_balance);
 
-            var SaaPS_Manage = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 15).Sum(x => x.Beginning_balance);//2023 PHM-HFDS
-            var SaaMOOE_Manage = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 15).Sum(x => x.Beginning_balance);//2023 PHM-HFDS
-            var SaaCO_Manage = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 15).Sum(x => x.Beginning_balance);//2023 PHM-HFDS
+            decimal totalPS_Family = SaaPS_Family + funsorcePS_Family;
+            decimal totalMOOE_Family = SaaMOOE_Family + funsorceMOOE_Family;
+            decimal totalCO_Family = SaaCO_Family + funsorceCO_Family;
+            decimal totalPrexc_Family = totalPS_Family + totalMOOE_Family + totalCO_Family; //Family Health, Nutrition and Responsible Parenting // 2023 FHINRP
 
-            var fundSorcePS_Manage = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 15).Sum(x => x.Beginning_balance); //SAA 2023-04-002179
-            var fundSorceMOOE_Manage = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 15).Sum(x => x.Beginning_balance); //SAA 2023-04-002179
-            var fundSorceCO_Manage = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 15).Sum(x => x.Beginning_balance); //SAA 2023-04-002179
+            var SaaPS_Environ = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 16).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Environ = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 16).Sum(x => x.Beginning_balance);
+            var SaaCO_Environ = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 16).Sum(x => x.Beginning_balance);
+
+            var funsourcePS_Environ = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 16).Sum(x => x.Beginning_balance);
+            var funsourceMOOE_Environ = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 16).Sum(x => x.Beginning_balance);
+            var funsourceCO_Environ = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 16).Sum(x => x.Beginning_balance);
+            decimal totalPS_Environ = SaaPS_Environ + funsourcePS_Environ;
+            decimal totalMOOE_Environ = funsourceMOOE_Environ + SaaMOOE_Environ;
+            decimal totalCO_Environ = SaaCO_Environ + funsourceCO_Environ;
+            decimal totalPrexc_Environ = totalPS_Environ + totalMOOE_Environ + totalCO_Environ;  //Environmental and Occupational Health // 310302100001000 // SAA 2023-04-002044
+
+            var SaaPS_Manage = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 15).Sum(x => x.Beginning_balance);//2023 PHM-HFDS
+            var SaaMOOE_Manage = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 15).Sum(x => x.Beginning_balance);//2023 PHM-HFDS
+            var SaaCO_Manage = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 15).Sum(x => x.Beginning_balance);//2023 PHM-HFDS
+
+            var fundSorcePS_Manage = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 15).Sum(x => x.Beginning_balance); //SAA 2023-04-002179
+            var fundSorceMOOE_Manage = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 15).Sum(x => x.Beginning_balance); //SAA 2023-04-002179
+            var fundSorceCO_Manage = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 15).Sum(x => x.Beginning_balance); //SAA 2023-04-002179
 
 
             decimal totalPS_Manage = SaaPS_Manage + fundSorcePS_Manage;
@@ -3552,13 +3797,13 @@ namespace fmis.Controllers.Budget.John
             decimal totalCO_Manage = fundSorceCO_Manage + SaaCO_Manage;
             decimal totalPrexc_Manage = totalPS_Manage + totalMOOE_Manage + totalCO_Manage;  //Public Health Management // 310301100001000 // 2023 PHM-PS
 
-            var SaaPS_Public = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 40).Sum(x => x.Beginning_balance);
-            var SaaMOOE_Public = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 40).Sum(x => x.Beginning_balance);
-            var SaaCO_Public = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 40).Sum(x => x.Beginning_balance);
+            var SaaPS_Public = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 40).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Public = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 40).Sum(x => x.Beginning_balance);
+            var SaaCO_Public = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 40).Sum(x => x.Beginning_balance);
             //Public Health Emergency Benefits and Allowances // 310300200003000 // SAA 2023-07-003434
-            var fundsorcePS_Public = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 40).Sum(x => x.Beginning_balance);
-            var fundsorceMOOE_Public = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 40).Sum(x => x.Beginning_balance);
-            var fundsorceCO_Public = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 40).Sum(x => x.Beginning_balance);
+            var fundsorcePS_Public = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 40).Sum(x => x.Beginning_balance);
+            var fundsorceMOOE_Public = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 40).Sum(x => x.Beginning_balance);
+            var fundsorceCO_Public = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 40).Sum(x => x.Beginning_balance);
            
             decimal totalPS_Public = SaaPS_Public + fundsorcePS_Public;
             decimal totalMOOE_Public = fundsorceMOOE_Public + SaaMOOE_Public;
@@ -3567,7 +3812,7 @@ namespace fmis.Controllers.Budget.John
 
 
 
-            decimal total_PUBLIC_HEALTHPROGRAM = totalPrexc_Public + totalprexc_PS_CO_MOOE + total_prevention + totalPS19_CO123 + totalPrex_co_ps + totalPrexc_Manage;
+            decimal total_PUBLIC_HEALTHPROGRAM = totalPrexc_Public + totalPrexc_SubProgram + totalPrexc_Control + totalPrexc_Family + totalPrexc_Environ + totalPrexc_Manage;
 
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "PUBLIC HEALTH PROGRAM";
@@ -3594,11 +3839,11 @@ namespace fmis.Controllers.Budget.John
             bool totalSaaDisplayed = false;
 
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 40))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 40))
             {
                 foreach (var allotClassid in AllotmentClassId)  //Public Health Emergency Benefits and Allowances // 310300200003000 // SAA 2023-07-003434
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 14).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 14).ToList();
                     //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 14)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -3674,7 +3919,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)  //Public Health Emergency Benefits and Allowances // 310300200003000 // SAA 2023-07-003434
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 40)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 40)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -3717,7 +3962,7 @@ namespace fmis.Controllers.Budget.John
             }//end of else
             foreach (var suballot in subAllotments)  //Public Health Emergency Benefits and Allowances // 310300200003000 // SAA 2023-07-003434
             { 
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 40)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 40)
                 {
 
                     SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
@@ -3781,11 +4026,11 @@ namespace fmis.Controllers.Budget.John
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             currentRow++;
 
-            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 15))
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 15))
             {
                 foreach (var allotClassid in AllotmentClassId)  ////Public Health Management // 310301100001000 // 2023 PHM-PS
                 {
-                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && f.AppropriationId == 1 && f.BudgetAllotmentId == 3 && f.PrexcId == 15).ToList();
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 15).ToList();
                     //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 14)
                     //{
                     if (funsorceAllot.Count > 0)
@@ -3863,7 +4108,7 @@ namespace fmis.Controllers.Budget.John
             {
                 foreach (var suballot in subAllotments)  //Public Health Management // 310301100001000 // 2023 PHM-PS
                 {
-                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 15)
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 15)
                     {
                         if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
                         {
@@ -3904,7 +4149,7 @@ namespace fmis.Controllers.Budget.John
             }//end of else
             foreach (var suballot in subAllotments)  //Public Health Management // 310301100001000 // 2023 PHM-PS
             {
-                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 15)
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 15)
                 {
 
                     SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
@@ -3960,130 +4205,142 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU3.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
 
             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPS19_CO123);
+            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPrexc_Environ);
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             currentRow++;
-            foreach (var suballot in subAllotments) //Environmental and Occupational Health // 310302100001000 // SAA 2023-04-002044
-            {// console Writeline()
-                if (suballot.AllotmentClassId == 2 && suballot.AppropriationId == 1 && suballot.BudgetAllotmentId == 3 && suballot.prexcId == 16)
+
+
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 16))
+            {
+                foreach (var allotClassid in AllotmentClassId)   //Environmental and Occupational Health // 310302100001000 // SAA 2023-04-002044
                 {
-                    if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 16).ToList();
+                    //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 16)
+                    //{
+                    if (funsorceAllot.Count > 0)
                     {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPS19_CO123);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
-                        Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
-
-                        if (PS19 == 0)
+                        foreach (var fundsorce in funsorceAllot)
                         {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Value = "-";
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        }
-                        else
-                        {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS19);
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        }
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services ");
+                            if (allotClassid == 1 || allotClassid == 2 || allotClassid == 3)
+                            {
+                                if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
+                                {
 
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa11);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
-                        paptitle = suballot.prexc.pap_title;
-                        papcode = suballot.prexc.pap_code1;
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Environ));
+                                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title); //National Health Workforce Support System (NHWSS)
+                                    Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
+
+                                    worksheet.Cell(currentRow, 1).Value = "GAA";
+                                    currentRow++;
+                                    if (totalPS_Environ == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Environ));
+                                        ItemSubPrexc(worksheet, ref currentRow, fundsorce.AllotmentClass.Desc);
+                                    }
+                                    if (totalMOOE_Environ == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Environ));
+
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+
+
+                                    paptitle = fundsorce.Prexc.pap_title;
+                                    papcode = fundsorce.Prexc.pap_code1;
+                                }
+
+                                SubAllotTitleRed(worksheet, ref currentRow, fundsorce.FundSourceTitle);
+                                duplicate1 = fundsorce.FundSourceTitle;
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", fundsorce.Beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+
+                                foreach (var uacs in fundsorce.FundSourceAmounts)
+                                {
+
+                                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    currentRow++;
+                                }
+                            }
+                        }
                     }
-                    if (suballot.Suballotment_title != duplicate1)
+                    // } //end of foreach
+                }
+            }
+            else
+            {
+                foreach (var suballot in subAllotments)   //Environmental and Occupational Health // 310302100001000 // SAA 2023-04-002044
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 16)
                     {
-                        SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
-                        duplicate1 = suballot.Suballotment_title;
-                        currentRow++;
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Environ));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+
+                            if (totalPS_Environ == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Environ));
+                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                            }
+                            if (totalMOOE_Environ == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Environ));
+
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+
+
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
                     }
+                }
+
+            }//end of else
+            foreach (var suballot in subAllotments)   //Environmental and Occupational Health // 310302100001000 // SAA 2023-04-002044
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 16)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+                    duplicate1 = suballot.Suballotment_title;
+                    currentRow++;
 
                     foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
-                    {
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(X => X.UacsId == uacs.UacsId).Account_title;
-
-                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(X => X.UacsId == uacs.UacsId).Expense_code;
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        currentRow++;
-                    }
-                    TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa11);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    currentRow++;
-                    if (CO13 == 0)
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = "-";
-                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", CO13);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    }
-                    ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                }
-            }//end of foreach
-
-            currentRow++;
-
-
-            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 1).Value = "FAMILY HEALTH SUB - PROGRAM";
-            var rangeAtoU4 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
-            rangeAtoU4.Style.Fill.BackgroundColor = XLColor.FromHtml("#F8FBE8"); //yellow
-            rangeAtoU4.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPrex_co_ps);
-            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            currentRow++;
-
-            foreach (var funsorce in funsources1) //Family Health, Nutrition and Responsible Parenting // 2023 FHINRP
-            {
-                if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 18)
-                {
-
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPrex_co_ps);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
-                    Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
-                    if (PS16 == 0)
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS16);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    }
-                    ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalSaa12);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    ItemSubPrexc(worksheet, ref currentRow, funsorce.AllotmentClass.Desc);
-
-                    SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
-                    currentRow++;
-                    foreach (var uacs in funsorce.FundSourceAmounts)
                     {
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
@@ -4095,25 +4352,214 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
+
                     }
 
-                    if (CO11 == 0)
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", CO11);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    }
-                    ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
                 }
-            }//end of foreaach
+            }// end of foreach
+
+            if (totalMOOE_Environ == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Environ));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
             currentRow++;
 
+            if (totalCO_Environ == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Environ));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            currentRow++;
+
+            worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 1).Value = "FAMILY HEALTH SUB - PROGRAM";
+            var rangeAtoU4 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
+            rangeAtoU4.Style.Fill.BackgroundColor = XLColor.FromHtml("#F8FBE8"); //yellow
+            rangeAtoU4.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", totalPrexc_Family);
+            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            currentRow++;
+
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 18))
+            {
+                foreach (var allotClassid in AllotmentClassId)   // Prevention and Control of Communicable Diseases// 310308100001000 // 2023 FHINRP
+                {
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 18).ToList();
+                    //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 14)
+                    //{
+                    if (funsorceAllot.Count > 0)
+                    {
+                        foreach (var fundsorce in funsorceAllot)
+                        {
+                            if (allotClassid == 1 || allotClassid == 2 || allotClassid == 3)
+                            {
+                                if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
+                                {
+
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Family));
+                                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title); 
+                                    Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
+                                    if (totalPS_Family == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Family));
+                                        ItemSubPrexc(worksheet, ref currentRow, fundsorce.AllotmentClass.Desc);
+                                    }
+                                    if (totalMOOE_Family == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Family));
+
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+
+
+                                    paptitle = fundsorce.Prexc.pap_title;
+                                    papcode = fundsorce.Prexc.pap_code1;
+                                }
+
+                                SubAllotTitleRed(worksheet, ref currentRow, fundsorce.FundSourceTitle);
+                                duplicate1 = fundsorce.FundSourceTitle;
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", fundsorce.Beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+
+                                foreach (var uacs in fundsorce.FundSourceAmounts)
+                                {
+
+                                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    currentRow++;
+                                }
+                            }
+                        }
+                    }
+                    // } //end of foreach
+                }
+            }
+            else
+            {
+                foreach (var suballot in subAllotments)   // Prevention and Control of Communicable Diseases// 310308100001000 // 2023 FHINRP
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 18)
+                    {
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Family));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+
+                            if (totalPS_Family == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Family));
+                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                            }
+                            if (totalMOOE_Family == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Family));
+
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+
+
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
+                    }
+                }
+
+            }//end of else
+            foreach (var suballot in subAllotments)  // Prevention and Control of Communicable Diseases// 310308100001000 // 2023 FHINRP
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 18)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+                    duplicate1 = suballot.Suballotment_title;
+                    currentRow++;
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        currentRow++;
+
+                    }
+
+                }
+            }// end of foreach
+
+            if (totalMOOE_Family == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Family));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            currentRow++;
+
+            if (totalCO_Family == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Family));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            currentRow++;
 
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "PREVENTION AND CONTROL OF COMMUNICABLE DISEASES SUB - PROGRAM";
@@ -4122,54 +4568,137 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU5.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
 
             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", total_prevention);
+            worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalPrexc_Control);
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             currentRow++;
 
-
-            foreach (var funsorce in funsources1) //Prevention and Control of Communicable Disea // 310308100001000 // 2023 PCCD
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 37))
             {
-                if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 37)
+                foreach (var allotClassid in AllotmentClassId)  //Prevention and Control of Communicable Disea // 310308100001000 // 2023 PCCD
                 {
-                    if (funsorce.Prexc.pap_title != paptitle || funsorce.Prexc.pap_code1 != papcode)
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 37).ToList();
+                    //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 14)
+                    //{
+                    if (funsorceAllot.Count > 0)
                     {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", total_prevention);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
-                        Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
-                        if (PS17 == 0)
+                        foreach (var fundsorce in funsorceAllot)
                         {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        }
-                        else
-                        {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS17);
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        }
+                            if (allotClassid == 1 || allotClassid == 2 || allotClassid == 3)
+                            {
+                                if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
+                                {
 
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services ");
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Control));
+                                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title);
+                                    Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
+                                    if (totalPS_Control == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Control));
+                                        ItemSubPrexc(worksheet, ref currentRow, fundsorce.AllotmentClass.Desc);
+                                    }
+                                    if (totalMOOE_Control == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Control));
 
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalFuncorce);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                        paptitle = funsorce.Prexc.pap_title;
-                        papcode = funsorce.Prexc.pap_code1;
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+
+
+                                    paptitle = fundsorce.Prexc.pap_title;
+                                    papcode = fundsorce.Prexc.pap_code1;
+                                }
+
+                                SubAllotTitleRed(worksheet, ref currentRow, fundsorce.FundSourceTitle);
+                                duplicate1 = fundsorce.FundSourceTitle;
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", fundsorce.Beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+
+                                foreach (var uacs in fundsorce.FundSourceAmounts)
+                                {
+
+                                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    currentRow++;
+                                }
+                            }
+                        }
                     }
-                    SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
+                    // } //end of foreach
+                }
+            }
+            else
+            {
+                foreach (var suballot in subAllotments)   //Prevention and Control of Communicable Disea // 310308100001000 // 2023 PCCD
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 37)
+                    {
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Control));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                            if (totalPS_Control == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Control));
+                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                            }
+                            if (totalMOOE_Control == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Control));
 
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", funsorce.Beginning_balance);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
 
+
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
+                    }
+                }
+
+            }//end of else
+            foreach (var suballot in subAllotments)  //Prevention and Control of Communicable Disea // 310308100001000 // 2023 PCCD
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 37)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+                    duplicate1 = suballot.Suballotment_title;
                     currentRow++;
-                    foreach (var uacs in funsorce.FundSourceAmounts)
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
                     {
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
@@ -4178,31 +4707,38 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
 
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
+
                     }
 
-
-                    if (OL3 == 0)
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", OL3);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    }
-
-                    ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
                 }
-            }//end of foreaach
+            }// end of foreach
+
+            if (totalMOOE_Control == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Control));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
             currentRow++;
 
-
+            if (totalCO_Control == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Control));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            currentRow++;
 
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM";
@@ -4211,52 +4747,133 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU24.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             currentRow++;
 
-            foreach (var funsorce in funsources1) //PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM
+            if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 23))
             {
-                if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 23)
+                foreach (var allotClassid in AllotmentClassId) //PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM
                 {
-                    if (funsorce.Prexc.pap_title != paptitle || funsorce.Prexc.pap_code1 != papcode)
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 23).ToList();
+                    //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 23)
+                    //{
+                    if (funsorceAllot.Count > 0)
                     {
-
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalprexc_PS_CO_MOOE);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
-                        Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
-
-                        if (PS15 == 0)
+                        foreach (var fundsorce in funsorceAllot)
                         {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        }
-                        else
-                        {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS15);
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        }
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            if (allotClassid == 1 || allotClassid == 2 || allotClassid == 3)
+                            {
+                                if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
+                                {
 
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", MOOE3);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses ");
-                        paptitle = funsorce.Prexc.pap_title;
-                        papcode = funsorce.Prexc.pap_code1;
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_SubProgram));
+                                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title);
+                                    Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
+                                    if (totalPS_SubProgram == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_SubProgram));
+                                        ItemSubPrexc(worksheet, ref currentRow, fundsorce.AllotmentClass.Desc);
+                                    }
+                                    if (totalMOOE_SubProgram == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_SubProgram));
+
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+
+
+                                    paptitle = fundsorce.Prexc.pap_title;
+                                    papcode = fundsorce.Prexc.pap_code1;
+                                }
+
+                                SubAllotTitleRed(worksheet, ref currentRow, fundsorce.FundSourceTitle);
+                                duplicate1 = fundsorce.FundSourceTitle;
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", fundsorce.Beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+
+                                foreach (var uacs in fundsorce.FundSourceAmounts)
+                                {
+
+                                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    currentRow++;
+                                }
+                            }
+                        }
                     }
+                    // } //end of foreach
+                }
+            }
+            else
+            {
+                foreach (var suballot in subAllotments)  //PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 23)
+                    {
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_SubProgram));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                            if (totalPS_SubProgram == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_SubProgram));
+                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                            }
+                            if (totalMOOE_SubProgram == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_SubProgram));
 
-                    SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", funsorce.Beginning_balance);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+
+
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
+                    }
+                }
+
+            }//end of else
+            foreach (var suballot in subAllotments) //PREVENTION AND CONTROL OF NON - COMMUNICABLE DISEASES SUB - PROGRAM
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 23)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+                    duplicate1 = suballot.Suballotment_title;
                     currentRow++;
-                    foreach (var uacs in funsorce.FundSourceAmounts)
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
                     {
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
@@ -4265,165 +4882,239 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
 
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
+
                     }
 
-                    if (CO14 == 0)
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", CO14);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    }
-
-                    ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                    currentRow++;
                 }
-            }//foreach          
+            }// end of foreach
+
+            if (totalMOOE_SubProgram == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Control));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
             currentRow++;
 
+            if (totalCO_Subprogram == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Subprogram));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
 
-            var PS13 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 24).Sum(x => x.Beginning_balance);
-            var PS14 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 24).Sum(x => x.Beginning_balance);
-            var totalFunsorce1 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 24).Sum(x => x.Beginning_balance);
+            currentRow++;
+           
+            var SaaPS_Epide = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 24).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Epide = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 24).Sum(x => x.Beginning_balance);
+            var SaaCO_Epide = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 24).Sum(x => x.Beginning_balance);
+            
+            var funsorcePS_Epide = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 24).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Epide = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 24).Sum(x => x.Beginning_balance);
+            var funsorceCO_Epide = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 24).Sum(x => x.Beginning_balance);
+            decimal totalPS_Epide = SaaPS_Epide + funsorcePS_Epide;
+            decimal totalMOOE_Epide = SaaMOOE_Epide + funsorceMOOE_Epide;
+            decimal totalCO_Epide = funsorceCO_Epide + SaaCO_Epide;
+            decimal totalPrexc_Epide = totalPS_Epide + totalMOOE_Epide + totalCO_Epide;//2023 ES // Epidemiology and Surveillance // 310400100001000
+
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "Epidemiology and Surveillance PROGRAM";
             var rangeAtoU6 = worksheet.Range(worksheet.Cell(currentRow, 1), worksheet.Cell(currentRow, 21));
             rangeAtoU6.Style.Fill.BackgroundColor = XLColor.FromHtml("#ff80b3");
             rangeAtoU6.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-
-            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalFunsorce1);
-            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            SaaGaaBalance(worksheet, ref currentRow, String.Format("{0:n2}", totalPrexc_Epide));
             currentRow++;
-            decimal TotalPs1 = PS13 + PS14;
 
-            foreach (var funsorce in funsources1)//2023 ES // Epidemiology and Surveillance // 310400100001000
+            if (funsources1.Any(x =>(new List<int> { 1, 2, 3 }).Contains(x.AllotmentClassId) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 24))
             {
-                if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 24)
+                foreach (var allotClassid in AllotmentClassId) //2023 ES // Epidemiology and Surveillance // 310400100001000
                 {
-                    if (funsorce.Prexc.pap_title != paptitle || funsorce.Prexc.pap_code1 != papcode)
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 24).ToList();
+                    //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 24)
+                    //{
+                    if (funsorceAllot.Count > 0)
                     {
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalFunsorce1);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
-                        Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
-
-                        if (TotalPs1 == 0)
+                        foreach (var fundsorce in funsorceAllot)
                         {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            if (allotClassid == 1 || allotClassid == 2 || allotClassid == 3)
+                            {
+                                if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
+                                {
+
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Epide));
+                                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title);
+                                    Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
+                                    if (totalPS_Epide == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Epide));
+                                        ItemSubPrexc(worksheet, ref currentRow, fundsorce.AllotmentClass.Desc);
+                                    }
+                                    if (totalMOOE_Epide == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Epide));
+
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+
+
+                                    paptitle = fundsorce.Prexc.pap_title;
+                                    papcode = fundsorce.Prexc.pap_code1;
+                                }
+
+                                SubAllotTitleRed(worksheet, ref currentRow, fundsorce.FundSourceTitle);
+                                duplicate1 = fundsorce.FundSourceTitle;
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", fundsorce.Beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+
+                                foreach (var uacs in fundsorce.FundSourceAmounts)
+                                {
+
+                                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    currentRow++;
+                                }
+                            }
                         }
-                        else
-                        {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", TotalPs1);
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        }
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalFunsorce1);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        ItemSubPrexc(worksheet, ref currentRow, funsorce.AllotmentClass.Desc);
-                        paptitle = funsorce.Prexc.pap_title;
-                        papcode = funsorce.Prexc.pap_code1;
                     }
-                    SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", funsorce.Beginning_balance);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
-                    currentRow++;
-                    foreach (var uacs in funsorce.FundSourceAmounts) // SAA 2023-05-002387
-                    {
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
-
-                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", uacs.beginning_balance);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        currentRow++;
-                    }
+                    // } //end of foreach
                 }
-
-            } //end of foreach
-
-            var totalSaa13 = subAllotments.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 24).Sum(x => x.Beginning_balance);
-            var CO = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 24).Sum(x => x.Beginning_balance);
-            var CO10 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 24).Sum(x => x.Beginning_balance);
-            decimal TotalCO = CO + CO10;
-            foreach (var subaalot in subAllotments) //2023 HEPR // Health Emergency Preparedness and Response // 310500100001000
-            {
-                if (subaalot.AllotmentClassId == 2 && subaalot.AppropriationId == 1 && subaalot.BudgetAllotmentId == 3 && subaalot.prexcId == 24)
-                {
-                    Prexc_papTitle(worksheet, ref currentRow, subaalot.prexc.pap_title);
-                    Prexc_papcode(worksheet, ref currentRow, subaalot.prexc.pap_code1);
-
-                    ItemSubPrexc(worksheet, ref currentRow, subaalot.AllotmentClass.Desc);
-
-                    SubAllotTitleRed(worksheet, ref currentRow, subaalot.Suballotment_title);
-                    currentRow++;
-                    foreach (var uacs in subaalot.SubAllotmentAmounts.ToList())
-                    {
-                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
-
-                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", uacs.beginning_balance);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                        currentRow++;
-                    }
-
-                }
-            }//end of foreach
-            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
-            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalSaa13);
-            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            currentRow++;
-            if (TotalCO == 0)
-            {
-                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             }
             else
             {
+                foreach (var suballot in subAllotments) //2023 ES // Epidemiology and Surveillance // 310400100001000
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 24)
+                    {
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Epide));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                            if (totalPS_Epide == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Epide));
+                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                            }
+                            if (totalMOOE_Epide == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Epide));
 
-                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", TotalCO);
-                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+
+
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
+                    }
+                }
+
+            }//end of else
+            foreach (var suballot in subAllotments) //2023 ES // Epidemiology and Surveillance // 310400100001000
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 24)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+                    duplicate1 = suballot.Suballotment_title;
+                    currentRow++;
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
+                    {
+                        worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                        worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        currentRow++;
+
+                    }
+
+                }
+            }// end of foreach
+
+            if (totalMOOE_Epide == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
             }
-            ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Epide));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
             currentRow++;
 
-            var PS12 = funsources1.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 25).Sum(x => x.Beginning_balance);
-            var OL2 = funsources1.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 25).Sum(x => x.Beginning_balance);
-            var totalFunsorce3 = funsources1.Where(x => x.AllotmentClassId == 2 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.PrexcId == 25).Sum(x => x.Beginning_balance);
-            decimal prexcPs12Ol2 = totalFunsorce3 + PS12 + OL2;
+            if (totalCO_Epide == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Epide));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            currentRow++;
+
+            var SaaPS_Emerge = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 25).Sum(x => x.Beginning_balance);
+            var SaaMOOE_Emerge = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 25).Sum(x => x.Beginning_balance);
+            var SaaCO_Emerge = subAllotments.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 25).Sum(x => x.Beginning_balance);
+
+            var funSorcePS_Emerge = funsources1.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 25).Sum(x => x.Beginning_balance);
+            var funsorceMOOE_Emerge = funsources1.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 25).Sum(x => x.Beginning_balance);
+            var funsorceCO_Emerge = funsources1.Where(x => x.AllotmentClassId == 3 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 25).Sum(x => x.Beginning_balance);
+            decimal totalPS_Emerge = SaaPS_Emerge + funSorcePS_Emerge;
+            decimal totalMOOE_Emerge = SaaMOOE_Emerge + funsorceMOOE_Emerge;
+            decimal totalCO_Emerge = funsorceCO_Emerge + SaaCO_Emerge;
+            decimal totalPrexc_Emerge = totalPS_Emerge + totalMOOE_Emerge + totalCO_Emerge;
 
             worksheet.Cell(currentRow, 1).Style.Font.FontSize = 10.5;
             worksheet.Cell(currentRow, 1).Value = "HEALTH EMERGENCY MANAGEMENT PROGRAM";
@@ -4432,56 +5123,139 @@ namespace fmis.Controllers.Budget.John
             rangeAtoU7.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
 
             worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-            worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalFunsorce3);
+            worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalPrexc_Emerge);
             worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             currentRow++;
 
-            foreach (var funsorce in funsources1) //HEALTH EMERGENCY MANAGEMENT PROGRAM 2023 HEPR
+
+            if (funsources1.Any(x => (new List<int> { 1, 2, 3 }).Contains(x.AllotmentClassId) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 25))
             {
-                if (funsorce.AllotmentClassId == 2 && funsorce.AppropriationId == 1 && funsorce.BudgetAllotmentId == 3 && funsorce.PrexcId == 25)
+                foreach (var allotClassid in AllotmentClassId) //HEALTH EMERGENCY MANAGEMENT PROGRAM 2023 HEPR0
                 {
-                    if (funsorce.Prexc.pap_title != paptitle || funsorce.Prexc.pap_code1 != papcode)
+                    var funsorceAllot = funsources1.Where(f => f.AllotmentClassId == allotClassid && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 25).ToList();
+                    //if (fundsorce.AllotmentClassId == 1 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 25)
+                    //{
+                    if (funsorceAllot.Count > 0)
                     {
-
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", prexcPs12Ol2);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                        Prexc_papTitle(worksheet, ref currentRow, funsorce.Prexc.pap_title);
-                        Prexc_papcode(worksheet, ref currentRow, funsorce.Prexc.pap_code1);
-
-                        if (PS12 == 0)
+                        foreach (var fundsorce in funsorceAllot)
                         {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        }
-                        else
-                        {
-                            worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                            worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                            worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", PS12);
-                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        }
+                            if (allotClassid == 1 || allotClassid == 2 || allotClassid == 3)
+                            {
+                                if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
+                                {
 
-                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services ");
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", totalFunsorce3);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Emerge));
+                                    Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title);
+                                    Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
+                                    if (totalPS_Emerge == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Emerge));
+                                        ItemSubPrexc(worksheet, ref currentRow, fundsorce.AllotmentClass.Desc);
+                                    }
+                                    if (totalMOOE_Emerge == 0)
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+                                    else
+                                    {
+                                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Emerge));
 
-                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance & Other Operating Expenses");
-                        paptitle = funsorce.Prexc.pap_title;
-                        papcode = funsorce.Prexc.pap_code1;
+                                        ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                                    }
+
+
+                                    paptitle = fundsorce.Prexc.pap_title;
+                                    papcode = fundsorce.Prexc.pap_code1;
+                                }
+
+                                SubAllotTitleRed(worksheet, ref currentRow, fundsorce.FundSourceTitle);
+                                duplicate1 = fundsorce.FundSourceTitle;
+
+                                worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                                worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
+                                worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", fundsorce.Beginning_balance);
+                                worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                currentRow++;
+
+                                foreach (var uacs in fundsorce.FundSourceAmounts)
+                                {
+
+                                    worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
+
+                                    worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
+
+                                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
+                                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                    currentRow++;
+                                }
+                            }
+                        }
                     }
-                    SubAllotTitleRed(worksheet, ref currentRow, funsorce.FundSourceTitle);
+                    // } //end of foreach
+                }
+            }
+            else
+            {
+                foreach (var suballot in subAllotments) //HEALTH EMERGENCY MANAGEMENT PROGRAM 2023 HEPR
+                {
+                    if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 25)
+                    {
+                        if (suballot.prexc.pap_title != paptitle || suballot.prexc.pap_code1 != papcode)
+                        {
 
-                    worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                    worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", funsorce.Beginning_balance);
-                    worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    worksheet.Cell(currentRow, 3).Style.Font.FontColor = XLColor.Red;
+                            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexc_Emerge));
+                            Prexc_papTitle(worksheet, ref currentRow, suballot.prexc.pap_title);
+                            Prexc_papcode(worksheet, ref currentRow, suballot.prexc.pap_code1);
+                            if (totalPS_Emerge == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPS_Emerge));
+                                ItemSubPrexc(worksheet, ref currentRow, suballot.AllotmentClass.Desc);
+                            }
+                            if (totalMOOE_Emerge == 0)
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, "-");
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+                            else
+                            {
+                                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Emerge));
+
+                                ItemSubPrexc(worksheet, ref currentRow, "Maintenance and Other Operating Expenses");
+                            }
+
+
+
+                            paptitle = suballot.prexc.pap_title;
+                            papcode = suballot.prexc.pap_code1;
+                        }
+                    }
+                }
+
+            }//end of else
+            foreach (var suballot in subAllotments) //HEALTH EMERGENCY MANAGEMENT PROGRAM 2023 HEPR
+            {
+                if ((suballot.AllotmentClassId == 1 || suballot.AllotmentClassId == 2 || suballot.AllotmentClassId == 3) && appropiationId.Contains(suballot.AppropriationId) && budgetallotmentId.Contains(suballot.BudgetAllotmentId.GetValueOrDefault()) && suballot.prexcId == 25)
+                {
+
+                    SubAllotTitleRed(worksheet, ref currentRow, suballot.Suballotment_title);
+                    duplicate1 = suballot.Suballotment_title;
                     currentRow++;
-                    foreach (var uacs in funsorce.FundSourceAmounts.ToList())
+
+                    foreach (var uacs in suballot.SubAllotmentAmounts.ToList())
                     {
                         worksheet.Cell(currentRow, 1).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 1).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Account_title;
@@ -4490,28 +5264,38 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
 
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
-                        worksheet.Cell(currentRow, 3).Value = String.Format("{0:n2}", uacs.beginning_balance);
+                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
-                    }
-                    if (OL2 == 0)
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", "-");
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, 3).Style.Font.FontSize = 10.5;
-                        worksheet.Cell(currentRow, 3).Style.Font.SetBold();
-                        worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", OL2);
-                        worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                    }
-                    ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                }
 
-            }//end of foreach
+                    }
+
+                }
+            }// end of foreach
+
+            if (SaaMOOE_Emerge == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Emerge));
+                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+            }
+            currentRow++;
+
+            if (totalCO_Emerge == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO_Emerge));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays ");
+            }
+
             currentRow++;
             var PS23 = subAllotments.Where(x => x.AllotmentClassId == 1 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 26).Sum(x => x.Beginning_balance);
             var CO17 = subAllotments.Where(x => x.AllotmentClassId == 3 && x.AppropriationId == 1 && x.BudgetAllotmentId == 3 && x.prexcId == 26).Sum(x => x.Beginning_balance);
@@ -4525,7 +5309,7 @@ namespace fmis.Controllers.Budget.John
             decimal MOOE6_MOOE7 = MOOE6 + MOOE7; decimal prexcTotal1 = MOOE6_MOOE7 + CO17_CO18 + PS23_PS22;
             foreach (var fundsorce in funsources1)// Quick Response Fund 310500100002000
             {
-                if (fundsorce.AllotmentClassId == 2 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 26)
+                if (fundsorce.AllotmentClassId == 2 && fundsorce.AppropriationId == 1 && fundsorce.BudgetAllotmentId == 3 && fundsorce.PrexcId == 26) // console.writeLine()
                 {
                     if (fundsorce.Prexc.pap_title != paptitle || fundsorce.Prexc.pap_code1 != papcode)
                     {
