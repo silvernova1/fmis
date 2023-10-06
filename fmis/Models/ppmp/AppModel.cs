@@ -37,7 +37,6 @@ namespace fmis.Models.ppmp
 
         public string? Remarks { get; set; }
 
-        [ForeignKey("Expense_id")]
-        public Expense? Expense { get; set; }
+        public AppExpense? AppExpense { get; set; }
     }
 }

@@ -1,0 +1,95 @@
+﻿@model fmis.ViewModel.AppViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Generate APP";
+}
+<style>
+    .custom-table td {
+        padding: 5px;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    #scroll-down-arrow {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999; /* Ensure the arrow is above other content */
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+
+<div class="text-right">
+    <form asp-controller="App" asp-action="GenerateApp" method="post" target="_blank">
+        <button type="submit">Generate PDF</button>
+    </form>
+</div>
+<hr />
+
+<div id="scroll-down-arrow">&#8595;</div>
+
+
+
+<form asp-controller="App" asp-action="UpdateAppExpense" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Procurement Project</th>
+                <th>PMO/End User</th>
+                <th>Yes</th>
+                <th>No</th>
+                <th>Mode of Procurement</th>
+                <th>Advertising/Posting IB/REI</th>
+                <th>Submission/ Opening of Bids</th>
+                <th>Notice of Award</th>
+                <th>Contract Signing</th>
+                <th>Source of Funds</th>
+                <th>Total</th>
+                <th>MOOE</th>
+                <th>CO</th>
+                <th>Remarks (Brief description of the Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appExpense in Model.AppExpenses)
+            {
+                <tr>
+                    <td style="width: 100px;"></td>
+                    <td style="width: 250px;">
+                        <strong><input type="text" asp-for="@appExpense.Description" value="@appExpense.Description" class="form-control" /></strong>
+                        <input type="hidden" asp-for="@appExpense.Id" value="@appExpense.Id" />
+                    </td>
+                </tr>
+
+                @foreach (var appModel in appExpense.AppModels)
+                {
+
+                    <tr>
+                        <td style="width: 100px;"><input type="text" asp-for="@appModel.Uacs" /></td>
+                        <input type="hidden" asp-for="@appModel.Id" />
+                        <td style="width: 250px;"><input type="text" asp-for="@appModel.ProcurementProject" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" asp-for="@appModel.EndUser" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" asp-for="@appModel.ModeOfProcurement" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" asp-for="@appModel.Advertising" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" asp-for="@appModel.Submission" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" asp-for="@appModel.NoticeOfAward" class="form-control" /></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div style="text-align: right;" id="targetElementID">
+        <button type="submit" class="btn btn-primary">Save All Changes</button>
+    </div>
+</form>

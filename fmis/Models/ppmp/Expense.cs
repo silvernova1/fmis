@@ -21,7 +21,5 @@ namespace fmis.Models.ppmp
 
         public List<Item>? Items { get; set; }
 
-        public List<AppModel>? AppModels { get; set; }
-
     }
 }
