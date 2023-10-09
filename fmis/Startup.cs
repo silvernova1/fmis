@@ -28,6 +28,7 @@ using System.Web.Http.Controllers;
 using Org.BouncyCastle.Crypto.Tls;
 using fmis.Data.MySql;
 using fmis.Models;
+using fmis.Repositories;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -66,7 +67,9 @@ namespace fmis
 
             services.AddSingleton<AutoIncrementGenerator>();
             services.AddHttpContextAccessor();
-            
+
+            services.AddScoped<IAppExpenseRepository, AppExpenseRepository>();
+
 
 
             #region CONTEXTS

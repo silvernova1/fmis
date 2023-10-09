@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,10 +32,13 @@ namespace fmis.Models.ppmp
 
         public string? Total { get; set; }
 
+        [BindProperty]
         public string? Mooe { get; set; }
 
+        [BindProperty]
         public string? Co { get; set; }
 
+        [BindProperty]
         public string? Remarks { get; set; }
 
         public AppExpense? AppExpense { get; set; }

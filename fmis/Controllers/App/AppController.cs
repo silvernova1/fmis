@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using Item = fmis.Models.ppmp.Item;
 using Font = iTextSharp.text.Font;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using fmis.Repositories;
 
 namespace fmis.Controllers.App
 {
@@ -37,14 +38,16 @@ namespace fmis.Controllers.App
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAppExpenseRepository _appExpenseRepository;
 
-        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor)
+        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, IAppExpenseRepository appExpenseRepository)
         {
             _context = context;
             _userService = userService;
             _ppmpContext = ppmpContext;
             _dts = dts;
             _httpContextAccessor = httpContextAccessor;
+            _appExpenseRepository = appExpenseRepository;
         }
 
         [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
@@ -56,13 +59,12 @@ namespace fmis.Controllers.App
             if (_context.AppExpense.Count() > 0)
             {
                 appExpenses = _context.AppExpense
-                    .Include(x => x.AppModels)
-                    .Where(x=>x != null && x.AppModels != null)
+                    .Include(x => x.AppModels.Where(x=>x != null))
                     .ToList();
 
-                ViewBag.expenses = appExpenses;
+                /*ViewBag.expenses = appExpenses;
 
-                ViewBag.appModels = _context.AppModel.ToList();
+                ViewBag.appModels = _context.AppModel.ToList();*/
 
                 return PartialView("_AppPartialView", appExpenses);
             }
@@ -76,21 +78,21 @@ namespace fmis.Controllers.App
                     .OrderBy(x => x.Uacs)
                     .ToList();
 
-                ViewBag.expenses = expenses;
+                /*ViewBag.expenses = expenses;
 
 
                 var uacs = expenses
                 .Select(x => x.Uacs)
                 .ToList();
 
-                ViewBag.uacs = uacs;
+                ViewBag.uacs = uacs;*/
 
                 return PartialView("_ExpensePartialView", expenses);
             }
         }
 
         [HttpPost]
-        public IActionResult SaveApp(List<AppExpense> AppExpenses)
+        public async Task<IActionResult> SaveApp(List<AppExpense> AppExpenses)
         {
             if(ModelState.IsValid)
             {
@@ -99,26 +101,43 @@ namespace fmis.Controllers.App
                     _context.AppExpense.Add(appExpense);
                 }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult UpdateAppExpense(List<AppExpense> appExpenses)
+        public async Task<IActionResult> UpdateAppExpense(List<AppExpense> appExpenses) 
         {
-            if(appExpenses != null)
+            if (appExpenses != null)
             {
                 foreach (var updatedExpense in appExpenses)
                 {
                     var existingExpense = _context.AppExpense.FirstOrDefault(x => x.Id == updatedExpense.Id);
 
-                    existingExpense.Description = updatedExpense.Description;
-                    existingExpense.AppModels = updatedExpense.AppModels;
+                    if (existingExpense != null)
+                    {
+                        existingExpense.Description = updatedExpense.Description;
 
-                    _context.Update(existingExpense);
+                        if (updatedExpense.AppModels != null && updatedExpense.AppModels.Any())
+                        {
+                            if (existingExpense.AppModels == null)
+                            {
+                                existingExpense.AppModels = new List<AppModel>();
+                            }
+
+                            foreach (var appModel in updatedExpense.AppModels)
+                            {
+                                existingExpense.AppModels.Add(appModel);
+                            }
+                        }
+
+                        _context.Update(existingExpense);
+                    }
                 }
+
+                await _context.SaveChangesAsync();
             }
-            _context.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
