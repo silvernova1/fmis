@@ -627,11 +627,14 @@ namespace fmis.Controllers.Budget.John
          .ThenInclude(x => x.Uacs)
          .Include(x => x.prexc)
          .Include(x => x.Fund)
+         .Include(x => x.Budget_allotment)
+           .ThenInclude(x => x.Yearly_reference)
          .OrderBy(x => x.prexc.pap_title)
          .ThenByDescending(x => x.Suballotment_title)
          .OrderBy(x => x.AllotmentClass.Id)
-        // .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= date2))
-       // .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday))
+         //.Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= date2))
+         .Where(o => o.CreatedAt >= date1 && o.CreatedAt <= date2)
+         // .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday))
          .ToList();
 
 
@@ -988,24 +991,31 @@ namespace fmis.Controllers.Budget.John
                     }
                 } // BudgetAllotment DashBoard year
 
+              
+                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE1));
+                    TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {prex.Budget_allotment.YearlyReferenceId)}");
+                    currentRow++;
+                
+                    
+
+                    if (totalCOGeneral == 0)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, "-");
+                        ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                        currentRow++;
+                    }
+                    else
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCOGeneral));
+                        ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                        currentRow++;
+                    }
+                
+               
+
             }// end of a foreach loop
-
-            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE1));
-            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            currentRow++;
-
-            if (totalCOGeneral == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                currentRow++;
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCOGeneral));
-                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                currentRow++;
-            }
+          
+            
 
 
             var SaaPS1 = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 2).Sum(x => x.Beginning_balance);
