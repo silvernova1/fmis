@@ -125,7 +125,8 @@ namespace fmis.Controllers.Budget.John
                             .Include(x => x.Appropriation)
                             .Include(x => x.AllotmentClass)
                             .OrderBy(x => x.AllotmentClass.Id)
-                           // .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= date2))
+                            .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= date2))
+                           // .Where(o => o.CreatedAt >= date1 && o.CreatedAt <= date2)
                             //.Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday))
                             .ToList();
             // var fundsource3 = (from fs in _MyDbContext.FundSources
@@ -461,18 +462,6 @@ namespace fmis.Controllers.Budget.John
             range11.Style.Fill.BackgroundColor = XLColor.Pink;
             range11.Style.Font.FontSize = 10;
             worksheet.Column("K").Width = 20;
-
-            // worksheet.Column("K").Width = 22;
-            // worksheet.Cell(9, 11).Value = "UNOBLIGATED BALANCE OF ALLOTMENT";
-            // worksheet.Cell(9, 11).Style.Font.FontSize = 10;
-            // worksheet.Cell(9, 11).Style.Font.SetBold();
-            // worksheet.Cell(9, 11).Style.Fill.BackgroundColor = XLColor.Pink;
-            // worksheet.Cell(10, 11).Style.Fill.BackgroundColor = XLColor.Pink;
-            // worksheet.Cell(11, 11).Style.Fill.BackgroundColor = XLColor.Pink;
-            // worksheet.Cell(9, 11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-            //// worksheet.Cell(9, 11).Style.Alignment.WrapText = true;
-            // worksheet.Cell(9, 11).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
             worksheet.Column("L").Width = 20;
             worksheet.Column("M").Width = 20;
             worksheet.Column("N").Width = 20;
@@ -632,8 +621,8 @@ namespace fmis.Controllers.Budget.John
          .OrderBy(x => x.prexc.pap_title)
          .ThenByDescending(x => x.Suballotment_title)
          .OrderBy(x => x.AllotmentClass.Id)
-         //.Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= date2))
-         .Where(o => o.CreatedAt >= date1 && o.CreatedAt <= date2)
+         .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= date2))
+         //.Where(o => o.Date >= date1 && o.Date <= date2)
          // .Where(x => x.Obligations.Any(o => o.Date >= date1 && o.Date <= lastday && o.Date >= firstDayOfMonth && o.Date <= lastday))
          .ToList();
 
@@ -900,6 +889,19 @@ namespace fmis.Controllers.Budget.John
                                 worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
                                 worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                                 worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                               if(uacs.realignment_amount == 0)
+                                {
+                                    worksheet.Cell(currentRow, 5).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 5).Value = "-";
+                                    worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                }
+                                else
+                                {
+                                    worksheet.Cell(currentRow, 5).Style.Font.FontSize = 9;
+                                    worksheet.Cell(currentRow, 5).Value = string.Format("{0:N2}", uacs.realignment_amount);
+                                    worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                }
+                               
                                 currentRow++;
 
                                 //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
@@ -968,6 +970,10 @@ namespace fmis.Controllers.Budget.John
                 if ((prex.AllotmentClassId == 1 || prex.AllotmentClassId == 2 || prex.AllotmentClassId == 3) && appropiationId.Contains(prex.AppropriationId) && budgetallotmentId.Contains(prex.BudgetAllotmentId.GetValueOrDefault()) && prex.prexcId == 1)
                 {
                     SubAllotTitleRed(worksheet, ref currentRow, prex.Suballotment_title);
+                    worksheet.Cell(currentRow, 5).Style.Font.FontSize = 9;
+                    worksheet.Cell(currentRow, 5).Value = string.Format("{0:N2}", prex.realignment_amount);
+                    worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    worksheet.Cell(currentRow, 5).Style.Font.FontColor = XLColor.Red;
 
                     currentRow++;
 
@@ -980,43 +986,62 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 2).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
 
-
                         worksheet.Cell(currentRow, 3).Style.Font.FontSize = 9;
                         worksheet.Cell(currentRow, 3).Value = string.Format("{0:N2}", uacs.beginning_balance);
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+
+                        if (uacs.realignment_amount == 0)
+                        {
+                            worksheet.Cell(currentRow, 5).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 5).Value = "-";
+                            worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        }
+                        else
+                        {
+                            worksheet.Cell(currentRow, 5).Style.Font.FontSize = 9;
+                            worksheet.Cell(currentRow, 5).Value = string.Format("{0:N2}", uacs.realignment_amount);
+                            worksheet.Cell(currentRow, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                        }
                         currentRow++;
 
                         //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
                         //worksheet.Cell(currentRow, 2).Value = _MyDbContext.Uacs.FirstOrDefault(x => x.UacsId == uacs.UacsId).Expense_code;
                     }
-                } // BudgetAllotment DashBoard year
+                } // BudgetAllotment DashBoard year     
+            } // end of foreach
 
-              
-                    SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE1));
-                    TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {prex.Budget_allotment.YearlyReferenceId)}");
-                    currentRow++;
-                
-                    
-
-                    if (totalCOGeneral == 0)
+            string yearlyReferenceStr = subAllotments.Select(x => x?.Budget_allotment?.Yearly_reference?.YearlyReference).FirstOrDefault();
+            //string yearlyReferenceStr = subAllotments.Select(x => x.Obligations).FirstOrDefault(x =>x.dat);
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            { decimal SaaMOOEPS_Gene = SaaMOOE1 + SaaPS2;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
                     {
-                        SaaGaaBalance(worksheet, ref currentRow, "-");
-                        ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Gene));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
                         currentRow++;
                     }
                     else
                     {
-                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCOGeneral));
-                        ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                        currentRow++;
+                        //console.writeline()
                     }
-                
-               
-
-            }// end of a foreach loop
-          
-            
-
+                }
+              
+            }
+            if (totalCOGeneral == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                currentRow++;
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCOGeneral));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                currentRow++;
+            }
 
             var SaaPS1 = subAllotments.Where(x => x.AllotmentClassId == 1 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 2).Sum(x => x.Beginning_balance);
             var SaaMOOE = subAllotments.Where(x => x.AllotmentClassId == 2 && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.prexcId == 2).Sum(x => x.Beginning_balance);
@@ -1164,10 +1189,23 @@ namespace fmis.Controllers.Budget.John
 
             }// end of a foreach loop
 
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {
+                decimal SaaMOOEPS_General = SaaPS1 + SaaMOOE;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_General));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else
+                    {
 
-            TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaPS1));
-            currentRow++;
+                    }
+                }
+            }
             if (totalCO_Adminis == 0)
             {
 
@@ -1386,15 +1424,20 @@ namespace fmis.Controllers.Budget.John
                 }
 
             }//end of foreach
-            if (SaaMOOE2 == 0)
+
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", "-"));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE2));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+                decimal SaaMOOEPS_Hea = SaaMOOE2 + SaaPS3;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Hea));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
+                }
             }
             currentRow++;
             if (totalCO_Health == 0)
@@ -1764,19 +1807,22 @@ namespace fmis.Controllers.Budget.John
                 }//end of if statement
 
             }//end of foreach
-            if (SaaMOOE_Chain == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Chain));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
 
-            currentRow++;
-
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {
+                decimal SaaMOOEPS_Chain = SaaMOOE_Chain + SaaPS_Chain;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Chain));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
+                    
+                }
+            }
             if (totalCO_Chain == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -2034,21 +2080,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }//end of foreach
-
-            if (SaaMOOE4 == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+                decimal SaaMOOEPS_Inter = SaaMOOE4 + SaaPS10;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Inter));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
             }
-            else
-            {
-
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE4));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-
-            }
-
             if (totalCO_Inter == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -2215,35 +2261,36 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         currentRow++;
                     }
-
-                    if (SaaMOOE_health == 0)
-                    {
-                        SaaGaaBalance(worksheet, ref currentRow, "-");
-                        TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-                    }
-                    else
-                    {
-                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_health));
-                        TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-                    }
-
-                    currentRow++;
-
-                    if (totalCO1_health == 0)
-                    {
-                        SaaGaaBalance(worksheet, ref currentRow, "-");
-                        ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                    }
-                    else
-                    {
-                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO1_health));
-                        ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
-                        currentRow++;
-                    }
+                   
                 }//end of if statement
 
             }
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {
+                decimal SaaMOOEPS_health = SaaMOOE_health + SaaPS_health;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_health));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
+            if (totalCO1_health == 0)
+            {
+                SaaGaaBalance(worksheet, ref currentRow, "-");
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+            }
+            else
+            {
+                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalCO1_health));
+                ItemSubPrexc(worksheet, ref currentRow, "Capital Outlays");
+                currentRow++;
+            }
             currentRow++;
             if (funsources1.Any(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 7))
             {
@@ -2408,18 +2455,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }//end of foreach
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {
+                decimal SaaMOOEPS_HRD = SaaMOOE_HSRD + SaaPS_HSRD;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_HRD));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
-            if (SaaMOOE_HSRD == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "total saa's 2023");
+                }
             }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:n2}", SaaMOOE_HSRD));
-                TOTALSaa(worksheet, ref currentRow, "total saa's 2023");
-            }
-            currentRow++;
             if (totalCO_HSRD == 0)
             {
 
@@ -2718,18 +2768,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }//end of foreach
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {
+                decimal SaaMOOEPS_Service = SaaMOOE_Service + SaaPS_Service;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Service));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
-            if (SaaMOOE_Service == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+                }
             }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Service));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
             if (totalCO_Service == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -2888,18 +2941,20 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            if (SaaMOOE_Enhanced == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Enhanced));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
+                decimal SaaMOOEPS_Enhanced = SaaMOOE_Enhanced + SaaPS_Enhanced;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Enhanced));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
 
-            currentRow++;
+                }
+            }
             if (totalCO_Enhanced == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -3065,17 +3120,21 @@ namespace fmis.Controllers.Budget.John
                     }
                 }
             } //end of foreach
-            if (SaaMOOE_Local == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "total saa's 2023");
+                decimal SaaMOOEPS_Local = SaaMOOE_Local + SaaPS_Local;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Local));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
+
+                }
             }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:n2}", SaaMOOE_Local));
-                TOTALSaa(worksheet, ref currentRow, "total saa's 2023");
-            }
-            currentRow++;
             if (totalCO_Local == 0)
             {
 
@@ -3239,19 +3298,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }//end of foreach
-
-
-            if (SaaMOOE_Pharmaceu == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
+                decimal SaaMOOEPS_Pharmaceu = SaaMOOE_Pharmaceu + SaaPS_Pharmaceu;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Pharmaceu));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
+
+                }
             }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Pharmaceu));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
-            }
-            currentRow++;
             if (totalCO_Pharmaceu == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -3425,18 +3486,21 @@ namespace fmis.Controllers.Budget.John
                 }
 
             }//end of foreach
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {
+                decimal SaaMOOEPS_HRH = SaaMOOE_HRH + SaaPS_HRH;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_HRH));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
-            if (SaaMOOE_HRH == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
+                }
             }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_HRH));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
             if (totalCO_HRH == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", "-"));
@@ -3595,19 +3659,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (SaaMOOE_NHWSS == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_NHWSS));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_NWHSS = SaaMOOE_NHWSS + SaaPS_NHWSS;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_NWHSS));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_NHWSS == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -3781,19 +3847,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (SaaMOOE_Health == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Health));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Heath = SaaMOOE_Health + SaaPS_Health;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Heath));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Health1 == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -4058,19 +4126,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (SaaMOOE_Public == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Public));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Public = SaaMOOE_Public + SaaPS_Public;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Public));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Public == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -4245,19 +4315,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (totalMOOE_Manage == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Manage));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Manage = SaaMOOE_Manage + SaaPS_Manage;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Manage));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Manage == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -4429,19 +4501,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (totalMOOE_Environ == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Environ));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Environ = SaaMOOE_Environ + SaaPS_Environ;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Environ));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Environ == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -4608,19 +4682,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (totalMOOE_Family == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Family));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Family = SaaMOOE_Family + SaaPS_Family;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Family));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Family == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -4787,19 +4863,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (totalMOOE_Control == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Control));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Control = SaaMOOE_Control + SaaPS_Control;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Control));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Control == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -4962,19 +5040,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (totalMOOE_SubProgram == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Control));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_SubProgram = SaaMOOE_SubProgram + SaaPS_SubProgram;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_SubProgram));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Subprogram == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -5151,19 +5231,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (totalMOOE_Epide == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalMOOE_Epide));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Epide = SaaMOOE_Epide + SaaPS_Epide;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Epide));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Epide == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -5344,19 +5426,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (SaaMOOE_Emerge == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_Emerge));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Epide = SaaMOOE_Emerge + SaaPS_Emerge;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Epide));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Emerge == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -5525,19 +5609,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-
-            if (SaaMOOE_quick == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOE_quick));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_quick = SaaMOOE_quick + SaaPS_quick;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_quick));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_quick == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -5734,19 +5820,21 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Blood = SaaPS_Blood + SaaMOOE_Blood;
-            if (SaaMOOEPS_Blood == 0)
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
             {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Blood));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+                decimal SaaMOOEPS_Blood = SaaPS_Blood + SaaMOOE_Blood;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Blood));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Blood == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -5915,19 +6003,20 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Ref = SaaMOOE_Ref + SaaPS_Ref;
-            if (SaaMOOEPS_Ref == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Ref));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {   decimal SaaMOOEPS_Ref = SaaMOOE_Ref + SaaPS_Ref;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Ref));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Ref == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -6102,19 +6191,20 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Deng = SaaPS_Deng + SaaMOOE_Deng;
-            if (SaaMOOEPS_Deng == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Deng));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {  decimal SaaMOOEPS_Deng = SaaPS_Deng + SaaMOOE_Deng;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Deng));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Deng == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -6299,19 +6389,20 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Serv = SaaMOOE_Serv + SaaPS_Serv;
-            if (SaaMOOEPS_Serv == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Serv));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {   decimal SaaMOOEPS_Serv = SaaMOOE_Serv + SaaPS_Serv;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Serv));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Serv == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -6491,19 +6582,20 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Indigent = SaaPs_Indigent + SaaMOOE_Indigent;
-            if (SaaMOOEPS_Indigent == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Indigent));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {     decimal SaaMOOEPS_Indigent = SaaPs_Indigent + SaaMOOE_Indigent;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Indigent));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Indigent == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -6683,19 +6775,20 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Nation = SaaPS_Nation + SaaMOOE_Naation;
-            if (SaaMOOEPS_Nation == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Nation));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {   decimal SaaMOOEPS_Nation = SaaPS_Nation + SaaMOOE_Naation;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Nation));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
+                    else { }
 
+                }
+            }
             if (totalCO_Nation == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -7022,19 +7115,19 @@ namespace fmis.Controllers.Budget.John
 
                 }
             }// end of foreach
-            decimal SaaMOOEPS_Risk = SaaPS_Risk + SaaMOOE_Risk;
-            if (SaaMOOEPS_Risk == 0)
-            {
-                SaaGaaBalance(worksheet, ref currentRow, "-");
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            else
-            {
-                SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Risk));
-                TOTALSaa(worksheet, ref currentRow, "TOTAL SAA'S 2023");
-            }
-            currentRow++;
+            if (!string.IsNullOrEmpty(yearlyReferenceStr))
+            {   decimal SaaMOOEPS_Risk = SaaPS_Risk + SaaMOOE_Risk;
+                if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
+                {
+                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    {
+                        SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Risk));
+                        TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+                        currentRow++;
+                    }
 
+                }
+            }
             if (totalCO_Risk == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
