@@ -618,6 +618,7 @@ namespace fmis.Controllers.Budget.John
          .Include(x => x.Fund)
          .Include(x => x.Budget_allotment)
            .ThenInclude(x => x.Yearly_reference)
+         .Include(x => x.Obligations)
          .OrderBy(x => x.prexc.pap_title)
          .ThenByDescending(x => x.Suballotment_title)
          .OrderBy(x => x.AllotmentClass.Id)
@@ -924,14 +925,10 @@ namespace fmis.Controllers.Budget.John
                             SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexcGeneral));
                             Prexc_papTitle(worksheet, ref currentRow, prex.prexc.pap_title);
                             Prexc_papcode(worksheet, ref currentRow, prex.prexc.pap_code1);
-
                             if (totalPSGeneral == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
-
                                 ItemSubPrexc(worksheet, ref currentRow, "Personnel Services");
-
-
                             }
                             else
                             {
@@ -1012,24 +1009,57 @@ namespace fmis.Controllers.Budget.John
             } // end of foreach
 
             string yearlyReferenceStr = subAllotments.Select(x => x?.Budget_allotment?.Yearly_reference?.YearlyReference).FirstOrDefault();
-            //string yearlyReferenceStr = subAllotments.Select(x => x.Obligations).FirstOrDefault(x =>x.dat);
             if (!string.IsNullOrEmpty(yearlyReferenceStr))
-            { decimal SaaMOOEPS_Gene = SaaMOOE1 + SaaPS2;
+            {
+                decimal SaaMOOEPS_Gene = SaaMOOE1 + SaaPS2;
                 if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceDate))
                 {
-                    if (yearlyReferenceDate >= date1 && yearlyReferenceDate <= date2)
+                    var filteredSubAllotments = subAllotments
+                        .Where(subAllotment =>
+                        {
+                            var obligation = subAllotment.Obligations.FirstOrDefault();
+                            if (obligation != null)
+                            {
+                                // Check if the obligation date's year matches the yearlyReferenceYear
+                                return obligation.Date.Year == yearlyReferenceDate.Year &&
+                                       obligation.Date >= date1 &&
+                                       obligation.Date <= date2;
+                            }
+                            return false; // Or handle the case when obligation is null
+                        })
+                        .ToList();
+
+                    foreach (var subAllotment in filteredSubAllotments)
                     {
                         SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Gene));
                         TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
                         currentRow++;
                     }
-                    else
-                    {
-                        //console.writeline()
-                    }
                 }
-              
             }
+            //if (DateTime.TryParseExact(yearlyReferenceStr, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime yearlyReferenceYear))
+            //{ var filteredSubAllotments = subAllotments
+            // .Where(subAllotment =>
+            //  {
+            //var obligation = subAllotment.Obligations.FirstOrDefault();
+            //if (obligation != null)
+            //{ return obligation.Date == yearlyReferenceYear; }
+            //return false;   
+            //}).ToList();
+            //   decimal SaaMOOEPS_Gene = SaaMOOE1 + SaaPS2;
+            //    foreach (var subAllotment in filteredSubAllotments) { 
+            //        // Check if the yearlyReferenceDate falls within the user-provided date range
+            //        if (yearlyReferenceYear >= date1 && yearlyReferenceYear <= date2)
+            //        {
+            //            SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Gene));
+            //            TOTALSaa(worksheet, ref currentRow, $"TOTAL SAA'S {yearlyReferenceStr}");
+            //            currentRow++;
+            //        }
+            //    }
+            //}
+
+
+
             if (totalCOGeneral == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
