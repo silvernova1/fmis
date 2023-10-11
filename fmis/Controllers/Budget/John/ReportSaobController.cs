@@ -820,6 +820,19 @@ namespace fmis.Controllers.Budget.John
                 worksheet.Cell(currentRow, column).Value = value;
                 worksheet.Cell(currentRow, column).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             }
+            void Remaining_BalancedRed(IXLWorksheet worksheet, ref int currentRow, int column, string value)
+            {
+                worksheet.Cell(currentRow, column).Style.Font.FontSize = 10.5;
+                worksheet.Cell(currentRow, column).Value = value;
+                worksheet.Cell(currentRow, column).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                worksheet.Cell(currentRow, column).Style.Font.FontColor = XLColor.Red;
+            }
+            void Remaining_BalancedBlack(IXLWorksheet worksheet, ref int currentRow, int column, string value)
+            {
+                worksheet.Cell(currentRow, column).Style.Font.FontSize = 9;
+                worksheet.Cell(currentRow, column).Value = value;
+                worksheet.Cell(currentRow, column).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            }
             bool totalSaa = false;
             string paptitle = null;
             string papcode = null;
@@ -874,19 +887,22 @@ namespace fmis.Controllers.Budget.John
             decimal totalMOOEGeneral = SaaMOOE1 + FundsourceMOOE1;
             decimal totalCOGeneral = SaaCO1 + FundsourceCO1;
             decimal totalPrexcGeneral = totalPSGeneral + totalMOOEGeneral + totalCOGeneral;
+            //Column 8 - Remaining Balanced
+            var SaaPS2_RemainingBalance = subAllotments.Where(prex => prex.AllotmentClassId == 1 && prex.prexcId == 1).Sum(prex => prex.Remaining_balance);
+            var SaaMOOE1_RemainingBalance = subAllotments.Where(prex => prex.AllotmentClassId == 2 && prex.prexcId == 1).Sum(prex => prex.Remaining_balance);
+            var SaaCO1_RemainingBalance = subAllotments.Where(prex => prex.AllotmentClassId == 3 && prex.prexcId == 1).Sum(prex => prex.Remaining_balance);
 
-            //Column 7
-            var SaaPS2_BegginingBalance = subAllotments.Where(prex => prex.AllotmentClassId == 1 && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
-            var SaaMOOE1_BeginingBalance = subAllotments.Where(prex => prex.AllotmentClassId == 2 && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
-            var SaaCO1_BeginningBalance = subAllotments.Where(prex => prex.AllotmentClassId == 3 && prex.prexcId == 1).Sum(prex => prex.Beginning_balance);
+            var FundsourcePS1_RemainingBalance = funsources1.Where(prex => prex.AllotmentClassId == 1 && prex.PrexcId == 1).Sum(prex => prex.Remaining_balance);
+            var FundsourceMOOE1_RemainingBalance = funsources1.Where(prex => prex.AllotmentClassId == 2 && prex.PrexcId == 1).Sum(prex => prex.Remaining_balance);
+            var FundsourceCO1_RemainingBalance = funsources1.Where(prex => prex.AllotmentClassId == 3 && prex.PrexcId == 1).Sum(prex => prex.Remaining_balance);
+            decimal totalPs_RemainingBalance = SaaPS2_RemainingBalance + FundsourcePS1_RemainingBalance;
+            decimal totalMOOE_RemainingBalance = SaaMOOE1_RemainingBalance + FundsourceMOOE1_RemainingBalance;
+            decimal totalCO_RemainingBalance = SaaCO1_RemainingBalance + FundsourceCO1_RemainingBalance;
+            decimal totalPrexc_RemainingBalance = totalPs_RemainingBalance + totalMOOE_RemainingBalance + totalCO_RemainingBalance;
+                //Column 8 End Of Remaining Balanced
 
-            var FundsourcePS1_BeginingBalance = funsources1.Where(prex => prex.AllotmentClassId == 1 && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
-            var FundsourceMOOE1_BeginingBalance = funsources1.Where(prex => prex.AllotmentClassId == 2 && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
-            var FundsourceCO1_BeginningBalamce = funsources1.Where(prex => prex.AllotmentClassId == 3 && prex.PrexcId == 1).Sum(prex => prex.Beginning_balance);
-            
             if (funsources1.Any(x => (x.AllotmentClassId == 2 || x.AllotmentClassId == 1 || x.AllotmentClassId == 3) && appropiationId.Contains(x.AppropriationId) && budgetallotmentId.Contains(x.BudgetAllotmentId.GetValueOrDefault()) && x.PrexcId == 1)) //General Management and Supervision :: for Funsorce
             {
-
                 foreach (var allotmentClass in AllotmentClassId)
                 {
                     var funsorceAllotClass = funsources1.Where(f => f.AllotmentClassId == allotmentClass && appropiationId.Contains(f.AppropriationId) && budgetallotmentId.Contains(f.BudgetAllotmentId.GetValueOrDefault()) && f.PrexcId == 1).ToList();
@@ -901,7 +917,7 @@ namespace fmis.Controllers.Budget.John
                                                                                                                                                 funsources1.Where(x => x.AllotmentClassId == 1 || x.AllotmentClassId == 2 || x.AllotmentClassId == 3).Sum(x => x.realignment_amount)));
                                
                                 Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalPrexcGeneral == 0 ? "-" : string.Format("{0:N2}", totalPrexcGeneral));
-
+                                Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalPrexc_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalPrexc_RemainingBalance));
                                 SaaGaaBalance(worksheet, ref currentRow, totalPrexcGeneral == 0 ? "-" : string.Format("{0:N2}", totalPrexcGeneral));
                                 Prexc_papTitle(worksheet, ref currentRow, fundsorce.Prexc.pap_title);
                                 Prexc_papcode(worksheet, ref currentRow, fundsorce.Prexc.pap_code1);
@@ -911,6 +927,7 @@ namespace fmis.Controllers.Budget.John
                             Realignment_amount(worksheet, ref currentRow, 5, fundsorce.realignment_amount == 0 ? "-" : string.Format("{0:N2}", subAllotments.Where(x => x.AllotmentClassId == 1).Sum(x => x.realignment_amount) +
                                                                                                                                             funsources1.Where(x => x.AllotmentClassId == 1).Sum(x => x.realignment_amount)));
                             Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalPSGeneral == 0 ? "-" : string.Format("{0:N2}", totalPSGeneral));
+                            Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalPs_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalPs_RemainingBalance));
                             if (totalPSGeneral == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -926,6 +943,7 @@ namespace fmis.Controllers.Budget.John
                                                                                                                                             funsources1.Where(x => x.AllotmentClassId == 2).Sum(x => x.realignment_amount));
                           
                             Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalMOOEGeneral == 0 ? "-" : string.Format("{0:N2}", totalMOOEGeneral));
+                            Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalMOOE_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalMOOE_RemainingBalance));
                             if (totalMOOEGeneral == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -979,6 +997,8 @@ namespace fmis.Controllers.Budget.John
                                                                                                                                        funsources1.Where(x => AllotmentClassId.Contains(x.AllotmentClassId) && x.PrexcId == 1).Sum(x => x.realignment_amount)));
 
                             Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalPrexcGeneral == 0 ? "-" : string.Format("{0:N2}", totalPrexcGeneral));
+                            Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalPrexc_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalPrexc_RemainingBalance));
+
                             SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", totalPrexcGeneral));
                             Prexc_papTitle(worksheet, ref currentRow, prex.prexc.pap_title);
                             Prexc_papcode(worksheet, ref currentRow, prex.prexc.pap_code1);
@@ -987,6 +1007,8 @@ namespace fmis.Controllers.Budget.John
                                 string.Format("{0:N2}", subAllotments.Where(x => x.AllotmentClassId == 1).Sum(x => x.realignment_amount) + funsources1.Where(x => x.AllotmentClassId == 1 && x.PrexcId == 1).Sum(x => x.realignment_amount)));
 
                             Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalPSGeneral == 0 ? "-" : string.Format("{0:N2}", totalPSGeneral));
+                            Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalPs_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalPs_RemainingBalance));
+
                             if (totalPSGeneral == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -1006,6 +1028,8 @@ namespace fmis.Controllers.Budget.John
                                 string.Format("{0:N2}", subAllotments.Where(x => x.AllotmentClassId == 2).Sum(x => x.realignment_amount)) + funsources1.Where(x => x.AllotmentClassId == 2).Sum(x => x.realignment_amount));
 
                             Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalMOOEGeneral == 0 ? "-" : string.Format("{0:N2}", totalMOOEGeneral));
+                            Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalMOOE_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalMOOE_RemainingBalance));
+
                             if (totalMOOEGeneral == 0)
                             {
                                 SaaGaaBalance(worksheet, ref currentRow, "-");
@@ -1034,7 +1058,7 @@ namespace fmis.Controllers.Budget.John
                     SubAllotTitleRed(worksheet, ref currentRow, prex.Suballotment_title);
                     Realignment_amountRed(worksheet, ref currentRow, 5, prex.realignment_amount == 0 ? "-" : string.Format("{0:N2}", prex.realignment_amount));
                     Beginning_BalancedRed(worksheet, ref currentRow, 7, prex.Beginning_balance == 0 ? "-" : string.Format("{0:N2}", prex.Beginning_balance));
-
+                    Remaining_BalancedRed(worksheet, ref currentRow, 8, prex.Remaining_balance == 0 ? "-" : string.Format("{0:N2}", prex.Remaining_balance));
                     currentRow++;
 
                     foreach (var uacs in prex.SubAllotmentAmounts.ToList())
@@ -1051,6 +1075,7 @@ namespace fmis.Controllers.Budget.John
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                         Realignment_amount(worksheet, ref currentRow, 5, uacs.realignment_amount == 0 ? "-" : string.Format("{0:N2}", uacs.realignment_amount));
                         Beginning_Balanced(worksheet, ref currentRow, 7, uacs.beginning_balance == 0 ? "-" : string.Format("{0:N2}", uacs.beginning_balance));
+                        Remaining_BalancedBlack(worksheet, ref currentRow, 8, uacs.remaining_balance == 0 ? "-" : string.Format("{0:N2}", uacs.remaining_balance));
                         currentRow++;
 
                         //worksheet.Cell(currentRow, 2).Style.Font.FontSize = 8;
@@ -1061,8 +1086,9 @@ namespace fmis.Controllers.Budget.John
 
                Realignment_amount(worksheet, ref currentRow, 5, subAllotments.Where(x => x.AllotmentClassId == 1 || x.AllotmentClassId == 2 && x.prexcId == 1).Sum(x => x.realignment_amount) == 0 ? "-" :
                                                  string.Format("{0:N2}", subAllotments.Where(x => (x.AllotmentClassId == 1 || x.AllotmentClassId == 2) && x.prexcId == 1).Sum(x => x.realignment_amount)));
-            decimal SaaMOOEPS_Gene = SaaMOOE1 + SaaPS2;
+            decimal SaaMOOEPS_Gene = SaaMOOE1 + SaaPS2; decimal SaaMOOEPS_RemainingBalance = SaaMOOE1_RemainingBalance + SaaPS2_RemainingBalance;
             Beginning_BalancedBlack(worksheet, ref currentRow, 7, SaaMOOEPS_Gene == 0 ? "-" : string.Format("{0:N2}", SaaMOOEPS_Gene));
+            Remaining_BalancedBlack(worksheet, ref currentRow, 8, SaaMOOEPS_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", SaaMOOEPS_RemainingBalance));
             if (firstMatchingYear != null)
             {
                 SaaGaaBalance(worksheet, ref currentRow, string.Format("{0:N2}", SaaMOOEPS_Gene));
@@ -1074,6 +1100,7 @@ namespace fmis.Controllers.Budget.John
             string.Format("{0:N2}", subAllotments.Where(x => x.AllotmentClassId == 3 &&  x.prexcId == 1).Sum(x => x.realignment_amount)) + funsources1.Where(x => x.AllotmentClassId == 3 && x.PrexcId == 1).Sum(x => x.realignment_amount));
            
             Beginning_BalancedBlack(worksheet, ref currentRow, 7, totalCOGeneral == 0 ?"-" : string.Format("{0:N2}", totalCOGeneral));
+            Remaining_BalancedBlack(worksheet, ref currentRow, 8, totalCO_RemainingBalance == 0 ? "-" : string.Format("{0:N2}", totalCO_RemainingBalance));
             if (totalCOGeneral == 0)
             {
                 SaaGaaBalance(worksheet, ref currentRow, "-");
