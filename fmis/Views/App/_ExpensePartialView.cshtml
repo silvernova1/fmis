@@ -17,10 +17,11 @@
     var query = new
     {
         itemId = 0,
-        modeProcurement = string.Empty
+        modeProcurement = string.Empty,
+        unitCostId = string.Empty,
+        tranche = string.Empty
     };
 }
-
 
 <style>
     .custom-table td {
@@ -37,7 +38,7 @@
         right: 20px;
         font-size: 24px;
         cursor: pointer;
-        z-index: 999; /* Ensure the arrow is above other content */
+        z-index: 999;
     }
 
     .hidden {
@@ -47,7 +48,7 @@
 
 
 <div class="text-right">
-    <form asp-controller="App" asp-action="GenerateApp" method="post" target="_blank">
+    <form asp-controller="App" asp-action="GenerateAppPdf" method="post" target="_blank">
         <button type="submit">Generate PDF</button>
     </form>
 </div>
@@ -57,7 +58,7 @@
 
 
 
-<form asp-controller="App" asp-action="SaveApp" method="post">
+<form asp-controller="App" asp-action="SaveApp" method="post" id="myForm">
     <table class="table">
         <thead>
             <tr>
@@ -87,30 +88,31 @@
                         <strong><input type="text" name="AppExpenses[@i].Description" value="@Model[i].Description" class="form-control" /></strong>
                     </td>
                 </tr>
-                    @for (var j = 0; j < Model[i].Items.Count && j < 5; j++)
+                    @for (var j = 0; j < Model[i].Items.Count; j++)
                     {
-
                         decimal total = 0;
-
-                        decimal jan = Convert.ToDecimal(Model[i].Items[j].Jan);
-                        decimal feb = Convert.ToDecimal(Model[i].Items[j].Feb);
-                        decimal mar = Convert.ToDecimal(Model[i].Items[j].Mar);
-                        decimal apr = Convert.ToDecimal(Model[i].Items[j].Apr);
-                        decimal may = Convert.ToDecimal(Model[i].Items[j].May);
-                        decimal jun = Convert.ToDecimal(Model[i].Items[j].Jun);
-                        decimal jul = Convert.ToDecimal(Model[i].Items[j].Jul);
-                        decimal aug = Convert.ToDecimal(Model[i].Items[j].Aug);
-                        decimal sep = Convert.ToDecimal(Model[i].Items[j].Sep);
-                        decimal oct = Convert.ToDecimal(Model[i].Items[j].Oct);
-                        decimal nov = Convert.ToDecimal(Model[i].Items[j].Nov);
-                        decimal dece = Convert.ToDecimal(Model[i].Items[j].Dece);
-
-                        var totalMonth = Model[i].Items[j].Dece + Model[i].Items[j].Jan;
+                        for (var k = 0; k < Model[i].Items[j].Item_Daily.Count; k++)
+                        {
 
 
+                        decimal jan = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Jan);
+                        decimal feb = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Feb);
+                        decimal mar = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Mar);
+                        decimal apr = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Apr);
+                        decimal may = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].May);
+                        decimal jun = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Jun);
+                        decimal jul = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Jul);
+                        decimal aug = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Aug);
+                        decimal sep = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Sep);
+                        decimal oct = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Oct);
+                        decimal nov = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Nov);
+                        decimal dece = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Dece);
 
-                        var unit_cost = Convert.ToDecimal(Model[i].Items[j].Unit_cost);
-                        string unitCostString = Model[i].Items[j].Unit_cost;
+                        var totalMonth = jan + feb;
+
+
+
+                        string unitCostString = Model[i].Items[j].Item_Daily[k].Unit_cost;
                         decimal unitCost;
 
                         if (!string.IsNullOrWhiteSpace(unitCostString) && decimal.TryParse(unitCostString, out unitCost))
@@ -121,6 +123,10 @@
                         {
                             Console.WriteLine("Invalid unit cost value: " + unitCostString);
                         }
+                        }
+
+
+                        
 
                         @foreach (var itemId in Model[i].Items[j].Item_Daily)
                         {
@@ -131,21 +137,25 @@
                                      select new
                                      {
                                          itemId = it_d1.Item_id,
-                                         modeProcurement = it_d2.Mode_procurement
+                                         modeProcurement = it_d2.Mode_procurement,
+                                         unitCostId = it_d2.Unit_cost,
+                                        tranche = it_d2.Tranche
                                      }).FirstOrDefault();
+
 
                         }
                         <tr>
+                            <input type="hidden" name="AppExpenses[@i].AppModels[@j].Tranche" value="@query?.tranche" />
                             <td style="width: 100px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Uacs" value="@Model[i].Uacs" /></td>
                             <td style="width: 250px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ProcurementProject" value="@Model[i].Items[j].Description" class="form-control" /></td>
                             <td style="width: 130px;"><input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="@Model[i].Items[j].Userid" class="form-control" /></td>
-                            <td style="width: 80px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                            <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].EarlyProcured" class="form-control" /></td>
+                            <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NotEarlyProcurered" class="form-control" /></td>
                             <td style="width: 130px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ModeOfProcurement" value="@query?.modeProcurement" class="form-control" /></td>
                             <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Advertising" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
                             <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Submission" id="submission@(i)_@(j)" class="form-control submission" /></td>
                             <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NoticeOfAward" id="notice@(i)_@(j)" class="form-control notice" /></td>
-                            <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ContractSigning" id="contract@(i)_@(j)" class="form-control contract" /></td>
+                            <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ContractSigning" id="datepicker@(i)_@(j)" class="form-control contract" /></td>
                             <td style="width: 80px;"><input type="text" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Total" value="@total" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Mooe" value="@total" class="form-control" /></td>
@@ -156,8 +166,11 @@
             }
         </tbody>
     </table>
-    <div style="text-align: right;" id="targetElementID">
-        <button type="submit" class="btn btn-primary">Save All Changes</button>
+    <div style="text-align: right;">
+        <button class="btn btn-primary" type="button" id="submitButton">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span id="buttonText">Saving All Changes</span>
+        </button>
     </div>
 </form>
 
@@ -167,28 +180,40 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script>
-    $(function () {
-        $(".advertising").datepicker({
-            dateFormat: "mm-dd-yy"
+
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            $('#submitButton').prop('disabled', true);
+            $('#submitButton .spinner-border').css('display', 'inline-block');
+            $('#buttonText').text('Saving Changes...');
+
+            $('#myForm').submit();
+        });
+    });
+
+    $(document).ready(function () {
+        $('.advertising').datepicker({
+            dateFormat: 'yy-mm-dd'
         });
     });
     $(function () {
         $(".submission").datepicker({
-            dateFormat: "mm-dd-yy"
+            dateFormat: 'yy-mm-dd'
         });
     });
     $(function () {
         $(".notice").datepicker({
-            dateFormat: "mm-dd-yy"
+            dateFormat: 'yy-mm-dd'
         });
     });
     $(function () {
         $(".contract").datepicker({
-            dateFormat: "mm-dd-yy"
+            dateFormat: 'yy-mm-dd'
         });
     });
+    //
     document.getElementById('scroll-down-arrow').addEventListener('click', function () {
-        const targetElement = document.getElementById('targetElementID');
+        const targetElement = document.getElementById('submitButton');
 
         if (targetElement) {
             targetElement.scrollIntoView({ behavior: 'smooth' });
@@ -198,7 +223,6 @@
     function checkScrollPosition() {
         const scrollY = window.scrollY;
 
-        // Replace 'threshold' with the scroll position at which you want to show the arrow
         const threshold = 200;
 
         const arrow = document.getElementById('scroll-down-arrow');
@@ -210,6 +234,5 @@
         }
     }
 
-    // Add an event listener to check the scroll position when the user scrolls
     window.addEventListener('scroll', checkScrollPosition);
 </script>

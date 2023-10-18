@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 using Item = fmis.Models.ppmp.Item;
 using Font = iTextSharp.text.Font;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
-using fmis.Repositories;
+using ClosedXML.Excel;
 
 namespace fmis.Controllers.App
 {
@@ -38,16 +38,19 @@ namespace fmis.Controllers.App
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAppExpenseRepository _appExpenseRepository;
 
-        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, IAppExpenseRepository appExpenseRepository)
+        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userService = userService;
             _ppmpContext = ppmpContext;
             _dts = dts;
             _httpContextAccessor = httpContextAccessor;
-            _appExpenseRepository = appExpenseRepository;
+        }
+
+        public IActionResult GetItems()
+        {
+            return Json(_ppmpContext.item.ToList());
         }
 
         [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
@@ -59,12 +62,10 @@ namespace fmis.Controllers.App
             if (_context.AppExpense.Count() > 0)
             {
                 appExpenses = _context.AppExpense
-                    .Include(x => x.AppModels.Where(x=>x != null))
+                    .Where(appExpense => appExpense.AppModels.Any())
+                    .Include(x => x.AppModels)
+                    .OrderBy(x => x.Uacs)
                     .ToList();
-
-                /*ViewBag.expenses = appExpenses;
-
-                ViewBag.appModels = _context.AppModel.ToList();*/
 
                 return PartialView("_AppPartialView", appExpenses);
             }
@@ -72,20 +73,11 @@ namespace fmis.Controllers.App
             {
                 var expenses = new List<Expense>();
                 expenses = _ppmpContext.expense
+                    .Where(expenses => expenses.Items.Any())
                     .Include(x => x.Items.Where(x => x.Yearly_ref_id == 4 && x.Status == null))
                         .ThenInclude(x => x.Item_Daily)
-                    .Where(x => x.Uacs != null && x.Items != null)
                     .OrderBy(x => x.Uacs)
                     .ToList();
-
-                /*ViewBag.expenses = expenses;
-
-
-                var uacs = expenses
-                .Select(x => x.Uacs)
-                .ToList();
-
-                ViewBag.uacs = uacs;*/
 
                 return PartialView("_ExpensePartialView", expenses);
             }
@@ -94,21 +86,126 @@ namespace fmis.Controllers.App
         [HttpPost]
         public async Task<IActionResult> SaveApp(List<AppExpense> AppExpenses)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 foreach (var appExpense in AppExpenses)
                 {
+                    var expense = appExpense.Description;
+
+                    switch (expense)
+                    {
+                        case "XLVIII. RENT - ICT  EQUIPMENT":
+                            appExpense.Uacs = "5029905008";
+                            break;
+                        case "IX. SEMI-EXPENDABLE - DISASTER RESPONSE AND RESCUE EQUIPMENT":
+                            appExpense.Uacs = "5020321008";
+                            break;
+                        case "LIII. OTHER MAINTENANCE AND OPERATING EXPENSES":
+                            appExpense.Uacs = "5029999099";
+                            break;
+                        case "XXIX. REPAIR MAINTENANCE - ICT EQUIPMENT":
+                            appExpense.Uacs = "5021305003";
+                            break;
+                        case "XXIV. CONSULTANCY SERVICES (One Line - Amount Only - for the Whole Division)":
+                            appExpense.Uacs = "5021103002";
+                            break;
+                        case "XXXVII. REPAIR MAINTENANCE - SEMI-EXPENDABLE - ICT EQUIPMENT":
+                            appExpense.Uacs = "5021321003";
+                            break;
+                        case "XXXV. REPAIR MAINTENANCE : OTHER PROPERTY, PLANT AND EQUIPMENT":
+                            appExpense.Uacs = "5021399099";
+                            break;
+                        case "XLII.  ADVERTISING EXPENSES":
+                            appExpense.Uacs = "5029901000";
+                            break;
+                        case "XLIX. RENT - ICT MACHINERY AND EQUIPMENT":
+                            appExpense.Uacs = "5029905008";
+                            break;
+                        default:
+                            appExpense.Uacs = null;
+                            break;
+                    }
+
+
+                    if (appExpense?.AppModels != null)
+                    {
+
+                        foreach (var appModel in appExpense.AppModels)
+                        {
+                            if (appModel != null)
+                            {
+                                appExpense.Uacs = appModel.Uacs;
+                            }
+                        }
+                    }
                     _context.AppExpense.Add(appExpense);
                 }
+
             }
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateAppExpense(List<AppExpense> appExpenses) 
+        public async Task<IActionResult> UpdateAppExpense(List<AppExpense> appExpenses)
         {
-            if (appExpenses != null)
+            if(appExpenses == null)
+            {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        // Log or print out the error messages to identify the validation issue.
+                        Console.WriteLine(error.ErrorMessage);
+                    }
+                }
+            }
+            foreach (var appExpense in appExpenses)
+            {
+                var existingAppExpense = _context.AppExpense.Find(appExpense.Id);
+
+                if (existingAppExpense == null)
+                {
+                    continue;
+                }
+
+                existingAppExpense.Description = appExpense.Description;
+
+                if (appExpense.AppModels != null)
+                {
+                    foreach (var appModel in appExpense.AppModels)
+                    {
+                        var existingAppModel = _context.AppModel.Find(appModel.Id);
+
+                        if (existingAppModel != null)
+                        {
+                            existingAppModel.Uacs = appModel.Uacs;
+                            existingAppModel.ProcurementProject = appModel.ProcurementProject;
+                            existingAppModel.EndUser = appModel.EndUser;
+                            existingAppModel.EarlyProcured = appModel.EarlyProcured;
+                            existingAppModel.NotEarlyProcurered = appModel.NotEarlyProcurered;
+                            existingAppModel.ModeOfProcurement = appModel.ModeOfProcurement;
+                            existingAppModel.Advertising = appModel.Advertising;
+                            existingAppModel.Submission = appModel.Submission;
+                            existingAppModel.NoticeOfAward = appModel.NoticeOfAward;
+                            existingAppModel.ContractSigning = appModel.ContractSigning;
+                            existingAppModel.FundSource = appModel.FundSource;
+                            existingAppModel.Total = appModel.Total;
+                            existingAppModel.Mooe = appModel.Mooe;
+                            existingAppModel.Co = appModel.Co;
+                            existingAppModel.Remarks = appModel.Remarks;
+
+                            _context.Update(existingAppModel); // Mark AppModel as modified
+                        }
+                    }
+                }
+
+                _context.Update(existingAppExpense); // Mark AppExpense as modified
+            }
+
+            await _context.SaveChangesAsync();
+
+            /*if (appExpenses != null)
             {
                 foreach (var updatedExpense in appExpenses)
                 {
@@ -118,16 +215,32 @@ namespace fmis.Controllers.App
                     {
                         existingExpense.Description = updatedExpense.Description;
 
-                        if (updatedExpense.AppModels != null && updatedExpense.AppModels.Any())
+                        if (updatedExpense.AppModels != null)
                         {
                             if (existingExpense.AppModels == null)
                             {
                                 existingExpense.AppModels = new List<AppModel>();
                             }
+                            var appModelsToRemove = existingExpense.AppModels
+                                .Where(existingAppModel => !updatedExpense.AppModels.Any(newAppModel => newAppModel.Id == existingAppModel.Id))
+                                .ToList();
 
+                            foreach (var appModelToRemove in appModelsToRemove)
+                            {
+                                _context.AppModel.Remove(appModelToRemove);
+                            }
                             foreach (var appModel in updatedExpense.AppModels)
                             {
-                                existingExpense.AppModels.Add(appModel);
+                                var existingAppModel = existingExpense.AppModels.FirstOrDefault(x => x.Id == appModel.Id);
+
+                                if (existingAppModel != null)
+                                {
+                                    existingAppModel.Mooe = appModel.Mooe;
+                                }
+                                else
+                                {
+                                    existingExpense.AppModels.Add(appModel);
+                                }
                             }
                         }
 
@@ -136,13 +249,43 @@ namespace fmis.Controllers.App
                 }
 
                 await _context.SaveChangesAsync();
-            }
+            }*/
 
             return RedirectToAction("Index");
         }
 
+        #region APP REPORTS
+
+        public IActionResult DownloadExcel()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                // Add data to the worksheet
+                worksheet.Cell(1, 12).Value = "Name";
+                worksheet.Cell(1, 2).Value = "Age";
+
+                worksheet.Cell(2, 1).Value = "John";
+                worksheet.Cell(2, 2).Value = 30;
+
+                worksheet.Cell(3, 1).Value = "Alice";
+                worksheet.Cell(3, 2).Value = 25;
+
+
+
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+        }
+
+
         [HttpPost]
-        public IActionResult GenerateApp()
+        public IActionResult GenerateAppPdf()
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
@@ -168,7 +311,7 @@ namespace fmis.Controllers.App
                 Font headerFont = new Font(Font.FontFamily.COURIER, 9, Font.BOLD, BaseColor.BLACK);
                 Font cellFont = new Font(Font.FontFamily.COURIER, 9, Font.NORMAL, BaseColor.BLACK);
 
-                float[] columnWidths = new float[] { 35f, 250f, 60f, 40f, 40f, 80f, 80f, 75f, 70f, 70f, 70f, 80f, 80f, 80f, 150f };
+                float[] columnWidths = new float[] { 90f, 250f, 90f, 40f, 40f, 80f, 90f, 90f, 90f, 90f, 70f, 80f, 80f, 80f, 150f };
                 table.SetWidths(columnWidths);
 
                 foreach (string header in headers)
@@ -180,20 +323,23 @@ namespace fmis.Controllers.App
                     table.AddCell(headerCell);
                 }
 
-                var items = _context.AppModel.ToList();
+                var items = _context.AppModel.OrderBy(x => x.Uacs).ToList();
 
                 for (int row = 0; row < items.Count; row++)
                 {
+                    string itemUacs = items[row].Uacs;
                     string itemDescription = items[row].ProcurementProject;
                     string endUser = items[row].EndUser;
+                    string earlyProcured = items[row].EarlyProcured;
+                    string notEarlyProcured = items[row].NotEarlyProcurered;
                     string modeofProcurement = items[row].ModeOfProcurement;
-                    string advertising = items[row].Advertising?.ToString("MM-dd-yy");
-                    string submission = items[row].Submission?.ToString("MM-dd-yy");
-                    string noticeOfAward = items[row].NoticeOfAward?.ToString("MM-dd-yy");
-                    string contractSigning = items[row].ContractSigning?.ToString("MM-dd-yy");
+                    string advertising = items[row].Advertising?.ToString("MM-dd-yyyy");
+                    string submission = items[row].Submission?.ToString("MM-dd-yyyy");
+                    string noticeOfAward = items[row].NoticeOfAward?.ToString("MM-dd-yyyy");
+                    string contractSigning = items[row].ContractSigning?.ToString("MM-dd-yyyy");
                     string fundSource = items[row].FundSource;
-                    string total = items[row].Total.ToString();
-                    string mooe = items[row].Mooe.ToString();
+                    string total = string.Format("{0:N0}", items[row].Total);
+                    string mooe = string.Format("{0:N0}", items[row].Mooe);
                     string co = items[row].Co.ToString();
                     string remarks = items[row].Remarks;
 
@@ -201,13 +347,25 @@ namespace fmis.Controllers.App
                     {
                         PdfPCell cell;
 
-                        if (col == 1)
+                        if (col == 0)
+                        {
+                            cell = new PdfPCell(new Phrase(itemUacs, cellFont));
+                        }
+                        else if (col == 1)
                         {
                             cell = new PdfPCell(new Phrase(itemDescription, cellFont));
                         }
-                        else if(col == 2)
+                        else if (col == 2)
                         {
                             cell = new PdfPCell(new Phrase(endUser, cellFont));
+                        }
+                        else if (col == 3)
+                        {
+                            cell = new PdfPCell(new Phrase(earlyProcured, cellFont));
+                        }
+                        else if (col == 4)
+                        {
+                            cell = new PdfPCell(new Phrase(notEarlyProcured, cellFont));
                         }
                         else if (col == 5)
                         {
@@ -251,15 +409,14 @@ namespace fmis.Controllers.App
                         }
                         else
                         {
-                            cell = new PdfPCell(new Phrase(/*$"Row {row + 1}, Cell {col + 1}"*/"", cellFont));
+                            cell = new PdfPCell(new Phrase("", cellFont));
                         }
 
-                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         cell.BorderWidthLeft = 1f;
                         cell.BorderWidthRight = col == headers.Length - 1 ? 1f : 0f;
                         cell.BorderWidthTop = 0f;
                         cell.BorderWidthBottom = 0f;
+                        cell.BorderWidthBottom = 1f;
 
                         table.AddCell(cell);
                     }
@@ -278,6 +435,7 @@ namespace fmis.Controllers.App
             return new EmptyResult();
         }
 
+        #endregion
 
         #region LOGIN
         [HttpGet]

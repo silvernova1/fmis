@@ -16,7 +16,9 @@ namespace fmis.Models.ppmp
 
         public string? EndUser { get; set; }
 
-        public string? IsEarlyProcurement { get; set; }
+        public string? EarlyProcured { get; set; }
+
+        public string? NotEarlyProcurered { get; set; }
 
         public string? ModeOfProcurement { get; set; }
 
@@ -30,17 +32,19 @@ namespace fmis.Models.ppmp
 
         public string? FundSource { get; set; }
 
-        public string? Total { get; set; }
+        public decimal Total { get; set; }
 
-        [BindProperty]
-        public string? Mooe { get; set; }
+        public decimal Mooe { get; set; }
 
-        [BindProperty]
-        public string? Co { get; set; }
+        public decimal Co { get; set; }
 
-        [BindProperty]
         public string? Remarks { get; set; }
 
+        public int? Expense_id { get; set; }
+
+        public string? Tranche { get; set; }
+
+        [ForeignKey("Expense_id")]
         public AppExpense? AppExpense { get; set; }
     }
 }

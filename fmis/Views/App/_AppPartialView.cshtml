@@ -28,7 +28,7 @@
 
 
 <div class="text-right">
-    <form asp-controller="App" asp-action="GenerateApp" method="post" target="_blank">
+    <form asp-controller="App" asp-action="GenerateAppPdf" method="post" target="_blank">
         <button type="submit">Generate PDF</button>
     </form>
 </div>
@@ -38,7 +38,7 @@
 
 
 
-<form asp-controller="App" asp-action="UpdateAppExpense" method="post">
+<form asp-controller="App" asp-action="UpdateAppExpense" method="post" id="myForm">
     <table class="table">
         <thead>
             <tr>
@@ -60,13 +60,13 @@
             </tr>
         </thead>
         <tbody>
-            @for (var i = 0; i < Model.Count; i++)
+            @for (var i = 0; i < Model?.Count; i++)
             {
                 <tr>
                     <td style="width: 100px;"></td>
                     <td style="width: 250px;">
                         <strong><input type="text" name="appExpenses[@i].Description" value="@Model[i].Description" class="form-control" /></strong>
-                        <input type="hidden" name="appExpenses[@i].Id" asp-for="@Model[i].Id" />
+                        <input type="hidden" name="appExpenses[@i].Id" asp-for="@Model[i].Id"/>
                     </td>
                 </tr>
 
@@ -74,35 +74,98 @@
                 {
 
                     <tr>
+                        <input type="hidden" name="AppExpenses[@i].AppModels[@j].Id" asp-for="@Model[i].AppModels[j].Id" />
                         <td style="width: 100px;"><input type="text" name="appExpenses[@i].AppModels[@j].Uacs" value="@Model[i].AppModels[j].Uacs" /></td>
-                        <input type="hidden" name="appExpenses[@i].AppModels[@j].Id" asp-for="@Model[i].AppModels[j].Id" />
                         <td style="width: 250px;"><input type="text" name="appExpenses[@i].AppModels[@j].ProcurementProject" value="@Model[i].AppModels[j].ProcurementProject" class="form-control" /></td>
                         <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].EndUser" value="@Model[i].AppModels[j].EndUser" class="form-control" /></td>
-                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
-                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" name="appExpenses[@i].AppModels[@j].EarlyProcured" value="@Model[i].AppModels[j].EarlyProcured" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" name="appExpenses[@i].AppModels[@j].NotEarlyProcurered" value="@Model[i].AppModels[j].NotEarlyProcurered" class="form-control" /></td>
                         <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].ModeOfProcurement" value="@Model[i].AppModels[j].ModeOfProcurement" class="form-control" /></td>
-                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Advertising" value="@Model[i].AppModels[j].Advertising" class="form-control" /></td>
-                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Submission" value="@Model[i].AppModels[j].Submission" class="form-control" /></td>
-                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward" class="form-control" /></td>
-                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Advertising" value="@Model[i].AppModels[j].Advertising?.ToString("yyyy-MM-dd")" class="form-control advertising" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Submission" value="@Model[i].AppModels[j].Submission?.ToString("yyyy-MM-dd")" class="form-control submission" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward?.ToString("yyyy-MM-dd")" class="form-control submission" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning?.ToString("yyyy-MM-dd")" class="form-control contract" /></td>
                         <td style="width: 80px;"><input type="text" class="form-control" /></td>
                         <td style="width: 140px;"><input type="text" name="appExpenses[@i].AppModels[@j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>
-                        @*<td style="width: 140px;"><input type="text" name="appExpenses[@i].AppModels[@j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>*@
-
-                        @*<td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Submission" value="@Model[i].AppModels[j].Submission" class="form-control" /></td>
-                        <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward" class="form-control" /></td>
-                        <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning" class="form-control" /></td>
-                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
-                        <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>
-                        <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>
-                        <td style="width: 140px;"><input type="text" class="form-control" /></td>
-                        <td style="width: 160px;"><input type="text" class="form-control" /></td>*@
+                        <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].Co" value="@Model[i].AppModels[j].Co" class="form-control" /></td>
+                        @*<td style="width: 130px;">
+                            <textarea name="appExpenses[@i].AppModels[@j].Remarks" class="form-control" rows="4" cols="50">@Model[i].AppModels[j].Remarks</textarea>
+                        </td>*@
+                        <td style="width: 130px;">
+                            <input type="text" name="appExpenses[@i].AppModels[@j].Remarks" value="@Model[i].AppModels[j].Remarks" class="form-control" />
+                        </td>
                     </tr>
                 }
             }
         </tbody>
     </table>
     <div style="text-align: right;">
-        <button type="submit" class="btn btn-primary">Save All Changes</button>
+        <button class="btn btn-primary" type="button" id="submitButton">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span id="buttonText">Saving All Changes</span>
+        </button>
     </div>
 </form>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            $('#submitButton').prop('disabled', true);
+            $('#submitButton .spinner-border').css('display', 'inline-block');
+            $('#buttonText').text('Saving Changes...');
+
+            $('#myForm').submit();
+        });
+    });
+
+    $(document).ready(function () {
+        $('.advertising').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".submission").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".notice").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".contract").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    //
+    document.getElementById('scroll-down-arrow').addEventListener('click', function () {
+        const targetElement = document.getElementById('submitButton');
+
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+            this.classList.add('hidden');
+        }
+    });
+    function checkScrollPosition() {
+        const scrollY = window.scrollY;
+
+        const threshold = 200;
+
+        const arrow = document.getElementById('scroll-down-arrow');
+
+        if (scrollY > threshold) {
+            arrow.classList.remove('hidden');
+        } else {
+            arrow.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('scroll', checkScrollPosition);
+</script>

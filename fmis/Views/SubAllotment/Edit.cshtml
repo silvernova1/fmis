@@ -80,6 +80,10 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
+                <label>Section:</label>
+                <select class="form-control select2" asp-for="SectionId" id="section"></select>
+            </div>
+            <div class="form-group">
                 <label>Date:</label>
                 <input asp-for="Date" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control">
                 <span asp-validation-for="Date" class="text-danger"></span>
@@ -92,8 +96,6 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
-     
-
     </div>
     <h6 style="font-weight:bold; margin-left: 465px" >Sub Total Amount:   <span id="sub_total_amt" style="color:green">₱0.00</span></h6>
 
@@ -103,23 +105,51 @@
     <div class="controls" hidden>
         <button id="export-file">Download CSV</button>
     </div>
-@*    <div class="infobox infobox-green pull-right">
-        <div class="infobox-icon">
-            <i class="ace-icon fa fa-money"></i>
-        </div>
-        <div class="infobox-data">
-            <span class="infobox-data-number" style="font-size:11pt; color:grey;">
-                <span id="sub_total_amt">₱0.00</span>
-            </span>
-            <div class="infobox-content">
-                <span class="label label-success arrowed-in arrowed-in-right"> Sub Total Amount </span>
-            </div>
-        </div>
-    </div>*@
 </form>
 
 <script>
+    //
+    function populateSectionSelect(selectedRespoId) {
+        $.ajax({
+            url: '@Url.Action("GetSection", "SubAllotment")',
+            method: 'GET',
+            data: { divisionId: selectedRespoId },
+            success: function (sections) {
+                var sectionSelect = $("#section");
+                sectionSelect.empty();
 
+                $.each(sections, function (index, section) {
+                    sectionSelect.append($("<option></option>")
+                        .attr("value", section.id)
+                        .text(section.description));
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        // Get the initialRespoId from the "Respo" select
+        var initialRespoId = $("#respo").val();
+        alert(initialRespoId);
+
+        // Get the initialSectionValue from the "Section" select
+        var initialSectionValue = $("#section").val();
+        //alert(initialSectionValue);
+
+        // If "Section" already has a value, no need to populate it
+        if (initialSectionValue == null) {
+            populateSectionSelect(initialRespoId);
+        }
+    });
+
+    $("#respo").on("change", function () {
+        var selectedRespoId = $(this).val();
+        populateSectionSelect(selectedRespoId);
+    });
+    //
     $(document).ready(function () {
         $(".select2").select2();
         $('[data-bs-toggle="tooltip"]').tooltip();
