@@ -262,19 +262,19 @@ namespace fmis.Controllers
             dynamic sections = null;
             if (divisionId == 1)
             {
-                sections = _dts.section.Where(c => c.division == 6).ToList();
+                sections = _dts.section.Where(c => c.Division == 6).ToList();
             }
             else if(divisionId == 2)
             {
-                sections = _dts.section.Where(c => c.division == 4).ToList();
+                sections = _dts.section.Where(c => c.Division == 4).ToList();
             }
             else if (divisionId == 3)
             {
-                sections = _dts.section.Where(c => c.division == 3).ToList();
+                sections = _dts.section.Where(c => c.Division == 3).ToList();
             }
             else if (divisionId == 4)
             {
-                sections = _dts.section.Where(c => c.division == 5).ToList();
+                sections = _dts.section.Where(c => c.Division == 5).ToList();
             }
 
 
@@ -283,7 +283,7 @@ namespace fmis.Controllers
 
         public IActionResult Section()
         {
-            var dts = _dts.section.Where(x=>x.division == 3 || x.division == 4 || x.division == 5 || x.division == 6).ToList();
+            var dts = _dts.section.Where(x=>x.Division == 3 || x.Division == 4 || x.Division == 5 || x.Division == 6).ToList();
 
             return Json(dts);
         }

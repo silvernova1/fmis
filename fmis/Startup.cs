@@ -29,6 +29,7 @@ using Org.BouncyCastle.Crypto.Tls;
 using fmis.Data.MySql;
 using fmis.Models;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -48,6 +49,12 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.AddDebug();
+            });
+
             services.Configure<FormOptions>(options =>
             {
                 options.ValueCountLimit = 4000;

@@ -1,6 +1,9 @@
 ﻿@model List<fmis.Models.ppmp.Expense>
 @using fmis.Data;
+@using fmis.Data.MySql;
+@using fmis.Models.ppmp;
 @inject PpmpContext _ppmpContext
+@inject DtsContext _dts
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Generate APP";
@@ -126,10 +129,11 @@
                         }
 
 
-                        
+                        List<Section> sectionUsersList = new List<Section>();
 
-                        @foreach (var itemId in Model[i].Items[j].Item_Daily)
+                        foreach (var itemId in Model[i].Items[j].Item_Daily)
                         {
+
                             query = (from it_d1 in _ppmpContext.item_daily
                                      join it_d2 in _ppmpContext.item_daily
                                      on it_d1.Item_id equals it_d2.Item_id
@@ -139,16 +143,34 @@
                                          itemId = it_d1.Item_id,
                                          modeProcurement = it_d2.Mode_procurement,
                                          unitCostId = it_d2.Unit_cost,
-                                        tranche = it_d2.Tranche
+                                         tranche = it_d2.Tranche
                                      }).FirstOrDefault();
 
 
+                            var sectionUser = _dts.section.SingleOrDefault(x => x.Id == itemId.Section_id);
+
+                            if (sectionUser != null)
+                            {
+                                sectionUsersList.Add(sectionUser);
+                            }
                         }
+
+                    
+
+
+                        
+
+
                         <tr>
                             <input type="hidden" name="AppExpenses[@i].AppModels[@j].Tranche" value="@query?.tranche" />
                             <td style="width: 100px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Uacs" value="@Model[i].Uacs" /></td>
                             <td style="width: 250px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ProcurementProject" value="@Model[i].Items[j].Description" class="form-control" /></td>
-                            <td style="width: 130px;"><input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="@Model[i].Items[j].Userid" class="form-control" /></td>
+                        @if (sectionUsersList.Count > 0)
+                        {
+                            <td style="width: 130px;">
+                                <input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="@sectionUsersList[0].Acronym" class="form-control" />
+                            </td>
+                        }
                             <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].EarlyProcured" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NotEarlyProcurered" class="form-control" /></td>
                             <td style="width: 130px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ModeOfProcurement" value="@query?.modeProcurement" class="form-control" /></td>

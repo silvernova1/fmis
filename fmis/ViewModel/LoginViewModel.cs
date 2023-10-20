@@ -20,6 +20,7 @@ namespace fmis.ViewModel
 
         public string ReturnUrl { get; set; }
 
+        [Required]
         public int Year { get; set; }
     }
 }

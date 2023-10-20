@@ -14,6 +14,8 @@ namespace fmis.Data
         public DbSet<Expense> expense { get; set; }
         public DbSet<Item> item { get; set; }
         public DbSet<ItemDaily> item_daily { get; set; }
+        public DbSet<YearlyReference> yearly_reference { get; set; }
+        public DbSet<Section> section { get; set; }
 
     }
 }

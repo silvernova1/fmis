@@ -27,6 +27,7 @@ using Item = fmis.Models.ppmp.Item;
 using Font = iTextSharp.text.Font;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using ClosedXML.Excel;
+using Microsoft.Extensions.Logging;
 
 namespace fmis.Controllers.App
 {
@@ -38,19 +39,21 @@ namespace fmis.Controllers.App
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<AppController> _logger;
 
-        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor)
+        public AppController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, ILogger<AppController> logger)
         {
             _context = context;
             _userService = userService;
             _ppmpContext = ppmpContext;
             _dts = dts;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         public IActionResult GetItems()
         {
-            return Json(_ppmpContext.item.ToList());
+            return Json(_dts.section.ToList());
         }
 
         [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
@@ -67,6 +70,10 @@ namespace fmis.Controllers.App
                     .OrderBy(x => x.Uacs)
                     .ToList();
 
+                
+
+
+
                 return PartialView("_AppPartialView", appExpenses);
             }
             else
@@ -74,10 +81,12 @@ namespace fmis.Controllers.App
                 var expenses = new List<Expense>();
                 expenses = _ppmpContext.expense
                     .Where(expenses => expenses.Items.Any())
-                    .Include(x => x.Items.Where(x => x.Yearly_ref_id == 4 && x.Status == null))
+                    .Include(x => x.Items.Where(x => x.Yearly_ref_id == int.Parse(YearId) && x.Status == null))
                         .ThenInclude(x => x.Item_Daily)
                     .OrderBy(x => x.Uacs)
                     .ToList();
+
+                ViewBag.section = _dts.section.ToList();
 
                 return PartialView("_ExpensePartialView", expenses);
             }
@@ -149,17 +158,6 @@ namespace fmis.Controllers.App
         [HttpPost]
         public async Task<IActionResult> UpdateAppExpense(List<AppExpense> appExpenses)
         {
-            if(appExpenses == null)
-            {
-                foreach (var modelState in ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        // Log or print out the error messages to identify the validation issue.
-                        Console.WriteLine(error.ErrorMessage);
-                    }
-                }
-            }
             foreach (var appExpense in appExpenses)
             {
                 var existingAppExpense = _context.AppExpense.Find(appExpense.Id);
@@ -285,17 +283,237 @@ namespace fmis.Controllers.App
 
 
         [HttpPost]
-        public IActionResult GenerateAppPdf()
+        [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
+        public async Task<IActionResult> GenerateApp()
         {
+
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 Document document = new Document(PageSize.LEGAL.Rotate());
 
                 PdfWriter pdfWriter = PdfWriter.GetInstance(document, memoryStream);
 
+
                 document.Open();
 
-                document.Add(new Paragraph("Department of Health-Central Visayas-Center for Health Development Revised Annual Procurement Plan for FY 2023 \n\n"));
+                PdfPTable table = new PdfPTable(15);
+                table.WidthPercentage = 100;
+
+                float[] columnWidths = new float[] { 90f, 250f, 90f, 40f, 40f, 80f, 90f, 90f, 90f, 90f, 70f, 80f, 80f, 80f, 150f };
+                table.SetWidths(columnWidths);
+
+
+                PdfPCell cell = new PdfPCell(new Phrase("Code"));
+                cell.Rowspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Procurement Project"));
+                cell.Rowspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("PMO/End User"));
+                cell.Rowspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Early Procurement"));
+                cell.Colspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Mode of Procurement"));
+                cell.Rowspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Schedule for Each Procurement Activity"));
+                cell.Colspan = 4;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Source of Funds"));
+                cell.Rowspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Estimated Budget (PhP)"));
+                cell.Colspan = 3;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Remarks (Brief description of the Project"));
+                cell.Rowspan = 2;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                // Row 2
+                cell = new PdfPCell(new Phrase("Yes"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("No"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+
+                cell = new PdfPCell(new Phrase("Advertising/Posting IB/REI"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Submission/ Opening of Bids"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Notice of Award"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Contract Signing"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("Total"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("MOOE"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Phrase("CO"));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                table.AddCell(cell);
+
+                var items = _context.AppModel.OrderBy(x => x.Uacs).ToList();
+                Font cellFont = new Font(Font.FontFamily.COURIER, 9, Font.NORMAL, BaseColor.BLACK);
+
+                foreach (var item in items)
+                {
+                    cell = new PdfPCell(new Phrase(item.Uacs, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.ProcurementProject, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.EndUser, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.EarlyProcured, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.NotEarlyProcurered, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.ModeOfProcurement, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.Advertising.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.Submission.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.NoticeOfAward.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.ContractSigning.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.FundSource, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.Total.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.Mooe.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.ContractSigning.ToString(), cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(item.Remarks, cellFont));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    table.AddCell(cell);
+                }
+                document.Add(table);
+                document.Close();
+
+                Response.Headers.Add("Content-Disposition", "inline; filename=sample.pdf");
+                Response.ContentType = "application/pdf";
+
+                await Response.Body.WriteAsync(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
+            }
+
+            return new EmptyResult();
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "Scheme3", Roles = "app_admin")]
+        public async Task<IActionResult> GenerateAppPdf()
+        {
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Document document = new Document(PageSize.LEGAL.Rotate());
+
+                PdfWriter pdfWriter = PdfWriter.GetInstance(document, memoryStream);
+
+
+                document.Open();
+
+                string year = User.FindFirstValue("YearlyRef");
+
+                document.Add(new Paragraph("Department of Health-Central Visayas-Center for Health Development Revised Annual Procurement Plan for FY " + year + "  \n\n"));
+
+                
 
                 PdfPTable table = new PdfPTable(15);
                 table.WidthPercentage = 100;
@@ -414,7 +632,7 @@ namespace fmis.Controllers.App
 
                         cell.BorderWidthLeft = 1f;
                         cell.BorderWidthRight = col == headers.Length - 1 ? 1f : 0f;
-                        cell.BorderWidthTop = 0f;
+                        cell.BorderWidthTop = 1f;
                         cell.BorderWidthBottom = 0f;
                         cell.BorderWidthBottom = 1f;
 
@@ -429,7 +647,9 @@ namespace fmis.Controllers.App
                 Response.Headers.Add("Content-Disposition", "inline; filename=sample.pdf");
                 Response.ContentType = "application/pdf";
 
-                Response.Body.Write(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
+                //Response.Body.Write(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
+
+                await Response.Body.WriteAsync(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
             }
 
             return new EmptyResult();
@@ -463,26 +683,33 @@ namespace fmis.Controllers.App
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, int Year)
         {
-            ViewData["Year"] = _context.Yearly_reference.ToList();
             if (ModelState.IsValid)
             {
                 var user = await _userService.ValidateUserCredentialsAsync(model.Username, model.Password);
                 if (user is not null)
                 {
-                    user.Year = model.Year.ToString();
-                    user.YearId = _context.Yearly_reference.FirstOrDefault(x => x.YearlyReference == user.Year).YearlyReferenceId;
-                    await LoginAsync(user, model.RememberMe);
+                    var yearlyReference = _ppmpContext.yearly_reference.FirstOrDefault(x => x.Year == Year);
 
-
-                    if (user.Username == "hr_admin")
+                    if (yearlyReference != null)
                     {
-                        return RedirectToAction("Index", "App");
+                        user.Year = yearlyReference.Year.ToString();
+                        user.YearId = yearlyReference.Id;
+                        await LoginAsync(user, model.RememberMe);
+
+                        if (user.Username == "hr_admin")
+                        {
+                            return RedirectToAction("Index", "App");
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
                     }
                     else
                     {
-                        return NotFound();
+                        ModelState.AddModelError("Year", "Year does not exist in the database.");
                     }
                 }
                 else
@@ -547,7 +774,11 @@ namespace fmis.Controllers.App
         #endregion
 
         #region COOKIES
-        public string year { get { return User.FindFirstValue("Year"); } }
+        public string YearId { get { return User.FindFirstValue("YearlyRefId"); } }
+        public string Year { get { return User.FindFirstValue("YearlyRef"); } }
+
+
+
         #endregion
     }
 }
