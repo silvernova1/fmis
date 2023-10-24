@@ -165,12 +165,18 @@
                             <input type="hidden" name="AppExpenses[@i].AppModels[@j].Tranche" value="@query?.tranche" />
                             <td style="width: 100px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Uacs" value="@Model[i].Uacs" /></td>
                             <td style="width: 250px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ProcurementProject" value="@Model[i].Items[j].Description" class="form-control" /></td>
-                        @if (sectionUsersList.Count > 0)
-                        {
+                            @if (sectionUsersList.Count > 0)
+                            {
+                                <td style="width: 130px;">
+                                    <input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="@sectionUsersList[0].Acronym" class="form-control" />
+                                </td>
+                            }
+                            else
+                            {
                             <td style="width: 130px;">
-                                <input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="@sectionUsersList[0].Acronym" class="form-control" />
+                                <input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="" class="form-control" />
                             </td>
-                        }
+                            }
                             <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].EarlyProcured" class="form-control" /></td>
                             <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NotEarlyProcurered" class="form-control" /></td>
                             <td style="width: 130px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ModeOfProcurement" value="@query?.modeProcurement" class="form-control" /></td>
@@ -178,11 +184,11 @@
                             <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Submission" id="submission@(i)_@(j)" class="form-control submission" /></td>
                             <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NoticeOfAward" id="notice@(i)_@(j)" class="form-control notice" /></td>
                             <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ContractSigning" id="datepicker@(i)_@(j)" class="form-control contract" /></td>
-                            <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                            <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].FundSource" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Total" value="@total" class="form-control" /></td>
                             <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Mooe" value="@total" class="form-control" /></td>
-                            <td style="width: 140px;"><input type="text" class="form-control" /></td>
-                            <td style="width: 160px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Co" value="0" class="form-control" /></td>
+                            <td style="width: 160px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Remarks" class="form-control" /></td>
                         </tr>
                     }
             }

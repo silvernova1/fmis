@@ -18,7 +18,7 @@
         right: 20px;
         font-size: 24px;
         cursor: pointer;
-        z-index: 999; /* Ensure the arrow is above other content */
+        z-index: 999;
     }
 
     .hidden {
@@ -85,7 +85,7 @@
                         <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Submission" value="@Model[i].AppModels[j].Submission?.ToString("yyyy-MM-dd")" class="form-control submission" /></td>
                         <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward?.ToString("yyyy-MM-dd")" class="form-control submission" /></td>
                         <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning?.ToString("yyyy-MM-dd")" class="form-control contract" /></td>
-                        <td style="width: 80px;"><input type="text" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" name="appExpenses[@i].AppModels[@j].FundSource" value="@Model[i].AppModels[j].FundSource" class="form-control" /></td>
                         <td style="width: 140px;"><input type="text" name="appExpenses[@i].AppModels[@j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>
                         <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>
                         <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].Co" value="@Model[i].AppModels[j].Co" class="form-control" /></td>
