@@ -244,6 +244,15 @@ namespace fmis
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 })
+                .AddCookie("Scheme4", options =>
+                {
+                    options.Cookie.Name = "Scheme4";
+                    options.LoginPath = "/Procurement/Login";
+                    options.LogoutPath = "/Procurement/Logout";
+                    options.AccessDeniedPath = "/Index/NotFound";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(5);
+                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                })
                 .AddCookie("Scheme3", options =>
                 {
                     options.Cookie.Name = "Scheme3";
@@ -253,6 +262,8 @@ namespace fmis
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 });
+
+
 
 
             services.AddAuthorization(options =>
@@ -266,6 +277,7 @@ namespace fmis
 
                 options.AddPolicy("Accounting", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("User", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "user"));
+   
             });
             services.Configure<CookiePolicyOptions>(options =>
             {

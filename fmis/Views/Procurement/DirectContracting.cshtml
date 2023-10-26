@@ -1,0 +1,213 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Direct Contracting)";
+}
+
+<style>
+
+    .card-container {
+        width: calc(70% - 10px); /* Adjust the total width by considering padding (20px on each side) */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        background-color: #fff;
+        margin-left: 50px;
+    }
+
+    /* Media query for tablets (landscape and portrait) */
+    @@media (max-width: 1024px) {
+        .card-container {
+            width: calc(80% - 40px); /* Adjust width for tablets */
+        }
+    }
+
+    /* Media query for mobile devices */
+    @@media (max-width: 767px) {
+        .background-wrapper {
+            min-height: 100vh;
+        }
+
+        .card-container {
+            width: 90%; /* Adjust width for mobile devices */
+        }
+    }
+
+
+
+    .rectangle h2 {
+        white-space: nowrap;
+        margin-top: 5px; /* Add space at the top */
+        margin-bottom: 5px; /* Add space at the bottom */
+    }
+
+    .rectangle h6 {
+        white-space: nowrap;
+    }
+
+    .rectangle {
+        border: 1px solid black;
+        padding-left: 100px;
+        padding-right: 100px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: fit-content;
+        display: inline-block;
+    }
+
+    .TimesNewRoman {
+        font-family: 'Times New Roman';
+        margin: 0;
+        padding: 0;
+    }
+
+    .justify {
+        text-align: justify;
+    }
+
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns with equal width */
+    }
+
+    .grid-item {
+        padding: 5px; /* Add padding for spacing within each grid item */
+        text-align: center;
+        margin-top: 20px; /* A/* Center-align the text within each grid item */
+    }
+
+    .logo-container {
+        float: left; /* Float the logo container to the left */
+        /* Adjust the margin as needed */
+    }
+
+    /* Style for the logo image */
+    .logo-image {
+        max-width: 100px; /* Adjust the max-width of the logo image */
+    }
+
+</style>
+<h3 class="grey lighter smaller">
+    RMOP DIRECT CONTRACTING (DRUGS AND MEDS)
+</h3>
+<hr>
+<div class="background-wrapper">
+    <div class="card-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="logo-container">
+                    <img src="~/assets/images/doh_logo_updated.png" alt="Logo" style="margin-left:160px" class="logo-image" />
+                </div>
+                <center>
+                    <div style="margin-right: 300px;">
+                        <p class="TimesNewRoman">Republic of the Philippines</p>
+                        <p class="TimesNewRoman">Department Of Health </p>
+                        <h4 class="TimesNewRoman" style="font-weight:bold"> CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT </h4>
+                        <p class="TimesNewRoman">Osmeña Boulevard,Sambag II, Cebu City, 6000 Philippines </p>
+                        <p class="TimesNewRoman">Regional Director’s Office Tel. No. (032) 253-6355 Fax No. (032) 254-0109 </p>
+                        <p class="TimesNewRoman">Official Website http://www.ro7.doh.gov.ph E-mail Address: dohro7@gmail.com </p>
+                        <br />
+                    </div>
+                    <br />
+                    <h5 class="TimesNewRoman" style="font-weight:bold">
+                        BAC RESOLUTION NO. ______-AMP s. 2023<br />
+                        “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:<br />
+                        DIRECT CONTRACTING UNDER SEC. 50 OF THE REVISED IMPLEMENTING <br />
+                        RULES AND REGULATIONS OF RA 9184.”<br />
+                        __________________________________________________________________________________
+                    </h5>
+                    <br />
+                </center>
+                <div class="justify">
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> pursuant to Sec. 48.2, in relation to Sec. 10 of the IRR, as a general rule, the Procuring </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Entity shall adopt competitive bidding as the general method of procurement and that alternative methods of  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> procurement shall be resorted to only in highly exceptional cases provided for in the rules; </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> Sec. 50 of the IRR provides that Direct Contracting or single source procurement is a  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> method of procurement of Goods that does not require elaborate Bidding Documents and that the supplier is  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> simply asked to submit a price quotation or a pro-forma invoice together with the conditions of the sale; </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> the same provision in the immediately preceding clause enumerates the conditions </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> material prior to a resort with Direct Contracting, thus: (1) Procurement of Goods of proprietary nature which  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> can be obtained only from the proprietary source, i.e., when patents, trade secrets, and copyrights prohibit others </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> from manufacturing the same item; (2) When the procurement of critical components from a specific supplier is </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> a condition precedent to hold a contractor to guarantee its project performance, in accordance with the provisions </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> of its contract; or (3) those sold by an exclusive dealer or manufacturer which does not have sub-dealers selling </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> at lower prices and for which no suitable substitute can be obtained at a more advantageous terms to the GoP; </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> corollary thereto, Purchase Request No. ________ for the Procurement of </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ___________________________________________________________________________________ </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ________________________________________________________________________________ in the</h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> amount of PHP ______________ was referred to the Bids and Awards Committee for processing; </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> after evaluation of the purchase request vis-à-vis the implementing rules and upon   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman">confirmation of the existence of the conditions allowing the same, the BAC has come to a resolution that resort   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> to the Alternative Mode of Procurement Direct Contracting under Sec. 50 of the IRR would be most   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> advantageous to the government and is essentially the most applicable recourse given the availing circumstances;   </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, to recommend  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> the use of the Alternative Mode of Procurement Direct Contracting under Sec. 50 of the Revised Implementing </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Rules and Regulations of the Republic Act No. 9184 for Purchase Request No. _____________ , in the amount  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> of PHP ______________ for the  Procurement of _________________________________________________. </h5>
+                    <br />
+                    <h5 style="margin-left:320px;" class="TimesNewRoman"> __________________________ 2023 , Cebu City, Philippines. </h5>
+                    <br />
+                    <br />
+                </div>
+                <div class="grid-container">
+                    <div class="grid-item" style="margin-left:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">DR. SHARON AZENITH LAUREL </h5>
+                        <p class="TimesNewRoman">Provisional Member</p>
+                    </div>
+                    <div class="grid-item">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. NELNER OMUS</h5>
+                        <p class="TimesNewRoman">Provisional Member</p>
+                    </div>
+                    <div class="grid-item" style="margin-right:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. RAMIL R. ABREA</h5>
+                        <p class="TimesNewRoman">Member</p>
+                    </div>
+
+                    <div class="grid-item" style="margin-left:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. ROLDAN A. CUBILLO</h5>
+                        <p class="TimesNewRoman">Member (DOH Union Rep)</p>
+                    </div>
+
+                    <div class="grid-item">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. JO DAVID Z. BORCES</h5>
+                        <p class="TimesNewRoman">Member</p>
+                        <br />
+                        <br />
+                        <br />
+                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. JONATHAN NEIL V. ERASMO</h5>
+                        <p class="TimesNewRoman">Chairperson</p>
+                        <br />
+                        <br />
+                        <h5 class="TimesNewRoman" style="margin-right:300px;">Approved:</h5>
+                        <br />
+                        <h5 class="TimesNewRoman" style="font-weight:bold">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
+                        <p class="TimesNewRoman">Director IV</p>
+                    </div>
+
+                    <div class="grid-item" style="margin-right:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
+                        <p class="TimesNewRoman">Vice-Chairperson</p>
+                    </div>
+
+
+                </div>
+
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

@@ -72,6 +72,8 @@ namespace fmis.Services
             return indexUser;
         }
 
+
+
         public string HashPasswordIndexUser(IndexUser user, string password)
         {
             return _hasherIndexUser.HashPassword(user, password);
