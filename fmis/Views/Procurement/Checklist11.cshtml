@@ -1,0 +1,227 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Checklist11)";
+}
+
+
+
+<style>
+
+    .card-container {
+        width: calc(30% - 40px); /* Adjust the total width by considering padding (20px on each side) */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        background-color: #fff;
+        margin-left: 50px;
+    }
+
+    .underline {
+        text-decoration: underline;
+        width: 200px; /* Adjust the width as needed (percentage or other units) */
+        margin: 0 auto; /* Center-align the underline */
+    }
+
+    .card-container input[type="checkbox"] {
+        width: 18px; /* Adjust the width */
+        height: 18px; /* Adjust the height */
+        margin-right: 5px;
+        margin-top: 2px; /* Add some space between the checkbox and label */
+    }
+
+    .card-container p {
+        margin-bottom: -2px;
+    }
+
+
+    /* Style for the form elements within the card */
+    .card-container form {
+        /* Add your form element styles here */
+    }
+
+    .card-container label {
+        font-weight: bold;
+    }
+
+    .card-container input[type="text"]
+    card-container select,
+    .card-container textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+
+    /* Media query for tablets (landscape and portrait) */
+    @@media (max-width: 1024px) {
+        .card-container {
+            width: calc(80% - 40px); /* Adjust width for tablets */
+        }
+    }
+
+    /* Media query for mobile devices */
+    @@media (max-width: 767px) {
+        .background-wrapper {
+            min-height: 100vh;
+        }
+
+        .card-container {
+            width: 90%; /* Adjust width for mobile devices */
+        }
+    }
+
+
+
+    .rectangle h2 {
+        white-space: nowrap;
+        margin-top: 5px; /* Add space at the top */
+        margin-bottom: 5px; /* Add space at the bottom */
+    }
+
+    .rectangle h6 {
+        white-space: nowrap;
+    }
+
+    .rectangle {
+        border: 1px solid black;
+        padding-left: 100px;
+        padding-right: 100px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: fit-content;
+        display: inline-block;
+    }
+
+</style>
+<h3 class="grey lighter smaller">
+    P.U Checklist #11
+</h3>
+<hr>
+<div class="background-wrapper">
+    <div class="card-container">
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <center>
+                    <div class="rectangle">
+                        <h2>P.U CHECKLIST #11</h2>
+                    </div>
+                    <h5 style="font-weight:bold">
+                        PURCHASE REQUEST (PR) FOR <br />
+                        <u style="font-size:15pt">
+                            FURNITURES & FIXTURES
+                        </u>
+                    </h5>
+                    <h5>PR NO. : __________________</h5>
+                    <h5>DATE : ___________________</h5>
+                    <div class="rectangle">
+                        <h6 style="font-weight:bold">
+                            SUPPORTING DOCUMENTS/DETAILS
+                        </h6>
+                    </div>
+                </center>
+                <div class="form-group">
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Complete signatures incl. approval
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Complete with PR # and date
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Estimated unit cost & correct total cost
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Purpose of Request
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Funding Source
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Pre-"Job Order" Inspection Report (if equipment is a replacement <br />
+                        &nbsp; &nbsp; &nbsp; &nbsp; of defective unit)
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        With Phrase "LEASE FOR 3 MONTHS" if fund source <br />
+                        &nbsp; &nbsp; &nbsp; &nbsp; is not CAPITAL OUTLAY
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        With complete description but not limited to size, dimension, <br />
+                        &nbsp; &nbsp; &nbsp; &nbsp; color, make, type, horsepower, capacity, etc.
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                         Provision of warranty, if applicable 
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Name of user or location office
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Approved Justification, if applicable
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Approved Realignment, If applicable
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Approved WFP/Supplemental WFP
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        Approved PPMP/Supplemental PPMP
+                    </p>
+                    <p>
+                        <input type="checkbox" class="form-check-input">
+                        <u style="font-weight:bold">Others</u> <br />
+                        &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                    </p>
+                    <br />
+                    <p style="font-weight:bold">
+                        REMARKS:
+                    </p>
+                    <p style="font-weight:bold">
+                        <input type="checkbox" class="form-check-input">
+                        COMPLETE
+                    </p>
+                    <p style="font-weight:bold">
+                        <input type="checkbox" class="form-check-input">
+                        Please comply with item(s) marked <br />
+                        &nbsp; &nbsp; &nbsp; &nbsp; X on or before _________________________
+                    </p>
+                    <br />
+                    <br />
+                    <p style="font-family:'Times New Roman'; font-style:italic; font-size: 10pt">
+                        CHECKED/REVIEWED BY:
+                    </p>
+                    <br />
+                    <center>
+                        <p class="underline">
+                            LUCHE F. QUIRANTE
+                        </p>
+                    </center>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+

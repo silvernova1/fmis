@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Xml;
 using fmis.Models.pr;
 using fmis.Models.ppmp;
+using fmis.Models.Procurement;
 
 namespace fmis.Data
 {

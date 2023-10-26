@@ -1,0 +1,368 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Abstract)";
+}
+
+
+
+
+<h3 class="grey lighter smaller">
+    ABSTRACT
+</h3>
+<hr>
+
+<div class="modal fade" id="CreateModalCanvass" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContent"></div> <!-- Placeholder for content -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditModalAbstract" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContentEdit"></div> <!-- Placeholder for CanvassEdit content -->
+        </div>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<h1 style="margin-left : 200px; font-weight:bold;">2023 ABSTRACT LOG BOOK</h1>
+<br />
+<table class="table table-hover" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                ABSTRACT NO.
+            </th>
+            <th>
+                ABSTRACT DATE
+            </th>
+            <th>
+                PR NO./ DATE
+            </th>
+            <th>
+                CANVASS NO./DATE
+            </th>
+            <th>
+                RECOMMENDED AWARD
+            </th>
+            <th>
+                RMOP
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                <a class="btn btn-xs btn-primary btn-edit" onclick="openEditAbstractModal()">
+                    <i class="ace-icon fa fa-edit"></i>Edit
+                </a>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<div class="col-xs-12">
+
+    <div id="my-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Abstract</h3>
+                </div>
+                <form asp-action="Create" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
+                                        <input type="text" class="form-control" id="" name="" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <input type="DATE" class="form-control" id="" name="" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  PR NO./ DATE </label>
+                                        <input type="text" class="form-control" id="" name="" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold">  CANVASS NO./DATE  </label>
+                                        <input type="text" class="form-control" id="Date" name="Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> RECOMMENDED AWARD</label>
+                                        <input type="date" class="form-control" id="Date" name="Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <input type="text" class="form-control" id="ContactNumber" name="" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    </div>
+
+
+    
+<script>
+    function openEditAbstractModal() {
+        // Load the CanvassEdit content into the modal
+        $.get("/Procurement/AbstractEdit", function (data) {
+            $("#modalContentEdit").html(data);
+            $("#EditModalAbstract").modal("show");
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement";
+}
+
+
+
+<style>
+
+
+
+
+</style>
+<h3 class="grey lighter smaller">
+    ABSTRACT
+</h3>
+<hr>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContent"></div> <!-- Placeholder for content -->
+        </div>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<h1 style="margin-left : 200px; font-weight:bold;">2023 ABSTRACT OF PRICE LIST LOGBOOK</h1>
+<br />
+<table class="table table-hover" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                ABSTRACT NO.
+            </th>
+            <th>
+                ABSTRACT DATE
+            </th>
+            <th>
+                PR NO./ DATE
+            </th>
+            <th>
+                CANVASS NO./DATE
+            </th>
+            <th>
+                RECOMMENDED AWARD
+            </th>
+            <th>
+                RMOP
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal">
+                    <i class="ace-icon fa fa-edit"></i>
+                </a>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+<div class="col-xs-12">
+
+    <div id="my-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Canvass</h3>
+                </div>
+                <form asp-action="Create" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ NO. </label>
+                                        <input type="text" class="form-control" id="" name="" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <input type="DATE" class="form-control" id="" name="" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                        <input type="text" class="form-control" id="" name="" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> PR NO.  </label>
+                                        <input type="text" class="form-control" id="Date" name="Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold">PR DATE: </label>
+                                        <input type="date" class="form-control" id="Date" name="Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <input type="text" class="form-control" id="ContactNumber" name="" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+
+        </div><!-- /.modal-dialog -->
+    </div>
+
+
+
+
+    <!-- PAGE CONTENT ENDS -->
+</div>
+ *@
