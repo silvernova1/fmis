@@ -78,7 +78,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label>Responsibility Center:</label>
-                    <select class="form-control" asp-for="RespoId" id="respo" asp-items="ViewBag.RespoId"></select>
+                    <select class="form-control" asp-for="RespoId" id="respo" asp-items="ViewBag.RespoId" onchange="handleDropdownChange(this)"></select>
                 </div>
                 <div class="form-group">
                     <label>Sub-Allotment Title:</label>
@@ -93,9 +93,13 @@
             </div>
             <div class="col-md-3">
             <div class="form-group">
-                <label>Date:</label>
-                <input type="date" asp-for="Date" class="form-control">
-                <span asp-validation-for="Date" class="text-danger"></span>
+                    <label>Section:</label>
+                    <select class="form-control select2" asp-for="SectionId" id="sectionDropdown"></select>
+              </div>
+              <div class="form-group">
+                    <label>Date:</label>
+                    <input type="date" asp-for="Date" class="form-control">
+                    <span asp-validation-for="Date" class="text-danger"></span>
               </div>
             </div>
             <div class="col-md-9">
@@ -137,7 +141,57 @@
 
 
 <script>
+    //
+    function populateSectionDropdown(divisionId) {
+        var url = '@Url.Action("GetSection", "SubAllotment")';
 
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: { divisionId: divisionId },
+            success: function (data) {
+                var sectionDropdown = $("#sectionDropdown");
+
+                sectionDropdown.empty();
+
+                $.each(data, function (index, item) {
+                    sectionDropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.description
+                    }));
+                });
+                var selectedValue = data.length > 0 ? data[0].id : '';
+                sectionDropdown.val(selectedValue);
+            },
+            error: function (error) {
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    function handleDropdownChange(selectElement) {
+        var selectedValue = selectElement.value;
+
+        populateSectionDropdown(selectedValue);
+    }
+   
+
+    $(document).ready(function () {
+        $("#divisionDropdown").change(function () {
+            var selectedDivision = $(this).val();
+            console.log(selectedDivision);
+            if (selectedDivision) {
+                $.getJSON("/Dropdown/GetCities", { divisionId: selectedDivision }, function (data) {
+                    $("#sectionDropdown").empty();
+                    $("#sectionDropdown").append("<option value=''>Select City</option>");
+                    $.each(data, function (index, item) {
+                        $("#sectionDropdown").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+                });
+            }
+        });
+    });
+    //
     $(document).ready(function () {
         $('.select2').select2();
         $('[data-bs-toggle="tooltip"]').tooltip();

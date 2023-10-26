@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using fmis.Models.John;
+using fmis.Models.ppmp;
 using fmis.Models.silver;
 
 namespace fmis.Models
@@ -17,6 +18,8 @@ namespace fmis.Models
         public int uacs_type { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+
+        //public List<AppModel> AppModels { get; set; }
 
     }
 }

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.ppmp
 {
-    public class Item
+    public class ItemDaily
     {
         public int Id { get; set; }
+
+        public int Item_id { get; set; }
 
         [MaxLength(255)]
         public string Unique_id { get; set; }
@@ -17,9 +17,9 @@ namespace fmis.Models.ppmp
 
         public int? Expense_id { get; set; }
 
-        //public int? Division_id { get; set; }
+        public int? Division_id { get; set; }
 
-        //public int? Section_id { get; set; }
+        public int? Section_id { get; set; }
 
         [MaxLength(45)]
         public string? Tranche { get; set; }
@@ -74,10 +74,7 @@ namespace fmis.Models.ppmp
 
         public int Yearly_ref_id { get; set; }
 
-        [ForeignKey("Expense_id")]
-        public Expense Expense { get; set; }
-
-        public List<ItemDaily>? Item_Daily { get; set; }
-
+        [ForeignKey("Item_id")]
+        public Item Item { get; set; }
     }
 }

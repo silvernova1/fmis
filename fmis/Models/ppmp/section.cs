@@ -1,10 +1,10 @@
 ﻿namespace fmis.Models.ppmp
 {
-    public class section
+    public class Section
     {
-        public int id { get; set; }
-        public int division { get; set; }
-        public string description { get; set; }
-        public string acronym { get; set; }
+        public int Id { get; set; }
+        public int Division { get; set; }
+        public string Description { get; set; }
+        public string Acronym { get; set; }
     }
 }
