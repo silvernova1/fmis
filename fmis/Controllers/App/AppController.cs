@@ -385,7 +385,6 @@ namespace fmis.Controllers.App
                 decimal total = 0;
 
 
-
                 foreach (var expense in expenses)
                 {
                     cell = new PdfPCell(new Phrase(" ", cellFont));
@@ -545,89 +544,6 @@ namespace fmis.Controllers.App
                 }
 
 
-
-
-                /*foreach (var item in items)
-                {
-                    cell = new PdfPCell(new Phrase(item.Uacs, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.ProcurementProject, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.EndUser, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.EarlyProcured, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.NotEarlyProcurered, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.ModeOfProcurement, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.Advertising.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.Submission.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.NoticeOfAward.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.ContractSigning.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.FundSource, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.Total.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.Mooe.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.ContractSigning.ToString(), cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    cell = new PdfPCell(new Phrase(item.Remarks, cellFont));
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    table.AddCell(cell);
-
-                    total += item.Total;
-                }*/
-
-
                 PdfPTable footer = new PdfPTable(15);
                 footer.WidthPercentage = 100;
 
@@ -639,23 +555,24 @@ namespace fmis.Controllers.App
                     PdfPCell footerCell = new PdfPCell(new Phrase(" ", cellFont));
                     footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                     footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    footer.AddCell(footerCell);
 
 
-                    if (i == 1)
-                    {
-                        footerCell.Border = PdfPCell.LEFT_BORDER;
-                        footer.AddCell(footerCell);
-                    }
-                    else if (i == 12)
-                    {
-                        footerCell.Border = PdfPCell.RIGHT_BORDER;
-                        footer.AddCell(footerCell);
-                    }
-                    else
-                    {
-                        footerCell.Border = PdfPCell.NO_BORDER;
-                        footer.AddCell(footerCell);
-                    }
+                    /* if (i == 1)
+                     {
+                         footerCell.Border = PdfPCell.LEFT_BORDER;
+                         footer.AddCell(footerCell);
+                     }
+                     else if (i == 12)
+                     {
+                         footerCell.Border = PdfPCell.RIGHT_BORDER;
+                         footer.AddCell(footerCell);
+                     }
+                     else
+                     {
+                         footerCell.Border = PdfPCell.NO_BORDER;
+                         footer.AddCell(footerCell);
+                     }*/
 
 
                     if (i == 1)
@@ -663,7 +580,7 @@ namespace fmis.Controllers.App
                         footerCell = new PdfPCell(new Phrase("GRAND TOTAL", cellFont));
                         footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        footerCell.Border = PdfPCell.NO_BORDER;
+                        //footerCell.Border = PdfPCell.NO_BORDER;
                         footer.AddCell(footerCell);
                     }
                     if (i == 10)
@@ -671,7 +588,7 @@ namespace fmis.Controllers.App
                         footerCell = new PdfPCell(new Phrase(@total.ToString(), cellFont));
                         footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        footerCell.Border = PdfPCell.NO_BORDER;
+                        //footerCell.Border = PdfPCell.NO_BORDER;
                         footer.AddCell(footerCell);
                     }
                     if (i == 10)
@@ -679,7 +596,7 @@ namespace fmis.Controllers.App
                         footerCell = new PdfPCell(new Phrase(@total.ToString(), cellFont));
                         footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        footerCell.Border = PdfPCell.NO_BORDER;
+                        //footerCell.Border = PdfPCell.NO_BORDER;
                         footer.AddCell(footerCell);
                     }
                 }
@@ -835,7 +752,7 @@ namespace fmis.Controllers.App
                     if (i == 1)
                     {
                         footerCell = new PdfPCell(new Phrase("MS. LUCHIE QUIRANTE", headerFont));
-                        footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         footerCell.Border = PdfPCell.NO_BORDER;
                         footer.AddCell(footerCell);
@@ -845,7 +762,7 @@ namespace fmis.Controllers.App
                     {
                         footerCell = new PdfPCell(new Phrase("DR. JONATHAN NEIL V. ERASMO, MD, MPH, FPSMS", headerFont));
                         footerCell.Colspan = 5;
-                        footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         footerCell.Border = PdfPCell.NO_BORDER;
                         footer.AddCell(footerCell);
@@ -855,7 +772,59 @@ namespace fmis.Controllers.App
                     {
                         footerCell = new PdfPCell(new Phrase("DR. JAIME S. BERNADAS, MGM, CESO III", headerFont));
                         footerCell.Colspan = 4;
-                        footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                        footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        footerCell.Border = PdfPCell.NO_BORDER;
+                        footer.AddCell(footerCell);
+                    }
+                }
+
+                for (int i = 1; i <= 5; i++)
+                {
+                    PdfPCell footerCell = new PdfPCell(new Phrase(" ", cellFont));
+                    footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+
+                    if (i == 1)
+                    {
+                        footerCell.Border = PdfPCell.LEFT_BORDER;
+                        footer.AddCell(footerCell);
+                    }
+                    else if (i == 5)
+                    {
+                        footerCell.Border = PdfPCell.RIGHT_BORDER;
+                        footer.AddCell(footerCell);
+                    }
+                    else
+                    {
+                        footerCell.Border = PdfPCell.NO_BORDER;
+                        footer.AddCell(footerCell);
+                    }
+
+                    if (i == 1)
+                    {
+                        footerCell = new PdfPCell(new Phrase("BAC Secretariat\n\n\n\n\n", cellFont));
+                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                        footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        footerCell.Border = PdfPCell.NO_BORDER;
+                        footer.AddCell(footerCell);
+                    }
+
+                    if (i == 3)
+                    {
+                        footerCell = new PdfPCell(new Phrase("\nBAC Chairperson\nInfrastructure/Civil Works, Drugs and Medicines,\nMedical and Dental Supplies, Materials, Reagents \nand Active Ingredients\nGoods, Equipment and Consulting Services", cellFont));
+                        footerCell.Colspan = 5;
+                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                        footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        footerCell.Border = PdfPCell.NO_BORDER;
+                        footer.AddCell(footerCell);
+                    }
+
+                    if (i == 4)
+                    {
+                        footerCell = new PdfPCell(new Phrase("Director IV\nHead of the Procuring Agency\n\n\n\n", cellFont));
+                        footerCell.Colspan = 4;
+                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         footerCell.Border = PdfPCell.NO_BORDER;
                         footer.AddCell(footerCell);
@@ -867,41 +836,23 @@ namespace fmis.Controllers.App
                     PdfPCell footerCell = new PdfPCell(new Phrase(" ", cellFont));
                     footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                     footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    footer.AddCell(footerCell);
 
                     if (i == 1)
                     {
-                        footerCell = new PdfPCell(new Phrase("BAC Secretariat\n\n\n\n\n", cellFont));
-                        footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                        footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        footerCell.Border = PdfPCell.LEFT_BORDER | PdfPCell.BOTTOM_BORDER;
                         footer.AddCell(footerCell);
                     }
-
-                    if (i == 3)
+                    else if (i == 15)
                     {
-                        footerCell = new PdfPCell(new Phrase("\nBAC Chairperson\nInfrastructure/Civil Works, Drugs and Medicines,\nMedical and Dental Supplies, Materials, Reagents \nand Active Ingredients\nGoods, Equipment and Consulting Services", cellFont));
-                        footerCell.Colspan = 5;
-                        footerCell.HorizontalAlignment = Element.ALIGN_LEFT;
-                        footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        footerCell.Border = PdfPCell.RIGHT_BORDER | PdfPCell.BOTTOM_BORDER;
+                        //footerCell.Border = PdfPCell.BOTTOM_BORDER;
                         footer.AddCell(footerCell);
                     }
-
-                    if (i == 5)
+                    else
                     {
-                        footerCell = new PdfPCell(new Phrase("Director IV\nHead of the Procuring Agency\n\n\n\n", cellFont));
-                        footerCell.Colspan = 4;
-                        footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                        footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        footerCell.Border = PdfPCell.BOTTOM_BORDER;
                         footer.AddCell(footerCell);
                     }
-                }
-
-                for (int i = 1; i <= 15; i++)
-                {
-                    PdfPCell footerCell = new PdfPCell(new Phrase(" "));
-                    footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    footer.AddCell(footerCell);
                 }
 
 

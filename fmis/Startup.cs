@@ -57,7 +57,7 @@ namespace fmis
 
             services.Configure<FormOptions>(options =>
             {
-                options.ValueCountLimit = 4000;
+                options.ValueCountLimit = 5000;
             });
             services.AddTransient<EmailService>();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
