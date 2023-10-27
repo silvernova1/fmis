@@ -31,6 +31,8 @@ using System.Linq;
 using Item = fmis.Models.ppmp.Item;
 using Font = iTextSharp.text.Font;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using fmis.Models.Procurement;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace fmis.Controllers.Procurement
 {
@@ -53,6 +55,26 @@ namespace fmis.Controllers.Procurement
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public IActionResult SaveChecklist(PuChecklist puChecklist)
+        {
+            if (ModelState.IsValid)
+            {
+                if(puChecklist.Prno != null)
+                {
+                    puChecklist.PrChecklist = puChecklist.PrChecklist.Where(x => x.IsChecked).ToList();
+
+
+                    _context.PuChecklist.Add(puChecklist);
+                    _context.SaveChanges();
+
+
+                    return Json(new { success = true, message = "Submitted to End User" });
+                }
+            }
+
+            return Json(new { success = false, message = "Error submitting the form" });
+        }
+
         //INDEX
         #region
         public IActionResult Index()
@@ -69,6 +91,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist1()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist1");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -79,6 +103,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist2()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist2");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -89,6 +115,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist3()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist3");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -99,6 +127,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist4()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist4");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -109,6 +139,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist5()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist5");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -119,6 +151,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist6()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist6");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -129,6 +163,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist7()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist7");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -139,6 +175,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist8()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist8");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -149,6 +187,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist9()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist9");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -159,6 +199,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist10()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist10");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -169,6 +211,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist11()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist11");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -179,6 +223,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist12()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist12");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -189,6 +235,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist13()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist13");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -199,6 +247,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist14()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist14");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -209,6 +259,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist15()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist15");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -219,6 +271,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist16()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist16");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -229,6 +283,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist17()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist17");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -239,6 +295,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult Checklist18()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist18");
+
+            PrDropDownList();
             return View();
         }
         #endregion
@@ -456,7 +514,19 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        private void PrDropDownList()
+        {
+            ViewBag.PrId = new SelectList((from pr in _context.Pr.ToList()
+                                              select new
+                                              {
+                                                  Id = pr.Id,
+                                                  Prno = pr.Prno
+                                              }),
+                                     "Id",
+                                     "Prno",
+                                     null);
 
+        }
 
         #region LOGIN
         [HttpGet]

@@ -101,6 +101,9 @@ namespace fmis.Data
         public DbSet<AppExpense> AppExpense { get; set; }
         public DbSet<AppModel> AppModel { get; set; }
 
+        public DbSet<PuChecklist> PuChecklist { get; set; }
+        public DbSet<PrChecklist> PrChecklist { get; set; }
+
 
 
         public class MyEntityConfiguration : IEntityTypeConfiguration<InfraProgress>
