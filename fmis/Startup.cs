@@ -30,6 +30,8 @@ using fmis.Data.MySql;
 using fmis.Models;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -59,6 +61,9 @@ namespace fmis
             {
                 options.ValueCountLimit = 5000;
             });
+
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<EmailService>();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddCors();

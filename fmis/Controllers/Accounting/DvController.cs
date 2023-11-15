@@ -168,7 +168,7 @@ namespace fmis.Controllers.Accounting
             .OrderByDescending(e => e.DvId)
             .FirstOrDefault();
 
-            if (lastRecord != null)
+            /*if (lastRecord != null)
             {
                 int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
                 lastDvNo++;
@@ -179,7 +179,7 @@ namespace fmis.Controllers.Accounting
             else
             {
                 ViewData["DvNo"] = "S09-2872";
-            }
+            }*/
 
             return PartialView("_CreatePartial");
         }
@@ -264,7 +264,7 @@ namespace fmis.Controllers.Accounting
             .OrderByDescending(e => e.DvId)
             .FirstOrDefault();
 
-            if (lastRecord != null)
+            /*if (lastRecord != null)
             {
                 int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
                 lastDvNo++;
@@ -275,7 +275,7 @@ namespace fmis.Controllers.Accounting
             else
             {
                 ViewData["DvNo"] = "T09-4274";
-            }
+            }*/
 
             return View(newDv);
         }

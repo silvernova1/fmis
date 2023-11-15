@@ -1,17 +1,89 @@
-﻿@{
+﻿@model List<fmis.Models.Procurement.Po>
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(PurchaseOrder)";
 }
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
 
 <h3 class="grey lighter smaller">
     PURCHASE ORDER
 </h3>
 <hr>
 
-<div class="modal fade" id="EditModalPurchaseOrderNo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div id="modalContentEdit"></div> <!-- Placeholder for CanvassEdit content -->
+<div class="col-xs-12">
+    <div id="editPo" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Purchase Order</h3>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PO NO. </label>
+                                        <input type="text" class="form-control" id="poNo" name="poNo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  PO DATE </label>
+                                        <input type="text" class="form-control" id="poDate" name="poDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">SUPPLIER </label>
+                                        <input type="text" class="form-control" id="supplier" name="supplier">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  AMOUNT </label>
+                                        <input type="text" class="form-control" id="amount" name="amount">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  RMOP </label>
+                                        <input type="text" class="form-control" id="rmop" name="rmop">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" id="prNo" name="prNo" asp-items="ViewBag.PrId">
+                                            <option>Select Pr No</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="prDate" name="prDate" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> DESCRIPTION </label>
+                                        <textarea class="form-control" id="description" name="description" ></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">REMARKS</label>
+                                        <input type="text" class="form-control" id="remarks" name="remarks">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -59,134 +131,155 @@
         </tr>
     </thead>
     <tbody>
-
-        <tr>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                <a class="btn btn-xs btn-primary btn-edit" onclick="openEditPurchaseOrderNoModal()">
-                    <i class="ace-icon fa fa-edit"></i>Edit
-                </a>
-            </td>
-        </tr>
-
+        @if(Model.Count > 0)
+        {
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.PoNo
+                    </td>
+                    <td>
+                        @item.PoDate.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
+                        @item.PrNo
+                    </td>
+                    <td>
+                        @item.PrDate.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
+                        @item.Supplier
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.Amount
+                    </td>
+                    <td>
+                        @item.Rmop
+                    </td>
+                    <td>
+                        @item.Remarks
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                            <i class="ace-icon fa fa-edit"></i>Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    <div class="alert alert-danger">
+                        No data found.
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
-
-
-
-
-<div class="col-xs-12">
-
-    <div id="my-modal" class="modal fade" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 class="smaller lighter blue no-margin">Create Purchase Order</h3>
-                </div>
-                <form asp-action="Create" method="post">
-                    <div class="modal-body">
-                        <div>
-                            <h4 class="grey lighter smaller">
-                                Please complete the form.
-                            </h4>
-                            <br />
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> PO NO. </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">PO DATE </label>
-                                        <input type="date" class="form-control" id="" name="" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  PR NO. </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  SUPPLIER </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  RMOP </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> PR DATE  </label>
-                                        <input type="date" class="form-control" id="Date" name="Date">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> DESCRIPTION </label>
-                                        <input type="text" class="form-control" id="Date" name="Date">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> AMOUNT </label>
-                                        <input type="text" class="form-control" id="Date" name="Date">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">REMARKS</label>
-                                        <input type="text" class="form-control" id="ContactNumber" name="" required>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
-                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-
-        </div><!-- /.modal-dialog -->
-    </div>
-
-</div>
+@await Html.PartialAsync("_AddPo")
 
 
 <script>
-    function openEditPurchaseOrderNoModal() {
-        // Load the CanvassEdit content into the modal
-        $.get("/Procurement/PurchaseOrderEdit", function (data) {
-            $("#modalContentEdit").html(data);
-            $("#EditModalPurchaseOrderNo").modal("show");
+
+    var itemId;
+    $(document).ready(function () {
+        $(".btn-edit").click(function () {
+            itemId = $(this).data("id");
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPo", "Procurement")',
+                data: { id: itemId },
+                success: function (data) {
+                    $("#poNo").val(data.poNo);
+                    $("#poDate").val(data.poDate);
+                    $("#prNo").val(data.prNo);
+                    $("#prDate").val(data.prDate);
+                    $("#supplier").val(data.supplier);
+                    $("#amount").val(data.amount);
+                    $("#rmop").val(data.rmop);
+                    $("#description").val(data.description);
+                    $("#remarks").val(data.remarks);
+                    $("#editPo").modal("show");
+                }
+            });
         });
-    }
+
+        $("#poDate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $("#saveChanges").click(function (e) {
+            e.preventDefault();
+            var newData = {
+                Id: itemId,
+                PoNo: $("#poNo").val(),
+                PoDate: $("#poDate").val(),
+                PrNo: $("#prNo").val(),
+                PrDate: $("#prDate").val(),
+                Supplier: $("#supplier").val(),
+                Amount: $("#amount").val(),
+                Rmop: $("#rmop").val(),
+                Description: $("#description").val(),
+                Remarks: $("#remarks").val(),
+                
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePo", "Procurement")',
+                data: JSON.stringify(newData),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editPo").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                    //$("#editPo").modal("hide");
+                    //$('form')[0].reset();
+                }
+            });
+        });
+
+        $("#prNo").change(function () {
+            var selectedPrNo = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetDate","Procurement")',
+                type: 'GET',
+                data: { prNo: selectedPrNo },
+                success: function (result) {
+                    $("#prDate").val(result);
+                },
+                error: function () {
+                    console.log('Error fetching date');
+                }
+            });
+        });
+
+    });
 </script>

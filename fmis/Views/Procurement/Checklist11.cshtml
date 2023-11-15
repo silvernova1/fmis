@@ -1,4 +1,5 @@
-﻿@{
+﻿@model fmis.Models.Procurement.PuChecklist
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(Checklist11)";
 }
@@ -104,124 +105,173 @@
     <div class="card-container">
 
         <div class="row">
-
-            <div class="col-md-12">
-                <center>
-                    <div class="rectangle">
-                        <h2>P.U CHECKLIST #11</h2>
-                    </div>
-                    <h5 style="font-weight:bold">
-                        PURCHASE REQUEST (PR) FOR <br />
-                        <u style="font-size:15pt">
-                            FURNITURES & FIXTURES
-                        </u>
-                    </h5>
-                    <h5>PR NO. : __________________</h5>
-                    <h5>DATE : ___________________</h5>
-                    <div class="rectangle">
-                        <h6 style="font-weight:bold">
-                            SUPPORTING DOCUMENTS/DETAILS
-                        </h6>
-                    </div>
-                </center>
-                <div class="form-group">
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Complete signatures incl. approval
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Complete with PR # and date
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Estimated unit cost & correct total cost
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Purpose of Request
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Funding Source
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Pre-"Job Order" Inspection Report (if equipment is a replacement <br />
-                        &nbsp; &nbsp; &nbsp; &nbsp; of defective unit)
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        With Phrase "LEASE FOR 3 MONTHS" if fund source <br />
-                        &nbsp; &nbsp; &nbsp; &nbsp; is not CAPITAL OUTLAY
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        With complete description but not limited to size, dimension, <br />
-                        &nbsp; &nbsp; &nbsp; &nbsp; color, make, type, horsepower, capacity, etc.
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                         Provision of warranty, if applicable 
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Name of user or location office
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Approved Justification, if applicable
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Approved Realignment, If applicable
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Approved WFP/Supplemental WFP
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        Approved PPMP/Supplemental PPMP
-                    </p>
-                    <p>
-                        <input type="checkbox" class="form-check-input">
-                        <u style="font-weight:bold">Others</u> <br />
-                        &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
-                    </p>
-                    <br />
-                    <p style="font-weight:bold">
-                        REMARKS:
-                    </p>
-                    <p style="font-weight:bold">
-                        <input type="checkbox" class="form-check-input">
-                        COMPLETE
-                    </p>
-                    <p style="font-weight:bold">
-                        <input type="checkbox" class="form-check-input">
-                        Please comply with item(s) marked <br />
-                        &nbsp; &nbsp; &nbsp; &nbsp; X on or before _________________________
-                    </p>
-                    <br />
-                    <br />
-                    <p style="font-family:'Times New Roman'; font-style:italic; font-size: 10pt">
-                        CHECKED/REVIEWED BY:
-                    </p>
-                    <br />
+            <form asp-controller="Procurement" asp-action="SaveChecklist">
+                <input type="hidden" asp-for="ChecklistNo" value="11" />
+                <div class="col-md-12">
                     <center>
-                        <p class="underline">
-                            LUCHE F. QUIRANTE
-                        </p>
+                        <div class="rectangle">
+                            <h2>P.U CHECKLIST #11</h2>
+                        </div>
+                        <h5 style="font-weight:bold">
+                            PURCHASE REQUEST (PR) FOR <br />
+                            <u style="font-size:15pt">
+                                FURNITURES & FIXTURES
+                            </u>
+                        </h5>
+                        <h6>
+                            PR NO :
+                            <select asp-for="Prno" asp-items="ViewBag.PrId" class="form-control pr" style="width: 200px;">
+                                <option value="">Select Pr</option>
+                            </select>
+                        </h6>
+                        <h6>
+                            DATE : <input type="date" asp-for="PuChecklistDate" class="text-input-container" style="width: 200px;" />
+                        </h6>
+                        <div class="rectangle">
+                            <h6 style="font-weight:bold">
+                                SUPPORTING DOCUMENTS/DETAILS
+                            </h6>
+                        </div>
                     </center>
-
+                    <div class="form-group">
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[0].IsChecked" class="form-check-input">
+                            Complete signatures incl. approval
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[1].IsChecked" class="form-check-input">
+                            Complete with PR # and date
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[2].IsChecked" class="form-check-input">
+                            Estimated unit cost & correct total cost
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[3].IsChecked" class="form-check-input">
+                            Purpose of Request
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[4].IsChecked" class="form-check-input">
+                            Funding Source
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[5].IsChecked" class="form-check-input">
+                            Pre-"Job Order" Inspection Report (if equipment is a replacement <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; of defective unit)
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
+                            With Phrase "LEASE FOR 3 MONTHS" if fund source <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; is not CAPITAL OUTLAY
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[7].IsChecked" class="form-check-input">
+                            With complete description but not limited to size, dimension, <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; color, make, type, horsepower, capacity, etc.
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
+                            Provision of warranty, if applicable
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
+                            Name of user or location office
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
+                            Approved Justification, if applicable
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
+                            Approved Realignment, If applicable
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
+                            Approved WFP/Supplemental WFP
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
+                            Approved PPMP/Supplemental PPMP
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[14].IsChecked" class="form-check-input">
+                            <u style="font-weight:bold">Others</u> <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                        </p>
+                        <br />
+                        <p style="font-weight:bold">
+                            REMARKS:
+                        </p>
+                        <p style="font-weight:bold">
+                            <input type="checkbox" asp-for="PrChecklist[15].IsChecked" class="form-check-input">
+                            COMPLETE
+                        </p>
+                        <p style="font-weight:bold">
+                            <input type="checkbox" asp-for="PrChecklist[16].IsChecked" class="form-check-input">
+                            Please comply with item(s) marked <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before _________________________
+                        </p>
+                        <br />
+                        <br />
+                        <p style="font-family:'Times New Roman'; font-style:italic; font-size: 10pt">
+                            CHECKED/REVIEWED BY:
+                        </p>
+                        <br />
+                        <center>
+                            <p class="underline">
+                                LUCHE F. QUIRANTE
+                            </p>
+                            <button type="submit" class="bnt btn-primary" style="float: right;">Submit</button>
+                        </center>
+                    </div>
                 </div>
-
-            </div>
-
+            </form>
         </div>
-
     </div>
 </div>
+
+<br />
+<div class="alert" style="width: 550px; display: none;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <span id="alert-message"></span>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.pr').select2();
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '@Url.Action("SaveChecklist", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    var $alert = $('.alert');
+                    var $alertMessage = $('#alert-message');
+
+                    if (result.success) {
+                        $alert
+                            .removeClass('alert-danger')
+                            .addClass('alert-success');
+                    } else {
+                        $alert
+                            .removeClass('alert-success')
+                            .addClass('alert-danger');
+                    }
+
+                    $alertMessage.text(result.message);
+                    $alert.show();
+
+                    $('form')[0].reset();
+                    $('.pr').val('').trigger('change');
+                },
+                error: function () {
+                }
+            });
+        });
+    });
+</script>
 
 
 

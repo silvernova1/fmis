@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<fmis.Models.Procurement.BacResNo>
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(BacResNo)";
 }
@@ -14,15 +15,39 @@
 <div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div id="modalContent"></div> <!-- Placeholder for content -->
+            <div id="modalContent"></div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="EditModalBacResNo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div id="modalContentEdit"></div> <!-- Placeholder for CanvassEdit content -->
+<div class="col-xs-12">
+    <div id="editModal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Update Bac Resolution No.</h3>
+                </div>
+                <form id="editForm">
+                    <div class="modal-body">
+                        <div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="BacResNumber" style="font-weight:bold">BAC RES NO. </label>
+                                        <input type="text" class="form-control" id="bacResNumber" name="bacResNumber" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -40,80 +65,81 @@
             <th>
                 BAC RESOLUTION NO.
             </th>
-     
             <th>
                 ACTIONS
             </th>
         </tr>
     </thead>
     <tbody>
-
-        <tr>
-            <td>
-                10101010101
-            </td>
-            <td>
-                <a class="btn btn-xs btn-primary btn-edit" onclick="openEditBacResNoModal()">
-                    <i class="ace-icon fa fa-edit"></i>Edit
-                </a>
-            </td>
-        </tr>
-
+        @if(Model.Count > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item?.BacResNumber
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                            <i class="ace-icon fa fa-edit"></i>Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">
+                    <div class="alert alert-danger">
+                        No data found.
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
-<div class="col-xs-12">
-
-    <div id="my-modal" class="modal fade" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 class="smaller lighter blue no-margin">Create Bac Resolution No.</h3>
-                </div>
-                <form asp-action="Create" method="post">
-                    <div class="modal-body">
-                        <div>
-                            <br />
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">BAC RES NO. </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                    
-                                </div>
-                            </div>
+@await Html.PartialAsync("_AddBacResNo")
 
 
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
-                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-
-        </div><!-- /.modal-dialog -->
-    </div>
-
-
-
-
-    <!-- PAGE CONTENT ENDS -->
-</div>
 
 <script>
-    function openEditBacResNoModal() {
-        // Load the CanvassEdit content into the modal
-        $.get("/Procurement/BacResolutionNoEdit", function (data) {
-            $("#modalContentEdit").html(data);
-            $("#EditModalBacResNo").modal("show");
+    var itemId;
+
+    $(document).ready(function () {
+        $(".btn-edit").click(function () {
+            itemId = $(this).data("id");
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetItem", "Procurement")',
+                data: { id: itemId },
+                success: function (data) {
+                    $("#bacResNumber").val(data.bacResNumber);
+                    $("#editModal").modal("show");
+                }
+            });
         });
-    }
+
+        $("#saveChanges").click(function () {
+            var newData = {
+                Id: itemId,
+                BacResNumber: $("#bacResNumber").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateItem", "Procurement")',
+                data: JSON.stringify(newData),
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    $("#editModal").modal("hide");
+
+                    location.reload();
+                }
+            });
+        });
+    });
 </script>
 
