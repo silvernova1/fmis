@@ -33,10 +33,11 @@ using Font = iTextSharp.text.Font;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using fmis.Models.Procurement;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace fmis.Controllers.Procurement
 {
-    
+
     public class ProcurementController : Controller
     {
 
@@ -59,7 +60,7 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                if(puChecklist.Prno != null)
+                if (puChecklist.Prno != null)
                 {
                     puChecklist.PrChecklist = puChecklist.PrChecklist.Where(x => x.IsChecked).ToList();
 
@@ -308,18 +309,45 @@ namespace fmis.Controllers.Procurement
         public IActionResult BacResolutionNo()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Bac", "BacResolutionNo");
-            return View();
+
+            var bacResNo = _context.BacResNo.ToList();
+
+            return View(bacResNo);
         }
-        #endregion
 
+        public IActionResult SaveBacResNo(BacResNo model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(model);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("BacResolutionNo");
+        }
 
-        //LOGBOOK BAC RES NO EDIT
-        #region
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult BacResolutionNoEdit()
         {
-            // You can add any necessary logic here before rendering the CanvassEdit view.
             return PartialView("BacResolutionNoEdit");
+        }
+
+        [HttpGet]
+        public IActionResult GetItem(int id)
+        {
+            var item = _context.BacResNo.Find(id);
+            return Json(item);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateItem([FromBody] BacResNo newData)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Update(newData);
+                _context.SaveChanges();
+                return RedirectToAction("BacResolutionNo");
+            }
+            return BadRequest(ModelState);
         }
         #endregion
 
@@ -331,7 +359,35 @@ namespace fmis.Controllers.Procurement
         public IActionResult RmopSignatory()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Signatory", "RmopSignatory");
-            return View();
+
+            var rmop = _context.Rmop.ToList();
+            return View(rmop);
+        }
+        public IActionResult SaveRmop(Rmop model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(model);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("RmopSignatory");
+        }
+        [HttpGet]
+        public IActionResult GetRmop(int id)
+        {
+            var item = _context.Rmop.Find(id);
+            return Json(item);
+        }
+        [HttpPost]
+        public IActionResult UpdateRmop([FromBody] Rmop newData)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Update(newData);
+                _context.SaveChanges();
+                return RedirectToAction("RmopSignatory");
+            }
+            return BadRequest(ModelState);
         }
         #endregion
 
@@ -352,8 +408,29 @@ namespace fmis.Controllers.Procurement
         public IActionResult AgencyToAgency()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "AgencyToAgency");
+            BacResNoDownList();
+            PrDropDownList();
+
+
+
             return View();
         }
+
+        public IActionResult SavePrAta(RmopAta model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+            return Json(new { success = false });
+        }
+
         #endregion
 
         //RMOP DIRECT CONTRACTING
@@ -362,8 +439,28 @@ namespace fmis.Controllers.Procurement
         public IActionResult DirectContracting()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "DirectContracting");
+            BacResNoDownList();
+            PrDropDownList();
+
             return View();
         }
+
+        public IActionResult SaveRmopDc(RmopDc model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true, message = "RMOP DIRECT CONTRACTING (DRUGS AND MEDS) saved successfully." });
+                }
+            }
+
+            return Json(new { success = false, message = "Error submitting the form" });
+        }
+
         #endregion
 
 
@@ -373,8 +470,28 @@ namespace fmis.Controllers.Procurement
         public IActionResult EmergencyCases()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "EmergencyCases");
+            BacResNoDownList();
+            PrDropDownList();
+
             return View();
         }
+
+        public IActionResult SaveRmopEc(RmopEc model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
         #endregion
 
 
@@ -384,7 +501,26 @@ namespace fmis.Controllers.Procurement
         public IActionResult LeaseOfVenue()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "LeaseOfVenue");
+            BacResNoDownList();
+            PrDropDownList();
+
             return View();
+        }
+
+        public IActionResult SaveRmopLov(RmopLov model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 
@@ -394,7 +530,26 @@ namespace fmis.Controllers.Procurement
         public IActionResult PublicBidding()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PublicBidding");
+            BacResNoDownList();
+            PrDropDownList();
+
+
             return View();
+        }
+        public IActionResult SaveRmopPb(RmopPb model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 
@@ -405,7 +560,25 @@ namespace fmis.Controllers.Procurement
         public IActionResult PsDbm()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PsDbm");
+            BacResNoDownList();
+            PrDropDownList();
+
             return View();
+        }
+        public IActionResult SaveRmopPsDbm(RmopPsDbm model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 
@@ -416,7 +589,27 @@ namespace fmis.Controllers.Procurement
         public IActionResult ScientificScholarly()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "ScientificScholarly");
+            BacResNoDownList();
+            PrDropDownList();
+
+
             return View();
+        }
+
+        public IActionResult SaveRmopSs(RmopSs model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 
@@ -426,19 +619,82 @@ namespace fmis.Controllers.Procurement
         public IActionResult SmallValue()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "SmallValue");
+            BacResNoDownList();
+            PrDropDownList();
+
+
             return View();
+        }
+
+        public IActionResult SaveRmopSvp(RmopSvp model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 
 
-   
+
         //LOGBOOK CANVASS
         #region
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Canvass()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Canvass");
-            return View();
+
+            var canvass = _context.Canvass.ToList();
+
+            return View(canvass);
+        }
+
+        [HttpPost]
+        public IActionResult SaveCanvass(Canvass model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(model.RpqNo))
+                {
+                    _context.Canvass.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+        public IActionResult GetCanvass(int id)
+        {
+            var item = _context.Canvass.Find(id);
+            return Json(item);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateCanvass([FromBody] Canvass newData)
+        {
+            if (ModelState.IsValid)
+            {
+                if (newData.RpqNo != null || newData.RpqNo == "")
+                {
+                    _context.Canvass.Update(newData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 
@@ -459,8 +715,67 @@ namespace fmis.Controllers.Procurement
         public IActionResult Abstract()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Abstract");
-            return View();
+            PrWithDate();
+            CanvassWithDate();
+
+            return View(_context.Abstract.ToList());
         }
+
+        public IActionResult SaveAbstract(Abstract model)
+        {
+            if(ModelState.IsValid)
+            {
+                if(!String.IsNullOrEmpty(model.AbstractNo))
+                {
+                    _context.Abstract.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true } );
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+        public IActionResult GetAbstract(int id)
+        {
+            var item = _context.Abstract.Find(id);
+            if (item != null)
+            {
+                string formattedAbstractDate = item.AbstractDate.ToString("MMM d, yyyy");
+
+                var result = new
+                {
+                    AbstractNo = item.AbstractNo,
+                    AbstractDate = formattedAbstractDate,
+                    PrNoWithDate = item.PrNoWithDate,
+                    CanvassNoWithDate = item.CanvassNoWithDate,
+                    RecommendedAward = item.RecommendedAward,
+                    Rmop = item.Rmop
+                };
+
+                return Json(result);
+            }
+
+            return NotFound();
+        }
+
+        public IActionResult UpdateAbstract([FromBody] Abstract newData)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(newData.AbstractNo))
+                {
+                    _context.Abstract.Update(newData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
         #endregion
 
         //LOGBOOK ABSTRACT EDIT
@@ -468,7 +783,7 @@ namespace fmis.Controllers.Procurement
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult AbstractEdit()
         {
-            // You can add any necessary logic here before rendering the CanvassEdit view.
+            
             return PartialView("AbstractEdit");
         }
         #endregion
@@ -480,8 +795,86 @@ namespace fmis.Controllers.Procurement
         public IActionResult PurchaseOrder()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "PurchaseOrder");
-            return View();
+            PrDropDownList();
+
+            return View(_context.Po.ToList());
         }
+
+        public JsonResult GetDate(int prNo)
+        {
+            var date = _context.Pr.FirstOrDefault(x => x.Id == prNo)?.PrnoDate;
+
+            if (date != null)
+            {
+                string formattedDate = date.Value.ToString("MMM d, yyyy");
+
+                return Json(formattedDate);
+            }
+
+            return Json("Date not found");
+        }
+
+        [HttpPost]
+        public IActionResult SavePo(Po model)
+        {
+            if(ModelState.IsValid)
+            {
+                if(!String.IsNullOrEmpty(model.PoNo))
+                {
+                    _context.Po.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+        public IActionResult GetPo(int id)
+        {
+            var item = _context.Po.Find(id);
+            if (item != null)
+            {
+                string formattedPrDate = item.PrDate.ToString("MMM d, yyyy");
+                string formattedPoDate = item.PrDate.ToString("MMM d, yyyy");
+
+                var result = new
+                {
+                    PoNo = item.PoNo,
+                    PoDate = formattedPoDate,
+                    PrNo = item.PrNo,
+                    PrDate = formattedPrDate,
+                    Description = item.Description,
+                    Supplier = item.Supplier,
+                    Amount = item.Amount,
+                    Rmop = item.Rmop,
+                    Remarks = item.Remarks
+                };
+
+                return Json(result);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public IActionResult UpdatePo([FromBody] Po newData)
+        {
+            if (ModelState.IsValid)
+            {
+                if(!String.IsNullOrEmpty(newData.PoNo))
+                {
+                    _context.Update(newData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
         #endregion
 
         //LOGBOOK PURCHASE ORDER EDIT
@@ -514,9 +907,35 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        private void CanvassWithDate()
+        {
+            ViewBag.CanvassWithDate = new SelectList((from c in _context.Canvass.Where(x => x.RpqNo != null).ToList()
+                                                 select new
+                                                 {
+                                                     CanvassDate = c.RpqNo + " - " + c.RpqDate.ToString("M-d-yyyy")
+                                                 }),
+                                     "CanvassDate",
+                                     "CanvassDate",
+                                     null);;
+
+        }
+
+        private void PrWithDate()
+        {
+            ViewBag.PrWithDate = new SelectList((from pr in _context.Pr.Where(x => x.Prno != null).ToList()
+                                           select new
+                                           {
+                                               PrWithDate = pr.Prno + " - " + pr.PrnoDate.ToString("M-d-yyyy")
+                                           }),
+                                     "PrWithDate",
+                                     "PrWithDate",
+                                     null);
+
+        }
+
         private void PrDropDownList()
         {
-            ViewBag.PrId = new SelectList((from pr in _context.Pr.ToList()
+            ViewBag.PrId = new SelectList((from pr in _context.Pr.Where(x=>x.Prno != null).ToList()
                                               select new
                                               {
                                                   Id = pr.Id,
@@ -524,6 +943,20 @@ namespace fmis.Controllers.Procurement
                                               }),
                                      "Id",
                                      "Prno",
+                                     null);
+
+        }
+
+        private void BacResNoDownList()
+        {
+            ViewBag.BacResNo = new SelectList((from bcn in _context.BacResNo.ToList()
+                                           select new
+                                           {
+                                               Id = bcn.Id,
+                                               BacResNo = bcn.BacResNumber
+                                           }),
+                                     "Id",
+                                     "BacResNo",
                                      null);
 
         }

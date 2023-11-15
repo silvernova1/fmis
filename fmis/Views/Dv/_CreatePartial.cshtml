@@ -63,7 +63,7 @@
             </div>
             <div class="1stcol col-md-2" style="width: 130px;">
                 <h5>Dv #: </h5>
-                <input asp-for="DvNo" type="text" id="dvno" class="form-control" value="@ViewData["DvNo"]" onchange="DvCheck()" />
+                <input asp-for="DvNo" id="exemptedInput" type="text" class="form-control" />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
                 <p id="DvCheck" />
             </div>
@@ -808,7 +808,7 @@
         var retention = document.getElementById("retention");
         var payment_of = document.getElementById("payment_of");
         var containerElement = document.getElementsByClassName("container")[0];
-        console.log(progress);
+        //console.log(progress);
         if (selectedOption === "1") {
             containerElement.style.height = "650px";
             advance.style.display = "block";
@@ -855,7 +855,7 @@
     $(function () {
         $("select#dv_type").change(function () {
             var cid = $(this).val();
-            console.log(cid);
+            //console.log(cid);
             if (cid == 'S') {
                 //$("#advance-gross").show();
                 //$("#advance-deduction1").show();
@@ -898,11 +898,13 @@
 
     //adding comma after 3 digits
     function updateTextView(_obj) {
-        var num = +_obj.val();
-        if (num == '') {
-            _obj.val('0');
-        } else {
-            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+        if (_obj.attr('id') !== 'exemptedInput') {
+            var num = +_obj.val();
+            if (num == '') {
+                _obj.val('0');
+            } else {
+                _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+            }
         }
     }
     function getNumber(_str) {
@@ -980,7 +982,7 @@
         let dvDeduction = $(parentDiv).find('select');
         let dvDedectionAmt = $(parentDiv).find('input');
         if (dvDeduction.val() && dvDedectionAmt.val()) {
-            console.log(dvDeduction.val(), dvDedectionAmt.val());
+            //console.log(dvDeduction.val(), dvDedectionAmt.val());
         }
         computeNetAmount();
     }

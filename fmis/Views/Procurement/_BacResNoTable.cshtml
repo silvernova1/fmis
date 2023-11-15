@@ -1,0 +1,22 @@
+﻿@model List<fmis.Models.Procurement.BacResNo>
+
+<table class="table table-hover" style="width: 900px">
+    <thead>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item?.BacResNumber
+                </td>
+                <td>
+                    <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                        <i class="ace-icon fa fa-edit"></i>Edit
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
