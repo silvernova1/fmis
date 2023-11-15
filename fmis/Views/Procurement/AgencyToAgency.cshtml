@@ -1,4 +1,5 @@
-﻿@{
+﻿@model fmis.Models.Procurement.RmopAta
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(AgencyToAgency)";
 }
@@ -6,7 +7,7 @@
 <style>
 
     .card-container {
-        width: calc(70% - 10px); /* Adjust the total width by considering padding (20px on each side) */
+        width: calc(70% - 10px);
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -15,21 +16,19 @@
         margin-left: 50px;
     }
 
-    /* Media query for tablets (landscape and portrait) */
     @@media (max-width: 1024px) {
         .card-container {
-            width: calc(80% - 40px); /* Adjust width for tablets */
+            width: calc(80% - 40px);
         }
     }
 
-    /* Media query for mobile devices */
     @@media (max-width: 767px) {
         .background-wrapper {
             min-height: 100vh;
         }
 
         .card-container {
-            width: 90%; /* Adjust width for mobile devices */
+            width: 90%;
         }
     }
 
@@ -37,8 +36,8 @@
 
     .rectangle h2 {
         white-space: nowrap;
-        margin-top: 5px; /* Add space at the top */
-        margin-bottom: 5px; /* Add space at the bottom */
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 
     .rectangle h6 {
@@ -65,52 +64,56 @@
 
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 columns with equal width */
+        grid-template-columns: repeat(3, 1fr);
        
     }
 
     .grid-item {
-        padding: 5px; /* Add padding for spacing within each grid item */
+        padding: 5px;
         text-align: center;
-        margin-top: 20px; /* A/* Center-align the text within each grid item */
+        margin-top: 20px;
     }
 
     .logo-container {
-        float: left; /* Float the logo container to the left */
-        /* Adjust the margin as needed */
+        float: left;
     }
 
-    /* Style for the logo image */
     .logo-image {
-        max-width: 100px; /* Adjust the max-width of the logo image */
+        max-width: 100px;
     }
 
 
 
 </style>
 <h3 class="grey lighter smaller">
-    RMOP AGENCY TO AGENCY
+    RMOP AGENCY TO AGENCY 
 </h3>
 <hr>
-<div class="background-wrapper">
-    <div class="card-container">
-        <div class="row">
-            <div class="col-md-12">
+
+<div class="card-container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-controller="Procurement" asp-action="SavePrAta" method="post">
                 <div class="logo-container">
                     <img src="~/assets/images/doh_logo_updated.png" alt="Logo" style="margin-left:160px" class="logo-image" />
                 </div>
                 <center>
-   
                     <div style="margin-right: 300px;">
                         <p class="TimesNewRoman">Republic of the Philippines</p>
                         <p class="TimesNewRoman">Department Of Health </p>
-                        <h4 class="TimesNewRoman" style="font-weight:bold">CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT </h4>
+                        <h4 class="TimesNewRoman" style="font-weight:bold">CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT</i></h4>
                         <br />
                         <br />
-                        <h5 class="TimesNewRoman" style="font-weight:bold">BAC RESOLUTION NO. <b id="editableText" data-type="select" data-value="Initial Value">______ </b>-AMP s.  2023</h5>
+                        <h5 class="TimesNewRoman" style="font-weight:bold">
+                            BAC RESOLUTION NO.
+                            <b id="bacNo" data-type="select">______ </b>
+                            <input type="hidden" name="BacNo" id="BacNoHidden" />
+                            -AMP s.  2023
+                        </h5>
                     </div>
                     <br />
-                    <h5 class="TimesNewRoman" style="font-weight:bold">“RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:<br /> 
+                    <h5 class="TimesNewRoman" style="font-weight:bold">
+                        “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:<br />
                         NEGOTIATED PROCUREMENT (AGENCY TO AGENCY) UNDER SEC. 53.5 OF <br />
                         THE REVISED IMPLEMENTING RULES AND REGULATIONS OF RA 9184.”
                         __________________________________________________________________________________
@@ -130,10 +133,15 @@
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> is tasked with a centralized procurement of Common-Use Supplies for the GoP in accordance with Letters of </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> Instruction No. 755 and E.O. 359, s. 1989; </h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> corollary thereto, Purchase Request No. ________ for the Procurement of </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <span id="inputtedText" data-type="text" data-pk="1" data-url="/your-server-endpoint">___________________________________________________________________________________ </span></h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ________________________________________________________________________________ in the</h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> amount of PHP ______________ was referred to the Bids and Awards Committee for processing; </h5>
+                    <h5 style="margin-left:300px;" class="TimesNewRoman">
+                        <b>WHEREAS,</b> corollary thereto, Purchase Request No.
+                        <b id="prNoOne" data-type="select">______ </b>
+                        <input type="hidden" name="PrNoOne" id="PrNoOneHidden" />
+                        for the Procurement of
+                    </h5>
+                    <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 640px; font-family: 'Times New Roman'; font-size: 14px;">
+                    @*<h5 style="margin-left:245px;" class="TimesNewRoman"> <span >___________________________________________________________________________________ </span></h5>*@
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing; </h5>
                     <br />
                     <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> after evaluation of the purchase request vis-à-vis the implementing rules and upon  </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> confirmation of the existence of the conditions allowing the same, the BAC has come to a resolution that  </h5>
@@ -141,16 +149,21 @@
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> of the IRR would be most advantageous to the government and is essentially the most applicable recourse </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> given the availing circumstances;   </h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> the BAC shall contract the foregoing procurement with the __(Agency)___; </h5>
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> the BAC shall contract the foregoing procurement with the <input type="text" style="border: none; border-bottom: 1px solid black; width: 30px;" name="AgencyBefore">(Agency) <input type="text" style="border: none; border-bottom: 1px solid black; width: 30px;" name="AgencyAfter">; </h5>
                     <br />
                     <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, to </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> recommend the use of the Alternative Mode of Procurement: Negotiated Procurement (Agency to Agency) </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman"> under Sec. 53.5 of the Revised Implementing  Rules and Regulations of the Republic Act No. 9184 for </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman">Purchase Request No. _____________ , in the amount of PHP ______________ for the  Procurement of </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ___________________________________________________________________________________ </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ________________________________________________________________________________. </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman">
+                        Purchase Request No.
+                        <b id="prNoTwo" data-type="select">______ </b>
+                        <input type="hidden" name="PrNoTwo" id="PrNoTwoHidden" />
+                        , in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 100px;" name="PrAmountTwo"> for the  Procurement of
+                    </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 640px;" name="PrDescriptionTwo"> </h5>
+                    @*<h5 style="margin-left:245px;" class="TimesNewRoman"> ________________________________________________________________________________. </h5>*@
                     <br />
-                    <h5 style="margin-left:320px;" class="TimesNewRoman"> __________________________ 2023 , Cebu City, Philippines. </h5>
+                    <h5 style="margin-left:320px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 120px;" name="PrDate"> 2023 , Cebu City, Philippines. </h5>
                     <br />
                     <br />
                 </div>
@@ -183,7 +196,7 @@
                         <p class="TimesNewRoman">Chairperson</p>
                         <br />
                         <br />
-                        <h5 class="TimesNewRoman" style="margin-right:300px;" >Approved:</h5>
+                        <h5 class="TimesNewRoman" style="margin-right:300px;">Approved:</h5>
                         <br />
                         <h5 class="TimesNewRoman" style="font-weight:bold">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
                         <p class="TimesNewRoman">Director IV</p>
@@ -193,42 +206,93 @@
                         <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
                         <p class="TimesNewRoman">Vice-Chairperson</p>
                     </div>
-
-
                 </div>
-
                 <br />
-            </div>
+                <div class="col-md-12 bg-light text-right">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
-<Script>
+<script>
     $(document).ready(function () {
-        // Initialize x-editable
-        $('#editableText').editable({
-            source: [
-                { value: 'Option 1', text: 'Option 1' },
-                { value: 'Option 2', text: 'Option 2' },
-                { value: 'Option 3', text: 'Option 3' }
-            ],
+        var sourceData = @Json.Serialize(ViewBag.BacResNo);
+        var prData = @Json.Serialize(ViewBag.PrId);
+
+        // Initialize X-Editable
+        $('#bacNo').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Bac No',
             success: function (response, newValue) {
-                // Handle the updated value here (e.g., update it in the database)
-                console.log('Updated value:', newValue);
+                $('#BacNoHidden').val(newValue);
             }
         });
-    });
+        //Pr No 1
+        $('#prNoOne').editable({
+            type: 'select',
+            source: prData,
+            title: 'Select Pr No',
+            success: function (response, newValue) {
+                $('#PrNoOneHidden').val(newValue);
+            }
+        });
+        //Pr No 2
+        $('#prNoTwo').editable({
+            type: 'select',
+            source: prData,
+            title: 'Select Pr No',
+            success: function (response, newValue) {
+                $('#PrNoTwoHidden').val(newValue);
+            }
+        });
 
-    $('#inputtedText').editable({
-        success: function (response, newValue) {
-            // Handle the updated value here (e.g., update it in the database)
-            console.log('Updated value:', newValue);
-        }
-    });
+        $('form').submit(function (e) {
+            e.preventDefault();
 
-</Script>
+            $.ajax({
+                url: '@Url.Action("SavePrAta", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    //var form = $(this);
+                    //var action = form.attr('action');
+                    //var data = form.serialize();
+
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'RMOP AGENCY TO AGENCY saved successfully.'
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form.'
+                        });
+                    }
+
+                    $('form')[0].reset();
+                    $('#BacNoHidden').val('');
+                    $('#PrNoOneHidden').val('');
+                    $('#PrNoTwoHidden').val('');
+                },
+                error: function () {
+                }
+            });
+        });
+
+    });
+</script>
 
 
 

@@ -101,6 +101,22 @@ namespace fmis.Data
         public DbSet<AppExpense> AppExpense { get; set; }
         public DbSet<AppModel> AppModel { get; set; }
 
+        public DbSet<PuChecklist> PuChecklist { get; set; }
+        public DbSet<PrChecklist> PrChecklist { get; set; }
+        public DbSet<BacResNo> BacResNo { get; set; }
+        public DbSet<Rmop> Rmop { get; set; }
+        public DbSet<RmopAta> RmopAta { get; set; }
+        public DbSet<RmopDc> RmopDc { get; set; }
+        public DbSet<RmopEc> RmopEc { get; set; }
+        public DbSet<RmopLov> RmopLov { get; set; }
+        public DbSet<RmopPb> RmopPb { get; set; }
+        public DbSet<RmopPsDbm> RmopPsDbm { get; set; }
+        public DbSet<RmopSs> RmopSs { get; set; }
+        public DbSet<RmopSvp> RmopSvp { get; set; }
+        public DbSet<Canvass> Canvass { get; set; }
+        public DbSet<Po> Po { get; set; }
+        public DbSet<Abstract> Abstract { get; set; }
+
 
 
         public class MyEntityConfiguration : IEntityTypeConfiguration<InfraProgress>
