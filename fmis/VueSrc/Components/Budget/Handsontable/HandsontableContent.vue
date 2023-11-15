@@ -985,13 +985,12 @@
                     }
                 }
 
-                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue }
+                const send_data = { row: row, col: col, afterChange: true, userid: userInfo.value.userid, data: newValue, totalObligation: totalObligation.value }
                 socket.value.send(JSON.stringify(send_data));
 
                 await __saveObligationAmount(obligation_amount_data)
                 $toast.success('Successfully Save Obligation Amount!');
                 return;
-
             }
 
             let obligation_data = new FormData();
@@ -1151,6 +1150,8 @@
         totalObligation.value = totalSumObligation;
 
         const response = await saveObligationAmount(data);
+        const send_data = { afterChange: true, userid: userInfo.value.userid }
+        socket.value.send(JSON.stringify(send_data));
     }
 
     const __deleteObligation = async (data: {}) => {

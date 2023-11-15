@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Xml;
 using fmis.Models.pr;
 using fmis.Models.ppmp;
+using fmis.Models.Procurement;
 
 namespace fmis.Data
 {
@@ -96,6 +97,8 @@ namespace fmis.Data
         public DbSet<Expense> Expense { get; set; }
         public DbSet<Item> Item { get; set; }
         public DbSet<IndexUser> IndexUser { get; set; }
+
+        public DbSet<AppExpense> AppExpense { get; set; }
         public DbSet<AppModel> AppModel { get; set; }
 
 

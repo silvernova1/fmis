@@ -881,6 +881,7 @@
 
                         </ul>
                     </li>
+
                 </ul>
             </li>
 
@@ -982,10 +983,494 @@
         }
 
 
+        @if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+        {
+            <li class="@if (ViewBag.filter.main == "Maiff")
+                    @Html.Raw("active open")
+
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-user"></i>
+                    <span class="menu-text"> MAIFF </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub == "Dv")
+                    @Html.Raw("active")
+">
+
+                        <a asp-area="" asp-controller="Maiff" asp-action="Index">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Disbursement Voucher
+                        </a>
+
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+        }
+
+
+
+
+
+
+
+        @if (User.FindFirstValue(ClaimTypes.Role) == "pu_admin" )
+        {
+            <li class="@if (ViewBag.filter.main == "Procurement")
+                    @Html.Raw("active open")">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-shopping-cart"></i>
+                    <span class="menu-text"> PROCUREMENT </span>
+                </a>
+            
+            </li>
+            <li class="@if (ViewBag.filter.sub == "Checklist")
+                    @Html.Raw("active open")
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-check-square"></i>
+                    <span class="menu-text"> CHECK LIST  </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist1")
+                     @Html.Raw("active")
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist1">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #1
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist2")
+                     @Html.Raw("active")
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist2">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #2
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist3")
+                     @Html.Raw("active")
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist3">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #3
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist4")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist4">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #4
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist5")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist5">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #5
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist6")
+                     @Html.Raw("active")
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist6">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #6
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist7")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist7">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #7
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist8")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist8">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #8
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist9")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist9">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #9
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist10")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist10">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #10
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist11")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist11">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #11
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist12")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist12">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #12
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist13")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist13">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #13
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist14")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist14">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #14
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist15")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist15">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #15
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist16")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist16">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #16
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist17")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist17">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #17
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Checklist18")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Checklist18">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            Checklist #18
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="@if (ViewBag.filter.sub == "Bac")
+                    @Html.Raw("active open")
+
+
+
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-hashtag"></i>
+                    <span class="menu-text"> BAC RES NO. </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "BacResolutionNo")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="BacResolutionNo">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            LIST OF NO.
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="@if (ViewBag.filter.sub == "Signatory")
+                    @Html.Raw("active open")
+
+
+
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-users"></i>
+                    <span class="menu-text"> RMOP's Signatory  </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "RmopSignatory")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="RmopSignatory">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            LIST OF SIGNATORY
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="@if (ViewBag.filter.sub == "Rmop")
+                    @Html.Raw("active open")
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-list"></i>
+                    <span class="menu-text"> RMOP's  </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "AgencyToAgency")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="AgencyToAgency">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            AGENCY TO AGENCY
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "DirectContracting")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="DirectContracting">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            DIRECT CONTRACTING (DRUGS & MEDS)
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "EmergencyCases")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="EmergencyCases">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            EMERGENCY CASES (DRUGS & MEDS)
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "LeaseOfVenue")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="LeaseOfVenue">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            LEASE OF VENUE (GOODS) 
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "PublicBidding")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="PublicBidding">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            PB (GOODS AND EQUIPMENT)
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "PsDbm")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="PsDbm">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            PS-DBM
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "ScientificScholarly")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="ScientificScholarly">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            SCIENTIFIC SCHOLARLY
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "SmallValue")
+                     @Html.Raw("active")
+
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="SmallValue">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            SVP (GOOD & EQUIPMENT)
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
+
+
+            <li class="@if (ViewBag.filter.sub == "LogBook")
+                    @Html.Raw("active open")
+
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-book"></i>
+                    <span class="menu-text"> LOGBOOKS  </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "Canvass")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Canvass">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            CANVASS
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "Abstract")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Abstract">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            ABSTRACT 
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="@if (ViewBag.filter.sub2 == "PurchaseOrder")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="PurchaseOrder">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                           PURCHASE ORDER
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+
+                    <li class="@if (ViewBag.filter.sub2 == "Twg")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Twg">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            TWG
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+
+           
+        }
+
 
     </ul>
 
-    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+@*     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
-    </div>
+    </div> *@
 </div>

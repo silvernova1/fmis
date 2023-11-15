@@ -1,14 +1,4 @@
-﻿ @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
-@inject fmis.Data.MyDbContext _context
-@using Microsoft.EntityFrameworkCore;
-
-
-@functions{
-    public string GetAntiXsrfRequestToken()
-    {
-        return Xsrf.GetAndStoreTokens(Context).RequestToken;
-    }
-}
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,6 +59,8 @@
     <script src="~/assets/js/jquery.flot.pie.min.js"></script>
     <script src="~/assets/js/jquery.flot.resize.min.js"></script>
 
+
+   
     <!-- ace scripts -->
     <script src="~/assets/js/ace-elements.min.js"></script>
     <script src="~/assets/js/ace.min.js"></script>
@@ -89,10 +81,9 @@
         <script type="text/javascript">
             try { ace.settings.loadState('main-container') } catch (e) { }
         </script>
-        @if(!User.IsInRole("app_admin"))
-        {
+     
             <partial name="~/Views/Shared/_Sidebar.cshtml" />
-        }
+     
 
         <div class="main-content">
             <div class="main-content-inner">
@@ -151,9 +142,7 @@
                         <span class="blue bolder">FMIS - </span>
                         Department of Health Central Visayas CHD  &copy; 2021
                     </span>
-
                     &nbsp; &nbsp;
-
                 </div>
             </div>
         </div>
@@ -213,21 +202,6 @@
         });
     }
 
-    function logout() {
-        event.preventDefault();
-        $.ajax({
-            type: "POST",
-            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            url: "/Identity/Account/Logout?returnUrl=%2FHome%2FDashboard%3Fpage%3D%252FIndex",
-            data: {
-                "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
-            },
-            success: function (result) {
-                location.reload();
-            },
-            error: function (result) {
-                console.log(result.responseText);
-            }
-        });
-    }
+   /* 
+    }*/
 </script>

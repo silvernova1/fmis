@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -68,6 +69,7 @@ namespace fmis.Controllers.Accounting
                     {
                         return RedirectToAction("Index", "Dv");
                     }
+                    
                 }
                 else
                 {
@@ -121,8 +123,10 @@ namespace fmis.Controllers.Accounting
                 new Claim(ClaimTypes.Surname, user.Lname)
             };
 
+
             var identity1 = new ClaimsIdentity(claims, "Scheme2");
             var principal1 = new ClaimsPrincipal(identity1);
+
 
             await HttpContext.SignInAsync("Scheme2", principal1);
         }

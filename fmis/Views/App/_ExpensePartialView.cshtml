@@ -1,0 +1,266 @@
+﻿@model List<fmis.Models.ppmp.Expense>
+@using fmis.Data;
+@using fmis.Data.MySql;
+@using fmis.Models.ppmp;
+@inject PpmpContext _ppmpContext
+@inject DtsContext _dts
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Generate APP";
+}
+
+@{
+    List<int> expenseIdList = new List<int>();
+    for (var i = 0; i < Model.Count; i++)
+    {
+        var expenseId = Model[i].Id;
+        expenseIdList.Add(expenseId);
+    }
+
+    var query = new
+    {
+        itemId = 0,
+        modeProcurement = string.Empty,
+        unitCostId = string.Empty,
+        tranche = string.Empty
+    };
+}
+
+<style>
+    .custom-table td {
+        padding: 5px;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    #scroll-down-arrow {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+
+<div class="text-right">
+    <form asp-controller="App" asp-action="GenerateAppPdf" method="post" target="_blank">
+        <button type="submit">Generate PDF</button>
+    </form>
+</div>
+<hr />
+
+<div id="scroll-down-arrow">&#8595;</div>
+
+
+
+<form asp-controller="App" asp-action="SaveApp" method="post" id="myForm">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Procurement Project</th>
+                <th>PMO/End User</th>
+                <th>Yes</th>
+                <th>No</th>
+                <th>Mode of Procurement</th>
+                <th>Advertising/Posting IB/REI</th>
+                <th>Submission/ Opening of Bids</th>
+                <th>Notice of Award</th>
+                <th>Contract Signing</th>
+                <th>Source of Funds</th>
+                <th>Total</th>
+                <th>MOOE</th>
+                <th>CO</th>
+                <th>Remarks (Brief description of the Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td style="width: 100px;"></td>
+                    <td style="width: 250px;">
+                        <strong><input type="text" name="AppExpenses[@i].Description" value="@Model[i].Description" class="form-control" /></strong>
+                    </td>
+                </tr>
+                    @for (var j = 0; j < Model[i].Items.Count; j++)
+                    {
+                        decimal total = 0;
+                        for (var k = 0; k < Model[i].Items[j].Item_Daily.Count; k++)
+                        {
+
+
+                        decimal jan = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Jan);
+                        decimal feb = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Feb);
+                        decimal mar = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Mar);
+                        decimal apr = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Apr);
+                        decimal may = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].May);
+                        decimal jun = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Jun);
+                        decimal jul = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Jul);
+                        decimal aug = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Aug);
+                        decimal sep = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Sep);
+                        decimal oct = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Oct);
+                        decimal nov = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Nov);
+                        decimal dece = Convert.ToDecimal(Model[i].Items[j].Item_Daily[k].Dece);
+
+                        var totalMonth = jan + feb;
+
+
+
+                        string unitCostString = Model[i].Items[j].Item_Daily[k].Unit_cost;
+                        decimal unitCost;
+
+                        if (!string.IsNullOrWhiteSpace(unitCostString) && decimal.TryParse(unitCostString, out unitCost))
+                        {
+                            total = unitCost * totalMonth;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid unit cost value: " + unitCostString);
+                        }
+                        }
+
+
+                        List<Section> sectionUsersList = new List<Section>();
+
+                        foreach (var itemId in Model[i].Items[j].Item_Daily)
+                        {
+
+                            query = (from it_d1 in _ppmpContext.item_daily
+                                     join it_d2 in _ppmpContext.item_daily
+                                     on it_d1.Item_id equals it_d2.Item_id
+                                     where it_d1.Item_id == itemId.Item_id && it_d2.Status == null && it_d1.Yearly_ref_id == 4
+                                     select new
+                                     {
+                                         itemId = it_d1.Item_id,
+                                         modeProcurement = it_d2.Mode_procurement,
+                                         unitCostId = it_d2.Unit_cost,
+                                         tranche = it_d2.Tranche
+                                     }).FirstOrDefault();
+
+
+                            var sectionUser = _dts.section.SingleOrDefault(x => x.Id == itemId.Section_id);
+
+                            if (sectionUser != null)
+                            {
+                                sectionUsersList.Add(sectionUser);
+                            }
+                        }
+
+                    
+
+
+                        
+
+
+                        <tr>
+                            <input type="hidden" name="AppExpenses[@i].AppModels[@j].Tranche" value="@query?.tranche" />
+                            <td style="width: 100px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Uacs" value="@Model[i].Uacs" /></td>
+                            <td style="width: 250px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ProcurementProject" value="@Model[i].Items[j].Description" class="form-control" /></td>
+                            @if (sectionUsersList.Count > 0)
+                            {
+                                <td style="width: 130px;">
+                                    <input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="@sectionUsersList[0].Acronym" class="form-control" />
+                                </td>
+                            }
+                            else
+                            {
+                            <td style="width: 130px;">
+                                <input type="text" name="AppExpenses[@i].AppModels[@j].EndUser" value="" class="form-control" />
+                            </td>
+                            }
+                            <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].EarlyProcured" class="form-control" /></td>
+                            <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NotEarlyProcurered" class="form-control" /></td>
+                            <td style="width: 130px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ModeOfProcurement" value="@query?.modeProcurement" class="form-control" /></td>
+                            <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Advertising" id="advertising@(i)_@(j)" class="form-control advertising" /></td>
+                            <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Submission" id="submission@(i)_@(j)" class="form-control submission" /></td>
+                            <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].NoticeOfAward" id="notice@(i)_@(j)" class="form-control notice" /></td>
+                            <td style="width: 120px;"><input type="text" name="AppExpenses[@i].AppModels[@j].ContractSigning" id="datepicker@(i)_@(j)" class="form-control contract" /></td>
+                            <td style="width: 80px;"><input type="text" name="AppExpenses[@i].AppModels[@j].FundSource" class="form-control" /></td>
+                            <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Total" value="@total" class="form-control" /></td>
+                            <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Mooe" value="@total" class="form-control" /></td>
+                        <td style="width: 140px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Co" value="0" class="form-control" /></td>
+                            <td style="width: 160px;"><input type="text" name="AppExpenses[@i].AppModels[@j].Remarks" class="form-control" /></td>
+                        </tr>
+                    }
+            }
+        </tbody>
+    </table>
+    <div style="text-align: right;">
+        <button class="btn btn-primary" type="button" id="submitButton">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span id="buttonText">Saving All Changes</span>
+        </button>
+    </div>
+</form>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            $('#submitButton').prop('disabled', true);
+            $('#submitButton .spinner-border').css('display', 'inline-block');
+            $('#buttonText').text('Saving Changes...');
+
+            $('#myForm').submit();
+        });
+    });
+
+    $(document).ready(function () {
+        $('.advertising').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".submission").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".notice").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".contract").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    //
+    document.getElementById('scroll-down-arrow').addEventListener('click', function () {
+        const targetElement = document.getElementById('submitButton');
+
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+            this.classList.add('hidden');
+        }
+    });
+    function checkScrollPosition() {
+        const scrollY = window.scrollY;
+
+        const threshold = 200;
+
+        const arrow = document.getElementById('scroll-down-arrow');
+
+        if (scrollY > threshold) {
+            arrow.classList.remove('hidden');
+        } else {
+            arrow.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('scroll', checkScrollPosition);
+</script>

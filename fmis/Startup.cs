@@ -28,6 +28,8 @@ using System.Web.Http.Controllers;
 using Org.BouncyCastle.Crypto.Tls;
 using fmis.Data.MySql;
 using fmis.Models;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -47,6 +49,16 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.AddDebug();
+            });
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = 5000;
+            });
             services.AddTransient<EmailService>();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddCors();
@@ -66,7 +78,7 @@ namespace fmis
 
             services.AddSingleton<AutoIncrementGenerator>();
             services.AddHttpContextAccessor();
-            
+
 
 
             #region CONTEXTS
@@ -244,6 +256,15 @@ namespace fmis
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 })
+                .AddCookie("Scheme4", options =>
+                {
+                    options.Cookie.Name = "Scheme4";
+                    options.LoginPath = "/Procurement/Login";
+                    options.LogoutPath = "/Procurement/Logout";
+                    options.AccessDeniedPath = "/Index/NotFound";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(5);
+                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                })
                 .AddCookie("Scheme3", options =>
                 {
                     options.Cookie.Name = "Scheme3";
@@ -253,6 +274,8 @@ namespace fmis
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 });
+
+
 
 
             services.AddAuthorization(options =>
@@ -266,6 +289,7 @@ namespace fmis
 
                 options.AddPolicy("Accounting", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "accounting_admin"));
                 options.AddPolicy("User", polBuilder => polBuilder.RequireClaim(ClaimTypes.Role, "user"));
+   
             });
             services.Configure<CookiePolicyOptions>(options =>
             {

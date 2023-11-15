@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fmis.Models.ppmp
@@ -8,17 +10,17 @@ namespace fmis.Models.ppmp
     {
         public int Id { get; set; }
 
-        public int UacsId { get; set; }
+        public string? Uacs { get; set; }
 
-        public int? Expense_id { get; set; }
+        public string? ProcurementProject { get; set; }
 
-        public string ProcurementProject { get; set; }
+        public string? EndUser { get; set; }
 
-        public string EndUser { get; set; }
+        public string? EarlyProcured { get; set; }
 
-        public string IsEarlyProcurement { get; set; }
+        public string? NotEarlyProcurered { get; set; }
 
-        public string ModeOfProcurement { get; set; }
+        public string? ModeOfProcurement { get; set; }
 
         public DateTime? Advertising { get; set; }
 
@@ -28,20 +30,21 @@ namespace fmis.Models.ppmp
 
         public DateTime? ContractSigning { get; set; }
 
-        public string FundSource { get; set; }
+        public string? FundSource { get; set; }
 
-        [Column(TypeName = "decimal(18, 2)")]
         public decimal Total { get; set; }
 
-        [Column(TypeName = "decimal(18, 2)")]
         public decimal Mooe { get; set; }
 
-        [Column(TypeName = "decimal(18, 2)")]
         public decimal Co { get; set; }
 
-        public string Remarks { get; set; }
+        public string? Remarks { get; set; }
+
+        public int? Expense_id { get; set; }
+
+        public string? Tranche { get; set; }
 
         [ForeignKey("Expense_id")]
-        public Expense Expense { get; set; }
+        public AppExpense? AppExpense { get; set; }
     }
 }

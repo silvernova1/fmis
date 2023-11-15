@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -75,6 +76,8 @@ namespace fmis.Models.ppmp
 
         [ForeignKey("Expense_id")]
         public Expense Expense { get; set; }
+
+        public List<ItemDaily>? Item_Daily { get; set; }
 
     }
 }
