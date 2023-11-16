@@ -21,6 +21,7 @@ using fmis.Filters;
 using fmis.Models.silver;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Authorization;
+using fmis.Data.MySql;
 
 namespace fmis.Controllers
 {
@@ -33,9 +34,10 @@ namespace fmis.Controllers
         private readonly BudgetAllotmentContext _bContext;
         private readonly PrexcContext _pContext;
         private readonly MyDbContext _MyDbContext;
+        private readonly DtsContext _dts;
       
 
-        public SubAllotmentController(SubAllotmentContext context, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext)
+        public SubAllotmentController(SubAllotmentContext context, UacsContext uContext, BudgetAllotmentContext bContext, PrexcContext pContext, MyDbContext MyDbContext, Suballotment_amountContext subAllotmentAmountContext, DtsContext dts)
         {
             _context = context;
             _uContext = uContext;
@@ -43,6 +45,7 @@ namespace fmis.Controllers
             _pContext = pContext;
             _MyDbContext = MyDbContext;
             _subAllotmentAmountContext = subAllotmentAmountContext;
+            _dts = dts;
 
         }
 
@@ -254,6 +257,37 @@ namespace fmis.Controllers
             return Ok(await _MyDbContext.SaveChangesAsync());
         }
 
+        public IActionResult GetSection(int divisionId)
+        {
+            dynamic sections = null;
+            if (divisionId == 1)
+            {
+                sections = _dts.section.Where(c => c.Division == 6).ToList();
+            }
+            else if(divisionId == 2)
+            {
+                sections = _dts.section.Where(c => c.Division == 4).ToList();
+            }
+            else if (divisionId == 3)
+            {
+                sections = _dts.section.Where(c => c.Division == 3).ToList();
+            }
+            else if (divisionId == 4)
+            {
+                sections = _dts.section.Where(c => c.Division == 5).ToList();
+            }
+
+
+            return Json(sections);
+        }
+
+        public IActionResult Section()
+        {
+            var dts = _dts.section.Where(x=>x.Division == 3 || x.Division == 4 || x.Division == 5 || x.Division == 6).ToList();
+
+            return Json(dts);
+        }
+
         // GET: Sub_allotment/Create
         public async Task <IActionResult> Create(int AllotmentClassId, int AppropriationId, int BudgetAllotmentId, bool lastYear)
         {
@@ -373,6 +407,7 @@ namespace fmis.Controllers
             sub_allotment_data.Suballotment_code = subAllotment.Suballotment_code;
             sub_allotment_data.PapType = subAllotment.PapType;
             sub_allotment_data.RespoId = subAllotment.RespoId;
+            sub_allotment_data.SectionId = subAllotment.SectionId;
             sub_allotment_data.Beginning_balance = beginning_balance;
             sub_allotment_data.Remaining_balance = remaining_balance;
 

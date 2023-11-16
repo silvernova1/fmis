@@ -14,6 +14,6 @@ namespace fmis.Data
         {
         }
 
-        public DbSet<fmis.Models.Section> Section { get; set; }
+        //public DbSet<fmis.Models.SectionOld> Section { get; set; }
     }
 }

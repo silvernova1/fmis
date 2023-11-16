@@ -1,28 +1,78 @@
-﻿@{
+﻿@model List<fmis.Models.Procurement.Abstract>
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(Abstract)";
 }
 
 
-
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
 
 <h3 class="grey lighter smaller">
     ABSTRACT
 </h3>
 <hr>
 
-<div class="modal fade" id="CreateModalCanvass" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div id="modalContent"></div> <!-- Placeholder for content -->
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="EditModalAbstract" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div id="modalContentEdit"></div> <!-- Placeholder for CanvassEdit content -->
+<div class="col-xs-12">
+    <div id="editAbstract" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Abstract</h3>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
+                                        <input type="text" class="form-control" id="abstractNo" name="AbstractNo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">ABSTRACT DATE </label>
+                                        <input type="text" class="form-control" id="abstractDate" name="AbstractDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  PR NO./ DATE </label>
+                                        <select class="form-control" id="prNoWithDate" name="PrNoWithDate" asp-items="ViewBag.PrWithDate">
+                                            <option>Select Pr</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  CANVASS NO./DATE  </label>
+                                        <select class="form-control" id="canvassNoWithDate" name="CanvassNoWithDate" asp-items="ViewBag.CanvassWithDate">
+                                            <option>Select Canvass</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> RECOMMENDED AWARD</label>
+                                        <input type="text" class="form-control" id="recommendedAward" name="RecommendedAward">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <input type="text" class="form-control" id="rmop" name="Rmop" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -61,115 +111,127 @@
         </tr>
     </thead>
     <tbody>
-
-        <tr>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                SAMPLE
-            </td>
-            <td>
-                <a class="btn btn-xs btn-primary btn-edit" onclick="openEditAbstractModal()">
-                    <i class="ace-icon fa fa-edit"></i>Edit
-                </a>
-            </td>
-        </tr>
+        @if(Model.Count > 0)
+        {
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.AbstractNo
+                    </td>
+                    <td>
+                        @item.AbstractDate.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
+                        @item.PrNoWithDate
+                    </td>
+                    <td>
+                        @item.CanvassNoWithDate
+                    </td>
+                    <td>
+                        @item.RecommendedAward
+                    </td>
+                    <td>
+                        @item.Rmop
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                            <i class="ace-icon fa fa-edit"></i>Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    <div class="alert alert-danger">
+                        No data found.
+                    </div>
+                </td>
+            </tr>
+        }
+        
 
     </tbody>
 </table>
 
-<div class="col-xs-12">
+@await Html.PartialAsync("_AddAbstract")
 
-    <div id="my-modal" class="modal fade" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 class="smaller lighter blue no-margin">Create Abstract</h3>
-                </div>
-                <form asp-action="Create" method="post">
-                    <div class="modal-body">
-                        <div>
-                            <h4 class="grey lighter smaller">
-                                Please complete the form.
-                            </h4>
-                            <br />
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">RPQ DATE </label>
-                                        <input type="DATE" class="form-control" id="" name="" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  PR NO./ DATE </label>
-                                        <input type="text" class="form-control" id="" name="" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Date" style="font-weight:bold">  CANVASS NO./DATE  </label>
-                                        <input type="text" class="form-control" id="Date" name="Date">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Date" style="font-weight:bold"> RECOMMENDED AWARD</label>
-                                        <input type="date" class="form-control" id="Date" name="Date">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">RMOP</label>
-                                        <input type="text" class="form-control" id="ContactNumber" name="" required>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
-                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-
-        </div><!-- /.modal-dialog -->
-    </div>
-
-    </div>
-
-
-    
 <script>
-    function openEditAbstractModal() {
-        // Load the CanvassEdit content into the modal
-        $.get("/Procurement/AbstractEdit", function (data) {
-            $("#modalContentEdit").html(data);
-            $("#EditModalAbstract").modal("show");
+
+    var itemId;
+    $(document).ready(function () {
+        $(".btn-edit").click(function () {
+            itemId = $(this).data("id");
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAbstract", "Procurement")',
+                data: { id: itemId },
+                success: function (data) {
+                    $("#abstractNo").val(data.abstractNo);
+                    $("#abstractDate").val(data.abstractDate);
+                    $("#prNoWithDate").val(data.prNoWithDate);
+                    $("#canvassNoWithDate").val(data.canvassNoWithDate);
+                    $("#recommendedAward").val(data.recommendedAward);
+                    $("#rmop").val(data.rmop);
+                    $("#editAbstract").modal("show");
+                }
+            });
         });
-    }
+
+        $("#abstractDate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $("#saveChanges").click(function (e) {
+            e.preventDefault();
+            var newData = {
+                Id: itemId,
+                AbstractNo: $("#abstractNo").val(),
+                AbstractDate: $("#abstractDate").val(),
+                PrNoWithDate: $("#prNoWithDate").val(),
+                CanvassNoWithDate: $("#canvassNoWithDate").val(),
+                RecommendedAward: $("#recommendedAward").val(),
+                Rmop: $("#rmop").val(),
+
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateAbstract", "Procurement")',
+                data: JSON.stringify(newData),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editAbstract").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                }
+            });
+        });
+
+    });
 </script>
-
-
 
 
 

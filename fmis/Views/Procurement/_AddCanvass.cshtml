@@ -1,0 +1,116 @@
+﻿@model List<fmis.Models.Procurement.Canvass>
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
+<div class="col-xs-12">
+    <div id="my-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Canvass</h3>
+                </div>
+                <form asp-action="SaveCanvass" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ NO. </label>
+                                        <input type="text" class="form-control" name="RpqNo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <input type="text" class="form-control" id="rpqdate" name="rpqdate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                        <input type="text" class="form-control" name="ItemDesc" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> PR NO.  </label>
+                                        <input type="text" class="form-control" name="PrNo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold">PR DATE: </label>
+                                        <input type="text" class="form-control" id="prdate" name="prdate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <input type="text" class="form-control" name="Rmop">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#rpqdate").datepicker({
+            dateFormat: "MM d, yy"
+        
+        });
+
+        $("#prdate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("SaveCanvass", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#my-modal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                    $('form')[0].reset();
+
+                },
+                error: function () {
+                }
+            });
+        });
+
+    });
+</script>

@@ -28,6 +28,10 @@ using System.Web.Http.Controllers;
 using Org.BouncyCastle.Crypto.Tls;
 using fmis.Data.MySql;
 using fmis.Models;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 
 [assembly: OwinStartup(typeof(fmis.Startup))]
 
@@ -47,6 +51,19 @@ namespace fmis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.AddDebug();
+            });
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = 5000;
+            });
+
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<EmailService>();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddCors();
@@ -66,7 +83,7 @@ namespace fmis
 
             services.AddSingleton<AutoIncrementGenerator>();
             services.AddHttpContextAccessor();
-            
+
 
 
             #region CONTEXTS
