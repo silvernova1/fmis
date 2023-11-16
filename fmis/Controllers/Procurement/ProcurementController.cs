@@ -76,6 +76,7 @@ namespace fmis.Controllers.Procurement
             return Json(new { success = false, message = "Error submitting the form" });
         }
 
+
         //INDEX
         #region
         public IActionResult Index()
@@ -960,6 +961,18 @@ namespace fmis.Controllers.Procurement
                                      null);
 
         }
+
+        //PRINT
+        #region
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Print()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            return View();
+        }
+        #endregion
+
+
 
         #region LOGIN
         [HttpGet]
