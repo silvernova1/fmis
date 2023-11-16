@@ -19,6 +19,7 @@ using System.Xml;
 using fmis.Models.pr;
 using fmis.Models.ppmp;
 using fmis.Models.Procurement;
+using fmis.Models.Maiff;
 
 namespace fmis.Data
 {
@@ -98,6 +99,7 @@ namespace fmis.Data
         public DbSet<Item> Item { get; set; }
         public DbSet<IndexUser> IndexUser { get; set; }
         public DbSet<AppModel> AppModel { get; set; }
+        public DbSet<MaiffDv> MaiffDv { get; set; }
 
 
 
@@ -235,5 +237,7 @@ namespace fmis.Data
                 ((BaseEntityTimeStramp)entity.Entity).UpdatedAt = now;
             }
         }
+
+     
     }
 }

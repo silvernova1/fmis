@@ -53,6 +53,8 @@ namespace fmis.Controllers.Procurement
             _httpContextAccessor = httpContextAccessor;
         }
 
+
+
         //INDEX
         #region
         public IActionResult Index()
@@ -453,6 +455,18 @@ namespace fmis.Controllers.Procurement
         {
             // You can add any necessary logic here before rendering the CanvassEdit view.
             return PartialView("TwgEdit");
+        }
+        #endregion
+
+
+
+        //PRINT
+        #region
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Print()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            return View();
         }
         #endregion
 
