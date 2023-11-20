@@ -33,6 +33,9 @@
 <div id="example" class="hot"></div>
 <br />
 
+<div class="controls">
+    <a class="btn btn-primary btn-sm" id="export-file"> <span class="glyphicon glyphicon-download"></span> Export Excel</a>
+</div>
 
 <script>
 
@@ -181,6 +184,22 @@
     });
 
     var tableData = JSON.stringify(hot.getSourceData());
+    const exportPlugin = hot.getPlugin('exportFile');
+    button.addEventListener('click', () => {
+        exportPlugin.downloadFile('csv', {
+            bom: false,
+            columnDelimiter: ',',
+            columnHeaders: true,
+            exportHiddenColumns: false,
+            exportHiddenRows: false,
+            fileExtension: 'csv',
+            filename: 'ListOfPayee(HrmoJobOrder)',
+            mimeType: 'text/csv',
+            rowDelimiter: '\r\n',
+            rowHeaders: true,
+        });
+    });
+
     @*console.log(hot.getSourceData());*@
 
 

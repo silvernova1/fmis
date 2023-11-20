@@ -19,6 +19,7 @@ using System.Xml;
 using fmis.Models.pr;
 using fmis.Models.ppmp;
 using fmis.Models.Procurement;
+using fmis.Models.Maiff;
 
 namespace fmis.Data
 {
@@ -100,6 +101,7 @@ namespace fmis.Data
 
         public DbSet<AppExpense> AppExpense { get; set; }
         public DbSet<AppModel> AppModel { get; set; }
+        public DbSet<MaiffDv> MaiffDv { get; set; }
 
         public DbSet<PuChecklist> PuChecklist { get; set; }
         public DbSet<PrChecklist> PrChecklist { get; set; }
@@ -116,6 +118,7 @@ namespace fmis.Data
         public DbSet<Canvass> Canvass { get; set; }
         public DbSet<Po> Po { get; set; }
         public DbSet<Abstract> Abstract { get; set; }
+        public DbSet<Twg> Twg { get; set; }
 
 
 
@@ -253,5 +256,7 @@ namespace fmis.Data
                 ((BaseEntityTimeStramp)entity.Entity).UpdatedAt = now;
             }
         }
+
+     
     }
 }
