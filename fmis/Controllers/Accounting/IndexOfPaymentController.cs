@@ -686,7 +686,6 @@ namespace fmis.Controllers.Accounting
                     var existingPayee = await _MyDbContext.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
                     if (existingPayee == null)
                     {
-                        // Data already exists, add it to the existingData list
                         data.Add(concatenatedPayee);
                     }
                     else

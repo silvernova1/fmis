@@ -34,6 +34,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using fmis.Models.Procurement;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace fmis.Controllers.Procurement
 {
@@ -319,10 +320,14 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                _context.Add(model);
-                _context.SaveChanges();
+                if (!String.IsNullOrWhiteSpace(model.BacResNumber))
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+                }
+                return Json(new { success = true} );
             }
-            return RedirectToAction("BacResolutionNo");
+            return Json(new { success = false });
         }
 
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
@@ -339,15 +344,18 @@ namespace fmis.Controllers.Procurement
         }
 
         [HttpPost]
-        public IActionResult UpdateItem([FromBody] BacResNo newData)
+        public IActionResult UpdateBacResNo([FromBody] BacResNo newData)
         {
             if (ModelState.IsValid)
             {
-                _context.Update(newData);
-                _context.SaveChanges();
-                return RedirectToAction("BacResolutionNo");
+                if(!String.IsNullOrWhiteSpace(newData.BacResNumber))
+                {
+                    _context.Update(newData);
+                    _context.SaveChanges();
+                    return Json(new { success = true });
+                }
             }
-            return BadRequest(ModelState);
+            return Json(new { success = false });
         }
         #endregion
 
@@ -367,10 +375,15 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                _context.Add(model);
-                _context.SaveChanges();
+                if(!String.IsNullOrWhiteSpace(model.FullName))
+                {
+                    _context.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
             }
-            return RedirectToAction("RmopSignatory");
+            return Json(new { success = false });
         }
         [HttpGet]
         public IActionResult GetRmop(int id)
@@ -383,11 +396,14 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                _context.Update(newData);
-                _context.SaveChanges();
-                return RedirectToAction("RmopSignatory");
+                if (!String.IsNullOrWhiteSpace(newData.FullName))
+                {
+                    _context.Update(newData);
+                    _context.SaveChanges();
+                }
+                return Json(new { success = true } );
             }
-            return BadRequest(ModelState);
+            return Json(new { success = false });
         }
         #endregion
 
@@ -893,8 +909,69 @@ namespace fmis.Controllers.Procurement
         public IActionResult Twg()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Twg");
-            return View();
+            PrDropDownList();
+
+            return View(_context.Twg.ToList());
         }
+
+        [HttpPost]
+        public IActionResult SaveTwg(Twg model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(model.TwgNo))
+                {
+                    _context.Twg.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+        public IActionResult GetTwg(int id)
+        {
+            var item = _context.Twg.Find(id);
+            if (item != null)
+            {
+                string formattedTwgDate = item.TwgDate.ToString("MMM d, yyyy");
+                string formattedPrDate = item.PrDate.ToString("MMM d, yyyy");
+
+                var result = new
+                {
+                    TwgNo = item.TwgNo,
+                    TwgDate = formattedTwgDate,
+                    Recommendation = item.Recommendation,
+                    Prno = item.Prno,
+                    PrDate = formattedPrDate,
+                    ReceivedBy = item.ReceivedBy
+                };
+
+                return Json(result);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public IActionResult UpdateTwg([FromBody] Twg newData)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(newData.TwgNo))
+                {
+                    _context.Twg.Update(newData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
         #endregion
 
         //LOGBOOK PURCHASE ORDER EDIT

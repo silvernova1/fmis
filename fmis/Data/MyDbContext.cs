@@ -116,6 +116,7 @@ namespace fmis.Data
         public DbSet<Canvass> Canvass { get; set; }
         public DbSet<Po> Po { get; set; }
         public DbSet<Abstract> Abstract { get; set; }
+        public DbSet<Twg> Twg { get; set; }
 
 
 
