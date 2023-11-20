@@ -995,7 +995,7 @@
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
-                <ul class="submenu">
+             @*    <ul class="submenu">
                     <li class="@if (ViewBag.filter.sub == "Dv")
                     @Html.Raw("active")
 ">
@@ -1008,7 +1008,7 @@
 
                         <b class="arrow"></b>
                     </li>
-                </ul>
+                </ul> *@
             </li>
         }
 
@@ -1464,7 +1464,36 @@
                 </ul>
             </li>
 
-           
+            <li class="@if (ViewBag.filter.sub == "Recommendation")
+                    @Html.Raw("active open")
+
+
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-book"></i>
+                    <span class="menu-text"> RECOMMENDATION  </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "Print")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Print">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            PDF's
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+
+
+                
+                </ul>
+            </li>
         }
 
 
