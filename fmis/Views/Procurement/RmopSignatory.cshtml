@@ -148,10 +148,27 @@
                 url: '@Url.Action("UpdateRmop", "Procurement")',
                 data: JSON.stringify(newData),
                 contentType: "application/json; charset=utf-8",
-                success: function () {
-                    $("#editModal").modal("hide");
-
-                    location.reload();
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editModal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
                 }
             });
         });

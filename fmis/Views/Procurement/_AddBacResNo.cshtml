@@ -10,7 +10,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h3 class="smaller lighter blue no-margin">Create Bac Resolution No.</h3>
                 </div>
-                <form asp-controller="Procurement" asp-action="SaveBacResNo" method="post">
+                <form>
                     <div class="modal-body">
                         <div>
                             <br />
@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <button type="submit" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
                         <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
                     </div>
                 </form>
@@ -33,3 +33,42 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("SaveBacResNo", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#my-modal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                },
+                error: function () {
+                }
+            });
+        });
+    });
+</script>
