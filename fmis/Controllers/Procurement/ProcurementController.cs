@@ -34,6 +34,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using fmis.Models.Procurement;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using iTextSharp.tool.xml;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace fmis.Controllers.Procurement
@@ -985,6 +986,28 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+
+        #region
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Indexing()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Index", "Indexing");
+            return View();
+        }
+        #endregion
+
+        #region
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Supplier()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Supplier");
+            return View();
+        }
+        #endregion
+
+
+
+
         private void CanvassWithDate()
         {
             ViewBag.CanvassWithDate = new SelectList((from c in _context.Canvass.Where(x => x.RpqNo != null).ToList()
@@ -1045,10 +1068,612 @@ namespace fmis.Controllers.Procurement
         public IActionResult Print()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+
             return View();
         }
         #endregion
 
+
+        //PRINT PU
+        #region
+        public IActionResult PrintPu(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                // Method to add centered paragraph with bold text
+                void AddCenteredParagraph(PdfPCell cell, string text, bool isBold = false)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f) : new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    cell.AddElement(centeredParagraph);
+                }
+
+                // Method to add cross layout
+                void AddCrossLayout()
+                {
+                    PdfPTable table = new PdfPTable(2);
+                    table.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                    table.LockedWidth = true;
+
+                    // First row
+                    PdfPCell topLeftCell = new PdfPCell();
+                    topLeftCell.Border = Rectangle.NO_BORDER;
+                    topLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    topLeftCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topLeftCell);
+                    table.AddCell(topLeftCell);
+
+                    PdfPCell topRightCell = new PdfPCell();
+                    topRightCell.Border = Rectangle.NO_BORDER;
+                    topRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    topRightCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topRightCell);
+                    table.AddCell(topRightCell);
+
+                    // Second row
+                    PdfPCell bottomLeftCell = new PdfPCell();
+                    bottomLeftCell.Border = Rectangle.NO_BORDER;
+                    bottomLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    bottomLeftCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomLeftCell);
+                    table.AddCell(bottomLeftCell);
+
+                    PdfPCell bottomRightCell = new PdfPCell();
+                    bottomRightCell.Border = Rectangle.NO_BORDER;
+                    bottomRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    bottomRightCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomRightCell);
+                    table.AddCell(bottomRightCell);
+
+                    // Add the table to the document
+                    doc.Add(table);
+                }
+
+                // Method to add sample paragraphs
+                void AddSampleParagraphs(PdfPCell cell)
+                {
+
+                    cell.Border = Rectangle.BOX;
+
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "With Notice of Award and Contract with");
+                    AddCenteredParagraph(cell, "REYNA's THE HAVEN AND GARDENS FOOD");
+                    AddCenteredParagraph(cell, "CATERING SERVICES, INC.");
+                    AddCenteredParagraph(cell, "Located at New Calceta St., Cogon District,");
+                    AddCenteredParagraph(cell, "Tagbiliran City 6300 Bohol");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "LUCHE F. QUIRANTE", isBold: true);
+                    AddCenteredParagraph(cell, "Head, BAC Secretariat");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "Noted:");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. JONATHAN NEIL V. ERASMO", isBold: true);
+                    AddCenteredParagraph(cell, "Chairperson, BAC for Goods, \n Equipment & Consulting Services");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. SOPHIA M. MANCAO", isBold: true);
+                    AddCenteredParagraph(cell, "Vice-Chairperson, BAC for Goods, \n Equipment & Consulting Services");
+                    AddCenteredParagraph(cell, "\n");
+
+                }
+
+                // Add the cross layout
+                AddCrossLayout();
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        //PRINT RECOMMENDATION GOODS
+        #region
+        public IActionResult PrintRecommendationGoods(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                // Method to add centered paragraph with bold text
+                void AddCenteredParagraph(PdfPCell cell, string text, bool isBold = false, bool alignLeft = false, float leftMargin = 0)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9) : new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+
+
+
+                    if (alignLeft)
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_LEFT;
+                    }
+                    else
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    }
+
+                    centeredParagraph.IndentationLeft = leftMargin;
+                    cell.AddElement(centeredParagraph);
+                }
+
+                // Method to add cross layout
+                void AddCrossLayout()
+                {
+                    PdfPTable table = new PdfPTable(2);
+                    table.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                    table.LockedWidth = true;
+
+                    // First row
+                    PdfPCell topLeftCell = new PdfPCell();
+                    topLeftCell.Border = Rectangle.NO_BORDER;
+                    topLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    topLeftCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topLeftCell);
+                    table.AddCell(topLeftCell);
+
+                    PdfPCell topRightCell = new PdfPCell();
+                    topRightCell.Border = Rectangle.NO_BORDER;
+                    topRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    topRightCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topRightCell);
+                    table.AddCell(topRightCell);
+
+                    // Second row
+                    PdfPCell bottomLeftCell = new PdfPCell();
+                    bottomLeftCell.Border = Rectangle.NO_BORDER;
+                    bottomLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    bottomLeftCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomLeftCell);
+                    table.AddCell(bottomLeftCell);
+
+                    PdfPCell bottomRightCell = new PdfPCell();
+                    bottomRightCell.Border = Rectangle.NO_BORDER;
+                    bottomRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    bottomRightCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomRightCell);
+                    table.AddCell(bottomRightCell);
+
+                    // Add the table to the document
+                    doc.Add(table);
+                }
+
+                // Method to add sample paragraphs
+                void AddSampleParagraphs(PdfPCell cell)
+                {
+
+                    cell.Border = Rectangle.BOX;
+
+
+
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DOH CENTRAL VISAYAS", isBold: true);
+                    AddCenteredParagraph(cell, "CENTER for HEALTH DEVELOPMENT", isBold: true);
+                    AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+              
+                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "MEMO TO: BAC SECRETARIAT", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "FINDINGS:", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "RECOMMENDATION:", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "The Bids & Awards Committee:", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "ATTY. MARISSA C. GOROSIN" + "              " + "MR. ROLDAN A. CUBILLO", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "          Provisional Member" + "                                       " + "Member", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "MR. RAMIL R. ABREA" + "                       " + "ATTY. JO DAVID Z. BORCES", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "              Member" + "                           " + "                        Member", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. SOPHIA M. MANCAO" + "         " + "DR. JONATHAN NEIL V. ERASMO", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "           Vice-Chairperson" + "                  " + "                    Chairperson", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+
+                }
+
+                // Add the cross layout
+                AddCrossLayout();
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        //PRINT RECOMMENDATION MEDS
+        #region
+        public IActionResult PrintRecommendationMeds(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                // Method to add centered paragraph with bold text
+                void AddCenteredParagraph(PdfPCell cell, string text, bool isBold = false, bool alignLeft = false, float leftMargin = 0)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9) : new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    
+
+
+                    if (alignLeft)
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_LEFT;
+                    }
+                    else
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    }
+
+                    centeredParagraph.IndentationLeft = leftMargin;
+                    cell.AddElement(centeredParagraph);
+                }
+
+                // Method to add cross layout
+                void AddCrossLayout()
+                {
+                    PdfPTable table = new PdfPTable(2);
+                    table.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                    table.LockedWidth = true;
+
+                    // First row
+                    PdfPCell topLeftCell = new PdfPCell();
+                    topLeftCell.Border = Rectangle.NO_BORDER;
+                    topLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    topLeftCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topLeftCell);
+                    table.AddCell(topLeftCell);
+
+                    PdfPCell topRightCell = new PdfPCell();
+                    topRightCell.Border = Rectangle.NO_BORDER;
+                    topRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    topRightCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topRightCell);
+                    table.AddCell(topRightCell);
+
+                    // Second row
+                    PdfPCell bottomLeftCell = new PdfPCell();
+                    bottomLeftCell.Border = Rectangle.NO_BORDER;
+                    bottomLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    bottomLeftCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomLeftCell);
+                    table.AddCell(bottomLeftCell);
+
+                    PdfPCell bottomRightCell = new PdfPCell();
+                    bottomRightCell.Border = Rectangle.NO_BORDER;
+                    bottomRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    bottomRightCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomRightCell);
+                    table.AddCell(bottomRightCell);
+
+                    // Add the table to the document
+                    doc.Add(table);
+                }
+
+                // Method to add sample paragraphs
+                void AddSampleParagraphs(PdfPCell cell)
+                {
+
+                    cell.Border = Rectangle.BOX;
+
+                
+
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DOH CENTRAL VISAYAS", isBold: true);
+                    AddCenteredParagraph(cell, "CENTER for HEALTH DEVELOPMENT", isBold: true);
+                    AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 10f, isBold:true) ;
+                    AddCenteredParagraph(cell, "MEMO TO: BAC SECRETARIAT", alignLeft: true, leftMargin: 10f, isBold: true);
+                    AddCenteredParagraph(cell, "FINDINGS:", alignLeft: true, leftMargin: 10f, isBold: true);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "RECOMMENDATION:", isBold: true, alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "The Bids & Awards Committee:", isBold: true, alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. SHARON ZENITH LAUREL" + "                   " + "DR. NELNER OMUS", isBold: true, alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "          Provisional Member" + "                               " + "Provisional Member", alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "MR. ROLDAN A. CUBILLO" + "                        " + "MR. RAMIL R. ABREA", isBold: true, alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "              Member" + "                           " + "                            Member", alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "ATTY. JO DAVID BORCES" + "                   " + "DR. SOPHIA M. MANCAO", isBold: true, alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "             Member" + "                     " + "                         Vice-Chairperson", alignLeft: true, leftMargin: 10f);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. JONATHAN NEIL V. ERASMO", isBold: true);
+                    AddCenteredParagraph(cell, "Chairperson");
+                    AddCenteredParagraph(cell, "\n");
+
+                }
+
+                // Add the cross layout
+                AddCrossLayout();
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        //PRINT TWG GOODS
+        #region
+        public IActionResult PrintTWGGoods(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                // Method to add centered paragraph with bold text
+                void AddCenteredParagraph(PdfPCell cell, string text, bool isBold = false, bool alignLeft = false, float leftMargin = 0, float rightMargin = 0)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9) : new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+
+
+                    if (alignLeft)
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_LEFT;
+                    }
+                    else
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    }
+
+                    centeredParagraph.IndentationLeft = leftMargin;
+                    cell.AddElement(centeredParagraph);
+                }
+
+                // Method to add cross layout
+                void AddCrossLayout()
+                {
+                    PdfPTable table = new PdfPTable(2);
+                    table.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                    table.LockedWidth = true;
+
+                    // First row
+                    PdfPCell topLeftCell = new PdfPCell();
+                    topLeftCell.Border = Rectangle.NO_BORDER;
+                    topLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    topLeftCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topLeftCell);
+                    table.AddCell(topLeftCell);
+
+                    PdfPCell topRightCell = new PdfPCell();
+                    topRightCell.Border = Rectangle.NO_BORDER;
+                    topRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    topRightCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topRightCell);
+                    table.AddCell(topRightCell);
+
+                    // Second row
+                    PdfPCell bottomLeftCell = new PdfPCell();
+                    bottomLeftCell.Border = Rectangle.NO_BORDER;
+                    bottomLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    bottomLeftCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomLeftCell);
+                    table.AddCell(bottomLeftCell);
+
+                    PdfPCell bottomRightCell = new PdfPCell();
+                    bottomRightCell.Border = Rectangle.NO_BORDER;
+                    bottomRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    bottomRightCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomRightCell);
+                    table.AddCell(bottomRightCell);
+
+                    // Add the table to the document
+                    doc.Add(table);
+                }
+
+                // Method to add sample paragraphs
+                void AddSampleParagraphs(PdfPCell cell)
+                {
+
+                    cell.Border = Rectangle.BOX;
+
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DOH CENTRAL VISAYAS", isBold: true);
+                    AddCenteredParagraph(cell, "CENTER for HEALTH DEVELOPMENT", isBold: true);
+                    AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "MEMO TO: TWG for GOODS", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "FINDINGS:" + "                      "+ "Supplier submitted counter offers", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "RECOMMENDATION" + "     Evaluate quotations as to comppliance", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "                                          " + "with specifications as & requirements of RA");
+                    AddCenteredParagraph(cell, "     " + "9184", alignLeft: true, leftMargin: 95f);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "The Bids & Awards Committee:", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "ATTY. MARISSA C. GOROSIN" + "            " + "MR. ROLDAN A. CUBILLO", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "          Provisional Member" + "                                       " + "Member", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "MR. RAMIL R. ABREA" + "                     " + "ATTY. JO DAVID Z. BORCES", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "              Member" + "                           " + "                        Member", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. SOPHIA M. MANCAO" + "         " + "DR. JONATHAN NEIL V. ERASMO", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "         Vice-Chairperson" + "                  " + "                    Chairperson", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                }
+
+                // Add the cross layout
+                AddCrossLayout();
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        //PRINT TWG GOODS
+        #region
+        public IActionResult PrintTWGMeds(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                // Method to add centered paragraph with bold text
+                void AddCenteredParagraph(PdfPCell cell, string text, bool isBold = false, bool alignLeft = false, float leftMargin = 0, float rightMargin = 0)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9) : new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+
+
+
+                    if (alignLeft)
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_LEFT;
+                    }
+                    else
+                    {
+                        centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    }
+
+                    centeredParagraph.IndentationLeft = leftMargin;
+                    cell.AddElement(centeredParagraph);
+                }
+
+                // Method to add cross layout
+                void AddCrossLayout()
+                {
+                    PdfPTable table = new PdfPTable(2);
+                    table.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                    table.LockedWidth = true;
+
+                    // First row
+                    PdfPCell topLeftCell = new PdfPCell();
+                    topLeftCell.Border = Rectangle.NO_BORDER;
+                    topLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    topLeftCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topLeftCell);
+                    table.AddCell(topLeftCell);
+
+                    PdfPCell topRightCell = new PdfPCell();
+                    topRightCell.Border = Rectangle.NO_BORDER;
+                    topRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    topRightCell.VerticalAlignment = Element.ALIGN_TOP;
+                    AddSampleParagraphs(topRightCell);
+                    table.AddCell(topRightCell);
+
+                    // Second row
+                    PdfPCell bottomLeftCell = new PdfPCell();
+                    bottomLeftCell.Border = Rectangle.NO_BORDER;
+                    bottomLeftCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    bottomLeftCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomLeftCell);
+                    table.AddCell(bottomLeftCell);
+
+                    PdfPCell bottomRightCell = new PdfPCell();
+                    bottomRightCell.Border = Rectangle.NO_BORDER;
+                    bottomRightCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    bottomRightCell.VerticalAlignment = Element.ALIGN_BOTTOM;
+                    AddSampleParagraphs(bottomRightCell);
+                    table.AddCell(bottomRightCell);
+
+                    // Add the table to the document
+                    doc.Add(table);
+                }
+
+                // Method to add sample paragraphs
+                void AddSampleParagraphs(PdfPCell cell)
+                {
+
+                    cell.Border = Rectangle.BOX;
+
+                    AddCenteredParagraph(cell, "DOH CENTRAL VISAYAS", isBold: true);
+                    AddCenteredParagraph(cell, "CENTER for HEALTH DEVELOPMENT", isBold: true);
+                    AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "MEMO TO: TWG For DRUGS/MEDICINE, MEDICAL", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "                    & DENTAL SUPPLIES/MATERIALS,", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "                    REAGENTS AND ACTIVE INGREDIENTS,", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "FINDINGS:" + "                      " + "Supplier submitted counter offers", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "RECOMMENDATION" + "     Evaluate quotations as to comppliance", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "                                          " + "with specifications as & requirements of RA");
+                    AddCenteredParagraph(cell, "     " + "9184", alignLeft: true, leftMargin: 95f);
+                    AddCenteredParagraph(cell, "The Bids & Awards Committee:", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. SHARON ZENITH LAUREL" + "                   " + "DR. NELNER OMUS", isBold: true, alignLeft: true, leftMargin : 7);
+                    AddCenteredParagraph(cell, "          Provisional Member" + "                          " + "     Provisional Member", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "MR. ROLDAN A. CUBILLO" + "                        " + "MR. RAMIL R. ABREA", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "              Member" + "                           " + "                        Member", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "ATTY. JO DAVID BORCES" + "                   " + "DR. SOPHIA M. MANCAO", isBold: true, alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "               Member" + "                  " + "                          Vice-Chairperson", alignLeft: true, leftMargin: 7);
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "\n");
+                    AddCenteredParagraph(cell, "DR. JONATHAN NEIL V. ERASMO", isBold: true);
+                    AddCenteredParagraph(cell, "Chairperson");
+                    AddCenteredParagraph(cell, "\n");
+
+
+                }
+
+                // Add the cross layout
+                AddCrossLayout();
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
 
 
         #region LOGIN

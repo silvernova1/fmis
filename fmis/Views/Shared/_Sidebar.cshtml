@@ -995,7 +995,7 @@
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
-             @*    <ul class="submenu">
+                <ul class="submenu">
                     <li class="@if (ViewBag.filter.sub == "Dv")
                     @Html.Raw("active")
 ">
@@ -1008,7 +1008,7 @@
 
                         <b class="arrow"></b>
                     </li>
-                </ul> *@
+                </ul>
             </li>
         }
 
@@ -1464,14 +1464,16 @@
                 </ul>
             </li>
 
+         
+
             <li class="@if (ViewBag.filter.sub == "Recommendation")
                     @Html.Raw("active open")
 
 
 ">
                 <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-book"></i>
-                    <span class="menu-text"> RECOMMENDATION  </span>
+                    <i class="menu-icon fa fa-certificate"></i>
+                    <span class="menu-text"> NOA </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
 
@@ -1484,15 +1486,57 @@
 ">
                         <a asp-controller="Procurement" asp-action="Print">
                             <i class="menu-icon fa fa-arrow-right blue"></i>
-                            PDF's
+                            Print NOA
                         </a>
                         <b class="arrow"></b>
                     </li>
 
+                    <li class="@if (ViewBag.filter.sub2 == "Supplier")
+                     @Html.Raw("active")
 
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Supplier">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                           List Of Supplier
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
 
                 
                 </ul>
+            </li>
+
+            <li class="@if (ViewBag.filter.sub == "Index")
+                    @Html.Raw("active open")
+
+
+
+">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-inbox"></i>
+                    <span class="menu-text"> Indexing  </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                    <li class="@if (ViewBag.filter.sub2 == "Indexing")
+                     @Html.Raw("active")
+
+
+
+">
+                        <a asp-controller="Procurement" asp-action="Indexing">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            List Of Index
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                
+                </ul>
+
+
             </li>
         }
 

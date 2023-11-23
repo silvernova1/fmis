@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Supplier)";
+}
+
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
+
+<h3 class="grey lighter smaller">
+    List Of Supplier
+</h3>
+<hr>
+
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-hover" style="width: 600px">
+    <thead>
+        <tr>
+            <th>
+                Supplier Name
+            </th>
+            <th>
+               Supplier Address
+            </th>
+            
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            
+            <td>
+                LOURDES ELORDE PANDESAL COCO BREAD CHESSE BERD
+            </td>
+            <td>
+                ARBEES SHOBEE PAN DE MANILA MQIATOS
+            </td>
+            <td>
+                <a class="btn btn-xs btn-primary btn-edit">
+                    <i class="ace-icon fa fa-edit"></i>Edit
+                </a>
+            </td>
+        </tr>
+
+
+
+
+
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_AddSupplier")
+
+<script>
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
