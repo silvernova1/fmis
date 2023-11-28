@@ -71,11 +71,11 @@ namespace fmis.Controllers.Procurement
                     _context.SaveChanges();
 
 
-                    return Json(new { success = true, message = "Submitted to End User" });
+                    return Json(new { success = true } );
                 }
             }
 
-            return Json(new { success = false, message = "Error submitting the form" });
+            return Json(new { success = false } );
         }
 
 
@@ -663,8 +663,7 @@ namespace fmis.Controllers.Procurement
 
 
 
-        //LOGBOOK CANVASS
-        #region
+        #region CANVASS
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Canvass()
         {
@@ -806,9 +805,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        //LOGBOOK PURCHASE ORDER
-        #region
+        #region LOGBOOK PURCHASE ORDER
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult PurchaseOrder()
         {
@@ -986,22 +983,119 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        #region
-        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
-        public IActionResult Indexing()
-        {
-            ViewBag.filter = new FilterSidebar("Procurement", "Index", "Indexing");
-            return View();
-        }
-        #endregion
-
-        #region
+        #region SUPPLIER
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Supplier()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Supplier");
-            return View();
+            var supplier = _context.Supplier.ToList();
+
+            return View(supplier);
+        }
+        [HttpPost]
+        public IActionResult SaveSupplier(Supplier model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(model.SupplierName))
+                {
+                    _context.Supplier.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+        public IActionResult GetSupplier(int id)
+        {
+            var supplier = _context.Supplier.Find(id);
+            return Ok(supplier);
+        }
+        [HttpPost]
+        public IActionResult UpdateSupplier([FromBody] Supplier newData)
+        {
+            if (ModelState.IsValid)
+            {
+                if (newData.SupplierName != null || newData.SupplierName == "")
+                {
+                    _context.Supplier.Update(newData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+        #endregion
+
+        #region INDEXING
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Indexing()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Index", "Indexing");
+            var index = _context.PuIndexing.ToList();
+
+            return View(index);
+        }
+        [HttpPost]
+        public IActionResult SaveIndex(PuIndexing model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(model.PoNo))
+                {
+                    _context.PuIndexing.Add(model);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+        public IActionResult GetIndex(int id)
+        {
+            var item = _context.PuIndexing.Find(id);
+            if (item != null)
+            {
+                string formattedBudgetDate = item.BudgetReleased.ToString("MMM d, yyyy");
+                string formattedSupplyDate = item.SupplyReleased.ToString("MMM d, yyyy");
+
+                var result = new
+                {
+                    PoNo = item.PoNo,
+                    PrNo = item.PrNo,
+                    ItemDesc = item.ItemDesc,
+                    Gp = item.Gp,
+                    Rmop = item.Rmop,
+                    BudgetReleased = formattedBudgetDate,
+                    SupplyReleased = formattedSupplyDate,
+                    Remarks = item.Remarks
+                };
+
+                return Json(result);
+            }
+
+            return NotFound();
+        }
+        [HttpPost]
+        public IActionResult UpdateIndex([FromBody] PuIndexing newData)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!String.IsNullOrEmpty(newData.PoNo))
+                {
+                    _context.Update(newData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
         #endregion
 

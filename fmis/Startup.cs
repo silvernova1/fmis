@@ -213,8 +213,6 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
             services.AddDbContext<SectionsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SectionsContext")));
-            services.AddDbContext<MaiffDvContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("MaiffDvContext")));
             #endregion
 
 
