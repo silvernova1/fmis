@@ -88,6 +88,7 @@ namespace fmis.Controllers.App
             }
         }
 
+        //Update Controller method
         [HttpPost]
         public async Task<IActionResult> SaveApp(List<AppExpense> AppExpenses)
         {
@@ -272,7 +273,7 @@ namespace fmis.Controllers.App
                 PdfPTable table = new PdfPTable(15);
                 table.WidthPercentage = 100;
 
-                float[] columnWidths = new float[] { 90f, 250f, 90f, 40f, 40f, 80f, 90f, 90f, 90f, 90f, 70f, 80f, 80f, 80f, 150f };
+                float[] columnWidths = new float[] { 90f, 250f, 90f, 60f, 40f, 80f, 90f, 90f, 90f, 90f, 70f, 130f, 130f, 80f, 80f };
                 table.SetWidths(columnWidths);
 
 
@@ -519,12 +520,12 @@ namespace fmis.Controllers.App
                         cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         table.AddCell(cell);
 
-                        cell = new PdfPCell(new Phrase(item.Total.ToString(), cellFont));
+                        cell = new PdfPCell(new Phrase(item.Total.ToString("##,#00.00"), cellFont));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         table.AddCell(cell);
 
-                        cell = new PdfPCell(new Phrase(item.Mooe.ToString(), cellFont));
+                        cell = new PdfPCell(new Phrase(item.Mooe.ToString("##,#00.00"), cellFont));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         table.AddCell(cell);
@@ -547,7 +548,7 @@ namespace fmis.Controllers.App
                 PdfPTable footer = new PdfPTable(15);
                 footer.WidthPercentage = 100;
 
-                float[] footerWidths = new float[] { 90f, 250f, 90f, 40f, 40f, 80f, 90f, 90f, 90f, 90f, 70f, 80f, 80f, 80f, 150f };
+                float[] footerWidths = new float[] { 90f, 250f, 90f, 60f, 40f, 80f, 90f, 90f, 90f, 90f, 70f, 130f, 130f, 80f, 80f };
                 footer.SetWidths(footerWidths);
 
                 for (int i = 1; i <= 12; i++)
@@ -556,24 +557,6 @@ namespace fmis.Controllers.App
                     footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                     footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                     footer.AddCell(footerCell);
-
-
-                    /* if (i == 1)
-                     {
-                         footerCell.Border = PdfPCell.LEFT_BORDER;
-                         footer.AddCell(footerCell);
-                     }
-                     else if (i == 12)
-                     {
-                         footerCell.Border = PdfPCell.RIGHT_BORDER;
-                         footer.AddCell(footerCell);
-                     }
-                     else
-                     {
-                         footerCell.Border = PdfPCell.NO_BORDER;
-                         footer.AddCell(footerCell);
-                     }*/
-
 
                     if (i == 1)
                     {
@@ -585,7 +568,7 @@ namespace fmis.Controllers.App
                     }
                     if (i == 10)
                     {
-                        footerCell = new PdfPCell(new Phrase(@total.ToString(), cellFont));
+                        footerCell = new PdfPCell(new Phrase(@total.ToString("##,#00.00"), cellFont));
                         footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         //footerCell.Border = PdfPCell.NO_BORDER;
@@ -593,7 +576,7 @@ namespace fmis.Controllers.App
                     }
                     if (i == 10)
                     {
-                        footerCell = new PdfPCell(new Phrase(@total.ToString(), cellFont));
+                        footerCell = new PdfPCell(new Phrase(@total.ToString("##,#00.00"), cellFont));
                         footerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         footerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         //footerCell.Border = PdfPCell.NO_BORDER;

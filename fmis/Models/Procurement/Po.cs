@@ -6,6 +6,8 @@ namespace fmis.Models.Procurement
     {
         public int Id { get; set; }
 
+        public string AbstractNo { get; set; }
+
         public string PoNo { get; set; }
 
         public DateTime PoDate { get; set; }

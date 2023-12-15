@@ -14,9 +14,11 @@ using System.Collections.Generic;
 using fmis.Models.ppmp;
 using Microsoft.EntityFrameworkCore;
 using fmis.Models.pr;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Employee
 {
+    //[Authorize(AuthenticationSchemes = "Scheme2")]
     public class EmployeeController : Controller
     {
         private readonly PpmpContext _ppmpContext;

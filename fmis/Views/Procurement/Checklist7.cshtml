@@ -225,27 +225,25 @@
 
         $('form').submit(function (e) {
             e.preventDefault();
+
             $.ajax({
                 url: '@Url.Action("SaveChecklist", "Procurement")',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function (result) {
-                    var $alert = $('.alert');
-                    var $alertMessage = $('#alert-message');
-
                     if (result.success) {
-                        $alert
-                            .removeClass('alert-danger')
-                            .addClass('alert-success');
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Submitted to End User..',
+                            sound: false
+                        });
                     } else {
-                        $alert
-                            .removeClass('alert-success')
-                            .addClass('alert-danger');
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
                     }
-
-                    $alertMessage.text(result.message);
-                    $alert.show();
-
                     $('form')[0].reset();
                     $('.pr').val('').trigger('change');
                 },

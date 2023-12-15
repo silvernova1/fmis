@@ -4,7 +4,9 @@
     {
         public int Id { get; set; }
 
-        public string BacNo { get; set; }
+		public string UserId { get; set; }
+
+		public string BacNo { get; set; }
 
         public string PrNoOne { get; set; }
 
