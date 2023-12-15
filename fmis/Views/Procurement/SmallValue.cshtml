@@ -144,10 +144,6 @@
                         <h5 class="TimesNewRoman"> <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 620px; font-family: 'Times New Roman'; font-size: 14px;">   </h5>
                         <h5 style="margin-left:245px;" class="TimesNewRoman"> in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;   </h5>
                         <br />
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> despite diligent efforts, the BAC found the items covered in the above-stated   </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> Purchase Request were not available in the Procurement Service – Department of Budget and Management </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> (PS-DBM);  </h5>
-                        <br />
                         <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> after evaluation of the purchase request vis-à-vis the implementing rules and upon    </h5>
                         <h5 style="margin-left:245px;" class="TimesNewRoman"> confirmation of the existence of the conditions allowing the same, the BAC has come to a resolution that   </h5>
                         <h5 style="margin-left:245px;" class="TimesNewRoman"> resort to the Alternative Mode of Procurement: Negotiated Procurement (Small Value Procurement) under    </h5>
@@ -203,7 +199,10 @@
                     </div>
                     <br />
                     <div class="col-md-12 bg-light text-right">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-xs btn-primary"> <i class="ace-icon fa fa-check-square-o"></i> Save</button>
+                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintSmallValue","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
+                            <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
+                        </a>
                     </div>
                 </div>
             </form>
